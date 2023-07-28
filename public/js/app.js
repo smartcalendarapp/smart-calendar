@@ -2719,8 +2719,6 @@ let calendarday = new Date().getDate()
 let calendar = new Calendar()
 
 
-let todomode = 0
-
 //load data
 getclient()
 
@@ -5982,6 +5980,14 @@ function cancelschedulemytasks(){
 }
 
 //here4
+function toggleplanmytask(id){
+	if(planmytaskslist.includes(id)){
+		planmytaskslist = planmytaskslist.filter(d => d != id)
+	}else{
+		planmytaskslist.push(id)
+	}
+	calendar.updateTodo()
+}
 
 
 
@@ -7089,107 +7095,7 @@ function gettododata(item){
 	}else{
 		//view
 
-		if(todomode == 1){
-			
-			output = `<div class="todoitem todoitemwrap" draggable="true" ondragstart="dragtodo(event, '${item.id}')">
-		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
-
-			 		<div class="display-flex flex-row gap-12px">
-
-	 					${!selectplanmytasks ? 
-							`<div class="todoitemcheckbox tooltip display-flex" onclick="todocompleted(event, '${item.id}');gtag('event', 'button_click', { useraction: '${item.completed ? 'Mark uncomplete - task' : 'Mark complete - task'}' })">
-							${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
-						</div>`
-							: ''}
-	
-						<div class="justify-flex-end flex-1 display-flex flex-row small:flex-column gap-12px">
-	
-							<div class="flex-1 display-flex flex-column gap-6px">
-								<div class="width-full display-flex flex-column gap-6px">
-				 
-									<div class="display-flex flex-row gap-12px small:flex-column small:gap-6px">
-	
-							 			<div class="flex-1">
-											<div class="todoitemtext selecttext text-16px ${itemclasses.join(' ')}">
-												<span class="text-bold">${item.title ? cleanInput(item.title) : `New Task`}</span>
-											</div>
-						 				</div>
-			
-	 									<div class="flex-1">
-											<div class="gap-6px todoitemtextbutton display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton" onclick="clicktodoitemduedate(event, '${item.id}')">
-												<div class="pointer-auto pointer ${!endbeforedate ? 'text-quaternary hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-blue hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${Calendar.Event.getDueText(item)}` : 'No due date'}</div>
-											</div>
-										</div>
-	
-					 					<div class="flex-1">
-											<div class="todoitemtextbutton width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-green hoverunderlinegreen pointer-auto pointer transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
-												Takes ${getDHMText(myduration)}
-											</div>
-					 					</div>
-	
-	 									<div class="flex-1">
-											<div class="todoitemtextbutton width-fit text-14px nowrap pointer-auto pointer popupbutton transition-duration-100 ${['text-quaternary hoverunderlinequaternary visibility-hidden hoverpriority small:visibility-visible', 'text-orange hoverunderlineorange', 'text-red hoverunderlinered'][item.priority]} ${itemclasses.join(' ')}" onclick="clicktodoitempriority(event, '${item.id}')">
-												${['Low', 'Medium', 'High'][item.priority]} priority
-											</div>
-										</div>
-			
-									</div>
-						
-									${item.notes ? 
-									`<div class="pre-wrap break-word selecttext todoitemtext text-quaternary text-14px overflow-hidden ${itemclasses.join(' ')}">${formatURL(cleanInput(item.notes))}</div>` : ''}
-	
-								</div>
-				
-							</div>
-					
-	
-						</div>
-	
-
-						<div class="gap-12px todoitembuttongroup height-fit justify-flex-end flex-row small:visibility-visible">
-							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="edittodo('${item.id}');gtag('event', 'button_click', { useraction: 'Edit - task' })">
-								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-								<g>
-								<path d="M178.389 21.6002L31.105 168.884M234.4 77.6109L87.1156 224.895M178.389 21.6002C193.856 6.13327 218.933 6.13327 234.4 21.6002C249.867 37.0671 249.867 62.1439 234.4 77.6109M10 245.998L31.105 168.884M10.0017 246L87.1156 224.895" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								</g>
-								</svg>
-			
-								<span class="tooltiptextcenter" id="eventinfoedittooltiptext">Edit</span>
-							</div>
-				
-							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="deletetodo('${item.id}');gtag('event', 'button_click', { useraction: 'Delete - task' })">
-								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-								<g>
-								<path d="M207.414 223.445L207.414 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M71.3433 246L184.657 246" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M207.414 223.445C207.414 235.902 197.226 246 184.657 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M238 57.6433L18 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M48.5864 223.445L48.5864 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M48.5864 223.445C48.5864 235.902 58.775 246 71.3433 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M96.1228 10L159.881 10" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M173.737 23.7283C173.737 16.1464 167.534 10 159.881 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M82.2668 23.7283C82.2668 16.1464 88.4703 10 96.1228 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M82.2668 23.7283L82.2668 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M173.737 23.7283L173.737 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M165.379 101.49L165.379 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
-								<path d="M90.6212 101.49L90.6212 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
-								<path d="M128 101.49L128 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
-								</g>
-								</svg>
-		
-								<span class="tooltiptextcenter" id="eventinfoedittooltiptext">Delete</span>
-							</div>
-		
-						</div>
-			
-			 
-					</div>
-				</div>
-		 	</div>`
-			
-		}else if(todomode == 0){
-			
-		  output = `<div class="todoitem todoitemwrap" draggable="true" ondragstart="dragtodo(event, '${item.id}')">
+		  output = `<div class="todoitem todoitemwrap" draggable="true" ondragstart="dragtodo(event, '${item.id}')" ${selectplanmytasks ? `onclick="toggleplanmytask('${item.id}')"` : ''} ${selectplanmytasks && planmytaskslist.includes(item.id) ? 'background-blue' : ''}>
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
 			 		<div class="display-flex flex-row gap-12px">
@@ -7274,7 +7180,6 @@ function gettododata(item){
 					</div>
 				</div>
 		 	</div>`
-		}
 	}
 
   return output
