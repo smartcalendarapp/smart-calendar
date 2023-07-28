@@ -1,0 +1,270 @@
+html * {
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s;
+	font-family:var(--font);
+}
+
+div{
+	cursor:default;
+	-webkit-user-select:none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+body{
+	background-color: var(--background-primary);
+	margin:0;
+}
+
+html, body{
+	height:100%;
+	width:100%;
+}
+
+@media (max-width: 600px) {
+	input, textarea{
+		font-size:16px !important;
+	}
+}
+
+.buttongoogle{
+	height:18px;
+	width:18px;
+	display:inline;
+	vertical-align:middle;
+	pointer-events:none;
+}
+.googlebutton{
+	color:var(--black);
+	background-color:var(--white);
+	box-shadow:0 0 8px -2px var(--black-transparent);
+}
+.googlebutton:hover{
+	background-color:var(--white-hover)
+}
+
+
+.infoinput{
+	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+	box-sizing: border-box;
+	padding-top:8px;
+	padding-bottom:8px;
+	padding-left:12px;
+	padding-right:12px;
+	color:var(--text-primary);
+	font-size:14px;
+	background-color:transparent;
+	flex:1;
+	margin:0;
+	border:none;
+	outline:none;
+	width: 100%;
+	border-radius:8px;
+	position:relative;
+}
+.infoinput:hover{
+	background-color:var(--background-tint-1);
+}
+
+.inputline{
+	height:2px;
+	display:inline-block;
+	transition:all 0.3s;
+	position:absolute;
+  width:0;
+	left:50%;
+	bottom:0;
+	background-color:var(--blue);
+}
+
+.infoinput:focus + .inputline{
+	width:100%;
+	left:0;
+}
+
+.infoinput::placeholder{
+	color:var(--text-secondary);
+}
+
+.screen{
+	flex:1;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+}
+.screenwrap{
+	display:flex;
+	flex-direction:column;
+	height:100%;
+	width:100%;
+}
+
+.formcontainer{
+	width:100%;
+	max-width:400px;
+	padding-left:12px;
+	padding-right:12px;
+}
+.form{
+	gap:12px;
+	display:flex;
+	flex-direction:column;
+}
+
+.formgroup{
+	gap:6px;
+	display:flex;
+	flex-direction:column;
+}
+
+.forminputwrap{
+	position:relative;
+	display:flex;
+	overflow:hidden;
+	border-radius:8px;
+	background-color:var(--background-tint-1);
+}
+
+.formtext{
+	color:var(--text-primary);
+	font-size:14px;
+}
+
+.formsubmit{
+	text-align:center;
+	transition:background-color 0.1s;
+	background-color:var(--blue);
+	color:var(--white);
+	font-size:14px;
+	border-radius:8px;
+	cursor:pointer;
+	border:none;
+	padding-top:8px;
+	padding-bottom:8px;
+	border-radius:8px;
+	font-weight:normal;
+	-webkit-appearance:none;
+}
+.formsubmit:hover{
+	background-color:var(--blue-hover);
+}
+.screenwrap{
+	display:flex;
+	flex-direction:column;
+	gap:12px;
+}
+.formtitle{
+	color:var(--text-primary);
+	font-size:24px;
+	text-align:center;
+}
+
+
+
+.navbar{
+	align-items:center;
+	display:flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding-left:60px;
+	padding-right:60px;
+	padding-top:12px;
+	padding-bottom:12px;
+	z-index:99;
+}
+
+.buttonlogo{
+	height:32px;
+	width:32px;
+}
+.navtitle{
+	display:flex;
+	flex-direction:row;
+	align-items:center;
+	gap:6px;
+	white-space: nowrap;
+	color:var(--text-primary);
+	text-decoration:none;
+	transition:none;
+}
+
+.navbuttonblue{
+	cursor:pointer;
+	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+	border-radius:50vh;
+	padding-left:16px;
+	padding-right:16px;
+	padding-top:8px;
+	padding-bottom:8px;
+	height:fit-content;
+	text-decoration:none;
+		font-size:16px;
+	color:var(--white);
+	background-color:var(--blue);
+}
+.navbuttonblue:hover{
+	background-color:var(--blue-hover);
+}
+
+.navbutton{
+	padding-left:16px;
+	padding-right:16px;
+	padding-top:8px;
+	padding-bottom:8px;
+	height:fit-content;
+	text-decoration:none;
+		font-size:16px;
+	color:var(--text-primary);
+}
+.navbutton:hover{
+	text-decoration:underline;
+}
+
+.navbuttongroup{
+	display:flex;
+	flex-direction:row;
+	gap:12px;
+}
+
+
+.formswitch{
+	text-decoration:none;
+	border-radius:8px;
+		font-size:14px;
+	color:var(--text-primary);
+	width:fit-content;
+	cursor:pointer;
+}
+.formswitch:hover{
+	text-decoration:underline;
+}
+
+.errorwrap{
+	font-size:14px;
+	color:var(--red);
+	font-weight:600;
+}
+
+.orbar{
+	height:1px;
+	flex:1 0 auto;
+	background-color:var(--text-tertiary)
+}
+
+.buttoninline{
+	height:18px;
+	width:18px;
+	stroke: var(--text-primary);
+	fill: none;
+	display:inline;
+	vertical-align:middle;
+	pointer-events:none;
+}
+.checkboxfilled{
+	stroke:none !important;
+	fill:var(--blue) !important;
+}
+
+.checkboxunfilled{
+	stroke:var(--text-secondary) !important;
+}

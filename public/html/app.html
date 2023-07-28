@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Smart Calendar | App</title>
+	<meta name="description" content="Open your calendar and start planning. Schedule your tasks and get them done.">
+	<meta name="keywords" content="To-Do List,Calendar App,Automated Scheduling,Task Scheduling,Google Calendar Integration,Productivity Tools,Time Management,Personal Assistant">
+	<meta name="author" content="Smart Calendar">
+	<link rel="canonical" href="https://smartcalendar.us/app">
+
+	<!-- open graph -->
+	<meta property="og:type" content="website">
+  <meta property="og:url" content="https://smartcalendar.us/app">
+  <meta property="og:title" content="Smart Calendar | App">
+  <meta property="og:description" content="Open your calendar and start planning. Schedule your tasks and get them done.">
+ 	<meta name="og:image" content="https://smartcalendar.us/images/embedimage.png">
+
+	<!-- twitter -->
+	<meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://smartcalendar.us/app">
+  <meta name="twitter:title" content="Smart Calendar | App">
+  <meta name="twitter:description" content="Open your calendar and start planning. Schedule your tasks and get them done.">
+  <meta name="twitter:image" content="https://smartcalendar.us/images/embedimage.png">
+
+	<!-- files -->
+	<link rel="icon" type="image/x-icon" href="../logo.png">
+	<link href="../app.css" rel="stylesheet" type="text/css" />
+	<link href="../base.css" rel="stylesheet" type="text/css" />
+	<link href="../base-hover.css" rel="stylesheet" type="text/css"/>
+	<link href="../base-media.css" rel="stylesheet" type="text/css"/>
+
+	<!-- fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+	
+	<!-- Hotjar Tracking Code for https://smartcalendar.us -->
+	<script>
+		if(localStorage.getItem('noanalytics')!=JSON.stringify(true)){
+			
+			(function(h,o,t,j,a,r){
+					h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+					h._hjSettings={hjid:3548463,hjsv:6};
+					a=o.getElementsByTagName('head')[0];
+					r=o.createElement('script');r.async=1;
+					r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+					a.appendChild(r);
+			})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+			
+		}
+	</script>
+</head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YNYSBZ76C2"></script>
+<script>
+	if(localStorage.getItem('noanalytics')!=JSON.stringify(true)){
+	
+	 	window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+	
+	  gtag('config', 'G-YNYSBZ76C2');
+	
+	}
+</script>
+	
+
+<body>
+	<div class="absolute padding-24px gap-12px bottom-0 right-0 left-0 display-flex flex-column align-center justify-flex-end z-index-2000 pointer-none border-box overflow-hidden" id="allalerts">
+	</div>
+
+	
+	<div class="fadetransition welcomepopup display-flex flex-column border-8px box-shadow backdrop-blur background-primary-transparent z-index-1000 absolute hiddenfade overflow-hidden minwidthheight popupbutton" id="welcomepopup"></div>
+
+	<div class="fadetransition absolute welcomeshadow z-index-999 pointer-none hiddenfade display-none" id="welcomeshadow"></div>
+	
+	<div class="absolute top-0 left-0 width-full z-index-2000 height-full display-flex justify-center align-center fadetransition transition-duration-200 background-primary flex-column gap-24px" id="loadingscreen">
+		<div class="text-24px text-primary">Smart Calendar</div>
+		<div class="loader width200px"></div>
+	</div>
+
+
+	<canvas id="confetticanvas" class="pointer-none height-full width-full absolute top-0 left-0 z-index-2000"></canvas>
+		
+	<div class="absolute top-0 left-0 width-full background-primary z-index-2000 height-full display-flex justify-center align-center fadetransition transition-duration-200 hiddenfade" id="loginpopup">
+		<div class="padding-12px display-flex flex-column gap-12px">
+			<div class="text-primary text-18px">Please log in to continue to Smart Calendar</div>
+			<a class="border-8px background-blue padding-8px-12px text-white text-14px text-center text-decoration-none hover:background-blue-hover transition-duration-100" href="../login">Log in</a>
+		</div>
+	</div>
+
+	<div class="notificationsscreen hiddenfade" id="notificationsscreen" onclick="nextdisplaynotification(event)">
+		<div class="notificationsscreenitem" id="notificationsscreenitem">
+		</div>
+	</div>
+
+	<div class="z-index-1000 popup box-shadow backdrop-blur padding-12px border-8px absolute gap-4px display-flex flex-column hiddenpopup picker" onmousedown="event.preventDefault()" id="datepicker"></div>
+
+
+	<div class="helpmenu hiddenpopup popup z-index-1000 padding-12px gap-12px" id="todoitempriority">
+		<div class="display-flex flex-row gap-12px justify-space-between align-center">
+			<div>
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					</g>
+					</svg>
+				</div>
+			
+			<div class="infotitle">Priority</div>
+
+			<div class="infotoprightgroup">
+				<div class="infotopright pointer" onclick="closetodoitempriority(event)">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+			</div>
+		</div>
+		<div class="display-flex flex-column overflow-auto border-8px listborder max-height-240px" id="todoitemprioritylist"></div>
+	</div>
+
+	
+	<div class="helpmenu hiddenpopup popup z-index-1000 padding-12px gap-12px" id="createtodoitempriority">
+		<div class="display-flex flex-row gap-12px justify-space-between align-center">
+			<div>
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					</g>
+					</svg>
+				</div>
+			
+			<div class="infotitle">Priority</div>
+
+			<div class="infotoprightgroup">
+				<div class="infotopright pointer" onclick="closecreatetodoitempriority(event)">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+			</div>
+		</div>
+		<div class="display-flex flex-column overflow-auto border-8px listborder max-height-240px" id="createtodoitemprioritylist"></div>
+	</div>
+
+
+	
+	<div class="helpmenu hiddenpopup popup z-index-1000 padding-12px gap-12px" id="todoitemduration">
+		<div class="display-flex flex-row justify-space-between align-center">
+			<div>
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					</g>
+					</svg>
+				</div>
+			
+			<div class="infotitle">Time needed</div>
+
+			<div class="infotoprightgroup">
+				<div class="infotopright pointer" onclick="closetodoitemduration(event)">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+			</div>
+		</div>
+		
+		<div class="infogroup">
+			<div class="inputgroup">
+				<div class="inputgroupitem flex-1">
+					<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtodoitemduration(event)" id="todoitemdurationinput" class="infoinput" placeholder="Custom time needed" type="text">
+						<span class="inputline"></span>
+					</input>
+				</div>
+			</div>
+		</div>
+		<div class="display-flex flex-column overflow-auto border-8px listborder max-height-240px" id="todoitemdurationlist"></div>
+	</div>
+
+
+	<div class="helpmenu hiddenpopup popup z-index-1000 padding-12px gap-12px" id="createtodoitemduration">
+		<div class="display-flex flex-row justify-space-between align-center">
+			<div>
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					</g>
+					</svg>
+				</div>
+			
+			<div class="infotitle">Time needed</div>
+
+			<div class="infotoprightgroup">
+				<div class="infotopright pointer" onclick="closecreatetodoitemduration(event)">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+			</div>
+		</div>
+		
+		<div class="infogroup">
+			<div class="inputgroup">
+				<div class="inputgroupitem flex-1">
+					<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputcreatetodoitemduration(event)" id="createtodoitemdurationinput" class="infoinput" placeholder="Custom time needed" type="text">
+						<span class="inputline"></span>
+					</input>
+				</div>
+			</div>
+		</div>
+		<div class="display-flex flex-column overflow-auto border-8px listborder max-height-240px" id="createtodoitemdurationlist">		
+		</div>
+	</div>
+
+
+	<div class="helpmenu hiddenpopup popup z-index-1000 padding-12px gap-12px" id="todoitemduedate">
+		<div class="display-flex flex-row justify-space-between align-center">
+
+			<div>
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					</g>
+					</svg>
+				</div>
+			
+			<div class="infotitle">Due date</div>
+
+			<div class="infotoprightgroup">
+				<div class="infotopright pointer" onclick="closetodoitemduedate(event)">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+			</div>
+		</div>
+
+		<div class="display-flex flex-row gap-12px flex-wrap-wrap">
+			<div class="bordertertiary transition-duration-100 width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemnotdue(event, inputtodoid)">No due date</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputtodoitemduetime(event, 1440)">Tomorrow</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);inputtodoitemduetime(event, 1440)">In 2 days</div>
+		</div>
+
+		<div class="horizontalbar"></div>
+
+
+		<div class="display-flex flex-row gap-12px">
+
+			<div class="display-flex flex-column gap-12px">
+				<div class="infogroup">
+					<div class="inputgroup">
+						<div class="inputgroupitem flex-1">
+							<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtodoitemduedate(event)" id="todoitemduedateinput" class="infoinput" placeholder="Custom date" type="text">
+								<span class="inputline"></span>
+							</input>
+						</div>
+					</div>
+				</div>
+				<div class="display-flex flex-column overflow-auto border-8px listborder padding-12px" id="todoitemduedatelist"></div>
+			</div>
+	
+			<div class="display-flex flex-column gap-12px">
+				<div class="infogroup">
+					<div class="inputgroup">
+						<div class="inputgroupitem flex-1">
+							<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtodoitemduetime(event)" id="todoitemduetimeinput" class="infoinput" placeholder="Custom time" type="text">
+								<span class="inputline"></span>
+							</input>
+						</div>
+					</div>
+				</div>
+				<div class="display-flex flex-column overflow-auto border-8px listborder max-height-240px" id="todoitemduetimelist"></div>
+			</div>
+			
+		</div>
+	</div>
+
+
+
+	<div class="helpmenu hiddenpopup popup z-index-1000 padding-12px gap-12px" id="createtodoitemduedate">
+		<div class="display-flex flex-row justify-space-between align-center">
+
+			<div>
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					</g>
+					</svg>
+				</div>
+			
+			<div class="infotitle">Due date</div>
+
+			<div class="infotoprightgroup">
+				<div class="infotopright pointer" onclick="closecreatetodoitemduedate(event)">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+			</div>
+		</div>
+
+		<div class="display-flex flex-row gap-12px flex-wrap-wrap">
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemnotdue(event)">No due date</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputcreatetodoitemduetime(event, 1440)">Tomorrow</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);inputcreatetodoitemduetime(event, 1440)">In 2 days</div>
+		</div>
+
+		<div class="horizontalbar"></div>
+		
+
+		<div class="display-flex flex-row gap-12px">
+			
+			<div class="display-flex flex-column gap-12px">
+				<div class="infogroup">
+					<div class="inputgroup">
+						<div class="inputgroupitem flex-1">
+							<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputcreatetodoitemduedate(event)" id="createtodoitemduedateinput" class="infoinput" placeholder="Custom date" type="text">
+								<span class="inputline"></span>
+							</input>
+						</div>
+					</div>
+				</div>
+				<div class="display-flex flex-column overflow-auto border-8px listborder padding-12px" id="createtodoitemduedatelist"></div>
+			</div>
+	
+			<div class="display-flex flex-column gap-12px">
+				<div class="infogroup">
+					<div class="inputgroup">
+						<div class="inputgroupitem flex-1">
+							<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputcreatetodoitemduetime(event)" id="createtodoitemduetimeinput" class="infoinput" placeholder="Custom time" type="text">
+								<span class="inputline"></span>
+							</input>
+						</div>
+					</div>
+				</div>
+				<div class="display-flex flex-column overflow-auto border-8px listborder max-height-240px" id="createtodoitemduetimelist"></div>
+			</div>
+			
+		</div>
+	</div>
+
+
+	
+	<div class="helpmenu hiddenpopup popup z-index-1000" id="timewindowpopup"></div>
+	
+	<div class="eventinfo hiddenpopup popup z-index-1000 notificationswidth minwidthheight" id="calendaritempopup"></div>
+
+
+	<div class="helpmenu hiddenpopup popup z-index-1000 minwidthheight" id="todoitempopup">
+	</div>
+	
+	<div class="helpmenu hiddenpopup popup picker z-index-1000 max-height-240px" onmousedown="event.preventDefault()" id="durationpicker"></div>
+
+	<div class="helpmenu hiddenpopup popup picker z-index-1000 max-height-240px" onmousedown="event.preventDefault()" id="timepicker"></div>
+
+	<div class="settingsscreen hiddenfade small:padding-0 small:background-transparent" id="settingsscreen" onclick="clicksettingsscreen(event)">
+			
+		<div class="display-flex flex-1 box-shadow todowidth flex-column height-full settingscontent small:width-full small:height-full overflow-y-auto" id="settingscontent">
+
+			<div class="display-flex flex-column overflow-y-auto flex-1">
+
+				<!-- top bar -->
+				<div class="infotop borderbottom justify-space-between">
+					<div>
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+						<g></g>
+						</svg>
+					</div>
+					<div class="text-18px text-primary">Settings</div>
+					<div class="infotoprightgroup">
+						<div class="infotopright pointer" onclick="closesettings(event)">
+							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+							<g>
+							<g opacity="1">
+							<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+							<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+							</g>
+							</g>
+							</svg>
+						</div>
+						
+					</div>
+				</div>
+
+				<div class="flex-1 display-flex flex-row overflow-y-auto small:flex-column">
+					<!-- left tab -->
+					<div class="border-box border-box padding-left-12px padding-top-12px display-flex flex-column leftcolumn small:display-none" id="settingstablist1">
+						<div class="leftwrapitem" onclick="clicksettingstab(0)">Account</div>
+						<div class="leftwrapitem" onclick="clicksettingstab(1)">General</div>
+						<div class="leftwrapitem" onclick="clicksettingstab(2)">My calendars</div>
+						<div class="leftwrapitem" onclick="clicksettingstab(3)">Notifications</div>
+					</div>
+
+					<!-- settings page -->
+					<div class="flex-1 padding-12px display-flex flex-column settingspadding overflow-y-auto border-box" id="settingscontentwrap">
+
+						<!-- account -->
+						<div class="display-flex flex-column gap-24px">
+							<div class="infogroup">
+								<div class="infotext text-16px text-bold">Email</div>
+								<div id="accountusername" class="infotext"></div>
+								<div id="changeusername" class="accountbutton popupbutton display-none" onclick="openchangeusername()">Change email</div>
+								<div id="setusername" class="accountbutton popupbutton display-none" onclick="opensetusername()">Set email</div>
+							</div>
+
+							<div class="horizontalbar"></div>
+							
+							<div class="infogroup">
+								<div class="infotext text-16px text-bold">Password</div>
+								<div id="accountpassword" class="infotext"></div>
+								<div id="changepassword" class="accountbutton popupbutton display-none" onclick="openchangepassword()">Change password</div>
+								<div id="setpassword" class="accountbutton popupbutton display-none" onclick="opensetpassword()">Set password</div>
+							</div>
+
+							<div class="horizontalbar"></div>
+							
+							<div class="infogroup">
+								<div class="infotext text-16px text-bold">Login methods</div>
+			
+								<!-- list of login methods -->
+								<div class="background-tint-1 padding-12px border-8px display-flex flex-row gap-12px flex-wrap-wrap justify-space-between align-center">
+									<div class="display-flex flex-row align-center gap-12px">
+										<div class="text-primary text-14px nowrap">
+											<svg viewBox="0 0 24 24" width="100%" class="buttongoogle" height="100%"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path><path d="M1 1h22v22H1z" fill="none"></path></svg> Google
+										</div>
+										<div class="text-14px text-primary display-none" id="googleemail"></div>
+									</div>
+			
+									<div>
+										<div class="width-fit text-14px text-primary background-tint-1 padding-8px-12px hover:background-tint-2 border-8px transition-duration-100 pointer display-none" id="connectgoogle" onclick="connectgoogle()">Connect</div>
+										<div class="width-fit text-14px text-primary background-tint-1 padding-8px-12px hover:background-tint-2 border-8px transition-duration-100 pointer display-none" id="disconnectgoogle" onclick="disconnectgoogle()">Disconnect</div>
+									</div>
+								</div>
+										
+								<div id="googleerrorwrap" class="errorwrap display-none"></div>
+							</div>
+							
+							<div class="logout" onclick="logout()">Log out</div>
+
+
+							<div class="horizontalbar"></div>
+							
+							<div class="infogroup">
+								<div class="display-flex flex-row gap-12px align-center">
+									<div class="infotext text-16px text-bold">Enable Google Calendar Syncing</div>
+									<label class="switch">
+										<input type="checkbox" oninput="togglesyncgooglecalendar(event)" id="syncgooglecalendartoggle">
+										<span class="slider"></span>
+									</label>
+								</div>
+								
+								<div class="display-flex flex-row gap-12px align-center">
+									<div id="lastsyncedgooglecalendar" class="gap-6px display-flex flex-row align-center"></div>
+									<div class="display-flex flex-row gap-12px">
+										<div id="synnowcgooglecalendar" onclick="syncnowgooglecalendar()" class="flex-1 text-center display-none text-14px text-white border-8px padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 pointer">Sync now</div>
+									</div>
+								</div>
+								
+								<div id="importgooglecalendarerror" class="errorwrap display-none"></div>
+							</div>
+						</div>
+		
+						<!-- general -->
+						<div class="display-flex flex-column gap-24px">
+			
+							<div class="infogroup">
+								<div class="infotext text-16px text-bold">Theme</div>
+								<div class="inputeventtype" id="settingsthemes">
+									<div class="inputeventtypechild" onclick="clicksettingstheme(0)">Sync with device</div>
+									<div class="inputeventtypechild" onclick="clicksettingstheme(1)">Light</div>
+									<div class="inputeventtypechild" onclick="clicksettingstheme(2)">Dark</div>
+								</div>
+							</div>
+
+							<div class="horizontalbar"></div>
+			
+							<div class="infogroup">
+								<div class="infotext text-16px text-bold">Time format</div>
+								<div class="inputeventtype">
+									<div class="inputeventtypechild" id="settingstimeformat12" onclick="clicksettingstimeformat(false)">12 hour</div>
+									<div class="inputeventtypechild" id="settingstimeformat24" onclick="clicksettingstimeformat(true)">24 hour</div>
+								</div>
+							</div>
+
+							<div class="horizontalbar"></div>
+
+							<div class="infogroup">
+								<div class="infotext text-16px text-bold">Scheduling mode</div>
+								<div class="text-14px text-quaternary">Choose how Smart Calendar automatically schedules events.<br>Smart Calendar will only schedule events you want it to, and events like meetings or appointments will not be touched.</div>
+								<div class="flex-wrap-wrap justify-center display-flex flex-row background-tint-1 border-8px overflow-hidden" id="autoschedulemodes2">
+									<div class="flex-1 display-flex flex-column modeoptionbutton border-8px padding-8px-12px pointer transition-duration-100" onclick="clickschedulemode(0)">
+										<div class="transition-duration-100 text-18px text-primary text-center pointer-none schedulemodetext">Focus</div>
+										<div class="nowrap transition-duration-100 text-14px text-primary text-center pointer-none schedulemodetext">Ideal for maximizing productivity</div>
+									</div>
+									<div class="flex-1 display-flex flex-column modeoptionbutton border-8px padding-8px-12px pointer transition-duration-100" onclick="clickschedulemode(1)">
+										<div class="transition-duration-100 text-18px text-primary text-center pointer-none schedulemodetext">Balanced</div>
+										<div class="nowrap transition-duration-100 text-14px text-primary text-center pointer-none schedulemodetext">Ideal for an even workload over time</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="horizontalbar"></div>
+
+							
+							<div class="infogroup">
+								<div class="infotext text-16px text-bold">Sleep time</div>
+								<div class="text-14px text-quaternary">Smart Calendar schedules events outside of your sleep time.</div>
+								<div class="inputgroup gap-6px">
+									<div class="inputgroupitem flex-1">
+										<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepstart(event)" id="settingssleepstart2" class="infoinput inputtimepicker" placeholder="Add start time" type="text">
+											<span class="inputline"></span>
+										</input>
+									</div>
+									<div class="text-14px text-primary">to</div>
+									<div class="inputgroupitem flex-1">
+										<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepend(event)" id="settingssleepend2" class="infoinput inputtimepicker" placeholder="Add end time" type="text">
+											<span class="inputline"></span>
+										</input>
+									</div>
+								</div>
+							</div>
+							
+
+							<div class="horizontalbar"></div>
+							
+							<div class="infogroup">
+								<div class="infotext text-16px text-bold">Break between events</div>
+								<div class="text-14px text-quaternary">Smart Calendar includes a break between events when planning your schedule.</div>
+								<div class="inputgroup">
+									<div class="inputgroupitem flex-1">
+										<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingseventspacing(event)" id="settingseventspacing2" class="infoinput inputdurationpicker" placeholder="Add duration" type="text">
+											<span class="inputline"></span>
+										</input>
+									</div>
+								</div>
+							</div>
+						</div>
+			
+						<!-- calendars -->
+						<div class="display-flex flex-column gap-24px">
+
+							<div id="settingscalendarlist" class="display-flex flex-column gap-6px"></div>
+
+							<div class="horizontalbar"></div>
+							
+							<div class="infogroup">
+								<div class="text-16px text-primary text-bold">Create calendar</div>
+								<div class="border-8px background-blue hover:background-blue-hover transition-duration-100 text-14px pointer text-center padding-8px-12px text-white" onclick="createcalendar()">Create calendar</div>
+							</div>
+
+							<div class="horizontalbar"></div>
+							
+							<div class="infogroup">
+								<div class="text-16px text-primary text-bold">Upload calendar file</div>
+								<div class="border-8px background-blue hover:background-blue-hover transition-duration-100 text-14px pointer text-center padding-8px-12px text-white" onclick="clickuploadfile()">Upload file
+									<input type="file" accept=".ics" id="importcalendar" class="display-none" onchange="inputcalendarfile(event)"></input>
+								</div>
+							</div>
+							
+							<div class="horizontalbar"></div>
+							
+
+							<div class="infogroup">
+								<div class="text-16px text-primary text-bold">Add calendar subscription</div>
+								<div class="display-flex flex-row gap-12px">
+									<div class="inputgroup flex-1">
+										<div class="inputgroupitem flex-1">
+											<input placeholder="https://example.com/calendar.ics" onkeydown="if(event.keyCode == 13){ inputsubscribecalendar(event) }" id="inputsubscribecalendar" class="infoinput" type="url">
+												<span class="inputline"></span>
+											</input>
+										</div>
+									</div>
+									<div class="text-center background-blue hover:background-blue-hover transition-duration-100 text-14px pointer text-center padding-8px-12px text-white border-8px" onclick="inputsubscribecalendar()">Add subscription</div>
+								</div>
+							</div>
+
+							<div class="horizontalbar"></div>
+
+							<div class="infogroup">
+								<div class="display-flex flex-row gap-12px align-center">
+									<div class="infotext text-16px text-bold">Enable Google Calendar Syncing</div>
+									<label class="switch">
+										<input type="checkbox" oninput="togglesyncgooglecalendar(event)" id="syncgooglecalendartoggle2">
+										<span class="slider"></span>
+									</label>
+								</div>
+
+								<div class="display-flex flex-row gap-12px align-center">
+								<div id="lastsyncedgooglecalendar2" class="gap-6px display-flex flex-row align-center"></div>
+									<div class="display-flex flex-row gap-12px">
+										<div id="synnowcgooglecalendar2" onclick="syncnowgooglecalendar()" class="flex-1 display-none text-14px text-center text-white border-8px padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 pointer">Sync now</div>
+									</div>
+								</div>
+								
+								<div id="importgooglecalendarerror2" class="errorwrap display-none"></div>
+							</div>
+							
+						</div>
+
+            <!-- notifs -->
+						<div class="display-flex flex-column gap-24px">
+								<div class="display-flex flex-row gap-12px align-center">
+									<div class="infotext text-16px text-bold">Enable Web Notifications</div>
+									<label class="switch">
+										<input type="checkbox" oninput="togglePushNotifs(event)" id="enablepushnotif">
+										<span class="slider"></span>
+									</label>
+								</div>
+            </div>
+            
+
+						</div>
+
+					</div>
+
+
+					<!-- mobile only tab -->
+					<div class="flex-shrink-0 overflow-x-auto noscrollbar bordertop padding-12px bordertop flex-row display-none small:display-flex gap-12px" id="settingstablist2">
+						<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(0)">Account</div>
+						<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(1)">General</div>
+						<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(2)">My calendars</div>
+					</div>
+					
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+	<div class="helpmenu hiddenpopup popup" id="leftmenuwrap">
+		<div class="helpitem align-center display-flex flex-row gap-12px" id="toggletheme" onclick="toggletheme()"></div>
+
+		<div class="helpitem align-center display-flex flex-row gap-12px" onclick="clicktakeinteractivetour(event)">
+			<div class="text-14px text-primary pointer-none">Take a tour</div>
+		</div>
+
+		<a href="https://discord.gg/dHBFFNp7g7" target="_blank" rel="noopener noreferrer" class="helpitem align-center display-flex flex-row gap-12px" onclick="closehelp()">
+			<svg width="16" height="16" class="fillbutton" viewBox="0 0 16 16">
+		  <path d="M13.545 2.907a13.227 13.227 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.19 12.19 0 0 0-3.658 0 8.258 8.258 0 0 0-.412-.833.051.051 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.041.041 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032c.001.014.01.028.021.037a13.276 13.276 0 0 0 3.995 2.02.05.05 0 0 0 .056-.019c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.01-.059.051.051 0 0 0-.018-.011 8.875 8.875 0 0 1-1.248-.595.05.05 0 0 1-.02-.066.051.051 0 0 1 .015-.019c.084-.063.168-.129.248-.195a.05.05 0 0 1 .051-.007c2.619 1.196 5.454 1.196 8.041 0a.052.052 0 0 1 .053.007c.08.066.164.132.248.195a.051.051 0 0 1-.004.085 8.254 8.254 0 0 1-1.249.594.05.05 0 0 0-.03.03.052.052 0 0 0 .003.041c.24.465.515.909.817 1.329a.05.05 0 0 0 .056.019 13.235 13.235 0 0 0 4.001-2.02.049.049 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.034.034 0 0 0-.02-.019Zm-8.198 7.307c-.789 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.45.73 1.438 1.613 0 .888-.637 1.612-1.438 1.612Zm5.316 0c-.788 0-1.438-.724-1.438-1.612 0-.889.637-1.613 1.438-1.613.807 0 1.451.73 1.438 1.613 0 .888-.631 1.612-1.438 1.612Z"></path>
+				</svg>
+			<div class="text-14px text-primary pointer-none">Join Discord Server</div>
+		</a>
+
+		
+		<div class="horizontalbar"></div>
+
+		<div class="helpitem align-center display-flex flex-row gap-12px" onclick="opensettings(event);gtag('event', 'button_click', { useraction: 'Settings - nav bar' }) ">
+			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+				<g>
+				<path d="M88.6333 128C88.6333 106.258 106.258 88.6333 128 88.6333C149.742 88.6333 167.367 106.258 167.367 128C167.367 149.742 149.742 167.367 128 167.367C106.258 167.367 88.6333 149.742 88.6333 128Z" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+				<path d="M101.521 40.8836L106.742 18.8719C106.742 18.8719 107.824 15.3158 109.952 13.0978C112.08 10.8799 115.254 10 115.254 10L139.987 10C139.987 10 144.189 10.9478 146.546 13.0941C148.903 15.2404 149.416 18.5853 149.416 18.5853L155.745 40.8618L167.367 46.9222" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+				<path d="M154.479 215.119L149.258 237.13C149.258 237.13 148.176 240.686 146.048 242.904C143.92 245.122 140.746 246.002 140.746 246.002L116.013 246.002C116.013 246.002 111.811 245.054 109.454 242.908C107.097 240.762 106.584 237.417 106.584 237.417L100.255 215.14L88.6333 209.08" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+				<path d="M215.118 101.522L237.129 106.743C237.129 106.743 240.685 107.825 242.903 109.953C245.121 112.081 246.001 115.255 246.001 115.255L246.001 139.988C246.001 139.988 245.053 144.19 242.907 146.547C240.761 148.904 237.416 149.417 237.416 149.417L215.139 155.746L209.079 167.368" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+				<path d="M40.8825 154.48L18.8708 149.259C18.8708 149.259 15.3147 148.177 13.0967 146.049C10.8788 143.921 9.9989 140.747 9.9989 140.747L9.9989 116.014C9.9989 116.014 10.9467 111.812 13.093 109.455C15.2393 107.098 18.5842 106.585 18.5842 106.585L40.8607 100.257L46.9211 88.6344" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+				<path d="M208.325 170.879L220.198 190.135C220.198 190.135 221.947 193.415 222.011 196.488C222.075 199.561 220.452 202.428 220.452 202.428L202.963 219.916C202.963 219.916 199.322 222.217 196.137 222.367C192.953 222.516 190.225 220.513 190.225 220.513L169.998 209.236L157.495 213.169" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+				<path d="M47.675 85.1233L35.802 65.867C35.802 65.867 34.0526 62.5874 33.989 59.5143C33.9254 56.4412 35.5477 53.5747 35.5477 53.5747L53.0366 36.0857C53.0366 36.0857 56.678 33.7847 59.8625 33.6356C63.0471 33.4864 65.7747 35.489 65.7747 35.489L86.0015 46.766L98.505 42.8332" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+				<path d="M85.1222 208.326L65.8659 220.199C65.8659 220.199 62.5863 221.948 59.5132 222.012C56.4401 222.076 53.5736 220.453 53.5736 220.453L36.0846 202.965C36.0846 202.965 33.7836 199.323 33.6345 196.139C33.4853 192.954 35.4879 190.226 35.4879 190.226L46.7649 170L42.8321 157.496" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+				<path d="M170.878 47.6761L190.134 35.8031C190.134 35.8031 193.414 34.0537 196.487 33.9901C199.56 33.9265 202.426 35.5488 202.426 35.5488L219.915 53.0377C219.915 53.0377 222.216 56.6791 222.366 59.8636C222.515 63.0482 220.512 65.7758 220.512 65.7758L209.235 86.0026L213.168 98.5061" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+				</g>
+			</svg>
+
+			<div class="text-14px text-primary pointer-none">Settings</div>
+		</div>
+		
+		<div class="helpitem align-center display-flex flex-row gap-12px" onclick="logout()">
+			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+			<g>
+			<path d="M162.47 27.7092L211.764 27.7092C224.377 27.7092 234.602 37.9343 234.602 50.5475L234.602 205.452C234.602 218.066 224.377 228.291 211.764 228.291L162.47 228.291" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+			<path d="M21.3981 128L164.566 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+			<path d="M87.6182 185.694L21.3981 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+			<path d="M87.6182 70.3055L21.3981 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+			</g>
+			</svg>
+			
+			<div class="text-14px text-primary pointer-none">Log out</div>
+		</div>
+	</div>
+
+	<div class="helpmenu hiddenpopup popup z-index-200" id="remindmemenu">
+		<div class="display-flex flex-column" id="remindmetime">
+			<div class="helpitem display-flex flex-row gap-12px" onclick="remindme(0)"><span></span>At event</div>
+			<div class="helpitem display-flex flex-row gap-12px" onclick="remindme(1)"><span></span>5 minutes before</div>
+			<div class="helpitem display-flex flex-row gap-12px" onclick="remindme(2)"><span></span>15 minutes before</div>
+			<div class="helpitem display-flex flex-row gap-12px" onclick="remindme(3)"><span></span>1 hour before</div>
+			<div class="helpitem display-flex flex-row gap-12px" onclick="remindme(4)"><span></span>1 day before</div>
+		</div>
+	</div>
+
+	<div class="helpmenu hiddenpopup popup z-index-400" id="repeatfrequencymenu">
+		<div class="helpitem nowrap" onclick="selectrepeatfrequency(0)">day</div>
+		<div class="helpitem nowrap" onclick="selectrepeatfrequency(1)">week</div>
+		<div class="helpitem nowrap" onclick="selectrepeatfrequency(2)">month</div>
+		<div class="helpitem nowrap" onclick="selectrepeatfrequency(3)">year</div>
+	</div>
+
+	<div class="helpmenu hiddenpopup popup z-index-200 minwidthheight" id="calendaroptionmenu">
+	</div>
+
+	<div class="helpmenu hiddenpopup popup z-index-200" id="repeatoptionmenu">
+		<div class="helpitem display-flex flex-row gap-12px" onclick="selectrepeatoption(0)"><span id="repeatoption0"></span>No repeat</div>
+		<div class="helpitem display-flex flex-row gap-12px" onclick="selectrepeatoption(1)"><span id="repeatoption1"></span>Daily</div>
+		<div class="helpitem display-flex flex-row gap-12px" onclick="selectrepeatoption(2)"><span id="repeatoption2"></span>Weekly</div>
+		<div class="helpitem display-flex flex-row gap-12px" onclick="selectrepeatoption(3)"><span id="repeatoption3"></span>Monthly</div>
+ 		<div class="helpitem display-flex flex-row gap-12px" onclick="selectrepeatoption(4)"><span id="repeatoption4"></span>Yearly</div>
+		<div class="helpitem display-flex flex-row gap-12px" onclick="selectrepeatoption(5)"><span id="repeatoption5"></span>Weekdays</div>
+		<div class="helpitem display-flex flex-row gap-12px" onclick="selectrepeatoption()"><span id="repeatoption"></span>Custom repeat...</div>
+	</div>
+
+
+	<div class="helpmenu hiddenpopup popup z-index-200" id="timeframecustommenu">
+		<div class="infotitle">Custom time window</div>
+		<div class="display-flex flex-row">
+			<div class="display-flex flex-column flex-1">
+				<div class="helpitem display-flex flex-row justify-space-between" onclick="selecttimeframeoption(0, 0)">Any day<span id="daytimeframeoption0"></span></div>
+				<div class="helpitem display-flex flex-row justify-space-between" onclick="selecttimeframeoption(0, 1)">Weekdays<span id="daytimeframeoption1"></span></div>
+				<div class="helpitem display-flex flex-row justify-space-between" onclick="selecttimeframeoption(0, 2)">Weekends<span id="daytimeframeoption2"></span></div>
+			</div>
+			<div class="verticalbar"></div>
+			<div class="display-flex flex-column flex-1">
+				<div class="helpitem display-flex flex-row justify-space-between" onclick="selecttimeframeoption(1, 0)">Any time<span id="timetimeframeoption0"></span></div>
+				<div class="helpitem display-flex flex-row justify-space-between" onclick="selecttimeframeoption(1, 1)">Morning<span id="timetimeframeoption1"></span></div>
+				<div class="helpitem display-flex flex-row justify-space-between" onclick="selecttimeframeoption(1, 2)">Afternoon<span id="timetimeframeoption2"></span></div>
+				<div class="helpitem display-flex flex-row justify-space-between" onclick="selecttimeframeoption(1, 3)">Evening<span id="timetimeframeoption3"></span></div>
+				<div class="helpitem display-flex flex-row justify-space-between" onclick="selecttimeframeoption(1, 4)">9 AM to 5 PM<span id="timetimeframeoption4"></span></div>
+				<div class="helpitem display-flex flex-row justify-space-between" onclick="selecttimeframeoption(1)">Custom...<span id="timetimeframeoption"></span></div>
+			</div>
+		</div>
+		
+		<div class="padding-8px-12px display-flex flex-column gap-12px">
+			<div class="width-fit display-flex flex-row gap-6px align-center text-14px text-white"><span class="display-flex flex-row align-center pointer" onclick="togglesavetimeframe(event)" id="savetimeframecheckbox"></span> Save template</div>
+			
+			<div class="inputgroupitem display-none" id="savetimeframeinput">
+				<input onkeydown="if(event.keyCode == 13){ this.blur() }" id="timeframetemplateinput" class="infoinput" type="text" placeholder="Template name">
+					<span class="inputline"></span>
+				</input>
+			</div>
+			
+			<div class="display-flex flex-row gap-12px justify-flex-end">
+				<div class="width-fit text-14px text-primary padding-8px-12px background-tint-1 hover:background-tint-2 transition-duration-100 border-8px pointer" onclick="clickcancelcustomtimeframe()">Cancel</div>
+				<div class="width-fit text-14px text-white padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 border-8px pointer" onclick="submitcustomtimeframe()">Done</div>
+			</div>
+		</div>
+	</div>
+
+	
+	<div class="schedulemenu hiddenpopup popup z-index-300" id="repeatcustommenu">
+		<div class="infogroup">
+			<div class="text-18px text-primary">Custom repeat</div>
+			<div class="display-flex flex-row gap-6px align-center">
+				<div class="text-primary text-14px nowrap">Repeat every</div>
+	
+				<div class="inputgroup">
+					<div class="inputgroupitem">
+						<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputrepeatinterval(event)" id="repeatintervalinput" class="infoinput width-96px" type="number" min="1" placeholder="Interval">
+							<span class="inputline"></span>
+						</input>
+					</div>
+				</div>
+				
+				<div class="border-8px transition-duration-100 pointer background-tint-1 hover:background-tint-2 text-14px text-primary padding-8px-12px popupbutton" onclick="clickrepeatfrequency()" id="repeatfrequencybutton"> 
+				</div>
+			</div>
+			
+		</div>
+
+		<div class="infogroup display-none" id="repeatweek">
+			<div class="text-primary text-14px">Repeat on</div>
+			<div class="display-flex flex-row gap-6px" id="repeatweekchildren">
+				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(0)">S</div>
+				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(1)">M</div>
+				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(2)">T</div>
+				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(3)">W</div>
+				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(4)">T</div>
+				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(5)">F</div>
+				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(6)">S</div>
+			</div>
+		</div>
+
+		<div class="infogroup">
+			<div class="display-flex flex-row gap-12px justify-flex-end">
+				<div class="border-8px background-tint-1 hover:background-tint-2 padding-8px-12px text-primary text-14px transition-duration-100 pointer" onclick="cancelcustomrepeat()">Cancel</div>
+				<div class="border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="submitcustomrepeat()">Submit</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="schedulemenu hiddenpopup popup z-index-1000" id="changepasswordmenu" style="min-width:300px">
+		<div class="infotitle text-center">Change Password</div>
+		
+		<div class="errorwrap display-none" id="passworderrorwrap"></div>
+		
+		<form class="form" id="changepasswordform" onsubmit="submitchangepassword(event)">
+			<div class="formgroup">
+				<div class="forminputwrap">
+					<input placeholder="Current password" type="password" name="currentpassword" class="infoinput"></input>
+					<span class="inputline"></span>
+				</div>
+			</div>
+	
+			<div class="formgroup">
+				<div class="forminputwrap">
+					<input placeholder="New password" type="password" name="newpassword" class="infoinput"></input>
+					<span class="inputline"></span>
+				</div>
+			</div>
+
+			<div class="formgroup">
+				<div class="forminputwrap">
+					<input placeholder="Confirm new password" type="password" name="confirmnewpassword" class="infoinput"></input>
+					<span class="inputline"></span>
+				</div>
+			</div>
+
+			
+			<input type="submit" value="Submit" class="formsubmit"/>
+		</form>
+	</div>
+
+
+
+	<div class="schedulemenu hiddenpopup popup z-index-1000" id="setpasswordmenu" style="min-width:300px">
+		<div class="infotitle text-center">Set Password</div>
+		
+		<div class="errorwrap display-none" id="passworderrorwrap2"></div>
+		
+		<form class="form" id="setpasswordform" onsubmit="submitsetpassword(event)">
+	
+			<div class="formgroup">
+				<div class="forminputwrap">
+					<input placeholder="New password" type="password" name="newpassword" class="infoinput"></input>
+					<span class="inputline"></span>
+				</div>
+			</div>
+
+			<div class="formgroup">
+				<div class="forminputwrap">
+					<input placeholder="Confirm new password" type="password" name="confirmnewpassword" class="infoinput"></input>
+					<span class="inputline"></span>
+				</div>
+			</div>
+
+			
+			<input type="submit" value="Submit" class="formsubmit"/>
+		</form>
+	</div>
+
+
+	<div class="schedulemenu hiddenpopup popup z-index-1000" id="changeusernamemenu" style="min-width:300px">
+		<div class="infotitle text-center">Change Email</div>
+		
+		<div class="errorwrap display-none" id="usernameerrorwrap"></div>
+		
+		<form class="form" id="changeusernameform" onsubmit="submitchangeusername(event)">
+			<div class="formgroup">
+				<div class="forminputwrap">
+					<input placeholder="Current password" type="password" name="currentpassword" class="infoinput"></input>
+					<span class="inputline"></span>
+				</div>
+			</div>
+	
+			<div class="formgroup">
+				<div class="forminputwrap">
+					<input placeholder="New email" type="email" name="newusername" class="infoinput"></input>
+					<span class="inputline"></span>
+				</div>
+			</div>
+
+			
+			<input type="submit" value="Submit" class="formsubmit"/>
+		</form>
+	</div>
+
+
+
+	<div class="schedulemenu hiddenpopup popup z-index-1000" id="setusernamemenu" style="min-width:300px">
+		<div class="infotitle text-center">Set Email</div>
+		
+		<div class="errorwrap display-none" id="usernameerrorwrap2"></div>
+		
+		<form class="form" id="setusernameform" onsubmit="submitsetusername(event)">
+	
+			<div class="formgroup">
+				<div class="forminputwrap">
+					<input placeholder="Current password" type="password" name="currentpassword" class="infoinput"></input>
+					<span class="inputline"></span>
+				</div>
+			</div>
+
+			<div class="formgroup">
+				<div class="forminputwrap">
+					<input placeholder="New email" type="email" name="newusername" class="infoinput"></input>
+					<span class="inputline"></span>
+				</div>
+			</div>
+
+			
+			<input type="submit" value="Submit" class="formsubmit"/>
+		</form>
+	</div>
+
+
+	<div class="pointer-none settingsscreennobackground hiddenfade small:padding-0" id="autoscheduleframemenu">	
+		<div class="pointer-auto settingscontent display-flex width500px box-shadow flex-column small:width-full overflow-y-auto small:border-0">
+			<div class="display-flex minwidthheight flex-column overflow-y-auto" id="autoscheduleframemenucontent">
+			</div>
+		</div>
+	</div>
+
+
+
+	<!-- calendar info image -->
+	<div class="settingsscreen small:padding-0 hiddenfade" id="welcomecalendar">
+		<div class="relative margin-12px overflow-y-auto border-box border-8px box-shadow calendarsplash padding-top-relative gap-48px display-flex padding-48px small:padding-12px flex-column align-center">
+			<div class="text-white text-36px text-center text-bold">Welcome to Smart Calendar!</div>
+			<div class="display-flex flex-column gap-12px">
+				<div class="text-white text-24px"><span class="text-bold">Organize</span>: Add tasks to your to-do list. </div>
+				<div class="text-white text-24px"><span class="text-bold">Automate</span>: Click "Schedule" to put tasks on your calendar.</div>
+				<div class="text-white text-24px"><span class="text-bold">AI Oriented</span>: Your schedule will automatically be rearranged if any changes come up. Don't worry, events like meetings or appointments won't be touched.</div>
+			</div>
+			
+			<img src="../todotocalendar.png" class="objectfitcontain border-8px flex-shrink-0 max-width-600px width-full height-auto" width="1024" height="360" alt="Plan tasks on calendar"></img>
+
+			<div class="border-round padding-8px-12px text-18px whitebutton transition-duration-100 pointer" onclick="closewelcomepopup('calendar')">Got it</div>
+		</div>
+	</div>
+
+
+	<div class="absolute display-none background-primary-transparent pointer-none dragtododiv backdrop-blur border-8px box-shadow z-index-200" id="dragtododiv"></div>
+
+	<!-- interactive tour -->
+	<div class="absolute width-full height-full top-0 left-0 overflow-hidden pointer-none" id="interactivetourbeaconlist">
+		<div class="absolute hiddenfade popupbutton beaconwrap z-index-100" onclick="openinteractivetourpopup('clickaddtask');gtag('event', 'button_click', { useraction: 'Add task beacon' })" id="interactivetourbeaconclickaddtask">
+			<div class="beacon pointer-none"></div>
+			
+			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
+			<g>
+			<path d="M128.001 0C114.798 0 103.421 14.0434 104.219 27.0996L110.806 159.354C111.129 170.465 117.509 178.33 128.001 178.33C138.483 178.33 144.621 170.687 145.197 159.354L151.783 27.0369C152.542 13.1194 141.568-5.10502e-06 128.001 0Z" fill-rule="nonzero" opacity="1" ></path>
+			<path d="M128.001 207.607C114.826 207.607 104.132 218.3 104.132 231.476C104.132 244.651 114.826 255.313 128.001 255.313C141.176 255.313 151.87 244.651 151.87 231.476C151.87 218.3 141.176 207.607 128.001 207.607Z" fill-rule="nonzero" opacity="1" ></path>
+			</g>
+			</svg>
+		</div>
+		
+		<div class="absolute hiddenfade popupbutton beaconwrap z-index-2000" onclick="openinteractivetourpopup('clickaddtitle');gtag('event', 'button_click', { useraction: 'Add title beacon' })" id="interactivetourbeaconclickaddtitle">
+			<div class="beacon pointer-none"></div>
+			
+			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
+			<g>
+			<path d="M128.001 0C114.798 0 103.421 14.0434 104.219 27.0996L110.806 159.354C111.129 170.465 117.509 178.33 128.001 178.33C138.483 178.33 144.621 170.687 145.197 159.354L151.783 27.0369C152.542 13.1194 141.568-5.10502e-06 128.001 0Z" fill-rule="nonzero" opacity="1" ></path>
+			<path d="M128.001 207.607C114.826 207.607 104.132 218.3 104.132 231.476C104.132 244.651 114.826 255.313 128.001 255.313C141.176 255.313 151.87 244.651 151.87 231.476C151.87 218.3 141.176 207.607 128.001 207.607Z" fill-rule="nonzero" opacity="1" ></path>
+			</g>
+			</svg>
+		</div>
+
+	
+		
+		
+		<div class="absolute hiddenfade popupbutton beaconwrap z-index-2000" onclick="openinteractivetourpopup('submitaddtask');gtag('event', 'button_click', { useraction: 'Submit task beacon' })" id="interactivetourbeaconsubmitaddtask">
+			<div class="beacon pointer-none"></div>
+			
+			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
+			<g>
+			<path d="M128.001 0C114.798 0 103.421 14.0434 104.219 27.0996L110.806 159.354C111.129 170.465 117.509 178.33 128.001 178.33C138.483 178.33 144.621 170.687 145.197 159.354L151.783 27.0369C152.542 13.1194 141.568-5.10502e-06 128.001 0Z" fill-rule="nonzero" opacity="1" ></path>
+			<path d="M128.001 207.607C114.826 207.607 104.132 218.3 104.132 231.476C104.132 244.651 114.826 255.313 128.001 255.313C141.176 255.313 151.87 244.651 151.87 231.476C151.87 218.3 141.176 207.607 128.001 207.607Z" fill-rule="nonzero" opacity="1" ></path>
+			</g>
+			</svg>
+		</div>
+		
+		<div class="absolute hiddenfade popupbutton beaconwrap z-index-2000" onclick="openinteractivetourpopup('clickscheduleoncalendar');gtag('event', 'button_click', { useraction: 'Schedule on calendar beacon' })" id="interactivetourbeaconclickscheduleoncalendar">
+			<div class="beacon pointer-none"></div>
+			
+			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
+			<g>
+			<path d="M128.001 0C114.798 0 103.421 14.0434 104.219 27.0996L110.806 159.354C111.129 170.465 117.509 178.33 128.001 178.33C138.483 178.33 144.621 170.687 145.197 159.354L151.783 27.0369C152.542 13.1194 141.568-5.10502e-06 128.001 0Z" fill-rule="nonzero" opacity="1" ></path>
+			<path d="M128.001 207.607C114.826 207.607 104.132 218.3 104.132 231.476C104.132 244.651 114.826 255.313 128.001 255.313C141.176 255.313 151.87 244.651 151.87 231.476C151.87 218.3 141.176 207.607 128.001 207.607Z" fill-rule="nonzero" opacity="1" ></path>
+			</g>
+			</svg>
+		</div>
+		
+		<div class="absolute hiddenfade popupbutton beaconwrap z-index-100" onclick="openinteractivetourpopup('addevent');gtag('event', 'button_click', { useraction: 'Create an event beacon' })" id="interactivetourbeaconaddevent">
+			<div class="beacon pointer-none"></div>
+			
+			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
+			<g>
+			<path d="M128.001 0C114.798 0 103.421 14.0434 104.219 27.0996L110.806 159.354C111.129 170.465 117.509 178.33 128.001 178.33C138.483 178.33 144.621 170.687 145.197 159.354L151.783 27.0369C152.542 13.1194 141.568-5.10502e-06 128.001 0Z" fill-rule="nonzero" opacity="1" ></path>
+			<path d="M128.001 207.607C114.826 207.607 104.132 218.3 104.132 231.476C104.132 244.651 114.826 255.313 128.001 255.313C141.176 255.313 151.87 244.651 151.87 231.476C151.87 218.3 141.176 207.607 128.001 207.607Z" fill-rule="nonzero" opacity="1" ></path>
+			</g>
+			</svg>
+		</div>
+		
+		<div class="absolute hiddenfade popupbutton beaconwrap z-index-200" onclick="openinteractivetourpopup('autoschedule');gtag('event', 'button_click', { useraction: 'Schedule time for me beacon' })" id="interactivetourbeaconautoschedule">
+			<div class="beacon pointer-none"></div>
+			
+			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
+			<g>
+			<path d="M128.001 0C114.798 0 103.421 14.0434 104.219 27.0996L110.806 159.354C111.129 170.465 117.509 178.33 128.001 178.33C138.483 178.33 144.621 170.687 145.197 159.354L151.783 27.0369C152.542 13.1194 141.568-5.10502e-06 128.001 0Z" fill-rule="nonzero" opacity="1" ></path>
+			<path d="M128.001 207.607C114.826 207.607 104.132 218.3 104.132 231.476C104.132 244.651 114.826 255.313 128.001 255.313C141.176 255.313 151.87 244.651 151.87 231.476C151.87 218.3 141.176 207.607 128.001 207.607Z" fill-rule="nonzero" opacity="1" ></path>
+			</g>
+			</svg>
+		</div>
+	</div>
+
+	<div class="absolute" id="interactivetourpopuplist">
+		<div class="interactivetourpopup hiddenpopup popupbutton" id="interactivetourpopupclickaddtask">
+			<div>
+				<div class="text-14px text-quaternary nowrap">TIP</div>
+				<div class="text-18px text-primary nowrap text-bold">Add task</div>
+			</div>
+			<div class="text-18px text-quaternary">Jotting down your tasks is the first step to organize your life. Any time you have a task on mind, add it here.</div>
+				 
+			<div class="display-flex flex-row justify-space-between align-center">
+				<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
+				<div class="text-14px pointer pointer-auto padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="readinteractivetourpopup('clickaddtask')">Got it</div>
+			</div>
+		</div>
+
+		<div class="interactivetourpopup hiddenpopup popupbutton" id="interactivetourpopupclickaddtitle">
+			<div>
+				<div class="text-14px text-quaternary nowrap">TIP</div>
+				<div class="text-18px text-primary nowrap text-bold">Add task details</div>
+			</div>
+			<div class="text-18px text-quaternary">You can include a due date, time needed (e.g. takes 1 hour), and priority (e.g. high priority).</div>
+					 
+			<div class="display-flex flex-row justify-space-between align-center">
+				<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
+				<div class="text-14px pointer pointer-auto padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="readinteractivetourpopup('clickaddtitle')">Got it</div>
+			</div>
+		</div>
+
+		<div class="interactivetourpopup hiddenpopup popupbutton" id="interactivetourpopupsubmitaddtask">
+			<div>
+				<div class="text-14px text-quaternary nowrap">TIP</div>
+				<div class="text-18px text-primary nowrap text-bold">Create</div>
+			</div>
+			<div class="text-18px text-quaternary">Save your task to your to-do list.</div>
+
+			<div class="display-flex flex-row justify-space-between align-center">
+				<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
+				<div class="text-14px pointer pointer-auto padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="readinteractivetourpopup('submitaddtask')">Got it</div>
+			</div>
+		</div>
+
+		<div class="interactivetourpopuptop hiddenpopup popupbutton" id="interactivetourpopupclickscheduleoncalendar">
+			<div>
+				<div class="text-14px text-quaternary nowrap">TIP</div>
+				<div class="text-18px text-primary nowrap text-bold">Plan my tasks</div>
+			</div>
+			<div class="text-18px text-quaternary">Click to automatically schedule your tasks into your calendar. This is where the magic happens!</div>
+					 
+			<div class="display-flex flex-row justify-space-between align-center">
+				<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
+				<div class="text-14px pointer pointer-auto padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="readinteractivetourpopup('clickscheduleoncalendar')">Got it</div>
+			</div>
+		</div>
+
+		<div class="interactivetourpopup hiddenpopup popupbutton" id="interactivetourpopupaddevent">
+			<div>
+				<div class="text-14px text-quaternary nowrap">TIP</div>
+				<div class="text-18px text-primary nowrap text-bold">Create an event</div>
+			</div>
+			<div class="text-18px text-quaternary">Click and drag to create an event.</div>
+					 
+			<div class="display-flex flex-row justify-space-between align-center">
+				<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
+				<div class="text-14px pointer pointer-auto padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="readinteractivetourpopup('addevent')">Got it</div>
+			</div>
+		</div>
+
+		<div class="interactivetourpopup hiddenpopup popupbutton" id="interactivetourpopupautoschedule">
+			<div>
+				<div class="text-14px text-quaternary nowrap">TIP</div>
+				<div class="text-18px text-primary nowrap text-bold">Schedule mode</div>
+			</div>
+			<div class="text-18px text-quaternary"><span class="text-bold">Fixed time</span>: you set a specific time for the event.<br><br><span class="text-bold">Auto-schedule time</span>: the app intelligently schedules the event.</div>
+					 
+			<div class="display-flex flex-row justify-space-between align-center">
+				<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
+				<div class="text-14px pointer pointer-auto padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="readinteractivetourpopup('autoschedule')">Got it</div>
+			</div>
+		</div>
+		
+	</div>
+
+
+	<!-- CREATE TO DO UI -->
+	<div class="schedulemenu z-index-999 box-shadow hiddenpopup eventinfowidth popup small:width-full small:height-full small:top-0 small:left-0" id="todopopup">
+		<div class="display-flex flex-column gap-12px">
+
+			<div class="justify-space-between display-flex flex-row align-center">
+				<div>
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					</g>
+					</svg>
+				</div>
+				
+				<div class="text-18px text-primary nowrap">Add task</div>
+
+				<div class="infotopright pointer" onclick="closecreatetodo()">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+				
+			</div>
+
+			
+			<div id="createtodobutton" class="flex-shrink-0 bordertertiary border-8px transition-duration-100">
+				<div class="inputgroup" id="todoinputtitlegroup">
+					<input oninput="typeaddtask(event);readinteractivetourpopup('clickaddtitle')" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add task' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.keyCode == 13){ submitcreatetodo(event) }" placeholder="Buy groceries by tomorrow 6pm takes 1h" autocomplete="off" id="todoinputtitle" maxlength="2000"></input>
+					<span class="inputline"></span>
+				</div>
+
+				<div class="horizontalbar"></div>
+
+				<div class="flex-1 align-center display-flex flex-row gap-12px padding-12px flex-wrap-wrap">
+					<div class="border-8px padding-left-12px padding-right-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap popupbutton text-14px pointer-auto pointer transition-duration-100" onclick="readinteractivetourpopup('clickduedate');clickcreatetododuedate(event)" id="createtododuedate">
+					</div>
+
+					<div class="border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-green pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetododuration(event)" id="createtododuration">
+					</div>
+
+					<div class="border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetodopriority(event)" id="createtodopriority">
+					</div>
+				</div>
+
+				<div class="horizontalbar"></div>
+
+				<div class="inputgroup border-8px overflow-hidden">
+					<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotes" maxlength="2000"></textarea>
+					<span class="inputline"></span>
+				</div>		
+				
+			</div>
+
+			<div class="justify-flex-end display-flex flex-row gap-12px align-center">
+				<div class="display-flex flex-row gap-12px align-center" id="createtodoaddbutton">
+					<div class="todoitembutton display-flex text-16px text-white flex-row align-center gap-6px border-round padding-8px-16px bluebutton" onclick="readinteractivetourpopup('submitaddtask');submitcreatetodo(event);gtag('event', 'button_click', { useraction: 'Create - add task' })">Create</div>
+					
+				</div>
+					
+			</div>
+			
+		</div>
+
+	</div>
+
+
+
+	<!-- CREATE EVENT UI -->
+	<div class="schedulemenu z-index-999 box-shadow hiddenpopup eventinfowidth popup small:width-full small:height-full small:top-0 small:left-0" id="createeventpopup">
+		<div class="display-flex flex-column gap-12px">
+
+			<div class="justify-space-between display-flex flex-row align-center">
+				<div>
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					</g>
+					</svg>
+				</div>
+				
+				<div class="text-18px text-primary nowrap">Add event</div>
+
+				<div class="infotopright pointer" onclick="closecreateevent()">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+				
+			</div>
+
+			
+			<div class="flex-shrink-0 transition-duration-100">
+				<div class="border-8px flex-1 overflow-hidden bordertertiary inputgroup">
+					<input oninput="typeaddevent(event)" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add event' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.keyCode == 13){ submitcreateevent(event) }" placeholder="Meeting with Cathy tomorrow 9:00 1 hour" autocomplete="off" maxlength="2000" id="createeventtitle"></input>
+					<span class="inputline"></span>
+				</div>
+			</div>
+
+			<div class="display-flex flex-row justify-flex-end">
+				<div class="todoitembutton display-flex text-white flex-row align-center gap-6px border-round padding-8px-16px text-16px bluebutton" onclick="submitcreateevent(event);gtag('event', 'button_click', { useraction: 'Create - add event' })">Create</div>
+			</div>
+			
+		</div>
+
+	</div>
+
+
+	
+	<div class="eventinfowidth eventinfo popup eventinfomaxheight hiddenpopup small:max-height-revert small:width-full small:top-0 small:left-0" id="eventinfo">
+		<div class="infotop justify-space-between cursormove" onmousedown="clickeventinfo(event)" id="drageventinfo">
+			<div></div>
+			
+			<div class="infotoprightgroup">
+				<div class="infotopright pointer tooltip" onclick="clickeventinfodelete(event);gtag('event', 'button_click', { useraction: 'Delete - event info' })" id="eventinfodelete">
+					
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<path d="M207.414 223.445L207.414 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					<path d="M71.3433 246L184.657 246" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					<path d="M207.414 223.445C207.414 235.902 197.226 246 184.657 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+					<path d="M238 57.6433L18 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					<path d="M48.5864 223.445L48.5864 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					<path d="M48.5864 223.445C48.5864 235.902 58.775 246 71.3433 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+					<path d="M96.1228 10L159.881 10" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					<path d="M173.737 23.7283C173.737 16.1464 167.534 10 159.881 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+					<path d="M82.2668 23.7283C82.2668 16.1464 88.4703 10 96.1228 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+					<path d="M82.2668 23.7283L82.2668 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					<path d="M173.737 23.7283L173.737 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					<path d="M165.379 101.49L165.379 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+					<path d="M90.6212 101.49L90.6212 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+					<path d="M128 101.49L128 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+					</g>
+					</svg>
+
+					<span class="tooltiptextcenter">Delete</span>
+				</div>
+				
+				<div class="infotopright pointer tooltip" onclick="clickeventinfoedit(event)" id="eventinfoedit">
+				</div>
+				
+				<div class="infotopright pointer" onclick="closeeventinfo(event)">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+				
+			</div>
+		</div>
+		<div class="info" id="info">
+		</div>
+	</div>
+
+	<div class="schedulemenu hiddenpopup popup small:width-full small:height-full small:top-0 small:left-0 small:border-0" id="quickeventwrap">
+	</div>
+
+
+
+	<div class="focuswrap width-full absolute top-0 left-0 z-index-2000 height-full hiddenfade" id="focuswrap">
+		<div class="display-flex width-full height-full flex-column justify-center align-center">
+			<div class="display-flex flex-column width-full align-center gap-120px overflow-y-auto">
+			<div class="display-flex flex-column align-center">
+					<div class="text-60px text-primary text-bold text-center" id="focustime"></div>
+					<div class="text-48px text-primary text-bold text-center" id="focusdate"></div>
+				</div>
+		
+				<div class="border-box display-flex width-full flex-column gap-60px max-width-600px width-full padding-left-12px padding-right-12px" id="focusprogress"></div>
+			</div>
+		</div>
+
+		<div class="absolute top-0 right-0 padding-12px">
+			<div class="infotopright pointer" onclick="closefocus()">
+				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+				<g>
+				<g opacity="1">
+				<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+				<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+				</g>
+				</g>
+				</svg>
+			</div>
+		</div>
+		
+	</div>
+
+	<div class="z-index-200 sidebutton tooltip display-none z-index-100 absolute top-0 left-0 margin-12px small:display-none" onclick="togglesidebar()" id="togglesidebarhidden">
+		<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+		<g>
+		<path d="M20 128L236 128" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+		<path d="M20 30L236 30" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+		<path d="M20 226L236 226" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+		</g>
+		</svg>
+		
+		<span class="tooltiptextright">Show sidebar</span>
+	</div>
+	
+
+	
+	<div class="screenwrap flex-row small:padding-0" id="screenwrap">
+
+		<!-- desktop only left bar -->
+		<div class="leftbar relative display-flex border-box background-secondary flex-column small:display-none height-full" id="leftwrap">
+			<div class="absolute bottom-0 width-full loader left-0 display-none" id="statusdisplay"></div>
+			
+			<div class="leftcolumn display-flex flex-column height-full overflow-y-auto">
+
+					<!-- nav bar -->
+					<div class="display-flex flex-row align-center gap-6px padding-12px">
+						<div class="sidebutton tooltip" onclick="togglesidebar()" id="togglesidebarshown">
+							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+							<g>
+							<path d="M20 128L236 128" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+							<path d="M20 30L236 30" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+							<path d="M20 226L236 226" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+							</g>
+							</svg>
+							
+							<span class="tooltiptextright">Hide sidebar</span>
+						</div>
+						
+						<a href="/" class="navtitle">
+							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"  viewBox="0 0 256 256" width="100%" class="buttonlogo pointer-none">
+							<defs>
+							<linearGradient gradientTransform="matrix(1 0 0 1 0 0)" gradientUnits="userSpaceOnUse" id="LinearGradient" x1="128.288" x2="131.219" y1="0.0282336" y2="197.358">
+							<stop offset="0" stop-color="#ffce1c"/>
+							<stop offset="1" stop-color="#ffb01c"/>
+							</linearGradient>
+							</defs>
+							<clipPath id="ArtboardFrame">
+							<rect height="256" width="256" x="0" y="0"/>
+							</clipPath>
+							<g clip-path="url(#ArtboardFrame)" id="Layer-1">
+							<path d="M128-0.21875C78.9234-0.21875 43.1251 36.6296 43.125 87.4688C43.125 98.5244 44.9386 107.945 48.5 116.625C51.2697 123.375 54.4693 128.687 60.2188 136.812C60.6846 137.471 62.6297 140.175 63.125 140.875C68.5883 148.6 71.5532 153.543 74.0625 159.719C77.2758 167.627 79.0855 176.606 79.4062 187.781C79.5615 193.19 83.9951 197.5 89.4062 197.5L165.562 197.5C171.047 197.5 175.509 193.078 175.562 187.594C175.664 177.178 177.424 168.383 180.781 160.094C183.423 153.572 186.476 148.261 192.562 139C192.733 138.74 194.513 136.072 195.031 135.281C201.021 126.147 204.344 120.353 207.219 113.281C210.966 104.065 212.875 94.4838 212.875 83.6562C212.875 34.3499 177.264-0.21874 128-0.21875ZM131.281 43.8438C137.895 43.8438 144.084 45.0283 149.844 47.375C155.604 49.7217 160.23 52.8658 163.75 56.8125L152.562 67.6875C150.322 64.5942 147.277 62.0671 143.438 60.0938C139.597 58.1204 135.269 57.125 130.469 57.125C127.909 57.125 125.332 57.4629 122.719 58.1562C120.105 58.8496 117.727 59.9846 115.594 61.5312C113.46 63.0779 111.74 64.9879 110.406 67.2812C109.073 69.5746 108.406 72.3312 108.406 75.5312C108.406 78.6246 109.023 81.2013 110.25 83.2812C111.477 85.3613 113.107 87.1225 115.188 88.5625C117.268 90.0025 119.736 91.2367 122.562 92.25C125.389 93.2633 128.394 94.3083 131.594 95.375C135.434 96.5483 139.335 97.8817 143.281 99.375C147.228 100.868 150.8 102.828 154 105.281C157.2 107.735 159.817 110.789 161.844 114.469C163.87 118.149 164.875 122.815 164.875 128.469C164.875 134.335 163.78 139.43 161.594 143.75C159.407 148.07 156.502 151.642 152.875 154.469C149.248 157.295 145.059 159.426 140.312 160.812C135.566 162.199 130.701 162.875 125.688 162.875C118.541 162.875 111.635 161.492 104.969 158.719C98.3021 155.945 92.7796 151.846 88.4062 146.406L100.719 136C103.385 139.947 106.957 143.14 111.438 145.594C115.918 148.047 120.773 149.281 126 149.281C128.667 149.281 131.333 148.903 134 148.156C136.667 147.41 139.095 146.225 141.281 144.625C143.468 143.025 145.238 141.025 146.625 138.625C148.012 136.225 148.719 133.32 148.719 129.906C148.719 126.493 148.003 123.668 146.562 121.375C145.122 119.082 143.172 117.131 140.719 115.531C138.265 113.931 135.41 112.558 132.156 111.438C128.903 110.317 125.47 109.173 121.844 108C118.217 106.933 114.645 105.64 111.125 104.094C107.605 102.547 104.461 100.556 101.688 98.1562C98.9142 95.7562 96.6754 92.8013 94.9688 89.2812C93.2621 85.7612 92.4063 81.3829 92.4062 76.1562C92.4063 70.5029 93.5504 65.6471 95.8438 61.5938C98.1371 57.5404 101.133 54.1979 104.812 51.5312C108.493 48.8646 112.641 46.9142 117.281 45.6875C121.921 44.4608 126.588 43.8438 131.281 43.8438Z" fill="url(#LinearGradient)" fill-rule="nonzero" opacity="1" stroke="none"/>
+							<path d="M89.6562 207.562C84.1334 207.562 79.6562 212.04 79.6562 217.562C79.6562 223.085 84.1334 227.562 89.6562 227.562L166.344 227.562C171.867 227.562 176.344 223.085 176.344 217.562C176.344 212.04 171.867 207.562 166.344 207.562L89.6562 207.562Z" fill="#ffab1b" fill-rule="nonzero" opacity="1" stroke="none"/>
+							<path d="M110.156 236C104.633 236 100.156 240.477 100.156 246C100.156 251.523 104.633 256 110.156 256L145.844 256C151.367 256 155.844 251.523 155.844 246C155.844 240.477 151.367 236 145.844 236L110.156 236Z" fill="#ffab1b" fill-rule="nonzero" opacity="1" stroke="none"/>
+							<g opacity="1"/>
+							</g>
+							</svg>
+						
+							<div class="text-18px pointer-none nowrap text-primary">Smart Calendar</div>
+						</a>
+					</div>
+
+
+				<div class="display-flex flex-column justify-space-between flex-1 padding-12px padding-top-0">
+					
+					<!-- top -->
+					<div class="display-flex flex-column gap-12px">
+						
+						<!-- tabs -->
+						<div class="display-flex flex-column gap-12px">
+
+							<div class="padding-8px-12px pointer popupbutton transition-duration-100 width-fit align-self-center smartbuttonbackground display-flex box-shadow gap-6px flex-row align-center border-round display-none" onclick="readinteractivetourpopup('clickaddtask');opencreatetodo(event);gtag('event', 'button_click', { useraction: 'Add task - nav bar' })" id="todolisttab">
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+								<g>
+								<g opacity="1">
+								<path d="M128.004 10.0039L128.004 246.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+								<path d="M246.004 128.004L10.0039 128.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+								</g>
+								</g>
+								</svg>
+		
+								<div class="text-18px text-white pointer-none nowrap transition-none">Add task</div>
+							</div>
+
+						
+							<div class="display-flex flex-column">
+								<div class="leftwrapitem display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Home - nav bar' }) " id="calendartab">
+	
+								
+									
+									<div class="text-18px text-primary pointer-none transition-none">Home</div>
+								</div>
+								<div class="leftwrapitem display-flex gap-6px flex-row align-center" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab">
+	
+								
+									
+									<div class="text-18px text-primary pointer-none transition-none">Time report</div>
+								</div>
+								<div class="leftwrapitem display-flex gap-6px flex-row align-center display-none" onclick="clicktab([4])" id="feedbacktab">
+									
+									<div class="text-18px text-primary pointer-none transition-none">Feedback</div>
+								</div>
+							</div>
+	
+						</div>
+		
+					</div>
+	
+					
+					<!-- bottom -->
+					<div class="display-flex flex-column gap-12px">
+	
+						<!-- my calendars -->
+						<div class="display-flex flex-column">
+							<div class="display-flex padding-8px-12px background-tint-1 hover:background-tint-2 transition-duration-100 border-8px justify-space-between flex-row gap-6px align-center pointer" onclick="togglesettingscalendarlist();gtag('event', 'button_click', { useraction: 'My calendars - nav bar' })">
+								<div class="display-flex flex-row gap-6px align-center pointer-none">
+									<div class="text-18px text-primary pointer-none">My calendars</div>
+								</div>
+								
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge calendarlisttoggle rotate-90" id="calendarlisttoggle">
+								<g>
+								<g opacity="1">
+								<path d="M208.112 88.6229L128 167.377" fill-rule="nonzero" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M47.8879 88.6229L128 167.377" fill-rule="nonzero" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								</g>
+								</g>
+								</svg>
+							</div>
+		
+							<div class="display-flex flex-column overflow-y-auto" id="calendarlist"></div>
+						</div>
+	
+						<div class="horizontalbar"></div>
+	
+						<!-- settings -->
+						<div class="display-flex flex-column gap-12px">
+							<div class="popupbutton border-box border-8px gap-6px overflow-hidden pointer display-flex flex-row background-tint-1 padding-8px-12px align-center hover:background-tint-2 transition-duration-100" onclick="opensettings(event)">
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge pointer-none">
+								<g>
+								<path d="M88.6333 128C88.6333 106.258 106.258 88.6333 128 88.6333C149.742 88.6333 167.367 106.258 167.367 128C167.367 149.742 149.742 167.367 128 167.367C106.258 167.367 88.6333 149.742 88.6333 128Z" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M101.521 40.8836L106.742 18.8719C106.742 18.8719 107.824 15.3158 109.952 13.0978C112.08 10.8799 115.254 10 115.254 10L139.987 10C139.987 10 144.189 10.9478 146.546 13.0941C148.903 15.2404 149.416 18.5853 149.416 18.5853L155.745 40.8618L167.367 46.9222" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M154.479 215.119L149.258 237.13C149.258 237.13 148.176 240.686 146.048 242.904C143.92 245.122 140.746 246.002 140.746 246.002L116.013 246.002C116.013 246.002 111.811 245.054 109.454 242.908C107.097 240.762 106.584 237.417 106.584 237.417L100.255 215.14L88.6333 209.08" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M215.118 101.522L237.129 106.743C237.129 106.743 240.685 107.825 242.903 109.953C245.121 112.081 246.001 115.255 246.001 115.255L246.001 139.988C246.001 139.988 245.053 144.19 242.907 146.547C240.761 148.904 237.416 149.417 237.416 149.417L215.139 155.746L209.079 167.368" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M40.8825 154.48L18.8708 149.259C18.8708 149.259 15.3147 148.177 13.0967 146.049C10.8788 143.921 9.9989 140.747 9.9989 140.747L9.9989 116.014C9.9989 116.014 10.9467 111.812 13.093 109.455C15.2393 107.098 18.5842 106.585 18.5842 106.585L40.8607 100.257L46.9211 88.6344" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M208.325 170.879L220.198 190.135C220.198 190.135 221.947 193.415 222.011 196.488C222.075 199.561 220.452 202.428 220.452 202.428L202.963 219.916C202.963 219.916 199.322 222.217 196.137 222.367C192.953 222.516 190.225 220.513 190.225 220.513L169.998 209.236L157.495 213.169" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M47.675 85.1233L35.802 65.867C35.802 65.867 34.0526 62.5874 33.989 59.5143C33.9254 56.4412 35.5477 53.5747 35.5477 53.5747L53.0366 36.0857C53.0366 36.0857 56.678 33.7847 59.8625 33.6356C63.0471 33.4864 65.7747 35.489 65.7747 35.489L86.0015 46.766L98.505 42.8332" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M85.1222 208.326L65.8659 220.199C65.8659 220.199 62.5863 221.948 59.5132 222.012C56.4401 222.076 53.5736 220.453 53.5736 220.453L36.0846 202.965C36.0846 202.965 33.7836 199.323 33.6345 196.139C33.4853 192.954 35.4879 190.226 35.4879 190.226L46.7649 170L42.8321 157.496" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M170.878 47.6761L190.134 35.8031C190.134 35.8031 193.414 34.0537 196.487 33.9901C199.56 33.9265 202.426 35.5488 202.426 35.5488L219.915 53.0377C219.915 53.0377 222.216 56.6791 222.366 59.8636C222.515 63.0482 220.512 65.7758 220.512 65.7758L209.235 86.0026L213.168 98.5061" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								</g>
+								</svg>
+								<div class="pointer-none text-18px text-primary">Settings</div>
+							</div>
+						
+							<div class="justify-space-between popupbutton border-box border-8px gap-6px overflow-hidden pointer display-flex flex-row background-tint-1 padding-8px-12px align-center hover:background-tint-2 transition-duration-100" id="leftmenubutton" onclick="openleftmenu(event);gtag('event', 'button_click', { useraction: 'More - nav bar' }) ">
+								<div class="pointer-none display-flex flex-row gap-6px align-center overflow-hidden" id="leftmenutext"></div>
+		
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge flex-shrink-0">
+								<g>
+								<path d="M118.061 128C118.061 122.511 122.511 118.061 128 118.061C133.489 118.061 137.939 122.511 137.939 128C137.939 133.489 133.489 137.939 128 137.939C122.511 137.939 118.061 133.489 118.061 128Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M208.695 128C208.695 122.511 213.144 118.061 218.634 118.061C224.123 118.061 228.573 122.511 228.573 128C228.573 133.489 224.123 137.939 218.634 137.939C213.144 137.939 208.695 133.489 208.695 128Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M27.4272 128C27.4272 122.511 31.8771 118.061 37.3663 118.061C42.8555 118.061 47.3054 122.511 47.3054 128C47.3054 133.489 42.8555 137.939 37.3663 137.939C31.8771 137.939 27.4272 133.489 27.4272 128Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+								</g>
+								</svg>
+							</div>
+						</div>
+	
+	
+					</div>
+
+				</div>
+			</div>
+				
+		</div>
+		
+
+		<div class="background-secondary small:background-primary pagewrap border-box flex-column">
+		
+			<div class="relative panelwrap background-primary small:flex-column" id="panelwrap">
+
+				<!-- mobile top bar -->
+				<!--
+				<div class="display-none padding-top-12px flex-row gap-12px overflow-x-auto align-center noscrollbar">
+
+
+					<div class="display-flex flex-row align-center flex-1 justify-space-evenly">
+						<div class="padding-8px popupbutton hover:background-tint-1 display-flex flex-column align-center border-8px pointer transition-duration-100 text-14px" onclick="opensettings(event);gtag('event', 'button_click', { useraction: 'Settings - nav bar' }) ">
+							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge pointer-none">
+							<g>
+							<path d="M88.6333 128C88.6333 106.258 106.258 88.6333 128 88.6333C149.742 88.6333 167.367 106.258 167.367 128C167.367 149.742 149.742 167.367 128 167.367C106.258 167.367 88.6333 149.742 88.6333 128Z" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M101.521 40.8836L106.742 18.8719C106.742 18.8719 107.824 15.3158 109.952 13.0978C112.08 10.8799 115.254 10 115.254 10L139.987 10C139.987 10 144.189 10.9478 146.546 13.0941C148.903 15.2404 149.416 18.5853 149.416 18.5853L155.745 40.8618L167.367 46.9222" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M154.479 215.119L149.258 237.13C149.258 237.13 148.176 240.686 146.048 242.904C143.92 245.122 140.746 246.002 140.746 246.002L116.013 246.002C116.013 246.002 111.811 245.054 109.454 242.908C107.097 240.762 106.584 237.417 106.584 237.417L100.255 215.14L88.6333 209.08" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M215.118 101.522L237.129 106.743C237.129 106.743 240.685 107.825 242.903 109.953C245.121 112.081 246.001 115.255 246.001 115.255L246.001 139.988C246.001 139.988 245.053 144.19 242.907 146.547C240.761 148.904 237.416 149.417 237.416 149.417L215.139 155.746L209.079 167.368" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M40.8825 154.48L18.8708 149.259C18.8708 149.259 15.3147 148.177 13.0967 146.049C10.8788 143.921 9.9989 140.747 9.9989 140.747L9.9989 116.014C9.9989 116.014 10.9467 111.812 13.093 109.455C15.2393 107.098 18.5842 106.585 18.5842 106.585L40.8607 100.257L46.9211 88.6344" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M208.325 170.879L220.198 190.135C220.198 190.135 221.947 193.415 222.011 196.488C222.075 199.561 220.452 202.428 220.452 202.428L202.963 219.916C202.963 219.916 199.322 222.217 196.137 222.367C192.953 222.516 190.225 220.513 190.225 220.513L169.998 209.236L157.495 213.169" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M47.675 85.1233L35.802 65.867C35.802 65.867 34.0526 62.5874 33.989 59.5143C33.9254 56.4412 35.5477 53.5747 35.5477 53.5747L53.0366 36.0857C53.0366 36.0857 56.678 33.7847 59.8625 33.6356C63.0471 33.4864 65.7747 35.489 65.7747 35.489L86.0015 46.766L98.505 42.8332" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M85.1222 208.326L65.8659 220.199C65.8659 220.199 62.5863 221.948 59.5132 222.012C56.4401 222.076 53.5736 220.453 53.5736 220.453L36.0846 202.965C36.0846 202.965 33.7836 199.323 33.6345 196.139C33.4853 192.954 35.4879 190.226 35.4879 190.226L46.7649 170L42.8321 157.496" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M170.878 47.6761L190.134 35.8031C190.134 35.8031 193.414 34.0537 196.487 33.9901C199.56 33.9265 202.426 35.5488 202.426 35.5488L219.915 53.0377C219.915 53.0377 222.216 56.6791 222.366 59.8636C222.515 63.0482 220.512 65.7758 220.512 65.7758L209.235 86.0026L213.168 98.5061" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							</g>
+							</svg>
+						</div>
+					</div>
+					
+					<div class="display-flex flex-row justify-center align-center flex-1">
+						<div class="padding-8px-12px pointer popupbutton transition-duration-100 width-fit smartbuttonbackground display-flex gap-6px flex-row align-center border-round" onclick="readinteractivetourpopup('clickaddtask');opencreatetodo(event);gtag('event', 'button_click', { useraction: 'Add task - nav bar' })" id="todolisttab2">
+							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+							<g>
+							<g opacity="1">
+							<path d="M128.004 10.0039L128.004 246.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+							<path d="M246.004 128.004L10.0039 128.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+							</g>
+							</g>
+							</svg>
+	
+							<div class="text-18px text-white pointer-none transition-none nowrap">Add task</div>
+						</div>
+					</div>
+
+					
+
+					<div class="display-flex flex-row align-center flex-1 justify-space-evenly">
+	
+						<div class="popupbutton hover:background-tint-1 display-flex flex-column align-center border-8px pointer transition-duration-100 text-14px" id="mobilemore" onclick="openmore(event);gtag('event', 'button_click', { useraction: 'More - nav bar' }) ">
+							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge padding-8px">
+							<g>
+							<path d="M118.061 128C118.061 122.511 122.511 118.061 128 118.061C133.489 118.061 137.939 122.511 137.939 128C137.939 133.489 133.489 137.939 128 137.939C122.511 137.939 118.061 133.489 118.061 128Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M208.695 128C208.695 122.511 213.144 118.061 218.634 118.061C224.123 118.061 228.573 122.511 228.573 128C228.573 133.489 224.123 137.939 218.634 137.939C213.144 137.939 208.695 133.489 208.695 128Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M27.4272 128C27.4272 122.511 31.8771 118.061 37.3663 118.061C42.8555 118.061 47.3054 122.511 47.3054 128C47.3054 133.489 42.8555 137.939 37.3663 137.939C31.8771 137.939 27.4272 133.489 27.4272 128Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+							</g>
+							</svg>
+	
+						</div>
+					</div>
+
+
+				</div>
+				-->
+
+
+				
+				
+				<div class="summarywrap display-none small:border-none small:border-0" id="feedbackwrap">
+					<div class="todobar small:background-transparent">Feedback</div>
+
+					<div class="overflow-y-auto">
+						<div class="display-flex flex-column align-center gap-12px padding-12px display-none" id="thankyoufeedback">
+							<div class="text-18px padding-12px text-white background-blue border-8px">Thank you! Your feedback helps improve Smart Calendar</div>
+							<div class="border-8px background-blue text-white padding-8px-12px pointer hover:background-blue-hover text-14px transition-duration-100" onclick="clickfeedbackdone()">Done</div>
+						</div>
+	
+						<div class="display-flex flex-column align-center width-full">
+							<div class="display-flex flex-column align-center gap-24px padding-12px feedbackgroup" id="feedbackgroup">
+								<div class="text-18px text-primary text-center">We want to hear from you! Please share with us your experience</div>
+
+								<div class="text-18px text-primary text-center">
+									You can also send feedback in our <a href="https://discord.gg/dHBFFNp7g7" target="_blank" rel="noopener noreferrer" class="text-primary text-underline">Discord Server</a>!
+								</div>
+			
+								<form class="form" id="feedbackform" onsubmit="submitfeedback(event)">
+									<div class="formgroup">
+										<div class="formtext">What features do you like? (optional)</div>
+										<div class="forminputwrap">
+											<textarea id="feedbackformquestion1" maxlength="2000" type="text" class="infoinput infonotes"></textarea>
+											<span class="inputline"></span>
+										</div>
+									</div>
+							
+									<div class="formgroup">
+										<div class="formtext">What can be improved? (optional)</div>
+										<div class="forminputwrap">
+											<textarea id="feedbackformquestion2" maxlength="2000" type="text" class="infoinput infonotes"></textarea>
+											<span class="inputline"></span>
+										</div>
+									</div>
+			
+									<div class="formgroup">
+										<div class="formtext">Any suggestions? (optional)</div>
+										<div class="forminputwrap">
+											<textarea id="feedbackformquestion3" maxlength="2000" type="text" class="infoinput infonotes"></textarea>
+											<span class="inputline"></span>
+										</div>
+									</div>
+									
+									<input type="submit" value="Submit" class="formsubmit"/>
+								</form>
+		
+							</div>
+						</div>
+					</div>
+				</div>
+
+				
+				<div class="summarywrap display-none small:border-none small:border-0" id="summarywrap">
+					<div class="todobar small:background-transparent">Time report</div>
+					<div class="summarycontainer">
+						<div class="summarycontent gap-96px">
+
+							<div class="summarycontentgroup">
+								<div class="display-flex flex-row justify-space-between">
+									<div class="summarytitle">Progress</div>
+									<div class="border-8px padding-8px-12px background-tint-1 hover:background-tint-2 transition-duration-100 pointer text-primary" onclick="openfocus()">Full screen view</div>
+								</div>
+								<div class="display-flex flex-column gap-48px" id="progressevents">
+								</div>
+							</div>
+
+							<div class="summarycontentgroup">
+								<div class="summarytitle">Today's events</div>
+								<div class="summaryrow small:flex-column">
+									<div class="summaryrowitem">
+										<div class="summaryitemtitle">Time busy</div>
+										<div id="summaryeventtimebusy" class="summaryitembigtext"></div>
+									</div>
+									<div class="summaryrowitem">
+										<div class="summaryitemtitle">Time free</div>
+										<div id="summaryeventtimefree" class="summaryitembigtext"></div>
+									</div>
+									<div class="summaryrowitem">
+										<div class="summaryitemtitle">Time for sleep</div>
+										<div id="summaryeventtimesleep" class="summaryitembigtext"></div>
+										<div class="border-8px padding-8px-12px background-tint-1 hover:background-tint-2 transition-duration-100 pointer text-primary" onclick="opensettingssleep()">Edit sleep time</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="summarycontentgroup">
+								<div class="summarytitle">Today's tasks</div>
+								<div class="summaryrow small:flex-column">
+									<div class="summaryrowitem">
+										<div class="summaryitemtitle">Completed</div>
+										<div id="summarytodocompleted"></div>
+									</div>
+									<div class="summaryrowitem">
+										<div class="summaryitemtitle">Unfinished</div>
+										<div id="summarytodounfinished"></div>
+									</div>
+									<div class="summaryrowitem">
+										<div class="summaryitemtitle">Overdue</div>
+										<div id="summarytodooverdue"></div>
+									</div>
+								</div>
+							</div>
+
+							<div class="summarycontentgroup">
+								<div class="summarytitle">Past week's events</div>
+								<div class="text-14px text-quaternary">Hover over each bar for more info</div>
+								<div class="display-flex flex-row gap-6px">
+									<div class="display-flex flex-column">
+										<div class="relative height60px">
+											<div class="text-14px text-secondary text-right relative top-7px">24h</div>
+										</div>
+										<div class="relative height60px">
+											<div class="text-14px text-secondary text-right relative top-7px">20h</div>
+										</div>
+										<div class="relative height60px">
+											<div class="text-14px text-secondary text-right relative top-7px">16h</div>
+										</div>
+										<div class="relative height60px">
+											<div class="text-14px text-secondary text-right relative top-7px">12h</div>
+										</div>
+										<div class="relative height60px">
+											<div class="text-14px text-secondary text-right relative top-7px">8h</div>
+										</div>
+										<div class="relative height60px">
+											<div class="text-14px text-secondary text-right relative top-7px">4h</div>
+										</div>
+										<div class="relative height-0">
+											<div class="text-14px text-secondary text-right relative top-7px">0h</div>
+										</div>
+									</div>
+									<div class="display-flex flex-column flex-1">
+										<div class="display-flex flex-column relative">
+											<div id="eventgraph" class="absolute display-flex flex-row width-full height-full"></div>
+											
+											<div class="height60px bordertop border-box"></div>
+											<div class="height60px bordertop border-box"></div>
+											<div class="height60px bordertop border-box"></div>
+											<div class="height60px bordertop border-box"></div>
+											<div class="height60px bordertop border-box"></div>
+											<div class="height60px bordertop border-box"></div>
+											<div class="height-0 bordertop border-box"></div>
+										</div>
+										
+										<div class="display-flex flex-row padding-top-12px" id="eventgraphdays">
+										</div>
+									</div>
+								
+								</div>
+							</div>
+						
+
+						</div>
+					</div>
+				</div>
+
+
+
+
+				<div class="todowrap relative display-none border-box overflow-auto" id="todowrap">
+
+					
+					<div class="todobar padding-12px display-flex flex-row align-center">
+						<div class="flex-1"></div>
+
+						<div class="flex-1 display-flex flex-row justify-center">
+							<div class="text-18px text-primary pointer-none text-center">To do list</div>
+						</div>
+
+						<div class="flex-1 display-flex flex-row justify-flex-end">
+							<div class="text-16px text-white small:box-shadow-none bluebutton transition-duration-100 border-round padding-8px-16px nowrap popupbutton box-shadow pointer pointer-auto" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Show calendar' })" id="showcalendarbutton">Show calendar</div>
+						</div>
+					</div>
+					
+					<div class="todocontainer" id="todocontainer">						
+			
+						<div class="display-flex gap-24px flex-column padding-12px marginbottom50vh">
+
+
+							<div class="text-16px text-quaternary text-center">Jot down your ideas, tasks, or projects here.</div>
+
+							<div class="padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit align-self-center smartbuttonbackground display-flex gap-6px flex-row align-center border-round" onclick="readinteractivetourpopup('clickaddtask');opencreatetodo(event);gtag('event', 'button_click', { useraction: 'Add task - to do list' })" id="todolisttab2">
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+								<g>
+								<g opacity="1">
+								<path d="M128.004 10.0039L128.004 246.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+								<path d="M246.004 128.004L10.0039 128.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+								</g>
+								</g>
+								</svg>
+					
+								<div class="text-18px text-white pointer-none nowrap transition-none">Add task</div>
+							</div>
+
+
+							<div class="display-flex flex-row gap-12px justify-center width-full">
+								<div class="overflow-hidden gap-6px align-center display-flex flex-row text-18px padding-8px-12px transition-duration-100 text-primary width-fit smartbuttonbackground display-flex flex-row tooltip popupbutton pointer-auto pointer border-round" onclick="clickplanmytasksmore(event)" id="scheduleoncalendar">
+									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhitefill">
+									<g>
+									<path d="M46-4.10783e-15C20.5949-4.10783e-15 0 20.4899 0 45.7654L0 65.6633L0 85.5613L0 210.235C0 235.51 20.5949 256 46 256L210 256C235.405 256 256 235.51 256 210.235L256 85.5613L256 65.6633L256 45.7654C256 20.4899 235.405-1.01206e-05 210-4.10783e-15L46-4.10783e-15ZM46 59.694L210 59.694C224.359 59.694 236 71.2752 236 85.5613L236 210.235C236 224.521 224.359 236.102 210 236.102L46 236.102C31.6406 236.102 20 224.521 20 210.235L20 85.5613C20 71.2752 31.6406 59.694 46 59.694Z" fill-rule="nonzero" opacity="1"></path>
+									<path d="M56.4316 90.9174L80.4316 90.9174C84.8499 90.9174 88.4316 94.4991 88.4316 98.9174L88.4316 122.917C88.4316 127.336 84.8499 130.917 80.4316 130.917L56.4316 130.917C52.0134 130.917 48.4316 127.336 48.4316 122.917L48.4316 98.9174C48.4316 94.4991 52.0134 90.9174 56.4316 90.9174Z" fill-rule="nonzero" opacity="1"></path>
+									<path d="M116 90.9174L140 90.9174C144.418 90.9174 148 94.4991 148 98.9174L148 122.917C148 127.336 144.418 130.917 140 130.917L116 130.917C111.582 130.917 108 127.336 108 122.917L108 98.9174C108 94.4991 111.582 90.9174 116 90.9174Z" fill-rule="nonzero" opacity="1"></path>
+									<path d="M173.596 90.9174L197.596 90.9174C202.014 90.9174 205.596 94.4991 205.596 98.9174L205.596 122.917C205.596 127.336 202.014 130.917 197.596 130.917L173.596 130.917C169.178 130.917 165.596 127.336 165.596 122.917L165.596 98.9174C165.596 94.4991 169.178 90.9174 173.596 90.9174Z" fill-rule="nonzero" opacity="1"></path>
+									<path d="M56.4316 147.412L80.4316 147.412C84.8499 147.412 88.4316 150.994 88.4316 155.412L88.4316 179.412C88.4316 183.83 84.8499 187.412 80.4316 187.412L56.4316 187.412C52.0134 187.412 48.4316 183.83 48.4316 179.412L48.4316 155.412C48.4316 150.994 52.0134 147.412 56.4316 147.412Z" fill-rule="nonzero" opacity="1"></path>
+									<path d="M116 147.412L140 147.412C144.418 147.412 148 150.994 148 155.412L148 179.412C148 183.83 144.418 187.412 140 187.412L116 187.412C111.582 187.412 108 183.83 108 179.412L108 155.412C108 150.994 111.582 147.412 116 147.412Z" fill-rule="nonzero" opacity="1"></path>
+									</g>
+									</svg>
+									Schedule my tasks
+								</div>
+								
+								<div class="background-tint-1 border-8px padding-12px width-full display-flex flex-column gap-12px align-center display-none" id="schedulemytasksactive">
+									<div class="infotopright pointer absolute top-0 right-0 margin-12px" onclick="cancelschedulemytasks(event)">
+										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+										<g>
+										<g opacity="1">
+										<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+										<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+										</g>
+										</g>
+										</svg>
+									</div>
+									<div class="text-18px text-bold text-primary">Select tasks to schedule...</div>
+									<div class="flex-row gap-12px display-flex">
+										<div class="text-primary padding-8px-12px bluebutton border-8px transition-duration-100 pointer" onclick="cancelschedulemytasks()">Go</div>
+									</div>
+								</div>
+							</div>
+			
+							
+		
+							<div class="flex-column display-flex gap-24px" id="alltodolist"></div>
+							
+			
+						</div>
+			
+						
+					</div>
+
+				</div>
+						
+
+				
+				<div class="calendarwrap relative margin-12px box-shadow border-16px display-none small:absolute small:top-0 small:bottom-0 small:left-0 small:right-0" id="calendarwrap">
+						<div class="display-flex flex-column padding-top-12px gap-12px calendartopbar">
+							
+							<div class="display-flex flex-row justify-space-between padding-left-12px padding-right-12px align-center gap-12px">
+								
+								<!-- month title -->
+								<div class="display-flex flex-row gap-12px justify-flex-start flex-1" id="calendarmonth">
+	
+									
+									<div class="display-flex flex-row align-center pointer-none">
+										<div class="topbarinfodate nowrap pointer-none small:display-none" id="topbarinfodate"></div>
+	
+										<div class="topbarinfodate nowrap display-none small:display-flex" id="topbarinfodate2"></div>	
+									</div>
+									
+									<div class="topbarmiddle small:display-none" id="topbarmiddle">
+										<div class="topbarmodechild flex-1 text-center" onclick="setcalendarmode(0);gtag('event', 'button_click', { useraction: 'Day - calendar' })">Day</div>
+										<div class="topbarmodechild flex-1 text-center" onclick="setcalendarmode(1);gtag('event', 'button_click', { useraction: 'Week - calendar' })">Week</div>
+										<div class="topbarmodechild flex-1 text-center" onclick="setcalendarmode(2);gtag('event', 'button_click', { useraction: 'Month - calendar' })">Month</div>
+									</div>
+
+								</div>
+	
+	
+								<!-- previous/today/next -->
+								<div class="display-flex flex-row align-center justify-flex-end flex-1">				
+									<div class="display-flex flex-row align-center">
+										<div class="topbarbutton" onclick="prevcalendar();gtag('event', 'button_click', { useraction: 'Previous - calendar' })">
+											<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+											<g>
+											<path d="M186 10L70 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+											<path d="M186 246L70 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+											</g>
+											</svg>
+										</div>
+												
+										<div class="topbarbuttontext text-16px" onclick="todaycalendar();gtag('event', 'button_click', { useraction: 'Today - calendar' })">Today</div>
+												
+										<div class="topbarbutton" onclick="nextcalendar();gtag('event', 'button_click', { useraction: 'Next - calendar' })">
+											<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+											<g>
+											<path d="M70 10L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+											<path d="M70 246L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+											</g>
+											</svg>
+										</div>
+									</div>
+
+
+									<div class="infotopright pointer" onclick="clicktab([1]);gtag('event', 'button_click', { useraction: 'Close calendar' })">
+										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+										<g>
+										<g opacity="1">
+										<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+										<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+										</g>
+										</g>
+										</svg>
+									</div>
+									
+								</div>
+								
+							</div>
+							
+							<div class="display-flex flex-row" id="topbardays"></div>
+						</div>
+						<div class="barcolumnrelative" id="barcolumnrelative">
+							<div class="barcolumncontainer" id="barcolumncontainer"></div>
+
+							<div class="padding-8px-12px absolute top-0 margin-24px z-index-99 pointer popupbutton transition-duration-100 width-fit align-self-center bluebutton display-flex box-shadow gap-6px flex-row align-center border-round" onclick="opencreateevent(event)">
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+								<g>
+								<g opacity="1">
+								<path d="M128.004 10.0039L128.004 246.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+								<path d="M246.004 128.004L10.0039 128.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+								</g>
+								</g>
+								</svg>
+		
+								<div class="text-18px text-white pointer-none nowrap transition-none">Add event</div>
+							</div>
+
+							<!-- drop task -->
+							<div class="hiddenfade z-index-100 display-flex flex-column pointer-none align-center justify-center absolute bottom-0 left-0 right-0 top-0 dragtodohighlight" id="dragtodohighlight">
+								<div class="text-18px text-white">Drop task to schedule on calendar</div>
+							</div>
+		
+
+							<!-- scheduling screen -->
+							<div class="absolute hiddenfade gap-12px align-center z-index-100 pointer-none display-flex top-0 left-0 right-0 bottom-0 flex-column" id="schedulingscreen">
+								<div class="absolute top-0 left-0 bottom-0 right-0 schedulingscreenbackground"></div>
+								
+								<div class="display-flex align-center width300px flex-column gap-12px margin-24px box-shadow backdrop-blur background-primary-transparent border-8px padding-12px">
+									<div class="text-18px text-primary" id="schedulingscreentext"></div>
+									<div class="manualloader width-full" id="schedulingscreenloader"><div class="loaderprogress"></div></div>
+								</div>
+							</div>
+							
+						
+					</div>
+
+					<div class="paneldivider" onmousedown="clickpaneldivider(event)"></div>
+				</div>
+
+
+				<!-- mobile only bottom bar -->
+				<div class="align-center display-none small:display-flex flex-row gap-12px padding-12px bordertop">	
+
+											
+					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([1]);gtag('event', 'button_click', { useraction: 'Home - nav bar' }) " id="calendartab2">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonlarge">
+						<g>
+						<path d="M216.422 96.5767L216.422 206.806C216.422 222.546 203.662 235.306 187.922 235.306L68.5817 235.306C52.8418 235.306 40.082 222.546 40.082 206.806L40.082 96.5767" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M9.80138 120.006L112.201 27.35C121.027 18.5244 135.28 18.4684 144.036 27.2249L246.199 120.986" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M211.921 42.4158L215.422 42.4158L215.422 88.6843L211.921 75.9057L211.921 42.4158Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="22"></path>
+						</g>
+						</svg>
+						
+						<div class="text-14px text-primary pointer-none nowrap mobilepagetext transition-duration-100">Home</div>
+					</div>
+					
+					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab2">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonfillwhite">
+						<g>
+						<path d="M128 0C57.3075 0 0 57.3075 0 128C0 198.692 57.3075 256 128 256C198.692 256 256 198.692 256 128C256 57.3075 198.692 0 128 0ZM128 20C187.647 20 236 68.3532 236 128C236 187.647 187.647 236 128 236C68.3532 236 20 187.647 20 128C20 68.3532 68.3532 20 128 20Z" fill-rule="nonzero" opacity="1" ></path>
+						<path d="M128 44.8438C122.477 44.8438 118 49.3209 118 54.8438L118 128C118 133.523 122.477 138 128 138C133.523 138 138 133.523 138 128L138 54.8438C138 49.3209 133.523 44.8438 128 44.8438Z" fill-rule="nonzero" opacity="1" ></path>
+						<path d="M128 118C125.441 118 122.89 118.985 120.938 120.938C117.032 124.843 117.032 131.157 120.938 135.062L172.656 186.812C176.561 190.718 182.907 190.718 186.812 186.812C190.718 182.907 190.718 176.561 186.812 172.656L135.062 120.938C133.11 118.985 130.559 118 128 118Z" fill-rule="nonzero" opacity="1" ></path>
+						</g>
+						</svg>
+						
+						<div class="text-14px text-primary pointer-none nowrap mobilepagetext transition-duration-100">Time report</div>
+					</div>
+
+					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="opensettings();gtag('event', 'button_click', { useraction: 'Settings - nav bar' })">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge pointer-none">
+						<g>
+						<path d="M88.6333 128C88.6333 106.258 106.258 88.6333 128 88.6333C149.742 88.6333 167.367 106.258 167.367 128C167.367 149.742 149.742 167.367 128 167.367C106.258 167.367 88.6333 149.742 88.6333 128Z" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M101.521 40.8836L106.742 18.8719C106.742 18.8719 107.824 15.3158 109.952 13.0978C112.08 10.8799 115.254 10 115.254 10L139.987 10C139.987 10 144.189 10.9478 146.546 13.0941C148.903 15.2404 149.416 18.5853 149.416 18.5853L155.745 40.8618L167.367 46.9222" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M154.479 215.119L149.258 237.13C149.258 237.13 148.176 240.686 146.048 242.904C143.92 245.122 140.746 246.002 140.746 246.002L116.013 246.002C116.013 246.002 111.811 245.054 109.454 242.908C107.097 240.762 106.584 237.417 106.584 237.417L100.255 215.14L88.6333 209.08" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M215.118 101.522L237.129 106.743C237.129 106.743 240.685 107.825 242.903 109.953C245.121 112.081 246.001 115.255 246.001 115.255L246.001 139.988C246.001 139.988 245.053 144.19 242.907 146.547C240.761 148.904 237.416 149.417 237.416 149.417L215.139 155.746L209.079 167.368" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M40.8825 154.48L18.8708 149.259C18.8708 149.259 15.3147 148.177 13.0967 146.049C10.8788 143.921 9.9989 140.747 9.9989 140.747L9.9989 116.014C9.9989 116.014 10.9467 111.812 13.093 109.455C15.2393 107.098 18.5842 106.585 18.5842 106.585L40.8607 100.257L46.9211 88.6344" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M208.325 170.879L220.198 190.135C220.198 190.135 221.947 193.415 222.011 196.488C222.075 199.561 220.452 202.428 220.452 202.428L202.963 219.916C202.963 219.916 199.322 222.217 196.137 222.367C192.953 222.516 190.225 220.513 190.225 220.513L169.998 209.236L157.495 213.169" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M47.675 85.1233L35.802 65.867C35.802 65.867 34.0526 62.5874 33.989 59.5143C33.9254 56.4412 35.5477 53.5747 35.5477 53.5747L53.0366 36.0857C53.0366 36.0857 56.678 33.7847 59.8625 33.6356C63.0471 33.4864 65.7747 35.489 65.7747 35.489L86.0015 46.766L98.505 42.8332" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M85.1222 208.326L65.8659 220.199C65.8659 220.199 62.5863 221.948 59.5132 222.012C56.4401 222.076 53.5736 220.453 53.5736 220.453L36.0846 202.965C36.0846 202.965 33.7836 199.323 33.6345 196.139C33.4853 192.954 35.4879 190.226 35.4879 190.226L46.7649 170L42.8321 157.496" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M170.878 47.6761L190.134 35.8031C190.134 35.8031 193.414 34.0537 196.487 33.9901C199.56 33.9265 202.426 35.5488 202.426 35.5488L219.915 53.0377C219.915 53.0377 222.216 56.6791 222.366 59.8636C222.515 63.0482 220.512 65.7758 220.512 65.7758L209.235 86.0026L213.168 98.5061" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						</g>
+						</svg>
+						<div class="text-14px text-primary pointer-none nowrap mobilepagetext transition-duration-100">Settings</div>
+					</div>
+
+					</div>
+			</div>
+			
+		</div>
+		
+		</div>
+	</div>
+</div>
+
+		<script src="https://unpkg.com/ical.js"></script>
+		<script src="https://jakubroztocil.github.io/rrule/dist/es5/rrule-tz.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js" defer></script>
+		<script src="../app.js"></script>
+
+</body>
+
+</html>

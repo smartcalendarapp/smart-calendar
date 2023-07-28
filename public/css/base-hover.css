@@ -1,0 +1,773 @@
+
+.hover\:border-0:hover{
+	border-radius:0
+}
+.hover\:border-8px:hover{
+	border-radius:8px
+}
+.hover\:border-round:hover{
+	border-radius:1000px
+}
+.hover\:background-transparent:hover{
+	background-color:transparent
+}
+.hover\:background-primary:hover{
+	background-color:var(--background-primary)
+}
+.hover\:background-primary-transparent:hover{
+	background-color:var(--background-primary-transparent)
+}
+.hover\:background-secondary:hover{
+	background-color:var(--background-secondary)
+}
+.hover\:background-secondary-transparent:hover{
+	background-color:var(--background-secondary-transparent)
+}
+.hover\:background-tint-1:hover{
+	background-color:var(--background-tint-1)
+}
+.hover\:background-tint-2:hover{
+	background-color:var(--background-tint-2)
+}
+.hover\:background-red:hover{
+	background-color:var(--red)
+}
+.hover\:background-orange:hover{
+	background-color:var(--orange)
+}
+.hover\:background-yellow:hover{
+	background-color:var(--yellow)
+}
+.hover\:background-green:hover{
+	background-color:var(--green)
+}
+.hover\:background-blue:hover{
+	background-color:var(--blue)
+}
+.hover\:background-purple:hover{
+	background-color:var(--purple)
+}
+.hover\:background-red-transparent:hover{
+	background-color:var(--red-transparent)
+}
+.hover\:background-orange-transparent:hover{
+	background-color:var(--orange-transparent)
+}
+.hover\:background-yellow-transparent:hover{
+	background-color:var(--yellow-transparent)
+}
+.hover\:background-green-transparent:hover{
+	background-color:var(--green-transparent)
+}
+.hover\:background-blue-transparent:hover{
+	background-color:var(--blue-transparent)
+}
+.hover\:background-purple-transparent:hover{
+	background-color:var(--purple-transparent)
+}
+.hover\:background-red-hover:hover{
+	background-color:var(--red-hover)
+}
+.hover\:background-blue-hover:hover{
+	background-color:var(--blue-hover)
+}
+.hover\:background-orange-hover:hover{
+	background-color:var(--orange-hover)
+}
+
+.hover\:text-transparent:hover{
+	color:transparent
+}
+.hover\:text-primary:hover{
+	color:var(--text-primary)
+}
+.hover\:text-secondary:hover{
+	color:var(--text-secondary)
+}
+.hover\:text-tertiary:hover{
+	color:var(--text-tertiary)
+}
+.hover\:text-quaternary:hover{
+	color:var(--text-quaternary)
+}
+.hover\:text-quinary:hover{
+	color:var(--text-quinary)
+}
+.hover\:text-white:hover{
+	color:var(--white)
+}
+.hover\:text-gray:hover{
+	color:var(--gray)
+}
+.hover\:text-red:hover{
+	color:var(--red)
+}
+.hover\:text-red-hover:hover{
+	color:var(--red-hover)
+}
+.hover\:text-orange:hover{
+	color:var(--orange)
+}
+.hover\:text-orange-hover:hover{
+	color:var(--orange-hover)
+}
+.hover\:text-green:hover{
+	color:var(--green)
+}
+.hover\:text-green-hover:hover{
+	color:var(--green-hover)
+}
+.hover\:text-blue:hover{
+	color:var(--blue)
+}
+.hover\:text-blue-hover:hover{
+	color:var(--blue-hover)
+}
+.hover\:text-purple:hover{
+	color:var(--purple)
+}
+.hover\:text-purple-hover:hover{
+	color:var(--purple-hover)
+}
+.hover\:text-normal:hover{
+	font-weight:normal
+}
+.hover\:text-bold:hover{
+	font-weight:600
+}
+.hover\:text-12px:hover{
+	font-size:12px
+}
+.hover\:text-14px:hover{
+	font-size:14px
+}
+.hover\:text-16px:hover{
+	font-size:16px
+}
+.hover\:text-18px:hover{
+	font-size:18px
+}
+.hover\:text-24px:hover{
+	font-size:24px
+}
+.hover\:text-36px:hover{
+	font-size:36px
+}
+.hover\:text-48px:hover{
+	font-size:48px
+}
+.hover\:text-60px:hover{
+	font-size:60px
+}
+.hover\:text-overflow-ellipsis:hover{
+	text-overflow:ellipsis
+}
+.hover\:text-center:hover{
+	text-align:center
+}
+.hover\:text-right:hover{
+	text-align:right
+}
+.hover\:text-decoration-none:hover{
+	text-decoration:none
+}
+.hover\:text-decoration-underline:hover{
+	text-decoration:underline
+}
+.hover\:vertical-align-middle:hover{
+	vertical-align:middle
+}
+
+.hover\:box-shadow:hover{
+	box-shadow:0 0 40px 0 var(--black-transparent)
+}
+.hover\:box-shadow-2:hover{
+	box-shadow:0 0 15px -5px var(--black-transparent)
+}
+.hover\:pointer:hover{
+	cursor:pointer
+}
+.hover\:move:hover{
+	cursor:move
+}
+
+.hover\:nowrap:hover{
+	white-space:nowrap
+}
+.hover\:pre:hover{
+	white-space:pre
+}
+.hover\:pre-wrap:hover{
+	white-space:pre-wrap
+}
+
+.hover\:break-word:hover{
+	word-wrap:break-word
+}
+
+.hover\:backdrop-blur:hover{
+	-webkit-backdrop-filter:blur(20px)
+	backdrop-filter:blur(20px)
+}
+.hover\:order-0:hover{
+	order:0
+}
+.hover\:order-1:hover{
+	order:1
+}
+.hover\:order--1:hover{
+	order:-1
+}
+.hover\:flex-column:hover{
+	flex-direction:column
+}
+.hover\:flex-row:hover{
+	flex-direction:row
+}
+.hover\:flex-column-reverse:hover{
+	flex-direction:column-reverse
+}
+.hover\:flex-row-reverse:hover{
+	flex-direction:row-reverse
+}
+.hover\:flex-1:hover{
+	flex:1
+}
+.hover\:flex-2:hover{
+	flex:2
+}
+.hover\:flex-0:hover{
+	flex:0
+}
+.hover\:flex-shrink-0:hover{
+	flex-shrink:0
+}
+.hover\:flex-shrink-1:hover{
+	flex-shrink:1
+}
+.hover\:flex-grow-0:hover{
+	flex-grow:0
+}
+.hover\:flex-grow-1:hover{
+	flex-grow:1
+}
+.hover\:flex-wrap-wrap:hover{
+	flex-wrap:wrap
+}
+.hover\:flex-basis-0:hover{
+	flex-basis:0
+}
+.hover\:flex-basis-auto:hover{
+	flex-basis:auto
+}
+.hover\:align-self-center:hover{
+	align-self:center
+}
+.hover\:align-center:hover{
+	align-items:center
+}
+.hover\:align-flex-start:hover{
+	align-items:flex-start
+}
+.hover\:align-flex-end:hover{
+	align-items:flex-end
+}
+.hover\:justify-center:hover{
+	justify-content:center
+}
+.hover\:justify-space-between:hover{
+	justify-content:space-between
+}
+.hover\:justify-space-evenly:hover{
+	justify-content:space-evenly
+}
+.hover\:justify-space-around:hover{
+	justify-content:space-around
+}
+.hover\:justify-flex-end:hover{
+	justify-content:flex-end
+}
+.hover\:justify-flex-start:hover{
+	justify-content:flex-start
+}
+
+.hover\:row-gap-6px:hover{
+	row-gap:6px
+}
+.hover\:row-gap-12px:hover{
+	row-gap:12px
+}
+.hover\:column-gap-6px:hover{
+	column-gap:6px
+}
+.hover\:column-gap-12px:hover{
+	column-gap:12px
+}
+.hover\:gap-2px:hover{
+	gap:2px
+}
+.hover\:gap-4px:hover{
+	gap:4px
+}
+.hover\:gap-6px:hover{
+	gap:6px
+}
+.hover\:gap-12px:hover{
+	gap:12px
+}
+.hover\:gap-24px:hover{
+	gap:24px
+}
+.hover\:gap-48px:hover{
+	gap:48px
+}
+.hover\:gap-60px:hover{
+	gap:60px
+}
+.hover\:gap-96px:hover{
+	gap:96px
+}
+.hover\:gap-120px:hover{
+	gap:120px
+}
+.hover\:gap-192px:hover{
+	gap:192px
+}
+
+.hover\:absolute:hover{
+	position:absolute
+}
+.hover\:relative:hover{
+	position:relative
+}
+.hover\:sticky:hover{
+	position:sticky
+}
+.hover\:fixed:hover{
+	position:fixed
+}
+
+.hover\:max-height-revert:hover{
+	max-height:revert
+}
+.hover\:max-width-revert:hover{
+	max-width:revert
+}
+
+.hover\:height-0:hover{
+	height:0
+}
+.hover\:height-full:hover{
+	height:100%
+}
+.hover\:height-100vh:hover{
+	height:100vh
+}
+.hover\:height-fit:hover{
+	height:fit-content
+}
+.hover\:height-100vh:hover{
+	height:100vh
+}
+.hover\:height-1em:hover{
+	height:1em
+}
+.hover\:height-100vw:hover{
+	height:100vw
+}
+.hover\:height-auto:hover{
+	height:auto
+}
+.hover\:min-width-0:hover{
+	min-width:0
+}
+.hover\:min-height-0:hover{
+	min-height:0
+}
+.hover\:min-width-full:hover{
+	min-width:100%
+}
+.hover\:min-height-full:hover{
+	min-height:100%
+}
+.hover\:min-width-auto:hover{
+	min-width:auto
+}
+.hover\:min-height-auto:hover{
+	min-height:auto
+}
+.hover\:width-0:hover{
+	width:0
+}
+.hover\:width-full:hover{
+	width:100%
+}
+.hover\:width-100vw:hover{
+	width:100vw
+}
+.hover\:width-auto:hover{
+	width:auto
+}
+.hover\:width-fit:hover{
+	width:fit-content
+}
+.hover\:width-1em:hover{
+	width:1em
+}
+.hover\:width-96px:hover{
+	width:96px
+}
+.hover\:width-192px:hover{
+	width:192px
+}
+
+.hover\:visibility-visible:hover{
+	visibility:visible
+}
+.hover\:visibility-hidden:hover{
+	visibility:hidden
+}
+.hover\:display-block:hover{
+	display:block
+}
+.hover\:display-flex:hover{
+	display:flex
+}
+.hover\:display-inline:hover{
+	display:inline
+}
+.hover\:display-inline-block:hover{
+	display:inline-block
+}
+.hover\:display-none:hover{
+	display:none
+}
+.hover\:opacity-0:hover{
+	opacity:0
+}
+.hover\:opacity-1:hover{
+	opacity:1
+}
+
+.hover\:z-index-1:hover{
+	z-index:1
+}
+.hover\:z-index-2:hover{
+	z-index:2
+}
+.hover\:z-index-3:hover{
+	z-index:3
+}
+.hover\:z-index-4:hover{
+	z-index:4
+}
+.hover\:z-index-10:hover{
+	z-index:10
+}
+.hover\:z-index-99:hover{
+	z-index:99
+}
+.hover\:z-index-100:hover{
+	z-index:100
+}
+.hover\:z-index-200:hover{
+	z-index:200
+}
+.hover\:z-index-300:hover{
+	z-index:300
+}
+.hover\:z-index-400:hover{
+	z-index:400
+}
+.hover\:z-index-500:hover{
+	z-index:500
+}
+.hover\:z-index-999:hover{
+	z-index:999
+}
+.hover\:z-index-1000:hover{
+	z-index:1000
+}
+.hover\:z-index-2000:hover{
+	z-index:2000
+}
+.hover\:z-index-3000:hover{
+	z-index:3000
+}
+
+.hover\:pointer-none:hover{
+	pointer-events:none
+}
+.hover\:pointer-auto:hover{
+	pointer-events:auto
+}
+.hover\:padding-0:hover{
+	padding:0
+}
+.hover\:padding-2px:hover{
+	padding:2px
+}
+.hover\:padding-3px:hover{
+	padding:3px
+}
+.hover\:padding-4px:hover{
+	padding:4px
+}
+.hover\:padding-6px:hover{
+	padding:6px
+}
+.hover\:padding-12px:hover{
+	padding:12px
+}
+.hover\:padding-24px:hover{
+	padding:24px
+}
+.hover\:padding-60px:hover{
+	padding:60px
+}
+.hover\:padding-6px-12px:hover{
+	padding:6px 12px
+}
+.hover\:padding-8px-12px:hover{
+	padding:8px 12px
+}
+.hover\:padding-8px-16px:hover{
+	padding:8px 16px
+}
+.hover\:padding-left-0:hover{
+	padding-left:0
+}
+.hover\:padding-right-0:hover{
+	padding-right:0
+}
+.hover\:padding-top-0:hover{
+	padding-top:0
+}
+.hover\:padding-bottom-0:hover{
+	padding-bottom:0
+}
+.hover\:padding-left-2px:hover{
+	padding-left:2px
+}
+.hover\:padding-right-2px:hover{
+	padding-right:2px
+}
+.hover\:padding-top-2px:hover{
+	padding-top:2px
+}
+.hover\:padding-bottom-2px:hover{
+	padding-bottom:2px
+}
+.hover\:padding-left-4px:hover{
+	padding-left:4px
+}
+.hover\:padding-right-4px:hover{
+	padding-right:4px
+}
+.hover\:padding-top-4px:hover{
+	padding-top:4px
+}
+.hover\:padding-bottom-4px:hover{
+	padding-bottom:4px
+}
+.hover\:padding-left-6px:hover{
+	padding-left:6px
+}
+.hover\:padding-right-6px:hover{
+	padding-right:6px
+}
+.hover\:padding-top-6px:hover{
+	padding-top:6px
+}
+.hover\:padding-bottom-6px:hover{
+	padding-bottom:6px
+}
+.hover\:padding-top-8px:hover{
+	padding-top:8px
+}
+.hover\:padding-bottom-8px:hover{
+	padding-bottom:8px
+}
+.hover\:padding-left-12px:hover{
+	padding-left:12px
+}
+.hover\:padding-right-12px:hover{
+	padding-right:12px
+}
+.hover\:padding-top-12px:hover{
+	padding-top:12px
+}
+.hover\:padding-bottom-12px:hover{
+	padding-bottom:12px
+}
+.hover\:padding-left-24px:hover{
+	padding-left:24px
+}
+.hover\:padding-right-24px:hover{
+	padding-right:24px
+}
+.hover\:padding-top-24px:hover{
+	padding-top:24px
+}
+.hover\:padding-bottom-24px:hover{
+	padding-bottom:24px
+}
+.hover\:padding-left-60px:hover{
+	padding-left:60px
+}
+.hover\:padding-right-60px:hover{
+	padding-right:60px
+}
+.hover\:padding-top-60px:hover{
+	padding-top:60px
+}
+.hover\:padding-bottom-60px:hover{
+	padding-bottom:60px
+}
+.hover\:padding-left-96px:hover{
+	padding-left:96px
+}
+.hover\:padding-right-96px:hover{
+	padding-right:96px
+}
+.hover\:padding-top-96px:hover{
+	padding-top:96px
+}
+.hover\:padding-bottom-96px:hover{
+	padding-bottom:96px
+}
+.hover\:padding-left-192px:hover{
+	padding-left:192px
+}
+.hover\:padding-right-192px:hover{
+	padding-right:192px
+}
+.hover\:padding-top-192px:hover{
+	padding-top:192px
+}
+.hover\:padding-bottom-192px:hover{
+	padding-bottom:192px
+}
+.hover\:margin-0:hover{
+	margin:0
+}
+.hover\:margin-left-12px:hover{
+	margin-left:12px
+}
+.hover\:margin-right-12px:hover{
+	margin-right:12px
+}
+.hover\:margin-top-12px:hover{
+	margin-top:12px
+}
+.hover\:margin-bottom-12px:hover{
+	margin-bottom:12px
+}
+.hover\:margin-12px:hover{
+	margin:12px
+}
+.hover\:margin-6px:hover{
+	margin:6px
+}
+.hover\:overflow-y-auto:hover{
+	overflow-y:auto
+}
+.hover\:overflow-x-auto:hover{
+	overflow-x:auto
+}
+.hover\:overflow-auto:hover{
+	overflow:auto
+}
+.hover\:overflow-hidden:hover{
+	overflow:hidden
+}
+
+.hover\:transition-color:hover{
+	transition-property:background-color,color,border-color
+}
+.hover\:transition-color-transform-opacity:hover{
+	transition-property:background-color,color,border-color,transform,opacity
+}
+.hover\:transition-color-transform-opacity-visibility:hover{
+	transition-property:background-color,color,border-color,transform,opacity,visibility
+}
+.hover\:transition-color-opacity-visibility:hover{
+	transition-property:background-color,color,border-color,opacity,visibility
+}
+.hover\:transition-all:hover{
+	transition-property:all
+}
+.hover\:transition-duration-100:hover{
+	transition-duration:0.1s
+}
+.hover\:transition-duration-200:hover{
+	transition-duration:0.2s
+}
+.hover\:transition-duration-300:hover{
+	transition-duration:0.3s
+}
+.hover\:transition-duration-500:hover{
+	transition-duration:0.5s
+}
+.hover\:transition-none:hover{
+	transition:none
+}
+
+.hover\:top-0:hover{
+	top:0
+}
+.hover\:left-0:hover{
+	left:0
+}
+.hover\:right-0:hover{
+	right:0
+}
+.hover\:bottom-0:hover{
+	bottom:0
+}
+.hover\:top-full:hover{
+	top:100%
+}
+.hover\:left-full:hover{
+	left:100%
+}
+.hover\:right-full:hover{
+	right:100%
+}
+.hover\:bottom-full:hover{
+	bottom:100%
+}
+.hover\:top-half:hover{
+	top:50%
+}
+.hover\:left-half:hover{
+	left:50%
+}
+.hover\:right-half:hover{
+	right:50%
+}
+.hover\:bottom-half:hover{
+	bottom:50%
+}
+
+.hover\:border-box:hover{
+	box-sizing:border-box
+}
+.hover\:border-solid:hover{
+	border-style:solid
+}
+.hover\:border-width-4px:hover{
+	border-width:4px
+}
+.hover\:border-width-6px:hover{
+	border-width:6px
+}
+.hover\:border-color-transparent:hover{
+	border-color:transparent
+}
+.hover\:border-none:hover{
+	border:none
+}
+.hover\:outline-none:hover{
+	outline:none
+}

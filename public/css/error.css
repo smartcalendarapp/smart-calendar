@@ -1,0 +1,103 @@
+html * {
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s;
+	font-family:var(--font);
+}
+
+div{
+	cursor:default;
+	-webkit-user-select:none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+body{
+	background-color: var(--background-primary);
+	margin:0;
+}
+
+html, body{
+	height:100%;
+	width:100%;
+}
+
+
+
+.navbar{
+	align-items:center;
+	display:flex;
+	flex-direction: row;
+	justify-content: space-between;
+	padding-left:60px;
+	padding-right:60px;
+	padding-top:12px;
+	padding-bottom:12px;
+	z-index:99;
+}
+
+.buttonlogo{
+	height:32px;
+	width:32px;
+}
+.navtitle{
+	display:flex;
+	flex-direction:row;
+	align-items:center;
+	gap:6px;
+	white-space: nowrap;
+	color:var(--text-primary);
+	text-decoration:none;
+	transition:none;
+}
+
+.navbuttonblue{
+	cursor:pointer;
+	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+	border-radius:50vh;
+	padding-left:16px;
+	padding-right:16px;
+	padding-top:8px;
+	padding-bottom:8px;
+	height:fit-content;
+	text-decoration:none;
+		font-size:16px;
+	color:var(--white);
+	background-color:var(--blue);
+}
+.navbuttonblue:hover{
+	background-color:var(--blue-hover);
+}
+
+.navbutton{
+	padding-left:16px;
+	padding-right:16px;
+	padding-top:8px;
+	padding-bottom:8px;
+	height:fit-content;
+	text-decoration:none;
+		font-size:16px;
+	color:var(--text-primary);
+}
+.navbutton:hover{
+	text-decoration:underline;
+}
+
+.navbuttongroup{
+	display:flex;
+	flex-direction:row;
+	gap:12px;
+}
+
+
+.screenwrap{
+	display:flex;
+	flex-direction:column;
+	height:100%;
+	width:100%;
+}
+.screen{
+	flex:1;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+}

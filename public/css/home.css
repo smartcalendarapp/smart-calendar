@@ -1,0 +1,243 @@
+html * {
+	font-family:var(--font);
+	transition: background-color 0.1s, border-color 0.1s, color 0.1s;
+  scroll-behavior: smooth;
+	-webkit-font-smoothing: antialiased;
+}
+
+div{
+	cursor:default;
+	-webkit-user-select:none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+body{
+	background-color: var(--background-primary-home);
+	margin:0;
+}
+
+html{
+	height:100%;
+	width:100%;
+}
+
+header, main, footer, p {
+  margin: 0;
+  padding: 0;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: normal;
+  margin: 0;
+}
+
+
+
+
+
+
+img{
+	pointer-events:none;
+}
+
+
+
+.gradienttextblue{
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-image: linear-gradient(to right, #37d4e6, #37bae6);
+}
+.gradienttextblue2{
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-image: linear-gradient(to bottom, #37bae6, #3797e6);
+}
+.gradienttextblue3{
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-image: linear-gradient(to right, #3797e6, #428bff);
+}
+.gradienttextblue4{
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-image: linear-gradient(to bottom, #37d4e6, #3797e6);
+}
+.gradienttextred{
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-image: linear-gradient(to bottom, #ff960d, #ff4d00);
+}
+
+.buttonlogo{
+	height:32px;
+	width:32px;
+}
+.navbar{
+	align-items:center;
+	display:flex;
+	flex-direction: row;
+	backdrop-filter:blur(20px);
+	-webkit-backdrop-filter: blur(20px);
+	position:fixed;
+	top:0;
+	z-index:99;
+	box-sizing:border-box;
+	width:100%;
+	background-color:transparent;
+}
+.navbar.scrolled{
+	background-color:var(--background-secondary-transparent);
+}
+
+.navbarspace{
+	max-width:60px;
+	width:100%;
+	flex-basis:auto;
+}
+
+@media (max-width: 600px) {
+	.navbarspace{
+		max-width:24px;
+		width:100%;
+		flex-basis:auto;
+	}
+}
+
+.menubackground{
+	background-color:var(--background-primary-home-transparent);
+	border-bottom:1px solid var(--text-tertiary);
+}
+
+.navtitle{
+	display:flex;
+	flex-direction:row;
+	align-items:center;
+	gap:6px;
+	white-space: nowrap;
+	color:var(--text-primary);
+	text-decoration:none;
+	transition:none;
+}
+.rotate270{
+	transform: rotate(270deg);
+}
+
+
+.buttonlarge {
+	height:18px;
+	width:auto;
+	stroke: var(--text-primary);
+	fill: none;
+	display: block;
+}
+.buttoninlinebluegradient{
+	height:36px;
+	width:auto;
+	stroke: #3797e6;
+	fill: none;
+	display:inline;
+	vertical-align:middle;
+	pointer-events:none;
+}
+.buttoninline{
+	height:18px;
+	width:auto;
+	stroke: var(--text-primary);
+	fill: none;
+	display:inline;
+	vertical-align:middle;
+	pointer-events:none;
+}
+
+.buttonwhite{
+	height:18px;
+	width:auto;
+	stroke: var(--white);
+	fill: none;
+	display:block;
+	pointer-events:none;
+}
+
+.navbuttonblue{
+	white-space:nowrap;
+	cursor:pointer;
+	border-radius:1000px;
+	padding-left:16px;
+	padding-right:16px;
+	padding-top:8px;
+	padding-bottom:8px;
+	height:fit-content;
+	text-decoration:none;
+	font-size:16px;
+	color:var(--white);
+	background-color:var(--blue);
+}
+.navbuttonblue:hover{
+	background-color:var(--blue-hover);
+}
+
+.navbutton{
+	white-space:nowrap;
+	padding-left:16px;
+	padding-right:16px;
+	padding-top:8px;
+	padding-bottom:8px;
+	height:fit-content;
+	text-decoration:none;
+	font-size:16px;
+	color:var(--text-primary);
+	border-radius:8px;
+}
+.navbutton:hover{
+	background-color:var(--background-tint-2)
+}
+
+
+.fadeslidebefore{
+	opacity:0;
+	transform:translateY(50px);
+	transition: opacity 1s, transform 0.5s;
+}
+.fadeslideafter{
+	opacity:1;
+	transform:translateY(0);
+}
+
+.logoinline{
+	display:inline;
+	height:1em;
+	width:1em;
+	vertical-align:middle;
+	stroke:var(--text-primary);
+}
+
+@keyframes slideupdown{
+  0% {
+    transform: translateY(0)
+  }
+  50% {
+    transform: translateY(10px)
+  }
+  100% {
+    transform: translateY(0)
+  }
+}
+.learnmorebutton{
+	transition: transform 0.2s;
+	animation: slideupdown 2s ease-in-out infinite;
+}
+
+
+.menu{
+	transition: max-height 0.2s;
+}
+.hiddenheight{
+	max-height:0 !important;
+}
