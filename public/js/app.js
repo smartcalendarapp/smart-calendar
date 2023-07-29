@@ -5974,14 +5974,14 @@ function clickplanmytasksmore(event){
 	calendar.updateTodo()
 }
 
-function cancelschedulemytasks(){
+function closeschedulemytasks(){
 	selectplanmytasks = false
 	calendar.updateTodo()
 }
 
 //here4
 function toggleplanmytask(id){
-	if(planmytaskslist.includes(id)){
+	if(planmytaskslist.find(g => g == id)){
 		planmytaskslist = planmytaskslist.filter(d => d != id)
 	}else{
 		planmytaskslist.push(id)
@@ -5992,6 +5992,8 @@ function toggleplanmytask(id){
 function clickautoschedulego(){
 	let mytodos = calendar.todos.filter(d => planmytaskslist.find(f => f == d.id))
 	if(mytodos.length > 0){
+		closeschedulemytasks()
+
 		startAutoSchedule(mytodos, true)
 	}
 }
@@ -7102,16 +7104,15 @@ function gettododata(item){
 	}else{
 		//view
 
-		  output = `<div class="todoitem todoitemwrap" draggable="true" ondragstart="dragtodo(event, '${item.id}')" ${selectplanmytasks ? `onclick="toggleplanmytask('${item.id}')"` : ''} ${selectplanmytasks && planmytaskslist.includes(item.id) ? 'background-blue' : ''}>
+		console.log(item.id, planmytaskslist.find(g=>g == item.id))
+			output = `<div class="todoitem todoitemwrap ${selectplanmytasks ? `pointer` : ''}" ${!selectplanmytasks ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''} ${selectplanmytasks ? `onclick="toggleplanmytask('${item.id}')"` : ''} ${selectplanmytasks && planmytaskslist.find(g => g == item.id) ? 'background-blue' : ''}>
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
-			 		<div class="display-flex flex-row gap-12px">
-						${!selectplanmytasks ? 
-							`<div class="todoitemcheckbox tooltip display-flex" onclick="todocompleted(event, '${item.id}');gtag('event', 'button_click', { useraction: '${item.completed ? 'Mark uncomplete - task' : 'Mark complete - task'}' })">
+						<div class="display-flex flex-row gap-12px">
+							<div class="todoitemcheckbox tooltip display-flex" onclick="todocompleted(event, '${item.id}');gtag('event', 'button_click', { useraction: '${item.completed ? 'Mark uncomplete - task' : 'Mark complete - task'}' })">
 							${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
-						</div>`
-							: ''}
-	
+						</div>
+		
 						<div class="justify-flex-end flex-1 display-flex flex-row small:flex-column gap-12px">
 	
 							<div class="flex-1 display-flex flex-column gap-6px">
