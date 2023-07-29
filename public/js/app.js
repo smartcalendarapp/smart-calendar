@@ -7104,9 +7104,8 @@ function gettododata(item){
 	}else{
 		//view
 
-		console.log(item.id, planmytaskslist.find(g=>g == item.id))
-			output = `<div class="todoitem todoitemwrap ${selectplanmytasks ? `pointer` : ''}" ${!selectplanmytasks ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''} ${selectplanmytasks ? `onclick="toggleplanmytask('${item.id}')"` : ''} ${selectplanmytasks && planmytaskslist.find(g => g == item.id) ? 'background-blue' : ''}>
-		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
+			output = `<div class="todoitem todoitemwrap ${selectplanmytasks ? `pointer` : ''} ${selectplanmytasks && planmytaskslist.find(g => g == item.id) ? 'background-blue' : ''}" ${!selectplanmytasks ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''} ${selectplanmytasks ? `onclick="toggleplanmytask('${item.id}')"` : ''}>
+		 		<div class="todoitemcontainer ${selectplanmytasks ? `pointer-none` : ''} padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
 						<div class="display-flex flex-row gap-12px">
 							<div class="todoitemcheckbox tooltip display-flex" onclick="todocompleted(event, '${item.id}');gtag('event', 'button_click', { useraction: '${item.completed ? 'Mark uncomplete - task' : 'Mark complete - task'}' })">
