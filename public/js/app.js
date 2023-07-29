@@ -5989,6 +5989,13 @@ function toggleplanmytask(id){
 	calendar.updateTodo()
 }
 
+function clickautoschedulego(){
+	let mytodos = calendar.todos.filter(d => planmytaskslist.find(f => f == d.id))
+	if(mytodos.length > 0){
+		startAutoSchedule(mytodos, true)
+	}
+}
+
 
 
 
