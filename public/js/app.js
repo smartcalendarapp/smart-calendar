@@ -235,9 +235,9 @@ function getpriorityicon(value){
 	if(value == 0){
 		return ''
 	}else if(value == 1){
-		return `<span class="text-white background-orange text-12px text-bol">medium</span>`
+		return `<span class="text-white priorityiconpadding border-round background-orange text-12px text-bold">medium</span>`
 	}else if(value == 2){
-		return `<span class="text-white background-red text-12px text-bol">high</span>`
+		return `<span class="text-white priorityiconpadding border-round background-red text-12px text-bold">high</span>`
 	}
 }
 
@@ -1575,9 +1575,9 @@ class Calendar {
 			 
 							<div class="infogroup">
 			 					<div class="inputgroup">
-				 					<div class="text-14px text-primary display-flex flex-row align-center">Schedule mode
-										<div class="tooltip transition-duration-100 border-round padding-6px text-18px text-primary">
-											<span class="text-bold background-tint-1 pointer pointer-auto">?</span>
+				 					<div class="text-14px text-primary gap-6px display-flex flex-row align-center">Schedule mode
+										<div class="tooltip transition-duration-100">
+											<span class="text-bold text-primary text-18px border-round background-tint-1 padding-4px pointer pointer-auto">?</span>
 											<span class="tooltiptextright"><span class="text-bold">Fixed time</span>: you set a specific time for the event.<br><br><span class="text-bold">Auto-schedule time</span>: the app intelligently schedules the event.</span>
 											</div>
 					 					</div>
@@ -5983,8 +5983,6 @@ function closeschedulemytasks(){
 
 //here4
 function toggleplanmytask(event, id){
-	if(event.currentTarget !== event.target) return
-
 	let item = calendar.todos.find(g => g.id == id)
 	if(!item) return
 	if(!Calendar.Todo.isSchedulable(item)){
@@ -7442,7 +7440,6 @@ function inputtodoitemnotdue(event, id){
 
 	calendar.updateTodo()
 	calendar.updateHistory()
-	calendar.updateInfo()
 
 	closetodoitemduedate()
 }
@@ -7500,7 +7497,6 @@ function inputtodoitemduetime(event, duetime){
 		
 		calendar.updateTodo()
 		calendar.updateHistory()
-		calendar.updateInfo()
 
 		//blur
 		let todoitemduetimeinput = getElement('todoitemduetimeinput')
@@ -7556,7 +7552,6 @@ function inputtodoitempriority(event, index){
 		inputtodoid = null
 		calendar.updateTodo()
 		calendar.updateHistory()
-		calendar.updateInfo()
 
 		//close
 		let todoitempriority = getElement('todoitempriority')
@@ -7628,7 +7623,6 @@ function inputtodoitemduration(event, duration){
 
 		calendar.updateTodo()
 		calendar.updateHistory()
-		calendar.updateInfo()
 
 		//blur
 		let todoitemdurationinput = getElement('todoitemdurationinput')

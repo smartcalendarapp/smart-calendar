@@ -3121,6 +3121,11 @@ body{
 }
 
 
+
+.priorityiconpadding{
+	padding:4px 6px;
+}
+
 .width400px{
 	width:400px;
 }
