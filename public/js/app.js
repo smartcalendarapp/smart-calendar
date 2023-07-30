@@ -1578,13 +1578,13 @@ class Calendar {
 				 					<div class="text-14px text-primary gap-6px display-flex flex-row align-center">Schedule mode
 										<div class="tooltip transition-duration-100">
 											<span class="text-bold text-primary text-18px border-round background-tint-1 padding-4px pointer pointer-auto">?</span>
-											<span class="tooltiptextright"><span class="text-bold">Fixed time</span>: you set a specific time for the event.<br><br><span class="text-bold">Auto-schedule time</span>: the app intelligently schedules the event.</span>
+											<span class="tooltiptextright"><span class="text-bold">Event (fixed time)</span>: you set a specific time for the event.<br><br><span class="text-bold">Task (auto-scheduled)</span>: the app intelligently schedules the event.</span>
 											</div>
 					 					</div>
 					
 									<div class="width-fit overflow-visible inputeventtype" id="eventinfosmartschedule">
-						 				<div class="inputeventtypechild" onclick="eventtype(0);gtag('event', 'button_click', { useraction: 'Fixed time - event info'})">Fixed time</div>
-										<div class="inputeventtypechild" onclick="eventtype(1);gtag('event', 'button_click', { useraction: 'Auto schedule - event info'})">Auto-schedule time</div>
+						 				<div class="inputeventtypechild" onclick="eventtype(0);gtag('event', 'button_click', { useraction: 'Fixed time - event info'})">Event (fixed time)</div>
+										<div class="inputeventtypechild" onclick="eventtype(1);gtag('event', 'button_click', { useraction: 'Auto schedule - event info'})">Task (auto-scheduled)</div>
 					 				</div>
 				 				</div>
 							</div>`)
@@ -1935,8 +1935,8 @@ class Calendar {
 							<div class="infotext selecttext nowrap">${Calendar.Event.getFullStartEndText(item)}</div>
 				 				${!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item) ? `
 				 				<div class="flex-basis-auto flex-grow-0 flex-shrink-0 inputeventtype" id="eventinfosmartschedule">
-					 				<div class="inputeventtypechild flex-grow-0 flex-shrink-0" onclick="eventtype(0);gtag('event', 'button_click', { useraction: 'Fixed time - event info'})">Fixed time</div>
-									<div class="inputeventtypechild flex-grow-0 flex-shrink-0" onclick="eventtype(1);gtag('event', 'button_click', { useraction: 'Auto schedule - event info'})">Auto-schedule time</div>
+					 				<div class="inputeventtypechild flex-grow-0 flex-shrink-0" onclick="eventtype(0);gtag('event', 'button_click', { useraction: 'Fixed time - event info'})">Event (fixed time)</div>
+									<div class="inputeventtypechild flex-grow-0 flex-shrink-0" onclick="eventtype(1);gtag('event', 'button_click', { useraction: 'Auto schedule - event info'})">Task (auto-scheduled)</div>
 				 				</div>
 								` : ''}
 			 			</div>
