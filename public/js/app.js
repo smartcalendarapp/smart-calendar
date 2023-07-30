@@ -2029,14 +2029,18 @@ class Calendar {
 
 		if(selectplanmytasks){
 			let schedulemytasksactive = getElement('schedulemytasksactive')
-			schedulemytasksactive.classList.remove('display-none')
+			schedulemytasksactive.classList.remove('hiddenpopup')
 		}else{
 			let schedulemytasksactive = getElement('schedulemytasksactive')
-			schedulemytasksactive.classList.add('display-none')
+			schedulemytasksactive.classList.add('hiddenpopup')
 		}
 
 		let plantaskssubmit = getElement('plantaskssubmit')
-		plantaskssubmit.innerHTML = `Go (${planmytaskslist.length})`
+		if(planmytaskslist.length > 0){
+			plantaskssubmit.innerHTML = `Confirm (${planmytaskslist.length} tasks)`
+		}else{
+			plantaskssubmit.innerHTML = `Select at least 1 task`
+		}
 	}
 
 	updateEditTodo(){

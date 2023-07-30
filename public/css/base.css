@@ -173,6 +173,9 @@
 .text-white{
 	color:var(--white)
 }
+.text-black{
+	color:var(--black)
+}
 .text-gray{
 	color:var(--gray)
 }

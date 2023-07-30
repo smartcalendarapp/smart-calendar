@@ -841,6 +841,14 @@ body{
 	display: block;
 	pointer-events:none;
 }
+.buttonblack{
+	height:18px;
+	width:18px;
+	stroke: var(--black);
+	fill: none;
+	display: block;
+	pointer-events:none;
+}
 .buttonwhitefill{
 	height:18px;
 	width:18px;
