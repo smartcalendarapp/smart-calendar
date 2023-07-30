@@ -1716,7 +1716,32 @@
 						</div>
 					</div>
 					
-					<div class="todocontainer" id="todocontainer">						
+					<div class="todocontainer relative" id="todocontainer">	
+						
+						<div class="absolute top-0 left-0 right-0 margin-24px background-blue border-8px padding-12px width-full display-flex flex-column gap-12px align-center display-none" id="schedulemytasksactive">
+							<div class="infotopright pointer absolute top-0 right-0 margin-12px" onclick="closeschedulemytasks(event)">
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+								<g>
+								<g opacity="1">
+								<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+								<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+								</g>
+								</g>
+								</svg>
+							</div>
+							<div class="text-18px text-bold text-primary">Select tasks to schedule</div>
+							<div class="flex-row gap-12px display-flex">
+								<div class="display-flex flex-row gap-6px align-center whitebutton padding-8px-12px bluebutton border-round transition-duration-100 pointer " onclick="clickautoschedulego()">
+									<div id="plantaskssubmit" class="text-18px text-white"></div>
+									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+										<g>
+										<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+										<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+										<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+										</g>
+									</svg>
+								</div>
+						</div>
 			
 						<div class="display-flex gap-24px flex-column padding-12px marginbottom50vh">
 
@@ -1751,23 +1776,7 @@
 									</svg>
 									Schedule my tasks
 								</div>
-								
-								<div class="relative background-tint-1 border-8px padding-12px width-full display-flex flex-column gap-12px align-center display-none" id="schedulemytasksactive">
-									<div class="infotopright pointer absolute top-0 right-0 margin-12px" onclick="closeschedulemytasks(event)">
-										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-										<g>
-										<g opacity="1">
-										<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-										<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-										</g>
-										</g>
-										</svg>
-									</div>
-									<div class="text-18px text-bold text-primary">Select tasks to schedule...</div>
-									<div class="flex-row gap-12px display-flex">
-										<div class="text-primary padding-8px-12px bluebutton border-8px transition-duration-100 pointer" onclick="clickautoschedulego()">Go</div>
-									</div>
-								</div>
+
 							</div>
 			
 							

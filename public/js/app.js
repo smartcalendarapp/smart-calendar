@@ -1591,7 +1591,7 @@ class Calendar {
 			 					<div class="inputgroup">
 				 					<div class="text-14px text-primary display-flex flex-row align-center">Schedule mode
 										<div class="tooltip transition-duration-100 border-round padding-6px text-18px text-primary">
-											<span class="text-bold">?</span>
+											<span class="text-bold background-tint-1 pointer pointer-auto">?</span>
 											<span class="tooltiptextright"><span class="text-bold">Fixed time</span>: you set a specific time for the event.<br><br><span class="text-bold">Auto-schedule time</span>: the app intelligently schedules the event.</span>
 											</div>
 					 					</div>
@@ -1977,7 +1977,7 @@ class Calendar {
 						</div>`)
 	        }
 						
-					output.push(`<div class="schedulebutton popupbutton" id="remindmebutton" onclick="clickeventremindme('${item.id}')">${item.reminder.length == 0 ? 'Set reminder' : `Manage reminders (${item.reminder.length})`}</div>`)
+					output.push(`<div class="text-bold schedulebutton popupbutton" id="remindmebutton" onclick="clickeventremindme('${item.id}')">${item.reminder.length == 0 ? 'Set reminder' : `Manage reminders (${item.reminder.length})`}</div>`)
 	
 	        info.innerHTML = output.join('')
 	      }
@@ -2021,7 +2021,7 @@ class Calendar {
 
 	updateTodoButtons(){
 		let scheduleoncalendar = getElement('scheduleoncalendar')
-		if(calendar.todos.filter(d => Calendar.Todo.isSchedulable(d)).length > 0 && !selectplanmytasks){
+		if(calendar.todos.filter(d => Calendar.Todo.isSchedulable(d)).length > 0){
 			scheduleoncalendar.classList.remove('display-none')
 		}else{
 			scheduleoncalendar.classList.add('display-none')
@@ -2034,6 +2034,9 @@ class Calendar {
 			let schedulemytasksactive = getElement('schedulemytasksactive')
 			schedulemytasksactive.classList.add('display-none')
 		}
+
+		let plantaskssubmit = getElement('plantaskssubmit')
+		plantaskssubmit.innerHTML = `Go (${planmytaskslist.length})`
 	}
 
 	updateEditTodo(){
@@ -7104,8 +7107,8 @@ function gettododata(item){
 	}else{
 		//view
 
-			output = `<div class="todoitem todoitemwrap ${selectplanmytasks ? `pointer` : ''} ${selectplanmytasks && planmytaskslist.find(g => g == item.id) ? 'background-blue' : ''}" ${!selectplanmytasks ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''} ${selectplanmytasks ? `onclick="toggleplanmytask('${item.id}')"` : ''}>
-		 		<div class="todoitemcontainer ${selectplanmytasks ? `pointer-none` : ''} padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
+			output = `<div class="todoitem todoitemwrap ${selectplanmytasks ? `pointer` : ''} ${selectplanmytasks && planmytaskslist.find(g => g == item.id) ? 'selectedtasktoplan' : ''}" ${!selectplanmytasks ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''} ${selectplanmytasks ? `onclick="toggleplanmytask('${item.id}')"` : ''}>
+		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
 						<div class="display-flex flex-row gap-12px">
 							<div class="todoitemcheckbox tooltip display-flex" onclick="todocompleted(event, '${item.id}');gtag('event', 'button_click', { useraction: '${item.completed ? 'Mark uncomplete - task' : 'Mark complete - task'}' })">

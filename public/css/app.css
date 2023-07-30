@@ -3102,6 +3102,10 @@ body{
 }
 
 
+.selectedtasktoplan{
+	border:2px solid var(--blue);
+	border-radius:8px;
+}
 
 .todoinputhighlight{
 	background-color:var(--background-blue-transparent);
