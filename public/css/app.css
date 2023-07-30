@@ -1140,10 +1140,6 @@ body{
 }
 
 
-.schedulingscreen{
-	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, transition 0.2s;
-	box-sizing:border-box;
-}
 
 .schedulingscreenbackground{
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s;

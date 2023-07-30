@@ -2016,17 +2016,17 @@ class Calendar {
 
 		if(schedulemytasksenabled){
 			let schedulemytasksactive = getElement('schedulemytasksactive')
-			schedulemytasksactive.classList.remove('hiddenpopup')
+			schedulemytasksactive.classList.remove('hiddenfade')
 		}else{
 			let schedulemytasksactive = getElement('schedulemytasksactive')
-			schedulemytasksactive.classList.add('hiddenpopup')
+			schedulemytasksactive.classList.add('hiddenfade')
 		}
 
 		let plantaskssubmit = getElement('plantaskssubmit')
 		schedulemytaskslist = schedulemytaskslist.filter(d => calendar.todos.find(g => g.id == d))
 		if(schedulemytaskslist.length > 0){
 			plantaskssubmit.innerHTML = `<div class="display-flex flex-row gap-6px align-center background-blue hover:background-blue-hover padding-8px-12px border-round transition-duration-100 pointer" onclick="submitschedulemytasks()">
-				<div class="pointer-none text-18px text-white text-bold">Continue (${schedulemytaskslist.length})</div>
+				<div class="pointer-none text-18px text-white">Continue (${schedulemytaskslist.length})</div>
 				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 					<g>
 					<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -9148,13 +9148,13 @@ async function autoScheduleV2(smartevents, showui, addedtodos){
 	}
 	if(showui){
 		let schedulingscreen = getElement('schedulingscreen')
-		schedulingscreen.classList.remove('hiddenpopup')
+		schedulingscreen.classList.remove('hiddenfade')
 
 		loading = true
 		requestAnimationFrame(updateloaderprogress)
 		
 		let schedulingscreentext = getElement('schedulingscreentext')
-		schedulingscreentext.innerHTML = `Scheduling ${smartevents.length} event${smartevents.length == 1 ? '' : 's'}...`
+		schedulingscreentext.innerHTML = `Scheduling ${smartevents.length} task${smartevents.length == 1 ? '' : 's'}...`
 	}
 	
 	if(calendar.smartschedule.mode == 0){
@@ -9353,7 +9353,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos){
 		await sleep(1000)
 		
 		loading = false
-		schedulingscreen.classList.add('hiddenpopup')
+		schedulingscreen.classList.add('hiddenfade')
 	}
 
 
