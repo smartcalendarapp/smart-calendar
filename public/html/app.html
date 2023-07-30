@@ -647,6 +647,7 @@
 						<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(0)">Account</div>
 						<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(1)">General</div>
 						<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(2)">My calendars</div>
+						<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(3)">Notifications</div>
 					</div>
 					
 				</div>
@@ -1719,9 +1720,9 @@
 					<div class="todocontainer" id="todocontainer">	
 						
 						<div class="z-index-100 pointer-none display-flex flex-column align-center absolute bottom-0 left-0 right-0 border-box width-full">
-							<div class="display-flex pointer-auto hiddenpopup selecttasksmenu flex-column gap-12px align-center background-blue border-8px padding-12px margin-24px box-shadow relative" id="schedulemytasksactive">
+							<div class="display-flex border-box pointer-auto hiddenpopup selecttasksmenu flex-column gap-12px align-center background-blue border-8px padding-12px margin-24px box-shadow relative" id="schedulemytasksactive">
 								<div class="infotopright pointer pointer-auto absolute top-0 right-0 margin-12px" onclick="closeschedulemytasks(event)">
-									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 									<g>
 									<g opacity="1">
 									<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
@@ -1731,8 +1732,8 @@
 									</svg>
 								</div>
 								<div class="text-18px text-white">Click tasks to schedule</div>
-								<div class="display-flex flex-row gap-12px">
-									<div class="background-tint-1 hover:background-tint-2 transition-duration-100 pointer text-white pointer-auto border-8px padding-8px-12px text-18px" onclick="selectalltaskstoschedule(event)">Select all</div>
+								<div class="display-flex align-center flex-row gap-12px">
+									<div class="background-tint-1 hover:background-tint-2 transition-duration-100 pointer text-white pointer-auto border-8px padding-8px-12px text-16px" onclick="selectallschedulemytasks(event)">Select all</div>
 									<div id="plantaskssubmit" class="pointer-auto"></div>
 								</div>
 							</div>
@@ -1744,7 +1745,7 @@
 
 							<div class="text-16px text-quaternary text-center">Jot down your ideas, tasks, or projects here.</div>
 
-							<div class="sticky justify-space-between z-index-100 todobuttonstop display-flex flex-row gap-24px">
+							<div class="sticky justify-space-between z-index-1 todobuttonstop display-flex flex-row gap-24px">
 								<div class="padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-round" onclick="readinteractivetourpopup('clickaddtask');opencreatetodo(event);gtag('event', 'button_click', { useraction: 'Add task - to do list' })" id="todolisttab2">
 									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 									<g>
@@ -1787,7 +1788,7 @@
 						
 
 				
-				<div class="calendarwrap relative margin-12px box-shadow border-16px display-none small:absolute small:top-0 small:bottom-0 small:left-0 small:right-0" id="calendarwrap">
+				<div class="calendarwrap relative margin-12px box-shadow border-16px display-none small:absolute small:top-0 small:bottom-0 small:left-0 small:right-0 small:z-index-99" id="calendarwrap">
 						<div class="display-flex flex-column padding-top-12px gap-12px calendartopbar">
 							
 							<div class="display-flex flex-row justify-space-between padding-left-12px padding-right-12px align-center gap-12px">

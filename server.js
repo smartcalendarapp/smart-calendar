@@ -477,8 +477,7 @@ function cacheReminders(user){
 	  return pattern.test(str)
 	}
 	
-	//get all calendar events if no parameters
-	//get events between start and end date if parameters
+	//get calendar events within 1 day
 	function getevents(){
 		function isHidden(item){
 			if(item.calendarid == null){
@@ -498,7 +497,7 @@ function cacheReminders(user){
 
 
 		let maxdate = new Date()
-		maxdate.setFullYear(maxdate.getFullYear() + 1)
+		maxdate.setFullYear(maxdate.getDate() + 1)
 		
 		let output = []
 		let shownevents = calendar.events.filter(d => {
