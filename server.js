@@ -512,9 +512,7 @@ function cacheReminders(user){
 
 			if(item.repeat.interval == null || item.repeat.frequency == null){
 				//no repeat
-				if (!startrange || !endrange || (itemenddate.getTime() > startrange.getTime() && itemstartdate.getTime() < endrange.getTime())){
-					output.push(item)
-				}
+				output.push(item)
 			}else{
 				//repeat
 				let byday = [0]
@@ -551,9 +549,7 @@ function cacheReminders(user){
 							repeatitem.end.day = repeatenddate.getDate()
 							repeatitem.end.minute = repeatenddate.getHours() * 60 + repeatenddate.getMinutes()
 
-							if(!startrange || !endrange || (repeatenddate.getTime() > startrange.getTime() && repeatstartdate.getTime() < endrange.getTime())){
-								output.push(repeatitem)
-							}
+							output.push(repeatitem)
 						}
 
 						//next

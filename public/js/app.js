@@ -1578,7 +1578,7 @@ class Calendar {
 				 					<div class="display-flex flex-column">
 										<div class="text-14px text-primary">Schedule mode</div>
 										<div class="tooltip">
-											<span class="hover:text-decoration-underline text-blue text-14px pointer pointer-auto">learn more</span>
+											<span class="hover:text-decoration-underline text-blue text-14px pointer pointer-auto">Learn more</span>
 											<span class="tooltiptextright"><span class="text-bold">Event (fixed time)</span>: you set a specific time for the event.<br><br><span class="text-bold">Task (auto-scheduled)</span>: the app intelligently schedules the event.</span>
 										</div>
 					 				</div>
