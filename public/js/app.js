@@ -786,7 +786,7 @@ class Calendar {
 		}
 
 		static isSchedulable(item){
-			return !item.completed && item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null
+			return !item.completed
 		}
 	}
 	
@@ -2021,7 +2021,7 @@ class Calendar {
 
 	updateTodoButtons(){
 		let scheduleoncalendar = getElement('scheduleoncalendar')
-		if(calendar.todos.filter(d => Calendar.Todo.isSchedulable(d)).length > 0){
+		if(calendar.todos.filter(d => !d.completed).length > 0){
 			scheduleoncalendar.classList.remove('display-none')
 		}else{
 			scheduleoncalendar.classList.add('display-none')
@@ -2038,7 +2038,7 @@ class Calendar {
 		let plantaskssubmit = getElement('plantaskssubmit')
 		if(planmytaskslist.length > 0){
 			plantaskssubmit.innerHTML = `<div class="display-flex flex-row gap-6px align-center whitebutton padding-8px-12px border-round transition-duration-100 pointer" onclick="clickautoschedulego()">
-				<div class="pointer-none text-18px text-black">Continue (${planmytaskslist.length})</div>
+				<div class="pointer-none text-14px text-black">Continue (${planmytaskslist.length})</div>
 				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonblack">
 					<g>
 					<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -2048,7 +2048,7 @@ class Calendar {
 				</svg>
 			</div>`
 		}else{
-			plantaskssubmit.innerHTML = `<div class="text-red text-14px">Select at least 1 task to continue</div>`
+			plantaskssubmit.innerHTML = `<div class="text-white text-14px">Select a task to continue</div>`
 		}
 	}
 
@@ -2122,7 +2122,7 @@ class Calendar {
 		for(let i = 0; i < notduetodos.length; i++){
 			let item = notduetodos[i]
 			if(i == 0){
-				tempoutput.push(`<div class="text-18px text-quaternary">Not due</div>`)
+				tempoutput.push(`<div class="text-18px text-quaternary">No due date</div>`)
 			}
 			tempoutput2.push(gettododata(item))
 			if(i == notduetodos.length - 1){
@@ -5984,7 +5984,7 @@ function clickschedulemode(mode){
 let planmytaskslist = []
 let selectplanmytasks = false
 function clickplanmytasksmore(event){
-	planmytaskslist = [...calendar.todos.map(d => d.id)]
+	planmytaskslist = [...calendar.todos.filter(item => Calendar.Todo.isSchedulable(item) && (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null)).map(d => d.id)]
 	selectededittodoid = null
 	selectplanmytasks = true
 	calendar.updateTodo()
@@ -5996,7 +5996,15 @@ function closeschedulemytasks(){
 }
 
 //here4
-function toggleplanmytask(id){
+function toggleplanmytask(event, id){
+	if(event.currentTarget !== event.target) return
+
+	let item = calendar.todos.find(g => g.id == id)
+	if(!item) return
+	if(!Calendar.Todo.isSchedulable(item)){
+		return
+	}
+	
 	if(planmytaskslist.find(g => g == id)){
 		planmytaskslist = planmytaskslist.filter(d => d != id)
 	}else{
@@ -6007,9 +6015,9 @@ function toggleplanmytask(id){
 
 function clickautoschedulego(){
 	let mytodos = calendar.todos.filter(d => planmytaskslist.find(f => f == d.id))
+
 	if(mytodos.length > 0){
 		closeschedulemytasks()
-
 		startAutoSchedule(mytodos, true)
 	}
 }
@@ -7120,7 +7128,7 @@ function gettododata(item){
 	}else{
 		//view
 
-			output = `<div class="todoitem todoitemwrap ${selectplanmytasks ? `pointer` : ''} ${selectplanmytasks && planmytaskslist.find(g => g == item.id) ? 'selectedtasktoplan' : ''}" ${!selectplanmytasks ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''} ${selectplanmytasks ? `onclick="toggleplanmytask('${item.id}')"` : ''}>
+			output = `<div class="todoitem todoitemwrap ${selectplanmytasks && planmytaskslist.find(g => g == item.id) ? 'selectedtasktoplan' : ''}" ${!selectplanmytasks ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''} ${selectplanmytasks ? `onclick="toggleplanmytask(event, '${item.id}')"` : ''}>
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
 						<div class="display-flex flex-row gap-12px">
