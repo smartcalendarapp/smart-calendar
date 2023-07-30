@@ -2023,7 +2023,7 @@ class Calendar {
 		}
 
 		let plantaskssubmit = getElement('plantaskssubmit')
-		plantaskssubmit = plantaskssubmit.filter(d => calendar.todos.find(g => g.id == d))
+		planmytaskslist = planmytaskslist.filter(d => calendar.todos.find(g => g.id == d))
 		if(planmytaskslist.length > 0){
 			plantaskssubmit.innerHTML = `<div class="display-flex flex-row gap-6px align-center whitebutton padding-8px-12px border-round transition-duration-100 pointer" onclick="clickautoschedulego()">
 				<div class="pointer-none text-14px text-black text-bold">Continue (${planmytaskslist.length})</div>
