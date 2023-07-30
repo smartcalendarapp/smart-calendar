@@ -231,27 +231,13 @@ function getElement(id){
 
 
 //get exclamation
-function getexclamation(value, tooltip){
+function getpriorityicon(value){
 	if(value == 0){
 		return ''
 	}else if(value == 1){
-		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="iconorange tooltip">
-		<g>
-		<path d="M128 15L128 172.484" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="30"></path>
-		<path d="M128.005 236L127.995 236" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="40"></path>
-		</g>
-		</svg>
-		${tooltip || ''}`
+		return `<span class="text-white background-orange text-12px text-bol">medium</span>`
 	}else if(value == 2){
-		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="iconred tooltip">
-			<g>
-			<path d="M75.3511 15L75.3511 172.484" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="30"></path>
-			<path d="M75.3561 236L75.3461 236" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="40"></path>
-			<path d="M180.649 15L180.649 172.484" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="30"></path>
-			<path d="M180.654 236L180.644 236" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="40"></path>
-			</g>
-			</svg>
-	 		${tooltip || ''}`
+		return `<span class="text-white background-red text-12px text-bol">high</span>`
 	}
 }
 
@@ -1864,7 +1850,7 @@ class Calendar {
 						infopriority.innerHTML = `
 							${item.priority != 0 ?
 								`<div class="todoitemcheckbox tooltip display-flex">
-									${getexclamation(item.priority)}
+									${getpriorityicon(item.priority)}
 								</div>`
 								:
 								''
@@ -1932,7 +1918,7 @@ class Calendar {
 							${item.type == 1 ?
 								`${item.priority != 0 ?
 									`<div class="todoitemcheckbox tooltip display-flex">
-					 					${getexclamation(item.priority)}
+					 					${getpriorityicon(item.priority)}
 									</div>`
 									:
 									''
@@ -4165,7 +4151,7 @@ function getalldayeventdata(item, currentdate, timestamp){
 				<div class="monthcontainerwraptextdisplay text-bold ${itemclasses2.join(' ')}">
 					${item.type == 1 && item.priority != 0 ?
 						`<span class="todoitemcheckbox tooltip verticalalignmiddle">
-							${getexclamation(item.priority)}
+							${getpriorityicon(item.priority)}
 						</span>`
 						:
 						''
@@ -4328,7 +4314,7 @@ function getmontheventdata(item, currentdate, timestamp){
 				<div class="monthcontainerwraptextdisplay ${itemclasses2.join(' ')}">
 					${item.type == 1 && item.priority != 0 ?
 						`<span class="todoitemcheckbox tooltip verticalalignmiddle">
-							${getexclamation(item.priority)}
+							${getpriorityicon(item.priority)}
 						</span>`
 						:
 						''
@@ -8403,7 +8389,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 		
 				${item.type == 1 && item.priority != 0 ?
 					`<span class="todoitemcheckbox tooltip verticalalignmiddle">
-						${getexclamation(item.priority)}
+						${getpriorityicon(item.priority)}
 					</span>`
 					:
 					''
@@ -8491,7 +8477,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth){
 		
 				${item.type == 1 && item.priority != 0 ?
 					`<span class="todoitemcheckbox tooltip verticalalignmiddle">
-						${getexclamation(item.priority)}
+						${getpriorityicon(item.priority)}
 					</span>`
 					:
 					''
