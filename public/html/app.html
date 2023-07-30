@@ -1718,8 +1718,8 @@
 					
 					<div class="todocontainer relative" id="todocontainer">	
 						
-						<div class="z-index-100 absolute top-0 left-0 right-0 border-box padding-24px box-shadow width-full hiddenpopup" id="schedulemytasksactive">
-							<div class="display-flex flex-column gap-12px align-center background-blue border-8px padding-12px">
+						<div class="z-index-100 pointer-none display-flex flex-column align-center absolute top-0 left-0 right-0 border-box width-full">
+							<div class="display-flex hiddenpopup width300px flex-column gap-12px align-center background-blue border-8px padding-12px margin-24px box-shadow relative" id="schedulemytasksactive">
 								<div class="infotopright pointer absolute top-0 right-0 margin-12px" onclick="closeschedulemytasks(event)">
 									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 									<g>
@@ -1730,9 +1730,8 @@
 									</g>
 									</svg>
 								</div>
-								<div class="text-18px text-bold text-primary">Select tasks to schedule</div>
-								<div id="plantaskssubmit">
-								</div>
+								<div class="text-18px text-white">Select tasks to schedule</div>
+								<div id="plantaskssubmit" class="pointer-auto"></div>
 							</div>
 						</div>
 						
