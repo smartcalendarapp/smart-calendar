@@ -477,6 +477,115 @@ function cacheReminders(user){
 	  return pattern.test(str)
 	}
 	
+	//get all calendar events if no parameters
+	//get events between start and end date if parameters
+	function getevents(){
+		function isHidden(item){
+			if(item.calendarid == null){
+				let calendaritem = calendar.calendars.find(f => f.isprimary)
+				if(calendaritem){
+					return calendaritem.hidden
+				}
+			}else{
+				let calendaritem = calendar.calendars.find(f => f.id == item.calendarid)
+				if(calendaritem){
+					return calendaritem.hidden
+				}
+			}
+		}
+
+		let calendar = user.calendardata
+
+
+		let maxdate = new Date()
+		maxdate.setFullYear(maxdate.getFullYear() + 1)
+		
+		let output = []
+		let shownevents = calendar.events.filter(d => {
+			return !isHidden(d)
+		})
+
+		
+		for(let item of shownevents){
+			let itemstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+			let itemenddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
+
+			if(item.repeat.interval == null || item.repeat.frequency == null){
+				//no repeat
+				if (!startrange || !endrange || (itemenddate.getTime() > startrange.getTime() && itemstartdate.getTime() < endrange.getTime())){
+					output.push(item)
+				}
+			}else{
+				//repeat
+				let byday = [0]
+				if(item.repeat.frequency == 1){
+					byday = [...item.repeat.byday]
+					if(byday.length == 0){
+						byday.push(itemstartdate.getDay())
+					}
+				}
+				
+				for(let repeatindex of byday){
+					let repeatstartdate = new Date(itemstartdate.getTime())
+					if(item.repeat.frequency == 1){
+						repeatstartdate.setDate(repeatstartdate.getDate() + (repeatindex - repeatstartdate.getDay() + 7) % 7)
+					}
+
+		
+				let counter = 0
+					
+					while(repeatstartdate.getTime() < maxdate.getTime()){
+						//create
+						if(counter % item.repeat.interval == 0){
+							let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
+							let repeatenddate = new Date(repeatstartdate.getTime() + duration)
+							
+							let repeatitem = deepCopy(item)
+							repeatitem.start.year = repeatstartdate.getFullYear()
+							repeatitem.start.month = repeatstartdate.getMonth()
+							repeatitem.start.day = repeatstartdate.getDate()
+							repeatitem.start.minute = repeatstartdate.getHours() * 60 + repeatstartdate.getMinutes()
+			
+							repeatitem.end.year = repeatenddate.getFullYear()
+							repeatitem.end.month = repeatenddate.getMonth()
+							repeatitem.end.day = repeatenddate.getDate()
+							repeatitem.end.minute = repeatenddate.getHours() * 60 + repeatenddate.getMinutes()
+
+							if(!startrange || !endrange || (repeatenddate.getTime() > startrange.getTime() && repeatstartdate.getTime() < endrange.getTime())){
+								output.push(repeatitem)
+							}
+						}
+
+						//next
+						if(item.repeat.frequency == 0){
+							repeatstartdate.setDate(repeatstartdate.getDate() + 1)
+						}else if(item.repeat.frequency == 1){
+							repeatstartdate.setDate(repeatstartdate.getDate() + 7)
+						}else if(item.repeat.frequency == 2){
+							repeatstartdate.setMonth(repeatstartdate.getMonth() + 1)
+						}else if(item.repeat.frequency == 3){
+							repeatstartdate.setFullYear(repeatstartdate.getFullYear() + 1)
+						}
+		
+						counter++
+
+						//until or count
+						if((item.repeat.count && counter >= item.repeat.count) || (item.repeat.until && repeatstartdate.getTime() > new Date(item.repeat.until).getTime())){
+							break
+						}
+						
+					}
+					
+				}
+				
+			}
+		}
+		return output
+	}
+
+
+
+
 	let email = user.google_email || user.username
 	if(!isEmail(email)) return
 
@@ -486,7 +595,8 @@ function cacheReminders(user){
 	let name = user.google_email ? user.accountdata.google.name || user.google_email : user.username
 
 	let tempreminders = []
-	for(let item of user.calendardata.events){
+	let allevents = getevents()
+	for(let item of allevents){
 
 		for(let itemreminder of item.reminder){
 			tempreminders.push({
@@ -524,8 +634,8 @@ async function initializeReminders(){
     const items = response.Items.map(item => addmissingpropertiestouser(unmarshall(item)))
 
     for(let user of items){
-			cacheReminders(user)
-		}
+		cacheReminders(user)
+	}
   } catch (error) {
     console.error(error)
   }
