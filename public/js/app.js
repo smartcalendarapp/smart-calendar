@@ -1575,12 +1575,13 @@ class Calendar {
 			 
 							<div class="infogroup">
 			 					<div class="inputgroup">
-				 					<div class="text-14px text-primary gap-6px display-flex flex-row align-center">Schedule mode
-										<div class="tooltip transition-duration-100">
-											<span class="text-bold text-primary text-18px border-round background-tint-1 padding-4px pointer pointer-auto">?</span>
+				 					<div class="display-flex flex-column">
+										<div class="text-14px text-primary">Schedule mode</div>
+										<div class="tooltip">
+											<span class="hover:text-decoration-underline text-blue text-14px pointer pointer-auto">learn more</span>
 											<span class="tooltiptextright"><span class="text-bold">Event (fixed time)</span>: you set a specific time for the event.<br><br><span class="text-bold">Task (auto-scheduled)</span>: the app intelligently schedules the event.</span>
-											</div>
-					 					</div>
+										</div>
+					 				</div>
 					
 									<div class="width-fit overflow-visible inputeventtype" id="eventinfosmartschedule">
 						 				<div class="inputeventtypechild" onclick="eventtype(0);gtag('event', 'button_click', { useraction: 'Fixed time - event info'})">Event (fixed time)</div>
@@ -2022,9 +2023,10 @@ class Calendar {
 		}
 
 		let plantaskssubmit = getElement('plantaskssubmit')
+		plantaskssubmit = plantaskssubmit.filter(d => calendar.todos.find(g => g.id == d))
 		if(planmytaskslist.length > 0){
 			plantaskssubmit.innerHTML = `<div class="display-flex flex-row gap-6px align-center whitebutton padding-8px-12px border-round transition-duration-100 pointer" onclick="clickautoschedulego()">
-				<div class="pointer-none text-14px text-black">Continue (${planmytaskslist.length})</div>
+				<div class="pointer-none text-14px text-black text-bold">Continue (${planmytaskslist.length})</div>
 				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonblack">
 					<g>
 					<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -4150,7 +4152,7 @@ function getalldayeventdata(item, currentdate, timestamp){
 			<div class="monthcontainerwraptext">
 				<div class="monthcontainerwraptextdisplay text-bold ${itemclasses2.join(' ')}">
 					${item.type == 1 && item.priority != 0 ?
-						`<span class="todoitemcheckbox tooltip verticalalignmiddle">
+						`<span class="todoitemcheckbox tooltip">
 							${getpriorityicon(item.priority)}
 						</span>`
 						:
@@ -4313,7 +4315,7 @@ function getmontheventdata(item, currentdate, timestamp){
 			<div class="monthcontainerwraptext">
 				<div class="monthcontainerwraptextdisplay ${itemclasses2.join(' ')}">
 					${item.type == 1 && item.priority != 0 ?
-						`<span class="todoitemcheckbox tooltip verticalalignmiddle">
+						`<span class="todoitemcheckbox tooltip">
 							${getpriorityicon(item.priority)}
 						</span>`
 						:
@@ -8382,7 +8384,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 				<span class="text-bold">${item.title ? cleanInput(item.title) : 'New Event'}</span>
 		
 				${item.type == 1 && item.priority != 0 ?
-					`<span class="todoitemcheckbox tooltip verticalalignmiddle">
+					`<span class="todoitemcheckbox tooltip">
 						${getpriorityicon(item.priority)}
 					</span>`
 					:
@@ -8470,7 +8472,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth){
 				<span class="text-bold">${item.title ? cleanInput(item.title) : 'New Event'}</span>
 		
 				${item.type == 1 && item.priority != 0 ?
-					`<span class="todoitemcheckbox tooltip verticalalignmiddle">
+					`<span class="todoitemcheckbox tooltip">
 						${getpriorityicon(item.priority)}
 					</span>`
 					:
