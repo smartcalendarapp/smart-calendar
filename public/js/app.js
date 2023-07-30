@@ -2014,7 +2014,7 @@ class Calendar {
 			scheduleoncalendar.classList.add('display-none')
 		}
 
-		if(selectplanmytasks){
+		if(schedulemytasksenabled){
 			let schedulemytasksactive = getElement('schedulemytasksactive')
 			schedulemytasksactive.classList.remove('hiddenpopup')
 		}else{
@@ -2023,10 +2023,10 @@ class Calendar {
 		}
 
 		let plantaskssubmit = getElement('plantaskssubmit')
-		planmytaskslist = planmytaskslist.filter(d => calendar.todos.find(g => g.id == d))
-		if(planmytaskslist.length > 0){
-			plantaskssubmit.innerHTML = `<div class="display-flex flex-row gap-6px align-center whitebutton padding-8px-12px border-round transition-duration-100 pointer" onclick="clickautoschedulego()">
-				<div class="pointer-none text-18px text-black text-bold">Continue (${planmytaskslist.length})</div>
+		schedulemytaskslist = schedulemytaskslist.filter(d => calendar.todos.find(g => g.id == d))
+		if(schedulemytaskslist.length > 0){
+			plantaskssubmit.innerHTML = `<div class="display-flex flex-row gap-6px align-center whitebutton padding-8px-12px border-round transition-duration-100 pointer" onclick="submitschedulemytasks()">
+				<div class="pointer-none text-18px text-black text-bold">Continue (${schedulemytaskslist.length})</div>
 				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonblack">
 					<g>
 					<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -5969,38 +5969,45 @@ function clickschedulemode(mode){
 
 
 
-let planmytaskslist = []
-let selectplanmytasks = false
-function clickplanmytasksmore(event){
-	planmytaskslist = [...calendar.todos.filter(item => Calendar.Todo.isSchedulable(item) && (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null)).map(d => d.id)]
+let schedulemytaskslist = []
+let schedulemytasksenabled = false
+function clickschedulemytasks(event){
+	schedulemytaskslist = [...calendar.todos.filter(item => Calendar.Todo.isSchedulable(item) && (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null)).map(d => d.id)]
 	selectededittodoid = null
-	selectplanmytasks = true
+	schedulemytasksenabled = true
 	calendar.updateTodo()
 }
 
 function closeschedulemytasks(){
-	selectplanmytasks = false
+	schedulemytasksenabled = false
 	calendar.updateTodo()
 }
 
-//here4
-function toggleplanmytask(event, id){
+//select task
+function toggleschedulemytask(event, id){
 	let item = calendar.todos.find(g => g.id == id)
 	if(!item) return
 	if(!Calendar.Todo.isSchedulable(item)){
 		return
 	}
 	
-	if(planmytaskslist.find(g => g == id)){
-		planmytaskslist = planmytaskslist.filter(d => d != id)
+	if(schedulemytaskslist.find(g => g == id)){
+		schedulemytaskslist = schedulemytaskslist.filter(d => d != id)
 	}else{
-		planmytaskslist.push(id)
+		schedulemytaskslist.push(id)
 	}
 	calendar.updateTodo()
 }
 
-function clickautoschedulego(){
-	let mytodos = calendar.todos.filter(d => planmytaskslist.find(f => f == d.id))
+//select all
+function selectallschedulemytasks(){
+	schedulemytaskslist = [...calendar.todos.filter(item => Calendar.Todo.isSchedulable(item) && (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null)).map(d => d.id)]
+	calendar.updateTodo()
+}
+
+//confirm schedule tasks
+function submitschedulemytasks(){
+	let mytodos = calendar.todos.filter(d => schedulemytaskslist.find(f => f == d.id))
 
 	if(mytodos.length > 0){
 		closeschedulemytasks()
@@ -6008,7 +6015,7 @@ function clickautoschedulego(){
 	}
 }
 
-
+//here4
 
 
 function startAutoSchedule(scheduletodos, showui){
@@ -7114,7 +7121,7 @@ function gettododata(item){
 	}else{
 		//view
 
-			output = `<div class="todoitem todoitemwrap ${selectplanmytasks && planmytaskslist.find(g => g == item.id) ? 'selectedtasktoplan' : ''}" ${!selectplanmytasks ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''} ${selectplanmytasks ? `onclick="toggleplanmytask(event, '${item.id}')"` : ''}>
+			output = `<div class="todoitem todoitemwrap ${schedulemytasksenabled && schedulemytaskslist.find(g => g == item.id) ? 'selectedtasktoplan' : ''}" ${!schedulemytasksenabled ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''} ${schedulemytasksenabled ? `onclick="toggleschedulemytask(event, '${item.id}')"` : ''}>
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
 						<div class="display-flex flex-row gap-12px">
