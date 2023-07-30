@@ -1719,10 +1719,10 @@
 					
 					<div class="todocontainer" id="todocontainer">	
 						
-						<div class="z-index-100 pointer-none display-flex flex-column align-center absolute bottom-0 left-0 right-0 border-box width-full">
-							<div class="display-flex border-box pointer-auto hiddenpopup selecttasksmenu flex-column gap-12px align-center background-blue border-8px padding-12px margin-24px box-shadow relative" id="schedulemytasksactive">
+						<div class="z-index-50 pointer-none display-flex flex-column align-center absolute bottom-0 left-0 right-0 border-box width-full">
+							<div class="display-flex border-box pointer-auto hiddenpopup selecttasksmenu flex-column gap-12px align-center background-tint-1 backdrop-blur border-8px padding-12px margin-24px box-shadow relative" id="schedulemytasksactive">
 								<div class="infotopright pointer pointer-auto absolute top-0 right-0 margin-12px" onclick="closeschedulemytasks(event)">
-									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 									<g>
 									<g opacity="1">
 									<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
@@ -1731,9 +1731,9 @@
 									</g>
 									</svg>
 								</div>
-								<div class="text-18px text-white">Click tasks to schedule</div>
+								<div class="text-18px text-primary">Click tasks to schedule</div>
 								<div class="display-flex align-center flex-row gap-12px">
-									<div class="background-tint-1 hover:background-tint-2 transition-duration-100 pointer text-white pointer-auto border-8px padding-8px-12px text-16px" onclick="selectallschedulemytasks(event)">Select all</div>
+									<div class="background-tint-1 hover:background-tint-2 transition-duration-100 pointer text-primary pointer-auto border-8px padding-8px-12px text-16px" onclick="selectallschedulemytasks(event)">Select all</div>
 									<div id="plantaskssubmit" class="pointer-auto"></div>
 								</div>
 							</div>
@@ -1745,7 +1745,7 @@
 
 							<div class="text-16px text-quaternary text-center">Jot down your ideas, tasks, or projects here.</div>
 
-							<div class="sticky justify-space-between z-index-1 todobuttonstop display-flex flex-row gap-24px">
+							<div class="sticky justify-space-between z-index-50 todobuttonstop display-flex flex-row gap-24px">
 								<div class="padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-round" onclick="readinteractivetourpopup('clickaddtask');opencreatetodo(event);gtag('event', 'button_click', { useraction: 'Add task - to do list' })" id="todolisttab2">
 									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 									<g>
@@ -1877,10 +1877,10 @@
 		
 
 							<!-- scheduling screen -->
-							<div class="absolute hiddenfade gap-12px align-center z-index-100 pointer-none display-flex top-0 left-0 right-0 bottom-0 flex-column" id="schedulingscreen">
+							<div class="absolute hiddenpopup gap-12px align-center z-index-100 pointer-none display-flex top-0 left-0 right-0 bottom-0 flex-column" id="schedulingscreen">
 								<div class="absolute top-0 left-0 bottom-0 right-0 schedulingscreenbackground"></div>
 								
-								<div class="display-flex align-center width300px flex-column gap-12px margin-24px box-shadow backdrop-blur background-primary-transparent border-8px padding-12px">
+								<div class="display-flex selecttasksmenu align-center flex-column gap-12px margin-24px box-shadow background-tint-1 backdrop-blur border-8px padding-12px">
 									<div class="text-18px text-primary" id="schedulingscreentext"></div>
 									<div class="manualloader width-full" id="schedulingscreenloader"><div class="loaderprogress"></div></div>
 								</div>

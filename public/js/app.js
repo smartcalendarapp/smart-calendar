@@ -2025,9 +2025,9 @@ class Calendar {
 		let plantaskssubmit = getElement('plantaskssubmit')
 		schedulemytaskslist = schedulemytaskslist.filter(d => calendar.todos.find(g => g.id == d))
 		if(schedulemytaskslist.length > 0){
-			plantaskssubmit.innerHTML = `<div class="display-flex flex-row gap-6px align-center whitebutton padding-8px-12px border-round transition-duration-100 pointer" onclick="submitschedulemytasks()">
-				<div class="pointer-none text-18px text-black text-bold">Continue (${schedulemytaskslist.length})</div>
-				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonblack">
+			plantaskssubmit.innerHTML = `<div class="display-flex flex-row gap-6px align-center background-blue hover:background-blue-hover padding-8px-12px border-round transition-duration-100 pointer" onclick="submitschedulemytasks()">
+				<div class="pointer-none text-18px text-white text-bold">Continue (${schedulemytaskslist.length})</div>
+				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 					<g>
 					<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
 					<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -2036,7 +2036,7 @@ class Calendar {
 				</svg>
 			</div>`
 		}else{
-			plantaskssubmit.innerHTML = `<div class="text-white text-14px">Select a task to continue</div>`
+			plantaskssubmit.innerHTML = `<div class="text-primary text-14px">Select a task to continue</div>`
 		}
 	}
 
@@ -9148,7 +9148,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos){
 	}
 	if(showui){
 		let schedulingscreen = getElement('schedulingscreen')
-		schedulingscreen.classList.remove('hiddenfade')
+		schedulingscreen.classList.remove('hiddenpopup')
 
 		loading = true
 		requestAnimationFrame(updateloaderprogress)
@@ -9353,7 +9353,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos){
 		await sleep(1000)
 		
 		loading = false
-		schedulingscreen.classList.add('hiddenfade')
+		schedulingscreen.classList.add('hiddenpopup')
 	}
 
 
