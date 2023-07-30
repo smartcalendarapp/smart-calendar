@@ -3120,6 +3120,10 @@ body{
 	padding:4px 6px;
 }
 
+.selecttasksmenu{
+	width:100%;
+	max-width:400px;
+}
 
 .todobuttonstop{
 	top:24px
