@@ -7120,7 +7120,8 @@ function gettododata(item){
 	}else{
 		//view
 
-			output = `<div class="todoitem todoitemwrap ${schedulemytasksenabled && schedulemytaskslist.find(g => g == item.id) ? 'selectedtasktoplan' : ''}" ${!schedulemytasksenabled ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''} ${schedulemytasksenabled ? `onclick="toggleschedulemytask(event, '${item.id}')"` : ''}>
+			output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}>
+
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
 						<div class="display-flex flex-row gap-12px">
@@ -7202,6 +7203,11 @@ function gettododata(item){
 			 
 					</div>
 				</div>
+
+
+				${schedulemytasksenabled ? 
+					`<div class="absolute todoitemselectcheck background-tint-1 border-8px hover:background-tint-1 pointer pointer-auto transition-duration-100 text-16px text-primary" onclick="toggleschedulemytask(event, '${item.id}')">${schedulemytaskslist.find(g => g == item.id) ? `Deselect` : `Select`}</div>`
+				: ''}
 		 	</div>`
 	}
 
@@ -10350,9 +10356,8 @@ function clickboxcolumn(event, timestamp){
   selectedeventid = null
   selectedeventfromdate = new Date(timestamp)
 
-  if(oldselectedeventid){
   	calendar.updateEvents()
-  }
+
 	movingevent = true
   calendar.updateInfo(true)
 
