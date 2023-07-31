@@ -1599,7 +1599,7 @@ class Calendar {
 										<div class="text-14px text-primary">Auto-schedule</div>
 										<div class="tooltip">
 											<span class="hover:text-decoration-underline text-blue text-14px pointer pointer-auto">Learn more</span>
-											<span class="tooltiptextright">Automatically schedule your event for the best time. Ideal for tasks without a set time.</span>
+											<span class="tooltiptextright">Automatically schedule your event for the best time.<br>Good for tasks without a set time.</span>
 										</div>
 					 				</div>
 
@@ -1864,6 +1864,11 @@ class Calendar {
 						let infoallday = getElement('infoallday')
 						infoallday.innerHTML = getcheckbox(Calendar.Event.isAllDay(item))
 					}
+
+
+					//auto schedule
+					let eventinfosmartschedule = getElement('eventinfosmartschedule')
+					eventinfosmartschedule.innerHTML = getcheckbox(item.type == 1)
 	
 					if(item.type == 1){
 						//priority
