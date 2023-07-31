@@ -1957,7 +1957,7 @@ class Calendar {
 						<div class="infotext selecttext nowrap">${Calendar.Event.getFullStartEndText(item)}</div>
 					</div>`)
 
-					if(!Calendendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item)){
+					if(!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item)){
 						output.push(`<div class="infogroup">
 							<div class="inputgroup">
 								<div class="display-flex flex-column">
