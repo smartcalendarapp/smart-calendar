@@ -1603,11 +1603,7 @@ class Calendar {
 										</div>
 					 				</div>
 
-									 <div class="todoitemcheckbox tooltip display-flex" onclick="${item.type == 0 ?
-										(eventtype(1), gtag('event', 'button_click', { useraction: 'Check auto-schedule - event info' }))
-										:
-										(eventtype(0), gtag('event', 'button_click', { useraction: 'Uncheck auto-schedule - event info' }))
-									}" id="eventinfosmartschedule"></div>
+									 <div class="todoitemcheckbox tooltip display-flex" onclick="toggleeventtype()" id="eventinfosmartschedule"></div>
 					
 									<div class="width-fit overflow-visible inputeventtype" id="eventinfosmartschedule">
 					 				</div>
@@ -1959,11 +1955,7 @@ class Calendar {
 						<div class="display-flex flex-row gap-12px align-center flex-wrap-wrap">
 							<div class="infotext selecttext nowrap">${Calendar.Event.getFullStartEndText(item)}</div>
 				 				${!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item) ? `
-				 				<div class="todoitemcheckbox tooltip display-flex" onclick="${item.type == 0 ?
-									(eventtype(1), gtag('event', 'button_click', { useraction: 'Check auto-schedule - event info' }))
-									:
-									(eventtype(0), gtag('event', 'button_click', { useraction: 'Uncheck auto-schedule - event info' }))
-								}" id="eventinfosmartschedule"></div>
+				 				<div class="todoitemcheckbox tooltip display-flex" onclick="toggleeventtype()" id="eventinfosmartschedule"></div>
 								` : ''}
 			 			</div>
 					</div>`)
@@ -8534,6 +8526,19 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth){
 	</div>`
 
   return output
+}
+
+
+//toggle event type
+function toggleeventtype(){
+	let item = calendar.events.find(d => d.id == selectedeventid)
+	if(item.type == 0){
+		eventtype(1)
+		gtag('event', 'button_click', { useraction: 'Check auto-schedule - event info' })
+	 }else{
+		eventtype(0)
+		gtag('event', 'button_click', { useraction: 'Uncheck auto-schedule - event info' })
+	 }
 }
 
 //event type
