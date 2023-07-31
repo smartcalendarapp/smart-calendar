@@ -6444,7 +6444,6 @@ function resetcreatetodo(){
 	let nextdate = new Date()
 	nextdate.setHours(0,0,0,0)
 	nextdate.setDate(nextdate.getDate() + 1)
-	nextdate.setMinutes(nextdate.getMinutes() - 1)
 	
 	let todoinputtitle = getElement('todoinputtitle')
 	todoinputtitle.value = ''
