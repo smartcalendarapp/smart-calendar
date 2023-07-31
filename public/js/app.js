@@ -1596,16 +1596,20 @@ class Calendar {
 							<div class="infogroup">
 			 					<div class="inputgroup">
 				 					<div class="display-flex flex-column">
-										<div class="text-14px text-primary">Schedule mode</div>
+										<div class="text-14px text-primary">Auto-schedule</div>
 										<div class="tooltip">
 											<span class="hover:text-decoration-underline text-blue text-14px pointer pointer-auto">Learn more</span>
-											<span class="tooltiptextright"><span class="text-bold">Event (fixed time)</span>: you set a specific time for the event.<br><br><span class="text-bold">Task (auto-scheduled)</span>: the app intelligently schedules the event.</span>
+											<span class="tooltiptextright">Automatically schedule your event for the best time. Ideal for tasks without a set time.</span>
 										</div>
 					 				</div>
+
+									 <div class="todoitemcheckbox tooltip display-flex" onclick="${item.type == 0 ?
+										(eventtype(1), gtag('event', 'button_click', { useraction: 'Check auto-schedule - event info' }))
+										:
+										(eventtype(0), gtag('event', 'button_click', { useraction: 'Uncheck auto-schedule - event info' }))
+									}" id="eventinfosmartschedule"></div>
 					
 									<div class="width-fit overflow-visible inputeventtype" id="eventinfosmartschedule">
-						 				<div class="inputeventtypechild" onclick="eventtype(0);gtag('event', 'button_click', { useraction: 'Fixed time - event info'})">Event (fixed time)</div>
-										<div class="inputeventtypechild" onclick="eventtype(1);gtag('event', 'button_click', { useraction: 'Auto schedule - event info'})">Task (auto-scheduled)</div>
 					 				</div>
 				 				</div>
 							</div>`)
@@ -1955,10 +1959,11 @@ class Calendar {
 						<div class="display-flex flex-row gap-12px align-center flex-wrap-wrap">
 							<div class="infotext selecttext nowrap">${Calendar.Event.getFullStartEndText(item)}</div>
 				 				${!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item) ? `
-				 				<div class="flex-basis-auto flex-grow-0 flex-shrink-0 inputeventtype" id="eventinfosmartschedule">
-					 				<div class="inputeventtypechild flex-grow-0 flex-shrink-0" onclick="eventtype(0);gtag('event', 'button_click', { useraction: 'Fixed time - event info'})">Event (fixed time)</div>
-									<div class="inputeventtypechild flex-grow-0 flex-shrink-0" onclick="eventtype(1);gtag('event', 'button_click', { useraction: 'Auto schedule - event info'})">Task (auto-scheduled)</div>
-				 				</div>
+				 				<div class="todoitemcheckbox tooltip display-flex" onclick="${item.type == 0 ?
+									(eventtype(1), gtag('event', 'button_click', { useraction: 'Check auto-schedule - event info' }))
+									:
+									(eventtype(0), gtag('event', 'button_click', { useraction: 'Uncheck auto-schedule - event info' }))
+								}" id="eventinfosmartschedule"></div>
 								` : ''}
 			 			</div>
 					</div>`)
