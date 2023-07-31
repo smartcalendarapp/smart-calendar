@@ -1596,8 +1596,8 @@ class Calendar {
 							<div class="infogroup">
 			 					<div class="inputgroup">
 				 					<div class="display-flex flex-column">
-										<div class="width90px text-14px text-blue hover:text-decoration-underline tooltip">Auto-schedule
-											<span class="tooltiptextright">Automatically schedules your event for the best time.<br>Good for tasks without a set time.</span>
+										<div class="width90px text-14px text-blue hover:text-decoration-underline tooltip" id="eventinfosmartscheduletext">Auto-schedule
+											<span class="tooltiptextright">Automatically schedule your event for the best time.</span>
 										</div>
 					 				</div>
 
@@ -1961,13 +1961,13 @@ class Calendar {
 						output.push(`<div class="infogroup">
 							<div class="inputgroup">
 								<div class="display-flex flex-column">
-								<div class="text-14px text-blue hover:text-decoration-underline tooltip">Auto-schedule
-									<span class="tooltiptextright">Automatically schedules your event for the best time.<br>Good for tasks without a set time.</span>
-								</div>
+									<div class="text-14px text-blue hover:text-decoration-underline tooltip" id="eventinfosmartscheduletext">Auto-schedule
+										<span class="tooltiptextright">Automatically schedule your event for the best time.</span>
+									</div>
 								</div>
 
-							<div class="todoitemcheckbox display-flex" onclick="toggleeventtype()" id="eventinfosmartschedule"></div>
-			
+								<div class="todoitemcheckbox display-flex" onclick="toggleeventtype()" id="eventinfosmartschedule"></div>
+
 								</div>
 							</div>
 						</div>`)
@@ -3401,31 +3401,6 @@ function updateinteractivetour() {
 				hidepopup(mypopup)
 			}
 
-		} else if (key == 'submitaddtask') {
-
-			let tourbutton = getElement('createtodoaddbutton')
-			if (isviewable(tourbutton)) {
-				let rect = tourbutton.getBoundingClientRect()
-
-				if (value == false && key != selectedinteractivetourpopupindex) {
-					showbeacon(mybeacon)
-					movebeacon(mybeacon, rect.top, rect.right)
-				} else {
-					hidebeacon(mybeacon)
-				}
-
-				if (key == selectedinteractivetourpopupindex) {
-					showpopup(mypopup)
-				} else {
-					hidepopup(mypopup)
-				}
-
-				movepopup(mypopup, rect.top + rect.height, rect.left + rect.width / 2 - mypopup.offsetWidth / 2)
-			} else {
-				hidepopup(mypopup)
-				hidebeacon(mybeacon)
-			}
-
 		} else if (key == 'clickscheduleoncalendar') {
 
 			let tourbutton = getElement('scheduleoncalendar')
@@ -3434,7 +3409,7 @@ function updateinteractivetour() {
 
 				if (value == false && key != selectedinteractivetourpopupindex) {
 					showbeacon(mybeacon)
-					movebeacon(mybeacon, rect.top, rect.right)
+					movebeacon(mybeacon, rect.top, rect.left)
 				} else {
 					hidebeacon(mybeacon)
 				}
@@ -3445,7 +3420,7 @@ function updateinteractivetour() {
 					hidepopup(mypopup)
 				}
 
-				movepopup(mypopup, rect.top - mypopup.offsetHeight, rect.left + rect.width / 2 - mypopup.offsetWidth / 2)
+				movepopup(mypopup, rect.top + rect.offsetHeight, rect.right - mypopup.offsetWidth / 2)
 			} else {
 				hidebeacon(mybeacon)
 				hidepopup(mypopup)
@@ -3453,7 +3428,7 @@ function updateinteractivetour() {
 
 		} else if (key == 'autoschedule') {
 
-			let tourbutton = getElement('eventinfosmartschedule')
+			let tourbutton = getElement('eventinfosmartscheduletext')
 			if (isviewable(tourbutton)) {
 				let rect = tourbutton.getBoundingClientRect()
 
