@@ -2029,17 +2029,17 @@ class Calendar {
 	updateTodoButtons(){
 		let scheduleoncalendar = getElement('scheduleoncalendar')
 		if(calendar.todos.filter(d => !d.completed).length > 0 && !schedulemytasksenabled){
-			scheduleoncalendar.classList.remove('dispaly-none')
+			scheduleoncalendar.classList.remove('display-none')
 		}else{
-			scheduleoncalendar.classList.add('dispaly-none')
+			scheduleoncalendar.classList.add('display-none')
 		}
 
 		if(schedulemytasksenabled){
 			let schedulemytasksactive = getElement('schedulemytasksactive')
-			schedulemytasksactive.classList.remove('dispaly-none')
+			schedulemytasksactive.classList.remove('display-none')
 		}else{
 			let schedulemytasksactive = getElement('schedulemytasksactive')
-			schedulemytasksactive.classList.add('dispaly-none')
+			schedulemytasksactive.classList.add('display-none')
 		}
 
 		let plantaskssubmit = getElement('plantaskssubmit')
