@@ -2036,10 +2036,10 @@ class Calendar {
 
 		if(schedulemytasksenabled){
 			let schedulemytasksactive = getElement('schedulemytasksactive')
-			schedulemytasksactive.classList.remove('hiddenfade')
+			schedulemytasksactive.classList.remove('display-none')
 		}else{
 			let schedulemytasksactive = getElement('schedulemytasksactive')
-			schedulemytasksactive.classList.add('hiddenfade')
+			schedulemytasksactive.classList.add('display-none')
 		}
 
 		let plantaskssubmit = getElement('plantaskssubmit')
@@ -7140,7 +7140,7 @@ function gettododata(item){
 	}else{
 		//view
 
-			output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''} ${schedulemytasksenabled ? `onclick="toggleschedulemytask(event, '${item.id}')"` : ''}>
+			output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `draggable="true" ${Calendar.Todo.isSchedulable(item) ? `ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''} ${schedulemytasksenabled && Calendar.Todo.isSchedulable(item) ? `onclick="toggleschedulemytask(event, '${item.id}')"` : ''}>
 
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
