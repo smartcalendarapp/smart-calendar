@@ -7144,8 +7144,8 @@ function gettododata(item){
 
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
-						${!schedulemytasksenabled ? `
 						<div class="display-flex flex-row gap-12px">
+						${!schedulemytasksenabled ? `
 							<div class="todoitemcheckbox tooltip display-flex" onclick="todocompleted(event, '${item.id}');gtag('event', 'button_click', { useraction: '${item.completed ? 'Mark uncomplete - task' : 'Mark complete - task'}' })">
 							${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
 						</div>
