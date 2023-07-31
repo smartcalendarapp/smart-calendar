@@ -3267,12 +3267,6 @@ body{
 	left: -99999px !important;
   	top: -99999px !important;
 }
-.hiddenfade2{
-	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s;
-	opacity:0;
-	visibility:hidden;
-}
-
 .hiddenheight{
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, max-height 0.2s ease-in-out;
 	max-height: 0 !important;
