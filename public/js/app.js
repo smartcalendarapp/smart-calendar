@@ -7700,7 +7700,6 @@ function dragtodo(event, id){
 				let tempdate = new Date()
 				tempdate.setHours(0,0,0,0)
 				tempdate.setDate(tempdate.getDate() + 1)
-				tempdate.setMinutes(-1)
 				
 				item.endbefore.year = tempdate.getFullYear()
 				item.endbefore.month = tempdate.getMonth()
@@ -8506,7 +8505,6 @@ function eventtype(type){
 		let endbeforedate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
 		endbeforedate.setHours(0, 0,0, 0)
 		endbeforedate.setDate(endbeforedate.getDate() + 1)
-		endbeforedate.setMinutes(-1)
 		item.endbefore.year = endbeforedate.getFullYear()
 		item.endbefore.month = endbeforedate.getMonth()
 		item.endbefore.day = endbeforedate.getDate()
