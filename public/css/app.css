@@ -874,6 +874,15 @@ body{
 	vertical-align:middle;
 	pointer-events:none;
 }
+.buttoninlinelarge{
+	height:36px;
+	width:36px;
+	stroke: var(--text-primary);
+	fill: none;
+	display:inline;
+	vertical-align:middle;
+	pointer-events:none;
+}
 .buttonsmall{
 	height:14px;
 	width:14px;
