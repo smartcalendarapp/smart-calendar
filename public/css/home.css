@@ -111,8 +111,7 @@ img{
 }
 
 .menubackground{
-	background-color:var(--background-primary-home-transparent);
-	border-bottom:1px solid var(--text-tertiary);
+	background-color:var(--background-secondary-transparent);
 }
 
 .navtitle{
