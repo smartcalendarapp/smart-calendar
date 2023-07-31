@@ -7227,7 +7227,7 @@ function gettododata(item){
 				</div>
 
 
-				${schedulemytasksenabled ? 
+				${schedulemytasksenabled && Calendar.Todo.isSchedulable(item) ? 
 					`<div class="absolute todoitemselectcheck pointer pointer-auto">
 						${getbigcheckbox(schedulemytaskslist.find(g => g == item.id))}
 					</div>`
