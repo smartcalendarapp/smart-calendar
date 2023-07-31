@@ -2044,7 +2044,7 @@ class Calendar {
 
 		let plantaskssubmit = getElement('plantaskssubmit')
 		schedulemytaskslist = schedulemytaskslist.filter(d => calendar.todos.find(g => g.id == d))
-		plantaskssubmit.innerHTML = `<div class="tooltip display-flex flex-row gap-6px align-center background-blue hover:background-blue-hover padding-8px-12px border-round transition-duration-100 pointer ${schedulemytaskslist.length > 0 ? '' : 'greyedoutbutton'}" ${schedulemytaskslist.length > 0 ? `onclick="submitschedulemytasks()"` : ''}>
+		plantaskssubmit.innerHTML = `<div class="tooltip display-flex flex-row gap-6px align-center background-blue hover:background-blue-hover padding-8px-12px border-round transition-duration-100 pointer ${schedulemytaskslist.length > 0 ? '' : 'greyedoutevent'}" ${schedulemytaskslist.length > 0 ? `onclick="submitschedulemytasks()"` : ''}>
 			<div class="pointer-none text-18px text-white nowrap">Continue (${schedulemytaskslist.length})</div>
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 				<g>
@@ -2053,7 +2053,7 @@ class Calendar {
 				<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
 				</g>
 			</svg>
-			<span class="tooltiptextleft">Schedule ${schedulemytaskslist.length} tasks into your calendar</span>
+			${schedulemytaskslist.length > 0 ? `<span class="tooltiptextleft">Schedule ${schedulemytaskslist.length} tasks into your calendar</span>` : ''}
 		</div>`
 	}
 
