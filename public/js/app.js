@@ -1596,14 +1596,13 @@ class Calendar {
 							<div class="infogroup">
 			 					<div class="inputgroup">
 				 					<div class="display-flex flex-column">
-										<div class="text-14px text-primary">Auto-schedule</div>
-										<div class="tooltip">
+										<div class="text-14px text-blue hover:text-decoration-underline tooltip">Auto-schedule
 											<span class="hover:text-decoration-underline text-blue text-14px pointer pointer-auto">Learn more</span>
-											<span class="tooltiptextright">Automatically schedule your event for the best time.<br>Good for tasks without a set time.</span>
+											<span class="tooltiptextright">Automatically schedules your event for the best time.<br>Good for tasks without a set time.</span>
 										</div>
 					 				</div>
 
-									 <div class="todoitemcheckbox display-flex" onclick="toggleeventtype()" id="eventinfosmartschedule"></div>
+									<div class="todoitemcheckbox display-flex" onclick="toggleeventtype()" id="eventinfosmartschedule"></div>
 					
 					 				</div>
 				 				</div>
@@ -1956,12 +1955,17 @@ class Calendar {
 
 					output.push(`
 					<div class="infogroup">
-						<div class="display-flex flex-row gap-12px align-center flex-wrap-wrap">
-							<div class="infotext selecttext nowrap">${Calendar.Event.getFullStartEndText(item)}</div>
-				 				${!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item) ? `
-				 				<div class="todoitemcheckbox display-flex" onclick="toggleeventtype()" id="eventinfosmartschedule"></div>
-								` : ''}
-			 			</div>
+						<div class="infotext selecttext nowrap">${Calendar.Event.getFullStartEndText(item)}</div>
+					</div>`)
+
+					output.push(`
+					<div class="infogroup>
+						<div class="text-14px text-blue hover:text-decoration-underline tooltip">Auto-schedule
+							<span class="hover:text-decoration-underline text-blue text-14px pointer pointer-auto">Learn more</span>
+							<span class="tooltiptextright">Automatically schedules your event for the best time.<br>Good for tasks without a set time.</span>
+						</div>
+						${!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item) ? `
+							<div class="todoitemcheckbox display-flex" onclick="toggleeventtype()" id="eventinfosmartschedule"></div>` : ''}
 					</div>`)
 
 
@@ -5711,195 +5715,6 @@ function closewelcomepopup(name) {
 }
 
 
-//WELCOME
-/*
-let welcomeindex = 0
-const welcomedata = [
-	`<div class="display-flex flex-column gap-12px padding-12px">
-		  <div class="text-24px text-primary">Welcome to Smart Calendar</div>
-		<div class="text-18px text-primary">Take a short tour?</div>
-		  <div class="display-flex flex-row gap-12px justify-flex-end">
-			<div class="border-8px background-tint-1 text-14px padding-8px-12px text-primary transition-duration-100 pointer hover:background-tint-2" onclick="prevwelcome()">Not now</div>
-			<div class="border-8px background-blue text-14px padding-8px-12px text-white transition-duration-100 pointer hover:background-blue-hover" onclick="nextwelcome()">Start</div>
-		</div>
-	</div>`,
-	
-	`<div class="display-flex flex-column gap-12px padding-12px">
-		<div class="text-24px text-primary">Create an event</div>
-		<div class="text-18px text-primary">Click and drag.</div>
-		  <div class="display-flex flex-row gap-12px justify-flex-end">
-			<div class="border-8px background-tint-1 text-14px padding-8px-12px text-primary transition-duration-100 pointer hover:background-tint-2" onclick="prevwelcome()">Back</div>
-			<div class="border-8px background-blue text-14px padding-8px-12px text-white transition-duration-100 pointer hover:background-blue-hover" onclick="nextwelcome()">Next</div>
-		</div>
-	</div>`,
-	
-	`<div class="display-flex flex-column gap-12px padding-12px">
-		<div class="text-24px text-primary">Edit an event</div>
-		<div class="text-18px text-primary">Select an event, then click <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline">
-			<g>
-			<path d="M178.389 21.6002L31.105 168.884" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-			<path d="M234.4 77.6109L87.1156 224.895" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-			<path d="M178.389 21.6002C193.856 6.13327 218.933 6.13327 234.4 21.6002C249.867 37.0671 249.867 62.1439 234.4 77.6109" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-			<path d="M10 245.998L31.105 168.884" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-			<path d="M10.0017 246L87.1156 224.895" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-			</g>
-			</svg>
-		</div>
-		  <div class="display-flex flex-row gap-12px justify-flex-end">
-			<div class="border-8px background-tint-1 text-14px padding-8px-12px text-primary transition-duration-100 pointer hover:background-tint-2" onclick="prevwelcome()">Back</div>
-			<div class="border-8px background-blue text-14px padding-8px-12px text-white transition-duration-100 pointer hover:background-blue-hover" onclick="nextwelcome()">Next</div>
-		</div>
-	</div>`,
-	
-	`
-	  <div class="width-full padding-12px justify-center display-flex flex-row gap-12px align-center">
-			<div class="text-24px text-primary">Auto schedule</div>
-	</div>
-	  <div class="horizontalbar"></div>
-	<div class="display-flex flex-column gap-12px padding-12px">
-			<div class="text-18px text-primary">If you click this, Smart Calendar will automatically plan the best time for your event.</div>
-			  <div class="display-flex flex-row gap-12px justify-flex-end">
-				<div class="border-8px background-tint-1 text-14px padding-8px-12px text-primary transition-duration-100 pointer hover:background-tint-2" onclick="prevwelcome()">Back</div>
-				<div class="border-8px background-blue text-14px padding-8px-12px text-white transition-duration-100 pointer hover:background-blue-hover" onclick="nextwelcome()">Next</div>
-			</div>
-		</div>`,
-	
-	`<img src="../autoschedule.png" height="360" width="480" class="width-full height-auto"></img>
-	<div class="display-flex flex-column gap-12px padding-12px">
-	 <div class="text-24px text-primary">Smart schedule</div>
-		<div class="text-18px text-primary">Smart Calendar schedules your tasks into your calendar. It also optimizes your existing calendar schedule.</div>
-		<div class="display-flex flex-row gap-12px justify-flex-end">
-			<div class="border-8px background-tint-1 text-14px padding-8px-12px text-primary transition-duration-100 pointer hover:background-tint-2" onclick="prevwelcome()">Back</div>
-			<div class="border-8px background-blue text-14px padding-8px-12px text-white transition-duration-100 pointer hover:background-blue-hover" onclick="nextwelcome()">Next</div>
-		</div>
-	</div>`,
-	
-	`<div class="display-flex flex-column gap-12px padding-12px">
-	<div class="text-24px text-primary">To do list</div>
-		<div class="text-18px text-primary">Add your tasks in your To do list. Click <span class="text-bold">Schedule Tasks</span> to add them to your calendar.</div>
-		  <div class="display-flex flex-row gap-12px justify-flex-end">
-			<div class="border-8px background-tint-1 text-14px padding-8px-12px text-primary transition-duration-100 pointer hover:background-tint-2" onclick="prevwelcome()">Back</div>
-			<div class="border-8px background-blue text-14px padding-8px-12px text-white transition-duration-100 pointer hover:background-blue-hover" onclick="nextwelcome()">Done</div>
-		</div>
-	  </div>`
-]
-
-//updatewelcome()
-
-function prevwelcome(){
-	welcomeindex--
-	updatewelcome()
-}
-function nextwelcome(){
-	welcomeindex++
-	updatewelcome()
-}
-
-let inwelcome = false
-function showwelcome(){
-	let welcomepopup = getElement('welcomepopup')
-	let welcomeshadow = getElement('welcomeshadow')
-	welcomepopup.classList.remove('hiddenfade')
-	welcomeshadow.classList.remove('hiddenfade')
-	inwelcome = true
-}
-function hidewelcome(){
-	let welcomepopup = getElement('welcomepopup')
-	let welcomeshadow = getElement('welcomeshadow')
-	welcomepopup.classList.add('hiddenfade')
-	welcomeshadow.classList.add('hiddenfade')
-	inwelcome = false
-}
-
-
-function updatewelcome(){
-	function updatewelcomeshadow(id){
-		let welcomeshadow = getElement('welcomeshadow')
-		let element = getElement(id)
-		if(element){
-			let temprect = element.getBoundingClientRect()
-			welcomeshadow.style.left = temprect.left + 'px'
-			welcomeshadow.style.top = temprect.top + 'px'
-			welcomeshadow.style.height = temprect.height + 'px'
-			welcomeshadow.style.width = temprect.width + 'px'
-		}else{
-			welcomeshadow.style.height = '0px'
-			welcomeshadow.style.width = '0px'
-		}
-	}
-	function updatewelcomeposition(x, y){
-		welcomepopup.style.left = `${x}px`
-		welcomepopup.style.top = `${y}px`
-	}
-	
-	if(welcomeindex < 0 || welcomeindex > welcomedata.length - 1){
-		calendar.viewedtour = true
-		hidewelcome()
-		return
-	}
-
-	let welcomepopup = getElement('welcomepopup')
-	welcomepopup.innerHTML = welcomedata[welcomeindex]
-
-	let windowwidth = window.innerWidth
-	let windowheight = window.innerHeight
-	let welcomewidth = welcomepopup.offsetWidth
-	let welcomeheight = welcomepopup.offsetHeight
-	
-	if(welcomeindex == 0){		
-		updatewelcomeposition(windowwidth/2 - welcomewidth/2, windowheight/2 - welcomeheight/2)
-		updatewelcomeshadow()
-	}else if(welcomeindex == 1){
-		selectedeventid = null
-		calendar.updateEvents()
-		calendar.updateInfo()
-		
-		let calendarwrap = getElement('calendarwrap')
-		let rect = calendarwrap.getBoundingClientRect()
-		
-		updatewelcomeposition(rect.left, windowheight/2 - welcomeheight/2)
-		updatewelcomeshadow('barcolumncontainer')
-	}else if(welcomeindex == 2){
-		selectedeventid = null
-		calendar.updateEvents()
-		calendar.updateInfo()
-		
-		let calendarwrap = getElement('calendarwrap')
-		let rect = calendarwrap.getBoundingClientRect()
-		
-		updatewelcomeposition(rect.left, windowheight/2 - welcomeheight/2)
-		updatewelcomeshadow('barcolumncontainer')
-	}else if(welcomeindex == 3){
-		let eventinfosmartschedule = getElement('eventinfosmartschedule')
-		let rect = eventinfosmartschedule.getBoundingClientRect()
-		
-		updatewelcomeposition(rect.left - welcomewidth, rect.top - welcomeheight/2 + rect.height/2)
-		updatewelcomeshadow('eventinfosmartschedule')
-	}else if(welcomeindex == 4){
-		selectedeventid = null
-		calendar.updateEvents()
-		calendar.updateInfo()
-		
-		let smartschedulertab = getElement('smartschedulertab')
-		let rect = smartschedulertab.getBoundingClientRect()
-		
-		updatewelcomeposition(rect.left + rect.width, rect.top)
-		updatewelcomeshadow('smartschedulertab')
-	}else if(welcomeindex == 5){
-		selectedeventid = null
-		calendar.updateEvents()
-		calendar.updateInfo()
-		
-		let todolisttab = getElement('todolisttab')
-		let rect = todolisttab.getBoundingClientRect()
-		
-		updatewelcomeposition(rect.right, rect.top + welcomeheight/2)
-		updatewelcomeshadow('todolisttab')
-	}
-}
-*/
-
-
 //SCHEDULE
 function sorttodos(val) {
 	return val.sort((a, b) => {
@@ -6529,7 +6344,7 @@ function closetodoitemduedate() {
 
 	clickcreatetododuration()
 	clickcreatetododuedate()
-	  clickcreatetodopriority()
+	clickcreatetodopriority()
 */
 
 
@@ -7233,7 +7048,7 @@ function gettododata(item) {
 /*
 	functions for opening popup:
  
-	  clicktodoitemduedate()
+	clicktodoitemduedate()
 	clicktodoitempriority()
 	clicktodoitemduration()
 */
