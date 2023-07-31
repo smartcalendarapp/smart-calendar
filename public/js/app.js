@@ -3420,7 +3420,7 @@ function updateinteractivetour() {
 					hidepopup(mypopup)
 				}
 
-				movepopup(mypopup, rect.top + rect.offsetHeight, rect.right - mypopup.offsetWidth / 2)
+				movepopup(mypopup, rect.top + rect.height, rect.left + rect.width / 2 - mypopup.offsetWidth / 2)
 			} else {
 				hidebeacon(mybeacon)
 				hidepopup(mypopup)
