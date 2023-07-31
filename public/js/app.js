@@ -2053,7 +2053,7 @@ class Calendar {
 				<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
 				</g>
 			</svg>
-			<span class="tooltiptextleft>Schedule ${schedulemytaskslist.length} tasks into your calendar</span>
+			<span class="tooltiptextleft">Schedule ${schedulemytaskslist.length} tasks into your calendar</span>
 		</div>`
 	}
 
