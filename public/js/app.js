@@ -2028,7 +2028,7 @@ class Calendar {
 
 	updateTodoButtons(){
 		let scheduleoncalendar = getElement('scheduleoncalendar')
-		if(calendar.todos.filter(d => !d.completed).length > 0){
+		if(calendar.todos.filter(d => !d.completed).length > 0 && !schedulemytasksenabled){
 			scheduleoncalendar.classList.remove('display-none')
 		}else{
 			scheduleoncalendar.classList.add('display-none')
