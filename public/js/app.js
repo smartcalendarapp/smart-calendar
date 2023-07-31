@@ -1596,8 +1596,7 @@ class Calendar {
 							<div class="infogroup">
 			 					<div class="inputgroup">
 				 					<div class="display-flex flex-column">
-										<div class="text-14px text-blue hover:text-decoration-underline tooltip">Auto-schedule
-											<span class="hover:text-decoration-underline text-blue text-14px pointer pointer-auto">Learn more</span>
+										<div class="width90px text-14px text-blue hover:text-decoration-underline tooltip">Auto-schedule
 											<span class="tooltiptextright">Automatically schedules your event for the best time.<br>Good for tasks without a set time.</span>
 										</div>
 					 				</div>
@@ -1958,16 +1957,21 @@ class Calendar {
 						<div class="infotext selecttext nowrap">${Calendar.Event.getFullStartEndText(item)}</div>
 					</div>`)
 
-					output.push(`
-					<div class="infogroup>
-						<div class="text-14px text-blue hover:text-decoration-underline tooltip">Auto-schedule
-							<span class="hover:text-decoration-underline text-blue text-14px pointer pointer-auto">Learn more</span>
-							<span class="tooltiptextright">Automatically schedules your event for the best time.<br>Good for tasks without a set time.</span>
-						</div>
-						${!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item) ? `
-							<div class="todoitemcheckbox display-flex" onclick="toggleeventtype()" id="eventinfosmartschedule"></div>` : ''}
-					</div>`)
+					if(!Calendendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item)){
+						output.push(`<div class="infogroup">
+							<div class="inputgroup">
+								<div class="display-flex flex-column">
+								<div class="text-14px text-blue hover:text-decoration-underline tooltip">Auto-schedule
+									<span class="tooltiptextright">Automatically schedules your event for the best time.<br>Good for tasks without a set time.</span>
+								</div>
+								</div>
 
+							<div class="todoitemcheckbox display-flex" onclick="toggleeventtype()" id="eventinfosmartschedule"></div>
+			
+								</div>
+							</div>
+						</div>`)
+					}
 
 					if (item.type == 1) {
 						output.push(`
