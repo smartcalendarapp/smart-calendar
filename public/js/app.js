@@ -6171,17 +6171,17 @@ function gettodos(option1, option2){
 				//(date, null) is all todos after or on date
 				
 				if(option2 == null){
-					if (itemendbeforedate.getTime() >= option1.getTime()){
+					if (itemendbeforedate.getTime() > option1.getTime()){
 			      output.push(item)
 			    }
 				}else if(option1 == null){
-					if (itemendbeforedate.getTime() < option2.getTime()){
+					if (itemendbeforedate.getTime() <= option2.getTime()){
 			      output.push(item)
 			    }
 				}
 			}else{
 				//between start and end of range
-				if (itemendbeforedate.getTime() >= option1.getTime() && itemendbeforedate.getTime() < option2.getTime()){
+				if (itemendbeforedate.getTime() > option1.getTime() && itemendbeforedate.getTime() <= option2.getTime()){
 					output.push(item)
 				}
 			}
