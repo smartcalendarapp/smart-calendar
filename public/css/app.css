@@ -632,7 +632,7 @@ body{
 }
 
 .greyedoutbutton{
-	filter:saturate(0.5);
+	filter:saturate(0.5) saturate(0.5);
 }
 
 .greyedoutevent{
