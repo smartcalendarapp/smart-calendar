@@ -631,6 +631,9 @@ body{
 	background-color:var(--blue-hover) !important;
 }
 
+.greyedoutbutton{
+	filter:saturate(0.5);
+}
 
 .greyedoutevent{
 	filter: grayscale(50%) saturate(2);
