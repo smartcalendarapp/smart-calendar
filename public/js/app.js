@@ -7120,7 +7120,7 @@ function gettododata(item){
 	}else{
 		//view
 
-			output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}>
+			output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''} ${schedulemytasksenabled ? `onclick="toggleschedulemytask(event, '${item.id}')"` : ''}>
 
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
@@ -7205,8 +7205,15 @@ function gettododata(item){
 				</div>
 
 
-				${schedulemytasksenabled ? 
-					`<div class="absolute todoitemselectcheck background-tint-1 border-8px hover:background-tint-1 pointer pointer-auto transition-duration-100 text-16px text-primary" onclick="toggleschedulemytask(event, '${item.id}')">${schedulemytaskslist.find(g => g == item.id) ? `Deselect` : `Select`}</div>`
+				${schedulemytasksenabled && schedulemytaskslist.find(g => g == item.id) ? 
+					`<div class="absolute todoitemselectcheck pointer pointer-auto background-blue padding-6px border-round">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline">
+							<g>
+							<path d="M93.2369 211.648L10 120.493" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+							<path d="M93.2369 211.648L246 44.3518" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+							</g>
+						</svg>
+					</div>`
 				: ''}
 		 	</div>`
 	}
