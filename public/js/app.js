@@ -3409,7 +3409,7 @@ function updateinteractivetour() {
 
 				if (value == false && key != selectedinteractivetourpopupindex) {
 					showbeacon(mybeacon)
-					movebeacon(mybeacon, rect.top, rect.left)
+					movebeacon(mybeacon, rect.top, rect.right)
 				} else {
 					hidebeacon(mybeacon)
 				}
