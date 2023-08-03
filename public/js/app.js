@@ -8228,7 +8228,6 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 	output = `
 	<div class="absolute pointer-none" style="top:${mytop}px;height:${myheight}px;left:0;width:100%">
 		<div class="popupbutton eventwrap pointer-auto eventborder ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
-			${!Calendar.Event.isReadOnly(item) ? itemclicks.join('') : ''}
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
 				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
