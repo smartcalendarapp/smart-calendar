@@ -9533,7 +9533,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 	//animate
 	for(let item of modifiedevents){
 		await animateitem(item.id)
-		await sleep(300)
+		await sleep(3000)
 	}
 
 	//post animate
