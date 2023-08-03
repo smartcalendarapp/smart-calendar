@@ -8200,7 +8200,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 
 	let output = ''
 	output = `
-	<div class="absolute pointer-none" style="transform: translateX(${percentage * difference * 100}%);top:${mytop}px;height:${myheight}px;left:0;width:100%;">
+	<div class="absolute pointer-none" style="transform: translateX(${percentage * difference * 100}%);top:${mytop}px;height:${myheight}px;">
 		<div class="popupbutton eventwrap pointer-auto eventborder ${BORDERCOLORLIST[item.color]} ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
