@@ -9295,7 +9295,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 				}
 
 
-				if (tick > frames) {
+				if (tick >= frames) {
 					let newstartdate = new Date(realfinalstartdate)
 					let newenddate = new Date(newstartdate.getTime() + duration)
 	
@@ -9311,7 +9311,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 				}
 
 
-				if (tick > frames) {
+				if (tick >= frames) {
 					//stop
 					return resolve()
 				} else {
@@ -9377,7 +9377,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 						autoscheduleitem.percentage = beziercurve(tick / frames)
 					}
 
-					if (tick > frames) {
+					if (tick >= frames) {
 						let newstartdate = new Date(realfinalstartdate)
 						let newenddate = new Date(newstartdate.getTime() + duration)
 
@@ -9394,7 +9394,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 
 				}
 
-				if (tick > frames) {
+				if (tick >= frames) {
 					//stop
 					return resolve()
 				} else {
