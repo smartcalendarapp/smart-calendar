@@ -3129,6 +3129,11 @@ body {
 	flex: 1;
 }
 
+.eventborder{
+	border-width:1px;
+	border-style:solid;
+}
+
 .eventwrap {
 	position: absolute;
 	left: 0;
