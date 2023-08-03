@@ -2899,6 +2899,15 @@ body {
 	fill: var(--blue) !important;
 }
 
+.checkboxfilledprimary {
+	stroke: none !important;
+	fill: var(--text-primary) !important;
+}
+
+.selectedevent .checkboxfilledprimary{
+	fill:var(--white) !important;
+}
+
 .checkboxunfilled {
 	stroke: var(--text-secondary) !important;
 }

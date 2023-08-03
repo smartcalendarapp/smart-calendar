@@ -337,6 +337,26 @@ function getcheckcircle(boolean, tooltip) {
 	}
 }
 
+//get white check circle
+function getwhitecheckcircle(boolean, tooltip) {
+	if (boolean) {
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline checkboxfilledprimary">
+			<g>
+			<path d="M128 0C57.3075 0 0 57.3075 0 128C0 198.692 57.3075 256 128 256C198.692 256 256 198.692 256 128C256 57.3075 198.692 0 128 0ZM194.594 62.3125C198.149 61.9971 201.797 63.0595 204.75 65.5312C210.656 70.4747 211.443 79.2504 206.5 85.1562L114.781 194.719C109.207 201.378 98.949 201.378 93.375 194.719L47.5 139.938C42.5566 134.032 43.3441 125.256 49.25 120.312C55.1559 115.369 63.9628 116.157 68.9062 122.062L104.062 164.062L185.094 67.2812C187.565 64.3283 191.039 62.6279 194.594 62.3125Z" fill-rule="nonzero" opacity="1" ></path>
+			</g>
+			</svg>
+	 		${tooltip || ''}`
+	} else {
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline checkboxunfilled">
+			<g>
+			<path d="M128 10L128 10C193.17 10 246 62.8304 246 128L246 128C246 193.17 193.17 246 128 246L128 246C62.8304 246 10 193.17 10 128L10 128C10 62.8304 62.8304 10 128 10Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+			</g>
+			</svg>
+	 		${tooltip || ''}`
+	}
+}
+
+
 //get check
 function getcheck(boolean) {
 	if (boolean) {
@@ -4135,7 +4155,7 @@ function getalldayeventdata(item, currentdate, timestamp) {
 		itemclasses.push(BACKGROUNDCOLORLISTTRANSPARENT[item.color])
 	}
 
-	if ((item.completed && item.type == 1) || new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() < Date.now()) {
+	if (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() < Date.now()) {
 		itemclasses.push('greyedoutevent')
 	}
 
@@ -4297,7 +4317,7 @@ function getmontheventdata(item, currentdate, timestamp) {
 		itemclasses.push(BACKGROUNDCOLORLISTTRANSPARENT[item.color])
 	}
 
-	if ((item.completed && item.type == 1) || new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() < Date.now()) {
+	if (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() < Date.now()) {
 		itemclasses.push('greyedoutevent')
 	}
 
@@ -8193,38 +8213,39 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 		itemclasses.push('selectedcalendarevent')
 		itemclasses2.push('selectedtext')
 		itemclasses.push(BACKGROUNDCOLORLIST[item.color])
-	} else {
+	}else{
 		itemclasses.push(BACKGROUNDCOLORLISTTRANSPARENT[item.color])
+		itemclasses.push(BORDERCOLORLIST[item.color])
+		itemclasses.push('eventborder')
 	}
 
 	let newstartdate = new Date(newitem.start.year, newitem.start.month, newitem.start.day)
 	let oldstartdate = new Date(olditem.start.year, olditem.start.month, olditem.start.day)
 	let difference = Math.floor((newstartdate.getTime() - oldstartdate.getTime()) / 86400000)
 
-	if ((item.completed && item.type == 1)) {
-		itemclasses.push('greyedoutevent')
-	}
-
 	let output = ''
-	output = `<div class="eventwrap animatedeventwrap ${itemclasses.join(' ')}" style="transform: translateX(${percentage * difference * 100}%);top:${mytop}px;height:${myheight}px;" id="${item.id}">
-		<div class="${item.type == 1 ? `eventleftsmart` : `eventleft`} ${BORDERCOLORLIST[item.color]}"></div>
-		<div class="eventtext">
-			<div class="eventtextspace"></div>
-			<div class="eventtextdisplay ${itemclasses2.join(' ')} ${item.completed && item.type == 1 ? 'text-secondary' : ''}">
-	
-				<span class="text-bold">${item.title ? cleanInput(item.title) : 'New Event'}</span>
+	output = `
+	<div class="absolute pointer-none" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
+		<div class="popupbutton eventwrap pointer-auto ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
+			<div class="${item.type == 1 ? `eventleftsmart` : `eventleft`} ${BORDERCOLORLIST[item.color]}"></div>
+			<div class="eventtext">
+				<div class="eventtextspace"></div>
+				<div class="eventtextdisplay ${itemclasses2.join(' ')} ${item.completed && item.type == 1 ? 'text-secondary' : ''}">
 		
-				${item.type == 1 && item.priority != 0 ?
-			`<span class="todoitemcheckbox tooltip">
-						${getpriorityicon(item.priority)}
-					</span>`
-			:
-			''
-		}
-		
-				${myheight < 45 ? ' ' : '</br>'}${Calendar.Event.getShortStartEndText(item)}</div>
+					<span class="text-bold">${item.title ? cleanInput(item.title) : 'New Event'}</span>
+			
+					${item.type == 1 && item.priority != 0 ?
+						`<span class="todoitemcheckbox tooltip">
+							${getpriorityicon(item.priority)}
+						</span>`
+				:
+				''
+			}
+			
+				${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${getHMText(item.start.minute)}</span></div>
+			</div>
+		${item.type == 1 ? `<div class="eventleftsmart ${BORDERCOLORLIST[item.color]}"></div>` : ``}
 		</div>
-	${item.type == 1 ? `<div class="eventleftsmart ${BORDERCOLORLIST[item.color]}"></div>` : ``}
 	</div>`
 
 	return output
@@ -8290,7 +8311,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 		itemclasses.push('eventborder')
 	}
 
-	if ((item.completed && item.type == 1) || (tempenddate.getTime() < Date.now() && item.type != 1)) {
+	if (tempenddate.getTime() < Date.now()) {
 		itemclasses.push('greyedoutevent')
 	}
 
@@ -8303,15 +8324,17 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 				<div class="eventtextspace"></div>
 				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
 		
+					${item.type == 1 ? getwhitecheckcircle(item.completed) : ''}
+
 					<span class="text-bold">${item.title ? cleanInput(item.title) : 'New Event'}</span>
 			
 					${item.type == 1 && item.priority != 0 ?
 						`<span class="todoitemcheckbox tooltip">
 							${getpriorityicon(item.priority)}
 						</span>`
-				:
-				''
-			}
+						:
+						''
+					}
 			
 				${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${getHMText(item.start.minute)}</span></div>
 				
