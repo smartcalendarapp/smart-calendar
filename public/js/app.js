@@ -270,7 +270,7 @@ function getcolorcheckbox(boolean, color, tooltip) {
 			</svg>
 	 		${tooltip || ''}`
 	} else {
-		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="checkboxbutton ${STROKECOLORLIST[color]}">
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline checkboxunfilled">
 			<g>
 			<path d="M50 10L206 10C228.091 10 246 27.9086 246 50L246 206C246 228.091 228.091 246 206 246L50 246C27.9086 246 10 228.091 10 206L10 50C10 27.9086 27.9086 10 50 10Z" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"/>
 			</g>
