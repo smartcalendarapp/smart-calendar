@@ -3136,10 +3136,11 @@ body {
 
 
 .eventwrap {
-	height:100%;
-	width:100%;
-	margin-left:4px;
-	margin-right:4px;
+	position:absolute;
+	top:0;
+	bottom:0;
+	right:4px;
+	left:4px;
 	z-index: 2;
 	overflow: hidden;
 	display: flex;
