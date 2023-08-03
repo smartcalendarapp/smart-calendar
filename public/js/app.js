@@ -1325,7 +1325,7 @@ class Calendar {
 	}
 
 
-	updateAnimatedEvents(oldevents, newevents) {
+	updateAnimatedEvents() {
 		if (calendarmode == 0 || calendarmode == 1) {
 			for (let i = 0; i < [3, 21][calendarmode]; i++) {
 				let currentdate = new Date(calendar.getDate())
@@ -1349,8 +1349,8 @@ class Calendar {
 					if (editeventid == item.id) {
 						output.push(getdayeventdata(item, currentdate, currentdate.getTime(), 0, 1))
 					} else {
-						let olditem = oldevents.find(f => f.id == item.id)
-						let newitem = newevents.find(d => d.id == item.id)
+						let olditem = oldautoscheduleeventslist.find(f => f.id == item.id)
+						let newitem = newautoscheduleeventslist.find(d => d.id == item.id)
 
 						if (!olditem || !newitem) continue
 
@@ -2729,6 +2729,8 @@ let editinfo = false;
 let movingevent = false;
 let selectededittodoid;
 let autoscheduleeventslist = []
+let oldautoscheduleeventslist = []
+let newautoscheduleeventslist = []
 
 //new calendar
 let calendarmode = 1
@@ -9293,7 +9295,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 				let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
 				if(autoscheduleitem){
 					autoscheduleitem.percentage = beziercurve(tick/frames)
-					calendar.updateAnimatedEvents(oldsmartevents, newcalendarevents)
+					calendar.updateAnimatedEvents()
 				}
 
 
@@ -9319,7 +9321,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 				} else {
 					//continue
 					tick++
-					calendar.updateAnimatedEvents(oldsmartevents, newcalendarevents)
+					calendar.updateAnimatedEvents()
 					requestAnimationFrame(nextframe, 10)
 				}
 
@@ -9402,7 +9404,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 				} else {
 					//continue
 					tick++
-					calendar.updateAnimatedEvents(oldsmartevents, newcalendarevents)
+					calendar.updateAnimatedEvents()
 					requestAnimationFrame(nextframe, 10)
 				}
 
@@ -9426,7 +9428,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 
 		autoscheduleeventslist = [{ id: id, percentage: 0 }]
 		calendar.updateEvents()
-		calendar.updateAnimatedEvents(oldsmartevents, newcalendarevents)
+		calendar.updateAnimatedEvents()
 
 		autoscheduleframemenucontent.innerHTML = `
 		<div class="infotop">
@@ -9501,7 +9503,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 		//remove animate
 		autoscheduleeventslist = []
 		calendar.updateEvents()
-		calendar.updateAnimatedEvents([], [])
+		calendar.updateAnimatedEvents()
 
 		animateindex = 0
 		animatenextitem()
@@ -9512,7 +9514,10 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 
 		//remove animate
 		autoscheduleeventslist = []
-		calendar.updateAnimatedEvents([], [])
+		oldautoscheduleeventslist = []
+		newautoscheduleeventslist = []
+
+		calendar.updateAnimatedEvents()
 		calendar.updateEvents()
 
 		calendar.updateHistory()
@@ -9527,8 +9532,11 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 	//pre animate	
 	autoscheduleeventid = null
 	autoscheduleeventslist = [...modifiedevents.map(d => { return { id: d.id, percentage: 0 } })]
+	oldautoscheduleeventslist = oldsmartevents
+	newautoscheduleeventslist = newcalendarevents
+
 	calendar.updateEvents()
-	calendar.updateAnimatedEvents(oldsmartevents, newcalendarevents)
+	calendar.updateAnimatedEvents()
 
 	//animate
 	for(let item of modifiedevents){
