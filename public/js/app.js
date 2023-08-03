@@ -1291,38 +1291,6 @@ class Calendar {
 		}
 	}
 
-	updateAnimatedEvents() {
-		if (calendarmode == 0 || calendarmode == 1) {
-			for (let i = 0; i < [3, 21][calendarmode]; i++) {
-				let currentdate = new Date(calendar.getDate())
-				if (calendarmode == 1) {
-					currentdate.setDate(currentdate.getDate() - currentdate.getDay() + i - 7)
-				} else if (calendarmode == 0) {
-					currentdate.setDate(currentdate.getDate() + i - 1)
-				}
-
-				let nextdate = new Date(currentdate)
-				nextdate.setDate(nextdate.getDate() + 1)
-
-				let output = []
-
-				let tempevents = getevents(currentdate, nextdate, calendar.events.filter(d => d.id == editeventid))
-
-				if(autoscheduleeventslist.length > 0) continue
-
-				for (let item of tempevents) {
-					output.push(getdayeventdata(item, currentdate, currentdate.getTime(), 0, 1))
-				}
-
-				let animateeventbox = getElement(`animateeventbox${i}`)
-				if (!animateeventbox) continue
-				if (animateeventbox.innerHTML != output.join('')) {
-					animateeventbox.innerHTML = output.join('')
-				}
-			}
-
-		}
-	}
 
 
 	updateAnimatedEvents() {
