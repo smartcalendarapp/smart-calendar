@@ -1306,7 +1306,9 @@ class Calendar {
 
 				let output = []
 
-				let tempevents = getevents(currentdate, nextdate, calendar.events.filter(d => d.id == editeventid && !autoscheduleeventslist.find(g => g.id == d.id)))
+				let tempevents = getevents(currentdate, nextdate, calendar.events.filter(d => d.id == editeventid))
+
+				if(autoscheduleeventslist.find(g => g.id == editeventid)) continue
 
 				for (let item of tempevents) {
 					output.push(getdayeventdata(item, currentdate, currentdate.getTime(), 0, 1))
