@@ -4308,20 +4308,20 @@ function getmontheventdata(item, currentdate, timestamp) {
 		<div class="monthcontainerwraptextgroup">
 			<div class="monthcontainerwraptext">
 				<div class="monthcontainerwraptextdisplay ${itemclasses2.join(' ')}">
+					<span class="text-bold">${item.title ? cleanInput(item.title) : 'New Event'}</span>
 					${item.type == 1 && item.priority != 0 ?
-			`<span class="todoitemcheckbox tooltip">
+						`<span class="todoitemcheckbox tooltip">
 							${getpriorityicon(item.priority)}
 						</span>`
-			:
-			''
-		}
-			 
-					<span class="text-bold">${item.title ? cleanInput(item.title) : 'New Event'}</span>
+						:
+						''
+					}
+					
 				</div>
 			</div>
 			<div class="monthcontainerwraptext">
-				<div class="monthcontainerwraptextdisplay ${itemclasses2.join(' ')}">
-					${Calendar.Event.getShortStartEndText(item)}
+				<div class="monthcontainerwraptextdisplay text-quaternary ${itemclasses2.join(' ')}">
+					${getHMText(item.start.minute)}
 				</div>
 			</div>
 		</div>
