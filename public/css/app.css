@@ -3216,6 +3216,12 @@ body {
 	flex-direction: column;
 }
 
+
+.checkcircletop{
+	top:3px;
+}
+
+
 .eventtextdisplay {
 	font-size: 14px;
 	color: var(--text-primary);
