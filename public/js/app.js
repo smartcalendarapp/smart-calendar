@@ -2768,6 +2768,23 @@ let calendar = new Calendar()
 getclient()
 
 
+//timing functions
+function easeinoutquad(t, b, c, d) {
+	t /= d / 2
+	if (t < 1) return c / 2 * t * t + b
+	t--
+	return -c / 2 * (t * (t - 2) - 1) + b
+}
+
+function beziercurve(t){
+	return t * t * (3 - 2 * t)
+}
+
+function easeoutcubic(t) {
+	return 1 - Math.pow(1 - t, 3)
+}
+
+
 //scroll calendar Y
 let scrollYAnimationFrameId;
 function scrollcalendarY(targetminute) {
@@ -2785,20 +2802,13 @@ function scrollcalendarY(targetminute) {
 
 	function animateScroll() {
 		currentTime += increment
-		const val = easeInOutQuad(currentTime, start, change, duration)
+		const val = easeoutcubic(currentTime, start, change, duration)
 		barcolumncontainer.scrollTo(0, val)
 		if (currentTime < duration) {
 			scrollYAnimationFrameId = requestAnimationFrame(animateScroll, increment)
 		}
 	}
 	scrollYAnimationFrameId = requestAnimationFrame(animateScroll, increment)
-
-	function easeInOutQuad(t, b, c, d) {
-		t /= d / 2
-		if (t < 1) return c / 2 * t * t + b
-		t--
-		return -c / 2 * (t * (t - 2) - 1) + b
-	}
 }
 
 //scroll calendar X
@@ -2827,7 +2837,7 @@ function scrollcalendarX(targetdate) {
 
 	function animateScroll() {
 		currentTime += increment;
-		let val = easeInOutQuad(currentTime, start, change, duration);
+		let val = easeinoutquad(currentTime, start, change, duration);
 
 		barcolumngroup.style.scrollSnapType = 'none'
 		barcolumngroup.scrollTo(val, 0)
@@ -2840,12 +2850,6 @@ function scrollcalendarX(targetdate) {
 	}
 	scrollXAnimationFrameId = requestAnimationFrame(animateScroll, increment);
 
-	function easeInOutQuad(t, b, c, d) {
-		t /= d / 2;
-		if (t < 1) return c / 2 * t * t + b;
-		t--;
-		return -c / 2 * (t * (t - 2) - 1) + b;
-	}
 }
 
 
@@ -9252,10 +9256,6 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 
 	function animateitem(id){
 		return new Promise(resolve => {
-			function beziercurve(t){
-				return t * t * (3 - 2 * t)
-			}
-
 			let newitem = newcalendarevents.find(d => d.id == id)
 			let olditem = oldsmartevents.find(d => d.id == id)
 			let item = calendar.events.find(d => d.id == id)
@@ -9277,7 +9277,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 
 			const frames = 30
 			function nextframe(){
-				let newstartdate = new Date(oldstartdate.getTime() + difference * beziercurve(tick/frames))
+				let newstartdate = new Date(oldstartdate.getTime() + difference * easeoutcubic(tick/frames))
 				let newenddate = new Date(newstartdate.getTime() + duration)
 
 				item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()
@@ -9292,7 +9292,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 
 				let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
 				if(autoscheduleitem){
-					autoscheduleitem.percentage = beziercurve(tick/frames)
+					autoscheduleitem.percentage = easeoutcubic(tick/frames)
 					calendar.updateAnimatedEvents(oldsmartevents, newcalendarevents)
 				}
 
@@ -9333,9 +9333,6 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 
 	function animateitems(items) {
 		return new Promise(resolve => {
-			function beziercurve(t) {
-				return t * t * (3 - 2 * t)
-			}
 
 			if (items.length == 0) {
 				resolve()
@@ -9364,7 +9361,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 					let difference = finalstartdate.getTime() - oldstartdate.getTime()
 
 
-					let newstartdate = new Date(oldstartdate.getTime() + difference * beziercurve(tick / frames))
+					let newstartdate = new Date(oldstartdate.getTime() + difference * easeoutcubic(tick / frames))
 					let newenddate = new Date(newstartdate.getTime() + duration)
 
 					item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()
@@ -9379,7 +9376,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 
 					let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
 					if (autoscheduleitem) {
-						autoscheduleitem.percentage = beziercurve(tick / frames)
+						autoscheduleitem.percentage = easeoutcubic(tick / frames)
 					}
 
 					if (tick > frames) {
@@ -9805,10 +9802,6 @@ async function autoScheduleV1(currentevents, showsummary) {
 		})
 	}
 
-	function beziercurve(t) {
-		return t * t * (3 - 2 * t)
-	}
-
 	let newevents = deepCopy(calendar.events)
 	let intermediateevents = deepCopy(oldcalendarevents)
 	calendar.events = intermediateevents
@@ -9816,6 +9809,7 @@ async function autoScheduleV1(currentevents, showsummary) {
 	let frames = 30
 	for (let tick = 0; tick < frames; tick++) {
 		for (let item of intermediateevents) {
+
 			let newitem = newevents.find(d => d.id == item.id)
 			let olditem = oldevents.find(d => d.id == item.id)
 
