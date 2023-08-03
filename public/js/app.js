@@ -1291,7 +1291,7 @@ class Calendar {
 		}
 	}
 
-	updateSelectedEvent() {
+	updateAnimatedEvents() {
 		if (calendarmode == 0 || calendarmode == 1) {
 			for (let i = 0; i < [3, 21][calendarmode]; i++) {
 				let currentdate = new Date(calendar.getDate())
@@ -1371,7 +1371,7 @@ class Calendar {
 
 
 	updateEvents() {
-		this.updateSelectedEvent()
+		this.updateAnimatedEvents()
 
 		if (calendarmode == 0 || calendarmode == 1) {
 			function getConflictingData(temp1, data, strict) {
@@ -9533,7 +9533,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 	//animate
 	for(let item of modifiedevents){
 		await animateitem(item.id)
-		await sleep(3000)
+		await sleep(300)
 	}
 
 	//post animate
@@ -10354,7 +10354,7 @@ function moveboxcolumn(event) {
 
 		editinfo = true
 
-		calendar.updateSelectedEvent()
+		calendar.updateAnimatedEvents()
 		calendar.updateInfo(true)
 
 		document.removeEventListener("mousemove", moveboxcolumn, false)
@@ -10514,7 +10514,7 @@ function moveevent(event) {
 	item.end.month = tempdate2.getMonth()
 	item.end.year = tempdate2.getFullYear()
 
-	calendar.updateSelectedEvent()
+	calendar.updateAnimatedEvents()
 	calendar.updateInfo()
 }
 
@@ -10708,7 +10708,7 @@ function moveeventbottom(event) {
 		}
 	}
 
-	calendar.updateSelectedEvent()
+	calendar.updateAnimatedEvents()
 	calendar.updateInfo()
 }
 
@@ -10778,7 +10778,7 @@ function moveeventtop(event) {
 		}, false);
 	}
 
-	calendar.updateSelectedEvent()
+	calendar.updateAnimatedEvents()
 	calendar.updateInfo()
 }
 
