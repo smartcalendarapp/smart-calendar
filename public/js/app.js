@@ -9273,7 +9273,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 			
 			let difference = finalstartdate.getTime() - oldstartdate.getTime()
 
-			const frames = 30
+			const frames = 50
 			function nextframe(){
 				let newstartdate = new Date(oldstartdate.getTime() + difference * easeoutcubic(tick/frames))
 				let newenddate = new Date(newstartdate.getTime() + duration)
@@ -9337,7 +9337,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 				return
 			}
 
-			const frames = 30
+			const frames = 50
 			function nextframe() {
 				for (let id of items) {
 					let newitem = newcalendarevents.find(d => d.id == id)
@@ -9531,6 +9531,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 	//animate
 	for(let item of modifiedevents){
 		await animateitem(item.id)
+		await sleep(300)
 	}
 
 	//post animate
