@@ -340,14 +340,14 @@ function getcheckcircle(boolean, tooltip) {
 //get white check circle
 function getwhitecheckcircle(boolean, tooltip) {
 	if (boolean) {
-		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge checkboxfilledprimary">
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline checkboxfilledprimary">
 			<g>
 			<path d="M128 0C57.3075 0 0 57.3075 0 128C0 198.692 57.3075 256 128 256C198.692 256 256 198.692 256 128C256 57.3075 198.692 0 128 0ZM194.594 62.3125C198.149 61.9971 201.797 63.0595 204.75 65.5312C210.656 70.4747 211.443 79.2504 206.5 85.1562L114.781 194.719C109.207 201.378 98.949 201.378 93.375 194.719L47.5 139.938C42.5566 134.032 43.3441 125.256 49.25 120.312C55.1559 115.369 63.9628 116.157 68.9062 122.062L104.062 164.062L185.094 67.2812C187.565 64.3283 191.039 62.6279 194.594 62.3125Z" fill-rule="nonzero" opacity="1" ></path>
 			</g>
 			</svg>
 	 		${tooltip || ''}`
 	} else {
-		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge checkboxunfilled">
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline checkboxunfilled">
 			<g>
 			<path d="M128 10L128 10C193.17 10 246 62.8304 246 128L246 128C246 193.17 193.17 246 128 246L128 246C62.8304 246 10 193.17 10 128L10 128C10 62.8304 62.8304 10 128 10Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
 			</g>
@@ -8322,9 +8322,14 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 			${!Calendar.Event.isReadOnly(item) ? itemclicks.join('') : ''}
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
-				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
-		
-					${item.type == 1 ? getwhitecheckcircle(item.completed) : ''}
+				<div class="eventtextdisplay ${myheight < 45 ? ' ' : '</br>'} ${itemclasses2.join(' ')}">
+					
+					${item.type == 1 ? 
+						`<span class="todoitemcheckbox tooltip">
+							${getwhitecheckcircle(item.completed)}
+						</span>` 
+						: ''
+					}
 
 					<span class="text-bold">${item.title ? cleanInput(item.title) : 'New Event'}</span>
 			
@@ -8335,8 +8340,11 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 						:
 						''
 					}
+					
 			
-				${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${getHMText(item.start.minute)}</span></div>
+					${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${getHMText(item.start.minute)}</span>
+				
+				</div>
 				
 			</div>
 		</div>
