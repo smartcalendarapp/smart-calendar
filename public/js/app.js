@@ -2769,13 +2769,6 @@ getclient()
 
 
 //timing functions
-function easeinoutquad(t, b, c, d) {
-	t /= d / 2
-	if (t < 1) return c / 2 * t * t + b
-	t--
-	return -c / 2 * (t * (t - 2) - 1) + b
-}
-
 function beziercurve(t){
 	return t * t * (3 - 2 * t)
 }
@@ -2801,8 +2794,15 @@ function scrollcalendarY(targetminute) {
 	let currentTime = 0
 
 	function animateScroll() {
+		function easeinoutquad(t, b, c, d) {
+			t /= d / 2
+			if (t < 1) return c / 2 * t * t + b
+			t--
+			return -c / 2 * (t * (t - 2) - 1) + b
+		}
+
 		currentTime += increment
-		const val = easeoutcubic(currentTime, start, change, duration)
+		const val = easeinoutquad(currentTime, start, change, duration)
 		barcolumncontainer.scrollTo(0, val)
 		if (currentTime < duration) {
 			scrollYAnimationFrameId = requestAnimationFrame(animateScroll, increment)
@@ -9273,9 +9273,9 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 			
 			let difference = finalstartdate.getTime() - oldstartdate.getTime()
 
-			const frames = 50
+			const frames = 40
 			function nextframe(){
-				let newstartdate = new Date(oldstartdate.getTime() + difference * easeoutcubic(tick/frames))
+				let newstartdate = new Date(oldstartdate.getTime() + difference * beziercurve(tick/frames))
 				let newenddate = new Date(newstartdate.getTime() + duration)
 
 				item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()
@@ -9290,7 +9290,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 
 				let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
 				if(autoscheduleitem){
-					autoscheduleitem.percentage = easeoutcubic(tick/frames)
+					autoscheduleitem.percentage = beziercurve(tick/frames)
 					calendar.updateAnimatedEvents(oldsmartevents, newcalendarevents)
 				}
 
@@ -9337,7 +9337,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 				return
 			}
 
-			const frames = 50
+			const frames = 40
 			function nextframe() {
 				for (let id of items) {
 					let newitem = newcalendarevents.find(d => d.id == id)
@@ -9359,7 +9359,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 					let difference = finalstartdate.getTime() - oldstartdate.getTime()
 
 
-					let newstartdate = new Date(oldstartdate.getTime() + difference * easeoutcubic(tick / frames))
+					let newstartdate = new Date(oldstartdate.getTime() + difference * beziercurve(tick / frames))
 					let newenddate = new Date(newstartdate.getTime() + duration)
 
 					item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()
@@ -9374,7 +9374,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 
 					let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
 					if (autoscheduleitem) {
-						autoscheduleitem.percentage = easeoutcubic(tick / frames)
+						autoscheduleitem.percentage = beziercurve(tick / frames)
 					}
 
 					if (tick > frames) {
