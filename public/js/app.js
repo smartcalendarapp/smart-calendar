@@ -8227,26 +8227,36 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 
 	let output = ''
 	output = `
-	<div class="absolute pointer-none" style="top:${mytop}px;height:${myheight}px;left:0;width:100%">
+	<div class="absolute pointer-none" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
 		<div class="popupbutton eventwrap pointer-auto ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
-			<div class="${item.type == 1 ? `eventleftsmart` : `eventleft`} ${BORDERCOLORLIST[item.color]}"></div>
+			${!Calendar.Event.isReadOnly(item) ? itemclicks.join('') : ''}
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
-				<div class="eventtextdisplay ${itemclasses2.join(' ')} ${item.completed && item.type == 1 ? 'text-secondary' : ''}">
-		
+				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
+					
+					${item.type == 1 ? 
+						`<span class="todoitemcheckbox tooltip checkcircletop">
+							${getwhitecheckcircle(item.completed)}
+						</span>` 
+						: ''
+					}
+
 					<span class="text-bold">${item.title ? cleanInput(item.title) : 'New Event'}</span>
 			
 					${item.type == 1 && item.priority != 0 ?
 						`<span class="todoitemcheckbox tooltip">
 							${getpriorityicon(item.priority)}
 						</span>`
-				:
-				''
-			}
+						:
+						''
+					}
+					
 			
-				${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${getHMText(item.start.minute)}</span></div>
+					${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${getHMText(item.start.minute)}</span>
+				
+				</div>
+				
 			</div>
-		${item.type == 1 ? `<div class="eventleftsmart ${BORDERCOLORLIST[item.color]}"></div>` : ``}
 		</div>
 	</div>`
 
