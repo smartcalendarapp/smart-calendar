@@ -3139,8 +3139,8 @@ body {
 	position:absolute;
 	top:0;
 	bottom:0;
-	right:6px;
-	left:0;
+	right:4px;
+	left:5px;
 	z-index: 2;
 	overflow: hidden;
 	display: flex;
