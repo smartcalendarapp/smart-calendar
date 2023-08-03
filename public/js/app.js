@@ -8282,10 +8282,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	if (selectedeventid == item.id || autoscheduleeventid == item.id) {
 		itemclasses.push('selectedevent')
 		itemclasses.push('selectedcalendarevent')
-		itemclasses2.push('selectedtext')
-		itemclasses.push(BACKGROUNDCOLORLIST[item.color])
-	} else {
-		itemclasses.push(BACKGROUNDCOLORLISTTRANSPARENT[item.color])
+		itemclasses.push('box-shadow')
 	}
 
 	if ((item.completed && item.type == 1) || (tempenddate.getTime() < Date.now() && item.type != 1)) {
@@ -8293,9 +8290,8 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	}
 
 	let output = ''
-	output = `<div class="popupbutton eventwrap ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
+	output = `<div class="popupbutton eventwrap selectedtext ${BACKGROUNDCOLORLIST[item.color]} ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
 		${!Calendar.Event.isReadOnly(item) ? itemclicks.join('') : ''}
-		<div class="${item.type == 1 ? `eventleftsmart` : `eventleft`} ${BORDERCOLORLIST[item.color]}"></div>
 		<div class="eventtext">
 			<div class="eventtextspace"></div>
 			<div class="eventtextdisplay ${itemclasses2.join(' ')}">
@@ -8313,7 +8309,6 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 				${myheight < 45 ? ' ' : '</br>'}${Calendar.Event.getShortStartEndText(item)}</div>
 			
 		</div>
-		${item.type == 1 ? `<div class="eventleftsmart ${BORDERCOLORLIST[item.color]}"></div>` : ``}
 	</div>`
 
 	return output
