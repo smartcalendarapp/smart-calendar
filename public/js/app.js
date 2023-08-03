@@ -9242,6 +9242,88 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 	calendar.events = deepCopy(oldcalendarevents)
 
 
+
+	function animateitem(id){
+		return new Promise(resolve => {
+			function beziercurve(t){
+				return t * t * (3 - 2 * t)
+			}
+
+			let newitem = newcalendarevents.find(d => d.id == id)
+			let olditem = oldsmartevents.find(d => d.id == id)
+			let item = calendar.events.find(d => d.id == id)
+
+			if(!newitem || !olditem || !item){
+				resolve()
+				return
+			}
+
+			let oldstartdate = new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute)
+			let oldenddate = new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute)
+			let duration = oldenddate.getTime() - oldstartdate.getTime()
+
+			let realfinalstartdate = new Date(newitem.start.year, newitem.start.month, newitem.start.day, 0, newitem.start.minute)
+			let finalstartdate = new Date(oldstartdate)
+			finalstartdate.setHours(realfinalstartdate.getHours(), realfinalstartdate.getMinutes())
+			
+			let difference = finalstartdate.getTime() - oldstartdate.getTime()
+
+			const frames = 30
+			function nextframe(){
+				let newstartdate = new Date(oldstartdate.getTime() + difference * beziercurve(tick/frames))
+				let newenddate = new Date(newstartdate.getTime() + duration)
+
+				item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()
+				item.start.day = newstartdate.getDate()
+				item.start.month = newstartdate.getMonth()
+				item.start.year = newstartdate.getFullYear()
+
+				item.end.minute = newenddate.getHours() * 60 + newenddate.getMinutes()
+				item.end.day = newenddate.getDate()
+				item.end.month = newenddate.getMonth()
+				item.end.year = newenddate.getFullYear()
+
+				let autoscheduleitem = autoscheduleevents.find(f => f.id == item.id)
+				if(autoscheduleitem){
+					autoscheduleitem.percentage = beziercurve(tick/frames)
+					calendar.updateAnimatedEvents(oldsmartevents, newcalendarevents)
+				}
+
+
+				if (tick > frames) {
+					let newstartdate = new Date(realfinalstartdate)
+					let newenddate = new Date(newstartdate.getTime() + duration)
+	
+					item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()
+					item.start.day = newstartdate.getDate()
+					item.start.month = newstartdate.getMonth()
+					item.start.year = newstartdate.getFullYear()
+					
+					item.end.minute = newenddate.getHours() * 60 + newenddate.getMinutes()
+					item.end.day = newenddate.getDate()
+					item.end.month = newenddate.getMonth()
+					item.end.year = newenddate.getFullYear()
+				}
+
+
+				if (tick > frames) {
+					//stop
+					return resolve()
+				} else {
+					//continue
+					tick++
+					calendar.updateAnimatedEvents(oldsmartevents, newcalendarevents)
+					requestAnimationFrame(nextframe, 10)
+				}
+
+			}
+
+			let tick = 0
+			nextframe()
+		})
+	}
+
+
 	function animateitems(items) {
 		return new Promise(resolve => {
 			function beziercurve(t) {
@@ -9445,7 +9527,10 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 	calendar.updateAnimatedEvents(oldsmartevents, newcalendarevents)
 
 	//animate
-	await animateitems(modifiedevents.map(d => d.id))
+	for(let item of modifiedevents){
+		await animateitem(item.id)
+	}
+	//await animateitems(modifiedevents.map(d => d.id))
 
 	//post animate
 	let animateindex = 0
