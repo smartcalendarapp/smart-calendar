@@ -8296,7 +8296,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 	let output = ''
 	output = `
-	<div class="absolute eventcontainer" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
+	<div class="absolute" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
 		<div class="popupbutton eventwrap ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
 			${!Calendar.Event.isReadOnly(item) ? itemclicks.join('') : ''}
 			<div class="eventtext">
