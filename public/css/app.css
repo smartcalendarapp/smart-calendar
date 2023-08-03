@@ -1335,6 +1335,11 @@ body {
 	display: inline-flex;
 }
 
+.selectedevent .text-quaternary{
+	color:var(--white) !important;
+}
+
+
 
 .completedtext {
 	color: var(--text-secondary) !important
@@ -1343,6 +1348,7 @@ body {
 .selectedevent .starboxfilledgray {
 	fill: var(--white) !important;
 }
+
 
 
 .todoitemtextwidth {
