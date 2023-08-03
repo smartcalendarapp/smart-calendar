@@ -1292,7 +1292,6 @@ class Calendar {
 	}
 
 
-
 	updateAnimatedEvents() {
 		if (calendarmode == 0 || calendarmode == 1) {
 			for (let i = 0; i < [3, 21][calendarmode]; i++) {
@@ -8201,7 +8200,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 
 	let output = ''
 	output = `
-	<div class="absolute pointer-none" style="top:${mytop}px;height:${myheight}px;left:0;width:100%">
+	<div class="absolute pointer-none" style="transform: translateX(${percentage * difference * 100}%);top:${mytop}px;height:${myheight}px;left:0;width:100%;">
 		<div class="popupbutton eventwrap pointer-auto eventborder ${BORDERCOLORLIST[item.color]} ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
@@ -9470,6 +9469,8 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 
 		//remove animate
 		autoscheduleeventslist = []
+		oldautoscheduleeventslist = []
+		newautoscheduleeventslist = []
 		calendar.updateEvents()
 		calendar.updateAnimatedEvents()
 
