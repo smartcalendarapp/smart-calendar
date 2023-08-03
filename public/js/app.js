@@ -9283,7 +9283,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 				item.end.month = newenddate.getMonth()
 				item.end.year = newenddate.getFullYear()
 
-				let autoscheduleitem = autoscheduleevents.find(f => f.id == item.id)
+				let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
 				if(autoscheduleitem){
 					autoscheduleitem.percentage = beziercurve(tick/frames)
 					calendar.updateAnimatedEvents(oldsmartevents, newcalendarevents)
@@ -9530,7 +9530,6 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 	for(let item of modifiedevents){
 		await animateitem(item.id)
 	}
-	//await animateitems(modifiedevents.map(d => d.id))
 
 	//post animate
 	let animateindex = 0
