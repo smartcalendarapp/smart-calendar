@@ -3143,10 +3143,10 @@ body {
 
 .eventwrap {
 	position:absolute;
-	top:2px;
-	bottom:0;
-	right:4px;
-	left:4px;
+	top:1px;
+	bottom:1px;
+	right:3px;
+	left:3px;
 	z-index: 2;
 	overflow: hidden;
 	display: flex;
@@ -3169,13 +3169,13 @@ body {
 }
 
 .eventwrapbottom {
-	border-bottom-left-radius: 8px;
-	border-bottom-right-radius: 8px;
+	border-bottom-left-radius: 6px;
+	border-bottom-right-radius: 6px;
 }
 
 .eventwraptop {
-	border-top-left-radius: 8px;
-	border-top-right-radius: 8px;
+	border-top-left-radius: 6px;
+	border-top-right-radius: 6px;
 }
 
 .eventtop {
@@ -3214,7 +3214,7 @@ body {
 
 .eventtextspace {
 	flex-basis: auto;
-	height: 6px;
+	height: 4px;
 	flex-shrink: 1;
 }
 
