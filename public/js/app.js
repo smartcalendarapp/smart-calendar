@@ -8221,7 +8221,6 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 		itemclasses.push(BACKGROUNDCOLORLIST[item.color])
 	}else{
 		itemclasses.push(BACKGROUNDCOLORLISTTRANSPARENT[item.color])
-		itemclasses.push(BORDERCOLORLIST[item.color])
 	}
 
 	let newstartdate = new Date(newitem.start.year, newitem.start.month, newitem.start.day)
@@ -8231,7 +8230,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 	let output = ''
 	output = `
 	<div class="absolute pointer-none" style="top:${mytop}px;height:${myheight}px;left:0;width:100%">
-		<div class="popupbutton eventwrap pointer-auto eventborder ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
+		<div class="popupbutton eventwrap pointer-auto eventborder ${BORDERCOLORLIST[item.color]} ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
 				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
@@ -8321,7 +8320,6 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 		itemclasses.push(BACKGROUNDCOLORLIST[item.color])
 	}else{
 		itemclasses.push(BACKGROUNDCOLORLISTTRANSPARENT[item.color])
-		itemclasses.push(BORDERCOLORLIST[item.color])
 	}
 
 	if (tempenddate.getTime() < Date.now()) {
@@ -8331,7 +8329,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	let output = ''
 	output = `
 	<div class="absolute pointer-none" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
-		<div class="popupbutton eventwrap pointer-auto eventborder ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
+		<div class="popupbutton eventwrap pointer-auto eventborder ${BORDERCOLORLIST[item.color]} ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
 			${!Calendar.Event.isReadOnly(item) ? itemclicks.join('') : ''}
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
