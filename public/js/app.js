@@ -8282,7 +8282,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	if (selectedeventid == item.id || autoscheduleeventid == item.id) {
 		itemclasses.push('selectedevent')
 		itemclasses.push('selectedcalendarevent')
-		itemclasses.push('selectedtext')
+		itemclasses2.push('selectedtext')
 		itemclasses.push(BACKGROUNDCOLORLIST[item.color])
 	}else{
 		itemclasses.push(BACKGROUNDCOLORLISTTRANSPARENT[item.color])
