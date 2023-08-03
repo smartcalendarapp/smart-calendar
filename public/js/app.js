@@ -8313,7 +8313,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 				''
 			}
 			
-					</div>
+				${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${getHMText(item.start.minute)}</span></div>
 				
 			</div>
 		</div>
