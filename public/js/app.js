@@ -8295,24 +8295,27 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	}
 
 	let output = ''
-	output = `<div class="popupbutton eventwrap ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
-		${!Calendar.Event.isReadOnly(item) ? itemclicks.join('') : ''}
-		<div class="eventtext">
-			<div class="eventtextspace"></div>
-			<div class="eventtextdisplay ${itemclasses2.join(' ')}">
-	
-				<span class="text-bold">${item.title ? cleanInput(item.title) : 'New Event'}</span>
+	output = `
+	<div class="absolute eventcontainer" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
+		<div class="popupbutton eventwrap ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
+			${!Calendar.Event.isReadOnly(item) ? itemclicks.join('') : ''}
+			<div class="eventtext">
+				<div class="eventtextspace"></div>
+				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
 		
-				${item.type == 1 && item.priority != 0 ?
-			`<span class="todoitemcheckbox tooltip">
-						${getpriorityicon(item.priority)}
-					</span>`
-			:
-			''
-		}
-		
-				${myheight < 45 ? ' ' : '</br>'}${Calendar.Event.getShortStartEndText(item)}</div>
+					<span class="text-bold">${item.title ? cleanInput(item.title) : 'New Event'}</span>
 			
+					${item.type == 1 && item.priority != 0 ?
+				`<span class="todoitemcheckbox tooltip">
+							${getpriorityicon(item.priority)}
+						</span>`
+				:
+				''
+			}
+			
+					${myheight < 45 ? ' ' : '</br>'}${Calendar.Event.getShortStartEndText(item)}</div>
+				
+			</div>
 		</div>
 	</div>`
 
