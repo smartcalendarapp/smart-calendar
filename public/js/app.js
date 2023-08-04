@@ -844,6 +844,8 @@ class Calendar {
 		todowrap.classList.add('display-none')
 		calendarwrap.classList.add('display-none')
 
+		let paneldivider = getElement('paneldivider')
+
 		//buttons
 		let calendartab = getElement('calendartab')
 		let todolisttab = getElement('todolisttab')
@@ -861,7 +863,7 @@ class Calendar {
 		calendartab2.classList.remove('selectedbutton2')
 		summarytab2.classList.remove('selectedbutton2')
 
-		todolisttab.classList.remove('smartbuttonbackgroundfaded')
+		paneldivider.classList.add('display-none')
 
 		if (calendartabs.includes(1)) {
 			this.updateTodo()
@@ -869,6 +871,8 @@ class Calendar {
 
 			calendartab.classList.add('selectedbutton')
 			calendartab2.classList.add('selectedbutton2')
+
+			paneldivider.classList.remove('display-none')
 		}
 
 		if (calendartabs.includes(0)) {
@@ -877,6 +881,8 @@ class Calendar {
 
 			calendartab.classList.add('selectedbutton')
 			calendartab2.classList.add('selectedbutton2')
+
+			paneldivider.classList.remove('display-none')
 		}
 
 		if (calendartabs.includes(2)) {
