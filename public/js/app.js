@@ -95,23 +95,23 @@ function round(number, increment) {
 	return Math.round(number / increment) * increment;
 }
 
-function getShortHMText(input) {
+function getShortHMText(input, showtext) {
 	let hours = Math.floor(input / 60)
 	let minutes = input % 60
 	if (calendar.settings.militarytime) {
 		return `${hours % 24}:${minutes.toString().padStart(2, '0')}`
 	} else {
-		return `${hours % 12 || 12}${minutes ? `:${minutes.toString().padStart(2, '0')}` : ''} ${hours >= 12 ? 'PM' : 'AM'}`
+		return `${hours % 12 || 12}${minutes ? `:${minutes.toString().padStart(2, '0')}` : ''}${showtext == false ? '' : ` ${hours >= 12 ? 'PM' : 'AM'}`}`
 	}
 }
 
-function getHMText(input) {
+function getHMText(input, showtext) {
 	let hours = Math.floor(input / 60)
 	let minutes = input % 60
 	if (calendar.settings.militarytime) {
 		return `${hours % 24}:${minutes.toString().padStart(2, '0')}`
 	} else {
-		return `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')} ${hours >= 12 ? 'pm' : 'am'}`
+		return `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')}${showtext == false ? '' : ` ${hours >= 12 ? 'PM' : 'AM'}`}`
 	}
 }
 
@@ -753,10 +753,14 @@ class Calendar {
 		}
 
 		static getShortStartEndText(item) {
+			function sametext(minutes1, minutes2) {
+				return (minutes1 >= 0 && minutes1 < 720 && minutes2 >= 0 && minutes2 < 720) || (minutes1 >= 720 && minutes1 <= 1439 && minutes2 >= 720 && minutes2 <= 1439);
+			}
+				
 			if (Calendar.Event.isAllDay(item)) {
 				return 'All day'
 			} else {
-				return `${getHMText(item.start.minute)} – ${getHMText(item.end.minute)}`
+				return `${getShortHMText(item.start.minute, sametext(item.start.minute, item.end.minute))} – ${getShortHMText(item.end.minute)}`
 			}
 		}
 
