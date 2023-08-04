@@ -95,23 +95,13 @@ function round(number, increment) {
 	return Math.round(number / increment) * increment;
 }
 
-function getShortHMText(input, showtext) {
-	let hours = Math.floor(input / 60)
-	let minutes = input % 60
-	if (calendar.settings.militarytime) {
-		return `${hours % 24}:${minutes.toString().padStart(2, '0')}`
-	} else {
-		return `${hours % 12 || 12}${minutes ? `:${minutes.toString().padStart(2, '0')}` : ''}${showtext == false ? '' : ` ${hours >= 12 ? 'PM' : 'AM'}`}`
-	}
-}
-
 function getHMText(input, showtext) {
 	let hours = Math.floor(input / 60)
 	let minutes = input % 60
 	if (calendar.settings.militarytime) {
 		return `${hours % 24}:${minutes.toString().padStart(2, '0')}`
 	} else {
-		return `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')}${showtext == false ? '' : ` ${hours >= 12 ? 'PM' : 'AM'}`}`
+		return `${hours % 12 || 12}${minutes ? `:${minutes.toString().padStart(2, '0')}` : ''}${showtext == false ? '' : ` ${hours >= 12 ? 'PM' : 'AM'}`}`
 	}
 }
 
@@ -760,11 +750,15 @@ class Calendar {
 			if (Calendar.Event.isAllDay(item)) {
 				return 'All day'
 			} else {
-				return `${getShortHMText(item.start.minute, sametext(item.start.minute, item.end.minute))} – ${getShortHMText(item.end.minute)}`
+				return `${getHMText(item.start.minute, !sametext(item.start.minute, item.end.minute))} – ${getHMText(item.end.minute)}`
 			}
 		}
 
 		static getFullStartEndText(item) {
+			function sametext(minutes1, minutes2) {
+				return (minutes1 >= 0 && minutes1 < 720 && minutes2 >= 0 && minutes2 < 720) || (minutes1 >= 720 && minutes1 <= 1439 && minutes2 >= 720 && minutes2 <= 1439);
+			}
+
 			let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 			let enddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
 
@@ -779,7 +773,7 @@ class Calendar {
 				}
 			} else {
 				timelist.push(getDMDYText(startdate))
-				timelist.push(getHMText(startdate.getHours() * 60 + startdate.getMinutes()))
+				timelist.push(getHMText(startdate.getHours() * 60 + startdate.getMinutes(), !sametext(item.start.minute, item.end.minute)))
 
 				timelist.push('–')
 				if (enddate.getDate() != startdate.getDate() || enddate.getMonth() != startdate.getMonth() || enddate.getFullYear() != startdate.getFullYear()) {
@@ -1494,7 +1488,7 @@ class Calendar {
 			let time = []
 			for (let i = 0; i < 25; i++) {
 				let difference = Math.abs((currentdate.getHours() * 60 + currentdate.getMinutes()) - (i * 60))
-				time.push(`<div class="timebox"><div class="timedisplay">${difference >= 10 ? `${getShortHMText(tempdate.getHours() * 60 + tempdate.getMinutes())}` : ''}</div></div>`)
+				time.push(`<div class="timebox"><div class="timedisplay">${difference >= 10 ? `${getHMText(tempdate.getHours() * 60 + tempdate.getMinutes())}` : ''}</div></div>`)
 				tempdate.setHours(tempdate.getHours() + 1)
 			}
 			timeboxcolumn.innerHTML = time.join('')
@@ -1503,7 +1497,7 @@ class Calendar {
 			let realtimedisplay = getElement('realtimedisplay')
 			realtimedisplay.classList.remove('display-none')
 			realtimedisplay.style.top = (currentdate.getHours() * 60 + currentdate.getMinutes()) + 'px'
-			realtimedisplay.innerHTML = getShortHMText(currentdate.getHours() * 60 + currentdate.getMinutes())
+			realtimedisplay.innerHTML = getHMText(currentdate.getHours() * 60 + currentdate.getMinutes())
 
 			let realbardisplay = getElement('realbardisplay')
 			realbardisplay.classList.remove('display-none')
@@ -8231,7 +8225,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 					}
 					
 			
-					${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${getHMText(item.start.minute)}</span>
+					${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item.start.minute)}</span>
 				
 				</div>
 				
@@ -8332,7 +8326,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 					}
 					
 			
-					${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${getHMText(item.start.minute)}</span>
+					${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item.start.minute)}</span>
 				
 				</div>
 				
