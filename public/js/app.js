@@ -111,7 +111,7 @@ function getHMText(input) {
 	if (calendar.settings.militarytime) {
 		return `${hours % 24}:${minutes.toString().padStart(2, '0')}`
 	} else {
-		return `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')}${hours >= 12 ? 'pm' : 'am'}`
+		return `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')} ${hours >= 12 ? 'pm' : 'am'}`
 	}
 }
 
