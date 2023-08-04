@@ -111,7 +111,7 @@ function getHMText(input) {
 	if (calendar.settings.militarytime) {
 		return `${hours % 24}:${minutes.toString().padStart(2, '0')}`
 	} else {
-		return `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')} ${hours >= 12 ? 'PM' : 'AM'}`
+		return `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')}${hours >= 12 ? 'pm' : 'am'}`
 	}
 }
 
@@ -6952,7 +6952,7 @@ function gettododata(item) {
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 				 
 									<div class="gap-6px todoitemtextbutton display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton" onclick="clicktodoitemduedate(event, '${item.id}')">
-										<div class="pointer-auto pointer ${!endbeforedate ? 'text-quaternary hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-blue hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${Calendar.Event.getDueText(item)}` : 'No due date'}</div>
+										<div class="pointer-auto pointer ${!endbeforedate ? 'text-quaternary hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-blue hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${CgetHMText(item.endbefore.minute)}` : 'No due date'}</div>
 									</div>
 	
 									<div class="todoitemtextbutton width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-green hoverunderlinegreen pointer-auto pointer transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
@@ -9256,7 +9256,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 			const frames = 30
 			function nextframe(){
 				if(todoitem){
-					let percentage = beziercurve(tick/frames)
+					let percentage = easeoutcubic(tick/frames)
 					
 					let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
 					if(autoscheduleitem){
