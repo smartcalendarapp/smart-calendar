@@ -1323,7 +1323,8 @@ class Calendar {
 
 						let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
 						let percentage = autoscheduleitem.percentage
-						output.push(getanimateddayeventdata(item, olditem, newitem, currentdate, currentdate.getTime(), percentage))
+						let addedtodo = autoscheduleitem.addedtodo
+						output.push(getanimateddayeventdata(item, olditem, newitem, currentdate, currentdate.getTime(), percentage, addedtodo))
 					}
 				}
 				let animateeventbox = getElement(`animateeventbox${i}`)
@@ -1990,9 +1991,11 @@ class Calendar {
 				}
 
 
-				//auto schedule
-				let eventinfosmartschedule = getElement('eventinfosmartschedule')
-				eventinfosmartschedule.innerHTML = getcheckbox(item.type == 1)
+				if(!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item)){
+					//auto schedule
+					let eventinfosmartschedule = getElement('eventinfosmartschedule')
+					eventinfosmartschedule.innerHTML = getcheckbox(item.type == 1)
+				}
 
 
 				if (movingevent) {
@@ -6921,7 +6924,7 @@ function gettododata(item) {
 	} else {
 		//view
 
-		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `draggable="true" ${Calendar.Todo.isSchedulable(item) ? `ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''} ${schedulemytasksenabled && Calendar.Todo.isSchedulable(item) ? `onclick="toggleschedulemytask(event, '${item.id}')"` : ''}>
+		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `draggable="true" ${Calendar.Todo.isSchedulable(item) ? `ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''}>
 
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
@@ -7009,7 +7012,7 @@ function gettododata(item) {
 
 
 				${schedulemytasksenabled && Calendar.Todo.isSchedulable(item) ?
-				`<div class="absolute todoitemselectcheck pointer pointer-auto">
+					`<div class="absolute todoitemselectcheck box-shadow pointer pointer-auto" onclick="toggleschedulemytask(event, '${item.id}')">
 						${getbigcheckbox(schedulemytaskslist.find(g => g == item.id))}
 					</div>`
 				: ''}
@@ -7019,7 +7022,6 @@ function gettododata(item) {
 	return output
 }
 
-//here4
 
 /*
 	functions for opening popup:
@@ -8142,7 +8144,7 @@ function getsleepdata() {
 
 
 //get animated day event data
-function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp, percentage) {
+function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp, percentage, addedtodo) {
 	let nextdate = new Date(currentdate.getTime())
 	nextdate.setDate(nextdate.getDate() + 1)
 
@@ -8151,6 +8153,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 
 	let itemclasses = []
 	let itemclasses2 = []
+	let itemclasses3 = []
 
 	let mytop;
 	let myheight;
@@ -8187,7 +8190,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 
 	if (selectedeventid == item.id || autoscheduleeventid == item.id) {
 		itemclasses.push('selectedevent')
-		itemclasses.push('selectedcalendarevent')
+		itemclasses3.push('selectedcalendarevent')
 		itemclasses2.push('selectedtext')
 		itemclasses.push(BACKGROUNDCOLORLIST[item.color])
 	}else{
@@ -8200,7 +8203,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 
 	let output = ''
 	output = `
-	<div class="absolute pointer-none" style="transform: translateX(${percentage * difference * 100}%);top:${mytop}px;height:${myheight}px;left:0;width:100%;">
+	<div class="absolute pointer-none overflow-hidden animatedeventwrap ${itemclasses3.join(' ')}" style="transform: ${!addedtodo ? `translateX(${percentage * difference * 100}%)` : ''} ${addedtodo ? `scale(${percentage * 100}%)` : ''};top:${mytop}px;height:${myheight}px;left:0;width:100%;">
 		<div class="popupbutton eventwrap pointer-auto eventborder ${BORDERCOLORLIST[item.color]} ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
@@ -8243,6 +8246,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	let itemclasses = []
 	let itemclicks = []
 	let itemclasses2 = []
+	let itemclasses3 = []
 
 	let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 	let tempenddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
@@ -8286,7 +8290,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 	if (selectedeventid == item.id || autoscheduleeventid == item.id) {
 		itemclasses.push('selectedevent')
-		itemclasses.push('selectedcalendarevent')
+		itemclasses3.push('selectedcalendarevent')
 		itemclasses2.push('selectedtext')
 		itemclasses.push(BACKGROUNDCOLORLIST[item.color])
 	}else{
@@ -8299,7 +8303,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 	let output = ''
 	output = `
-	<div class="absolute pointer-none" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
+	<div class="absolute pointer-none overflow-hidden ${itemclasses3.join(' ')}" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
 		<div class="popupbutton eventwrap pointer-auto eventborder ${BORDERCOLORLIST[item.color]} ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
 			${!Calendar.Event.isReadOnly(item) ? itemclicks.join('') : ''}
 			<div class="eventtext">
@@ -8974,6 +8978,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 
 
 	//loader
+	/*
 	let loading;
 	function updateloaderprogress() {
 		const increments = [0, 40, 70, 85, 95, 100]
@@ -9008,6 +9013,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 		let schedulingscreentext = getElement('schedulingscreentext')
 		schedulingscreentext.innerHTML = `Scheduling ${smartevents.length} task${smartevents.length == 1 ? '' : 's'}...`
 	}
+	*/
 
 	if (calendar.smartschedule.mode == 0) {
 		//FOCUS
@@ -9197,6 +9203,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 	autoschedulestats.modifiedeventslength = modifiedevents.length
 
 	//ui
+	/*
 	if (showui) {
 		await sleep(2000)
 
@@ -9207,6 +9214,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 		loading = false
 		schedulingscreen.classList.add('hiddenfade')
 	}
+	*/
 
 
 	//stats
@@ -9228,6 +9236,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 			let newitem = newcalendarevents.find(d => d.id == id)
 			let olditem = oldsmartevents.find(d => d.id == id)
 			let item = calendar.events.find(d => d.id == id)
+			let todoitem = addedtodos.find(d => d.id == id)
 
 			if(!newitem || !olditem || !item){
 				resolve()
@@ -9246,27 +9255,39 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 
 			const frames = 40
 			function nextframe(){
-				let newstartdate = new Date(oldstartdate.getTime() + difference * beziercurve(tick/frames))
-				let newenddate = new Date(newstartdate.getTime() + duration)
+				if(todoitem){
+					let percentage = easeoutcubic(tick/frames)
+					
+					let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
+					if(autoscheduleitem){
+						autoscheduleitem.percentage = percentage
+						calendar.updateAnimatedEvents()
+					}
+				}else{
+					let percentage = beziercurve(tick/frames)
 
-				item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()
-				item.start.day = newstartdate.getDate()
-				item.start.month = newstartdate.getMonth()
-				item.start.year = newstartdate.getFullYear()
+					let newstartdate = new Date(oldstartdate.getTime() + difference * percentage)
+					let newenddate = new Date(newstartdate.getTime() + duration)
 
-				item.end.minute = newenddate.getHours() * 60 + newenddate.getMinutes()
-				item.end.day = newenddate.getDate()
-				item.end.month = newenddate.getMonth()
-				item.end.year = newenddate.getFullYear()
+					item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()
+					item.start.day = newstartdate.getDate()
+					item.start.month = newstartdate.getMonth()
+					item.start.year = newstartdate.getFullYear()
 
-				let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
-				if(autoscheduleitem){
-					autoscheduleitem.percentage = beziercurve(tick/frames)
-					calendar.updateAnimatedEvents()
+					item.end.minute = newenddate.getHours() * 60 + newenddate.getMinutes()
+					item.end.day = newenddate.getDate()
+					item.end.month = newenddate.getMonth()
+					item.end.year = newenddate.getFullYear()
+
+					let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
+					if(autoscheduleitem){
+						autoscheduleitem.percentage = percentage
+						calendar.updateAnimatedEvents()
+					}
 				}
 
 
-				if (tick >= frames) {
+				if (tick >= frames || todoitem) {
 					let newstartdate = new Date(realfinalstartdate)
 					let newenddate = new Date(newstartdate.getTime() + duration)
 	
@@ -9500,7 +9521,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 
 	//pre animate	
 	autoscheduleeventid = null
-	autoscheduleeventslist = [...modifiedevents.map(d => { return { id: d.id, percentage: 0 } })]
+	autoscheduleeventslist = [...modifiedevents.map(d => { return { id: d.id, percentage: 0, addedtodo: !!addedtodos.find(f => f.id == d.id) } })]
 	oldautoscheduleeventslist = oldsmartevents
 	newautoscheduleeventslist = newcalendarevents
 
