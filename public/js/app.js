@@ -95,23 +95,23 @@ function round(number, increment) {
 	return Math.round(number / increment) * increment;
 }
 
-function getTitleHMText(input, showtext) {
+function getTitleHMText(input, hidetext) {
 	let hours = Math.floor(input / 60)
 	let minutes = input % 60
 	if (calendar.settings.militarytime) {
 		return `${hours % 24}:${minutes.toString().padStart(2, '0')}`
 	} else {
-		return `${hours % 12 || 12}${minutes ? `:${minutes.toString().padStart(2, '0')}` : ''}${showtext == false ? '' : ` ${hours >= 12 ? 'PM' : 'AM'}`}`
+		return `${hours % 12 || 12}${minutes ? `:${minutes.toString().padStart(2, '0')}` : ''}${hidetext == true ? '' : ` ${hours >= 12 ? 'PM' : 'AM'}`}`
 	}
 }
 
-function getHMText(input, showtext) {
+function getHMText(input, hidetext) {
 	let hours = Math.floor(input / 60)
 	let minutes = input % 60
 	if (calendar.settings.militarytime) {
 		return `${hours % 24}:${minutes.toString().padStart(2, '0')}`
 	} else {
-		return `${hours % 12 || 12}${minutes ? `:${minutes.toString().padStart(2, '0')}` : ''}${showtext == false ? '' : ` ${hours >= 12 ? 'pm' : 'am'}`}`
+		return `${hours % 12 || 12}${minutes ? `:${minutes.toString().padStart(2, '0')}` : ''}${hidetext == true ? '' : ` ${hours >= 12 ? 'pm' : 'am'}`}`
 	}
 }
 
@@ -759,11 +759,13 @@ class Calendar {
 
 			let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 			let enddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
+
+			let isshort = enddate.getTime() - startdate.getTime() < 2700000
 				
 			if (Calendar.Event.isAllDay(item)) {
 				return 'All day'
 			} else {
-				return `${getHMText(item.start.minute, !sametext(item.start.minute, item.end.minute) && enddate.getTime() - startdate.getTime() > 1800000)}${enddate.getTime() - startdate.getTime() <= 1800000 ? '' : ` – ${getHMText(item.end.minute)}`}`
+				return `${getHMText(item.start.minute, sametext(item.start.minute, item.end.minute) && !isshort)}${isshort ? '' : ` – ${getHMText(item.end.minute)}`}`
 			}
 		}
 
@@ -786,7 +788,7 @@ class Calendar {
 				}
 			} else {
 				timelist.push(getDMDYText(startdate))
-				timelist.push(getHMText(startdate.getHours() * 60 + startdate.getMinutes(), !sametext(item.start.minute, item.end.minute)))
+				timelist.push(getHMText(startdate.getHours() * 60 + startdate.getMinutes(), sametext(item.start.minute, item.end.minute)))
 
 				timelist.push('–')
 				if (enddate.getDate() != startdate.getDate() || enddate.getMonth() != startdate.getMonth() || enddate.getFullYear() != startdate.getFullYear()) {
