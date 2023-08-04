@@ -1618,17 +1618,14 @@
 
 
 
-				<div class="todowrap relative display-none border-box overflow-auto width400px" id="todowrap">
+				<div class="todowrap relative display-none border-box background-secondary overflow-auto width400px" id="todowrap">
 
 					
 					<div class="todobar padding-12px display-flex flex-row align-center">
-						<div class="flex-1"></div>
 
-						<div class="flex-1 display-flex flex-row justify-center">
-							<div class="text-18px text-primary pointer-none text-center">To do list</div>
-						</div>
+						<div class="text-18px text-primary pointer-none text-center">To do list</div>
 
-						<div class="flex-1 display-flex flex-row justify-flex-end">
+						<div class="flex-1 display-flex flex-row justify-flex-end display-none">
 							<div class="text-16px text-white small:box-shadow-none bluebutton transition-duration-100 border-round padding-8px-16px nowrap popupbutton box-shadow pointer pointer-auto" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Show calendar' })" id="showcalendarbutton">Show calendar</div>
 						</div>
 					</div>
@@ -1698,7 +1695,7 @@
 						
 
 				
-				<div class="calendarwrap relative display-none small:absolute small:top-0 small:bottom-0 small:left-0 small:right-0 small:z-index-99" id="calendarwrap">
+				<div class="calendarwrap relative display-none" id="calendarwrap">
 						<div class="display-flex flex-column padding-top-12px gap-12px calendartopbar">
 							
 							<div class="display-flex flex-row justify-space-between padding-left-12px padding-right-12px align-center gap-12px">
@@ -1796,7 +1793,7 @@
 				<div class="align-center display-none small:display-flex flex-row gap-12px padding-12px bordertop">	
 
 											
-					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([1]);gtag('event', 'button_click', { useraction: 'Home - nav bar' }) " id="calendartab2">
+					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([1]);gtag('event', 'button_click', { useraction: 'To do list - nav bar' }) " id="calendartab2">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonlarge">
 						<g>
 						<path d="M216.422 96.5767L216.422 206.806C216.422 222.546 203.662 235.306 187.922 235.306L68.5817 235.306C52.8418 235.306 40.082 222.546 40.082 206.806L40.082 96.5767" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
@@ -1805,7 +1802,19 @@
 						</g>
 						</svg>
 						
-						<div class="text-14px text-primary pointer-none nowrap mobilepagetext transition-duration-100">Home</div>
+						<div class="text-14px text-primary pointer-none nowrap mobilepagetext transition-duration-100">To do list</div>
+					</div>
+
+					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([0]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="calendartab2">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonlarge">
+						<g>
+						<path d="M216.422 96.5767L216.422 206.806C216.422 222.546 203.662 235.306 187.922 235.306L68.5817 235.306C52.8418 235.306 40.082 222.546 40.082 206.806L40.082 96.5767" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M9.80138 120.006L112.201 27.35C121.027 18.5244 135.28 18.4684 144.036 27.2249L246.199 120.986" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M211.921 42.4158L215.422 42.4158L215.422 88.6843L211.921 75.9057L211.921 42.4158Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="22"></path>
+						</g>
+						</svg>
+						
+						<div class="text-14px text-primary pointer-none nowrap mobilepagetext transition-duration-100">Calendar</div>
 					</div>
 					
 					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab2">
