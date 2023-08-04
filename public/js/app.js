@@ -756,11 +756,14 @@ class Calendar {
 			function sametext(minutes1, minutes2) {
 				return (minutes1 >= 0 && minutes1 < 720 && minutes2 >= 0 && minutes2 < 720) || (minutes1 >= 720 && minutes1 <= 1439 && minutes2 >= 720 && minutes2 <= 1439);
 			}
+
+			let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+			let enddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
 				
 			if (Calendar.Event.isAllDay(item)) {
 				return 'All day'
 			} else {
-				return `${getHMText(item.start.minute, !sametext(item.start.minute, item.end.minute))} – ${getHMText(item.end.minute)}`
+				return `${getHMText(item.start.minute, !sametext(item.start.minute, item.end.minute))}${enddate.getTime() - startdate.getTime() <= 1800000 ? '' : ` – ${getHMText(item.end.minute)}`}`
 			}
 		}
 
