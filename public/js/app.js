@@ -8225,7 +8225,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 					}
 					
 			
-					${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item.start.minute)}</span>
+					${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item)}</span>
 				
 				</div>
 				
@@ -8326,7 +8326,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 					}
 					
 			
-					${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item.start.minute)}</span>
+					${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item)}</span>
 				
 				</div>
 				
