@@ -1621,13 +1621,12 @@
 				<div class="todowrap relative display-none border-box background-secondary overflow-auto" id="todowrap">
 
 					
-					<div class="todobar padding-12px display-flex flex-row align-center">
+					<div class="todobar padding-12px display-flex flex-column align-center">
 
 						<div class="text-18px text-primary pointer-none flex-1 text-center">To do list</div>
 
-						<div class="flex-1 display-flex flex-row justify-flex-end display-none">
-							<div class="text-16px text-white small:box-shadow-none bluebutton transition-duration-100 border-round padding-8px-16px nowrap popupbutton box-shadow pointer pointer-auto" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Show calendar' })" id="showcalendarbutton">Show calendar</div>
-						</div>
+						<div class="text-16px text-quaternary text-center">Jot down your ideas, tasks, or projects here.</div>
+
 					</div>
 					
 					<div class="todocontainer" id="todocontainer">	
@@ -1636,8 +1635,6 @@
 
 						<div class="display-flex gap-24px flex-column padding-12px marginbottom50vh">
 
-
-							<div class="text-16px text-quaternary text-center">Jot down your ideas, tasks, or projects here.</div>
 
 							<div class="sticky justify-space-between z-index-50 todobuttonstop display-flex flex-row gap-24px">
 								<div class="padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-round" onclick="readinteractivetourpopup('clickaddtask');opencreatetodo(event);gtag('event', 'button_click', { useraction: 'Add task - to do list' })" id="todolisttab2">
@@ -1694,6 +1691,7 @@
 				</div>
 						
 
+				<div class="paneldivider" onmousedown="clickpaneldivider(event)"></div>
 				
 				<div class="calendarwrap relative display-none" id="calendarwrap">
 						<div class="display-flex flex-column padding-top-12px gap-12px calendartopbar">
@@ -1784,8 +1782,6 @@
 							
 						
 					</div>
-
-					<div class="paneldivider" onmousedown="clickpaneldivider(event)"></div>
 				</div>
 
 
