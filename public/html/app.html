@@ -1395,9 +1395,9 @@
 	
 						<!-- my calendars -->
 						<div class="display-flex flex-column gap-6px">
-							<div class="background-tint-1 border-8px padding-8px-12px display-flex transition-duration-100 justify-space-between flex-row align-center pointer" onclick="togglesettingscalendarlist();gtag('event', 'button_click', { useraction: 'My calendars - nav bar' })">
+							<div class="background-tint-1 hover:background-tint-2 padding-8px-12px display-flex transition-duration-100 justify-space-between flex-row align-center pointer" onclick="togglesettingscalendarlist();gtag('event', 'button_click', { useraction: 'My calendars - nav bar' })">
 								<div class="display-flex flex-row gap-6px align-center pointer-none">
-									<div class="text-16px text-bold text-primary pointer-none">My calendars</div>
+									<div class="text-16px text-primary pointer-none">My calendars</div>
 								</div>
 								
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge calendarlisttoggle rotate-90" id="calendarlisttoggle">
@@ -1416,7 +1416,7 @@
 						<div class="horizontalbar"></div>
 	
 						<!-- settings -->
-						<div class="display-flex flex-column gap-12px padding-left-12px padding-right-12px padding-bottom-12px">
+						<div class="display-flex flex-column gap-12px padding-left-12px padding-right-12px padding-bottom-12px display-none">
 							<div class="popupbutton border-box border-8px gap-6px overflow-hidden pointer display-flex flex-row background-tint-1 padding-8px-12px align-center hover:background-tint-2 transition-duration-100" onclick="opensettings(event)">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge pointer-none">
 								<g>
@@ -1779,6 +1779,7 @@
 						
 					</div>
 				</div>
+			</div>
 
 
 				<!-- mobile only bottom bar -->
