@@ -763,7 +763,7 @@ class Calendar {
 			if (Calendar.Event.isAllDay(item)) {
 				return 'All day'
 			} else {
-				return `${getHMText(item.start.minute, !sametext(item.start.minute, item.end.minute))}${enddate.getTime() - startdate.getTime() <= 1800000 ? '' : ` – ${getHMText(item.end.minute)}`}`
+				return `${getHMText(item.start.minute, !sametext(item.start.minute, item.end.minute) && enddate.getTime() - startdate.getTime() > 1800000)}${enddate.getTime() - startdate.getTime() <= 1800000 ? '' : ` – ${getHMText(item.end.minute)}`}`
 			}
 		}
 
