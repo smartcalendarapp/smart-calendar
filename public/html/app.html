@@ -412,7 +412,7 @@
 
 				<div class="flex-1 display-flex flex-row overflow-y-auto small:flex-column">
 					<!-- left tab -->
-					<div class="border-box border-box padding-left-12px padding-top-12px display-flex flex-column leftcolumn small:display-none" id="settingstablist1">
+					<div class="border-box border-box padding-left-12px padding-top-12px display-flex flex-column width240px small:display-none" id="settingstablist1">
 						<div class="leftwrapitem" onclick="clicksettingstab(0)">Account</div>
 						<div class="leftwrapitem" onclick="clicksettingstab(1)">General</div>
 						<div class="leftwrapitem" onclick="clicksettingstab(2)">My calendars</div>
@@ -1304,7 +1304,7 @@
 		<div class="leftbar relative display-flex border-box background-secondary flex-column small:display-none height-full" id="leftwrap">
 			<div class="absolute bottom-0 width-full loader left-0 display-none" id="statusdisplay"></div>
 			
-			<div class="leftcolumn display-flex flex-column height-full overflow-y-auto">
+			<div class="leftcolumn display-flex flex-column height-full">
 
 					<!-- nav bar -->
 					<div class="display-flex flex-row align-center gap-6px padding-12px">
@@ -1344,11 +1344,11 @@
 					</div>
 
 
-				<div class="display-flex flex-column justify-space-between flex-1">
+					<div class="display-flex flex-column justify-space-between flex-1 display-none">
 					
-					<!-- top -->
-					<div class="display-flex flex-column gap-12px padding-left-12px padding-right-12px">
-						
+						<!-- top -->
+						<div class="display-flex flex-column gap-12px padding-left-12px padding-right-12px">
+							
 						<!-- tabs -->
 						<div class="display-flex flex-column gap-12px">
 
@@ -1366,7 +1366,7 @@
 							</div>
 
 						
-							<div class="display-flex flex-column">
+							<div class="display-flex flex-column display-none">
 								<div class="leftwrapitem display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Home - nav bar' }) " id="calendartab">
 	
 								
@@ -1391,19 +1391,14 @@
 
 
 
-					<!-- middle -->
+					<!-- to do list tab -->
 					<div class="flex-1">
 						<div class="todowrap relative display-none border-box overflow-auto" id="todowrap">
 
 					
 							<div class="todobar padding-12px display-flex flex-row align-center">
-								<div class="flex-1"></div>
 		
-								<div class="flex-1 display-flex flex-row justify-center">
-									<div class="text-18px text-primary pointer-none text-center">To do list</div>
-								</div>
-		
-								<div class="flex-1 display-flex flex-row justify-flex-end">
+								<div class="flex-1 display-flex flex-row justify-flex-end display-none">
 									<div class="text-16px text-white small:box-shadow-none bluebutton transition-duration-100 border-round padding-8px-16px nowrap popupbutton box-shadow pointer pointer-auto" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Show calendar' })" id="showcalendarbutton">Show calendar</div>
 								</div>
 							</div>
@@ -1477,7 +1472,7 @@
 					<div class="display-flex flex-column gap-12px">
 	
 						<!-- my calendars -->
-						<div class="display-flex flex-column gap-6px">
+						<div class="display-flex flex-column gap-6px display-none">
 							<div class="background-tint-1 border-8px padding-8px-12px display-flex transition-duration-100 justify-space-between flex-row align-center pointer" onclick="togglesettingscalendarlist();gtag('event', 'button_click', { useraction: 'My calendars - nav bar' })">
 								<div class="display-flex flex-row gap-6px align-center pointer-none">
 									<div class="text-16px text-bold text-primary pointer-none">My calendars</div>
@@ -1495,9 +1490,7 @@
 		
 							<div class="padding-left-12px padding-right-12px display-flex flex-column overflow-y-auto" id="calendarlist"></div>
 						</div>
-	
-						<div class="horizontalbar"></div>
-	
+		
 						<!-- settings -->
 						<div class="display-flex flex-column gap-12px padding-left-12px padding-right-12px padding-bottom-12px">
 							<div class="popupbutton border-box border-8px gap-6px overflow-hidden pointer display-flex flex-row background-tint-1 padding-8px-12px align-center hover:background-tint-2 transition-duration-100" onclick="opensettings(event)">
@@ -1745,18 +1738,6 @@
 											</g>
 											</svg>
 										</div>
-									</div>
-
-
-									<div class="infotopright pointer" onclick="clicktab([1]);gtag('event', 'button_click', { useraction: 'Close calendar' })">
-										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-										<g>
-										<g opacity="1">
-										<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-										<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-										</g>
-										</g>
-										</svg>
 									</div>
 									
 								</div>

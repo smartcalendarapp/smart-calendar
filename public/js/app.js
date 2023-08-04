@@ -838,11 +838,9 @@ class Calendar {
 		//tabs
 		let summarywrap = getElement('summarywrap')
 		let calendarwrap = getElement('calendarwrap')
-		let feedbackwrap = getElement('feedbackwrap')
 		let todowrap = getElement('todowrap')
 
 		summarywrap.classList.add('display-none')
-		feedbackwrap.classList.add('display-none')
 		todowrap.classList.add('display-none')
 		calendarwrap.classList.add('display-none')
 
@@ -866,9 +864,6 @@ class Calendar {
 		todolisttab.classList.remove('smartbuttonbackgroundfaded')
 
 
-		let showcalendarbutton = getElement('showcalendarbutton')
-		showcalendarbutton.classList.remove('display-none')
-
 		if (calendartabs.includes(1)) {
 			this.updateTodo()
 			todowrap.classList.remove('display-none')
@@ -883,8 +878,6 @@ class Calendar {
 
 			calendartab.classList.add('selectedbutton')
 			calendartab2.classList.add('selectedbutton2')
-
-			showcalendarbutton.classList.add('display-none')
 		}
 
 		if (calendartabs.includes(2)) {
@@ -893,10 +886,6 @@ class Calendar {
 
 			summarytab.classList.add('selectedbutton')
 			summarytab2.classList.add('selectedbutton2')
-		}
-		if (calendartabs.includes(4)) {
-			feedbackwrap.classList.remove('display-none')
-			feedbacktab.classList.add('selectedbutton')
 		}
 
 

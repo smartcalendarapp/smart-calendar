@@ -1232,11 +1232,15 @@ body {
 }
 
 .leftcolumn {
-	width: 300px;
+	width: 360px;
 }
 
 .width200px {
 	width: 200px;
+}
+
+.width240px {
+	width: 240px;
 }
 
 .objectfitcontain {
