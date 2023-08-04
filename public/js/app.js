@@ -95,23 +95,13 @@ function round(number, increment) {
 	return Math.round(number / increment) * increment;
 }
 
-function getTitleHMText(input, hidetext) {
-	let hours = Math.floor(input / 60)
-	let minutes = input % 60
-	if (calendar.settings.militarytime) {
-		return `${hours % 24}:${minutes.toString().padStart(2, '0')}`
-	} else {
-		return `${hours % 12 || 12}${minutes ? `:${minutes.toString().padStart(2, '0')}` : ''}${hidetext == true ? '' : ` ${hours >= 12 ? 'PM' : 'AM'}`}`
-	}
-}
-
 function getHMText(input, hidetext) {
 	let hours = Math.floor(input / 60)
 	let minutes = input % 60
 	if (calendar.settings.militarytime) {
 		return `${hours % 24}:${minutes.toString().padStart(2, '0')}`
 	} else {
-		return `${hours % 12 || 12}${minutes ? `:${minutes.toString().padStart(2, '0')}` : ''}${hidetext == true ? '' : `${hours >= 12 ? 'pm' : 'am'}`}`
+		return `${hours % 12 || 12}${minutes ? `:${minutes.toString().padStart(2, '0')}` : ''}${hidetext == true ? '' : ` ${hours >= 12 ? 'PM' : 'AM'}`}`
 	}
 }
 
@@ -879,8 +869,6 @@ class Calendar {
 		let showcalendarbutton = getElement('showcalendarbutton')
 		showcalendarbutton.classList.remove('display-none')
 
-		this.updateSplitTabs(true)
-
 		if (calendartabs.includes(1)) {
 			this.updateTodo()
 			todowrap.classList.remove('display-none')
@@ -916,32 +904,6 @@ class Calendar {
 
 	}
 
-
-	updateSplitTabs(forcesplit) {
-		let calendarwrap = getElement('calendarwrap')
-		let todowrap = getElement('todowrap')
-		let panelwrap = getElement('panelwrap')
-
-		if (calendartabs.includes(0) && calendartabs.includes(1)) {
-			let calendarwrapflex = calendarwrap.offsetWidth / panelwrap.offsetWidth
-			let todowrapflex = todowrap.offsetWidth / panelwrap.offsetWidth
-
-			if (calendarmode == 0) {
-				if (calendarwrapflex / todowrapflex < 4 / 6 || forcesplit == true) {
-					calendarwrap.style.flex = '4'
-					todowrap.style.flex = '6'
-				}
-			} else if (calendarmode == 1 || calendarmode == 2) {
-				if (calendarwrapflex / todowrapflex < 6 / 4 || forcesplit == true) {
-					calendarwrap.style.flex = '6'
-					todowrap.style.flex = '4'
-				}
-			}
-		} else {
-			calendarwrap.style.flex = '1'
-			todowrap.style.flex = '1'
-		}
-	}
 
 	updateHistory(syncgoogle, smartschedule) {
 		let newjson = JSON.stringify({ events: this.events, todos: this.todos, calendars: this.calendars })
@@ -1006,7 +968,6 @@ class Calendar {
 
 	//calendar
 	updateCalendar() {
-		this.updateSplitTabs()
 		this.updateStructure()
 		this.updateBarColumnGroup()
 		this.updateTopBarChildren()
@@ -1499,7 +1460,7 @@ class Calendar {
 			let time = []
 			for (let i = 0; i < 25; i++) {
 				let difference = Math.abs((currentdate.getHours() * 60 + currentdate.getMinutes()) - (i * 60))
-				time.push(`<div class="timebox"><div class="timedisplay">${difference >= 10 ? `${getTitleHMText(tempdate.getHours() * 60 + tempdate.getMinutes())}` : ''}</div></div>`)
+				time.push(`<div class="timebox"><div class="timedisplay">${difference >= 10 ? `${getHMText(tempdate.getHours() * 60 + tempdate.getMinutes())}` : ''}</div></div>`)
 				tempdate.setHours(tempdate.getHours() + 1)
 			}
 			timeboxcolumn.innerHTML = time.join('')
@@ -1508,7 +1469,7 @@ class Calendar {
 			let realtimedisplay = getElement('realtimedisplay')
 			realtimedisplay.classList.remove('display-none')
 			realtimedisplay.style.top = (currentdate.getHours() * 60 + currentdate.getMinutes()) + 'px'
-			realtimedisplay.innerHTML = getTitleHMText(currentdate.getHours() * 60 + currentdate.getMinutes())
+			realtimedisplay.innerHTML = getHMText(currentdate.getHours() * 60 + currentdate.getMinutes())
 
 			let realbardisplay = getElement('realbardisplay')
 			realbardisplay.classList.remove('display-none')
@@ -6961,7 +6922,7 @@ function gettododata(item) {
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 				 
 									<div class="gap-6px todoitemtextbutton display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton" onclick="clicktodoitemduedate(event, '${item.id}')">
-										<div class="pointer-auto pointer ${!endbeforedate ? 'text-quaternary hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-blue hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}</div>
+										<div class="pointer-auto pointer ${!endbeforedate ? 'text-quaternary hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-blue hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${Calendar.Event.getDueText(item)}` : 'No due date'}</div>
 									</div>
 	
 									<div class="todoitemtextbutton width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-green hoverunderlinegreen pointer-auto pointer transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
