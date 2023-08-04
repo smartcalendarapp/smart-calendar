@@ -1232,16 +1232,13 @@ body {
 }
 
 .leftcolumn {
-	width: 360px;
+	width: 240px;
 }
 
 .width200px {
 	width: 200px;
 }
 
-.width240px {
-	width: 240px;
-}
 
 .objectfitcontain {
 	object-fit: contain;

@@ -863,7 +863,6 @@ class Calendar {
 
 		todolisttab.classList.remove('smartbuttonbackgroundfaded')
 
-
 		if (calendartabs.includes(1)) {
 			this.updateTodo()
 			todowrap.classList.remove('display-none')
