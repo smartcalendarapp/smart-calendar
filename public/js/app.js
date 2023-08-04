@@ -111,7 +111,7 @@ function getHMText(input, hidetext) {
 	if (calendar.settings.militarytime) {
 		return `${hours % 24}:${minutes.toString().padStart(2, '0')}`
 	} else {
-		return `${hours % 12 || 12}${minutes ? `:${minutes.toString().padStart(2, '0')}` : ''}${hidetext == true ? '' : ` ${hours >= 12 ? 'pm' : 'am'}`}`
+		return `${hours % 12 || 12}${minutes ? `:${minutes.toString().padStart(2, '0')}` : ''}${hidetext == true ? '' : `${hours >= 12 ? 'pm' : 'am'}`}`
 	}
 }
 
@@ -770,10 +770,6 @@ class Calendar {
 		}
 
 		static getFullStartEndText(item) {
-			function sametext(minutes1, minutes2) {
-				return (minutes1 >= 0 && minutes1 < 720 && minutes2 >= 0 && minutes2 < 720) || (minutes1 >= 720 && minutes1 <= 1439 && minutes2 >= 720 && minutes2 <= 1439);
-			}
-
 			let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 			let enddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
 
@@ -788,7 +784,7 @@ class Calendar {
 				}
 			} else {
 				timelist.push(getDMDYText(startdate))
-				timelist.push(getHMText(startdate.getHours() * 60 + startdate.getMinutes(), sametext(item.start.minute, item.end.minute)))
+				timelist.push(getHMText(startdate.getHours() * 60 + startdate.getMinutes()))
 
 				timelist.push('–')
 				if (enddate.getDate() != startdate.getDate() || enddate.getMonth() != startdate.getMonth() || enddate.getFullYear() != startdate.getFullYear()) {
