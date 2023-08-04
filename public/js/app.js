@@ -95,13 +95,23 @@ function round(number, increment) {
 	return Math.round(number / increment) * increment;
 }
 
-function getHMText(input, showtext) {
+function getTitleHMText(input, showtext) {
 	let hours = Math.floor(input / 60)
 	let minutes = input % 60
 	if (calendar.settings.militarytime) {
 		return `${hours % 24}:${minutes.toString().padStart(2, '0')}`
 	} else {
 		return `${hours % 12 || 12}${minutes ? `:${minutes.toString().padStart(2, '0')}` : ''}${showtext == false ? '' : ` ${hours >= 12 ? 'PM' : 'AM'}`}`
+	}
+}
+
+function getHMText(input, showtext) {
+	let hours = Math.floor(input / 60)
+	let minutes = input % 60
+	if (calendar.settings.militarytime) {
+		return `${hours % 24}:${minutes.toString().padStart(2, '0')}`
+	} else {
+		return `${hours % 12 || 12}${minutes ? `:${minutes.toString().padStart(2, '0')}` : ''}${showtext == false ? '' : ` ${hours >= 12 ? 'pm' : 'am'}`}`
 	}
 }
 
@@ -1488,7 +1498,7 @@ class Calendar {
 			let time = []
 			for (let i = 0; i < 25; i++) {
 				let difference = Math.abs((currentdate.getHours() * 60 + currentdate.getMinutes()) - (i * 60))
-				time.push(`<div class="timebox"><div class="timedisplay">${difference >= 10 ? `${getHMText(tempdate.getHours() * 60 + tempdate.getMinutes())}` : ''}</div></div>`)
+				time.push(`<div class="timebox"><div class="timedisplay">${difference >= 10 ? `${getTitleHMText(tempdate.getHours() * 60 + tempdate.getMinutes())}` : ''}</div></div>`)
 				tempdate.setHours(tempdate.getHours() + 1)
 			}
 			timeboxcolumn.innerHTML = time.join('')
@@ -1497,7 +1507,7 @@ class Calendar {
 			let realtimedisplay = getElement('realtimedisplay')
 			realtimedisplay.classList.remove('display-none')
 			realtimedisplay.style.top = (currentdate.getHours() * 60 + currentdate.getMinutes()) + 'px'
-			realtimedisplay.innerHTML = getHMText(currentdate.getHours() * 60 + currentdate.getMinutes())
+			realtimedisplay.innerHTML = getTitleHMText(currentdate.getHours() * 60 + currentdate.getMinutes())
 
 			let realbardisplay = getElement('realbardisplay')
 			realbardisplay.classList.remove('display-none')
