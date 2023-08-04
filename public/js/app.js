@@ -9256,7 +9256,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 			const frames = 30
 			function nextframe(){
 				if(todoitem){
-					let percentage = easeoutcubic(tick/frames)
+					let percentage = beziercurve(tick/frames)
 					
 					let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
 					if(autoscheduleitem){
