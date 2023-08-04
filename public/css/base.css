@@ -5,6 +5,7 @@
 	--background-primary-transparent:#ffffffb3;
 	--background-secondary: #f0f0f0;
 	--background-secondary-transparent:#f0f0f0b3;
+	--background-tertiary: #f7f7f7;
 	--background-tint-1: #0000000F;
 	--background-tint-2: #0000001F;
 	
@@ -48,10 +49,11 @@
 [data-theme="dark"] {
 	--background-primary-home: #000000;
 	--background-primary-home-transparent: #000000b3;
-	--background-primary: #222222;
-	--background-primary-transparent:#222222b3;
+	--background-primary: #242424;
+	--background-primary-transparent:#242424b3;
 	--background-secondary: #141414;
 	--background-secondary-transparent:#141414b3;
+	--background-tertiary: #1c1c1c;
 	--background-tint-1: #ffffff0F;
 	--background-tint-2: #ffffff1F;
 	
@@ -93,6 +95,9 @@
 }
 .background-secondary-transparent{
 	background-color:var(--background-secondary-transparent)
+}
+.background-tertiary{
+	background-color:var(--background-tertiary)
 }
 .background-tint-1{
 	background-color:var(--background-tint-1)

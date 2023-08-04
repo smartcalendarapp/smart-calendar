@@ -868,6 +868,7 @@ class Calendar {
 		if (calendartabs.includes(1)) {
 			this.updateTodo()
 			todowrap.classList.remove('display-none')
+			todowrap.style.flex = '1'
 
 			calendartab.classList.add('selectedbutton')
 			calendartab2.classList.add('selectedbutton2')
@@ -878,6 +879,7 @@ class Calendar {
 		if (calendartabs.includes(0)) {
 			this.updateCalendar()
 			calendarwrap.classList.remove('display-none')
+			calendarwrap.style.flex = '2'
 
 			calendartab.classList.add('selectedbutton')
 			calendartab2.classList.add('selectedbutton2')

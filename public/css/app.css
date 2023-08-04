@@ -2053,6 +2053,7 @@ body {
 .paneldivider {
 	position:relative;
 	height:100%;
+	z-index:1000;
 }
 .paneldividermove{
 	cursor: ew-resize;
