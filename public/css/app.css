@@ -2066,7 +2066,7 @@ body {
 .calendarwrap {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, flex 0.2s;
 	transition-timing-function: ease-in-out;
-	flex: 1;
+	flex: 2;
 	display: flex;
 	flex-direction: column;
 	overflow-y: auto;
