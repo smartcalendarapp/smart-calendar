@@ -887,9 +887,6 @@ class Calendar {
 			summarytab2.classList.add('selectedbutton2')
 		}
 
-
-		setStorage('calendartabs', calendartabs)
-
 	}
 
 
@@ -2677,10 +2674,6 @@ if ('matchMedia' in window) {
 
 
 let calendartabs = [0, 1]
-let calendartabsstorage = getStorage('calendartabs')
-if (calendartabsstorage != null) {
-	calendartabs = calendartabsstorage
-}
 if ('matchMedia' in window) {
 	let smallscreen = window.matchMedia('(max-width: 600px)')
 	if (smallscreen.matches) {

@@ -2066,7 +2066,7 @@ body {
 .calendarwrap {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, flex 0.2s;
 	transition-timing-function: ease-in-out;
-	flex: 2;
+	flex:2;
 	display: flex;
 	flex-direction: column;
 	overflow-y: auto;
@@ -2076,7 +2076,7 @@ body {
 .todowrap {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, flex 0.2s;
 	transition-timing-function: ease-in-out;
-	flex: 1;
+	flex:1;
 	overflow-y: auto;
 	display: flex;
 	flex-direction: column;
@@ -3535,28 +3535,6 @@ body {
 	#settingscontent {
 		margin: 0 !important;
 		box-shadow: none !important;
-	}
-
-	#calendarwrap {
-		transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s, opacity 0.2s !important;
-		transition-timing-function: ease;
-		border-radius: 0 !important;
-		margin: 0 !important;
-		box-shadow: none !important;
-
-	}
-
-	#calendarwrap.display-none {
-		display: block !important;
-		transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s, opacity 0.2s, visibility 0.2s, left 0s 0.2s, top 0s 0.2s !important;
-		opacity: 0;
-		transform: scale(0.9) translateY(5%);
-		visibility: hidden;
-	}
-
-	#todowrap {
-		box-shadow: none !important;
-		transition: background-color 0.5s, color 0.5s, border-color 0.5s !important;
 	}
 
 }
