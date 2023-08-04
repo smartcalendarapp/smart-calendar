@@ -2054,6 +2054,8 @@ body {
 	position:relative;
 	height:100%;
 	z-index:1000;
+	width:0px;
+	flex-basis:auto;
 }
 .paneldividermove{
 	cursor: ew-resize;
