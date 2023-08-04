@@ -3,9 +3,9 @@
 	--background-primary-home-transparent: #ffffffb3;
 	--background-primary: #ffffff;
 	--background-primary-transparent:#ffffffb3;
-	--background-secondary: #f0f0f0;
-	--background-secondary-transparent:#f0f0f0b3;
-	--background-tertiary: #f7f7f7;
+	--background-secondary: #ededed;
+	--background-secondary-transparent:#edededb3;
+	--background-tertiary: #f2f2f2;
 	--background-tint-1: #0000000F;
 	--background-tint-2: #0000001F;
 	
@@ -49,11 +49,11 @@
 [data-theme="dark"] {
 	--background-primary-home: #000000;
 	--background-primary-home-transparent: #000000b3;
-	--background-primary: #242424;
-	--background-primary-transparent:#242424b3;
+	--background-primary: #232323;
+	--background-primary-transparent:#232323b3;
 	--background-secondary: #141414;
 	--background-secondary-transparent:#141414b3;
-	--background-tertiary: #1c1c1c;
+	--background-tertiary: #1f1f1f;
 	--background-tint-1: #ffffff0F;
 	--background-tint-2: #ffffff1F;
 	
