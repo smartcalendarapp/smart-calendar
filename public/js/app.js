@@ -855,7 +855,7 @@ class Calendar {
 		let todolisttab2 = getElement('todolisttab2')
 		let summarytab2 = getElement('summarytab2')
 
-		calendartab.classList.remove('selectedbutton')
+		hometab.classList.remove('selectedbutton')
 		summarytab.classList.remove('selectedbutton')
 		feedbacktab.classList.remove('selectedbutton')
 
