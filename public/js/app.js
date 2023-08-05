@@ -10772,3 +10772,9 @@ function togglePushNotifs(event) {
 		removePushNotifs()
 	}
 }
+
+if (calendar.pushSubscriptionEnabled) {
+	enablePushNotifs()
+} else {
+	removePushNotifs()
+}
