@@ -1,5 +1,9 @@
+// FOR DOTENV DEV
+try {
+	require("dotenv").config()
+} catch (e) {}
+
 //DATABASE INITIALIZATION
-require("dotenv").config()
 const { DynamoDBClient, CreateTableCommand, PutItemCommand, GetItemCommand, ScanCommand, QueryCommand, UpdateItemCommand, DeleteItemCommand, BatchWriteCommand } = require('@aws-sdk/client-dynamodb')
 const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb')
 
