@@ -3498,8 +3498,8 @@ function movepaneldivider(event) {
 		relativex = maxwidth
 	}
 
-	todowrap.style.flex = relativex / maxwidth + ''
-	calendarwrap.style.flex = 1 - (relativex / maxwidth) + ''
+	todowrap.style.flexGrow = relativex / maxwidth + ''
+	calendarwrap.style.flexGrow = 1 - (relativex / maxwidth) + ''
 }
 
 
