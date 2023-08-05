@@ -9211,7 +9211,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 			
 			let difference = finalstartdate.getTime() - oldstartdate.getTime()
 
-			const frames = 30
+			const frames = 40
 			function nextframe(){
 				if(todoitem){
 					let percentage = easeoutcubic(tick/frames)
@@ -9287,7 +9287,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 				return
 			}
 
-			const frames = 30
+			const frames = 40
 			function nextframe() {
 				for (let id of items) {
 					let newitem = newcalendarevents.find(d => d.id == id)
@@ -9489,7 +9489,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 	//animate
 	for(let item of modifiedevents){
 		await animateitem(item.id)
-		await sleep(300)
+		await sleep(400)
 	}
 
 	//post animate
