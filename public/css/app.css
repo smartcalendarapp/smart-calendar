@@ -818,6 +818,9 @@ body {
 	border-radius: 100%;
 	animation: spin 2s linear infinite;
 }
+.spinred{
+	border-color:var(--red);
+}
 
 .loader {
 	height: 6px;

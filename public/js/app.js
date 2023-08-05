@@ -3001,14 +3001,14 @@ function updatestatus(newstatus) {
 	if (savestatus == 0) {
 		//saved
 		statusdisplay.classList.add('display-none')
-		statusdisplay.classList.remove('loaderred')
+		statusdisplay.classList.remove('spinred')
 	} else {
 		statusdisplay.classList.remove('display-none')
 		if (savestatus == 1) {
 			//saving
 		} else if (savestatus == 2) {
 			//error
-			statusdisplay.classList.add('loaderred')
+			statusdisplay.classList.add('spinred')
 		}
 	}
 }
