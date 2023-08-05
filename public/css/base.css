@@ -48,10 +48,10 @@
 [data-theme="dark"] {
 	--background-primary-home: #000000;
 	--background-primary-home-transparent: #000000b3;
-	--background-primary: #17171a;
-	--background-primary-transparent:#17171ab3;
-	--background-secondary: #202124;
-	--background-secondary-transparent:#202124b3;
+	--background-primary: #202124;
+	--background-primary-transparent:#202124b3;
+	--background-secondary: #17171a;
+	--background-secondary-transparent:#17171ab3;
 	--background-tint-1: #ffffff0F;
 	--background-tint-2: #ffffff1F;
 	
