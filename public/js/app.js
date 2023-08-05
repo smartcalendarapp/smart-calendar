@@ -3001,14 +3001,14 @@ function updatestatus(newstatus) {
 	if (savestatus == 0) {
 		//saved
 		statusdisplay.classList.add('display-none')
-		statusdisplay.classList.remove('spinred')
+		statusdisplay.classList.remove('loaderred')
 	} else {
 		statusdisplay.classList.remove('display-none')
 		if (savestatus == 1) {
 			//saving
 		} else if (savestatus == 2) {
 			//error
-			statusdisplay.classList.add('spinred')
+			statusdisplay.classList.add('loaderred')
 		}
 	}
 }
@@ -3518,8 +3518,9 @@ function openleftmenu(event) {
 	let leftmenuwrap = getElement('leftmenuwrap')
 	leftmenuwrap.classList.toggle('hiddenpopup')
 
-	leftmenuwrap.style.top = (leftmenubutton.offsetTop + leftmenubutton.offsetHeight) + 'px'
-	leftmenuwrap.style.left = fixleft(leftmenubutton.offsetLeft + leftmenubutton.offsetWidth/2 - leftmenuwrap.offsetWidth/2, leftmenuwrap) + 'px'
+	leftmenuwrap.style.top = (leftmenubutton.offsetTop - leftmenuwrap.offsetHeight) + 'px'
+	leftmenuwrap.style.left = fixleft(leftmenubutton.offsetLeft, leftmenuwrap) + 'px'
+	leftmenuwrap.style.width = leftmenubutton.offsetWidth + 'px'
 }
 
 function togglesidebar() {
