@@ -1,4 +1,5 @@
 //DATABASE INITIALIZATION
+require("dotenv").config()
 const { DynamoDBClient, CreateTableCommand, PutItemCommand, GetItemCommand, ScanCommand, QueryCommand, UpdateItemCommand, DeleteItemCommand, BatchWriteCommand } = require('@aws-sdk/client-dynamodb')
 const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb')
 
@@ -384,7 +385,6 @@ async function processReminders(){
 	}	
 
 
-
 	//check if remind
 	let sendreminders = []
 	let currentdate = Date.now()
@@ -393,14 +393,15 @@ async function processReminders(){
 	}
 	lastreminderdate = currentdate
 
+
 	//send reminders
 	for(let item of sendreminders){
-
 		//push notifications
 		if(item.pushSubscription){
+			console.log("push subscription")
 			try{
 				let difference = Math.floor((Date.now() - new Date(item.event.start).getTime())/60000)
-		    await webpush.sendNotification(item.pushSubscription, `REMINDER: ${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`)
+		    	await webpush.sendNotification(item.pushSubscription, `REMINDER: ${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`)
 			}catch(error){
 				console.error(error)
 			}
@@ -472,6 +473,7 @@ If you wish to stop receiving these notifications, you can update your preferenc
 
 //cache reminders
 function cacheReminders(user){
+
 	function isEmail(str) {
 	  let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 	  return pattern.test(str)
@@ -665,6 +667,7 @@ const express = require('express')
 const session = require('express-session')
 const app = express()
 const DynamoDBStore = require('dynamodb-store')
+const { Hash } = require('crypto')
 const dynamostore = new DynamoDBStore({
 	table: {
 		name: "smartcalendarsessions",
@@ -1488,6 +1491,7 @@ app.post('/login', async (req, res, next) => {
 		let username = fields.username
 		let password = fields.password
 		
+
 		const user = await getUserByAttribute(username)
 		if(!user){
 			return res.status(401).json({ error: 'Email does not exist.' })
@@ -1835,45 +1839,6 @@ app.post('/subscribecalendar', async (req, res) => {
 
 
 
-class PushNotificationManager {
-
-  static async init(pushSubscription, user) {
-		user.calendardata.pushSubscription = pushSubscription
-		await setUser(user)
-		
-		cacheReminders(user)
-		
-   	//await this.destroy(user)
-    //user.calendardata.pushNotifQueue = [];
-   	//await this.update(user)
-  }
-  
-  static async update(user) {
-      await this.destroy(user)
-      for (let event of user.calendardata.events) {
-        const start = new Date(event.start.year, event.start.month, event.start.day, 0, event.start.minute)
-        let timezoneoffsetms = user.accountdata.timezoneoffset * -1 * 60000
-        start.setTime(start.getTime() - timezoneoffsetms)
-        if (start < Date.now()) continue;
-        if ((start - Date.now()) > 86400000) continue;
-        let id = setTimeout(async () => {
-          await webpush.sendNotification(user.calendardata.pushSubscription, `Event Now: \"${event.title || "New Event"}\" (${event.start.year}-${event.start.month}-${event.start.day})`);  
-        }, start - Date.now())
-        user.calendardata.pushNotifQueue.push(id)
-      }
-
-      //await setUser(user)
-    }
- 
-    static async destroy(user) {
-      for (let id of user.calendardata.pushNotifQueue) {
-        clearTimeout(id)
-      }
-      user.calendardata.pushNotifQueue = [];
-      await setUser(user)
-    }
-  
-}
 
 app.post("/push-subscription", async (req, res) => {
   const { offset, subscription } = req.body
@@ -1885,7 +1850,10 @@ app.post("/push-subscription", async (req, res) => {
 			return res.status(401).json({ error: 'User is not signed in.' })
 		}
 
-		PushNotificationManager.init(subscription, user)
+		user.calendardata.pushSubscription = subscription
+		await setUser(user)
+		
+		cacheReminders(user)
 
     
 	  return res.end()
