@@ -1346,14 +1346,11 @@
 
 				<!-- middle -->
 				<div class="display-flex flex-row gap-12px align-center">
-					<div class="leftwrapitem display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Home - nav bar' }) " id="hometab">
-						<div class="text-18px text-primary pointer-none transition-none">Home</div>
+					<div class="leftwrapitem display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Home - nav bar' }) " id="hometab">
+						<div class="text-16px text-primary pointer-none transition-none">Home</div>
 					</div>
-					<div class="leftwrapitem display-flex gap-6px flex-row align-center" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab">
-						<div class="text-18px text-primary pointer-none transition-none">Time report</div>
-					</div>
-					<div class="leftwrapitem display-flex gap-6px flex-row align-center display-none" onclick="clicktab([4])" id="feedbacktab">
-						<div class="text-18px text-primary pointer-none transition-none">Feedback</div>
+					<div class="leftwrapitem display-flex gap-6px flex-row align-center" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab">
+						<div class="text-16px text-primary pointer-none transition-none">Time report</div>
 					</div>
 				</div>
 
@@ -1380,28 +1377,29 @@
 	
 						<div class="display-flex flex-column overflow-y-auto" id="calendarlist"></div>
 					</div>
-	
-					<!-- settings -->
-					<div class="display-flex flex-row gap-12px">
-						<div class="popupbutton border-box border-8px gap-6px overflow-hidden pointer display-flex flex-row background-tint-1 padding-8px-12px align-center hover:background-tint-2 transition-duration-100" onclick="opensettings(event)">
-							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge pointer-none">
-							<g>
-							<path d="M88.6333 128C88.6333 106.258 106.258 88.6333 128 88.6333C149.742 88.6333 167.367 106.258 167.367 128C167.367 149.742 149.742 167.367 128 167.367C106.258 167.367 88.6333 149.742 88.6333 128Z" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M101.521 40.8836L106.742 18.8719C106.742 18.8719 107.824 15.3158 109.952 13.0978C112.08 10.8799 115.254 10 115.254 10L139.987 10C139.987 10 144.189 10.9478 146.546 13.0941C148.903 15.2404 149.416 18.5853 149.416 18.5853L155.745 40.8618L167.367 46.9222" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M154.479 215.119L149.258 237.13C149.258 237.13 148.176 240.686 146.048 242.904C143.92 245.122 140.746 246.002 140.746 246.002L116.013 246.002C116.013 246.002 111.811 245.054 109.454 242.908C107.097 240.762 106.584 237.417 106.584 237.417L100.255 215.14L88.6333 209.08" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M215.118 101.522L237.129 106.743C237.129 106.743 240.685 107.825 242.903 109.953C245.121 112.081 246.001 115.255 246.001 115.255L246.001 139.988C246.001 139.988 245.053 144.19 242.907 146.547C240.761 148.904 237.416 149.417 237.416 149.417L215.139 155.746L209.079 167.368" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M40.8825 154.48L18.8708 149.259C18.8708 149.259 15.3147 148.177 13.0967 146.049C10.8788 143.921 9.9989 140.747 9.9989 140.747L9.9989 116.014C9.9989 116.014 10.9467 111.812 13.093 109.455C15.2393 107.098 18.5842 106.585 18.5842 106.585L40.8607 100.257L46.9211 88.6344" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M208.325 170.879L220.198 190.135C220.198 190.135 221.947 193.415 222.011 196.488C222.075 199.561 220.452 202.428 220.452 202.428L202.963 219.916C202.963 219.916 199.322 222.217 196.137 222.367C192.953 222.516 190.225 220.513 190.225 220.513L169.998 209.236L157.495 213.169" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M47.675 85.1233L35.802 65.867C35.802 65.867 34.0526 62.5874 33.989 59.5143C33.9254 56.4412 35.5477 53.5747 35.5477 53.5747L53.0366 36.0857C53.0366 36.0857 56.678 33.7847 59.8625 33.6356C63.0471 33.4864 65.7747 35.489 65.7747 35.489L86.0015 46.766L98.505 42.8332" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M85.1222 208.326L65.8659 220.199C65.8659 220.199 62.5863 221.948 59.5132 222.012C56.4401 222.076 53.5736 220.453 53.5736 220.453L36.0846 202.965C36.0846 202.965 33.7836 199.323 33.6345 196.139C33.4853 192.954 35.4879 190.226 35.4879 190.226L46.7649 170L42.8321 157.496" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M170.878 47.6761L190.134 35.8031C190.134 35.8031 193.414 34.0537 196.487 33.9901C199.56 33.9265 202.426 35.5488 202.426 35.5488L219.915 53.0377C219.915 53.0377 222.216 56.6791 222.366 59.8636C222.515 63.0482 220.512 65.7758 220.512 65.7758L209.235 86.0026L213.168 98.5061" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							</g>
-							</svg>
-						</div>
 					
-						<div class="justify-space-between popupbutton border-box border-8px gap-6px overflow-hidden pointer display-flex flex-row background-tint-1 padding-6px-12px align-center hover:background-tint-2 transition-duration-100" id="leftmenubutton" onclick="openleftmenu(event);gtag('event', 'button_click', { useraction: 'More - nav bar' }) ">
-							<div class="pointer-none display-flex flex-row gap-6px align-center overflow-hidden" id="leftmenutext"></div>
-						</div>
+
+					<!-- account -->
+					<div class="justify-space-between popupbutton border-box border-8px gap-6px overflow-hidden pointer display-flex flex-row background-tint-1 padding-6px-12px align-center hover:background-tint-2 transition-duration-100" id="leftmenubutton" onclick="openleftmenu(event);gtag('event', 'button_click', { useraction: 'More - nav bar' }) ">
+						<div class="pointer-none display-flex flex-row gap-6px align-center overflow-hidden" id="leftmenutext"></div>
+					</div>
+
+
+					<!-- settings -->
+					<div class="popupbutton border-box border-8px gap-6px overflow-hidden pointer display-flex flex-row background-tint-1 padding-8px align-center hover:background-tint-2 transition-duration-100" onclick="opensettings(event)">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge pointer-none">
+						<g>
+						<path d="M88.6333 128C88.6333 106.258 106.258 88.6333 128 88.6333C149.742 88.6333 167.367 106.258 167.367 128C167.367 149.742 149.742 167.367 128 167.367C106.258 167.367 88.6333 149.742 88.6333 128Z" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M101.521 40.8836L106.742 18.8719C106.742 18.8719 107.824 15.3158 109.952 13.0978C112.08 10.8799 115.254 10 115.254 10L139.987 10C139.987 10 144.189 10.9478 146.546 13.0941C148.903 15.2404 149.416 18.5853 149.416 18.5853L155.745 40.8618L167.367 46.9222" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M154.479 215.119L149.258 237.13C149.258 237.13 148.176 240.686 146.048 242.904C143.92 245.122 140.746 246.002 140.746 246.002L116.013 246.002C116.013 246.002 111.811 245.054 109.454 242.908C107.097 240.762 106.584 237.417 106.584 237.417L100.255 215.14L88.6333 209.08" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M215.118 101.522L237.129 106.743C237.129 106.743 240.685 107.825 242.903 109.953C245.121 112.081 246.001 115.255 246.001 115.255L246.001 139.988C246.001 139.988 245.053 144.19 242.907 146.547C240.761 148.904 237.416 149.417 237.416 149.417L215.139 155.746L209.079 167.368" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M40.8825 154.48L18.8708 149.259C18.8708 149.259 15.3147 148.177 13.0967 146.049C10.8788 143.921 9.9989 140.747 9.9989 140.747L9.9989 116.014C9.9989 116.014 10.9467 111.812 13.093 109.455C15.2393 107.098 18.5842 106.585 18.5842 106.585L40.8607 100.257L46.9211 88.6344" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M208.325 170.879L220.198 190.135C220.198 190.135 221.947 193.415 222.011 196.488C222.075 199.561 220.452 202.428 220.452 202.428L202.963 219.916C202.963 219.916 199.322 222.217 196.137 222.367C192.953 222.516 190.225 220.513 190.225 220.513L169.998 209.236L157.495 213.169" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M47.675 85.1233L35.802 65.867C35.802 65.867 34.0526 62.5874 33.989 59.5143C33.9254 56.4412 35.5477 53.5747 35.5477 53.5747L53.0366 36.0857C53.0366 36.0857 56.678 33.7847 59.8625 33.6356C63.0471 33.4864 65.7747 35.489 65.7747 35.489L86.0015 46.766L98.505 42.8332" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M85.1222 208.326L65.8659 220.199C65.8659 220.199 62.5863 221.948 59.5132 222.012C56.4401 222.076 53.5736 220.453 53.5736 220.453L36.0846 202.965C36.0846 202.965 33.7836 199.323 33.6345 196.139C33.4853 192.954 35.4879 190.226 35.4879 190.226L46.7649 170L42.8321 157.496" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M170.878 47.6761L190.134 35.8031C190.134 35.8031 193.414 34.0537 196.487 33.9901C199.56 33.9265 202.426 35.5488 202.426 35.5488L219.915 53.0377C219.915 53.0377 222.216 56.6791 222.366 59.8636C222.515 63.0482 220.512 65.7758 220.512 65.7758L209.235 86.0026L213.168 98.5061" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						</g>
+						</svg>
 					</div>
 
 
@@ -1661,7 +1659,7 @@
 									</div>
 									
 									<div class="topbarmiddle small:display-none" id="topbarmiddle">
-										<div class="topbarmodechild flex-1 text-center" onclick="setcalendarmode(0);gtag('event', 'button_click', { useraction: 'Day - calendar' })">Day</div>
+										<div class="topbarmodechild flex-1 text-center" onclick="setcalendarmode(0);gtag('event', 'button_click', { useraction: 'Day - calendar' })">Day</div>
 										<div class="topbarmodechild flex-1 text-center" onclick="setcalendarmode(1);gtag('event', 'button_click', { useraction: 'Week - calendar' })">Week</div>
 										<div class="topbarmodechild flex-1 text-center" onclick="setcalendarmode(2);gtag('event', 'button_click', { useraction: 'Month - calendar' })">Month</div>
 									</div>
@@ -1741,7 +1739,7 @@
 				<div class="align-center display-none small:display-flex flex-row gap-12px padding-12px bordertop">	
 
 											
-					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([1]);gtag('event', 'button_click', { useraction: 'To do list - nav bar' }) " id="todolisttab2">
+					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([1]);gtag('event', 'button_click', { useraction: 'To do list - nav bar' }) " id="todolisttab2">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonlarge">
 						<g>
 						<path d="M216.422 96.5767L216.422 206.806C216.422 222.546 203.662 235.306 187.922 235.306L68.5817 235.306C52.8418 235.306 40.082 222.546 40.082 206.806L40.082 96.5767" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
@@ -1753,7 +1751,7 @@
 						<div class="text-14px text-primary pointer-none nowrap mobilepagetext transition-duration-100">To do list</div>
 					</div>
 
-					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([0]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="calendartab2">
+					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([0]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="calendartab2">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonlarge">
 						<g>
 						<path d="M216.422 96.5767L216.422 206.806C216.422 222.546 203.662 235.306 187.922 235.306L68.5817 235.306C52.8418 235.306 40.082 222.546 40.082 206.806L40.082 96.5767" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
@@ -1765,7 +1763,7 @@
 						<div class="text-14px text-primary pointer-none nowrap mobilepagetext transition-duration-100">Calendar</div>
 					</div>
 					
-					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab2">
+					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab2">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonfillwhite">
 						<g>
 						<path d="M128 0C57.3075 0 0 57.3075 0 128C0 198.692 57.3075 256 128 256C198.692 256 256 198.692 256 128C256 57.3075 198.692 0 128 0ZM128 20C187.647 20 236 68.3532 236 128C236 187.647 187.647 236 128 236C68.3532 236 20 187.647 20 128C20 68.3532 68.3532 20 128 20Z" fill-rule="nonzero" opacity="1" ></path>
@@ -1777,7 +1775,7 @@
 						<div class="text-14px text-primary pointer-none nowrap mobilepagetext transition-duration-100">Time report</div>
 					</div>
 
-					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="opensettings();gtag('event', 'button_click', { useraction: 'Settings - nav bar' })">
+					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="opensettings();gtag('event', 'button_click', { useraction: 'Settings - nav bar' })">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge pointer-none">
 						<g>
 						<path d="M88.6333 128C88.6333 106.258 106.258 88.6333 128 88.6333C149.742 88.6333 167.367 106.258 167.367 128C167.367 149.742 149.742 167.367 128 167.367C106.258 167.367 88.6333 149.742 88.6333 128Z" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
