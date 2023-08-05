@@ -2070,7 +2070,7 @@ body {
 .calendarwrap {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s;
 	transition-timing-function: ease-in-out;
-	flex:1;
+	flex:2;
 	display: flex;
 	flex-direction: column;
 	overflow-y: auto;
@@ -2080,7 +2080,7 @@ body {
 .todowrap {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s;
 	transition-timing-function: ease-in-out;
-	flex-basis:400px;
+	flex:1;
 	overflow-y: auto;
 	display: flex;
 	flex-direction: column;
@@ -2917,6 +2917,11 @@ body {
 	stroke: var(--text-secondary) !important;
 }
 
+
+.checkboxfilledgreen {
+	stroke: none !important;
+	fill: var(--green) !important;
+}
 
 
 .max-width-400px {
