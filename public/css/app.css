@@ -3158,9 +3158,9 @@ body {
 
 .eventwrap {
 	position:absolute;
-	top:1px;
-	bottom:1px;
-	margin:0px 3px;
+	top:0;
+	bottom:0;
+	margin:1px 3px 0px 3px;
 	right:0;
 	left:0;
 	z-index: 2;
