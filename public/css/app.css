@@ -2070,7 +2070,7 @@ body {
 .calendarwrap {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s;
 	transition-timing-function: ease-in-out;
-	flex:2;
+	flex:1;
 	display: flex;
 	flex-direction: column;
 	overflow-y: auto;
@@ -2080,7 +2080,7 @@ body {
 .todowrap {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s;
 	transition-timing-function: ease-in-out;
-	flex:1;
+	flex-basis:400px;
 	overflow-y: auto;
 	display: flex;
 	flex-direction: column;
