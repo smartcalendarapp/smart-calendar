@@ -3518,9 +3518,8 @@ function openleftmenu(event) {
 	let leftmenuwrap = getElement('leftmenuwrap')
 	leftmenuwrap.classList.toggle('hiddenpopup')
 
-	leftmenuwrap.style.top = (leftmenubutton.offsetTop - leftmenuwrap.offsetHeight) + 'px'
-	leftmenuwrap.style.left = fixleft(leftmenubutton.offsetLeft, leftmenuwrap) + 'px'
-	leftmenuwrap.style.width = leftmenubutton.offsetWidth + 'px'
+	leftmenuwrap.style.top = (leftmenubutton.offsetTop + leftmenubutton.offsetHeight) + 'px'
+	leftmenuwrap.style.left = fixleft(leftmenubutton.offsetLeft + leftmenubutton.offsetWidth/2 - leftmenuwrap.offsetWidth/2, leftmenuwrap) + 'px'
 }
 
 function togglesidebar() {
