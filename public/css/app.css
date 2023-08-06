@@ -405,9 +405,10 @@ body {
 	max-height: 240px;
 }
 
-.borderblue {
-	border: 1px solid var(--blue);
+.selecteddatehighlight {
+	background-color: var(--green) !important;
 }
+
 
 
 .buttongoogle {
@@ -1826,6 +1827,10 @@ body {
 
 .selectedbutton {
 	background-color: var(--blue) !important;
+	color: var(--white) !important;
+}
+.selectedbuttongrey {
+	background-color: var(--background-tint-1) !important;
 	color: var(--white) !important;
 }
 

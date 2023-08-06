@@ -1474,9 +1474,9 @@ class Calendar {
 		let topbarmiddle = getElement('topbarmiddle')
 		for (let [index, div] of Object.entries(topbarmiddle.children)) {
 			if (index == calendarmode) {
-				div.classList.add('selectedbutton')
+				div.classList.add('selectedbuttongrey')
 			} else {
-				div.classList.remove('selectedbutton')
+				div.classList.remove('selectedbuttongrey')
 			}
 		}
 
@@ -1551,7 +1551,7 @@ class Calendar {
 							<div class="infogroup">
 			 					<div class="inputgroup">
 				 					<div class="display-flex flex-column">
-										<div class="width90px text-14px text-blue hover:text-decoration-underline tooltip" id="eventinfosmartscheduletext">Auto-schedule
+										<div class="width90px text-14px text-blue  tooltip" id="eventinfosmartscheduletext">Auto-schedule
 											<span class="tooltiptextright">Automatically schedule your event for the best time.</span>
 										</div>
 					 				</div>
@@ -1916,7 +1916,7 @@ class Calendar {
 						output.push(`<div class="infogroup">
 							<div class="inputgroup">
 								<div class="display-flex flex-column">
-									<div class="text-14px text-blue hover:text-decoration-underline tooltip" id="eventinfosmartscheduletext">Auto-schedule
+									<div class="text-14px text-blue  tooltip" id="eventinfosmartscheduletext">Auto-schedule
 										<span class="tooltiptextright">Automatically schedule your event for the best time.</span>
 									</div>
 								</div>
@@ -2459,10 +2459,6 @@ class Calendar {
 			lastsyncedgooglecalendar2.classList.remove('display-none')
 
 			let currentdate = new Date()
-			let difference;
-			if (calendar.lastsyncedgooglecalendardate) {
-				difference = Math.floor((currentdate.getTime() - calendar.lastsyncedgooglecalendardate) / 60000)
-			}
 
 			let issynced = calendar.lastsyncedgooglecalendardate && Math.floor((currentdate.getTime() - calendar.lastsyncedgooglecalendardate) / 60000) <= 1
 
@@ -2481,7 +2477,7 @@ class Calendar {
 						<path d="M128 0C57.3076 0 0 57.3076 0 128C0 198.692 57.3076 256 128 256C198.692 256 256 198.692 256 128C256 57.3076 198.692 0 128 0ZM128 7.75758C194.408 7.75758 248.242 61.5919 248.242 128C248.242 194.408 194.408 248.242 128 248.242C61.5919 248.242 7.75758 194.408 7.75758 128C7.75758 61.5919 61.5919 7.75758 128 7.75758Z" fill-rule="nonzero" opacity="1"></path>
 						</g>
 					</svg>`
-				 : `<div class="text-14px text-primary">Not synced. Last synced ${calendar.lastsyncedgooglecalendardate ? `${getRelativeDHMText(difference)}` : 'never'}.</div>`}</div>`
+				 : `<div class="text-14px text-primary">Not synced.</div>`}</div>`
 			lastsyncedgooglecalendar.innerHTML = text
 			lastsyncedgooglecalendar2.innerHTML = text
 		} else {
@@ -6536,7 +6532,7 @@ function updatecreatetododatepicker() {
 		let selected = duedate && currentdate.getFullYear() == duedate.getFullYear() && currentdate.getMonth() == duedate.getMonth() && currentdate.getDate() == duedate.getDate()
 
 		column.push(`
-		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'background-blue hover:background-blue-hover' : ''} ${selected ? 'borderblue' : ''}" onclick="inputcreatetodoitemduedate(event, ${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
+		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'background-blue hover:background-blue-hover' : ''} ${selected ? 'selecteddatehighlight' : ''}" onclick="inputcreatetodoitemduedate(event, ${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
 			<div class="text-14px text-primary text-center pointer-none ${today ? 'text-white' : ''} ${currentdate.getMonth() == createtododatepickerdate.getMonth() && currentdate.getFullYear() == createtododatepickerdate.getFullYear() ? '' : 'text-secondary'}">${currentdate.getDate()}</div>
 		</div>`)
 
@@ -6985,7 +6981,7 @@ function gettododata(item) {
 
 
 				${schedulemytasksenabled && Calendar.Todo.isSchedulable(item) ?
-					`<div class="absolute todoitemselectcheck box-shadow pointer pointer-auto" onclick="toggleschedulemytask(event, '${item.id}')">
+					`<div class="absolute todoitemselectcheck backdrop-blur box-shadow pointer pointer-auto" onclick="toggleschedulemytask(event, '${item.id}')">
 						${getbigcheckbox(schedulemytaskslist.find(g => g == item.id))}
 					</div>`
 				: ''}
@@ -7203,7 +7199,7 @@ function updatetododatepicker() {
 		let selected = duedate && currentdate.getFullYear() == duedate.getFullYear() && currentdate.getMonth() == duedate.getMonth() && currentdate.getDate() == duedate.getDate()
 
 		column.push(`
-		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'background-blue hover:background-blue-hover' : ''} ${selected ? 'borderblue' : ''}" onclick="inputtodoitemduedate(event, ${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
+		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'background-blue hover:background-blue-hover' : ''} ${selected ? 'selecteddatehighlight' : ''}" onclick="inputtodoitemduedate(event, ${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
 			<div class="text-14px text-primary text-center pointer-none ${today ? 'text-white' : ''} ${currentdate.getMonth() == tododatepickerdate.getMonth() && currentdate.getFullYear() == tododatepickerdate.getFullYear() ? '' : 'text-secondary'}">${currentdate.getDate()}</div>
 		</div>`)
 
@@ -7975,7 +7971,7 @@ function updatedatepicker() {
 		let selected = !isNaN(duedate.getTime()) && currentdate.getFullYear() == duedate.getFullYear() && currentdate.getMonth() == duedate.getMonth() && currentdate.getDate() == duedate.getDate()
 
 		column.push(`
-		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'background-blue hover:background-blue-hover' : ''} ${selected ? 'borderblue' : ''}" onclick="selectedatepicker(${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
+		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'background-blue hover:background-blue-hover' : ''} ${selected ? 'selecteddatehighlight' : ''}" onclick="selectedatepicker(${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
 			<div class="text-14px text-primary text-center pointer-none ${today ? 'text-white' : ''} ${currentdate.getMonth() == datepickerdate.getMonth() && currentdate.getFullYear() == datepickerdate.getFullYear() ? '' : 'text-secondary'}">${currentdate.getDate()}</div>
 		</div>`)
 
@@ -9226,7 +9222,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 			
 			let difference = finalstartdate.getTime() - oldstartdate.getTime()
 
-			const frames = 40
+			const frames = 30
 			function nextframe(){
 				if(todoitem){
 					let percentage = easeoutcubic(tick/frames)
@@ -9302,7 +9298,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 				return
 			}
 
-			const frames = 40
+			const frames = 30
 			function nextframe() {
 				for (let id of items) {
 					let newitem = newcalendarevents.find(d => d.id == id)
