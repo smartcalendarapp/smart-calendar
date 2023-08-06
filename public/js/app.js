@@ -8166,10 +8166,18 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 		itemclasses.push(BACKGROUNDCOLORLISTTRANSPARENT[item.color])
 	}
 
+
 	let newstartdate = new Date(newitem.start.year, newitem.start.month, newitem.start.day)
 	let oldstartdate = new Date(olditem.start.year, olditem.start.month, olditem.start.day)
-	let difference = Math.floor((newstartdate.getTime() - oldstartdate.getTime()) / 86400000)
 
+	let tempnewstartdate = new Date(newstartdate)
+	tempnewstartdate.setHours(0,0,0,0)
+	let tempoldstartdate = new Date(oldstartdate)
+	tempoldstartdate.setHours(0,0,0,0)
+
+	let difference = Math.floor((tempnewstartdate.getTime() - tempoldstartdate.getTime()) / 86400000)
+
+	
 	let output = ''
 	output = `
 	<div class="absolute pointer-none overflow-hidden animatedeventwrap ${itemclasses3.join(' ')}" style="transform: ${!addedtodo ? `translateX(${percentage * difference * 100}%)` : ''} ${addedtodo ? `scale(${percentage * 100}%)` : ''};top:${mytop}px;height:${myheight}px;left:0;width:100%;">
