@@ -855,9 +855,9 @@ class Calendar {
 		let todolisttab2 = getElement('todolisttab2')
 		let summarytab2 = getElement('summarytab2')
 
-		hometab.classList.remove('selectedbutton')
-		summarytab.classList.remove('selectedbutton')
-		feedbacktab.classList.remove('selectedbutton')
+		hometab.classList.remove('selectedbuttongrey')
+		summarytab.classList.remove('selectedbuttongrey')
+		feedbacktab.classList.remove('selectedbuttongrey')
 
 		calendartab2.classList.remove('selectedbutton2')
 		todolisttab2.classList.remove('selectedbutton2')
@@ -870,7 +870,7 @@ class Calendar {
 			todowrap.classList.remove('display-none')
 			todowrap.style.flex = '1'
 
-			hometab.classList.add('selectedbutton')
+			hometab.classList.add('selectedbuttongrey')
 			todolisttab2.classList.add('selectedbutton2')
 
 			paneldivider.classList.remove('display-none')
@@ -881,7 +881,7 @@ class Calendar {
 			calendarwrap.classList.remove('display-none')
 			calendarwrap.style.flex = '2'
 
-			hometab.classList.add('selectedbutton')
+			hometab.classList.add('selectedbuttongrey')
 			calendartab2.classList.add('selectedbutton2')
 
 			paneldivider.classList.remove('display-none')
@@ -891,7 +891,7 @@ class Calendar {
 			this.updateSummary()
 			summarywrap.classList.remove('display-none')
 
-			summarytab.classList.add('selectedbutton')
+			summarytab.classList.add('selectedbuttongrey')
 			summarytab2.classList.add('selectedbutton2')
 		}
 
