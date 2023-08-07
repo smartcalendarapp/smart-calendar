@@ -3332,7 +3332,6 @@ function continueonboarding(key){
 	updateonboardingscreen()
 }
 
-//here4
 
 
 async function logingoogle(event){
