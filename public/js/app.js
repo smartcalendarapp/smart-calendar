@@ -1996,6 +1996,7 @@ class Calendar {
 		this.updateTodoList()
 		this.updateEditTodo()
 		this.updateTodoButtons()
+		updateonboardingscreen()
 	}
 
 	updateTodoButtons() {
@@ -2339,8 +2340,8 @@ class Calendar {
 		let settingssleepend2 = getElement('settingssleepend2')
 		let settingseventspacing2 = getElement('settingseventspacing2')
 
-		settingssleepstart.value = getHMText(calendar.settings.sleep.startminute)
-		settingssleepend.value = getHMText(calendar.settings.sleep.endminute)
+		if(settingssleepstart) settingssleepstart.value = getHMText(calendar.settings.sleep.startminute)
+		if(settingssleepend) settingssleepend.value = getHMText(calendar.settings.sleep.endminute)
 		settingssleepstart2.value = getHMText(calendar.settings.sleep.startminute)
 		settingssleepend2.value = getHMText(calendar.settings.sleep.endminute)
 		settingseventspacing2.value = getDHMText(calendar.settings.eventspacing)
@@ -3596,8 +3597,8 @@ function movepaneldivider(event) {
 		relativex = maxwidth
 	}
 
-	todowrap.style.flexGrow = relativex / maxwidth + ''
-	calendarwrap.style.flexGrow = 1 - (relativex / maxwidth) + ''
+	todowrap.style.flex = relativex / maxwidth + ''
+	calendarwrap.style.flex = 1 - (relativex / maxwidth) + ''
 }
 
 
@@ -6833,7 +6834,6 @@ function submitcreatetodo(event) {
 	calendar.updateHistory()
 
 	closecreatetodo()
-	updateonboardingscreen()
 }
 
 
