@@ -2333,10 +2333,14 @@ class Calendar {
 		}
 
 		//inputs
+		let settingssleepstart = getElement('settingssleepstart')
+		let settingssleepend = getElement('settingssleepend')
 		let settingssleepstart2 = getElement('settingssleepstart2')
 		let settingssleepend2 = getElement('settingssleepend2')
 		let settingseventspacing2 = getElement('settingseventspacing2')
 
+		settingssleepstart.value = getHMText(calendar.settings.sleep.startminute)
+		settingssleepend.value = getHMText(calendar.settings.sleep.endminute)
 		settingssleepstart2.value = getHMText(calendar.settings.sleep.startminute)
 		settingssleepend2.value = getHMText(calendar.settings.sleep.endminute)
 		settingseventspacing2.value = getDHMText(calendar.settings.eventspacing)
@@ -3313,8 +3317,11 @@ function updateonboardingscreen(){
 
 		let onboardingconnectcalendarsoutlookcalendar = getElement('onboardingconnectcalendarsoutlookcalendar')
 		onboardingconnectcalendarsoutlookcalendar.innerHTML = ``
+	}else if(currentonboarding == 'sleeptime'){
+		calendar.updateSettings()
 	}
 }
+
 
 function continueonboarding(key){
 	if(calendar.onboarding[key] != null) calendar.onboarding[key] = true
@@ -6255,6 +6262,7 @@ function resetcreatetodo() {
 	let nextdate = new Date()
 	nextdate.setHours(0, 0, 0, 0)
 	nextdate.setDate(nextdate.getDate() + 1)
+	nextdate.setMinutes(-1)
 
 	let todoinputtitle = getElement('todoinputtitle')
 	todoinputtitle.value = ''
@@ -6931,7 +6939,7 @@ function gettododata(item) {
 	} else {
 		//view
 
-		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `draggable="true" ${Calendar.Todo.isSchedulable(item) ? `ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''}>
+		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''}>
 
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
@@ -7757,8 +7765,9 @@ function geteventfromtodo(item) {
 
 	if (endbeforeyear == null || endbeforemonth == null || endbeforeday == null || endbeforeminute == null) {
 		let tempduedate = new Date()
-		tmepduedate.setHours(0, 0, 0, 0)
+		tempduedate.setHours(0, 0, 0, 0)
 		tempduedate.setDate(tempduedate.getDate() + 1)
+		tempduedate.setMinutes(-1)
 
 		endbeforeyear = tempduedate.getFullYear()
 		endbeforemonth = tempduedate.getMonth()
@@ -8208,7 +8217,6 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 	let newstartdate = new Date(newitem.start.year, newitem.start.month, newitem.start.day)
 	let oldstartdate = new Date(olditem.start.year, olditem.start.month, olditem.start.day)
 
-	console.log((newstartdate.getTime() - oldstartdate.getTime()) / 86400000)
 	let difference = Math.floor((newstartdate.getTime() - oldstartdate.getTime()) / 86400000)
 
 

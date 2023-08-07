@@ -261,8 +261,8 @@
 
 		<div class="display-flex flex-row gap-12px flex-wrap-wrap">
 			<div class="bordertertiary transition-duration-100 width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemnotdue(event, inputtodoid)">No due date</div>
-			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputtodoitemduetime(event, 1440)">Tomorrow</div>
-			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);inputtodoitemduetime(event, 1440)">In 2 days</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputtodoitemduetime(event, 1440-1)">Today 11:59 PM</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);inputtodoitemduetime(event, 1440-1)">Tomorrow 11:59 PM</div>
 		</div>
 
 		<div class="horizontalbar"></div>
@@ -329,8 +329,8 @@
 
 		<div class="display-flex flex-row gap-12px flex-wrap-wrap">
 			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemnotdue(event)">No due date</div>
-			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputcreatetodoitemduetime(event, 1440)">Tomorrow</div>
-			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);inputcreatetodoitemduetime(event, 1440)">In 2 days</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputcreatetodoitemduetime(event, 1440-1)">Today 11:59 PM</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);inputcreatetodoitemduetime(event, 1440-1)">Tomorrow 11:59 PM</div>
 		</div>
 
 		<div class="horizontalbar"></div>
@@ -449,7 +449,7 @@
 		</div>
 
 		
-		<div class="height-full width-full display-flex flex-column display-none" id="onboardingsleeptime">
+		<div class="height-full width-full display-flex align-center flex-column display-none" id="onboardingsleeptime">
 			<div class="todowidth display-flex padding-96px small:padding-24px  border-box flex-column flex-1 justify-space-between">
 				<div class="display-flex flex-column gap-12px">
 					<div class="text-24px text-primary text-bold">Set sleep schedule</div>
@@ -458,13 +458,13 @@
 
 				<div class="inputgroup gap-6px">
 					<div class="inputgroupitem flex-1">
-						<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepstart(event)" id="settingssleepstart2" class="infoinput inputtimepicker" placeholder="Add start time" type="text">
+						<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepstart(event)" id="settingssleepstart" class="infoinput inputtimepicker" placeholder="Add start time" type="text">
 							<span class="inputline"></span>
 						</input>
 					</div>
 					<div class="text-14px text-primary">to</div>
 					<div class="inputgroupitem flex-1">
-						<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepend(event)" id="settingssleepend2" class="infoinput inputtimepicker" placeholder="Add end time" type="text">
+						<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepend(event)" id="settingssleepend" class="infoinput inputtimepicker" placeholder="Add end time" type="text">
 							<span class="inputline"></span>
 						</input>
 					</div>
@@ -479,11 +479,11 @@
 		</div>
 
 
-		<div class="height-full width-full display-flex flex-column display-none" id="onboardingaddtask">
+		<div class="height-full width-full display-flex align-center flex-column display-none" id="onboardingaddtask">
 			<div class="todowidth display-flex padding-96px small:padding-24px  border-box flex-column flex-1 justify-space-between">
 				<div class="display-flex flex-column gap-12px">
 					<div class="text-24px text-primary text-bold">Add your first task</div>
-					<div class="text-18px text-quaternary">Get in the habit of adding a task here.</div>
+					<div class="text-18px text-quaternary">Get in the habit of adding a task with us.</div>
 				</div>
 
 				<div class="display-flex align-self-center flex-column gap-12px">
@@ -1725,13 +1725,13 @@
 											<div class="text-14px text-quaternary">This will help our app schedule your tasks when you're awake.</div>
 											<div class="inputgroup gap-6px">
 												<div class="inputgroupitem flex-1">
-													<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepstart(event)" id="settingssleepstart2" class="infoinput inputtimepicker" placeholder="Add start time" type="text">
+													<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepstart(event)" id="settingssleepstart2" class="infoinput inputtimepicker" placeholder="Add start time" type="text">
 														<span class="inputline"></span>
 													</input>
 												</div>
 												<div class="text-14px text-primary">to</div>
 												<div class="inputgroupitem flex-1">
-													<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepend(event)" id="settingssleepend2" class="infoinput inputtimepicker" placeholder="Add end time" type="text">
+													<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepend(event)" id="settingssleepend2" class="infoinput inputtimepicker" placeholder="Add end time" type="text">
 														<span class="inputline"></span>
 													</input>
 												</div>
@@ -1746,7 +1746,7 @@
 											<div class="text-14px text-quaternary">The app includes a break between events when planning your tasks.</div>
 											<div class="inputgroup">
 												<div class="inputgroupitem flex-1">
-													<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingseventspacing(event)" id="settingseventspacing2" class="infoinput inputdurationpicker" placeholder="Add duration" type="text">
+													<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingseventspacing(event)" id="settingseventspacing2" class="infoinput inputdurationpicker" placeholder="Add duration" type="text">
 														<span class="inputline"></span>
 													</input>
 												</div>
