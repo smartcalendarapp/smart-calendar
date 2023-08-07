@@ -1072,14 +1072,14 @@
 
 			<!-- middle -->
 			<div class="display-flex flex-row align-center flex-1 justify-center gap-12px">
-				<div class="display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="hometab">
-					<div class="text-16px text-primary pointer-none transition-none">Calendar</div>
+				<div class="padding-bottom-6px pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="hometab">
+					<div class="text-16px text-quaternary pointer-none transition-none">Calendar</div>
 				</div>
-				<div class="display-flex gap-6px flex-row align-center" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab">
-					<div class="text-16px text-primary pointer-none transition-none">Time report</div>
+				<div class="padding-bottom-6px pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab">
+					<div class="text-16px text-quaternary pointer-none transition-none">Time report</div>
 				</div>
-				<div class="display-flex gap-6px flex-row align-center" onclick="clicktab([3]);gtag('event', 'button_click', { useraction: 'Settings - nav bar' }) " id="settingstab">
-					<div class="text-16px text-primary pointer-none transition-none">Settings</div>
+				<div class="padding-bottom-6px pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([3]);gtag('event', 'button_click', { useraction: 'Settings - nav bar' }) " id="settingstab">
+					<div class="text-16px text-quaternary pointer-none transition-none">Settings</div>
 				</div>
 			</div>
 
@@ -1449,31 +1449,13 @@
 
 				<div class="summarywrap relative display-none border-box overflow-auto" id="settingswrap">
 
-					<div class="display-flex flex-1 box-shadow todowidth flex-column height-full settingscontent small:width-full small:height-full overflow-y-auto" id="settingscontent">
+					<div class="display-flex flex-1 box-shadow todowidth flex-column height-full settingscontent small:width-full small:height-full overflow-y-auto">
 
 						<div class="display-flex flex-column overflow-y-auto flex-1">
 			
 							<!-- top bar -->
 							<div class="infotop borderbottom justify-space-between">
-								<div>
-									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-									<g></g>
-									</svg>
-								</div>
-								<div class="text-18px text-primary">Settings</div>
-								<div class="infotoprightgroup">
-									<div class="infotopright pointer" onclick="closesettings(event)">
-										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-										<g>
-										<g opacity="1">
-										<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-										<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-										</g>
-										</g>
-										</svg>
-									</div>
-									
-								</div>
+								<div class="text-18px text-primary text-center flex-1">Settings</div>
 							</div>
 			
 							<div class="flex-1 display-flex flex-row overflow-y-auto small:flex-column">

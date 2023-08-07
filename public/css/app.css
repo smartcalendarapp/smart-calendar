@@ -1833,16 +1833,23 @@ body {
 
 
 .selectedbuttonunderline{
+	color:var(--text-primary) !important;
+}
+.selectedbuttonunderline div{ 
+	color:var(--text-primary) !important;
+}
+.selectedbuttonunderline{
 	position:relative;
 }
 .selectedbuttonunderline::before {
 	position:absolute;
 	left:0;
 	right:0;
-	height:4px;
+	height:3px;
 	background-color:var(--blue);
 	border-radius:999px;
 	top:100%;
+	content:"";
 }
 
 .selectedbutton2 {
