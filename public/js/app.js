@@ -3271,20 +3271,26 @@ function updateonboardingscreen(){
 	let onboardingscreen = getElement('onboardingscreen')
 	onboardingscreen.classList.add('display-none')
 
-	let currentonboarding;
-	for(let [key, value] of Object.entries(calendar.onboarding)){
-		if(key == 'connectcalendars' || key == 'sleeptime' || key == 'addtask'){
-			let currentscreen = getElement(`onboarding${key}`)
-
-			if(value == false && !currentonboarding){
-				currentonboarding = key
-
-				onboardingscreen.classList.remove('display-none')
-				currentscreen.classList.remove('hiddenfade')
-			}else{
-				currentscreen.classList.add('hiddenfade')
-			}
+	function updatescreen(key, boolean){
+		let tempdiv = getElement(`onboarding${key}`)
+		if(boolean){
+			tempdiv.classList.remove('display-none')
+		}else{
+			tempdiv.classList.add('display-none')
 		}
+	}
+
+	let currentonboarding;
+	if(!calendar.onboarding.connectcalendars){
+		currentonboarding = 'connectcalendars'
+	}else if(!calendar.onboarding.sleeptime){
+		currentonboarding = 'sleeptime'
+	}else if(!calendar.onboarding.addtask){
+		currentonboarding = 'addtask'
+	}
+
+	for(let [key, value] of Object.entries(calendar.onboarding)){
+		updatescreen(key, key == currentonboarding)
 	}
 
 }

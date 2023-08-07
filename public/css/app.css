@@ -430,6 +430,15 @@ body {
 
 
 
+.googlebutton{
+	color:var(--black);
+	background-color:var(--white);
+	box-shadow:0 0 8px -2px var(--black-transparent);
+}
+.googlebutton:hover{
+	background-color:var(--white-hover)
+}
+
 
 
 .schedulemenu {
