@@ -1200,6 +1200,7 @@ body {
 
 .screenwrap {
 	display: flex;
+	flex-direction:column;
 	width: 100%;
 	height: 100%;
 	box-sizing: border-box;
@@ -1831,7 +1832,6 @@ body {
 }
 .selectedbuttongrey {
 	background-color: var(--background-tint-2) !important;
-	color: var(--white) !important;
 }
 
 .selectedbutton2 {
@@ -2511,7 +2511,7 @@ body {
 }
 
 .timedisplay {
-	color: var(--text-secondary);
+	color: var(--text-quaternary);
 	font-size: 14px;
 	position: relative;
 	top: -7px;
