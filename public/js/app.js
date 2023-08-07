@@ -849,7 +849,6 @@ class Calendar {
 		//buttons
 		let hometab = getElement('hometab')
 		let summarytab = getElement('summarytab')
-		let feedbacktab = getElement('feedbacktab')
 
 		let calendartab2 = getElement('calendartab2')
 		let todolisttab2 = getElement('todolisttab2')
@@ -857,7 +856,6 @@ class Calendar {
 
 		hometab.classList.remove('selectedbuttongrey')
 		summarytab.classList.remove('selectedbuttongrey')
-		feedbacktab.classList.remove('selectedbuttongrey')
 
 		calendartab2.classList.remove('selectedbutton2')
 		todolisttab2.classList.remove('selectedbutton2')
