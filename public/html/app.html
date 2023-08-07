@@ -383,11 +383,6 @@
 
 
 	<div class="helpmenu hiddenpopup popup" id="leftmenuwrap">
-		<div class="padding-12px display-flex flex-column">
-			<div class="pointer-none text-14px text-primary gap-6px align-center" id="leftmenutext"></div>
-		</div>
-
-		<div class="horizontalbar"></div>
 		
 		<div class="helpitem align-center display-flex flex-row gap-12px" id="toggletheme" onclick="toggletheme()"></div>
 
@@ -1076,17 +1071,17 @@
 
 			<!-- middle -->
 			<div class="display-flex flex-row align-center flex-1 justify-center gap-12px">
-				<div class="text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="hometab">
+				<div class="relative text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="hometab">
 					Calendar
-					<span class="buttonunderline padding-top-6px"></span>
+					<span class="buttonunderline"></span>
 				</div>
-				<div class="text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab">
+				<div class="relative text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab">
 					Time report
-					<span class="buttonunderline padding-top-6px"></span>
+					<span class="buttonunderline"></span>
 				</div>
-				<div class="text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([3]);gtag('event', 'button_click', { useraction: 'Settings - nav bar' }) " id="settingstab">
+				<div class="relative text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([3]);gtag('event', 'button_click', { useraction: 'Settings - nav bar' }) " id="settingstab">
 					Settings
-					<span class="buttonunderline padding-top-6px"></span>
+					<span class="buttonunderline"></span>
 				</div>
 			</div>
 
@@ -1453,11 +1448,11 @@
 				</div>
 
 
-				<div class="summarywrap relative align-center display-none border-box overflow-auto" id="settingswrap">
+				<div class="summarywrap relative display-none border-box overflow-auto" id="settingswrap">
 
-					<div class="display-flex flex-1 todowidth flex-column height-full overflow-y-auto">
+					<div class="display-flex flex-1 flex-column align-center height-full overflow-y-auto">
 
-						<div class="display-flex flex-column overflow-y-auto flex-1">
+						<div class="display-flex flex-column overflow-y-auto flex-1 todowidth">
 		
 			
 							<div class="flex-1 display-flex flex-row overflow-y-auto small:flex-column">

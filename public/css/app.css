@@ -1836,18 +1836,6 @@ body {
 }
 
 
-@keyframes expandunderline{
-	0%{
-		width:0;
-		left:50%;
-	}
-	100%{
-		width:100%;
-		left:0;
-	}
-}
-
-
 .buttonunderline {
 	height: 2px;
 	display: inline-block;
@@ -2776,7 +2764,6 @@ body {
 	justify-content: space-between;
 	flex-direction: row;
 	border-radius: 6px;
-	margin:0px 3px;
 }
 
 .monthcontainerwraptextgroup {
@@ -3207,7 +3194,7 @@ body {
 	position:absolute;
 	top:0;
 	bottom:0;
-	margin:1px 3px 0px 3px;
+	margin:1px 8px 0px 0px;
 	right:0;
 	left:0;
 	z-index: 2;

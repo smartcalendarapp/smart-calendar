@@ -3526,8 +3526,7 @@ function openleftmenu(event) {
 	leftmenuwrap.style.left = fixleft(leftmenubutton.offsetLeft + leftmenubutton.offsetWidth/2 - leftmenuwrap.offsetWidth/2, leftmenuwrap) + 'px'
 }
 function updateleftmenu(){
-	let leftmenutext = getElement('leftmenutext')
-	leftmenutext.innerHTML = clientinfo.google_email ? cleanInput(clientinfo.google.name || clientinfo.google_email) : clientinfo.username
+	//let displayname = clientinfo.google_email ? cleanInput(clientinfo.google.name || clientinfo.google_email) : clientinfo.username
 }
 
 function updateAvatar(){
