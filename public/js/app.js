@@ -3289,10 +3289,19 @@ function updateonboardingscreen(){
 		currentonboarding = 'addtask'
 	}
 
+	if(currentonboarding){
+		onboardingscreen.classList.remove('display-none')
+	}
+
 	for(let [key, value] of Object.entries(calendar.onboarding)){
 		updatescreen(key, key == currentonboarding)
 	}
 
+}
+
+function continueonboarding(key){
+	if(calendar.onboarding[key] != null) calendar.onboarding[key] = true
+	updateonboardingscreen()
 }
 //here4
 

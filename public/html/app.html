@@ -373,9 +373,9 @@
 	<div class="onboardingscreen absolute top-0 left-0 right-0 bottom-0 background-primary display-none" id="onboardingscreen">
 		<div class="height-full width-full display-flex flex-column align-center display-none" id="onboardingconnectcalendars">
 			<div class="todowidth display-flex padding-96px small:padding-24px  border-box flex-column flex-1 justify-space-between">
-				<div class="display-flex flex-column gap-12px"></div>
+				<div class="display-flex flex-column gap-12px">
 					<div class="text-24px text-primary text-bold">Connect calendar accounts</div>
-					<div class="text-18px text-quaternary">Smart Calendar will sync your events with a calendar. Strongly recommended.</div>
+					<div class="text-18px text-quaternary">Sync your events with Google and Outlook calendar. It's recommended to choose at least one.</div>
 				</div>
 
 				<div class="display-flex flex-column gap-12px">
@@ -386,8 +386,8 @@
 				</div>
 
 				<div class="display-flex flex-row gap-12px justify-center align-center">
-					<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary">Skip</div>
-					<div class="text-18px pointer pointer-auto padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white">Continue</div>
+					<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary">Skip for now</div>
+					<div class="text-18px pointer pointer-auto padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('connectcalendars')">Continue</div>
 				</div>
 
 			</div>
