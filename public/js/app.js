@@ -2328,15 +2328,6 @@ class Calendar {
 		settingseventspacing2.value = getDHMText(calendar.settings.eventspacing)
 
 
-		//left menu
-		let leftmenutext = getElement('leftmenutext')
-		leftmenutext.innerHTML = clientinfo.google_email ?
-			`${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : ''}
-			<div class="text-primary text-14px text-overflow-ellipsis overflow-hidden nowrap">${cleanInput(clientinfo.google.name || clientinfo.google_email)}</div>`
-			:
-			`<div class="text-primary text-14px text-overflow-ellipsis overflow-hidden nowrap">${clientinfo.username}</div>`
-
-
 		//tabs
 		let settingscontentwrap = getElement('settingscontentwrap')
 		for (let [index, div] of Object.entries(settingscontentwrap.children)) {
@@ -3511,24 +3502,23 @@ function movepaneldivider(event) {
 }
 
 
-function openmore(event) {
-	let morebutton = event.target
-	let leftmenuwrap = getElement('leftmenuwrap')
-	leftmenuwrap.classList.toggle('hiddenpopup')
-
-	leftmenuwrap.style.width = leftmenuwrap.scrollWidth + 'px'
-	leftmenuwrap.style.top = (morebutton.offsetTop + morebutton.offsetHeight) + 'px'
-	leftmenuwrap.style.left = fixleft(morebutton.offsetLeft + morebutton.offsetWidth / 2 - leftmenuwrap.offsetWidth / 2, leftmenuwrap) + 'px'
-}
-
 function openleftmenu(event) {
 	let leftmenubutton = getElement('leftmenubutton')
 	let leftmenuwrap = getElement('leftmenuwrap')
 	leftmenuwrap.classList.toggle('hiddenpopup')
 
-	leftmenuwrap.style.top = (leftmenubutton.offsetTop - leftmenuwrap.offsetHeight) + 'px'
-	leftmenuwrap.style.left = fixleft(leftmenubutton.offsetLeft, leftmenuwrap) + 'px'
-	leftmenuwrap.style.width = leftmenubutton.offsetWidth + 'px'
+	updateleftmenu()
+
+	leftmenuwrap.style.top = (leftmenubutton.offsetTop + leftmenubutton.offsetHeight) + 'px'
+	leftmenuwrap.style.left = fixleft(leftmenubutton.offsetLeft + leftmenubutton.offsetWidth/2 - leftmenuwrap.offsetWidth/2, leftmenuwrap) + 'px'
+}
+function updateleftmenu(){
+	let leftmenutext = getElement('leftmenutext')
+	leftmenutext.innerHTML = clientinfo.google_email ?
+		`${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : ''}
+		<div class="text-primary text-14px text-overflow-ellipsis overflow-hidden nowrap">${cleanInput(clientinfo.google.name || clientinfo.google_email)}</div>`
+		:
+		`<div class="text-primary text-14px text-overflow-ellipsis overflow-hidden nowrap">${clientinfo.username}</div>`
 }
 
 function togglesidebar() {
