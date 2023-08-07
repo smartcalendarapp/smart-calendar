@@ -3531,10 +3531,12 @@ function updateleftmenu(){
 
 function updateAvatar(){
 	let leftmenubutton = getElement('leftmenubutton')
-	leftmenubutton.innerHTML = clientinfo.google_email ?
-	`${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : ''}`
-	:
-	``
+	leftmenubutton.innerHTML = `
+		${clientinfo.google_email ?
+		`${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : ''}`
+		:
+		``}
+		<span class="hovercirclewrap"></span>`
 }
 
 
