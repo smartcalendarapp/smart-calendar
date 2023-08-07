@@ -3539,24 +3539,6 @@ function updateAvatar(){
 }
 
 
-function togglesidebar() {
-	let leftwrap = getElement('leftwrap')
-	leftwrap.classList.toggle('display-none')
-
-	let togglesidebarshown = getElement('togglesidebarshown')
-	let togglesidebarhidden = getElement('togglesidebarhidden')
-	togglesidebarshown.classList.add('display-none')
-	togglesidebarhidden.classList.add('display-none')
-
-	if (leftwrap.classList.contains('display-none')) {
-		togglesidebarhidden.classList.remove('display-none')
-	} else {
-		togglesidebarshown.classList.remove('display-none')
-	}
-
-}
-
-
 
 function fixleft(newx, div) {
 	let width = window.innerWidth || document.body.clientWidth

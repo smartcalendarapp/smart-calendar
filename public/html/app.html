@@ -384,7 +384,7 @@
 
 	<div class="helpmenu hiddenpopup popup" id="leftmenuwrap">
 		<div class="padding-12px display-flex flex-column">
-			<div class="pointer-none display-flex flex-row text-16px text-primary gap-6px align-center overflow-hidden" id="leftmenutext"></div>
+			<div class="pointer-none text-14px text-primary gap-6px align-center" id="leftmenutext"></div>
 		</div>
 
 		<div class="horizontalbar"></div>
@@ -1076,14 +1076,14 @@
 
 			<!-- middle -->
 			<div class="display-flex flex-row align-center flex-1 justify-center gap-12px">
-				<div class="padding-bottom-6px pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="hometab">
-					<div class="text-16px text-quaternary pointer-none transition-none">Calendar</div>
+				<div class="padding-bottom-6px text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="hometab">
+					Calendar
 				</div>
-				<div class="padding-bottom-6px pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab">
-					<div class="text-16px text-quaternary pointer-none transition-none">Time report</div>
+				<div class="padding-bottom-6px text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab">
+					Time report
 				</div>
-				<div class="padding-bottom-6px pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([3]);gtag('event', 'button_click', { useraction: 'Settings - nav bar' }) " id="settingstab">
-					<div class="text-16px text-quaternary pointer-none transition-none">Settings</div>
+				<div class="padding-bottom-6px text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([3]);gtag('event', 'button_click', { useraction: 'Settings - nav bar' }) " id="settingstab">
+					Settings
 				</div>
 			</div>
 
@@ -1118,12 +1118,12 @@
 
 		</div>
 
-		<div class="display-flex flex-row width-full overflow-y-auto">
 
-		<!-- desktop only left bar -->
-		<div class="leftbar relative display-flex border-box background-secondary flex-column small:display-none height-full display-none" id="leftwrap">
-			<div class="absolute bottom-0 width-full loader left-0 display-none" id="statusdisplay"></div>
-		</div>
+		<!-- app content -->
+		<div class="display-flex flex-row width-full overflow-y-auto flex-1">
+
+		<!-- here4 -->
+		<div class="absolute bottom-0 width-full loader left-0 display-none" id="statusdisplay"></div>
 		
 
 		<div class="background-secondary small:background-primary pagewrap border-box flex-column">

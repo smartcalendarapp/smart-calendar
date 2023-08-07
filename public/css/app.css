@@ -1826,16 +1826,33 @@ body {
 }
 
 
+
+
 .selectedbuttonunderline{
 	color:var(--text-primary) !important;
 }
 .selectedbuttonunderline div{ 
 	color:var(--text-primary) !important;
 }
+
+
+@keyframes expandunderline{
+	0%{
+		width:0;
+		left:50%;
+	}
+	100%{
+		width:100%;
+		left:0;
+	}
+}
+
+
 .selectedbuttonunderline{
 	position:relative;
 }
 .selectedbuttonunderline::before {
+	animation: expandunderline 0.2s forwards;
 	position:absolute;
 	left:0;
 	right:0;
