@@ -839,27 +839,33 @@ class Calendar {
 		let summarywrap = getElement('summarywrap')
 		let calendarwrap = getElement('calendarwrap')
 		let todowrap = getElement('todowrap')
+		let settingswrap = getElement('settingswrap')
 
 		summarywrap.classList.add('display-none')
 		todowrap.classList.add('display-none')
 		calendarwrap.classList.add('display-none')
+		settingswrap.classList.add('display-none')
 
 		let paneldivider = getElement('paneldivider')
 
 		//buttons
 		let hometab = getElement('hometab')
 		let summarytab = getElement('summarytab')
+		let settingstab = getElement('settingstab')
 
 		let calendartab2 = getElement('calendartab2')
 		let todolisttab2 = getElement('todolisttab2')
 		let summarytab2 = getElement('summarytab2')
+		let settingstab2 = getElement('settingstab')
 
-		hometab.classList.remove('selectedbuttongrey')
-		summarytab.classList.remove('selectedbuttongrey')
+		hometab.classList.remove('selectedbuttonunderline')
+		summarytab.classList.remove('selectedbuttonunderline')
+		settingstab.classList.remove('selectedbuttonunderline')
 
 		calendartab2.classList.remove('selectedbutton2')
 		todolisttab2.classList.remove('selectedbutton2')
 		summarytab2.classList.remove('selectedbutton2')
+		settingstab2.classList.remove('selectedbutton2')
 
 		paneldivider.classList.add('display-none')
 
@@ -868,7 +874,7 @@ class Calendar {
 			todowrap.classList.remove('display-none')
 			todowrap.style.flex = '1'
 
-			hometab.classList.add('selectedbuttongrey')
+			hometab.classList.add('selectedbuttonunderline')
 			todolisttab2.classList.add('selectedbutton2')
 
 			paneldivider.classList.remove('display-none')
@@ -879,7 +885,7 @@ class Calendar {
 			calendarwrap.classList.remove('display-none')
 			calendarwrap.style.flex = '2'
 
-			hometab.classList.add('selectedbuttongrey')
+			hometab.classList.add('selectedbuttonunderline')
 			calendartab2.classList.add('selectedbutton2')
 
 			paneldivider.classList.remove('display-none')
@@ -889,8 +895,16 @@ class Calendar {
 			this.updateSummary()
 			summarywrap.classList.remove('display-none')
 
-			summarytab.classList.add('selectedbuttongrey')
+			summarytab.classList.add('selectedbuttonunderline')
 			summarytab2.classList.add('selectedbutton2')
+		}
+
+		if (calendartabs.includes(3)) {
+			this.updateSettings()
+			settingswrap.classList.remove('display-none')
+
+			settingstab.classList.add('selectedbuttonunderline')
+			settingstab2.classList.add('selectedbutton2')
 		}
 
 	}
@@ -1472,9 +1486,9 @@ class Calendar {
 		let topbarmiddle = getElement('topbarmiddle')
 		for (let [index, div] of Object.entries(topbarmiddle.children)) {
 			if (index == calendarmode) {
-				div.classList.add('selectedbuttongrey')
+				div.classList.add('selectedbuttonunderline')
 			} else {
-				div.classList.remove('selectedbuttongrey')
+				div.classList.remove('selectedbuttonunderline')
 			}
 		}
 
@@ -2929,6 +2943,7 @@ function run() {
 	//calendar
 	calendar.updateTabs()
 	calendar.updateHistory()
+	updateAvatar()
 
 	//input pickers
 	updatetimepicker()
@@ -3515,11 +3530,19 @@ function openleftmenu(event) {
 function updateleftmenu(){
 	let leftmenutext = getElement('leftmenutext')
 	leftmenutext.innerHTML = clientinfo.google_email ?
-		`${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : ''}
-		<div class="text-primary text-14px text-overflow-ellipsis overflow-hidden nowrap">${cleanInput(clientinfo.google.name || clientinfo.google_email)}</div>`
+		`<div class="text-primary text-14px text-overflow-ellipsis overflow-hidden nowrap">${cleanInput(clientinfo.google.name || clientinfo.google_email)}</div>`
 		:
 		`<div class="text-primary text-14px text-overflow-ellipsis overflow-hidden nowrap">${clientinfo.username}</div>`
 }
+
+function updateAvatar(){
+	let leftmenubutton = getElement('leftmenubutton')
+	leftmenubutton.innerHTML = clientinfo.google_email ?
+	`${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : ''}`
+	:
+	``
+}
+//here4
 
 function togglesidebar() {
 	let leftwrap = getElement('leftwrap')
@@ -4649,11 +4672,6 @@ function displayalert(title) {
 
 //SETTINGS
 
-function clicksettingsscreen(event) {
-	if (event.target === getElement('settingsscreen')) {
-		closesettings()
-	}
-}
 
 function getdatafromicalendar(text, subscriptionurl) {
 	function getFrequencyNumber(rrule) {
@@ -5338,31 +5356,18 @@ function deletecalendar(id) {
 
 
 
-function opensettings(event) {
-	let settingsscreen = getElement('settingsscreen')
-	settingsscreen.classList.remove('hiddenfade')
-
-	calendar.updateSettings()
-
-	closehelp()
-}
-
 function opensettingssleep() {
-	settingstab = 1
-	opensettings()
+	calendartabs = [3]
+	calendar.updateTabs()
 }
 
 function opencreatecalendarbutton() {
-	settingstab = 2
-	opensettings()
+	calendartabs = [3]
+	calendar.updateTabs()
 
 	closecalendaroptionmenu()
 }
 
-function closesettings(event) {
-	let settingsscreen = getElement('settingsscreen')
-	settingsscreen.classList.add('hiddenfade')
-}
 
 function inputsettingssleepstart(event) {
 	let string = event.target.value.toLowerCase()
@@ -5425,7 +5430,7 @@ function closehelp() {
 function clicktour() {
 	closehelp()
 
-	calendartabs = [1]
+	calendartabs = [0,1]
 	calendar.updateTabs()
 
 	welcomeindex = 0

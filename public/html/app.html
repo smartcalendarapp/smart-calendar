@@ -381,281 +381,6 @@
 
 	<div class="helpmenu hiddenpopup popup picker z-index-1000 max-height-240px" onmousedown="event.preventDefault()" id="timepicker"></div>
 
-	<div class="settingsscreen hiddenfade small:padding-0 small:background-transparent" id="settingsscreen" onclick="clicksettingsscreen(event)">
-			
-		<div class="display-flex flex-1 box-shadow todowidth flex-column height-full settingscontent small:width-full small:height-full overflow-y-auto" id="settingscontent">
-
-			<div class="display-flex flex-column overflow-y-auto flex-1">
-
-				<!-- top bar -->
-				<div class="infotop borderbottom justify-space-between">
-					<div>
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-						<g></g>
-						</svg>
-					</div>
-					<div class="text-18px text-primary">Settings</div>
-					<div class="infotoprightgroup">
-						<div class="infotopright pointer" onclick="closesettings(event)">
-							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-							<g>
-							<g opacity="1">
-							<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-							<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-							</g>
-							</g>
-							</svg>
-						</div>
-						
-					</div>
-				</div>
-
-				<div class="flex-1 display-flex flex-row overflow-y-auto small:flex-column">
-					<!-- left tab -->
-					<div class="border-box border-box padding-left-12px padding-top-12px display-flex flex-column leftcolumn small:display-none" id="settingstablist1">
-						<div class="leftwrapitem" onclick="clicksettingstab(0)">Account</div>
-						<div class="leftwrapitem" onclick="clicksettingstab(1)">General</div>
-						<div class="leftwrapitem" onclick="clicksettingstab(2)">My calendars</div>
-						<div class="leftwrapitem" onclick="clicksettingstab(3)">Notifications</div>
-					</div>
-
-					<!-- settings page -->
-					<div class="flex-1 padding-12px display-flex flex-column settingspadding overflow-y-auto border-box" id="settingscontentwrap">
-
-						<!-- account -->
-						<div class="display-flex flex-column gap-24px">
-							<div class="infogroup">
-								<div class="infotext text-16px text-bold">Email</div>
-								<div id="accountusername" class="infotext"></div>
-								<div id="changeusername" class="accountbutton popupbutton display-none" onclick="openchangeusername()">Change email</div>
-								<div id="setusername" class="accountbutton popupbutton display-none" onclick="opensetusername()">Set email</div>
-							</div>
-
-							<div class="horizontalbar"></div>
-							
-							<div class="infogroup">
-								<div class="infotext text-16px text-bold">Password</div>
-								<div id="accountpassword" class="infotext"></div>
-								<div id="changepassword" class="accountbutton popupbutton display-none" onclick="openchangepassword()">Change password</div>
-								<div id="setpassword" class="accountbutton popupbutton display-none" onclick="opensetpassword()">Set password</div>
-							</div>
-
-							<div class="horizontalbar"></div>
-							
-							<div class="infogroup">
-								<div class="infotext text-16px text-bold">Login methods</div>
-			
-								<!-- list of login methods -->
-								<div class="background-tint-1 padding-12px border-8px display-flex flex-row gap-12px flex-wrap-wrap justify-space-between align-center">
-									<div class="display-flex flex-row align-center gap-12px">
-										<div class="text-primary text-14px nowrap">
-											<svg viewBox="0 0 24 24" width="100%" class="buttongoogle" height="100%"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path><path d="M1 1h22v22H1z" fill="none"></path></svg> Google
-										</div>
-										<div class="text-14px text-primary display-none" id="googleemail"></div>
-									</div>
-			
-									<div>
-										<div class="width-fit text-14px text-primary background-tint-1 padding-8px-12px hover:background-tint-2 border-8px transition-duration-100 pointer display-none" id="connectgoogle" onclick="connectgoogle()">Connect</div>
-										<div class="width-fit text-14px text-primary background-tint-1 padding-8px-12px hover:background-tint-2 border-8px transition-duration-100 pointer display-none" id="disconnectgoogle" onclick="disconnectgoogle()">Disconnect</div>
-									</div>
-								</div>
-										
-								<div id="googleerrorwrap" class="errorwrap display-none"></div>
-							</div>
-							
-							<div class="logout" onclick="logout()">Log out</div>
-
-
-							<div class="horizontalbar"></div>
-							
-							<div class="infogroup">
-								<div class="display-flex flex-row gap-12px align-center">
-									<div class="infotext text-16px text-bold">Sync with Google Calendar</div>
-									<label class="switch">
-										<input type="checkbox" oninput="togglesyncgooglecalendar(event)" id="syncgooglecalendartoggle">
-										<span class="slider"></span>
-									</label>
-								</div>
-								
-								<div class="display-flex flex-row gap-12px align-center">
-									<div id="lastsyncedgooglecalendar" class="gap-6px display-flex flex-row align-center"></div>
-									<div class="display-flex flex-row gap-12px">
-										<div id="synnowcgooglecalendar" onclick="syncnowgooglecalendar()" class="flex-1 text-center display-none text-14px text-white border-8px padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 pointer">Sync now</div>
-									</div>
-								</div>
-								
-								<div id="importgooglecalendarerror" class="errorwrap display-none"></div>
-							</div>
-						</div>
-		
-						<!-- general -->
-						<div class="display-flex flex-column gap-24px">
-			
-							<div class="infogroup">
-								<div class="infotext text-16px text-bold">Theme</div>
-								<div class="inputeventtype" id="settingsthemes">
-									<div class="inputeventtypechild" onclick="clicksettingstheme(0)">Sync with device</div>
-									<div class="inputeventtypechild" onclick="clicksettingstheme(1)">Light</div>
-									<div class="inputeventtypechild" onclick="clicksettingstheme(2)">Dark</div>
-								</div>
-							</div>
-
-							<div class="horizontalbar"></div>
-			
-							<div class="infogroup">
-								<div class="infotext text-16px text-bold">Time format</div>
-								<div class="inputeventtype">
-									<div class="inputeventtypechild" id="settingstimeformat12" onclick="clicksettingstimeformat(false)">12 hour</div>
-									<div class="inputeventtypechild" id="settingstimeformat24" onclick="clicksettingstimeformat(true)">24 hour</div>
-								</div>
-							</div>
-
-							<div class="horizontalbar"></div>
-
-							<div class="infogroup">
-								<div class="infotext text-16px text-bold">Scheduling mode</div>
-								<div class="text-14px text-quaternary">Choose how Smart Calendar automatically schedules events.<br>Smart Calendar will only schedule events you want it to, and events like meetings or appointments will not be touched.</div>
-								<div class="flex-wrap-wrap justify-center display-flex flex-row background-tint-1 border-8px overflow-hidden" id="autoschedulemodes2">
-									<div class="flex-1 display-flex flex-column modeoptionbutton border-8px padding-8px-12px pointer transition-duration-100" onclick="clickschedulemode(0)">
-										<div class="transition-duration-100 text-18px text-primary text-center pointer-none schedulemodetext">Focus</div>
-										<div class="nowrap transition-duration-100 text-14px text-primary text-center pointer-none schedulemodetext">Ideal for maximizing productivity</div>
-									</div>
-									<div class="flex-1 display-flex flex-column modeoptionbutton border-8px padding-8px-12px pointer transition-duration-100" onclick="clickschedulemode(1)">
-										<div class="transition-duration-100 text-18px text-primary text-center pointer-none schedulemodetext">Balanced</div>
-										<div class="nowrap transition-duration-100 text-14px text-primary text-center pointer-none schedulemodetext">Ideal for an even workload over time</div>
-									</div>
-								</div>
-							</div>
-
-							<div class="horizontalbar"></div>
-
-							
-							<div class="infogroup">
-								<div class="infotext text-16px text-bold">Sleep time</div>
-								<div class="text-14px text-quaternary">Smart Calendar schedules events outside of your sleep time.</div>
-								<div class="inputgroup gap-6px">
-									<div class="inputgroupitem flex-1">
-										<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepstart(event)" id="settingssleepstart2" class="infoinput inputtimepicker" placeholder="Add start time" type="text">
-											<span class="inputline"></span>
-										</input>
-									</div>
-									<div class="text-14px text-primary">to</div>
-									<div class="inputgroupitem flex-1">
-										<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepend(event)" id="settingssleepend2" class="infoinput inputtimepicker" placeholder="Add end time" type="text">
-											<span class="inputline"></span>
-										</input>
-									</div>
-								</div>
-							</div>
-							
-
-							<div class="horizontalbar"></div>
-							
-							<div class="infogroup">
-								<div class="infotext text-16px text-bold">Break between events</div>
-								<div class="text-14px text-quaternary">Smart Calendar includes a break between events when planning your schedule.</div>
-								<div class="inputgroup">
-									<div class="inputgroupitem flex-1">
-										<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingseventspacing(event)" id="settingseventspacing2" class="infoinput inputdurationpicker" placeholder="Add duration" type="text">
-											<span class="inputline"></span>
-										</input>
-									</div>
-								</div>
-							</div>
-						</div>
-			
-						<!-- calendars -->
-						<div class="display-flex flex-column gap-24px">
-
-							<div id="settingscalendarlist" class="display-flex flex-column gap-6px"></div>
-
-							<div class="horizontalbar"></div>
-							
-							<div class="infogroup">
-								<div class="text-16px text-primary text-bold">Create calendar</div>
-								<div class="border-8px background-blue hover:background-blue-hover transition-duration-100 text-14px pointer text-center padding-8px-12px text-white" onclick="createcalendar()">Create calendar</div>
-							</div>
-
-							<div class="horizontalbar"></div>
-							
-							<div class="infogroup">
-								<div class="text-16px text-primary text-bold">Upload calendar file</div>
-								<div class="border-8px background-blue hover:background-blue-hover transition-duration-100 text-14px pointer text-center padding-8px-12px text-white" onclick="clickuploadfile()">Upload file
-									<input type="file" accept=".ics" id="importcalendar" class="display-none" onchange="inputcalendarfile(event)"></input>
-								</div>
-							</div>
-							
-							<div class="horizontalbar"></div>
-							
-
-							<div class="infogroup">
-								<div class="text-16px text-primary text-bold">Add calendar subscription</div>
-								<div class="display-flex flex-row gap-12px">
-									<div class="inputgroup flex-1">
-										<div class="inputgroupitem flex-1">
-											<input placeholder="https://example.com/calendar.ics" onkeydown="if(event.keyCode == 13){ inputsubscribecalendar(event) }" id="inputsubscribecalendar" class="infoinput" type="url">
-												<span class="inputline"></span>
-											</input>
-										</div>
-									</div>
-									<div class="text-center background-blue hover:background-blue-hover transition-duration-100 text-14px pointer text-center padding-8px-12px text-white border-8px" onclick="inputsubscribecalendar()">Add subscription</div>
-								</div>
-							</div>
-
-							<div class="horizontalbar"></div>
-
-							<div class="infogroup">
-								<div class="display-flex flex-row gap-12px align-center">
-									<div class="infotext text-16px text-bold">Sync with Google Calendar</div>
-									<label class="switch">
-										<input type="checkbox" oninput="togglesyncgooglecalendar(event)" id="syncgooglecalendartoggle2">
-										<span class="slider"></span>
-									</label>
-								</div>
-
-								<div class="display-flex flex-row gap-12px align-center">
-								<div id="lastsyncedgooglecalendar2" class="gap-6px display-flex flex-row align-center"></div>
-									<div class="display-flex flex-row gap-12px">
-										<div id="synnowcgooglecalendar2" onclick="syncnowgooglecalendar()" class="flex-1 display-none text-14px text-center text-white border-8px padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 pointer">Sync now</div>
-									</div>
-								</div>
-								
-								<div id="importgooglecalendarerror2" class="errorwrap display-none"></div>
-							</div>
-							
-						</div>
-
-            <!-- notifs -->
-						<div class="display-flex flex-column gap-24px">
-								<div class="display-flex flex-row gap-12px align-center">
-									<div class="infotext text-16px text-bold">Get Web Notifications</div>
-									<label class="switch">
-										<input type="checkbox" oninput="togglePushNotifs(event)" id="enablepushnotif">
-										<span class="slider"></span>
-									</label>
-								</div>
-            </div>
-            
-
-						</div>
-
-					</div>
-
-
-					<!-- mobile only tab -->
-					<div class="flex-shrink-0 overflow-x-auto noscrollbar bordertop padding-12px bordertop flex-row display-none small:display-flex gap-12px" id="settingstablist2">
-						<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(0)">Account</div>
-						<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(1)">General</div>
-						<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(2)">My calendars</div>
-						<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(3)">Notifications</div>
-					</div>
-					
-				</div>
-
-			</div>
-		</div>
-	</div>
-
 
 	<div class="helpmenu hiddenpopup popup" id="leftmenuwrap">
 		<div class="pointer-none display-flex flex-row gap-6px align-center overflow-hidden" id="leftmenutext"></div>
@@ -676,7 +401,7 @@
 		
 		<div class="horizontalbar"></div>
 
-		<div class="helpitem align-center display-flex flex-row gap-12px" onclick="opensettings(event);gtag('event', 'button_click', { useraction: 'Settings - nav bar' }) ">
+		<div class="helpitem align-center display-flex flex-row gap-12px" onclick="clicktab([3]);gtag('event', 'button_click', { useraction: 'Settings - nav bar' }) ">
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 				<g>
 				<path d="M88.6333 128C88.6333 106.258 106.258 88.6333 128 88.6333C149.742 88.6333 167.367 106.258 167.367 128C167.367 149.742 149.742 167.367 128 167.367C106.258 167.367 88.6333 149.742 88.6333 128Z" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
@@ -1304,10 +1029,10 @@
 
 
 		<!-- nav bar -->
-		<div class="display-flex flex-row width-full border-box borderbottom justify-space-between align-center padding-8px background-secondary small:display-none">
+		<div class="display-flex flex-row width-full border-box borderbottom justify-space-between align-center padding-8px-12px background-secondary small:display-none">
 
-			<!-- logo -->
-			<div class="display-flex flex-row align-center gap-6px">
+			<!-- left -->
+			<div class="display-flex flex-row align-center gap-6px flex-1 justify-flex-start">
 				<div class="sidebutton tooltip display-none" onclick="togglesidebar()" id="togglesidebarshown">
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 					<g>
@@ -1345,13 +1070,16 @@
 
 
 
-			<!-- tabs -->
-			<div class="display-flex flex-row align-center">
-				<div class="leftwrapitem display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="hometab">
+			<!-- middle -->
+			<div class="display-flex flex-row align-center flex-1 justify-center gap-12px">
+				<div class="display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="hometab">
 					<div class="text-16px text-primary pointer-none transition-none">Calendar</div>
 				</div>
-				<div class="leftwrapitem display-flex gap-6px flex-row align-center" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab">
+				<div class="display-flex gap-6px flex-row align-center" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab">
 					<div class="text-16px text-primary pointer-none transition-none">Time report</div>
+				</div>
+				<div class="display-flex gap-6px flex-row align-center" onclick="clicktab([3]);gtag('event', 'button_click', { useraction: 'Settings - nav bar' }) " id="settingstab">
+					<div class="text-16px text-primary pointer-none transition-none">Settings</div>
 				</div>
 			</div>
 
@@ -1378,27 +1106,9 @@
 			</div>
 
 
-			<!-- settings -->
-			<div class="display-flex flex-row gap-12px align-center">
-				<div class="popupbutton border-box border-8px gap-6px overflow-hidden pointer display-flex flex-row background-tint-1 padding-8px-12px align-center hover:background-tint-2 transition-duration-100" onclick="opensettings(event)">
-					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge pointer-none">
-					<g>
-					<path d="M88.6333 128C88.6333 106.258 106.258 88.6333 128 88.6333C149.742 88.6333 167.367 106.258 167.367 128C167.367 149.742 149.742 167.367 128 167.367C106.258 167.367 88.6333 149.742 88.6333 128Z" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-					<path d="M101.521 40.8836L106.742 18.8719C106.742 18.8719 107.824 15.3158 109.952 13.0978C112.08 10.8799 115.254 10 115.254 10L139.987 10C139.987 10 144.189 10.9478 146.546 13.0941C148.903 15.2404 149.416 18.5853 149.416 18.5853L155.745 40.8618L167.367 46.9222" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-					<path d="M154.479 215.119L149.258 237.13C149.258 237.13 148.176 240.686 146.048 242.904C143.92 245.122 140.746 246.002 140.746 246.002L116.013 246.002C116.013 246.002 111.811 245.054 109.454 242.908C107.097 240.762 106.584 237.417 106.584 237.417L100.255 215.14L88.6333 209.08" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-					<path d="M215.118 101.522L237.129 106.743C237.129 106.743 240.685 107.825 242.903 109.953C245.121 112.081 246.001 115.255 246.001 115.255L246.001 139.988C246.001 139.988 245.053 144.19 242.907 146.547C240.761 148.904 237.416 149.417 237.416 149.417L215.139 155.746L209.079 167.368" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-					<path d="M40.8825 154.48L18.8708 149.259C18.8708 149.259 15.3147 148.177 13.0967 146.049C10.8788 143.921 9.9989 140.747 9.9989 140.747L9.9989 116.014C9.9989 116.014 10.9467 111.812 13.093 109.455C15.2393 107.098 18.5842 106.585 18.5842 106.585L40.8607 100.257L46.9211 88.6344" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-					<path d="M208.325 170.879L220.198 190.135C220.198 190.135 221.947 193.415 222.011 196.488C222.075 199.561 220.452 202.428 220.452 202.428L202.963 219.916C202.963 219.916 199.322 222.217 196.137 222.367C192.953 222.516 190.225 220.513 190.225 220.513L169.998 209.236L157.495 213.169" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-					<path d="M47.675 85.1233L35.802 65.867C35.802 65.867 34.0526 62.5874 33.989 59.5143C33.9254 56.4412 35.5477 53.5747 35.5477 53.5747L53.0366 36.0857C53.0366 36.0857 56.678 33.7847 59.8625 33.6356C63.0471 33.4864 65.7747 35.489 65.7747 35.489L86.0015 46.766L98.505 42.8332" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-					<path d="M85.1222 208.326L65.8659 220.199C65.8659 220.199 62.5863 221.948 59.5132 222.012C56.4401 222.076 53.5736 220.453 53.5736 220.453L36.0846 202.965C36.0846 202.965 33.7836 199.323 33.6345 196.139C33.4853 192.954 35.4879 190.226 35.4879 190.226L46.7649 170L42.8321 157.496" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-					<path d="M170.878 47.6761L190.134 35.8031C190.134 35.8031 193.414 34.0537 196.487 33.9901C199.56 33.9265 202.426 35.5488 202.426 35.5488L219.915 53.0377C219.915 53.0377 222.216 56.6791 222.366 59.8636C222.515 63.0482 220.512 65.7758 220.512 65.7758L209.235 86.0026L213.168 98.5061" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-					</g>
-					</svg>
-					<div class="pointer-none text-18px text-primary">Settings</div>
-				</div>
-			
-				<div class="popupbutton border-box border-round overflow-hidden pointer display-flex flex-row background-tint-1 padding-8px align-center hover:background-tint-2 transition-duration-100" id="leftmenubutton" onclick="openleftmenu(event);gtag('event', 'button_click', { useraction: 'More - nav bar' }) ">
-				</div>
+			<!-- right -->
+			<div class="display-flex flex-row gap-12px align-center flex-1 justify-flex-end">			
+				<div class="popupbutton border-box border-round overflow-hidden pointer display-flex flex-row background-tint-1 padding-8px align-center hover:background-tint-2 transition-duration-100" id="leftmenubutton" onclick="openleftmenu(event);gtag('event', 'button_click', { useraction: 'More - nav bar' }) "></div>
 			</div>
 
 
@@ -1572,7 +1282,7 @@
 				</div>
 
 
-				<div class="todowrap relative display-none border-box background-secondary overflow-auto" id="todowrap">
+				<div class="todowrap relative display-none border-box overflow-auto background-secondary small:background-primary" id="todowrap">
 
 					
 					<div class="todobar padding-12px display-flex flex-column align-center">
@@ -1641,7 +1351,7 @@
 				</div>
 
 
-				<div class="paneldivider display-none small:display-none" id="paneldivider">
+				<div class="paneldivider verticalbar display-none" id="paneldivider">
 					<div class="paneldividermove" onmousedown="clickpaneldivider(event)"></div>
 				</div>
 				
@@ -1661,7 +1371,7 @@
 									</div>
 									
 									<div class="topbarmiddle small:display-none" id="topbarmiddle">
-										<div class="topbarmodechild flex-1 text-center" onclick="setcalendarmode(0);gtag('event', 'button_click', { useraction: 'Day - calendar' })">Day</div>
+										<div class="topbarmodechild flex-1 text-center" onclick="setcalendarmode(0);gtag('event', 'button_click', { useraction: 'Day - calendar' })">Day</div>
 										<div class="topbarmodechild flex-1 text-center" onclick="setcalendarmode(1);gtag('event', 'button_click', { useraction: 'Week - calendar' })">Week</div>
 										<div class="topbarmodechild flex-1 text-center" onclick="setcalendarmode(2);gtag('event', 'button_click', { useraction: 'Month - calendar' })">Month</div>
 									</div>
@@ -1737,11 +1447,290 @@
 				</div>
 
 
+				<div class="summarywrap relative display-none border-box overflow-auto" id="settingswrap">
+
+					<div class="display-flex flex-1 box-shadow todowidth flex-column height-full settingscontent small:width-full small:height-full overflow-y-auto" id="settingscontent">
+
+						<div class="display-flex flex-column overflow-y-auto flex-1">
+			
+							<!-- top bar -->
+							<div class="infotop borderbottom justify-space-between">
+								<div>
+									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+									<g></g>
+									</svg>
+								</div>
+								<div class="text-18px text-primary">Settings</div>
+								<div class="infotoprightgroup">
+									<div class="infotopright pointer" onclick="closesettings(event)">
+										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+										<g>
+										<g opacity="1">
+										<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+										<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+										</g>
+										</g>
+										</svg>
+									</div>
+									
+								</div>
+							</div>
+			
+							<div class="flex-1 display-flex flex-row overflow-y-auto small:flex-column">
+								<!-- left tab -->
+								<div class="border-box border-box padding-left-12px padding-top-12px display-flex flex-column leftcolumn small:display-none" id="settingstablist1">
+									<div class="leftwrapitem" onclick="clicksettingstab(0)">Account</div>
+									<div class="leftwrapitem" onclick="clicksettingstab(1)">General</div>
+									<div class="leftwrapitem" onclick="clicksettingstab(2)">My calendars</div>
+									<div class="leftwrapitem" onclick="clicksettingstab(3)">Notifications</div>
+								</div>
+			
+								<!-- settings page -->
+								<div class="flex-1 padding-12px display-flex flex-column settingspadding overflow-y-auto border-box" id="settingscontentwrap">
+			
+									<!-- account -->
+									<div class="display-flex flex-column gap-24px">
+										<div class="infogroup">
+											<div class="infotext text-16px text-bold">Email</div>
+											<div id="accountusername" class="infotext"></div>
+											<div id="changeusername" class="accountbutton popupbutton display-none" onclick="openchangeusername()">Change email</div>
+											<div id="setusername" class="accountbutton popupbutton display-none" onclick="opensetusername()">Set email</div>
+										</div>
+			
+										<div class="horizontalbar"></div>
+										
+										<div class="infogroup">
+											<div class="infotext text-16px text-bold">Password</div>
+											<div id="accountpassword" class="infotext"></div>
+											<div id="changepassword" class="accountbutton popupbutton display-none" onclick="openchangepassword()">Change password</div>
+											<div id="setpassword" class="accountbutton popupbutton display-none" onclick="opensetpassword()">Set password</div>
+										</div>
+			
+										<div class="horizontalbar"></div>
+										
+										<div class="infogroup">
+											<div class="infotext text-16px text-bold">Login methods</div>
+						
+											<!-- list of login methods -->
+											<div class="background-tint-1 padding-12px border-8px display-flex flex-row gap-12px flex-wrap-wrap justify-space-between align-center">
+												<div class="display-flex flex-row align-center gap-12px">
+													<div class="text-primary text-14px nowrap">
+														<svg viewBox="0 0 24 24" width="100%" class="buttongoogle" height="100%"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path><path d="M1 1h22v22H1z" fill="none"></path></svg> Google
+													</div>
+													<div class="text-14px text-primary display-none" id="googleemail"></div>
+												</div>
+						
+												<div>
+													<div class="width-fit text-14px text-primary background-tint-1 padding-8px-12px hover:background-tint-2 border-8px transition-duration-100 pointer display-none" id="connectgoogle" onclick="connectgoogle()">Connect</div>
+													<div class="width-fit text-14px text-primary background-tint-1 padding-8px-12px hover:background-tint-2 border-8px transition-duration-100 pointer display-none" id="disconnectgoogle" onclick="disconnectgoogle()">Disconnect</div>
+												</div>
+											</div>
+													
+											<div id="googleerrorwrap" class="errorwrap display-none"></div>
+										</div>
+										
+										<div class="logout" onclick="logout()">Log out</div>
+			
+			
+										<div class="horizontalbar"></div>
+										
+										<div class="infogroup">
+											<div class="display-flex flex-row gap-12px align-center">
+												<div class="infotext text-16px text-bold">Sync with Google Calendar</div>
+												<label class="switch">
+													<input type="checkbox" oninput="togglesyncgooglecalendar(event)" id="syncgooglecalendartoggle">
+													<span class="slider"></span>
+												</label>
+											</div>
+											
+											<div class="display-flex flex-row gap-12px align-center">
+												<div id="lastsyncedgooglecalendar" class="gap-6px display-flex flex-row align-center"></div>
+												<div class="display-flex flex-row gap-12px">
+													<div id="synnowcgooglecalendar" onclick="syncnowgooglecalendar()" class="flex-1 text-center display-none text-14px text-white border-8px padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 pointer">Sync now</div>
+												</div>
+											</div>
+											
+											<div id="importgooglecalendarerror" class="errorwrap display-none"></div>
+										</div>
+									</div>
+					
+									<!-- general -->
+									<div class="display-flex flex-column gap-24px">
+						
+										<div class="infogroup">
+											<div class="infotext text-16px text-bold">Theme</div>
+											<div class="inputeventtype" id="settingsthemes">
+												<div class="inputeventtypechild" onclick="clicksettingstheme(0)">Sync with device</div>
+												<div class="inputeventtypechild" onclick="clicksettingstheme(1)">Light</div>
+												<div class="inputeventtypechild" onclick="clicksettingstheme(2)">Dark</div>
+											</div>
+										</div>
+			
+										<div class="horizontalbar"></div>
+						
+										<div class="infogroup">
+											<div class="infotext text-16px text-bold">Time format</div>
+											<div class="inputeventtype">
+												<div class="inputeventtypechild" id="settingstimeformat12" onclick="clicksettingstimeformat(false)">12 hour</div>
+												<div class="inputeventtypechild" id="settingstimeformat24" onclick="clicksettingstimeformat(true)">24 hour</div>
+											</div>
+										</div>
+			
+										<div class="horizontalbar"></div>
+			
+										<div class="infogroup">
+											<div class="infotext text-16px text-bold">Scheduling mode</div>
+											<div class="text-14px text-quaternary">Choose how Smart Calendar automatically schedules events.<br>Smart Calendar will only schedule events you want it to, and events like meetings or appointments will not be touched.</div>
+											<div class="flex-wrap-wrap justify-center display-flex flex-row background-tint-1 border-8px overflow-hidden" id="autoschedulemodes2">
+												<div class="flex-1 display-flex flex-column modeoptionbutton border-8px padding-8px-12px pointer transition-duration-100" onclick="clickschedulemode(0)">
+													<div class="transition-duration-100 text-18px text-primary text-center pointer-none schedulemodetext">Focus</div>
+													<div class="nowrap transition-duration-100 text-14px text-primary text-center pointer-none schedulemodetext">Ideal for maximizing productivity</div>
+												</div>
+												<div class="flex-1 display-flex flex-column modeoptionbutton border-8px padding-8px-12px pointer transition-duration-100" onclick="clickschedulemode(1)">
+													<div class="transition-duration-100 text-18px text-primary text-center pointer-none schedulemodetext">Balanced</div>
+													<div class="nowrap transition-duration-100 text-14px text-primary text-center pointer-none schedulemodetext">Ideal for an even workload over time</div>
+												</div>
+											</div>
+										</div>
+			
+										<div class="horizontalbar"></div>
+			
+										
+										<div class="infogroup">
+											<div class="infotext text-16px text-bold">Sleep time</div>
+											<div class="text-14px text-quaternary">Smart Calendar schedules events outside of your sleep time.</div>
+											<div class="inputgroup gap-6px">
+												<div class="inputgroupitem flex-1">
+													<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepstart(event)" id="settingssleepstart2" class="infoinput inputtimepicker" placeholder="Add start time" type="text">
+														<span class="inputline"></span>
+													</input>
+												</div>
+												<div class="text-14px text-primary">to</div>
+												<div class="inputgroupitem flex-1">
+													<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepend(event)" id="settingssleepend2" class="infoinput inputtimepicker" placeholder="Add end time" type="text">
+														<span class="inputline"></span>
+													</input>
+												</div>
+											</div>
+										</div>
+										
+			
+										<div class="horizontalbar"></div>
+										
+										<div class="infogroup">
+											<div class="infotext text-16px text-bold">Break between events</div>
+											<div class="text-14px text-quaternary">Smart Calendar includes a break between events when planning your schedule.</div>
+											<div class="inputgroup">
+												<div class="inputgroupitem flex-1">
+													<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingseventspacing(event)" id="settingseventspacing2" class="infoinput inputdurationpicker" placeholder="Add duration" type="text">
+														<span class="inputline"></span>
+													</input>
+												</div>
+											</div>
+										</div>
+									</div>
+						
+									<!-- calendars -->
+									<div class="display-flex flex-column gap-24px">
+			
+										<div id="settingscalendarlist" class="display-flex flex-column gap-6px"></div>
+			
+										<div class="horizontalbar"></div>
+										
+										<div class="infogroup">
+											<div class="text-16px text-primary text-bold">Create calendar</div>
+											<div class="border-8px background-blue hover:background-blue-hover transition-duration-100 text-14px pointer text-center padding-8px-12px text-white" onclick="createcalendar()">Create calendar</div>
+										</div>
+			
+										<div class="horizontalbar"></div>
+										
+										<div class="infogroup">
+											<div class="text-16px text-primary text-bold">Upload calendar file</div>
+											<div class="border-8px background-blue hover:background-blue-hover transition-duration-100 text-14px pointer text-center padding-8px-12px text-white" onclick="clickuploadfile()">Upload file
+												<input type="file" accept=".ics" id="importcalendar" class="display-none" onchange="inputcalendarfile(event)"></input>
+											</div>
+										</div>
+										
+										<div class="horizontalbar"></div>
+										
+			
+										<div class="infogroup">
+											<div class="text-16px text-primary text-bold">Add calendar subscription</div>
+											<div class="display-flex flex-row gap-12px">
+												<div class="inputgroup flex-1">
+													<div class="inputgroupitem flex-1">
+														<input placeholder="https://example.com/calendar.ics" onkeydown="if(event.keyCode == 13){ inputsubscribecalendar(event) }" id="inputsubscribecalendar" class="infoinput" type="url">
+															<span class="inputline"></span>
+														</input>
+													</div>
+												</div>
+												<div class="text-center background-blue hover:background-blue-hover transition-duration-100 text-14px pointer text-center padding-8px-12px text-white border-8px" onclick="inputsubscribecalendar()">Add subscription</div>
+											</div>
+										</div>
+			
+										<div class="horizontalbar"></div>
+			
+										<div class="infogroup">
+											<div class="display-flex flex-row gap-12px align-center">
+												<div class="infotext text-16px text-bold">Sync with Google Calendar</div>
+												<label class="switch">
+													<input type="checkbox" oninput="togglesyncgooglecalendar(event)" id="syncgooglecalendartoggle2">
+													<span class="slider"></span>
+												</label>
+											</div>
+			
+											<div class="display-flex flex-row gap-12px align-center">
+											<div id="lastsyncedgooglecalendar2" class="gap-6px display-flex flex-row align-center"></div>
+												<div class="display-flex flex-row gap-12px">
+													<div id="synnowcgooglecalendar2" onclick="syncnowgooglecalendar()" class="flex-1 display-none text-14px text-center text-white border-8px padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 pointer">Sync now</div>
+												</div>
+											</div>
+											
+											<div id="importgooglecalendarerror2" class="errorwrap display-none"></div>
+										</div>
+										
+									</div>
+			
+						<!-- notifs -->
+									<div class="display-flex flex-column gap-24px">
+											<div class="display-flex flex-row gap-12px align-center">
+												<div class="infotext text-16px text-bold">Get Web Notifications</div>
+												<label class="switch">
+													<input type="checkbox" oninput="togglePushNotifs(event)" id="enablepushnotif">
+													<span class="slider"></span>
+												</label>
+											</div>
+						</div>
+						
+			
+									</div>
+			
+								</div>
+			
+			
+								<!-- mobile only tab -->
+								<div class="flex-shrink-0 overflow-x-auto noscrollbar bordertop padding-12px bordertop flex-row display-none small:display-flex gap-12px" id="settingstablist2">
+									<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(0)">Account</div>
+									<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(1)">General</div>
+									<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(2)">My calendars</div>
+									<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(3)">Notifications</div>
+								</div>
+								
+							</div>
+			
+						</div>
+
+
+				</div>
+
+
+				
+
 				<!-- mobile only bottom bar -->
 				<div class="align-center display-none small:display-flex flex-row gap-12px padding-12px bordertop">	
 
 											
-					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([1]);gtag('event', 'button_click', { useraction: 'To do list - nav bar' }) " id="todolisttab2">
+					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([1]);gtag('event', 'button_click', { useraction: 'To do list - nav bar' }) " id="todolisttab2">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonlarge">
 						<g>
 						<path d="M216.422 96.5767L216.422 206.806C216.422 222.546 203.662 235.306 187.922 235.306L68.5817 235.306C52.8418 235.306 40.082 222.546 40.082 206.806L40.082 96.5767" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
@@ -1753,7 +1742,7 @@
 						<div class="text-14px text-primary pointer-none nowrap mobilepagetext transition-duration-100">To do list</div>
 					</div>
 
-					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([0]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="calendartab2">
+					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([0]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="calendartab2">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonlarge">
 						<g>
 						<path d="M216.422 96.5767L216.422 206.806C216.422 222.546 203.662 235.306 187.922 235.306L68.5817 235.306C52.8418 235.306 40.082 222.546 40.082 206.806L40.082 96.5767" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
@@ -1765,7 +1754,7 @@
 						<div class="text-14px text-primary pointer-none nowrap mobilepagetext transition-duration-100">Calendar</div>
 					</div>
 					
-					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab2">
+					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="settingstab2">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonfillwhite">
 						<g>
 						<path d="M128 0C57.3075 0 0 57.3075 0 128C0 198.692 57.3075 256 128 256C198.692 256 256 198.692 256 128C256 57.3075 198.692 0 128 0ZM128 20C187.647 20 236 68.3532 236 128C236 187.647 187.647 236 128 236C68.3532 236 20 187.647 20 128C20 68.3532 68.3532 20 128 20Z" fill-rule="nonzero" opacity="1" ></path>
@@ -1777,7 +1766,7 @@
 						<div class="text-14px text-primary pointer-none nowrap mobilepagetext transition-duration-100">Time report</div>
 					</div>
 
-					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="opensettings();gtag('event', 'button_click', { useraction: 'Settings - nav bar' })">
+					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([3]);gtag('event', 'button_click', { useraction: 'Settings - nav bar' })">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge pointer-none">
 						<g>
 						<path d="M88.6333 128C88.6333 106.258 106.258 88.6333 128 88.6333C149.742 88.6333 167.367 106.258 167.367 128C167.367 149.742 149.742 167.367 128 167.367C106.258 167.367 88.6333 149.742 88.6333 128Z" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>

@@ -1830,8 +1830,19 @@ body {
 	background-color: var(--blue) !important;
 	color: var(--white) !important;
 }
-.selectedbuttongrey {
-	background-color: var(--background-tint-2) !important;
+
+
+.selectedbuttonunderline{
+	position:relative;
+}
+.selectedbuttonunderline::before {
+	position:absolute;
+	left:0;
+	right:0;
+	height:4px;
+	background-color:var(--blue);
+	border-radius:999px;
+	top:100%;
 }
 
 .selectedbutton2 {
