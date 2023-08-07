@@ -2491,8 +2491,8 @@ class Calendar {
 						</g>
 					</svg>`
 				:
-				`<div class="text-14px text-primary">Not synced.</div>
-				<span class="tooltiptextcenter>${difference ? `Last synced ${getRelativeDHMText(difference)}` : `Never synced`}</span>`}
+				`<div class="text-14px text-red">Not synced</div>
+				<span class="tooltiptextcenter">${difference ? `Last synced ${getRelativeDHMText(difference)}` : `Never synced`}</span>`}
 			</div>`
 			lastsyncedgooglecalendar.innerHTML = text
 			lastsyncedgooglecalendar2.innerHTML = text
