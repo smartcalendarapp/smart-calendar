@@ -1486,9 +1486,9 @@ class Calendar {
 		let topbarmiddle = getElement('topbarmiddle')
 		for (let [index, div] of Object.entries(topbarmiddle.children)) {
 			if (index == calendarmode) {
-				div.classList.add('selectedbuttonunderline')
+				div.classList.add('selectedbuttongrey')
 			} else {
-				div.classList.remove('selectedbuttonunderline')
+				div.classList.remove('selectedbuttongrey')
 			}
 		}
 

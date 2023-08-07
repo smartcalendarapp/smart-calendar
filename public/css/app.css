@@ -1848,20 +1848,28 @@ body {
 }
 
 
-.selectedbuttonunderline{
-	position:relative;
+.buttonunderline {
+	height: 2px;
+	display: inline-block;
+	transition: all 0.3s !important;
+	position: absolute;
+	width: 0;
+	left: 50%;
+	bottom: 0;
+	background-color: var(--blue);
+	border-radius:99px;
 }
-.selectedbuttonunderline::before {
-	animation: expandunderline 0.2s forwards;
-	position:absolute;
-	left:0;
-	right:0;
-	height:3px;
-	background-color:var(--blue);
-	border-radius:999px;
-	top:100%;
-	content:"";
+
+.selectedbuttonunderline~.buttonunderline {
+	width: 100%;
+	left: 0;
 }
+
+
+.selectedbuttongrey{
+	background-color:var(--background-tint-2) !important;
+}
+
 
 .selectedbutton2 {
 	color: var(--blue);
