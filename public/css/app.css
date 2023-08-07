@@ -1865,21 +1865,6 @@ body {
 }
 
 
-.hovercircle{
-	position:relative
-}
-.hovercirclewrap{
-	position:absolute;
-	left:0;
-	right:0;
-	bottom:0;
-	top:0;
-	transform: scale(1.2);
-	transition-duration:0.1s;
-}
-.hovercircle:hover .hovercirclewrap{
-	background-color: var(--background-tint-1);
-}
 
 
 .buttonlogo {

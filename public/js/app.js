@@ -3535,8 +3535,7 @@ function updateAvatar(){
 		${clientinfo.google_email ?
 		`${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : ''}`
 		:
-		``}
-		<div class="hovercirclewrap"></div>`
+		``}`
 }
 
 
@@ -3815,6 +3814,22 @@ function mousedowndocument(event) {
 	}
 }
 
+
+//type in input
+document.onkeydown = function(event){
+	if(event.target.classList.contains('inputtimepicker')){
+		let inputvalue = event.target.value
+
+		let timepicker = getElement('timepicker')
+		for(let timediv of timepicker.children){
+			if(timediv.innerHTML.startsWith(inputvalue)){
+				timediv.classList.remove('display-none')
+			}else{
+				timediv.classList.add('display-none')
+			}
+		}
+	}
+}
 
 //EVENT INFO
 
