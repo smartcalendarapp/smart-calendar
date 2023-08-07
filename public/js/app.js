@@ -3469,7 +3469,7 @@ function restartinteractivetour() {
 function clicktakeinteractivetour() {
 	closehelp()
 	restartinteractivetour()
-	calendartabs = [1]
+	calendartabs = [0,1]
 	calendar.updateTabs()
 }
 
@@ -3536,7 +3536,7 @@ function updateAvatar(){
 		`${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : ''}`
 		:
 		``}
-		<span class="hovercirclewrap"></span>`
+		<div class="hovercirclewrap"></div>`
 }
 
 
@@ -5407,16 +5407,6 @@ function closehelp() {
 	leftmenuwrap.classList.add('hiddenpopup')
 }
 
-function clicktour() {
-	closehelp()
-
-	calendartabs = [0,1]
-	calendar.updateTabs()
-
-	welcomeindex = 0
-	showwelcome()
-	updatewelcome()
-}
 
 
 //NOTIFICATIONS
