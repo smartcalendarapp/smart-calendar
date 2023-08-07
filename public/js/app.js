@@ -2477,7 +2477,7 @@ class Calendar {
 			let text = `
 			<div class="display-flex flex-row align-center gap-6px">
 				${issynced ? 
-					`<div class="text-14px text-primary">In sync.</div>
+					`<div class="text-14px text-green">In sync</div>
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline checkboxfilledgreen">
 						<g>
 						<path d="M128 7.19484C61.2812 7.19484 7.19484 61.2812 7.19484 128C7.19484 194.719 61.2812 248.805 128 248.805C194.719 248.805 248.805 194.719 248.805 128C248.805 61.2812 194.719 7.19484 128 7.19484ZM190.851 66.0048C194.206 65.7071 197.649 66.7098 200.436 69.0426C206.01 73.7082 206.753 81.9906 202.088 87.5645L115.524 190.969C110.264 197.253 100.582 197.253 95.3213 190.969L52.0249 139.266C47.3593 133.693 48.1026 125.41 53.6765 120.745C59.2504 116.079 67.5623 116.822 72.2279 122.396L105.408 162.035L181.885 70.6942C184.217 67.9073 187.495 66.3024 190.851 66.0048Z" fill-rule="nonzero" opacity="1"></path>
@@ -3306,7 +3306,7 @@ function updateonboardingscreen(){
 	if(currentonboarding == 'connectcalendars'){
 		let onboardingconnectcalendarsgooglecalendar = getElement('onboardingconnectcalendarsgooglecalendar')
 		onboardingconnectcalendarsgooglecalendar.innerHTML = clientinfo.google_email ? 
-			`<div class="text-14px text-primary">Connected.</div>
+			`<div class="text-14px text-green">Connected</div>
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline checkboxfilledgreen">
 				<g>
 				<path d="M128 7.19484C61.2812 7.19484 7.19484 61.2812 7.19484 128C7.19484 194.719 61.2812 248.805 128 248.805C194.719 248.805 248.805 194.719 248.805 128C248.805 61.2812 194.719 7.19484 128 7.19484ZM190.851 66.0048C194.206 65.7071 197.649 66.7098 200.436 69.0426C206.01 73.7082 206.753 81.9906 202.088 87.5645L115.524 190.969C110.264 197.253 100.582 197.253 95.3213 190.969L52.0249 139.266C47.3593 133.693 48.1026 125.41 53.6765 120.745C59.2504 116.079 67.5623 116.822 72.2279 122.396L105.408 162.035L181.885 70.6942C184.217 67.9073 187.495 66.3024 190.851 66.0048Z" fill-rule="nonzero" opacity="1"></path>
@@ -3319,6 +3319,9 @@ function updateonboardingscreen(){
 		onboardingconnectcalendarsoutlookcalendar.innerHTML = ``
 	}else if(currentonboarding == 'sleeptime'){
 		calendar.updateSettings()
+	}else if(currentonboarding == 'addtask'){
+		let onboardingaddtasktodolist = getElement('onboardingaddtasktodolist')
+		onboardingaddtasktodolist.innerHTML = getElement('alltodolist').innerHTML
 	}
 }
 
@@ -6830,6 +6833,7 @@ function submitcreatetodo(event) {
 	calendar.updateHistory()
 
 	closecreatetodo()
+	updateonboardingscreen()
 }
 
 
