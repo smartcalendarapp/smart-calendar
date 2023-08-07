@@ -737,12 +737,6 @@ body {
 	width: 500px;
 }
 
-.settingscontent {
-	background-color: var(--background-primary-transparent);
-	backdrop-filter: blur(20px);
-	-webkit-backdrop-filter: blur(20px);
-	border-radius: 8px;
-}
 
 .notificationsscreen {
 	transition: opacity 0.2s, visibility 0.2s;
@@ -3524,7 +3518,6 @@ body {
 	}
 
 	#todopopup,
-	#settingscontent,
 	#eventinfo,
 	#createeventpopup {
 		background-color: var(--background-primary) !important;
@@ -3562,11 +3555,6 @@ body {
 		visibility: hidden;
 		left: -99999px !important;
 		top: -99999px !important;
-	}
-
-	#settingscontent {
-		margin: 0 !important;
-		box-shadow: none !important;
 	}
 
 }

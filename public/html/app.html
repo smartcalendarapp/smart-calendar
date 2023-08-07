@@ -383,7 +383,11 @@
 
 
 	<div class="helpmenu hiddenpopup popup" id="leftmenuwrap">
-		<div class="pointer-none display-flex flex-row gap-6px align-center overflow-hidden" id="leftmenutext"></div>
+		<div class="padding-12px display-flex flex-column">
+			<div class="pointer-none display-flex flex-row text-16px text-primary gap-6px align-center overflow-hidden" id="leftmenutext"></div>
+		</div>
+
+		<div class="horizontalbar"></div>
 		
 		<div class="helpitem align-center display-flex flex-row gap-12px" id="toggletheme" onclick="toggletheme()"></div>
 
@@ -1108,7 +1112,7 @@
 
 			<!-- right -->
 			<div class="display-flex flex-row gap-12px align-center flex-1 justify-flex-end">			
-				<div class="popupbutton border-box border-round overflow-hidden pointer display-flex flex-row background-tint-1 padding-8px align-center hover:background-tint-2 transition-duration-100" id="leftmenubutton" onclick="openleftmenu(event);gtag('event', 'button_click', { useraction: 'More - nav bar' }) "></div>
+				<div class="popupbutton border-box border-round overflow-hidden pointer display-flex flex-row hover:background-tint-1 padding-6px align-center transition-duration-100" id="leftmenubutton" onclick="openleftmenu(event);gtag('event', 'button_click', { useraction: 'More - nav bar' }) "></div>
 			</div>
 
 
@@ -1179,7 +1183,6 @@
 
 				
 				<div class="summarywrap display-none small:border-none small:border-0" id="summarywrap">
-					<div class="todobar small:background-transparent">Time report</div>
 					<div class="summarycontainer">
 						<div class="summarycontent gap-96px">
 
@@ -1447,16 +1450,12 @@
 				</div>
 
 
-				<div class="summarywrap relative display-none border-box overflow-auto" id="settingswrap">
+				<div class="summarywrap relative align-center display-none border-box overflow-auto" id="settingswrap">
 
-					<div class="display-flex flex-1 box-shadow todowidth flex-column height-full settingscontent small:width-full small:height-full overflow-y-auto">
+					<div class="display-flex flex-1 todowidth flex-column height-full overflow-y-auto">
 
 						<div class="display-flex flex-column overflow-y-auto flex-1">
-			
-							<!-- top bar -->
-							<div class="infotop borderbottom justify-space-between">
-								<div class="text-18px text-primary text-center flex-1">Settings</div>
-							</div>
+		
 			
 							<div class="flex-1 display-flex flex-row overflow-y-auto small:flex-column">
 								<!-- left tab -->
@@ -1673,16 +1672,16 @@
 										
 									</div>
 			
-						<!-- notifs -->
+									<!-- notifs -->
 									<div class="display-flex flex-column gap-24px">
 											<div class="display-flex flex-row gap-12px align-center">
-												<div class="infotext text-16px text-bold">Get Web Notifications</div>
+												<div class="infotext text-16px text-bold">Receive Web Notifications</div>
 												<label class="switch">
 													<input type="checkbox" oninput="togglePushNotifs(event)" id="enablepushnotif">
 													<span class="slider"></span>
 												</label>
 											</div>
-						</div>
+									</div>
 						
 			
 									</div>

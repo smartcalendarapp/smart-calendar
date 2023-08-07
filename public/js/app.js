@@ -3527,10 +3527,7 @@ function openleftmenu(event) {
 }
 function updateleftmenu(){
 	let leftmenutext = getElement('leftmenutext')
-	leftmenutext.innerHTML = clientinfo.google_email ?
-		`<div class="text-primary text-14px text-overflow-ellipsis overflow-hidden nowrap">${cleanInput(clientinfo.google.name || clientinfo.google_email)}</div>`
-		:
-		`<div class="text-primary text-14px text-overflow-ellipsis overflow-hidden nowrap">${clientinfo.username}</div>`
+	leftmenutext.innerHTML = clientinfo.google_email ? cleanInput(clientinfo.google.name || clientinfo.google_email) : clientinfo.username
 }
 
 function updateAvatar(){
@@ -3540,7 +3537,6 @@ function updateAvatar(){
 	:
 	``
 }
-//here4
 
 
 function togglesidebar() {
