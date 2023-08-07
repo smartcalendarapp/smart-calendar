@@ -1837,7 +1837,7 @@ body {
 
 
 .buttonunderline {
-	height: 2px;
+	height: 3px;
 	display: inline-block;
 	transition: all 0.3s !important;
 	position: absolute;
@@ -1846,6 +1846,7 @@ body {
 	bottom: 0;
 	background-color: var(--blue);
 	border-radius:99px;
+	transform:translateY(8px);
 }
 
 .selectedbuttonunderline .buttonunderline{
