@@ -2475,8 +2475,13 @@ class Calendar {
 				synnowcgooglecalendar2.classList.remove('display-none')
 			}
 
+			let difference;
+			if(calendar.lastsyncedgooglecalendardate){
+				difference = Math.floor((currentdate.getTime() - calendar.lastsyncedgooglecalendardate) / 60000)
+			}
+
 			let text = `
-			<div class="display-flex flex-row align-center gap-6px">
+			<div class="display-flex flex-row align-center gap-6px tooltip">
 				${issynced ? 
 					`<div class="text-14px text-green">In sync</div>
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline checkboxfilledgreen">
@@ -2485,7 +2490,10 @@ class Calendar {
 						<path d="M128 0C57.3076 0 0 57.3076 0 128C0 198.692 57.3076 256 128 256C198.692 256 256 198.692 256 128C256 57.3076 198.692 0 128 0ZM128 7.75758C194.408 7.75758 248.242 61.5919 248.242 128C248.242 194.408 194.408 248.242 128 248.242C61.5919 248.242 7.75758 194.408 7.75758 128C7.75758 61.5919 61.5919 7.75758 128 7.75758Z" fill-rule="nonzero" opacity="1"></path>
 						</g>
 					</svg>`
-				 : `<div class="text-14px text-primary">Not synced.</div>`}</div>`
+				:
+				`<div class="text-14px text-primary">Not synced.</div>
+				<span class="tooltiptextcenter>${difference ? `Last synced ${getRelativeDHMText(difference)}` : `Never synced`}</span>`}
+			</div>`
 			lastsyncedgooglecalendar.innerHTML = text
 			lastsyncedgooglecalendar2.innerHTML = text
 		} else {
