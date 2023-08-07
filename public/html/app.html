@@ -99,7 +99,7 @@
 	<div class="z-index-1000 popup box-shadow backdrop-blur padding-12px border-8px absolute gap-4px display-flex flex-column hiddenpopup picker" onmousedown="event.preventDefault()" id="datepicker"></div>
 
 
-	<div class="helpmenu hiddenpopup popup z-index-1000 padding-12px gap-12px" id="todoitempriority">
+	<div class="helpmenu hiddenpopup popup z-index-10001 padding-12px gap-12px" id="todoitempriority">
 		<div class="display-flex flex-row gap-12px justify-space-between align-center">
 			<div>
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -156,7 +156,7 @@
 
 
 	
-	<div class="helpmenu hiddenpopup popup z-index-1000 padding-12px gap-12px" id="todoitemduration">
+	<div class="helpmenu hiddenpopup popup z-index-10001 padding-12px gap-12px" id="todoitemduration">
 		<div class="display-flex flex-row justify-space-between align-center">
 			<div>
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -233,7 +233,7 @@
 	</div>
 
 
-	<div class="helpmenu hiddenpopup popup z-index-1000 padding-12px gap-12px" id="todoitemduedate">
+	<div class="helpmenu hiddenpopup popup z-index-10001 padding-12px gap-12px" id="todoitemduedate">
 		<div class="display-flex flex-row justify-space-between align-center">
 
 			<div>
@@ -401,7 +401,7 @@
 
 		<div class="flex-1 width-full display-flex flex-column align-center display-none" id="onboardingstart">
 			
-			<div class="todowidth display-flex padding-96px small:padding-24px border-box flex-column flex-1 justify-space-evenly">
+			<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px border-box flex-column flex-1 justify-space-evenly">
 				<div class="display-flex flex-column gap-12px">
 					<div class="text-24px text-primary text-bold">Welcome to Smart Calendar</div>
 					<div class="text-18px text-quaternary">We have just a few quick steps to personalize your experience. Let's get started!</div>
@@ -416,7 +416,7 @@
 
 		<div class="flex-1 width-full display-flex flex-column align-center display-none" id="onboardingconnectcalendars">
 			
-			<div class="todowidth display-flex padding-96px small:padding-24px  border-box flex-column flex-1 justify-space-between">
+			<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
 				<div class="display-flex flex-column gap-12px">
 					<div class="text-24px text-primary text-bold">Connect your calendars</div>
 					<div class="text-18px text-quaternary">Connect your Google or Outlook calendar to our app. We'll keep your calendars in sync.</div>
@@ -448,7 +448,7 @@
 
 		
 		<div class="height-full width-full display-flex align-center flex-column display-none" id="onboardingsleeptime">
-			<div class="todowidth display-flex padding-96px small:padding-24px  border-box flex-column flex-1 justify-space-between">
+			<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
 				<div class="display-flex flex-column gap-12px">
 					<div class="text-24px text-primary text-bold">Set sleep schedule</div>
 					<div class="text-18px text-quaternary">This will help our app schedule your tasks for when you're awake.</div>
@@ -478,14 +478,14 @@
 
 
 		<div class="height-full width-full display-flex align-center flex-column display-none" id="onboardingaddtask">
-			<div class="todowidth display-flex padding-96px small:padding-24px  border-box flex-column flex-1 justify-space-between">
+			<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px border-box flex-column flex-1 justify-space-between">
 				<div class="display-flex flex-column gap-12px">
 					<div class="text-24px text-primary text-bold">Add your first task</div>
-					<div class="text-18px text-quaternary">Get in the habit of adding a task with us.</div>
+					<div class="text-18px text-quaternary">Get in the habit of adding your tasks, projects, and plans here.</div>
 				</div>
 
-				<div class="display-flex align-center align-self-center flex-column gap-12px">
-					<div class="padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-round" onclick="opencreatetodo(event)">
+				<div class="overflow-hidden width-full display-flex align-center flex-column gap-12px">
+					<div class="padding-8px-12px pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-round" onclick="opencreatetodo(event)">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 						<g>
 						<g opacity="1">
@@ -498,7 +498,7 @@
 						<div class="text-18px text-white pointer-none nowrap transition-none">Add task</div>
 					</div>
 
-					<div id="onboardingaddtasktodolist" class="width500px"></div>
+					<div id="onboardingaddtasktodolist" class="overflow-y-auto width-full"></div>
 				</div>
 
 				<div class="display-flex flex-row gap-24px justify-center align-center">
@@ -1351,7 +1351,7 @@
 									<div class="summaryrowitem">
 										<div class="summaryitemtitle">Time for sleep</div>
 										<div id="summaryeventtimesleep" class="summaryitembigtext"></div>
-										<div class="border-8px padding-8px-12px background-tint-1 hover:background-tint-2 transition-duration-100 pointer text-primary" onclick="opensettingssleep()">Edit sleep schedule</div>
+										<div class="border-8px padding-8px-12px nowrap background-tint-1 hover:background-tint-2 transition-duration-100 pointer text-primary" onclick="opensettingssleep()">Edit sleep time</div>
 									</div>
 								</div>
 							</div>
