@@ -1837,7 +1837,7 @@ body {
 
 
 .buttonunderline {
-	height: 3px;
+	height: 2px;
 	display: inline-block;
 	transition: all 0.3s !important;
 	position: absolute;
@@ -1863,6 +1863,22 @@ body {
 .selectedbutton2 {
 	color: var(--blue);
 }
+
+
+.hovercircle{
+	position:relative
+}
+.hovercirclewrap{
+	position:absolute;
+	left:50%;
+	top:50%;
+	transform:translate(-50%,-50%) scale(1.2);
+	transition-duration:0.1s;
+}
+.hovercircle:hover .hovercirclewrap{
+	background-color: var(--background-tint-1);
+}
+
 
 .buttonlogo {
 	height: 32px;

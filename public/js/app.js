@@ -5335,6 +5335,7 @@ function deletecalendar(id) {
 function opensettingssleep() {
 	calendartabs = [3]
 	calendar.updateTabs()
+	closehelp()
 }
 
 function opencreatecalendarbutton() {
@@ -5342,6 +5343,7 @@ function opencreatecalendarbutton() {
 	calendar.updateTabs()
 
 	closecalendaroptionmenu()
+	closehelp()
 }
 
 
