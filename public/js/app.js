@@ -2950,6 +2950,10 @@ function run() {
 	updatecreatetodotimepickeronce()
 
 
+	//check for onboarding
+	updateunboardingscreen()
+
+
 	//set initial save data
 	lastbodydata = calendar.getChangedJSON()
 
@@ -3259,6 +3263,32 @@ function clickmonthdate(event, timestamp) {
 
 	calendar.updateCalendar()
 }
+
+
+
+//ONBOARDING
+function updateonboardingscreen(){
+	let onboardingscreen = getElement('onboardingscreen')
+	onboardingscreen.classList.add('display-none')
+
+	let currentonboarding;
+	for(let [key, value] of calendar.onboarding){
+		if(key == 'connectcalendars' || key == 'sleeptime' || key == 'addtask'){
+			let currentscreen = getElement(`onboarding${key}`)
+
+			if(value == false && !currentonboarding){
+				currentonboarding = key
+
+				onboardingscreen.classList.remove('display-none')
+				currentscreen.classList.remove('hiddenfade')
+			}else{
+				currentscreen.classList.add('hiddenfade')
+			}
+		}
+	}
+
+}
+//here4
 
 
 //INTERACTIVE TOUR
@@ -3814,22 +3844,6 @@ function mousedowndocument(event) {
 	}
 }
 
-
-//type in input
-document.onkeydown = function(event){
-	if(event.target.classList.contains('inputtimepicker')){
-		let inputvalue = event.target.value
-
-		let timepicker = getElement('timepicker')
-		for(let timediv of timepicker.children){
-			if(timediv.innerHTML.startsWith(inputvalue)){
-				timediv.classList.remove('display-none')
-			}else{
-				timediv.classList.add('display-none')
-			}
-		}
-	}
-}
 
 //EVENT INFO
 

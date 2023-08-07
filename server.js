@@ -19,7 +19,7 @@ const dynamoclient = new DynamoDBClient({
 })
 
 
-// for push notifs
+// FOR PUSH NOTIFS
 const webpush = require("web-push")
 webpush.setVapidDetails(
   "mailto:contact@smartcalendar.us",
@@ -27,42 +27,8 @@ webpush.setVapidDetails(
   process.env.VAPID_PRIVATE_KEY
 )
 
+
 //DATABASE FUNCTIONS
-/*
-const params = {
-  TableName: 'smartcalendarusers',
-  KeySchema: [
-    { AttributeName: 'userid', KeyType: 'HASH' },
-  ],
-  AttributeDefinitions: [
-    { AttributeName: 'userid', AttributeType: 'S' },
-    { AttributeName: 'google_email', AttributeType: 'S' },
-    { AttributeName: 'username', AttributeType: 'S' },
-  ],
-  GlobalSecondaryIndexes: [
-    {
-      IndexName: 'username-index',
-      KeySchema: [
-        { AttributeName: 'username', KeyType: 'HASH' },
-      ],
-      Projection: { ProjectionType: 'ALL' },
-    },
-		{
-      IndexName: 'google_email-index',
-      KeySchema: [
-        { AttributeName: 'google_email', KeyType: 'HASH' },
-      ],
-      Projection: { ProjectionType: 'ALL' },
-    }
-  ],
-  BillingMode: 'PAY_PER_REQUEST'
-}
-
-dynamoclient.send(new CreateTableCommand(params))
-	.then(data => console.error(data))
-	.catch(e => console.error(e))
-*/
-
 
 async function createUser(user){
 	const existinguser = user.username ? await getUserByAttribute(user.username) : null || user.google_email ? await getUserByAttribute(user.google_email) : null
@@ -285,7 +251,7 @@ class User{
 }
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
-const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, sleep: { startminute: 1380, endminute: 420 }, eventspacing: 15, militarytime: false, theme: 0 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, syncgooglecalendar: { deletedevents: [], editedevents: [], createdevents: [], createdcalendars: [], editedcalendars: [], deletedcalendars: [] }, interactivetour: { clickaddtask: false, clickaddtitle: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: false }
+const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, sleep: { startminute: 1380, endminute: 420 }, eventspacing: 15, militarytime: false, theme: 0 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, syncgooglecalendar: { deletedevents: [], editedevents: [], createdevents: [], createdcalendars: [], editedcalendars: [], deletedcalendars: [] }, onboarding: { connectcalendars: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickaddtitle: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: false }
 const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null }
 const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, title: null, type: 0, notes: null, completed: false, priority: 0, color: 3, reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } } }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, completed: false, priority: 0, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } } }
