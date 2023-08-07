@@ -127,7 +127,7 @@
 	</div>
 
 	
-	<div class="helpmenu hiddenpopup popup z-index-1000 padding-12px gap-12px" id="createtodoitempriority">
+	<div class="helpmenu hiddenpopup popup z-index-10001 padding-12px gap-12px" id="createtodoitempriority">
 		<div class="display-flex flex-row gap-12px justify-space-between align-center">
 			<div>
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -194,7 +194,7 @@
 	</div>
 
 
-	<div class="helpmenu hiddenpopup popup z-index-1000 padding-12px gap-12px" id="createtodoitemduration">
+	<div class="helpmenu hiddenpopup popup z-index-10001 padding-12px gap-12px" id="createtodoitemduration">
 		<div class="display-flex flex-row justify-space-between align-center">
 			<div>
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -301,7 +301,7 @@
 
 
 
-	<div class="helpmenu hiddenpopup popup z-index-1000 padding-12px gap-12px" id="createtodoitemduedate">
+	<div class="helpmenu hiddenpopup popup z-index-10001 padding-12px gap-12px" id="createtodoitemduedate">
 		<div class="display-flex flex-row justify-space-between align-center">
 
 			<div>
@@ -1176,6 +1176,8 @@
 
 			<!-- left -->
 			<div class="display-flex flex-row align-center gap-6px flex-1 justify-flex-start">
+				<div class="absolute bottom-0 width200px loader left-0 display-none" id="statusdisplay"></div>
+
 				<div class="sidebutton tooltip display-none" onclick="togglesidebar()" id="togglesidebarshown">
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 					<g>
@@ -1264,9 +1266,6 @@
 
 		<!-- app content -->
 		<div class="display-flex flex-row width-full overflow-y-auto flex-1">
-
-		<!-- here4 -->
-		<div class="absolute bottom-0 width-full loader left-0 display-none" id="statusdisplay"></div>
 		
 
 		<div class="background-secondary small:background-primary pagewrap border-box flex-column">
