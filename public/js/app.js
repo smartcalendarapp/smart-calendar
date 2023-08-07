@@ -2845,8 +2845,6 @@ async function getclientinfo() {
 		if (clientinfo.google_email == 'james.tsaggaris@gmail.com') {
 			setStorage('noanalytics', true)
 		}
-
-		calendar.updateSettings()
 	} else if (response2.status == 401) {
 		showloginpopup()
 	} else {
@@ -2857,8 +2855,8 @@ async function getclientinfo() {
 }
 
 async function getclient() {
-	await getclientdata()
 	await getclientinfo()
+	await getclientdata()
 }
 
 //save data
