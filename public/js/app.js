@@ -2951,7 +2951,7 @@ function run() {
 
 
 	//check for onboarding
-	updateunboardingscreen()
+	updateonboardingscreen()
 
 
 	//set initial save data
@@ -3272,7 +3272,7 @@ function updateonboardingscreen(){
 	onboardingscreen.classList.add('display-none')
 
 	let currentonboarding;
-	for(let [key, value] of calendar.onboarding){
+	for(let [key, value] of Object.entries(calendar.onboarding)){
 		if(key == 'connectcalendars' || key == 'sleeptime' || key == 'addtask'){
 			let currentscreen = getElement(`onboarding${key}`)
 
