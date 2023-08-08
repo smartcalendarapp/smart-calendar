@@ -1434,12 +1434,18 @@
 						<div class="text-18px text-primary pointer-none flex-1 text-center">To do list</div>
 
 						<div class="display-flex flex-row align-center gap-24px">
-							<div class="padding-top-6px padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktodotab(0);gtag('event', 'button_click', { useraction: 'Not scheduled yet - to do list' }) " id="todolistnotscheduledyet">
-								Not scheduled yet
+							<div class="padding-top-6px padding-bottom-6px relative hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktodotab(0);gtag('event', 'button_click', { useraction: 'Not scheduled yet - to do list' }) " id="todolistnotscheduledyet">
+								<div class="display-flex flex-row align-center gap-6px">
+									<div class="text-16px text-quaternary">Not scheduled yet</div>
+									<div id="todolistnotscheduledyettext" class="background-tint-1 text-14px text-quaternary border-round padding-4px"></div>
+								</div>
 								<span class="buttonunderline"></span>
 							</div>
-							<div class="padding-top-6px padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktodotab(1);gtag('event', 'button_click', { useraction: 'Scheduled tasks - to do list' }) " id="todolistscheduledtasks">
-								Scheduled tasks
+							<div class="padding-top-6px padding-bottom-6px relative hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktodotab(1);gtag('event', 'button_click', { useraction: 'Scheduled tasks - to do list' }) " id="todolistscheduledtasks">
+								<div class="display-flex flex-row align-center gap-6px">
+									<div class="text-16px text-quaternary">Scheduled tasks</div>
+									<div id="todolistscheduledtaskstext" class="background-tint-1 text-14px text-quaternary border-round padding-4px"></div>
+								</div>
 								<span class="buttonunderline"></span>
 							</div>
 						</div>
@@ -1452,7 +1458,7 @@
 						<div class="display-flex gap-24px flex-column padding-12px marginbottom50vh">
 
 
-							<div class="sticky justify-space-between z-index-50 todobuttonstop display-flex flex-row gap-24px">
+							<div class="sticky flex-wrap-wrap justify-space-between z-index-50 todobuttonstop display-flex flex-row gap-24px">
 								<div class="padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-round" onclick="readinteractivetourpopup('clickaddtask');opencreatetodo(event);gtag('event', 'button_click', { useraction: 'Add task - to do list' })" id="addtaskbutton">
 									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 									<g>
@@ -1553,7 +1559,7 @@
 
 								<!-- middle -->
 								<div class="display-flex flex-row align-center justify-center flex-1 small:display-none">
-									<div class="padding-8px-12px pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-round" onclick="opencreateevent(event)">
+									<div class="padding-8px-12px pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px" onclick="opencreateevent(event)">
 										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 										<g>
 										<g opacity="1">
@@ -1563,7 +1569,7 @@
 										</g>
 										</svg>
 				
-										<div class="text-18px text-white pointer-none nowrap transition-none">Add event</div>
+										<div class="text-16px text-white pointer-none nowrap transition-none">Add event</div>
 									</div>
 								</div>
 	
@@ -1587,7 +1593,7 @@
 							<div class="barcolumncontainer" id="barcolumncontainer"></div>
 
 
-							<div class="padding-8px-12px absolute top-0 margin-24px pointer popupbutton transition-duration-100 width-fit align-self-center bluebutton gap-6px flex-row align-center border-round display-none small:display-flex" onclick="opencreateevent(event)">
+							<div class="padding-8px-12px absolute top-0 margin-24px pointer popupbutton transition-duration-100 width-fit box-shadow align-self-center bluebutton gap-6px flex-row align-center border-round display-none small:display-flex" onclick="opencreateevent(event)">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 								<g>
 								<g opacity="1">

@@ -2089,6 +2089,11 @@ class Calendar {
 	updateTodoList() {
 		let output = []
 
+		let todolistnotscheduledyettext = getElement('todolistnotscheduledyettext')
+		let todolistscheduledtaskstext = getElement('todolistscheduledtaskstext')
+		todolistnotscheduledyettext.innerHTML = calendar.todos.length
+		todolistscheduledtaskstext.innerHTML = calendar.events.filter(d => d.type == 1).length
+
 		let mytodos = []
 		if(todomode == 0){
 			mytodos = calendar.todos
