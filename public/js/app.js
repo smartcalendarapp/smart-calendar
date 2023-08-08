@@ -2094,62 +2094,96 @@ class Calendar {
 		todolistnotscheduledyettext.innerHTML = calendar.todos.length
 		todolistscheduledtaskstext.innerHTML = calendar.events.filter(d => d.type == 1).length
 
-		let mytodos = []
 		if(todomode == 0){
-			mytodos = calendar.todos
-		}else if(todomode == 1){
-			mytodos = calendar.events.filter(d => d.type == 1)
-		}
+			let mytodos = calendar.todos
 
-		let duetodos = sorttodos(mytodos.filter(d => d.endbefore.year != null && d.endbefore.month != null && d.endbefore.day != null && d.endbefore.minute != null))
-		let notduetodos = mytodos.filter(d => d.endbefore.year == null || d.endbefore.month == null || d.endbefore.day == null || d.endbefore.minute == null)
+			let duetodos = sortduedate(mytodos.filter(d => d.endbefore.year != null && d.endbefore.month != null && d.endbefore.day != null && d.endbefore.minute != null))
+			let notduetodos = mytodos.filter(d => d.endbefore.year == null || d.endbefore.month == null || d.endbefore.day == null || d.endbefore.minute == null)
 
-		let lastduedate;
-		let tempoutput = []
-		let tempoutput2 = []
-		for (let i = 0; i < duetodos.length; i++) {
-			let item = duetodos[i]
-			let tempduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
-			if (!lastduedate || tempduedate.getDate() != lastduedate.getDate() || lastduedate.getMonth() != tempduedate.getMonth() || lastduedate.getFullYear() != tempduedate.getFullYear()) {
-				tempoutput.push(`<div class="text-18px text-quaternary">Due ${getDMDYText(tempduedate)}</div>`)
+			let lastduedate;
+			let tempoutput = []
+			let tempoutput2 = []
+			for (let i = 0; i < duetodos.length; i++) {
+				let item = duetodos[i]
+				let tempduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
+				if (!lastduedate || tempduedate.getDate() != lastduedate.getDate() || lastduedate.getMonth() != tempduedate.getMonth() || lastduedate.getFullYear() != tempduedate.getFullYear()) {
+					tempoutput.push(`<div class="text-18px text-quaternary">Due ${getDMDYText(tempduedate)}</div>`)
+				}
+
+				tempoutput2.push(gettododata(item))
+
+				let nextitem = duetodos[i + 1]
+				let nextduedate = nextitem ? new Date(nextitem.endbefore.year, nextitem.endbefore.month, nextitem.endbefore.day, 0, nextitem.endbefore.minute) : null
+				if (!nextduedate || nextduedate.getDate() != tempduedate.getDate() || nextduedate.getMonth() != tempduedate.getMonth() || nextduedate.getFullYear() != tempduedate.getFullYear()) {
+					output.push(`<div class="display-flex flex-column gap-12px">
+						${tempoutput.join('')}
+				
+						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
+					</div>`)
+					tempoutput = []
+					tempoutput2 = []
+				}
+
+				lastduedate = tempduedate
 			}
 
-			tempoutput2.push(gettododata(item))
+			for (let i = 0; i < notduetodos.length; i++) {
+				let item = notduetodos[i]
+				if (i == 0) {
+					tempoutput.push(`<div class="text-18px text-quaternary">No due date</div>`)
+				}
+				tempoutput2.push(gettododata(item))
+				if (i == notduetodos.length - 1) {
+					output.push(`
+					<div class="display-flex flex-column gap-12px">
+						${tempoutput.join('')}
+						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
+					</div>`)
+					tempoutput = []
+					tempoutput2 = []
+				}
+			}
 
-			let nextitem = duetodos[i + 1]
-			let nextduedate = nextitem ? new Date(nextitem.endbefore.year, nextitem.endbefore.month, nextitem.endbefore.day, 0, nextitem.endbefore.minute) : null
-			if (!nextduedate || nextduedate.getDate() != tempduedate.getDate() || nextduedate.getMonth() != tempduedate.getMonth() || nextduedate.getFullYear() != tempduedate.getFullYear()) {
-				output.push(`<div class="display-flex flex-column gap-12px">
-					${tempoutput.join('')}
+			let alltodolist = getElement('alltodolist')
+			alltodolist.innerHTML = output.join('')
 			
-					<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
-				</div>`)
-				tempoutput = []
-				tempoutput2 = []
+		}else if(todomode == 1){
+			let mytodos = calendar.events.filter(d => d.type == 1)
+			let sortedtodos = sortstartdate(mytodos)
+
+
+			let laststartdate;
+			let tempoutput = []
+			let tempoutput2 = []
+			for (let i = 0; i < sortedtodos.length; i++) {
+				let item = sortedtodos[i]
+				let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+				if (!laststartdate || tempstartdate.getDate() != laststartdate.getDate() || laststartdate.getMonth() != tempstartdate.getMonth() || laststartdate.getFullYear() != tempstartdate.getFullYear()) {
+					tempoutput.push(`<div class="text-18px text-quaternary">${getDMDYText(tempstartdate)}</div>`)
+				}
+
+				tempoutput2.push(gettododata(item))
+
+				let nextitem = sortedtodos[i + 1]
+				let nextstartdate = nextitem ? new Date(nextitem.start.year, nextitem.start.month, nextitem.start.day, 0, nextitem.start.minute) : null
+				if (!nextstartdate || nextstartdate.getDate() != tempstartdate.getDate() || nextstartdate.getMonth() != tempstartdate.getMonth() || nextstartdate.getFullYear() != tempstartdate.getFullYear()) {
+					output.push(`<div class="display-flex flex-column gap-12px">
+						${tempoutput.join('')}
+				
+						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
+					</div>`)
+					tempoutput = []
+					tempoutput2 = []
+				}
+
+				laststartdate = tempstartdate
 			}
 
-			lastduedate = tempduedate
+
+			let alltodolist = getElement('alltodolist')
+			alltodolist.innerHTML = output.join('')
 		}
 
-		for (let i = 0; i < notduetodos.length; i++) {
-			let item = notduetodos[i]
-			if (i == 0) {
-				tempoutput.push(`<div class="text-18px text-quaternary">No due date</div>`)
-			}
-			tempoutput2.push(gettododata(item))
-			if (i == notduetodos.length - 1) {
-				output.push(`
-				<div class="display-flex flex-column gap-12px">
-					${tempoutput.join('')}
-					<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
-		 		</div>`)
-				tempoutput = []
-				tempoutput2 = []
-			}
-		}
-
-		let alltodolist = getElement('alltodolist')
-		alltodolist.innerHTML = output.join('')
 	}
 
 
@@ -5758,9 +5792,14 @@ function closewelcomepopup(name) {
 
 
 //SCHEDULE
-function sorttodos(val) {
+function sortduedate(val) {
 	return val.sort((a, b) => {
 		return new Date(a.endbefore.year, a.endbefore.month, a.endbefore.day, 0, a.endbefore.minute).getTime() - new Date(b.endbefore.year, b.endbefore.month, b.endbefore.day, 0, b.endbefore.minute).getTime()
+	})
+}
+function sortstartdate(val) {
+	return val.sort((a, b) => {
+		return new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime() - new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime()
 	})
 }
 
@@ -7020,24 +7059,32 @@ function gettododata(item) {
 							<div class="flex-1 display-flex flex-column gap-6px">
 								<div class="width-full display-flex flex-column">
 				 
-									<div class="todoitemtext selecttext text-16px overflow-hidden ${itemclasses.join(' ')}">
+									<div class="todoitemtext text-16px overflow-hidden ${itemclasses.join(' ')}">
 										<span class="text-bold">${item.title ? cleanInput(item.title) : `New Task`}</span>
 									</div>
-					
+
 									${item.notes ?
-				`<div class="pre-wrap break-word selecttext todoitemtext text-quaternary text-14px overflow-hidden ${itemclasses.join(' ')}">${formatURL(cleanInput(item.notes))}</div>` : ''}
+									`<div class="pre-wrap break-word todoitemtext text-quaternary text-14px overflow-hidden ${itemclasses.join(' ')}">${formatURL(cleanInput(item.notes))}</div>` : ''}
 	
 								</div>
 				
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 				 
-									<div class="gap-6px todoitemtextbutton display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton" onclick="clicktodoitemduedate(event, '${item.id}')">
-										<div class="pointer-auto pointer ${!endbeforedate ? 'text-quaternary hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-blue hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${Calendar.Event.getDueText(item)}` : 'No due date'}</div>
-									</div>
-	
-									<div class="todoitemtextbutton width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-green hoverunderlinegreen pointer-auto pointer transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
-										Takes ${getDHMText(myduration)}
-									</div>
+									${Calendar.Event.isEvent(item) ? 
+										`<div class="gap-6px todoitemtextbutton display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton">
+											<div class="pointer-auto pointer text-green hoverunderlinegreen ">Starts ${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}</div>
+										</div>`
+										:
+										`<div class="gap-6px todoitemtextbutton display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton" onclick="clicktodoitemduedate(event, '${item.id}')">
+											<div class="pointer-auto pointer ${!endbeforedate ? 'text-quaternary hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-blue hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${Calendar.Event.getDueText(item)}` : 'No due date'}</div>
+										</div>`
+									}
+		
+									${Calendar.Event.isEvent(item) ? `` : 
+										`<div class="todoitemtextbutton width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-green hoverunderlinegreen pointer-auto pointer transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
+											Takes ${getDHMText(myduration)}
+										</div>`
+									}
 	
 									<div class="todoitemtextbutton text-14px nowrap pointer-auto pointer popupbutton transition-duration-100 ${['text-quaternary hoverunderlinequaternary visibility-hidden hoverpriority small:visibility-visible', 'text-orange hoverunderlineorange', 'text-red hoverunderlinered'][item.priority]} ${itemclasses.join(' ')}" onclick="clicktodoitempriority(event, '${item.id}')">
 										${['Low', 'Medium', 'High'][item.priority]} priority

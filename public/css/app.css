@@ -1394,7 +1394,9 @@ body {
 	visibility: visible;
 }
 
-
+.hoverchildprimary div{
+	transition-duration:0.1s;
+}
 .hoverchildprimary:hover div{
 	color:var(--primary) !important;
 }

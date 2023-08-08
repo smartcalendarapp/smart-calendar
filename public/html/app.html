@@ -1016,7 +1016,7 @@
 
 			<div class="justify-flex-end display-flex flex-row gap-12px align-center">
 				<div class="display-flex flex-row gap-12px align-center" id="createtodoaddbutton">
-					<div class="hover:text-decoration-underline pointer display-flex text-14px text-white flex-row align-center gap-6px border-round padding-8px-16px" onclick="submitcreatetodo(event, false);gtag('event', 'button_click', { useraction: 'Save and schedule later - add task' })">Save and schedule later</div>
+					<div class="hover:text-decoration-underline pointer display-flex text-14px text-white flex-row align-center gap-6px border-round" onclick="submitcreatetodo(event, false);gtag('event', 'button_click', { useraction: 'Save and schedule later - add task' })">Save and schedule later</div>
 					<div class="todoitembutton display-flex text-16px text-white flex-row align-center gap-6px border-round padding-8px-16px bluebutton" onclick="submitcreatetodo(event, true);gtag('event', 'button_click', { useraction: 'Schedule - add task' })">Schedule</div>
 					
 				</div>
@@ -1435,9 +1435,9 @@
 						<div class="text-18px text-primary pointer-none flex-1 text-center">To do list</div>
 
 						<div class="display-flex flex-row align-center gap-24px">
-							<div class="padding-top-6px padding-bottom-6px relative hoverchildprimary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktodotab(0);gtag('event', 'button_click', { useraction: 'Not scheduled yet - to do list' }) " id="todolistnotscheduledyet">
+							<div class="padding-top-6px padding-bottom-6px relative hoverchildprimary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktodotab(0);gtag('event', 'button_click', { useraction: 'Not scheduled - to do list' }) " id="todolistnotscheduledyet">
 								<div class="pointer-none display-flex flex-row align-center gap-6px">
-									<div class="text-16px text-quaternary">Not scheduled yet</div>
+									<div class="text-16px text-quaternary">Not scheduled</div>
 									<div id="todolistnotscheduledyettext" class="background-tint-1 text-14px text-quaternary border-round circlehighlight"></div>
 								</div>
 								<span class="buttonunderline"></span>
