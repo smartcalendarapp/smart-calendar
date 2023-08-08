@@ -1759,28 +1759,21 @@
 									<!-- calendars -->
 									<div class="display-flex flex-column gap-24px">
 			
-										<div id="settingscalendarlist" class="display-flex flex-column gap-6px"></div>
-			
-										<div class="horizontalbar"></div>
-										
 										<div class="infogroup">
-											<div class="text-16px text-primary text-bold">Create calendar</div>
-											<div class="border-8px background-blue hover:background-blue-hover transition-duration-100 text-14px pointer text-center padding-8px-12px text-white" onclick="createcalendar()">Create calendar</div>
+											<div class="text-16px text-primary text-bold">My calendars</div>
+											<div id="settingscalendarlist" class="display-flex flex-column gap-6px"></div>
 										</div>
 			
 										<div class="horizontalbar"></div>
 										
 										<div class="infogroup">
-											<div class="text-16px text-primary text-bold">Upload calendar file</div>
-											<div class="border-8px background-blue hover:background-blue-hover transition-duration-100 text-14px pointer text-center padding-8px-12px text-white" onclick="clickuploadfile()">Upload file
+											<div class="border-8px background-blue hover:background-blue-hover transition-duration-100 text-14px pointer text-center text-bold padding-8px-12px text-white" onclick="createcalendar()">Create calendar</div>
+
+											<div class="border-8px background-blue hover:background-blue-hover text-bold transition-duration-100 text-14px pointer text-center padding-8px-12px text-white" onclick="clickuploadfile()">Upload calendar file
 												<input type="file" accept=".ics" id="importcalendar" class="display-none" onchange="inputcalendarfile(event)"></input>
 											</div>
-										</div>
-										
-										<div class="horizontalbar"></div>
-										
-			
-										<div class="infogroup">
+
+											
 											<div class="text-16px text-primary text-bold">Add calendar subscription</div>
 											<div class="display-flex flex-row gap-12px">
 												<div class="inputgroup flex-1">
