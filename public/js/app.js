@@ -7072,11 +7072,11 @@ function gettododata(item) {
 				 
 									${Calendar.Event.isEvent(item) ? 
 										`<div class="gap-6px todoitemtextbutton display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton">
-											<div class="pointer-auto pointer text-green hoverunderlinegreen ">Starts ${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}</div>
+											<div class="pointer-auto pointer text-green">Starts ${getHMText(item.start.minute)}</div>
 										</div>`
 										:
 										`<div class="gap-6px todoitemtextbutton display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton" onclick="clicktodoitemduedate(event, '${item.id}')">
-											<div class="pointer-auto pointer ${!endbeforedate ? 'text-quaternary hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-blue hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${Calendar.Event.getDueText(item)}` : 'No due date'}</div>
+											<div class="pointer-auto pointer ${!endbeforedate ? 'text-quaternary hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-blue hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}</div>
 										</div>`
 									}
 		
