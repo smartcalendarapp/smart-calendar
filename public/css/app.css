@@ -1395,7 +1395,9 @@ body {
 }
 
 
-
+.hoverchildprimary:hover div{
+	color:var(--primary) !important;
+}
 
 .todoitembuttongroupstay {
 	display: flex;

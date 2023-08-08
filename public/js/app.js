@@ -6873,13 +6873,16 @@ function submitcreatetodo(event, scheduleincalendar) {
 	}
 	item.priority = createtodopriorityvalue
 
-	todomode = 0
 	calendar.todos.push(item)
-	calendar.updateTodo()
+
 	if(scheduleincalendar){
-		startAutoSchedule([item])
+		todomode = 1
+		startAutoSchedule([item], true)
+	}else{
+		todomode = 0
 	}
 
+	calendar.updateTodo()
 	calendar.updateHistory()
 
 	closecreatetodo()
