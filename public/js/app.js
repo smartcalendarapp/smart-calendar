@@ -2053,7 +2053,7 @@ class Calendar {
 	}
 
 	updateEditTodo() {
-		let item = calendar.todos.find(d => d.id == selectededittodoid)
+		let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
 		if (!item) return
 
 		let todoedittimewindowday = getElement('todoedittimewindowday')
@@ -7473,7 +7473,12 @@ function clicktodoitemduration(event, id) {
 	todoitemduration.style.left = fixleft(button.getBoundingClientRect().left - todoitemduration.offsetWidth * 0.5 + button.offsetWidth * 0.5, todoitemduration) + 'px'
 
 	//input
-	let myduration = item.duration
+	let myduration;
+	if(Calendar.Todo.isTodo(item)){
+		myduration = item.duration
+	}else{
+		myduration = Math.floor((new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()) / 60000)
+	}
 
 	let todoitemdurationinput = getElement('todoitemdurationinput')
 	todoitemdurationinput.value = getDHMText(myduration)
@@ -7513,11 +7518,26 @@ function inputtodoitemduration(event, duration) {
 	}
 
 	if (myduration == null) {
-		myduration = item.duration
+		let myduration;
+		if(Calendar.Todo.isTodo(item)){
+			myduration = item.duration
+		}else{
+			myduration = Math.floor((new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()) / 60000)
+		}
 	}
 
 	if (myduration != null) {
-		item.duration = myduration
+		if(Calendar.Todo.isTodo(item)){
+			item.duration = myduration
+		}else{
+			let tempenddate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+			tempenddate.setMinutes(tempenddate.getMinutes() + myduration)
+			
+			item.end.year = tempenddate.getFullYear()
+			item.end.month = tempenddate.getMonth()
+			item.end.day = tempenddate.getDate()
+			item.end.minute = tempenddate.getHours() * 60 + tempenddate.getMinutes()
+		}
 
 		calendar.updateTodo()
 		if(Calendar.Event.isEvent(item)){
@@ -7764,7 +7784,17 @@ function submitedittodo(event) {
 		item.title = title
 		item.notes = notes
 
-		item.duration = myduration
+		if(Calendar.Todo.isTodo(item)){
+			item.duration = myduration
+		}else{
+			let tempenddate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+			tempenddate.setMinutes(tempenddate.getMinutes() + myduration)
+			
+			item.end.year = tempenddate.getFullYear()
+			item.end.month = tempenddate.getMonth()
+			item.end.day = tempenddate.getDate()
+			item.end.minute = tempenddate.getHours() * 60 + tempenddate.getMinutes()
+		}
 
 		let option = daytimewindowoptiondata[edittodopreferredday]
 		if (option) {
