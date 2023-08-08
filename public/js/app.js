@@ -6853,7 +6853,7 @@ function typeaddtask(event, submit) {
 
 
 
-function submitcreatetodo(event) {
+function submitcreatetodo(event, scheduleincalendar) {
 	let title = typeaddtask(event, true)
 
 	let todoinputnotes = getElement('todoinputnotes')
@@ -6876,6 +6876,9 @@ function submitcreatetodo(event) {
 	todomode = 0
 	calendar.todos.push(item)
 	calendar.updateTodo()
+	if(scheduleincalendar){
+		startAutoSchedule([item])
+	}
 
 	calendar.updateHistory()
 
