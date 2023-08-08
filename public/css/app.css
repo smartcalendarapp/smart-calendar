@@ -2026,6 +2026,10 @@ body {
 	justify-content: center;
 }
 
+.circlehighlight{
+	padding:2px 6px;
+}
+
 .highlightdate {
 	background-color: var(--blue);
 	color: var(--white);
@@ -2733,7 +2737,7 @@ body {
 
 
 .dayeventheight {
-	max-height: 60px;
+	max-height: 48px;
 }
 
 .dayeventlist::-webkit-scrollbar {

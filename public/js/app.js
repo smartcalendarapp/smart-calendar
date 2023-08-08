@@ -6873,6 +6873,7 @@ function submitcreatetodo(event) {
 	}
 	item.priority = createtodopriorityvalue
 
+	todomode = 0
 	calendar.todos.push(item)
 	calendar.updateTodo()
 
@@ -7684,6 +7685,9 @@ async function todocompleted(event, id) {
 
 
 function deletetodo(id) {
+	let item = [...calendar.events, ...calendar.todos].find(d => d.id == id)
+	if(!item) return
+	
 	calendar.todos = calendar.todos.filter(d => d.id != id)
 	calendar.events = calendar.events.filter(d => d.id != id)
 
@@ -9631,7 +9635,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 
 	//stats
 	autoschedulestats.animateduration = performance.now() - startautoscheduleanimate
-	console.log(autoschedulestats)
+	//console.log(autoschedulestats)
 
 	//confetti
 	let confetticanvas = getElement('confetticanvas')
