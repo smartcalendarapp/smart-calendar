@@ -7071,7 +7071,7 @@ function gettododata(item) {
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 				 
 									<div class="gap-6px display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton" onclick="clicktodoitemduedate(event, '${item.id}')">
-										<div class="pointer-auto pointer ${!endbeforedate ? 'text-quaternary hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-blue hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}</div>
+										<div class="pointer-auto pointer ${!endbeforedate ? 'text-quaternary hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-blue hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${Calendar.Todo.getDueText(item)}` : 'No due date'}</div>
 									</div>
 									
 									${Calendar.Event.isEvent(item) ? 
