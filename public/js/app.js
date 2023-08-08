@@ -2000,8 +2000,23 @@ class Calendar {
 	}
 
 	updateTodoButtons() {
+		//mode buttons
+		let todolistnotscheduledyet = getElement('todolistnotscheduledyet')
+		let todolistscheduledtasks = getElement('todolistscheduledtasks')
+
+		todolistnotscheduledyet.classList.remove('selectedbuttonunderline')
+		todolistscheduledtasks.classList.remove('selectedbuttonunderline')
+
+		if(todomode == 0){
+			todolistnotscheduledyet.classList.add('selectedbuttonunderline')
+		}else if(todomode == 1){
+			todolistscheduledtasks.classList.add('selectedbuttonunderline')
+		}
+
+
+		//schedule button
 		let scheduleoncalendar = getElement('scheduleoncalendar')
-		if (calendar.todos.filter(d => !d.completed).length > 0 && !schedulemytasksenabled) {
+		if (calendar.todos.filter(d => !d.completed).length > 0 && !schedulemytasksenabled && todomode == 0) {
 			scheduleoncalendar.classList.remove('display-none')
 		} else {
 			scheduleoncalendar.classList.add('display-none')
@@ -2066,8 +2081,15 @@ class Calendar {
 	updateTodoList() {
 		let output = []
 
-		let duetodos = sorttodos(calendar.todos.filter(d => d.endbefore.year != null && d.endbefore.month != null && d.endbefore.day != null && d.endbefore.minute != null))
-		let notduetodos = calendar.todos.filter(d => d.endbefore.year == null || d.endbefore.month == null || d.endbefore.day == null || d.endbefore.minute == null)
+		let mytodos = []
+		if(todomode == 0){
+			mytodos = calendar.todos
+		}else if(todomode == 1){
+			mytodos = calendar.events.filter(d => d.type == 1)
+		}
+
+		let duetodos = sorttodos(mytodos.filter(d => d.endbefore.year != null && d.endbefore.month != null && d.endbefore.day != null && d.endbefore.minute != null))
+		let notduetodos = mytodos.filter(d => d.endbefore.year == null || d.endbefore.month == null || d.endbefore.day == null || d.endbefore.minute == null)
 
 		let lastduedate;
 		let tempoutput = []
@@ -2716,6 +2738,7 @@ if ('matchMedia' in window) {
 	}
 }
 
+let todomode = 0
 
 let calendaryear = new Date().getFullYear()
 let calendarmonth = new Date().getMonth()
@@ -3043,6 +3066,11 @@ function updatestatus(newstatus) {
 	}
 }
 
+
+function clicktodotab(index){
+	todomode = index
+	calendar.updateTodo()
+}
 
 function clicktab(index) {
 	let currentdate = new Date()
@@ -6993,7 +7021,7 @@ function gettododata(item) {
 						</div>
 	
 	
-						<div class="gap-12px todoitembuttongroup height-fit justify-flex-end flex-row small:visibility-visible">
+						<div class="gap-12px todoitembuttongroup absolute top-0 right-0 margin-12px height-fit flex-row small:visibility-visible">
 							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="edittodo('${item.id}');gtag('event', 'button_click', { useraction: 'Edit - task' })">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 								<g>
