@@ -2159,7 +2159,7 @@ class Calendar {
 				let item = sortedtodos[i]
 				let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 				if (!laststartdate || tempstartdate.getDate() != laststartdate.getDate() || laststartdate.getMonth() != tempstartdate.getMonth() || laststartdate.getFullYear() != tempstartdate.getFullYear()) {
-					tempoutput.push(`<div class="text-18px text-quaternary">${getDMDYText(tempstartdate)}</div>`)
+					tempoutput.push(`<div class="text-18px text-quaternary">Scheduled at ${getDMDYText(tempstartdate)}</div>`)
 				}
 
 				tempoutput2.push(gettododata(item))
@@ -7076,7 +7076,7 @@ function gettododata(item) {
 									
 									${Calendar.Event.isEvent(item) ? 
 										`<div class="gap-6px display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton">
-											<div class="text-green">Scheduled for ${getHMText(item.start.minute)}</div>
+											<div class="text-green">Scheduled at ${getHMText(item.start.minute)}</div>
 										</div>`
 										:
 										``
@@ -9573,7 +9573,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 			<div class="infotitle">${newitem.title ? cleanInput(newitem.title) : 'New Event'}</div>
 		</div>
 		<div class="info">
-			<div class="infotext">Scheduled for ${getDMDYText(new Date(newitem.start.year, newitem.start.month, newitem.start.day, 0, newitem.start.minute))} ${getHMText(newitem.start.minute)}.${addedtodos.find(d => d.id == newitem.id) ? `` : ` Keep this time?`}</div>
+			<div class="infotext">Scheduled at ${getDMDYText(new Date(newitem.start.year, newitem.start.month, newitem.start.day, 0, newitem.start.minute))} ${getHMText(newitem.start.minute)}.${addedtodos.find(d => d.id == newitem.id) ? `` : ` Keep this time?`}</div>
 			<div class="display-flex flex-row justify-space-between align-center gap-12px">
 	 			<div class="text-14px text-secondary">Event ${animateindex + 1} of ${modifiedevents.length}</div>
 		 		<div class="display-flex flex-row gap-12px">
