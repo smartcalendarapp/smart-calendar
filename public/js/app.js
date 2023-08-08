@@ -690,6 +690,10 @@ class Calendar {
 			}
 		}
 
+		static isEvent(item){
+			return calendar.events.find(d => d.id == item.id)
+		}
+
 		static getCalendar(item) {
 			if (item.calendarid == null) {
 				let calendaritem = calendar.calendars.find(f => f.isprimary)
@@ -814,6 +818,10 @@ class Calendar {
 
 		static isSchedulable(item) {
 			return !item.completed
+		}
+
+		static isTodo(item){
+			return calendar.todos.find(d => d.id == item.id)
 		}
 	}
 
@@ -6879,7 +6887,14 @@ function gettododata(item) {
 		itemclasses.push('completedtext')
 	}
 
-	let myduration = item.duration
+
+	let myduration;
+	if(Calendar.Todo.isTodo(item)){
+		myduration = item.duration
+	}else{
+		myduration = Math.floor((new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()) / 60000)
+	}
+
 
 	let endbeforedate;
 	if (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null) {
@@ -6966,7 +6981,7 @@ function gettododata(item) {
 				</div>
 				 
 				<div class="todoitembuttongroupstay justify-flex-end">
-					<div class="todoitembutton" onclick="canceledittodo('${item.id}')">Cancel</div>
+					<div class="todoitembutton" onclick="canceledittodo()">Cancel</div>
 					<div class="todoitembutton bluebutton" onclick="submitedittodo('${item.id}')">Save</div>
 				</div>
 			</div>
@@ -6974,6 +6989,8 @@ function gettododata(item) {
 		</div>`
 	} else {
 		//view
+
+		//here4
 
 		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''}>
 
@@ -7021,7 +7038,7 @@ function gettododata(item) {
 						</div>
 	
 	
-						<div class="gap-12px todoitembuttongroup absolute top-0 right-0 margin-12px height-fit flex-row small:visibility-visible">
+						<div class="gap-12px todoitembuttongroup height-fit justify-flex-end flex-row small:visibility-visible">
 							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="edittodo('${item.id}');gtag('event', 'button_click', { useraction: 'Edit - task' })">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 								<g>
@@ -7101,7 +7118,7 @@ let inputtodoid;
 
 //click on due date
 function clicktodoitemduedate(event, id) {
-	let item = calendar.todos.find(x => x.id == id)
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
 
 	//ui
@@ -7143,7 +7160,7 @@ function clicktodoitemduedate(event, id) {
 
 //update input value
 function updatetododateinput(id) {
-	let item = calendar.todos.find(x => x.id == id)
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
 
 	let duedate;
@@ -7156,7 +7173,7 @@ function updatetododateinput(id) {
 }
 //update input value
 function updatetodotimeinput(id) {
-	let item = calendar.todos.find(x => x.id == id)
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
 
 	let todoitemduetimeinput = getElement('todoitemduetimeinput')
@@ -7175,7 +7192,7 @@ function updatetodotimepickeronce() {
 }
 //update input ui
 function updatetodotimepicker() {
-	let item = calendar.todos.find(x => x.id == inputtodoid)
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == inputtodoid)
 	if (!item) return
 	let duedate;
 	if (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null) {
@@ -7212,7 +7229,7 @@ function updatetododatepicker() {
 		return new Date(year, month + 1, 0).getDate()
 	}
 
-	let item = calendar.todos.find(x => x.id == inputtodoid)
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == inputtodoid)
 	if (!item) return
 	let duedate;
 	if (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null) {
@@ -7320,7 +7337,7 @@ function inputtodoitemnotdue(event, id) {
 function inputtodoitemduedate(event, dueyear, duemonth, duedate) {
 	event.stopPropagation()
 
-	let item = calendar.todos.find(x => x.id == inputtodoid)
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == inputtodoid)
 	if (!item) return
 
 	let mydate;
@@ -7339,6 +7356,9 @@ function inputtodoitemduedate(event, dueyear, duemonth, duedate) {
 		item.endbefore.day = mydate.getDate()
 
 		calendar.updateTodo()
+		if(Calendar.Event.isEvent(item)){
+			calendar.updateEvents()
+		}
 		calendar.updateHistory()
 		calendar.updateInfo()
 
@@ -7352,7 +7372,7 @@ function inputtodoitemduedate(event, dueyear, duemonth, duedate) {
 }
 //input due time
 function inputtodoitemduetime(event, duetime) {
-	let item = calendar.todos.find(x => x.id == inputtodoid)
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == inputtodoid)
 	if (!item) return
 
 	let myminute;
@@ -7368,6 +7388,9 @@ function inputtodoitemduetime(event, duetime) {
 		item.endbefore.minute = myminute
 
 		calendar.updateTodo()
+		if(Calendar.Event.isEvent(item)){
+			calendar.updateEvents()
+		}
 		calendar.updateHistory()
 
 		//blur
@@ -7385,7 +7408,7 @@ function inputtodoitemduetime(event, duetime) {
 
 //click on priority
 function clicktodoitempriority(event, id) {
-	let item = calendar.todos.find(x => x.id == id)
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
 
 	//ui
@@ -7415,7 +7438,7 @@ function updatetodoitemprioritylist() {
 updatetodoitemprioritylist()
 
 function inputtodoitempriority(event, index) {
-	let item = calendar.todos.find(x => x.id == inputtodoid)
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == inputtodoid)
 	if (!item) return
 
 	if (index != null) {
@@ -7423,6 +7446,9 @@ function inputtodoitempriority(event, index) {
 
 		inputtodoid = null
 		calendar.updateTodo()
+		if(Calendar.Event.isEvent(item)){
+			calendar.updateEvents()
+		}
 		calendar.updateHistory()
 
 		//close
@@ -7435,7 +7461,7 @@ function inputtodoitempriority(event, index) {
 
 //click on duration
 function clicktodoitemduration(event, id) {
-	let item = calendar.todos.find(x => x.id == id)
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
 
 	//ui
@@ -7473,7 +7499,7 @@ updatetodoitemdurationlist()
 
 //input duration
 function inputtodoitemduration(event, duration) {
-	let item = calendar.todos.find(x => x.id == inputtodoid)
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == inputtodoid)
 	if (!item) return
 
 
@@ -7494,6 +7520,9 @@ function inputtodoitemduration(event, duration) {
 		item.duration = myduration
 
 		calendar.updateTodo()
+		if(Calendar.Event.isEvent(item)){
+			calendar.updateEvents()
+		}
 		calendar.updateHistory()
 
 		//blur
@@ -7591,11 +7620,14 @@ function movedragtodo(event) {
 
 //check completed
 async function todocompleted(event, id) {
-	let item = calendar.todos.find(x => x.id == id)
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
 	item.completed = !item.completed
 
 	calendar.updateTodo()
+	if(Calendar.Event.isEvent(item)){
+		calendar.updateEvents()
+	}
 	calendar.updateHistory()
 	calendar.updateInfo()
 
@@ -7624,57 +7656,22 @@ async function todocompleted(event, id) {
 }
 
 
-//more options
-function moretodo(id, button) {
-	let todoitempopup = getElement('todoitempopup')
-	todoitempopup.classList.toggle('hiddenpopup')
-	updatetodoitempopup(id)
-
-	todoitempopup.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, todoitempopup) + 'px'
-	todoitempopup.style.left = fixleft(button.getBoundingClientRect().left - todoitempopup.offsetWidth + button.offsetWidth, todoitempopup) + 'px'
-}
-
-function updatetodoitempopup(id) {
-	let item = calendar.todos.find(d => d.id == id)
-	if (!item) return
-	let todoitempopup = getElement('todoitempopup')
-	todoitempopup.innerHTML = `
-	<div class="helpitem" onclick="duplicatetodo('${id}')">Duplicate</div>`
-}
-function closetodoitempopup() {
-	let todoitempopup = getElement('todoitempopup')
-	todoitempopup.classList.add('hiddenpopup')
-}
-function duplicatetodo(id) {
-	let item = calendar.todos.find(d => d.id == id)
-	if (!item) return
-
-	let newitem = deepCopy(item)
-	newitem.id = generateID()
-	if (calendar.todos.find(d => d.id == id)) {
-		calendar.todos.push(newitem)
-	} else {
-		calendar.events.push(newitem)
-	}
-
-	calendar.updateTodo()
-	calendar.updateHistory()
-	calendar.updateInfo()
-
-	closetodoitempopup()
-}
 
 
 function deletetodo(id) {
 	calendar.todos = calendar.todos.filter(d => d.id != id)
+	calendar.events = calendar.events.filter(d => d.id != id)
 
 	calendar.updateTodo()
+	if(Calendar.Event.isEvent(item)){
+		calendar.updateEvents()
+	}
 	calendar.updateHistory()
 	calendar.updateInfo()
 }
 
 function edittodo(id) {
-	let item = calendar.todos.find(x => x.id == id)
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
 
 	selectededittodoid = id
@@ -7713,7 +7710,7 @@ function clickedittodopriority(index) {
 }
 
 function submitedittodo(event) {
-	let item = calendar.todos.find(d => d.id == selectededittodoid)
+	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
 	if (!item) return
 
 	let edittodoinputtitle = getElement('edittodoinputtitle')
@@ -7748,7 +7745,11 @@ function submitedittodo(event) {
 
 	let myduration = getDuration(string3).value
 	if (myduration == null) {
-		myduration = item.duration
+		if(Calendar.Todo.isTodo(item)){
+			myduration = item.duration
+		}else{
+			myduration = Math.floor((new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()) / 60000)
+		}
 	}
 
 	let tempendbeforedate = new Date(myendbeforeyear, myendbeforemonth, myendbeforeday, 0, myendbeforeminute)
@@ -7778,6 +7779,9 @@ function submitedittodo(event) {
 
 		selectededittodoid = null
 		calendar.updateTodo()
+		if(Calendar.Event.isEvent(item)){
+			calendar.updateEvents()
+		}
 		calendar.updateHistory()
 		calendar.updateInfo()
 	}
@@ -7851,9 +7855,6 @@ function gettodofromevent(item) {
 }
 
 
-function closetodo(event) {
-	event.stopPropagation()
-}
 
 
 //DATE PICKER
