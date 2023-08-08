@@ -1882,7 +1882,7 @@ body {
 
 .buttonlogo {
 	height: 32px;
-	width: auto;
+	width: 32px;
 }
 
 .selectedbutton .schedulemodetext {

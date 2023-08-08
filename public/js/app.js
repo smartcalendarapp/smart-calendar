@@ -5331,8 +5331,6 @@ function updatecalendaritempopup(id) {
 
 			${item.subscriptionurl ? `<div class="text-blue text-14px break-word overflow-hidden width-full">Subscribed to ${item.subscriptionurl}</div>` : ''}
 
-			${item.googleid ? `<div class="text-blue text-14px">Synced with Google Calendar</div>` : ''}
-
 	 		${!item.isprimary ? `<div class="pointer text-14px width-fit background-red hover:background-red-hover padding-8px-12px border-8px text-white transition-duration-100" onclick="deletecalendar('${item.id}')">Delete calendar</div>` : ''}
 		</div>`
 }
