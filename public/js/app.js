@@ -2159,7 +2159,9 @@ class Calendar {
 			}
 
 			let alltodolist = getElement('alltodolist')
-			alltodolist.innerHTML = output.join('')
+			if(alltodolist.innerHTML != output.join('')){
+				alltodolist.innerHTML = output.join('')
+			}
 			
 		}else if(todomode == 1){
 			let mytodos = calendar.events.filter(d => d.type == 1)
@@ -2195,7 +2197,9 @@ class Calendar {
 
 
 			let alltodolist = getElement('alltodolist')
-			alltodolist.innerHTML = output.join('')
+			if(alltodolist.innerHTML != output.join()){
+				alltodolist.innerHTML = output.join('')
+			}
 		}
 
 	}
@@ -6915,8 +6919,9 @@ function typeaddtask(event, submit) {
 }
 
 
+let newcreatedtodos = []
 
-function submitcreatetodo(event, scheduleincalendar) {
+function submitcreatetodo(event) {
 	let title = typeaddtask(event, true)
 
 	let todoinputnotes = getElement('todoinputnotes')
@@ -6937,13 +6942,9 @@ function submitcreatetodo(event, scheduleincalendar) {
 	item.priority = createtodopriorityvalue
 
 	calendar.todos.push(item)
+	newcreatedtodos.push(item.id)
 
-	if(scheduleincalendar){
-		todomode = 1
-		startAutoSchedule([item], true)
-	}else{
-		todomode = 0
-	}
+	todomode = 0
 
 	calendar.updateTodo()
 	calendar.updateHistory()
@@ -6978,6 +6979,9 @@ function gettododata(item) {
 	let currentdate = new Date()
 
 	let isoverdue = endbeforedate && currentdate.getTime() > endbeforedate.getTime() && !item.completed
+
+
+	let newlycreated = newcreatedtodos.find(d => d.id == id)
 
 	let output = ''
 	if (selectededittodoid == item.id) {
@@ -7064,7 +7068,7 @@ function gettododata(item) {
 	} else {
 		//view
 
-		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''}>
+		output = `<div class="${newlycreated ? 'growheight' : ''} relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''}>
 
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
@@ -7097,7 +7101,7 @@ function gettododata(item) {
 									
 									${Calendar.Event.isEvent(item) ? 
 										`<div class="gap-6px display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton">
-											<div class="text-green">Scheduled at ${Calendar.Event.getStartText(item)}</div>
+											<div class="text-green">Scheduled for ${Calendar.Event.getStartText(item)}</div>
 										</div>`
 										:
 										``
@@ -9701,7 +9705,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 			<div class="infotitle">${newitem.title ? cleanInput(newitem.title) : 'New Event'}</div>
 		</div>
 		<div class="info">
-			<div class="infotext">Scheduled at ${getDMDYText(new Date(newitem.start.year, newitem.start.month, newitem.start.day, 0, newitem.start.minute))} ${getHMText(newitem.start.minute)}.${addedtodos.find(d => d.id == newitem.id) ? `` : ` Keep this time?`}</div>
+			<div class="infotext">Scheduled for ${getDMDYText(new Date(newitem.start.year, newitem.start.month, newitem.start.day, 0, newitem.start.minute))} ${getHMText(newitem.start.minute)}.${addedtodos.find(d => d.id == newitem.id) ? `` : ` Keep this time?`}</div>
 			<div class="display-flex flex-row justify-space-between align-center gap-12px">
 	 			<div class="text-14px text-secondary">Event ${animateindex + 1} of ${modifiedevents.length}</div>
 		 		<div class="display-flex flex-row gap-12px">

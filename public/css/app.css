@@ -2020,7 +2020,7 @@ body {
 
 .topbarchildtext {
 	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
-	color: var(--text-primary);
+	color: var(--text-quaternary);
 	text-align: center;
 	font-size: 18px;
 	flex: 1;
@@ -2068,6 +2068,19 @@ body {
 }
 
 
+
+.growheight{
+	animation: growheight 1s fowards;
+}
+
+@keyframes growheight{
+	0%{
+		height:0;
+	}
+	100%{
+		height:auto;
+	}
+}
 
 
 .barcolumn {

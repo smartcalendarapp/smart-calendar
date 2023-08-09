@@ -1433,15 +1433,15 @@
 					
 					<div class="todobar relative padding-12px display-flex flex-column align-center gap-12px">
 
-						<div class="z-index-100 display-flex align-center justify-center absolute hiddenfade right-0 left-0 top-0 bottom-0 border-box background-blue padding-12px border-8px" id="schedulemytasksactivepopup">
-							<div class="text-white text-16px">Select tasks to schedule</div>
+						<div class="z-index-100 display-flex align-center justify-center absolute hiddenfade right-0 left-0 top-0 bottom-0 fadetransition border-box background-secondary" id="schedulemytasksactivepopup">
+							<div class="text-blue text-18px">Select tasks to schedule</div>
 						</div>
 
 						<div class="display-flex align-center flex-row width-full">
 							<div class="flex-1"></div>
 
 							<div class="flex-1 display-flex flex-row justify-center">
-								<div class="text-18px text-primary pointer-none flex-1 text-center">To do list</div>
+								<div class="text-bold text-18px text-primary pointer-none flex-1 text-center">To do list</div>
 							</div>
 
 							<div class="flex-1 display-flex flex-row justify-flex-end">
@@ -1538,9 +1538,9 @@
 	
 									
 									<div class="display-flex flex-row align-center pointer-none">
-										<div class="topbarinfodate nowrap pointer-none small:display-none" id="topbarinfodate"></div>
+										<div class="text-bold topbarinfodate nowrap pointer-none small:display-none" id="topbarinfodate"></div>
 	
-										<div class="topbarinfodate nowrap display-none small:display-flex" id="topbarinfodate2"></div>	
+										<div class="text-bold topbarinfodate nowrap display-none small:display-flex" id="topbarinfodate2"></div>	
 									</div>
 									
 									<div class="display-flex flex-row align-center">
@@ -1855,6 +1855,7 @@
 			
 									<!-- notifs -->
 									<div class="display-flex flex-column gap-24px">
+										<div class="infogroup">
 											<div class="display-flex justify-space-between flex-row gap-12px align-center">
 												<div class="infotext text-16px text-bold">Get Web Notifications</div>
 												<label class="switch">
@@ -1862,6 +1863,8 @@
 													<span class="slider"></span>
 												</label>
 											</div>
+											<div class="text-14px text-quaternary">You will get a reminder when an event starts.</div>
+										</div>
 									</div>
 						
 			
