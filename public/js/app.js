@@ -3641,6 +3641,12 @@ function clicktakeinteractivetour() {
 	closehelp()
 	restartinteractivetour()
 	calendartabs = [0,1]
+	if ('matchMedia' in window) {
+		let smallscreen = window.matchMedia('(max-width: 600px)')
+		if (smallscreen.matches) {
+			calendartabs = [0]
+		}
+	}
 	calendar.updateTabs()
 }
 
@@ -5946,8 +5952,12 @@ function startAutoSchedule(scheduletodos, showui) {
 		calendar.events.push(...addedtodos)
 	}
 
-	if (!calendartabs.includes(0)) {
-		calendartabs = [0, 1]
+
+	if ('matchMedia' in window) {
+		let smallscreen = window.matchMedia('(max-width: 600px)')
+		if (smallscreen.matches) {
+			calendartabs = [1]
+		}
 	}
 
 
@@ -6178,7 +6188,7 @@ function typeaddevent(event, submit) {
 	let tempmatch9 = getDate(finalstring)
 	let tempmatch3 = getMinute(finalstring)
 	if (tempmatch9.match || tempmatch3.match) {
-		let regex = new RegExp(`(((until|to|through|(end|ends|ending)(\\s+(on|at))?)\\s+)|-)?((${tempmatch9.match}\\s+${tempmatch3.match})|(${tempmatch3.match}\\s+${tempmatch9.match})|(${tempmatch3.match})|(${tempmatch3.match}))\\b`, 'i')
+		let regex = new RegExp(`\\b(((until|to|through|(end|ends|ending)(\\s+(on|at))?)\\s+)|-)?((${tempmatch9.match}\\s+${tempmatch3.match})|(${tempmatch3.match}\\s+${tempmatch9.match})|(${tempmatch3.match})|(${tempmatch3.match}))\\b`, 'i')
 		let tempmatch4 = finalstring.match(regex)
 		if (tempmatch4) {
 			let tempmatch7 = getDate(tempmatch4[0])
