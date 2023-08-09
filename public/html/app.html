@@ -667,7 +667,7 @@
 			<div class="text-white text-36px text-center text-bold">Welcome to Smart Calendar!</div>
 			<div class="display-flex flex-column gap-12px">
 				<div class="text-white text-24px"><span class="text-bold">Organize</span>: Add tasks to your to-do list. </div>
-				<div class="text-white text-24px"><span class="text-bold">Automate</span>: Click "Schedule" to plan tasks on your calendar.</div>
+				<div class="text-white text-24px"><span class="text-bold">Automate</span>: Click "Schedule my tasks" to have us plan your tasks in your calendar.</div>
 				<div class="text-white text-24px"><span class="text-bold">AI Oriented</span>: Your schedule will automatically be rearranged if any changes come up. Don't worry, events like meetings or appointments won't be touched.</div>
 			</div>
 			
@@ -1456,16 +1456,16 @@
 						</div>
 
 						<div class="display-flex flex-row align-center gap-24px">
-							<div class="padding-top-6px padding-bottom-6px relative hoverchildprimary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktodotab(0);gtag('event', 'button_click', { useraction: 'Not scheduled - to do list' }) " id="todolistnotscheduledyet">
+							<div class="padding-top-6px padding-bottom-6px relative hoverchildprimary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktodotab(0);gtag('event', 'button_click', { useraction: 'Unplanned tasks - to do list' }) " id="todolistnotscheduledyet">
 								<div class="pointer-none display-flex flex-row align-center gap-6px">
-									<div class="text-16px text-quaternary">Not scheduled</div>
+									<div class="text-16px text-quaternary">Unplanned tasks</div>
 									<div id="todolistnotscheduledyettext" class="background-tint-1 text-14px text-quaternary border-round circlehighlight"></div>
 								</div>
 								<span class="buttonunderline"></span>
 							</div>
-							<div class="padding-top-6px padding-bottom-6px relative hoverchildprimary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktodotab(1);gtag('event', 'button_click', { useraction: 'Scheduled tasks - to do list' }) " id="todolistscheduledtasks">
+							<div class="padding-top-6px padding-bottom-6px relative hoverchildprimary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktodotab(1);gtag('event', 'button_click', { useraction: 'Planned tasks - to do list' }) " id="todolistscheduledtasks">
 								<div class="pointer-none display-flex flex-row align-center gap-6px">
-									<div class="text-16px text-quaternary">Scheduled tasks</div>
+									<div class="text-16px text-quaternary">Planned tasks</div>
 									<div id="todolistscheduledtaskstext" class="background-tint-1 text-14px text-quaternary border-round circlehighlight"></div>
 								</div>
 								<span class="buttonunderline"></span>

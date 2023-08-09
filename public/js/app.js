@@ -2159,7 +2159,7 @@ class Calendar {
 				let item = sortedtodos[i]
 				let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 				if (!laststartdate || tempstartdate.getDate() != laststartdate.getDate() || laststartdate.getMonth() != tempstartdate.getMonth() || laststartdate.getFullYear() != tempstartdate.getFullYear()) {
-					tempoutput.push(`<div class="text-18px text-quaternary">Scheduled at ${getDMDYText(tempstartdate)}</div>`)
+					tempoutput.push(`<div class="text-18px text-quaternary">Scheduled for ${getDMDYText(tempstartdate)}</div>`)
 				}
 
 				tempoutput2.push(gettododata(item))
@@ -6178,7 +6178,7 @@ function typeaddevent(event, submit) {
 	let tempmatch9 = getDate(finalstring)
 	let tempmatch3 = getMinute(finalstring)
 	if (tempmatch9.match || tempmatch3.match) {
-		let regex = new RegExp(`\\b((until|to|-|through|(end|ends|ending)(\\s+(on|at))?)\\s+)?((${tempmatch9.match}\\s+${tempmatch3.match})|(${tempmatch3.match}\\s+${tempmatch9.match})|(${tempmatch3.match})|(${tempmatch3.match}))\\b`, 'i')
+		let regex = new RegExp(`\\b(((|until|to|through|(end|ends|ending)(\\s+(on|at))?)\\s+)|-)?((${tempmatch9.match}\\s+${tempmatch3.match})|(${tempmatch3.match}\\s+${tempmatch9.match})|(${tempmatch3.match})|(${tempmatch3.match}))\\b`, 'i')
 		let tempmatch4 = finalstring.match(regex)
 		if (tempmatch4) {
 			let tempmatch7 = getDate(tempmatch4[0])
