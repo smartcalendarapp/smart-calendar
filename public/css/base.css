@@ -355,6 +355,9 @@
 .align-self-center{
 	align-self:center
 }
+.align-self-flex-end{
+	align-self:flex-end
+}
 .align-center{
 	align-items:center
 }

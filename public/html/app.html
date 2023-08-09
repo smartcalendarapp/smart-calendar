@@ -261,7 +261,8 @@
 
 		<div class="display-flex flex-row gap-12px flex-wrap-wrap">
 			<div class="bordertertiary transition-duration-100 width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemnotdue(event, inputtodoid)">No due date</div>
-			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputtodoitemduetime(event, 1440-1)">Tomorrow</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputtodoitemduetime(event, 1440-1)">Today</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);inputtodoitemduetime(event, 1440-1)">Tomorrow</div>
 			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7);inputtodoitemduetime(event, 1440-1)">In 1 week</div>
 		</div>
 
@@ -329,7 +330,8 @@
 
 		<div class="display-flex flex-row gap-12px flex-wrap-wrap">
 			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemnotdue(event)">No due date</div>
-			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputcreatetodoitemduetime(event, 1440-1)">Tomorrow</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputcreatetodoitemduetime(event, 1440-1)">Today</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);inputcreatetodoitemduetime(event, 1440-1)">Tomorrow</div>
 			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7);inputcreatetodoitemduetime(event, 1440-1)">In 1 week</div>
 		</div>
 
@@ -1428,9 +1430,12 @@
 
 
 				<div class="todowrap relative display-none border-box overflow-auto background-secondary small:background-primary" id="todowrap">
-
 					
-					<div class="todobar padding-12px display-flex flex-column align-center gap-12px">
+					<div class="todobar relative padding-12px display-flex flex-column align-center gap-12px">
+						<div class="z-index-100 display-flex align-center justify-center absolute hiddenpopup margin-24px right-0 left-0 top-0 border-box background-blue padding-12px border-8px" id="schedulemytasksactivepopup">
+							<div class="text-white text-16px">Select tasks to schedule</div>
+						</div>
+
 						<div class="display-flex align-center flex-row width-full">
 							<div class="flex-1"></div>
 

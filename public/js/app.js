@@ -2075,11 +2075,13 @@ class Calendar {
 			scheduleoncalendar.classList.add('display-none')
 		}
 
+		let schedulemytasksactivepopup = getElement('schedulemytasksactivepopup')
+		let schedulemytasksactive = getElement('schedulemytasksactive')
 		if (schedulemytasksenabled) {
-			let schedulemytasksactive = getElement('schedulemytasksactive')
+			schedulemytasksactivepopup.classList.remove('hiddenpopup')
 			schedulemytasksactive.classList.remove('display-none')
 		} else {
-			let schedulemytasksactive = getElement('schedulemytasksactive')
+			schedulemytasksactivepopup.classList.add('hiddenpopup')
 			schedulemytasksactive.classList.add('display-none')
 		}
 
@@ -8479,7 +8481,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 
 	let output = ''
 	output = `
-	<div class="absolute pointer-none overflow-hidden animatedeventwrap ${itemclasses3.join(' ')}" style="transform: ${!addedtodo ? `translateX(${percentage * difference * 100}%)` : ''} ${addedtodo ? `scale(${percentage * 100}%)` : ''};top:${mytop}px;height:${myheight}px;left:0;width:100%;">
+	<div class="absolute pointer-none animatedeventwrap ${itemclasses3.join(' ')}" style="transform: ${!addedtodo ? `translateX(${percentage * difference * 100}%)` : ''} ${addedtodo ? `scale(${percentage * 100}%)` : ''};top:${mytop}px;height:${myheight}px;left:0;width:100%;">
 		<div class="popupbutton eventwrap pointer-auto eventborder ${BORDERCOLORLIST[item.color]} ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
@@ -8579,7 +8581,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 	let output = ''
 	output = `
-	<div class="absolute pointer-none overflow-hidden ${itemclasses3.join(' ')}" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
+	<div class="absolute pointer-none ${itemclasses3.join(' ')}" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
 		<div class="popupbutton eventwrap pointer-auto eventborder ${BORDERCOLORLIST[item.color]} ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
 			${!Calendar.Event.isReadOnly(item) ? itemclicks.join('') : ''}
 			<div class="eventtext">
