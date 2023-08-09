@@ -2031,7 +2031,7 @@ body {
 }
 
 .circlehighlight{
-	padding:2px 6px;
+	padding:3px 6px;
 }
 
 .highlightdate {
@@ -2073,6 +2073,7 @@ body {
 	scroll-snap-align: start;
 	flex: 1 0 auto;
 	box-sizing: border-box;
+	overflow:hidden;
 }
 
 .barcolumnall {
@@ -3232,7 +3233,7 @@ body {
 	z-index: 2;
 	overflow: hidden;
 	display: flex;
-	min-height: 15px;
+	min-height: 20px;
 	box-sizing: border-box;
 }
 
