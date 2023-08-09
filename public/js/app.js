@@ -6981,8 +6981,8 @@ function gettododata(item) {
 	let isoverdue = endbeforedate && currentdate.getTime() > endbeforedate.getTime() && !item.completed
 
 
-	let isnewlycreated = newcreatedtodos.find(d => d.id == item.id)
-	newcreatedtodos = newcreatedtodos.filter(d => d.id != item.id)
+	let isnewlycreated = newcreatedtodos.find(d => d == item.id)
+	newcreatedtodos = newcreatedtodos.filter(d => d != item.id)
 
 	let output = ''
 	if (selectededittodoid == item.id) {
