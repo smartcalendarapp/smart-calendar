@@ -339,7 +339,7 @@ function getwhitecheckcircle(boolean, tooltip) {
 			</svg>
 	 		${tooltip || ''}`
 	} else {
-		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninlibuttonsmallinlinenesmall checkboxunfilled">
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallinline checkboxunfilled">
 			<g>
 			<path d="M128 10L128 10C193.17 10 246 62.8304 246 128L246 128C246 193.17 193.17 246 128 246L128 246C62.8304 246 10 193.17 10 128L10 128C10 62.8304 62.8304 10 128 10Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
 			</g>
@@ -744,6 +744,11 @@ class Calendar {
 		static getDueText(item) {
 			let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 			return `${getDMDYText(endbeforedate)} ${getHMText(endbeforedate.getHours() * 60 + endbeforedate.getMinutes())}`
+		}
+
+		static getStartText(item) {
+			let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+			return `${getDMDYText(startdate)} ${getHMText(startdate.getHours() * 60 + startdate.getMinutes())}`
 		}
 
 		static getShortStartEndText(item) {
@@ -2081,7 +2086,7 @@ class Calendar {
 		let plantaskssubmit = getElement('plantaskssubmit')
 		schedulemytaskslist = schedulemytaskslist.filter(d => calendar.todos.find(g => g.id == d))
 		plantaskssubmit.innerHTML = `<div class="display-flex flex-row gap-6px align-center background-blue hover:background-blue-hover padding-8px-12px border-round transition-duration-100 pointer ${schedulemytaskslist.length > 0 ? '' : 'greyedoutevent'}" ${schedulemytaskslist.length > 0 ? `onclick="submitschedulemytasks()"` : ''}>
-			<div class="pointer-none text-18px text-white nowrap">Continue (${schedulemytaskslist.length})</div>
+			<div class="pointer-none text-16px text-white nowrap">Continue (${schedulemytaskslist.length})</div>
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 				<g>
 				<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -7090,7 +7095,7 @@ function gettododata(item) {
 									
 									${Calendar.Event.isEvent(item) ? 
 										`<div class="gap-6px display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton">
-											<div class="text-green">Scheduled at ${getHMText(item.start.minute)}</div>
+											<div class="text-green">Scheduled at ${Calendar.Event.getStartText(item.start.minute)}</div>
 										</div>`
 										:
 										``
@@ -7155,7 +7160,7 @@ function gettododata(item) {
 
 
 				${schedulemytasksenabled && Calendar.Todo.isSchedulable(item) ?
-					`<div class="absolute todoitemselectcheck backdrop-blur box-shadow pointer pointer-auto" onclick="toggleschedulemytask(event, '${item.id}')">
+					`<div class="absolute todoitemselectcheck background-secondary box-shadow pointer pointer-auto" onclick="toggleschedulemytask(event, '${item.id}')">
 						${getbigcheckbox(schedulemytaskslist.find(g => g == item.id))}
 					</div>`
 				: ''}
@@ -7849,7 +7854,6 @@ function inputtodonotes(event){
 	calendar.updateHistory()
 }
 
-//here4
 function inputtododuedate(event){
 	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
 	if (!item) return
