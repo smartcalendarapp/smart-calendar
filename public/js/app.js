@@ -1797,8 +1797,8 @@ class Calendar {
 
 					if (item.type == 1) {
 						//priority
-						let inputinfopriority = getElement('inputinfopriority')
-						for (let [index, div] of Object.entries(inputinfopriority.children)) {
+						let inputeventpriority = getElement('inputeventpriority')
+						for (let [index, div] of Object.entries(inputeventpriority.children)) {
 							if (index == item.priority) {
 								div.classList.add('selectedbutton')
 							} else {
@@ -1857,7 +1857,7 @@ class Calendar {
 						//completed
 						let infocompleted = getElement('infocompleted')
 						infocompleted.innerHTML = `
-						<div class="todoitemcheckbox tooltip display-flex" onclick="eventcompleted()">
+						<div class="todoitemcheckbox tooltip display-flex" onclick="eventcompleted('${item.id}')">
 							${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
 						</div>`
 					}
@@ -1906,7 +1906,7 @@ class Calendar {
 					output.push(`<div class="infogroup">
 						<div class="display-flex flex-row align-center gap-12px width-full">
 			 				${item.type == 1 ?
-							`<div class="todoitemcheckbox tooltip display-flex" onclick="eventcompleted()">
+							`<div class="todoitemcheckbox tooltip display-flex" onclick="eventcompleted('${item.id}')">
 					 				${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
 					 			</div>`
 							:
@@ -2002,8 +2002,49 @@ class Calendar {
 	//todo
 	updateTodo() {
 		this.updateTodoList()
+		this.updateEditTodo()
 		this.updateTodoButtons()
 		updateonboardingscreen()
+	}
+
+	updateEditTodo() {
+		let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
+		if(!item) return
+		
+		//priority
+		let todoeditpriority = getElement('todoeditpriority')
+		for (let [index, div] of Object.entries(todoeditpriority.children)) {
+			if (index == item.priority) {
+				div.classList.add('selectedbutton')
+			} else {
+				div.classList.remove('selectedbutton')
+			}
+		}
+
+		//time window
+		let todoedittimewindowday = getElement('todoedittimewindowday')
+		for (let [index, div] of Object.entries(todoedittimewindowday.children)) {
+			let itemvalue = item.timewindow.day
+			let modelvalue = daytimewindowoptiondata[+index]
+
+			if (isEqualArray(modelvalue.byday, itemvalue.byday)) {
+				div.classList.add('selectedbutton')
+			} else {
+				div.classList.remove('selectedbutton')
+			}
+		}
+
+		let todoedittimewindowtime = getElement('todoedittimewindowtime')
+		for (let [index, div] of Object.entries(todoedittimewindowtime.children)) {
+			let itemvalue = item.timewindow.time
+			let modelvalue = timetimewindowoptiondata[+index]
+			if (itemvalue.startminute == modelvalue.startminute && itemvalue.endminute == modelvalue.endminute) {
+				div.classList.add('selectedbutton')
+			} else {
+				div.classList.remove('selectedbutton')
+			}
+		}
+	}
 	}
 
 	updateTodoButtons() {
@@ -6154,7 +6195,7 @@ function typeaddevent(event, submit) {
 	let tempmatch9 = getDate(finalstring)
 	let tempmatch3 = getMinute(finalstring)
 	if (tempmatch9.match || tempmatch3.match) {
-		let regex = new RegExp(`\\b(((until|to|through|(end|ends|ending)(\\s+(on|at))?)\\s+)|-)?((${tempmatch9.match}\\s+${tempmatch3.match})|(${tempmatch3.match}\\s+${tempmatch9.match})|(${tempmatch3.match})|(${tempmatch3.match}))\\b`, 'i')
+		let regex = new RegExp(`((\\b(until|to|through|(end|ends|ending)(\\s+(on|at))?)\\s+)|-)?((${tempmatch9.match}\\s+${tempmatch3.match})|(${tempmatch3.match}\\s+${tempmatch9.match})|(${tempmatch3.match})|(${tempmatch3.match}))\\b`, 'i')
 		let tempmatch4 = finalstring.match(regex)
 		if (tempmatch4) {
 			let tempmatch7 = getDate(tempmatch4[0])
@@ -6775,7 +6816,7 @@ function typeaddtask(event, submit) {
 	let tempmatch1 = getDate(finalstring)
 	let tempmatch5 = getMinute(finalstring)
 	if (tempmatch1.match || tempmatch5.match) {
-		let regex = new RegExp(`\\b(due|by|deadline|due\\s+by|finish\\s+by|done\\s+by)\\s+((${tempmatch1.match}\\s+${tempmatch5.match})|(${tempmatch5.match}\\s+${tempmatch1.match})|(${tempmatch1.match})|(${tempmatch5.match}))\\b`, 'i')
+		let regex = new RegExp(`\\b(due|by|due\\s+at|due\\s+on|deadline|deadline\\s+at|deadline\\s+on|due\\s+by|finish\\s+by|done\\s+by|complete\\s+by)\\s+((${tempmatch1.match}\\s+${tempmatch5.match})|(${tempmatch5.match}\\s+${tempmatch1.match})|(${tempmatch1.match})|(${tempmatch5.match}))\\b`, 'i')
 		let tempmatch2 = finalstring.match(regex)
 		if (tempmatch2) {
 			let tempmatch6 = getDate(tempmatch2[0])
@@ -7008,7 +7049,7 @@ function gettododata(item) {
 				</div>
 				 
 				<div class="todoitembuttongroupstay justify-flex-end">
-					<div class="todoitembutton" onclick="closeedittodo()">Done</div>
+					<div class="todoitembutton buttonblue" onclick="closeedittodo()">Done</div>
 				</div>
 			</div>
 		</div>
@@ -8542,7 +8583,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
 					
 					${item.type == 1 ? 
-						`<span class="todoitemcheckbox tooltip checkcircletop">
+						`<span class="todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="eventcompleted('${item.id}')">
 							${getwhitecheckcircle(item.completed)}
 						</span>` 
 						: ''
@@ -10492,8 +10533,8 @@ function eventallday() {
 
 
 //event completed
-function eventcompleted() {
-	let item = calendar.events.find(f => f.id == selectedeventid)
+function eventcompleted(id) {
+	let item = calendar.events.find(f => f.id == id)
 	if (!item) return
 	item.completed = !item.completed
 
