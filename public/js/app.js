@@ -7095,7 +7095,7 @@ function gettododata(item) {
 									
 									${Calendar.Event.isEvent(item) ? 
 										`<div class="gap-6px display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton">
-											<div class="text-green">Scheduled at ${Calendar.Event.getStartText(item.start.minute)}</div>
+											<div class="text-green">Scheduled at ${Calendar.Event.getStartText(item)}</div>
 										</div>`
 										:
 										``
