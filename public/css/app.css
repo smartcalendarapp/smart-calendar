@@ -3201,7 +3201,13 @@ body {
 	color: var(--white) !important;
 }
 
+.selectedevent .checkboxfilledprimary{
+	fill:var(--white) !important
+}
 
+.selectedevent .checkboxunfilled{
+	stroke:var(--white) !important
+}
 
 .eventtextdisplay {
 	font-size: 14px;

@@ -7049,7 +7049,7 @@ function gettododata(item) {
 				</div>
 				 
 				<div class="todoitembuttongroupstay justify-flex-end">
-					<div class="todoitembutton buttonblue" onclick="closeedittodo()">Done</div>
+					<div class="todoitembutton bluebutton" onclick="closeedittodo()">Done</div>
 				</div>
 			</div>
 		</div>
@@ -8575,8 +8575,8 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 	let output = ''
 	output = `
-	<div class="absolute pointer-none overflow-hidden ${itemclasses3.join(' ')}" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
-		<div class="popupbutton eventwrap pointer-auto eventborder ${BORDERCOLORLIST[item.color]} ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
+	<div class="absolute pointer-none ${itemclasses3.join(' ')}" style="top:${mytop}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
+		<div class="popupbutton eventwrap pointer-auto eventborder ${BORDERCOLORLIST[item.color]} ${itemclasses.join(' ')}" id="${item.id}" style="height:${myheight}px" onmousedown="clickevent(event, ${timestamp})">
 			${!Calendar.Event.isReadOnly(item) ? itemclicks.join('') : ''}
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
