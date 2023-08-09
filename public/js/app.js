@@ -6178,7 +6178,7 @@ function typeaddevent(event, submit) {
 	let tempmatch9 = getDate(finalstring)
 	let tempmatch3 = getMinute(finalstring)
 	if (tempmatch9.match || tempmatch3.match) {
-		let regex = new RegExp(`\\b(((|until|to|through|(end|ends|ending)(\\s+(on|at))?)\\s+)|-)?((${tempmatch9.match}\\s+${tempmatch3.match})|(${tempmatch3.match}\\s+${tempmatch9.match})|(${tempmatch3.match})|(${tempmatch3.match}))\\b`, 'i')
+		let regex = new RegExp(`(((until|to|through|(end|ends|ending)(\\s+(on|at))?)\\s+)|-)?((${tempmatch9.match}\\s+${tempmatch3.match})|(${tempmatch3.match}\\s+${tempmatch9.match})|(${tempmatch3.match})|(${tempmatch3.match}))\\b`, 'i')
 		let tempmatch4 = finalstring.match(regex)
 		if (tempmatch4) {
 			let tempmatch7 = getDate(tempmatch4[0])
