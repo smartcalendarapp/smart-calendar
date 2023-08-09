@@ -1560,7 +1560,7 @@ class Calendar {
 								<div class="inputgroup">
 				 					<div class="text-14px text-primary width90px">Title</div>
 				 					<div class="inputgroupitem flex-1">
-										<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputinfotitle(event, '${item.id}')" id="infotitle" class="infoinput" placeholder="Add title" type="text" maxlength="2000"></input>
+										<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventtitle(event, '${item.id}')" id="infotitle" class="infoinput" placeholder="Add title" type="text" maxlength="2000"></input>
 										<span class="inputline"></span>
 					 				</div>
 								</div>
@@ -1589,13 +1589,13 @@ class Calendar {
 									<div class="inputgroup">
 				 						<div class="text-14px text-primary width90px">Starts</div>
 										<div class="inputgroupitem flex-1">
-											<input  onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputinfostartdate(event, '${item.id}')" id="infostartdate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
+											<input  onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventstartdate(event, '${item.id}')" id="infostartdate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
 											<span class="inputline"></span>
 					 					</div>
 	
 										${!Calendar.Event.isAllDay(item) ?
 									`<div class="inputgroupitem flex-1">
-												<input  onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputinfostartminute(event, '${item.id}')" id="infostarttime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
+												<input  onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventstartminute(event, '${item.id}')" id="infostarttime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
 												<span class="inputline"></span>
 											</div>` : ''
 								}
@@ -1607,12 +1607,12 @@ class Calendar {
 									<div class="inputgroup">
 										<div class="text-14px text-primary width90px">Ends</div>
 										<div class="inputgroupitem flex-1">
-											<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputinfoenddate(event, '${item.id}')" id="infoenddate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
+											<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventenddate(event, '${item.id}')" id="infoenddate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
 											<span class="inputline"></span>
 					 					</div>
 										${!Calendar.Event.isAllDay(item) ?
 									`<div class="inputgroupitem flex-1">
-											<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputinfoendminute(event, '${item.id}')" id="infoendtime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
+											<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventendminute(event, '${item.id}')" id="infoendtime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
 											<span class="inputline"></span>
 					 					</div>` : ''}
 									</div>
@@ -1638,11 +1638,11 @@ class Calendar {
 								<div class="inputgroup">
 									<div class="text-14px text-primary width90px">Due date</div>
 									<div class="inputgroupitem flex-1">
-										<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputinfoendbeforedate(event, '${item.id}')" id="infoendbeforedate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
+										<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventduedate(event, '${item.id}')" id="infoendbeforedate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
 										<span class="inputline"></span>
 									</div>
 									<div class="inputgroupitem flex-1">
-										<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputinfoendbeforeminute(event, '${item.id}')" id="infoendbeforetime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
+										<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventduetime(event, '${item.id}')" id="infoendbeforetime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
 										<span class="inputline"></span>
 									</div>
 								</div>
@@ -1652,7 +1652,7 @@ class Calendar {
 								<div class="inputgroup">
 									<div class="text-14px text-primary width90px">Time needed</div>
 									<div class="inputgroupitem flex-1">
-										<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputinfoduration(event, '${item.id}')" id="infoduration" class="infoinput inputdurationpicker" type="text" placeholder="Add duration"></input>
+										<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventduration(event, '${item.id}')" id="infoduration" class="infoinput inputdurationpicker" type="text" placeholder="Add duration"></input>
 										<span class="inputline"></span>
 								 </div>
 								</div>
@@ -1661,7 +1661,7 @@ class Calendar {
 							<div class="infogroup">
 								<div class="inputgroup">
 									<div class="text-14px text-primary width90px">Priority</div>
-									<div class="inputeventtype width-fit flex-1" id="inputinfopriority">
+									<div class="inputeventtype width-fit flex-1" id="inputeventpriority">
 										<div class="inputeventtypechild" onclick="clickeventpriority(0)">Low</div>
 										<div class="inputeventtypechild" onclick="clickeventpriority(1)">Medium</div>
 										<div class="inputeventtypechild" onclick="clickeventpriority(2)">High</div>
@@ -1702,7 +1702,7 @@ class Calendar {
 				 				<div class="inputgroup">
 									<div class="text-14px text-primary width90px">Notes</div>
 									<div class="inputgroupitem flex-1">
-										<textarea onblur="inputinfonotes(event, '${item.id}')" id="infonotes" class="infoinput infonotes" placeholder="Add notes"  maxlength="2000"></textarea>
+										<textarea onblur="inputeventnotes(event, '${item.id}')" id="infonotes" class="infoinput infonotes" placeholder="Add notes"  maxlength="2000"></textarea>
 						 				<span class="inputline"></span>
 									</div>
 								</div>
@@ -2002,7 +2002,6 @@ class Calendar {
 	//todo
 	updateTodo() {
 		this.updateTodoList()
-		this.updateEditTodo()
 		this.updateTodoButtons()
 		updateonboardingscreen()
 	}
@@ -2050,39 +2049,6 @@ class Calendar {
 				</g>
 			</svg>
 		</div>`
-	}
-
-	updateEditTodo() {
-		let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
-		if (!item) return
-
-		let todoedittimewindowday = getElement('todoedittimewindowday')
-		let todoedittimewindowtime = getElement('todoedittimewindowtime')
-		let todoeditpriority = getElement('todoeditpriority')
-
-		for (let [index, child] of Object.entries(todoedittimewindowday.children)) {
-			if (index == edittodopreferredday) {
-				child.classList.add('selectedbutton')
-			} else {
-				child.classList.remove('selectedbutton')
-			}
-		}
-
-		for (let [index, child] of Object.entries(todoedittimewindowtime.children)) {
-			if (index == edittodopreferredtime) {
-				child.classList.add('selectedbutton')
-			} else {
-				child.classList.remove('selectedbutton')
-			}
-		}
-
-		for (let [index, child] of Object.entries(todoeditpriority.children)) {
-			if (index == edittodopriority) {
-				child.classList.add('selectedbutton')
-			} else {
-				child.classList.remove('selectedbutton')
-			}
-		}
 	}
 
 
@@ -4059,7 +4025,7 @@ function moveeventinfo(event) {
 }
 
 //input duration
-function inputinfoduration(event) {
+function inputeventduration(event) {
 	if (selectedeventid) {
 		let string = event.target.value
 
@@ -4086,7 +4052,7 @@ function inputinfoduration(event) {
 }
 
 //input title
-function inputinfotitle(event, id) {
+function inputeventtitle(event, id) {
 	let item = calendar.events.find(c => c.id == id)
 	if (!item) return
 	item.title = event.target.value
@@ -4097,7 +4063,7 @@ function inputinfotitle(event, id) {
 }
 
 //input start date
-function inputinfostartdate(event, id) {
+function inputeventstartdate(event, id) {
 	let item = calendar.events.find(c => c.id == id)
 	if (!item) return
 	let string = event.target.value.toLowerCase()
@@ -4122,7 +4088,7 @@ function inputinfostartdate(event, id) {
 }
 
 //input start minute
-function inputinfostartminute(event, id) {
+function inputeventstartminute(event, id) {
 	let string = event.target.value.toLowerCase()
 
 	let mystartminute = getMinute(string).value
@@ -4145,7 +4111,7 @@ function inputinfostartminute(event, id) {
 
 
 //input end date
-function inputinfoenddate(event, id) {
+function inputeventenddate(event, id) {
 	let string = event.target.value.toLowerCase()
 	let item = calendar.events.find(c => c.id == id)
 	if (!item) return
@@ -4173,7 +4139,7 @@ function inputinfoenddate(event, id) {
 }
 
 //input end minute
-function inputinfoendminute(event, id) {
+function inputeventendminute(event, id) {
 	let myendminute;
 
 	let string = event.target.value.toLowerCase()
@@ -4197,7 +4163,7 @@ function inputinfoendminute(event, id) {
 }
 
 //input end before date
-function inputinfoendbeforedate(event, id) {
+function inputeventduedate(event, id) {
 	let string = event.target.value.toLowerCase()
 	let item = calendar.events.find(c => c.id == id)
 	if (!item) return
@@ -4218,7 +4184,7 @@ function inputinfoendbeforedate(event, id) {
 }
 
 //input end before minute
-function inputinfoendbeforeminute(event, id) {
+function inputeventduetime(event, id) {
 	let string = event.target.value.toLowerCase()
 
 	let myendbeforeminute = getMinute(string).value
@@ -4236,7 +4202,7 @@ function inputinfoendbeforeminute(event, id) {
 }
 
 //input notes
-function inputinfonotes(event, id) {
+function inputeventnotes(event, id) {
 	let item = calendar.events.find(c => c.id == id)
 	if (!item) return
 	item.notes = event.target.value
@@ -6976,32 +6942,32 @@ function gettododata(item) {
 				<div class="inputgroup">
 					<div class="text-14px text-primary width90px">Title</div>
 					<div class="inputgroupitem">
-						<input class="infoinput width-192px" onkeydown="if(event.keyCode == 13){ submitedittodo(event) }" placeholder="Add title" id="edittodoinputtitle" value="${cleanInput(item.title)}" maxlength="2000"></input>
+						<input class="infoinput width-192px" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtodotitle(event)" placeholder="Add title" id="edittodoinputtitle" value="${cleanInput(item.title)}" maxlength="2000"></input>
 						<span class="inputline"></span>
 					</div>
 		 		</div>
 		 		<div class="inputgroup">
 		 			<div class="text-14px text-primary width90px">Notes</div>
 					<div class="width-full inputgroupitem">
-						<textarea class="infonotes infoinput" placeholder="Add notes" id="edittodoinputnotes" maxlength="2000">${cleanInput(item.notes)}</textarea>
+						<textarea class="infonotes infoinput" placeholder="Add notes" id="edittodoinputnotes" onblur="inputtodonotes(event)" placeholder="Add date" onclick="this.select()" maxlength="2000">${cleanInput(item.notes)}</textarea>
 						<span class="inputline"></span>
 					</div>
 		 		</div>
 				<div class="inputgroup">
 					<div class="text-14px text-primary width90px">Due date</div>
 			 		<div class="inputgroupitem">
-						<input class="infoinput inputdatepicker width-192px" onkeydown="if(event.keyCode == 13){ submitedittodo(event) }" placeholder="Add date" onclick="this.select()" id="edittodoinputduedate" value="${endbeforedate ? getDMDYText(endbeforedate) : 'None'}"></input>
+						<input class="infoinput inputdatepicker width-192px" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtododuedate(event)" placeholder="Add date" onclick="this.select()" id="edittodoinputduedate" value="${endbeforedate ? getDMDYText(endbeforedate) : 'None'}"></input>
 						<span class="inputline"></span>
 					</div>
 		 			<div class="inputgroupitem">
-						<input class="infoinput inputtimepicker width-192px" onkeydown="if(event.keyCode == 13){ submitedittodo(event) }" placeholder="Add time"  onclick="this.select()" id="edittodoinputduetime" value="${endbeforedate ? getHMText(endbeforedate.getHours() * 60 + endbeforedate.getMinutes()) : 'None'}"></input>
+						<input class="infoinput inputtimepicker width-192px" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtododuetime(event)" placeholder="Add time"  onclick="this.select()" id="edittodoinputduetime" value="${endbeforedate ? getHMText(endbeforedate.getHours() * 60 + endbeforedate.getMinutes()) : 'None'}"></input>
 						<span class="inputline"></span>
 					</div>
 				</div>
 				<div class="inputgroup">
 					<div class="text-14px text-primary width90px">Time needed</div>
 			 		<div class="inputgroupitem">
-						<input onclick="this.select()" class="infoinput inputdurationpicker width-192px" onkeydown="if(event.keyCode == 13){ submitedittodo(event) }" placeholder="Add duration" id="edittodoinputduration" value="${getDHMText(myduration)}"></input>
+						<input onclick="this.select()" class="infoinput inputdurationpicker width-192px"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtododuration(event)" placeholder="Add duration" id="edittodoinputduration" value="${getDHMText(myduration)}"></input>
 						<span class="inputline"></span>
 					</div>
 				</div>
@@ -7042,16 +7008,13 @@ function gettododata(item) {
 				</div>
 				 
 				<div class="todoitembuttongroupstay justify-flex-end">
-					<div class="todoitembutton" onclick="canceledittodo()">Cancel</div>
-					<div class="todoitembutton bluebutton" onclick="submitedittodo('${item.id}')">Save</div>
+					<div class="todoitembutton" onclick="closeedittodo()">Done</div>
 				</div>
 			</div>
 		</div>
 		</div>`
 	} else {
 		//view
-
-		//here4
 
 		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''}>
 
@@ -7787,21 +7750,129 @@ function edittodo(id) {
 	edittodoinputtitle.focus()
 }
 
-let edittodopreferredtime = 0;
-let edittodopreferredday = 0;
-let edittodopriority = 0;
+
+
 function clickedittodotimewindowtime(index) {
-	edittodopreferredtime = index
-	calendar.updateEditTodo()
+	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
+	if (!item) return
+
+	let option2 = timetimewindowoptiondata[index]
+	if (option2) {
+		item.timewindow.time.startminute = option2.startminute
+		item.timewindow.time.endminute = option2.endminute
+	}
+	
+	calendar.updateTodo()
+	calendar.updateHistory()
 }
+
 function clickedittodotimewindowday(index) {
-	edittodopreferredday = index
-	calendar.updateEditTodo()
+	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
+	if (!item) return
+	
+	let option = daytimewindowoptiondata[index]
+	if (option) {
+		item.timewindow.day.byday = option.byday
+	}
+
+	calendar.updateTodo()
+	calendar.updateHistory()
 }
+
 function clickedittodopriority(index) {
-	edittodopriority = index
-	calendar.updateEditTodo()
+	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
+	if (!item) return
+
+	item.priority = index
+	calendar.updateTodo()
+	calendar.updateHistory()
 }
+
+function inputtodotitle(event){
+	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
+	if (!item) return
+
+	item.title = event.target.value
+
+	calendar.updateTodo()
+	calendar.updateHistory()
+}
+
+function inputtodonotes(event){
+	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
+	if (!item) return
+
+	item.notes = event.target.value
+
+	calendar.updateTodo()
+	calendar.updateHistory()
+}
+
+//here4
+function inputtododuedate(event){
+	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
+	if (!item) return
+
+	let string = event.target.value
+
+	let [myendbeforeyear, myendbeforemonth, myendbeforeday] = getDate(string).value
+
+	let tempdate = new Date(myendbeforeyear, myendbeforemonth, myendbeforeday)
+
+	if (!isNaN(tempdate.getTime())) {
+		item.endbefore.year = tempdate.getFullYear()
+		item.endbefore.month = tempdate.getMonth()
+		item.endbefore.day = tempdate.getDate()
+	}
+
+
+	calendar.updateTodo()
+	calendar.updateHistory()
+}
+
+function inputtododuetime(event){
+	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
+	if (!item) return
+
+	let string = event.target.value
+
+	let myendbeforeminute = getMinute(string).value
+
+	if (myendbeforeminute != null) {
+		item.endbefore.minute = myendbeforeminute
+	}
+
+	calendar.updateTodo()
+	calendar.updateHistory()
+}
+
+function inputtododuration(event){
+	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
+	if (!item) return
+
+	let string = event.target.value
+
+	if(Calendar.Todo.isTodo(item)){
+		let myduration = getDuration(string).value
+
+		item.duration = myduration
+	}else{
+		let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+		let myduration = getDuration(string).value
+		let enddate = new Date(startdate.getTime() + (myduration * 60000))
+
+		if (!isNaN(enddate.getTime()) && myduration != null) {
+			item.end.year = enddate.getFullYear()
+			item.end.month = enddate.getMonth()
+			item.end.day = enddate.getDate()
+			item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+		}
+	}
+
+	calendar.updateTodo()
+	calendar.updateHistory()
+}
+
 
 function submitedittodo(event) {
 	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
@@ -7891,7 +7962,7 @@ function submitedittodo(event) {
 	}
 }
 
-function canceledittodo() {
+function closeedittodo() {
 	selectededittodoid = null
 	calendar.updateTodo()
 }
