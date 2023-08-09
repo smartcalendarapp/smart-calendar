@@ -6981,7 +6981,8 @@ function gettododata(item) {
 	let isoverdue = endbeforedate && currentdate.getTime() > endbeforedate.getTime() && !item.completed
 
 
-	let newlycreated = newcreatedtodos.find(d => d.id == id)
+	let isnewlycreated = newcreatedtodos.find(d => d.id == item.id)
+	newcreatedtodos = newcreatedtodos.filter(d => d.id != item.id)
 
 	let output = ''
 	if (selectededittodoid == item.id) {
@@ -7068,7 +7069,7 @@ function gettododata(item) {
 	} else {
 		//view
 
-		output = `<div class="${newlycreated ? 'growheight' : ''} relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''}>
+		output = `<div class="${isnewlycreated ? 'growheight' : ''} relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''}>
 
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
