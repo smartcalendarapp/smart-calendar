@@ -2045,7 +2045,7 @@ class Calendar {
 			}
 		}
 	}
-	}
+
 
 	updateTodoButtons() {
 		//mode buttons
