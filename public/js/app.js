@@ -2078,10 +2078,10 @@ class Calendar {
 		let schedulemytasksactivepopup = getElement('schedulemytasksactivepopup')
 		let schedulemytasksactive = getElement('schedulemytasksactive')
 		if (schedulemytasksenabled) {
-			schedulemytasksactivepopup.classList.remove('hiddenpopup')
+			schedulemytasksactivepopup.classList.remove('hiddenfade')
 			schedulemytasksactive.classList.remove('display-none')
 		} else {
-			schedulemytasksactivepopup.classList.add('hiddenpopup')
+			schedulemytasksactivepopup.classList.add('hiddenfade')
 			schedulemytasksactive.classList.add('display-none')
 		}
 
