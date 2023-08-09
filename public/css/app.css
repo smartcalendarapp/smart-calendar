@@ -2070,7 +2070,8 @@ body {
 
 
 .growheight{
-	animation: growheight 1s fowards;
+	overflow:hidden;
+	animation: growheight 1s forwards;
 }
 
 @keyframes growheight{
