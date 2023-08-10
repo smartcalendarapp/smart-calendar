@@ -9260,7 +9260,10 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 
 
 	//check for overdue todos
-	let overduetodos = calendar.events.filter(d => d.type == 1 && !d.completed && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now()).filter(d => !resolvedoverduetodos.find(f => f == d.id))
+	let overduetodos = calendar.events.filter(d => d.type == 1 && !d.completed && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now())
+	if(resolvedoverduetodos){
+		overduetodos = overduetodos.filter(d => !resolvedoverduetodos.find(f => f == d.id))
+	}
 	
 	if(overduetodos.length > 0){
 		let overdueitem = overduetodos[0]
