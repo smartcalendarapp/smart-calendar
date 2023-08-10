@@ -9114,7 +9114,7 @@ let isautoscheduling = false;
 
 let rescheduletaskfunction;
 
-async function autoScheduleV2(smartevents, showui, addedtodos, overduetodocheck) {
+async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverduetodos) {
 	//functions
 	function sleep(time) {
 		return new Promise(resolve => {
@@ -9240,7 +9240,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, overduetodocheck)
 	//============================================================================
 
 
-	if (isautoscheduling == true && !overduetodocheck) return
+	if (isautoscheduling == true && resolvedoverduetodos.length == 0) return
 	isautoscheduling = true
 
 
@@ -9260,25 +9260,29 @@ async function autoScheduleV2(smartevents, showui, addedtodos, overduetodocheck)
 
 
 	//check for overdue todos
-	let overduetodos = calendar.events.filter(d => d.type == 1 && !d.completed && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now())
+	let overduetodos = calendar.events.filter(d => d.type == 1 && !d.completed && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now()).filter(d => !resolvedoverduetodos.find(f => f == d.id))
 	
 	if(overduetodos.length > 0){
 		let overdueitem = overduetodos[0]
 
 		rescheduletaskfunction = function(complete){
+			let tempitem = calendar.events.find(d => d.id == overdueitem.id)
+
 			if(complete){
-				let tempitem = calendar.events.find(d => d.id == overdueitem.id)
 				if(tempitem){
 					tempitem.completed = true
 				}
-
 				calendar.updateEvents()
 			}
 
 			let rescheduletaskpopup = getElement('rescheduletaskpopup')
 			rescheduletaskpopup.classList.add('hiddenpopup')
 
-			autoScheduleV2(smartevents, showui, addedtodos, true)
+			if(tempitem){
+				resolvedoverduetodos.push(tempitem.id)
+			}
+
+			autoScheduleV2(smartevents, showui, addedtodos, resolvedoverduetodos)
 		}
 
 		//show popup
@@ -9292,8 +9296,6 @@ async function autoScheduleV2(smartevents, showui, addedtodos, overduetodocheck)
 
 		let rescheduletaskpopup = getElement('rescheduletaskpopup')
 		rescheduletaskpopup.classList.remove('hiddenpopup')
-
-		overduetodos.shift()
 		return
 	}
 
