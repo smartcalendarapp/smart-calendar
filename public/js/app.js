@@ -2105,8 +2105,8 @@ class Calendar {
 
 		let todolistnotscheduledyettext = getElement('todolistnotscheduledyettext')
 		let todolistscheduledtaskstext = getElement('todolistscheduledtaskstext')
-		todolistnotscheduledyettext.innerHTML = calendar.todos.length
-		todolistscheduledtaskstext.innerHTML = calendar.events.filter(d => d.type == 1).length
+		todolistnotscheduledyettext.innerHTML = calendar.todos.filter(d => !d.completed).length
+		todolistscheduledtaskstext.innerHTML = calendar.events.filter(d => d.type == 1 && !d.complete).length
 
 		if(todomode == 0){
 			let mytodos = calendar.todos
@@ -6919,7 +6919,6 @@ function typeaddtask(event, submit) {
 }
 
 
-let newcreatedtodos = []
 
 function submitcreatetodo(event) {
 	let title = typeaddtask(event, true)
@@ -6942,7 +6941,6 @@ function submitcreatetodo(event) {
 	item.priority = createtodopriorityvalue
 
 	calendar.todos.push(item)
-	newcreatedtodos.push(item.id)
 
 	todomode = 0
 
@@ -6980,9 +6978,6 @@ function gettododata(item) {
 
 	let isoverdue = endbeforedate && currentdate.getTime() > endbeforedate.getTime() && !item.completed
 
-
-	let isnewlycreated = newcreatedtodos.find(d => d == item.id)
-	newcreatedtodos = newcreatedtodos.filter(d => d != item.id)
 
 	let output = ''
 	if (selectededittodoid == item.id) {
@@ -7069,7 +7064,7 @@ function gettododata(item) {
 	} else {
 		//view
 
-		output = `<div class="${isnewlycreated ? 'growheight' : ''} relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''}>
+		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''}>
 
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
@@ -9117,6 +9112,8 @@ let reviewanimate;
 let closeanimate;
 let isautoscheduling = false;
 
+let rescheduletaskfunction;
+
 async function autoScheduleV2(smartevents, showui, addedtodos) {
 	//functions
 	function sleep(time) {
@@ -9246,9 +9243,11 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 	if (isautoscheduling == true) return
 	isautoscheduling = true
 
+
 	//stats
 	const autoschedulestats = {}
 	const startautoscheduleprocess = performance.now()
+
 
 	//initialize
 	let iteratedevents = getiteratedevents()
@@ -9258,6 +9257,41 @@ async function autoScheduleV2(smartevents, showui, addedtodos) {
 	smartevents = smartevents.filter(d => Calendar.Event.isSchedulable(d)).sort((a, b) => {
 		return getcalculatedpriority(b) - getcalculatedpriority(a)
 	})
+
+
+	//check for overdue todos
+	let overduetodos = calendar.events.filter(d => d.type == 1 && !d.completed && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now())
+	if(overduetodos.length > 0){
+		let overdueitem = overduetodos[0]
+
+		rescheduletaskfunction = function(complete){
+			if(complete){
+				let tempitem = calendar.events.find(d => d.id == overdueitem.id)
+				if(tempitem){
+					tempitem.completed = true
+				}
+
+				calendar.updateEvents()
+			}
+
+			autoScheduleV2(smartevents, showui, addedtodos)
+		}
+
+		//show popup
+		let rescheduletaskpopup = getElement('rescheduletaskpopup')
+		rescheduletaskpopup.classList.remove('display-none')
+		
+		let rescheduletaskpopuptext = getElement('rescheduletaskpopuptext')
+		rescheduletaskpopuptext.innerHTML = `Your task <span class="text-bold">${overdueitem.title ? cleanInput(overdueitem.title) : 'New Event'}</span> is overdue. Have you completed it?`
+
+		let rescheduletaskpopupbuttons = getElement('rescheduletaskpopupbuttons')
+		rescheduletaskpopupbuttons.innerHTML = `
+			<div class="border-8px background-red hover:background-red-hover padding-8px-12px text-primary text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction()">No, do later</div>
+			<div class="border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction(true)">Yes, mark as done</div>`
+
+		overduetodos.shift()
+		return
+	}
 
 
 	//loader

@@ -2054,6 +2054,7 @@ body {
 	flex-direction: row;
 	overflow-x: scroll;
 	scroll-snap-type: x mandatory;
+	overflow-y:hidden;
 }
 
 .barcolumngroup::-webkit-scrollbar {
@@ -2069,26 +2070,11 @@ body {
 
 
 
-.growheight{
-	overflow:hidden;
-	animation: growheight 1s forwards;
-}
-
-@keyframes growheight{
-	0%{
-		height:0;
-	}
-	100%{
-		height:auto;
-	}
-}
-
 
 .barcolumn {
 	scroll-snap-align: start;
 	flex: 1 0 auto;
 	box-sizing: border-box;
-	overflow:hidden;
 }
 
 .barcolumnall {
