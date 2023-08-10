@@ -9281,11 +9281,13 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 			let rescheduletaskpopup = getElement('rescheduletaskpopup')
 			rescheduletaskpopup.classList.add('hiddenpopup')
 
+			let newresolvedoverduetodos = resolvedoverduetodos || []
+			
 			if(tempitem){
-				resolvedoverduetodos.push(tempitem.id)
+				newresolvedoverduetodos.push(tempitem.id)
 			}
 
-			autoScheduleV2(smartevents, showui, addedtodos, resolvedoverduetodos)
+			autoScheduleV2(smartevents, showui, addedtodos, newresolvedoverduetodos)
 		}
 
 		//show popup
