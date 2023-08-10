@@ -9869,7 +9869,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 	closeanimate()
 
 	if(showui){
-		displayalert(`Success! ${addedtodos.length} tasks were scheduled.`)
+		displayalert(`${addedtodos.length} tasks were successfully scheduled.`)
 	}
 
 	//stats
