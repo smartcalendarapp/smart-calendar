@@ -8457,6 +8457,10 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 
 	let difference = Math.floor((newstartdate.getTime() - oldstartdate.getTime()) / 86400000)
 
+	if(item.title == 'candy'){
+		console.log('new and old startdate 8461: ', newstartdate, oldstartdate)
+		console.log('percentage, difference: ', percentage, difference)
+	}
 
 	let output = ''
 	output = `
@@ -9587,6 +9591,11 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 			
 			let difference = finalstartdate.getTime() - oldstartdate.getTime()
 
+			if(item.title == 'candy'){
+				console.log('oldstartdate: ', oldstartdate)
+				console.log('realfinalstartdate: ', realfinalstartdate)
+			}
+
 			const frames = 30
 			function nextframe(){
 				if(todoitem){
@@ -9634,6 +9643,10 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 					item.end.day = newenddate.getDate()
 					item.end.month = newenddate.getMonth()
 					item.end.year = newenddate.getFullYear()
+
+					if(item.title == 'candy'){
+						console.log('line 9644: ', new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))
+					}
 				}
 
 
