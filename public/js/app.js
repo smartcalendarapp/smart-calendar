@@ -9532,7 +9532,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 	let oldcalendarday = calendarday
 
 	if (showui || addedtodos.length > 0) {
-		let firstitemdate = new Date(Math.min(...modifiedevents.map(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime())))
+		let firstitemdate = new Date(Math.min(...calendar.events.filter(d => modifiedevents.find(g => g.id == d.id)).map(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime())))
 
 		//horizontal
 		calendaryear = firstitemdate.getFullYear()
