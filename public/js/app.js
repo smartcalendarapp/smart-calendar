@@ -5951,9 +5951,6 @@ function submitschedulemytasks() {
 function startAutoSchedule(scheduletodos, showui) {
 	if (isautoscheduling == true) return
 
-	let oldcalendaryear = calendaryear
-	let oldcalendarmonth = calendarmonth
-	let oldcalendarday = calendarday
 	let oldcalendartabs = [...calendartabs]
 
 
@@ -5983,28 +5980,10 @@ function startAutoSchedule(scheduletodos, showui) {
 
 	if (scheduleitems.length == 0) return
 
-	//scroll into view
-	if (showui || addedtodos.length > 0) {
-		let firstitemdate = new Date(Math.min(...scheduleitems.map(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime())))
-
-		//horizontal
-		calendaryear = firstitemdate.getFullYear()
-		calendarmonth = firstitemdate.getMonth()
-		calendarday = firstitemdate.getDate()
-
-		//vertical
-		let barcolumncontainer = getElement('barcolumncontainer')
-
-		let target = firstitemdate.getHours() * 60 + firstitemdate.getMinutes() - barcolumncontainer.offsetHeight / 2
-		barcolumncontainer.scrollTo(0, target)
-	}
-
 	//update
 	if (!isEqualArray(calendartabs, oldcalendartabs)) {
 		calendar.updateTabs()
-	} else if (oldcalendaryear != calendaryear || oldcalendarmonth != calendarmonth || oldcalendarday != calendarday) {
-		calendar.updateCalendar()
-	} else {
+	} else  {
 		calendar.updateEvents()
 	}
 
@@ -9545,6 +9524,31 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 		schedulingscreen.classList.add('hiddenfade')
 	}
 	*/
+
+
+	//scroll
+	let oldcalendaryear = calendaryear
+	let oldcalendarmonth = calendarmonth
+	let oldcalendarday = calendarday
+
+	if (showui || addedtodos.length > 0) {
+		let firstitemdate = new Date(Math.min(...scheduleitems.map(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime())))
+
+		//horizontal
+		calendaryear = firstitemdate.getFullYear()
+		calendarmonth = firstitemdate.getMonth()
+		calendarday = firstitemdate.getDate()
+
+		//vertical
+		let barcolumncontainer = getElement('barcolumncontainer')
+
+		let target = firstitemdate.getHours() * 60 + firstitemdate.getMinutes() - barcolumncontainer.offsetHeight / 2
+		barcolumncontainer.scrollTo(0, target)
+	}
+
+	if (oldcalendaryear != calendaryear || oldcalendarmonth != calendarmonth || oldcalendarday != calendarday) {
+		calendar.updateCalendar()
+	}
 
 
 	//stats
