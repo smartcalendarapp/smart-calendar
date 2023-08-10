@@ -9260,43 +9260,41 @@ async function autoScheduleV2(smartevents, showui, addedtodos, overduetodocheck)
 
 
 	//check for overdue todos
-	if(!overduetodocheck){
-		let overduetodos = calendar.events.filter(d => d.type == 1 && !d.completed && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now())
-		
-		if(overduetodos.length > 0){
-			let overdueitem = overduetodos[0]
+	let overduetodos = calendar.events.filter(d => d.type == 1 && !d.completed && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now())
+	
+	if(overduetodos.length > 0){
+		let overdueitem = overduetodos[0]
 
-			rescheduletaskfunction = function(complete){
-				if(complete){
-					let tempitem = calendar.events.find(d => d.id == overdueitem.id)
-					if(tempitem){
-						tempitem.completed = true
-					}
-
-					calendar.updateEvents()
+		rescheduletaskfunction = function(complete){
+			if(complete){
+				let tempitem = calendar.events.find(d => d.id == overdueitem.id)
+				if(tempitem){
+					tempitem.completed = true
 				}
 
-				let rescheduletaskpopup = getElement('rescheduletaskpopup')
-				rescheduletaskpopup.classList.add('hiddenpopup')
-
-				autoScheduleV2(smartevents, showui, addedtodos, true)
+				calendar.updateEvents()
 			}
 
-			//show popup
-			let rescheduletaskpopuptext = getElement('rescheduletaskpopuptext')
-			rescheduletaskpopuptext.innerHTML = `Your task <span class="text-bold">${overdueitem.title ? cleanInput(overdueitem.title) : 'New Event'}</span> is overdue. Have you completed it?`
-
-			let rescheduletaskpopupbuttons = getElement('rescheduletaskpopupbuttons')
-			rescheduletaskpopupbuttons.innerHTML = `
-				<div class="border-8px background-tint-1 hover:background-tint-2 padding-8px-12px text-primary text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction()">No, I'll do later</div>
-				<div class="border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction(true)">Yes, mark as done</div>`
-
 			let rescheduletaskpopup = getElement('rescheduletaskpopup')
-			rescheduletaskpopup.classList.remove('hiddenpopup')
+			rescheduletaskpopup.classList.add('hiddenpopup')
 
-			overduetodos.shift()
-			return
+			autoScheduleV2(smartevents, showui, addedtodos, true)
 		}
+
+		//show popup
+		let rescheduletaskpopuptext = getElement('rescheduletaskpopuptext')
+		rescheduletaskpopuptext.innerHTML = `Your task <span class="text-bold">${overdueitem.title ? cleanInput(overdueitem.title) : 'New Event'}</span> is overdue. Have you completed it?`
+
+		let rescheduletaskpopupbuttons = getElement('rescheduletaskpopupbuttons')
+		rescheduletaskpopupbuttons.innerHTML = `
+			<div class="border-8px background-tint-1 hover:background-tint-2 padding-8px-12px text-primary text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction()">No, I'll do later</div>
+			<div class="border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction(true)">Yes, mark as done</div>`
+
+		let rescheduletaskpopup = getElement('rescheduletaskpopup')
+		rescheduletaskpopup.classList.remove('hiddenpopup')
+
+		overduetodos.shift()
+		return
 	}
 
 
