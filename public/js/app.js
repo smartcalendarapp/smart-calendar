@@ -9114,7 +9114,7 @@ let isautoscheduling = false;
 
 let rescheduletaskfunction;
 
-async function autoScheduleV2(smartevents, showui, addedtodos, skipoverduecheck) {
+async function autoScheduleV2(smartevents, showui, addedtodos, overduetodocheck) {
 	//functions
 	function sleep(time) {
 		return new Promise(resolve => {
@@ -9240,7 +9240,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, skipoverduecheck)
 	//============================================================================
 
 
-	if (isautoscheduling == true) return
+	if (isautoscheduling == true && !overduetodocheck) return
 	isautoscheduling = true
 
 
@@ -9260,7 +9260,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, skipoverduecheck)
 
 
 	//check for overdue todos
-	if(!skipoverduecheck){
+	if(!overduetodocheck){
 		let overduetodos = calendar.events.filter(d => d.type == 1 && !d.completed && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now())
 		
 		if(overduetodos.length > 0){
