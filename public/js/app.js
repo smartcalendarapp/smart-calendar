@@ -7097,7 +7097,7 @@ function gettododata(item) {
 									
 									${Calendar.Event.isEvent(item) ? 
 										`<div class="gap-6px display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton">
-											<div class="text-green">Scheduled for ${Calendar.Event.getStartText(item)}</div>
+											<div class="text-green ${itemclasses.join(' ')}">Scheduled for ${Calendar.Event.getStartText(item)}</div>
 										</div>`
 										:
 										``
@@ -9268,7 +9268,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 	if(overduetodos.length > 0){
 		let overdueitem = overduetodos[0]
 
-		rescheduletaskfunction = function(complete){
+		rescheduletaskfunction = async function(complete){
 			let tempitem = calendar.events.find(d => d.id == overdueitem.id)
 
 			if(complete){
@@ -9282,10 +9282,12 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 			rescheduletaskpopup.classList.add('hiddenpopup')
 
 			let newresolvedoverduetodos = resolvedoverduetodos || []
-			
+
 			if(tempitem){
 				newresolvedoverduetodos.push(tempitem.id)
 			}
+
+			await sleep(300)
 
 			autoScheduleV2(smartevents, showui, addedtodos, newresolvedoverduetodos)
 		}
@@ -9296,7 +9298,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 
 		let rescheduletaskpopupbuttons = getElement('rescheduletaskpopupbuttons')
 		rescheduletaskpopupbuttons.innerHTML = `
-			<div class="border-8px background-tint-1 hover:background-tint-2 padding-8px-12px text-primary text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction()">No, I'll do later</div>
+			<div class="border-8px background-tint-1 hover:background-tint-2 padding-8px-12px text-primary text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction()">No, reschedule it</div>
 			<div class="border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction(true)">Yes, mark as done</div>`
 
 		let rescheduletaskpopup = getElement('rescheduletaskpopup')
@@ -9865,6 +9867,10 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 	//post animate
 	let animateindex = 0
 	closeanimate()
+
+	if(showui){
+		displayalert(`Success! ${addedtodos.length} tasks were scheduled.`)
+	}
 
 	//stats
 	autoschedulestats.animateduration = performance.now() - startautoscheduleanimate
