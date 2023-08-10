@@ -654,11 +654,13 @@
 	</div>
 
 
-	<div class="schedulemenu hiddenpopup popup z-index-1000 width300px" id="rescheduletaskpopup">
-		<div class="infotitle text-center">Task completed?</div>
-		<div class="text-16px text-primary" id="rescheduletaskpopuptext"></div>
-		<div class="display-flex flex-row gap-12px justify-flex-end" id="rescheduletaskpopupbuttons"></div>
-
+	<div class="absolute pointer-none display-flex flex-column align-center justify-center">
+		<div class="popuptransition pointer-auto display-flex flex-column gap-12px border-8px background-primary-transparent backdrop-blur hiddenpopup z-index-1000 width300px" id="rescheduletaskpopup">
+			<div class="infotitle text-center">Task completed?</div>
+			<div class="text-16px text-primary" id="rescheduletaskpopuptext"></div>
+			<div class="display-flex flex-row gap-12px justify-flex-end" id="rescheduletaskpopupbuttons"></div>
+	
+		</div>
 	</div>
 
 

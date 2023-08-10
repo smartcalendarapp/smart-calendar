@@ -9288,7 +9288,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, skipoverduecheck)
 
 			let rescheduletaskpopupbuttons = getElement('rescheduletaskpopupbuttons')
 			rescheduletaskpopupbuttons.innerHTML = `
-				<div class="border-8px background-red hover:background-red-hover padding-8px-12px text-primary text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction()">No, I'll do later</div>
+				<div class="border-8px background-tint-1 hover:background-tint-2 padding-8px-12px text-primary text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction()">No, I'll do later</div>
 				<div class="border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction(true)">Yes, mark as done</div>`
 
 			let rescheduletaskpopup = getElement('rescheduletaskpopup')

@@ -658,7 +658,9 @@ body {
 .fadetransition {
 	transition: opacity 0.2s, visibility 0.2s;
 }
-
+.popuptransition {
+	transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
+}
 
 .welcomepopupbuttonrow {
 	display: flex;
