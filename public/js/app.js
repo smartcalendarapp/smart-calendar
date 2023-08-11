@@ -7760,35 +7760,53 @@ async function todocompleted(event, id) {
 }
 
 
+//start task now - adds task to calendar at current time, becomes fixed event
 function startnow(id){
-	let item = [...calendar.events, ...calendar.todos].find(d => d.id == id)
-	if(!item) return
+	let tempitem = [...calendar.events, ...calendar.todos].find(d => d.id == id)
+	if(!tempitem) return
+
+	if(Calendar.Event.isTodo(tempitem)){
+		let item = geteventfromtodo(tempitem)
 	
-	let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute) - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+		let startdate = new Date()
+		startdate.setMinutes(ceil(startdate.getMinutes(), 5))
+	
+		let enddate = new Date(startdate + tempitem.duration * 60000)
+	
+		item.start.year = startdate.getFullYear()
+		item.start.month = startdate.getMonth()
+		item.start.day = startdate.getDate()
+		item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+	
+		item.end.year = enddate.getFullYear()
+		item.end.month = enddate.getMonth()
+		item.end.day = enddate.getDate()
+		item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+	
+		item.type = 0
+	
+		calendar.events.push(item)
+		calendar.todos = calendar.todos.filter(d => d.id != tempitem.id)
+	}else{
+		let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 
-	let startdate = new Date()
-	startdate.setMinutes(ceil(startdate.getMinutes(), 5))
-
-	let enddate = new Date(startdate + duration)
-
-	item.start.year = startdate.getFullYear()
-	item.start.month = startdate.getMonth()
-	item.start.day = startdate.getDate()
-	item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
-
-	item.end.year = enddate.getFullYear()
-	item.end.month = enddate.getMonth()
-	item.end.day = enddate.getDate()
-	item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
-
-	item.type = 0
-
-	if(Calendar.Event.isTodo(item)){
-		let eventitem = geteventfromtodo(item)
-		calendar.events.push(eventitem)
-		calendar.todos = calendar.todos.filter(d => d.id != item.id)
+		let startdate = new Date()
+		startdate.setMinutes(ceil(startdate.getMinutes(), 5))
+	
+		let enddate = new Date(startdate + duration)
+	
+		tempitem.start.year = startdate.getFullYear()
+		tempitem.start.month = startdate.getMonth()
+		tempitem.start.day = startdate.getDate()
+		tempitem.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+	
+		tempitem.end.year = enddate.getFullYear()
+		tempitem.end.month = enddate.getMonth()
+		tempitem.end.day = enddate.getDate()
+		tempitem.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+	
+		tempitem.type = 0
 	}
-
 
 	calendar.updateTodo()
 	calendar.updateEvents()
