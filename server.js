@@ -859,8 +859,8 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 		}
 
 		if(!req.session.tokens || !user.accountdata.refreshtoken) {
-      return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
-    }
+			return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
+		}
 
 		if(!req.session.tokens.access_token){
 			let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)

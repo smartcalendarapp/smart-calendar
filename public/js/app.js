@@ -3406,6 +3406,11 @@ function updateonboardingscreen(){
 		updatescreen(key, key == currentonboarding)
 	}
 
+	getElement('todopopup').classList.remove('z-index-10000')
+	getElement('createtodoitemduedate').classList.remove('z-index-10001')
+	getElement('createtodoitemduration').classList.remove('z-index-10001')
+	getElement('createtodoitempriority').classList.remove('z-index-10001')
+
 	if(currentonboarding == 'connectcalendars'){
 		let onboardingconnectcalendarsgooglecalendar = getElement('onboardingconnectcalendarsgooglecalendar')
 		onboardingconnectcalendarsgooglecalendar.innerHTML = clientinfo.google_email ? 
@@ -3426,7 +3431,13 @@ function updateonboardingscreen(){
 	}else if(currentonboarding == 'addtask'){
 		let onboardingaddtasktodolist = getElement('onboardingaddtasktodolist')
 		onboardingaddtasktodolist.innerHTML = getElement('alltodolist').innerHTML
+
+		getElement('todopopup').classList.add('z-index-10000')
+		getElement('createtodoitemduedate').classList.add('z-index-10001')
+		getElement('createtodoitemduration').classList.add('z-index-10001')
+		getElement('createtodoitempriority').classList.add('z-index-10001')
 	}
+
 }
 
 
@@ -9232,9 +9243,17 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 	let oldsmartevents = deepCopy(smartevents)
 	let oldcalendarevents = deepCopy(calendar.events)
 
-	smartevents = smartevents.filter(d => Calendar.Event.isSchedulable(d) && (new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() > Date.now() || new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now())).sort((a, b) => {
+	smartevents = smartevents.filter(d => Calendar.Event.isSchedulable(d)).sort((a, b) => {
 		return getcalculatedpriority(b) - getcalculatedpriority(a)
 	})
+	
+	//don't schedule todo that is currently happening
+	let tempsmartevents = sortstartdate(smartevents)
+	let firstitem = tempsmartevents.find(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() > Date.now() || new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now())
+	if(firstitem){
+		smartevents = smartevents.filter(d => d.id != firstitem.id)
+	}
+	
 
 
 	//check for todos that haven't been done
