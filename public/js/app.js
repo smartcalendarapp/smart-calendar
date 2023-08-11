@@ -7771,7 +7771,8 @@ function startnow(id){
 		let startdate = new Date()
 		startdate.setMinutes(ceil(startdate.getMinutes(), 5))
 	
-		let enddate = new Date(startdate + tempitem.duration * 60000)
+		let enddate = new Date(startdate)
+		enddate.setMinutes(enddate.getMinutes() + tempitem.duration)
 	
 		item.start.year = startdate.getFullYear()
 		item.start.month = startdate.getMonth()
@@ -7788,7 +7789,7 @@ function startnow(id){
 		calendar.events.push(item)
 		calendar.todos = calendar.todos.filter(d => d.id != tempitem.id)
 	}else{
-		let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
+		let duration = new Date(tempitem.end.year, tempitem.end.month, tempitem.end.day, 0, tempitem.end.minute).getTime() - new Date(tempitem.start.year, tempitem.start.month, tempitem.start.day, 0, tempitem.start.minute).getTime()
 
 		let startdate = new Date()
 		startdate.setMinutes(ceil(startdate.getMinutes(), 5))
