@@ -1475,7 +1475,10 @@ app.post('/login', async (req, res, next) => {
 			return res.status(401).json({ error: 'Incorrect password.' })
 		}
 		
-		req.session.user = { userid: user.userid }
+		if(!req.session.user){
+			req.session.user = {}
+		}
+		req.session.user.userid = user.userid
 		user.accountdata.lastloggedindate = Date.now()
 		await setUser(user)
 		return res.redirect(301, '/app')

@@ -1852,7 +1852,7 @@ class Calendar {
 						let infopriority = getElement('infopriority')
 						infopriority.innerHTML = `
 							${item.priority != 0 ?
-								`<div class="todoitemcheckbox tooltip display-flex">
+								`<div class="height-fit display-flex tooltip display-flex">
 									${getpriorityicon(item.priority)}
 								</div>`
 								:
@@ -1862,7 +1862,7 @@ class Calendar {
 						//completed
 						let infocompleted = getElement('infocompleted')
 						infocompleted.innerHTML = `
-						<div class="todoitemcheckbox tooltip display-flex" onclick="eventcompleted('${item.id}')">
+						<div class="todoitemcheckbox tooltip display-flex" onclick="eventcompleted(event, '${item.id}')">
 							${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
 						</div>`
 					}
@@ -1911,16 +1911,16 @@ class Calendar {
 					output.push(`<div class="infogroup">
 						<div class="display-flex flex-row align-center gap-12px width-full">
 			 				${item.type == 1 ?
-							`<div class="todoitemcheckbox tooltip display-flex" onclick="eventcompleted('${item.id}')">
-					 				${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
-					 			</div>`
-							:
-							''
-						}
+								`<div class="todoitemcheckbox tooltip display-flex" onclick="eventcompleted(event, '${item.id}')">
+										${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
+									</div>`
+								:
+								''
+							}
 							<div class="infotitle min-width-0 selecttext">${item.title ? cleanInput(item.title) : 'New Event'}</div>
 							${item.type == 1 ?
 							`${item.priority != 0 ?
-								`<div class="todoitemcheckbox tooltip display-flex">
+								`<div class="height-fit display-flex tooltip display-flex">
 					 					${getpriorityicon(item.priority)}
 									</div>`
 								:
@@ -2105,8 +2105,8 @@ class Calendar {
 
 		let todolistnotscheduledyettext = getElement('todolistnotscheduledyettext')
 		let todolistscheduledtaskstext = getElement('todolistscheduledtaskstext')
-		todolistnotscheduledyettext.innerHTML = calendar.todos.filter(d => !d.completed).length
-		todolistscheduledtaskstext.innerHTML = calendar.events.filter(d => d.type == 1 && !d.complete).length
+		todolistnotscheduledyettext.innerHTML = calendar.todos.length
+		todolistscheduledtaskstext.innerHTML = calendar.events.filter(d => d.type == 1).length
 
 		if(todomode == 0){
 			let mytodos = calendar.todos
@@ -8567,7 +8567,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
 					
 					${item.type == 1 ? 
-						`<span class="todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="eventcompleted('${item.id}')">
+						`<span class="todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="eventcompleted(event, '${item.id}')">
 							${getwhitecheckcircle(item.completed)}
 						</span>` 
 						: ''
@@ -9272,7 +9272,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 
 		//show popup
 		let rescheduletaskpopuptext = getElement('rescheduletaskpopuptext')
-		rescheduletaskpopuptext.innerHTML = `Your task <span class="text-bold">${overdueitem.title ? cleanInput(overdueitem.title) : 'New Event'}</span> is overdue. Have you completed it?`
+		rescheduletaskpopuptext.innerHTML = `Your task <span class="text-bold">${overdueitem.title ? cleanInput(overdueitem.title) : 'New Event'}</span> was suggested to be done by now. Did you complete it?`
 
 		let rescheduletaskpopupbuttons = getElement('rescheduletaskpopupbuttons')
 		rescheduletaskpopupbuttons.innerHTML = `
@@ -9635,14 +9635,17 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 					item.end.year = newenddate.getFullYear()
 				}
 
-
-				if (tick >= frames) {
-					//stop
+				if(tick >= frames && !todoitem){
 					let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
 					if(autoscheduleitem){
 						autoscheduleitem.percentage = 0
 						calendar.updateAnimatedEvents()
 					}
+				}
+
+
+				if (tick >= frames) {
+					//stop
 					
 					return resolve()
 				} else {
@@ -9878,7 +9881,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 	closeanimate()
 
 	if(showui){
-		displayalert(`${addedtodos.length} tasks were successfully scheduled.`)
+		displayalert(`${addedtodos.length} task${addedtodos.length == 1 ? ' was' : 's were'} successfully scheduled.`)
 	}
 
 	//stats
@@ -10604,7 +10607,7 @@ function eventallday() {
 
 
 //event completed
-function eventcompleted(id) {
+async function eventcompleted(event, id) {
 	let item = calendar.events.find(f => f.id == id)
 	if (!item) return
 	item.completed = !item.completed
@@ -10612,6 +10615,29 @@ function eventcompleted(id) {
 	calendar.updateEvents()
 	calendar.updateInfo()
 	calendar.updateHistory()
+
+	if (item.completed) {
+		let confetticanvas = getElement('confetticanvas')
+		let myconfetti = confetti.create(confetticanvas, {
+			resize: true,
+			useWorker: true
+		})
+
+		await myconfetti({
+			particleCount: 20,
+			gravity: 0.75,
+			startVelocity: 15,
+			decay: 0.94,
+			ticks: 100,
+			origin: {
+				x: (event.clientX) / (window.innerWidth || document.body.clientWidth),
+				y: (event.clientY) / (window.innerHeight || document.body.clientHeight)
+			}
+		})
+
+		myconfetti.reset()
+
+	}
 }
 
 //double click column
