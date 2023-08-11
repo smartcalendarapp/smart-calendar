@@ -9249,7 +9249,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 	
 	//don't schedule todo that is currently happening
 	let tempsmartevents = sortstartdate(smartevents)
-	let firstitem = tempsmartevents.find(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() > Date.now() || new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now())
+	let firstitem = tempsmartevents.find(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now())
 	if(firstitem){
 		smartevents = smartevents.filter(d => d.id != firstitem.id)
 	}
