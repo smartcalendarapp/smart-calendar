@@ -9607,6 +9607,8 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 	let oldcalendarday = calendarday
 
 	if (showui || addedtodos.length > 0) {
+		console.log(calendar.events.filter(d => modifiedevents.find(g => g.id == d.id)).map(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime()))
+		console.log(modifiedevents)
 		let firstitemdate = new Date(Math.min(...calendar.events.filter(d => modifiedevents.find(g => g.id == d.id)).map(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime())))
 
 		//horizontal
