@@ -7765,7 +7765,7 @@ function startnow(id){
 	let tempitem = [...calendar.events, ...calendar.todos].find(d => d.id == id)
 	if(!tempitem) return
 
-	if(Calendar.Event.isTodo(tempitem)){
+	if(Calendar.Todo.isTodo(tempitem)){
 		let item = geteventfromtodo(tempitem)
 	
 		let startdate = new Date()
