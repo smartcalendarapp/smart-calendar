@@ -7111,6 +7111,18 @@ function gettododata(item) {
 	
 	
 						<div class="gap-12px todoitembuttongroup height-fit justify-flex-end flex-row small:visibility-visible">
+							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="startnow('${item.id}');gtag('event', 'button_click', { useraction: 'Start now - task' })">
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+								<g>
+								<path d="M45.6353 28.72L45.6353 227.28" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M210.365 128L45.6353 227.28" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M210.365 128L45.6353 28.72" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								</g>
+								</svg>
+
+								<span class="tooltiptextcenter">Start now</span>
+							</div>
+						
 							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="edittodo('${item.id}');gtag('event', 'button_click', { useraction: 'Edit - task' })">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 								<g>
@@ -7748,7 +7760,40 @@ async function todocompleted(event, id) {
 }
 
 
+function startnow(id){
+	let item = [...calendar.events, ...calendar.todos].find(d => d.id == id)
+	if(!item) return
+	
+	let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute) - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 
+	let startdate = new Date()
+	startdate.setMinutes(ceil(startdate.getMinutes(), 5))
+
+	let enddate = new Date(startdate + duration)
+
+	item.start.year = startdate.getFullYear()
+	item.start.month = startdate.getMonth()
+	item.start.day = startdate.getDate()
+	item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+
+	item.end.year = enddate.getFullYear()
+	item.end.month = enddate.getMonth()
+	item.end.day = enddate.getDate()
+	item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+
+	item.type = 0
+
+	if(Calendar.Event.isTodo(item)){
+		let eventitem = geteventfromtodo(item)
+		calendar.events.push(eventitem)
+		calendar.todos = calendar.todos.filter(d => d.id != item.id)
+	}
+
+
+	calendar.updateTodo()
+	calendar.updateEvents()
+	calendar.updateHistory()
+}
 
 function deletetodo(id) {
 	let item = [...calendar.events, ...calendar.todos].find(d => d.id == id)
@@ -8630,6 +8675,7 @@ function eventtype(type) {
 		let endbeforedate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
 		endbeforedate.setHours(0, 0, 0, 0)
 		endbeforedate.setDate(endbeforedate.getDate() + 1)
+		endbeforedate.setMinutes(-1)
 		item.endbefore.year = endbeforedate.getFullYear()
 		item.endbefore.month = endbeforedate.getMonth()
 		item.endbefore.day = endbeforedate.getDate()
@@ -9243,17 +9289,9 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 	let oldsmartevents = deepCopy(smartevents)
 	let oldcalendarevents = deepCopy(calendar.events)
 
-	smartevents = smartevents.filter(d => Calendar.Event.isSchedulable(d)).sort((a, b) => {
+	smartevents = smartevents.filter(d => Calendar.Event.isSchedulable(d) && (new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() > Date.now() || new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now())).sort((a, b) => {
 		return getcalculatedpriority(b) - getcalculatedpriority(a)
 	})
-	
-	//don't schedule todo that is currently happening
-	let tempsmartevents = sortstartdate(smartevents)
-	let firstitem = tempsmartevents.find(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now())
-	if(firstitem){
-		smartevents = smartevents.filter(d => d.id != firstitem.id)
-	}
-	
 
 
 	//check for todos that haven't been done
