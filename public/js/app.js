@@ -2298,13 +2298,13 @@ class Calendar {
 
 		let completedtodos = gettodos(startdate, enddate).filter(d => d.completed)
 		let unfinishedtodos = gettodos(currentdate, enddate).filter(d => !d.completed)
-		let overduetodos = gettodos(null, currentdate).filter(d => !d.completed)
+		let passedtodos = gettodos(null, currentdate).filter(d => !d.completed)
 
-		let totaltodos = completedtodos.length + unfinishedtodos.length + overduetodos.length
+		let totaltodos = completedtodos.length + unfinishedtodos.length + passedtodos.length
 
 		summarytodocompleted.innerHTML = getcircleprogressbar(completedtodos.length, totaltodos, completedtodos.length, 'var(--green)')
 		summarytodounfinished.innerHTML = getcircleprogressbar(unfinishedtodos.length, totaltodos, unfinishedtodos.length, 'var(--blue)')
-		summarytodooverdue.innerHTML = getcircleprogressbar(overduetodos.length, totaltodos, overduetodos.length, 'var(--red)')
+		summarytodooverdue.innerHTML = getcircleprogressbar(passedtodos.length, totaltodos, passedtodos.length, 'var(--red)')
 
 		//today's events
 		let summaryeventtimebusy = getElement('summaryeventtimebusy')
@@ -9092,7 +9092,7 @@ let isautoscheduling = false;
 
 let rescheduletaskfunction;
 
-async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverduetodos) {
+async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtodos) {
 	//functions
 	function sleep(time) {
 		return new Promise(resolve => {
@@ -9218,7 +9218,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 	//============================================================================
 
 
-	if (isautoscheduling == true && resolvedoverduetodos.length == 0) return
+	if (isautoscheduling == true && resolvedpassedtodos.length == 0) return
 	isautoscheduling = true
 
 
@@ -9232,19 +9232,19 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 	let oldsmartevents = deepCopy(smartevents)
 	let oldcalendarevents = deepCopy(calendar.events)
 
-	smartevents = smartevents.filter(d => Calendar.Event.isSchedulable(d)).sort((a, b) => {
+	smartevents = smartevents.filter(d => Calendar.Event.isSchedulable(d) && (new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() > Date.now() || new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now())).sort((a, b) => {
 		return getcalculatedpriority(b) - getcalculatedpriority(a)
 	})
 
 
-	//check for overdue todos
-	let overduetodos = calendar.events.filter(d => d.type == 1 && !d.completed && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now())
-	if(resolvedoverduetodos){
-		overduetodos = overduetodos.filter(d => !resolvedoverduetodos.find(f => f == d.id))
+	//check for todos that haven't been done
+	let passedtodos = smartevents.filter(d => new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now())
+	if(resolvedpassedtodos){
+		passedtodos = passedtodos.filter(d => !resolvedpassedtodos.find(f => f == d.id))
 	}
 	
-	if(overduetodos.length > 0){
-		let overdueitem = overduetodos[0]
+	if(passedtodos.length > 0){
+		let overdueitem = passedtodos[0]
 
 		rescheduletaskfunction = async function(complete){
 			let tempitem = calendar.events.find(d => d.id == overdueitem.id)
@@ -9259,15 +9259,15 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 			let rescheduletaskpopup = getElement('rescheduletaskpopup')
 			rescheduletaskpopup.classList.add('hiddenpopup')
 
-			let newresolvedoverduetodos = resolvedoverduetodos || []
+			let newresolvedpassedtodos = resolvedpassedtodos || []
 
 			if(tempitem){
-				newresolvedoverduetodos.push(tempitem.id)
+				newresolvedpassedtodos.push(tempitem.id)
 			}
 
 			await sleep(300)
 
-			autoScheduleV2(smartevents, showui, addedtodos, newresolvedoverduetodos)
+			autoScheduleV2(smartevents, showui, addedtodos, newresolvedpassedtodos)
 		}
 
 		//show popup
