@@ -5067,10 +5067,23 @@ function disablesyncgooglecalendar() {
 	let importgooglecalendarerror2 = getElement('importgooglecalendarerror2')
 	importgooglecalendarerror2.classList.add('display-none')
 
+	let loginwithgooglescreen = getElement('loginwithgooglescreen')
+	let loginwithgooglepopup = getElement('loginwithgooglescreen')
+	loginwithgooglescreen.classList.add('hiddenfade')
+	loginwithgooglepopup.classList.add('hiddenpopup')
+
 	calendar.settings.issyncingtogooglecalendar = false
 	calendar.updateSettings()
 }
 
+
+//close login with google popup
+function closeloginwithgooglepopup(){
+	let loginwithgooglescreen = getElement('loginwithgooglescreen')
+	let loginwithgooglepopup = getElement('loginwithgooglescreen')
+	loginwithgooglescreen.classList.add('hiddenfade')
+	loginwithgooglepopup.classList.add('hiddenpopup')
+}
 
 //set google calendar
 let issettingclientgooglecalendar = false
