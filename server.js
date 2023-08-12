@@ -675,8 +675,9 @@ async function getNewAccessToken(refreshToken){
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
 		const tokens = await googleclient.refreshToken(refreshToken)
 		return tokens.credentials.access_token
-	}catch(err){ }
-	return
+	}catch(err){
+		return false
+	}
 }
 
 async function isRefreshTokenValid(refreshToken) {
@@ -686,9 +687,11 @@ async function isRefreshTokenValid(refreshToken) {
 		const { expiry_date } = await googleclient.getAccessToken()
 
    	return expiry_date > Date.now()
-  } catch (error) { }
+  } catch (error) {
 	return false
+  }
 }
+
 
 //use routes
 app.use(express.static(path.join(__dirname, 'public')))
@@ -713,7 +716,7 @@ app.get('/auth/google', async (req, res, next) => {
 			scope: ['profile', 'email','https://www.googleapis.com/auth/calendar'],
 			redirect_uri: REDIRECT_URI,
 		}
-		
+		//here4
 		if(req.session.user){
 			const userid = req.session.user.userid
 			const user = await getUserById(userid)
@@ -1363,9 +1366,9 @@ app.post('/getclientgooglecalendar', async (req, res, next) => {
 			return res.status(401).json({ error: 'Google login is not connected, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
 		}
 
-		if(!req.session.tokens || !user.accountdata.refreshtoken) {
-      return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
-    }
+		if(!req.session.tokens && !user.accountdata.refreshtoken) {
+			return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
+		}
 
 		if(!req.session.tokens || !req.session.tokens.access_token){
 			let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
