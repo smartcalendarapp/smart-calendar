@@ -705,6 +705,10 @@ body {
 	padding-bottom: 50vh !important;
 }
 
+.blackbackground{
+	background-color: var(--black-transparent-2);
+}
+
 .settingsscreen {
 	background-color: var(--black-transparent-2);
 	transition: opacity 0.2s, visibility 0.2s;
