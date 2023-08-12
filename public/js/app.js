@@ -5135,7 +5135,7 @@ async function setclientgooglecalendar(requestchanges) {
 		}
 	} catch (err) {
 		console.log(err)
-		displayalert('Error, could not sync with Google Calendar' + err)
+		displayalert('Error, could not sync with Google Calendar')
 	}
 
 	issettingclientgooglecalendar = false
@@ -5191,7 +5191,7 @@ async function getclientgooglecalendar() {
 		}
 	} catch (err) {
 		console.log(err)
-		displayalert('Error, could not sync with Google Calendar')
+		displayalert('Error, could not sync with Google Calendar' + err)
 	}
 
 	isgettingclientgooglecalendar = false
