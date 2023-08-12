@@ -1380,6 +1380,7 @@ app.post('/getclientgooglecalendar', async (req, res, next) => {
 				console.warn('RIP HERE 1378')
 				return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
 			}
+			req.session.tokens = req.session.tokens || {}
 			req.session.tokens.access_token = accesstoken
 		}
 
