@@ -674,8 +674,10 @@ async function getNewAccessToken(refreshToken){
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
 		const tokens = await googleclient.refreshToken(refreshToken)
+		console.warn(tokens)
 		return tokens.credentials.access_token
 	}catch(err){
+		console.warn(err)
 		return false
 	}
 }
@@ -766,7 +768,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				req.session.user = { userid: user.userid }
 				req.session.tokens = tokens
 
-				user.accountdata.refreshtoken = tokens.refresh_token
+				user.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
 				user.accountdata.google.name = name
 				user.accountdata.google.profilepicture = profilepicture
 				user.accountdata.lastloggedindate = Date.now()
@@ -782,7 +784,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				
 				user2.google_email = email
 				user2.calendardata.settings.issyncingtogooglecalendar = true
-				user2.accountdata.refreshtoken = tokens.refresh_token
+				user2.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
 				user2.accountdata.google.name = name
 				user2.accountdata.google.profilepicture = profilepicture
 				user2.accountdata.lastloggedindate = Date.now()
@@ -790,7 +792,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			}else{
 				const user3 = addmissingpropertiestouser(new User({ username: email, google_email: email }))
 				user3.calendardata.settings.issyncingtogooglecalendar = true
-				user3.accountdata.refreshtoken = tokens.refresh_token
+				user3.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
 				user3.accountdata.google.name = name
 				user3.accountdata.google.profilepicture = profilepicture
 				user3.accountdata.lastloggedindate = Date.now()
