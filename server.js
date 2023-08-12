@@ -674,10 +674,8 @@ async function getNewAccessToken(refreshToken){
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
 		const tokens = await googleclient.refreshToken(refreshToken)
-		console.warn(tokens)
-		return tokens.credentials.access_token
+		return tokens.access_token
 	}catch(err){
-		console.warn(err)
 		return false
 	}
 }
