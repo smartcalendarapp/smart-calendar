@@ -5068,9 +5068,7 @@ function disablesyncgooglecalendar() {
 	importgooglecalendarerror2.classList.add('display-none')
 
 	let loginwithgooglescreen = getElement('loginwithgooglescreen')
-	let loginwithgooglepopup = getElement('loginwithgooglescreen')
 	loginwithgooglescreen.classList.add('hiddenfade')
-	loginwithgooglepopup.classList.add('hiddenpopup')
 
 	calendar.settings.issyncingtogooglecalendar = false
 	calendar.updateSettings()
@@ -5080,9 +5078,7 @@ function disablesyncgooglecalendar() {
 //close login with google popup
 function closeloginwithgooglepopup(){
 	let loginwithgooglescreen = getElement('loginwithgooglescreen')
-	let loginwithgooglepopup = getElement('loginwithgooglescreen')
 	loginwithgooglescreen.classList.add('hiddenfade')
-	loginwithgooglepopup.classList.add('hiddenpopup')
 }
 
 //set google calendar
@@ -5094,9 +5090,7 @@ async function setclientgooglecalendar(requestchanges) {
 	importgooglecalendarerror2.classList.add('display-none')
 
 	let loginwithgooglescreen = getElement('loginwithgooglescreen')
-	let loginwithgooglepopup = getElement('loginwithgooglescreen')
 	loginwithgooglescreen.classList.add('hiddenfade')
-	loginwithgooglepopup.classList.add('hiddenpopup')
 
 	if (!calendar.settings.issyncingtogooglecalendar) return
 	if (requestchanges.length == 0) return
@@ -5126,9 +5120,7 @@ async function setclientgooglecalendar(requestchanges) {
 			importgooglecalendarerror2.classList.remove('display-none')
 
 			let loginwithgooglescreen = getElement('loginwithgooglescreen')
-			let loginwithgooglepopup = getElement('loginwithgooglescreen')
 			loginwithgooglescreen.classList.remove('hiddenfade')
-			loginwithgooglepopup.classList.remove('hiddenpopup')
 		} else if (response.status == 200) {
 			const data = await response.json()
 
@@ -5173,9 +5165,7 @@ async function getclientgooglecalendar() {
 	importgooglecalendarerror2.classList.add('display-none')
 
 	let loginwithgooglescreen = getElement('loginwithgooglescreen')
-	let loginwithgooglepopup = getElement('loginwithgooglescreen')
 	loginwithgooglescreen.classList.add('hiddenfade')
-	loginwithgooglepopup.classList.add('hiddenpopup')
 
 	if (!calendar.settings.issyncingtogooglecalendar) return
 	if (isgettingclientgooglecalendar) return
@@ -5196,9 +5186,7 @@ async function getclientgooglecalendar() {
 			importgooglecalendarerror2.classList.remove('display-none')
 
 			let loginwithgooglescreen = getElement('loginwithgooglescreen')
-			let loginwithgooglepopup = getElement('loginwithgooglescreen')
 			loginwithgooglescreen.classList.remove('hiddenfade')
-			loginwithgooglepopup.classList.remove('hiddenpopup')
 		} else if (response.status == 200) {
 			const data = await response.json()
 
