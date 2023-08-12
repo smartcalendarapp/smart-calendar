@@ -675,18 +675,22 @@ async function getNewAccessToken(refreshToken){
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
 		const tokens = await googleclient.refreshToken(refreshToken)
 		return tokens.credentials.access_token
-	}catch(err){ }
+	}catch(err){
+		console.log(err)
+	}
 	return
 }
 
 async function isRefreshTokenValid(refreshToken) {
   try {
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
-    googleclient.setCredentials({ refresh_token: refreshToken })
-    const { expiry_date } = await googleclient.getAccessToken()
+		googleclient.setCredentials({ refresh_token: refreshToken })
+		const { expiry_date } = await googleclient.getAccessToken()
 
    	return expiry_date > Date.now()
-  } catch (error) { }
+  } catch (error) {
+	console.log(err)
+  }
 	return false
 }
 

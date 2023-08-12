@@ -5191,7 +5191,7 @@ async function getclientgooglecalendar() {
 		}
 	} catch (err) {
 		console.log(err)
-		displayalert('Error, could not sync with Google Calendar' + err)
+		displayalert('Error, could not sync with Google Calendar')
 	}
 
 	isgettingclientgooglecalendar = false
@@ -8433,15 +8433,13 @@ function getborderdata(item, currentdate, timestamp) {
 	let nextdate = new Date(currentdate.getTime())
 	nextdate.setDate(nextdate.getDate() + 1)
 
-	let barcolumngroup = getElement('barcolumngroup')
-
 	let myheight = 16
 	let mytop = item.endbefore.minute
 	if (mytop == 0) {
-		mytop = barcolumngroup.offsetHeight
+		mytop = 1440
 	}
-	if (mytop + myheight / 2 > barcolumngroup.offsetHeight) {
-		mytop = barcolumngroup.offsetHeight - myheight / 2
+	if (mytop + myheight / 2 > 1440) {
+		mytop = 1440 - myheight / 2
 	}
 
 	let itemclasses = []
