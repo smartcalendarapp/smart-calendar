@@ -5135,7 +5135,7 @@ async function setclientgooglecalendar(requestchanges) {
 		}
 	} catch (err) {
 		console.log(err)
-		alert(err+'')
+		getElement('todowrap').innerHTML = err+''
 		displayalert('Error, could not sync with Google Calendar')
 	}
 
