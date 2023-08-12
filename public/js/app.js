@@ -5080,6 +5080,11 @@ async function setclientgooglecalendar(requestchanges) {
 	let importgooglecalendarerror2 = getElement('importgooglecalendarerror2')
 	importgooglecalendarerror2.classList.add('display-none')
 
+	let loginwithgooglescreen = getElement('loginwithgooglescreen')
+	let loginwithgooglepopup = getElement('loginwithgooglescreen')
+	loginwithgooglescreen.classList.add('hiddenfade')
+	loginwithgooglepopup.classList.add('hiddenpopup')
+
 	if (!calendar.settings.issyncingtogooglecalendar) return
 	if (requestchanges.length == 0) return
 
@@ -5107,6 +5112,10 @@ async function setclientgooglecalendar(requestchanges) {
 			importgooglecalendarerror2.innerHTML = data.error
 			importgooglecalendarerror2.classList.remove('display-none')
 
+			let loginwithgooglescreen = getElement('loginwithgooglescreen')
+			let loginwithgooglepopup = getElement('loginwithgooglescreen')
+			loginwithgooglescreen.classList.remove('hiddenfade')
+			loginwithgooglepopup.classList.remove('hiddenpopup')
 		} else if (response.status == 200) {
 			const data = await response.json()
 
@@ -5150,6 +5159,11 @@ async function getclientgooglecalendar() {
 	let importgooglecalendarerror2 = getElement('importgooglecalendarerror2')
 	importgooglecalendarerror2.classList.add('display-none')
 
+	let loginwithgooglescreen = getElement('loginwithgooglescreen')
+	let loginwithgooglepopup = getElement('loginwithgooglescreen')
+	loginwithgooglescreen.classList.add('hiddenfade')
+	loginwithgooglepopup.classList.add('hiddenpopup')
+
 	if (!calendar.settings.issyncingtogooglecalendar) return
 	if (isgettingclientgooglecalendar) return
 
@@ -5168,7 +5182,10 @@ async function getclientgooglecalendar() {
 			importgooglecalendarerror2.innerHTML = data.error
 			importgooglecalendarerror2.classList.remove('display-none')
 
-			displayalert('Error, could not sync with Google Calendar')
+			let loginwithgooglescreen = getElement('loginwithgooglescreen')
+			let loginwithgooglepopup = getElement('loginwithgooglescreen')
+			loginwithgooglescreen.classList.remove('hiddenfade')
+			loginwithgooglepopup.classList.remove('hiddenpopup')
 		} else if (response.status == 200) {
 			const data = await response.json()
 
@@ -9355,7 +9372,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 
 		//show popup
 		let rescheduletaskpopuptext = getElement('rescheduletaskpopuptext')
-		rescheduletaskpopuptext.innerHTML = `Your task <span class="text-bold">${overdueitem.title ? cleanInput(overdueitem.title) : 'New Event'}</span> was suggested to be finished by now. Have you completed it?`
+		rescheduletaskpopuptext.innerHTML = `Your task <span class="text-bold">${overdueitem.title ? cleanInput(overdueitem.title) : 'New Event'}</span> was scheduled to be completed by now. Have you completed it?`
 
 		let rescheduletaskpopupbuttons = getElement('rescheduletaskpopupbuttons')
 		rescheduletaskpopupbuttons.innerHTML = `

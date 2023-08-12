@@ -674,10 +674,8 @@ async function getNewAccessToken(refreshToken){
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
 		const tokens = await googleclient.refreshToken(refreshToken)
-		console.warn(tokens.tokens.access_token)
 		return tokens.tokens.access_token
 	}catch(err){
-		console.warn(err)
 		return false
 	}
 }
@@ -867,11 +865,12 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 			return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
 		}
 
-		if(!req.session.tokens.access_token){
+		if(!req.session.tokens || !req.session.tokens.access_token){
 			let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
 			if(!accesstoken){
 				return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
 			}
+			req.session.tokens = req.session.tokens || {}
 			req.session.tokens.access_token = accesstoken
 		}
 
@@ -1183,6 +1182,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 			if(!accesstoken){
 				return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
 			}
+			req.session.tokens = req.session.tokens || {}
 			req.session.tokens.access_token = accesstoken
 		}
 
@@ -1369,15 +1369,12 @@ app.post('/getclientgooglecalendar', async (req, res, next) => {
 		}
 
 		if(!req.session.tokens && !user.accountdata.refreshtoken) {
-			console.warn('RIP HERE 1360')
 			return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
 		}
 
 		if(!req.session.tokens || !req.session.tokens.access_token){
-			console.warn('RIP HERE 1375')
 			let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
 			if(!accesstoken){
-				console.warn('RIP HERE 1378')
 				return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
 			}
 			req.session.tokens = req.session.tokens || {}
@@ -1419,7 +1416,6 @@ app.post('/getclientgooglecalendar', async (req, res, next) => {
 		
 		return res.json({ data: googlecalendardata })
 	}catch(error){
-		console.warn('RIP HERE 1419')
 		console.error(error)
 	  return res.status(401).json({ error: `Cannot access your Google Calendar, try to <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
 	}
