@@ -869,7 +869,7 @@ class Calendar {
 		let calendartab2 = getElement('calendartab2')
 		let todolisttab2 = getElement('todolisttab2')
 		let summarytab2 = getElement('summarytab2')
-		let settingstab2 = getElement('settingstab')
+		let settingstab2 = getElement('settingstab2')
 
 		hometab.classList.remove('selectedbuttonunderline')
 		summarytab.classList.remove('selectedbuttonunderline')
@@ -5982,7 +5982,7 @@ function startAutoSchedule(scheduletodos, showui) {
 	if ('matchMedia' in window) {
 		let smallscreen = window.matchMedia('(max-width: 600px)')
 		if (smallscreen.matches) {
-			calendartabs = [1]
+			calendartabs = [0]
 		}
 	}
 
@@ -7794,7 +7794,8 @@ function startnow(id){
 		let startdate = new Date()
 		startdate.setMinutes(ceil(startdate.getMinutes(), 5))
 	
-		let enddate = new Date(startdate + duration)
+		let enddate = new Date(startdate)
+		enddate.setTime(enddate.getTime() + duration)
 	
 		tempitem.start.year = startdate.getFullYear()
 		tempitem.start.month = startdate.getMonth()
@@ -7807,6 +7808,14 @@ function startnow(id){
 		tempitem.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
 	
 		tempitem.type = 0
+	}
+
+	if ('matchMedia' in window) {
+		let smallscreen = window.matchMedia('(max-width: 600px)')
+		if (smallscreen.matches) {
+			calendartabs = [0]
+			calendar.updateTabs()
+		}
 	}
 
 	calendar.updateTodo()
@@ -9348,7 +9357,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 
 		//show popup
 		let rescheduletaskpopuptext = getElement('rescheduletaskpopuptext')
-		rescheduletaskpopuptext.innerHTML = `Your task <span class="text-bold">${overdueitem.title ? cleanInput(overdueitem.title) : 'New Event'}</span> was suggested to be done by now. Did you complete it?`
+		rescheduletaskpopuptext.innerHTML = `Your task <span class="text-bold">${overdueitem.title ? cleanInput(overdueitem.title) : 'New Event'}</span> was suggested to be finished by now. Have you completed it?`
 
 		let rescheduletaskpopupbuttons = getElement('rescheduletaskpopupbuttons')
 		rescheduletaskpopupbuttons.innerHTML = `
@@ -9607,20 +9616,20 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 	let oldcalendarday = calendarday
 
 	if (showui || addedtodos.length > 0) {
-		console.log(calendar.events.filter(d => modifiedevents.find(g => g.id == d.id)).map(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime()))
-		console.log(modifiedevents)
-		let firstitemdate = new Date(Math.min(...calendar.events.filter(d => modifiedevents.find(g => g.id == d.id)).map(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime())))
+		let firstitemdate = new Date(Math.min(...modifiedevents.map(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime())))
 
-		//horizontal
-		calendaryear = firstitemdate.getFullYear()
-		calendarmonth = firstitemdate.getMonth()
-		calendarday = firstitemdate.getDate()
+		if(!isNaN(firstitemdate.getTime())){
+			//horizontal
+			calendaryear = firstitemdate.getFullYear()
+			calendarmonth = firstitemdate.getMonth()
+			calendarday = firstitemdate.getDate()
 
-		//vertical
-		let barcolumncontainer = getElement('barcolumncontainer')
+			//vertical
+			let barcolumncontainer = getElement('barcolumncontainer')
 
-		let target = firstitemdate.getHours() * 60 + firstitemdate.getMinutes() - barcolumncontainer.offsetHeight / 2
-		barcolumncontainer.scrollTo(0, target)
+			let target = firstitemdate.getHours() * 60 + firstitemdate.getMinutes() - barcolumncontainer.offsetHeight / 2
+			barcolumncontainer.scrollTo(0, target)
+		}
 	}
 
 	if (oldcalendaryear != calendaryear || oldcalendarmonth != calendarmonth || oldcalendarday != calendarday) {
