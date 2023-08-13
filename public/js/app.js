@@ -5076,9 +5076,11 @@ function disablesyncgooglecalendar() {
 
 
 //close login with google popup
+let hideloginwithgooglepopup = false
 function closeloginwithgooglepopup(){
 	let loginwithgooglescreen = getElement('loginwithgooglescreen')
 	loginwithgooglescreen.classList.add('hiddenfade')
+	hideloginwithgooglepopup = true
 }
 
 //set google calendar
@@ -5119,8 +5121,10 @@ async function setclientgooglecalendar(requestchanges) {
 			importgooglecalendarerror2.innerHTML = data.error
 			importgooglecalendarerror2.classList.remove('display-none')
 
-			let loginwithgooglescreen = getElement('loginwithgooglescreen')
-			loginwithgooglescreen.classList.remove('hiddenfade')
+			if(!hideloginwithgooglepopup){
+				let loginwithgooglescreen = getElement('loginwithgooglescreen')
+				loginwithgooglescreen.classList.remove('hiddenfade')
+			}
 		} else if (response.status == 200) {
 			const data = await response.json()
 
@@ -5185,8 +5189,10 @@ async function getclientgooglecalendar() {
 			importgooglecalendarerror2.innerHTML = data.error
 			importgooglecalendarerror2.classList.remove('display-none')
 
-			let loginwithgooglescreen = getElement('loginwithgooglescreen')
-			loginwithgooglescreen.classList.remove('hiddenfade')
+			if(!hideloginwithgooglepopup){
+				let loginwithgooglescreen = getElement('loginwithgooglescreen')
+				loginwithgooglescreen.classList.remove('hiddenfade')
+			}
 		} else if (response.status == 200) {
 			const data = await response.json()
 
@@ -7806,6 +7812,11 @@ function startnow(id){
 	
 		calendar.events.push(item)
 		calendar.todos = calendar.todos.filter(d => d.id != tempitem.id)
+
+		//scroll
+		let barcolumncontainer = getElement('barcolumncontainer')
+		let target = startdate.getHours() * 60 + startdate.getMinutes() - barcolumncontainer.offsetHeight / 2
+		barcolumncontainer.scrollTo(0, target)
 	}else{
 		let duration = new Date(tempitem.end.year, tempitem.end.month, tempitem.end.day, 0, tempitem.end.minute).getTime() - new Date(tempitem.start.year, tempitem.start.month, tempitem.start.day, 0, tempitem.start.minute).getTime()
 
@@ -7826,6 +7837,11 @@ function startnow(id){
 		tempitem.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
 	
 		tempitem.type = 0
+
+		//scroll
+		let barcolumncontainer = getElement('barcolumncontainer')
+		let target = startdate.getHours() * 60 + startdate.getMinutes() - barcolumncontainer.offsetHeight / 2
+		barcolumncontainer.scrollTo(0, target)
 	}
 
 	if ('matchMedia' in window) {
@@ -9984,7 +10000,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 	closeanimate()
 
 	if(showui){
-		displayalert(`${addedtodos.length} task${addedtodos.length == 1 ? ' was' : 's were'} successfully scheduled.`)
+		displayalert(`${addedtodos.length} task${addedtodos.length == 1 ? ' was' : 's were'} successfully scheduled`)
 	}
 
 	//stats
