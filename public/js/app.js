@@ -1522,6 +1522,7 @@ class Calendar {
 
 				let eventinfoedit = getElement('eventinfoedit')
 				let eventinfodelete = getElement('eventinfodelete')
+				let eventinfostartnow = getElement('eventinfostartnow')
 
 				//cannot edit or delete event
 				if (Calendar.Event.isReadOnly(item)) {
@@ -1530,6 +1531,12 @@ class Calendar {
 				} else {
 					eventinfoedit.classList.remove('display-none')
 					eventinfodelete.classList.remove('display-none')
+				}
+
+				if(item.type != 1 || Calendar.Event.isReadOnly(item)){
+					eventinfostartnow.classList.add('display-none')
+				}else{
+					eventinfostartnow.classList.remove('display-none')
 				}
 
 
@@ -1565,7 +1572,7 @@ class Calendar {
 								<div class="inputgroup">
 				 					<div class="text-14px text-primary width90px">Title</div>
 				 					<div class="inputgroupitem flex-1">
-										<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventtitle(event, '${item.id}')" id="infotitle" class="infoinput" placeholder="Add title" type="text" maxlength="2000"></input>
+										<input onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputeventtitle(event, '${item.id}')" id="infotitle" class="infoinput" placeholder="Add title" type="text" maxlength="2000"></input>
 										<span class="inputline"></span>
 					 				</div>
 								</div>
@@ -1594,13 +1601,13 @@ class Calendar {
 									<div class="inputgroup">
 				 						<div class="text-14px text-primary width90px">Starts</div>
 										<div class="inputgroupitem flex-1">
-											<input  onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventstartdate(event, '${item.id}')" id="infostartdate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
+											<input  onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputeventstartdate(event, '${item.id}')" id="infostartdate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
 											<span class="inputline"></span>
 					 					</div>
 	
 										${!Calendar.Event.isAllDay(item) ?
 									`<div class="inputgroupitem flex-1">
-												<input  onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventstartminute(event, '${item.id}')" id="infostarttime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
+												<input  onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputeventstartminute(event, '${item.id}')" id="infostarttime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
 												<span class="inputline"></span>
 											</div>` : ''
 								}
@@ -1612,12 +1619,12 @@ class Calendar {
 									<div class="inputgroup">
 										<div class="text-14px text-primary width90px">Ends</div>
 										<div class="inputgroupitem flex-1">
-											<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventenddate(event, '${item.id}')" id="infoenddate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
+											<input onclick="this.select()"  onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputeventenddate(event, '${item.id}')" id="infoenddate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
 											<span class="inputline"></span>
 					 					</div>
 										${!Calendar.Event.isAllDay(item) ?
 									`<div class="inputgroupitem flex-1">
-											<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventendminute(event, '${item.id}')" id="infoendtime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
+											<input onclick="this.select()"  onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputeventendminute(event, '${item.id}')" id="infoendtime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
 											<span class="inputline"></span>
 					 					</div>` : ''}
 									</div>
@@ -1643,11 +1650,11 @@ class Calendar {
 								<div class="inputgroup">
 									<div class="text-14px text-primary width90px">Due date</div>
 									<div class="inputgroupitem flex-1">
-										<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventduedate(event, '${item.id}')" id="infoendbeforedate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
+										<input onclick="this.select()"  onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputeventduedate(event, '${item.id}')" id="infoendbeforedate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
 										<span class="inputline"></span>
 									</div>
 									<div class="inputgroupitem flex-1">
-										<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventduetime(event, '${item.id}')" id="infoendbeforetime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
+										<input onclick="this.select()"  onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputeventduetime(event, '${item.id}')" id="infoendbeforetime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
 										<span class="inputline"></span>
 									</div>
 								</div>
@@ -1657,7 +1664,7 @@ class Calendar {
 								<div class="inputgroup">
 									<div class="text-14px text-primary width90px">Time needed</div>
 									<div class="inputgroupitem flex-1">
-										<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventduration(event, '${item.id}')" id="infoduration" class="infoinput inputdurationpicker" type="text" placeholder="Add duration"></input>
+										<input onclick="this.select()"  onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputeventduration(event, '${item.id}')" id="infoduration" class="infoinput inputdurationpicker" type="text" placeholder="Add duration"></input>
 										<span class="inputline"></span>
 								 </div>
 								</div>
@@ -3876,19 +3883,19 @@ function openfocus() {
 window.addEventListener('keydown', keydowndocument, false)
 function keydowndocument(event) {
 	if (!document.activeElement || document.activeElement === document.body) {
-		if (event.keyCode == 68 && calendartabs.includes(0)) { //D
+		if (event.key.toLowerCase() == 'd' && calendartabs.includes(0)) { //D
 			selectedeventid = null
 			calendarmode = 0
 			calendar.updateCalendar()
-		} else if (event.keyCode == 87 && calendartabs.includes(0)) { //W
+		} else if (event.key.toLowerCase() == 'w' && calendartabs.includes(0)) { //W
 			selectedeventid = null
 			calendarmode = 1
 			calendar.updateCalendar()
-		} else if (event.keyCode == 77 && calendartabs.includes(0)) { //M
+		} else if (event.key.toLowerCase() == 'm' && calendartabs.includes(0)) { //M
 			selectedeventid = null
 			calendarmode = 2
 			calendar.updateCalendar()
-		} else if ((event.keyCode == 8 || event.keyCode == 46) && calendartabs.includes(0)) { //backspace or delete
+		} else if ((event.key == 'Backspace' || event.key == 'Delete') && calendartabs.includes(0)) { //backspace or delete
 			let item = calendar.events.find(d => d.id == selectedeventid)
 			if (!item) return
 
@@ -3901,7 +3908,7 @@ function keydowndocument(event) {
 			calendar.updateTodo()
 			calendar.updateEvents()
 			calendar.updateHistory()
-		} else if (event.keyCode == 67 && (event.ctrlKey || event.metaKey) && calendartabs.includes(0)) { //ctrl C
+		} else if (event.key.toLowerCase() == 'c' && (event.ctrlKey || event.metaKey) && calendartabs.includes(0)) { //ctrl C
 			event.stopPropagation()
 			event.preventDefault()
 
@@ -3911,7 +3918,7 @@ function keydowndocument(event) {
 			if (Calendar.Event.isReadOnly(item)) return
 
 			copiedevent = JSON.stringify(item)
-		} else if (event.keyCode == 86 && (event.ctrlKey || event.metaKey) && calendartabs.includes(0)) { //ctrl V
+		} else if (event.key.toLowerCase() == 'v' && (event.ctrlKey || event.metaKey) && calendartabs.includes(0)) { //ctrl V
 			event.stopPropagation()
 			event.preventDefault()
 
@@ -3928,7 +3935,7 @@ function keydowndocument(event) {
 				calendar.updateEvents()
 				calendar.updateHistory()
 			}
-		} else if (event.keyCode == 90 && !event.shiftKey && (event.ctrlKey || event.metaKey)) { //ctrl Z
+		} else if (event.key.toLowerCase() == 'z' && !event.shiftKey && (event.ctrlKey || event.metaKey)) { //ctrl Z
 			event.stopPropagation()
 			event.preventDefault()
 
@@ -3943,7 +3950,7 @@ function keydowndocument(event) {
 			calendar.updateEvents()
 			calendar.updateTodo()
 			calendar.updateInfo()
-		} else if (((event.keyCode == 90 && event.shiftKey) || event.keyCode == 89) && (event.ctrlKey || event.metaKey)) { //ctrl shift Z or ctrl Y
+		} else if (((event.key.toLowerCase() == 'z' && event.shiftKey) || event.key.toLowerCase() == 'y') && (event.ctrlKey || event.metaKey)) { //ctrl shift Z or ctrl Y
 			event.stopPropagation()
 			event.preventDefault()
 
@@ -3958,11 +3965,11 @@ function keydowndocument(event) {
 			calendar.updateEvents()
 			calendar.updateTodo()
 			calendar.updateInfo()
-		} else if (event.keyCode == 37 && calendartabs.includes(0)) { //left arrow
+		} else if (event.key.toLowerCase() == 'ArrowLeft' && calendartabs.includes(0)) { //left arrow
 			prevcalendar()
-		} else if (event.keyCode == 39 && calendartabs.includes(0)) { //right arrow
+		} else if (event.key.toLowerCase() == 'ArrowRight' && calendartabs.includes(0)) { //right arrow
 			nextcalendar()
-		} else if (event.keyCode == 84 && calendartabs.includes(0)) { //T
+		} else if (event.key.toLowerCase() == 't' && calendartabs.includes(0)) { //T
 			todaycalendar()
 		}
 
@@ -5437,7 +5444,7 @@ function updatecalendaritempopup(id) {
 			<div class="inputgroup">
 				<div class="infotext width90px">Title</div>
 				<div class="inputgroupitem flex-1">
-					<input placeholder="Add title" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="renamecalendar(event, '${item.id}')" id="calendaritemtitle" class="infoinput" value="${item.title ? cleanInput(item.title) : ''}">
+					<input placeholder="Add title" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="renamecalendar(event, '${item.id}')" id="calendaritemtitle" class="infoinput" value="${item.title ? cleanInput(item.title) : ''}">
 						<span class="inputline"></span>
 					</input>
 				</div>
@@ -5446,7 +5453,7 @@ function updatecalendaritempopup(id) {
 			<div class="inputgroup">
 				<div class="infotext width90px">Description</div>
 				<div class="inputgroupitem flex-1">
-					<input placeholder="Add description" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="editdescriptioncalendar(event, '${item.id}')" id="calendaritemdescription" class="infoinput" value="${item.notes ? cleanInput(item.notes) : ''}">
+					<input placeholder="Add description" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="editdescriptioncalendar(event, '${item.id}')" id="calendaritemdescription" class="infoinput" value="${item.notes ? cleanInput(item.notes) : ''}">
 						<span class="inputline"></span>
 					</input>
 				</div>
@@ -7004,7 +7011,7 @@ function gettododata(item) {
 				<div class="inputgroup">
 					<div class="text-14px text-primary width90px">Title</div>
 					<div class="inputgroupitem">
-						<input class="infoinput width-192px" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtodotitle(event)" placeholder="Add title" id="edittodoinputtitle" value="${cleanInput(item.title)}" maxlength="2000"></input>
+						<input class="infoinput width-192px" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtodotitle(event)" placeholder="Add title" id="edittodoinputtitle" value="${cleanInput(item.title)}" maxlength="2000"></input>
 						<span class="inputline"></span>
 					</div>
 		 		</div>
@@ -7018,18 +7025,18 @@ function gettododata(item) {
 				<div class="inputgroup">
 					<div class="text-14px text-primary width90px">Due date</div>
 			 		<div class="inputgroupitem">
-						<input class="infoinput inputdatepicker width-192px" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtododuedate(event)" placeholder="Add date" onclick="this.select()" id="edittodoinputduedate" value="${endbeforedate ? getDMDYText(endbeforedate) : 'None'}"></input>
+						<input class="infoinput inputdatepicker width-192px" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtododuedate(event)" placeholder="Add date" onclick="this.select()" id="edittodoinputduedate" value="${endbeforedate ? getDMDYText(endbeforedate) : 'None'}"></input>
 						<span class="inputline"></span>
 					</div>
 		 			<div class="inputgroupitem">
-						<input class="infoinput inputtimepicker width-192px" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtododuetime(event)" placeholder="Add time"  onclick="this.select()" id="edittodoinputduetime" value="${endbeforedate ? getHMText(endbeforedate.getHours() * 60 + endbeforedate.getMinutes()) : 'None'}"></input>
+						<input class="infoinput inputtimepicker width-192px" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtododuetime(event)" placeholder="Add time"  onclick="this.select()" id="edittodoinputduetime" value="${endbeforedate ? getHMText(endbeforedate.getHours() * 60 + endbeforedate.getMinutes()) : 'None'}"></input>
 						<span class="inputline"></span>
 					</div>
 				</div>
 				<div class="inputgroup">
 					<div class="text-14px text-primary width90px">Time needed</div>
 			 		<div class="inputgroupitem">
-						<input onclick="this.select()" class="infoinput inputdurationpicker width-192px"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtododuration(event)" placeholder="Add duration" id="edittodoinputduration" value="${getDHMText(myduration)}"></input>
+						<input onclick="this.select()" class="infoinput inputdurationpicker width-192px"  onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtododuration(event)" placeholder="Add duration" id="edittodoinputduration" value="${getDHMText(myduration)}"></input>
 						<span class="inputline"></span>
 					</div>
 				</div>
@@ -7134,7 +7141,7 @@ function gettododata(item) {
 						</div>
 	
 	
-						<div class="gap-12px todoitembuttongroup height-fit justify-flex-end flex-row small:visibility-visible">
+						<div class="gap-6px todoitembuttongroup height-fit justify-flex-end flex-row small:visibility-visible">
 							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="startnow('${item.id}');gtag('event', 'button_click', { useraction: 'Start now - task' })">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 								<g>
