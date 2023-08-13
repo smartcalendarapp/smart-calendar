@@ -1850,9 +1850,13 @@ class Calendar {
 					}
 
 
-					//auto schedule
+					//event type
 					let eventinfosmartschedule = getElement('eventinfosmartschedule')
-					eventinfosmartschedule.innerHTML = getcheckbox(item.type == 1)
+					eventinfosmartschedule.innerHTML = `
+					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto>
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 ${item.type == 0 ? `background-blue` : ``} transition-duration-100" onclick="eventtype(0)">Event</div>
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 ${item.type == 1 ? `background-blue` : ``} transition-duration-100" onclick="eventtype(1)">Task</div>
+					</div>`
 
 					if (item.type == 1) {
 						//priority
@@ -1987,9 +1991,13 @@ class Calendar {
 
 
 				if(!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item)){
-					//auto schedule
+					//event type
 					let eventinfosmartschedule = getElement('eventinfosmartschedule')
-					eventinfosmartschedule.innerHTML = getcheckbox(item.type == 1)
+					eventinfosmartschedule.innerHTML = `
+					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto>
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 ${item.type == 0 ? `background-blue` : ``} transition-duration-100" onclick="eventtype(0)">Event</div>
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 ${item.type == 1 ? `background-blue` : ``} transition-duration-100" onclick="eventtype(1)">Task</div>
+					</div>`
 				}
 
 
@@ -8752,6 +8760,12 @@ function eventtype(type) {
 	calendar.updateInfo(true)
 	calendar.updateEvents()
 	calendar.updateHistory()
+
+	if (item.type == 0) {
+		gtag('event', 'button_click', { useraction: 'Event - event info' })
+	} else {
+		gtag('event', 'button_click', { useraction: 'Task - event info' })
+	}
 }
 
 //get borders
