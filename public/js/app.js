@@ -1957,10 +1957,10 @@ class Calendar {
 						
 						output.push(`
 						
-						<div class="display-flex flex-row align-center gap-12px">
+						<div class="display-flex flex-row flex-wrap-wrap gap-12px">
 							${item.type == 1 ? 
 							`<div class="text-primary display-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-tint-1 hover:background-tint-2 pointer-auto transition-duration-100 border-8px pointer" onclick="todocompleted(event, selectedeventid)">
-								<div class="pointer-none text-primary text-14px">${item.completed ? `Mark uncomplete` : 'Mark complete'}</div>
+								<div class="pointer-none nowrap text-primary text-14px">${item.completed ? `Mark uncomplete` : 'Mark complete'}</div>
 							</div>
 							<div class="text-white display-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-green hover:background-green-hover pointer-auto transition-duration-100 border-8px pointer" onclick="startnow(selectedeventid);gtag('event', 'button_click', { useraction: 'Start now - event info' })">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
@@ -1970,10 +1970,22 @@ class Calendar {
 									<path d="M210.365 128L45.6353 28.72" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
 									</g>
 								</svg>
-								<div class="pointer-none text-white text-14px">Start now</div>
+								<div class="pointer-none nowrap text-white text-14px">Start now</div>
 							</div>` : ''}
 						
-							<div class="text-14px padding-8px-12px tooltip infotopright background-blue hover:background-blue-hover text-white pointer-auto transition-duration-100 border-8px pointer popupbutton" id="remindmebutton" onclick="clickeventremindme('${item.id}')">${item.reminder.length == 0 ? 'Set reminder' : `Manage reminders (${item.reminder.length})`}</div>
+							<div class="text-14px display-flex flex-row align-center gap-6px padding-8px-12px tooltip infotopright background-blue hover:background-blue-hover text-white pointer-auto transition-duration-100 border-8px pointer popupbutton" id="remindmebutton" onclick="clickeventremindme('${item.id}')">
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 246 256" width="100%" class="buttonwhite">
+									<g>
+									<path d="M10 192.42L236 192.42" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+									<path d="M123 10.0582C130.922 9.7034 166.037 9.56067 191.111 54.719C202.976 76.0876 197.404 109.904 203.553 129.081C210.425 150.514 216.819 155.444 226.874 168.604C236.928 181.764 235.77 192.42 235.77 192.42" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+									<path d="M123 10.0582C115.078 9.7034 79.9633 9.56067 54.8887 54.719C43.0237 76.0876 48.5959 109.904 42.4474 129.081C35.5753 150.514 29.1808 155.444 19.1262 168.604C9.07153 181.764 10.23 192.42 10.23 192.42" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+									<path d="M78.4636 192.42C78.4636 192.42 81.2653 246 123.554 246C165.843 246 170.823 192.42 170.823 192.42" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+									</g>
+								</svg>
+
+
+								<div class="pointer-none nowrap text-white text-14px">${item.reminder.length == 0 ? 'Set reminder' : `Manage reminders (${item.reminder.length})`}</div>
+							</div>
 						</div>
 						`)
 					}
