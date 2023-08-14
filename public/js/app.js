@@ -1952,6 +1952,8 @@ class Calendar {
 					if (item.type == 1) {
 						output.push(`
 							<div class="infotext selecttext infotext"><span class="text-bold">Due</span> ${Calendar.Event.getDueText(item)}</div>`)
+						output.push(`
+							<div class="infotext selecttext infotext"><span class="text-bold">Takes</span> ${getDHMText(Math.floor((new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())/60000))}</div>`)
 					}
 
 					if (item.repeat.frequency != null && item.repeat.interval != null) {
