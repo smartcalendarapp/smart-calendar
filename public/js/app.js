@@ -1958,7 +1958,7 @@ class Calendar {
 						output.push(`
 						<div class="display-flex flex-row align-center gap-12px">
 							${item.type == 1 ? 
-							`<div class="text-primary display-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-blue hover:background-blue-hover pointer-auto transition-duration-100 border-8px pointer" onclick="todocompleted(event, selectedeventid)">
+							`<div class="text-primary display-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-tint-1 hover:background-tint-2 pointer-auto transition-duration-100 border-8px pointer" onclick="todocompleted(event, selectedeventid)">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge checkboxfilledprimary">
 									<g>
 									<path d="M128 7.19484C61.2812 7.19484 7.19484 61.2812 7.19484 128C7.19484 194.719 61.2812 248.805 128 248.805C194.719 248.805 248.805 194.719 248.805 128C248.805 61.2812 194.719 7.19484 128 7.19484ZM190.851 66.0048C194.206 65.7071 197.649 66.7098 200.436 69.0426C206.01 73.7082 206.753 81.9906 202.088 87.5645L115.524 190.969C110.264 197.253 100.582 197.253 95.3213 190.969L52.0249 139.266C47.3593 133.693 48.1026 125.41 53.6765 120.745C59.2504 116.079 67.5623 116.822 72.2279 122.396L105.408 162.035L181.885 70.6942C184.217 67.9073 187.495 66.3024 190.851 66.0048Z" fill-rule="nonzero" opacity="1" ></path>
@@ -1966,9 +1966,9 @@ class Calendar {
 									</g>
 								</svg>
 
-								<div class="pointer-none text-white text-14px">${item.completed ? `Mark uncomplete` : 'Mark complete'}</div>
+								<div class="pointer-none text-primary text-14px">${item.completed ? `Mark uncomplete` : 'Mark complete'}</div>
 							</div>
-							<div class="text-white display-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-orange hover:background-orange-hover pointer-auto transition-duration-100 border-8px pointer" onclick="startnow(selectedeventid);gtag('event', 'button_click', { useraction: 'Start now - event info' })">
+							<div class="text-white display-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright smartbuttonbackground pointer-auto transition-duration-100 border-8px pointer" onclick="startnow(selectedeventid);gtag('event', 'button_click', { useraction: 'Start now - event info' })">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 									<g>
 									<path d="M45.6353 28.72L45.6353 227.28" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -1976,7 +1976,7 @@ class Calendar {
 									<path d="M210.365 128L45.6353 28.72" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
 									</g>
 								</svg>
-								<div class="pointer-nonetext-white text-14px">Start now</div>
+								<div class="pointer-none text-white text-14px">Start now</div>
 							</div>` : ''}
 						
 							<div class="text-14px padding-8px-12px tooltip infotopright background-blue hover:background-blue-hover text-white pointer-auto transition-duration-100 border-8px pointer popupbutton" id="remindmebutton" onclick="clickeventremindme('${item.id}')">${item.reminder.length == 0 ? 'Set reminder' : `Manage reminders (${item.reminder.length})`}</div>
