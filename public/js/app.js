@@ -1853,9 +1853,9 @@ class Calendar {
 					//event type
 					let eventinfosmartschedule = getElement('eventinfosmartschedule')
 					eventinfosmartschedule.innerHTML = `
-					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto>
-						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(0)">Meeting</div>
-						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(1)">Task</div>
+					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto">
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(0)">Meeting</div>
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(1)">Task</div>
 					</div>`
 
 					if (item.type == 1) {
@@ -1994,9 +1994,9 @@ class Calendar {
 					//event type
 					let eventinfosmartschedule = getElement('eventinfosmartschedule')
 					eventinfosmartschedule.innerHTML = `
-					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto>
-						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(0)">Meeting</div>
-						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(1)">Task</div>
+					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto">
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(0)">Meeting</div>
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(1)">Task</div>
 					</div>`
 				}
 
