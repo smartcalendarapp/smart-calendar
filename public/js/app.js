@@ -1521,7 +1521,6 @@ class Calendar {
 
 				let eventinfoedit = getElement('eventinfoedit')
 				let eventinfodelete = getElement('eventinfodelete')
-				let eventinfostartnow = getElement('eventinfostartnow')
 
 				//cannot edit or delete event
 				if (Calendar.Event.isReadOnly(item)) {
@@ -1530,17 +1529,6 @@ class Calendar {
 				} else {
 					eventinfoedit.classList.remove('display-none')
 					eventinfodelete.classList.remove('display-none')
-				}
-
-
-				let eventinfomarkcomplete = getElement('eventinfomarkcomplete')
-				if(item.type != 1 || Calendar.Event.isReadOnly(item)){
-					eventinfostartnow.classList.add('display-none')
-					eventinfomarkcomplete.classList.add('display-none')
-				}else{
-					eventinfostartnow.classList.remove('display-none')
-					eventinfomarkcomplete.classList.remove('display-none')
-					eventinfomarkcomplete.innerHTML = `Mark ${item.completed == 1 ? 'uncomplete' : 'complete'}`
 				}
 
 
@@ -1969,7 +1957,23 @@ class Calendar {
 						</div>`)
 					}
 
-					output.push(`<div class="text-bold schedulebutton popupbutton" id="remindmebutton" onclick="clickeventremindme('${item.id}')">${item.reminder.length == 0 ? 'Set reminder' : `Manage reminders (${item.reminder.length})`}</div>`)
+
+					if(!Calendar.Event.isReadOnly(item) && item.type == 1){
+						output.push('<div class="horizontalbar"></div>')
+						
+						output.push(`
+						<div class="display-flex flex-row align-center gap-12px">
+							<div class="text-bold text-primary text-14px padding-8px-12px tooltip infotopright background-tint-1 hover:background-tint-2 pointer-auto transition-duration-100 border-8px pointer" onclick="todocompleted(event, selectedeventid)">
+								${item.completed ? `Mark uncomplete` : 'Mark complete'}
+							</div>
+							<div class="text-bold text-white text-14px padding-8px-12px tooltip infotopright background-green pointer-auto transition-duration-100 border-8px pointer" onclick="startnow(selectedeventid);gtag('event', 'button_click', { useraction: 'Start now - event info' })">
+								Start now
+							</div>
+						
+							<div class="text-bold text-14px padding-8px-12px tooltip infotopright background-blue hover:background-blue-hover text-white pointer-auto transition-duration-100 border-8px pointer popupbutton" id="remindmebutton" onclick="clickeventremindme('${item.id}')">${item.reminder.length == 0 ? 'Set reminder' : `Manage reminders (${item.reminder.length})`}</div>
+						</div>
+						`)
+					}
 
 					info.innerHTML = output.join('')
 				}
