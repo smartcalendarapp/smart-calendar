@@ -1581,7 +1581,7 @@ class Calendar {
 			 
 							<div class="infogroup">
 			 					<div class="inputgroup">
-
+								 	<div class="text-14px text-primary width90px">Type</div>
 									<div class="display-flex" id="eventinfosmartschedule"></div>
 				 				</div>
 							</div>`)
@@ -1943,7 +1943,7 @@ class Calendar {
 					if(!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item)){
 						output.push(`<div class="infogroup">
 							<div class="inputgroup">
-
+								
 								<div class="display-flex" id="eventinfosmartschedule"></div></div>
 							</div>
 						</div>`)
@@ -9349,14 +9349,15 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 		return getcalculatedpriority(b) - getcalculatedpriority(a)
 	})
 
-	//check for todos that are currently being done
+
+	//check for todos that are currently being done - don't reschedule first one
 	let doingtodos = sortstartdate(smartevents).filter(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now())
 	if(doingtodos[0]){
 		smartevents = smartevents.filter(d => d.id != doingtodos[0].id)
 	}
 
 
-	//check for todos that haven't been done
+	//check for todos that haven't been done - ask to reschedule them
 	let passedtodos = smartevents.filter(d => new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() <= Date.now())
 	if(resolvedpassedtodos){
 		passedtodos = passedtodos.filter(d => !resolvedpassedtodos.find(f => f == d.id))
@@ -9449,7 +9450,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 		for (let item of smartevents) {
 			donesmartevents.push(item)
 
-			let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !Calendar.Event.isSchedulable(d))
+			let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !smartevents.find(g => g.id == d.id))
 
 			//get basic variables
 			let startafterdate = new Date()
@@ -9555,7 +9556,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 		for (let item of smartevents) {
 			donesmartevents.push(item)
 
-			let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !Calendar.Event.isSchedulable(d))
+			let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !smartevents.find(g => g.id == d.id))
 
 			//get basic variables
 			let startafterdate = new Date()
