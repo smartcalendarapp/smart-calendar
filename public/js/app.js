@@ -1504,7 +1504,6 @@ class Calendar {
 				div.classList.remove('selectedbuttongrey')
 			}
 		}
-
 	}
 
 	updateInfo(updateStructure, showinfo) {
@@ -1582,15 +1581,8 @@ class Calendar {
 			 
 							<div class="infogroup">
 			 					<div class="inputgroup">
-				 					<div class="display-flex flex-column">
-										<div class="width90px text-14px text-blue  tooltip" id="eventinfosmartscheduletext">Type
-											<span class="tooltiptextright">Meetings are fixed-time, tasks are auto-scheduled. </span>
-										</div>
-					 				</div>
 
 									<div class="display-flex" id="eventinfosmartschedule"></div>
-					
-					 				</div>
 				 				</div>
 							</div>`)
 
@@ -1854,7 +1846,7 @@ class Calendar {
 					let eventinfosmartschedule = getElement('eventinfosmartschedule')
 					eventinfosmartschedule.innerHTML = `
 					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto">
-						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(0)">Meeting</div>
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(0)">Event</div>
 						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(1)">Task</div>
 					</div>`
 
@@ -1951,15 +1943,8 @@ class Calendar {
 					if(!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item)){
 						output.push(`<div class="infogroup">
 							<div class="inputgroup">
-								<div class="display-flex flex-column">
-									<div class="text-14px text-blue tooltip" id="eventinfosmartscheduletext">Type
-										<span class="tooltiptextright">Meetings are fixed-time, tasks are auto-scheduled. </span>
-									</div>
-								</div>
 
-								<div class="display-flex" id="eventinfosmartschedule"></div>
-
-								</div>
+								<div class="display-flex" id="eventinfosmartschedule"></div></div>
 							</div>
 						</div>`)
 					}
@@ -1995,7 +1980,7 @@ class Calendar {
 					let eventinfosmartschedule = getElement('eventinfosmartschedule')
 					eventinfosmartschedule.innerHTML = `
 					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto">
-						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(0)">Meeting</div>
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(0)">Event</div>
 						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(1)">Task</div>
 					</div>`
 				}
@@ -7870,6 +7855,7 @@ function startnow(id){
 	calendar.updateTodo()
 	calendar.updateEvents()
 	calendar.updateHistory()
+	calendar.updateInfo()
 }
 
 function deletetodo(id) {
@@ -9359,13 +9345,19 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 	let oldsmartevents = deepCopy(smartevents)
 	let oldcalendarevents = deepCopy(calendar.events)
 
-	smartevents = smartevents.filter(d => Calendar.Event.isSchedulable(d) && (new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() > Date.now() || new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now())).sort((a, b) => {
+	smartevents = smartevents.filter(d => Calendar.Event.isSchedulable(d)).sort((a, b) => {
 		return getcalculatedpriority(b) - getcalculatedpriority(a)
 	})
 
+	//check for todos that are currently being done
+	let doingtodos = sortstartdate(smartevents).filter(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now())
+	if(doingtodos[0]){
+		smartevents = smartevents.filter(d => d.id != doingtodos[0].id)
+	}
+
 
 	//check for todos that haven't been done
-	let passedtodos = smartevents.filter(d => new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now())
+	let passedtodos = smartevents.filter(d => new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() <= Date.now())
 	if(resolvedpassedtodos){
 		passedtodos = passedtodos.filter(d => !resolvedpassedtodos.find(f => f == d.id))
 	}
@@ -9399,7 +9391,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 
 		//show popup
 		let rescheduletaskpopuptext = getElement('rescheduletaskpopuptext')
-		rescheduletaskpopuptext.innerHTML = `Your task <span class="text-bold">${overdueitem.title ? cleanInput(overdueitem.title) : 'New Event'}</span> was scheduled to be completed by now. Have you completed it?`
+		rescheduletaskpopuptext.innerHTML = `We want to keep your schedule up-to-date. Have you completed your task <span class="text-bold">${overdueitem.title ? cleanInput(overdueitem.title) : 'New Event'}</span>?`
 
 		let rescheduletaskpopupbuttons = getElement('rescheduletaskpopupbuttons')
 		rescheduletaskpopupbuttons.innerHTML = `
