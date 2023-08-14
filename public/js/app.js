@@ -1583,12 +1583,12 @@ class Calendar {
 							<div class="infogroup">
 			 					<div class="inputgroup">
 				 					<div class="display-flex flex-column">
-										<div class="width90px text-14px text-blue  tooltip" id="eventinfosmartscheduletext">Auto-schedule
-											<span class="tooltiptextright">Automatically schedule your event for the best time.</span>
+										<div class="width90px text-14px text-blue  tooltip" id="eventinfosmartscheduletext">Type
+											<span class="tooltiptextright">Meetings are fixed-time, tasks are auto-scheduled. </span>
 										</div>
 					 				</div>
 
-									<div class="todoitemcheckbox display-flex" onclick="toggleeventtype()" id="eventinfosmartschedule"></div>
+									<div class="display-flex" id="eventinfosmartschedule"></div>
 					
 					 				</div>
 				 				</div>
@@ -1854,7 +1854,7 @@ class Calendar {
 					let eventinfosmartschedule = getElement('eventinfosmartschedule')
 					eventinfosmartschedule.innerHTML = `
 					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto>
-						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(0)">Event</div>
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(0)">Meeting</div>
 						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(1)">Task</div>
 					</div>`
 
@@ -1952,12 +1952,12 @@ class Calendar {
 						output.push(`<div class="infogroup">
 							<div class="inputgroup">
 								<div class="display-flex flex-column">
-									<div class="text-14px text-blue  tooltip" id="eventinfosmartscheduletext">Auto-schedule
-										<span class="tooltiptextright">Automatically schedule your event for the best time.</span>
+									<div class="text-14px text-blue tooltip" id="eventinfosmartscheduletext">Type
+										<span class="tooltiptextright">Meetings are fixed-time, tasks are auto-scheduled. </span>
 									</div>
 								</div>
 
-								<div class="todoitemcheckbox display-flex" onclick="toggleeventtype()" id="eventinfosmartschedule"></div>
+								<div class="display-flex" id="eventinfosmartschedule"></div>
 
 								</div>
 							</div>
@@ -1995,7 +1995,7 @@ class Calendar {
 					let eventinfosmartschedule = getElement('eventinfosmartschedule')
 					eventinfosmartschedule.innerHTML = `
 					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto>
-						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(0)">Event</div>
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(0)">Meeting</div>
 						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(1)">Task</div>
 					</div>`
 				}
@@ -8727,17 +8727,6 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 }
 
 
-//toggle event type
-function toggleeventtype() {
-	let item = calendar.events.find(d => d.id == selectedeventid)
-	if (item.type == 0) {
-		eventtype(1)
-		gtag('event', 'button_click', { useraction: 'Check auto-schedule - event info' })
-	} else {
-		eventtype(0)
-		gtag('event', 'button_click', { useraction: 'Uncheck auto-schedule - event info' })
-	}
-}
 
 //event type
 function eventtype(type) {
