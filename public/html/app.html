@@ -1125,7 +1125,14 @@
 	
 	<div class="eventinfowidth eventinfo popup eventinfomaxheight hiddenpopup small:max-height-revert small:width-full small:top-0 small:left-0" id="eventinfo">
 		<div class="infotop justify-space-between cursormove" onmousedown="clickeventinfo(event)" id="drageventinfo">
-			<div></div>
+			<div class="infotoprightgroup">
+				<div class="backdrop-blur text-primary text-14px background-tint-1 padding-8px-12px tooltip infotopright hover:background-tint-2 pointer-auto transition-duration-100 border-8px pointer" onclick="startnow(selectedeventid);gtag('event', 'button_click', { useraction: 'Start now - event info' })" id="eventinfomarkcomplete">
+					Mark complete
+				</div>
+				<div class="backdrop-blur text-primary text-14px background-tint-1 padding-8px-12px tooltip infotopright hover:background-tint-2 pointer-auto transition-duration-100 border-8px pointer" onclick="startnow(selectedeventid);gtag('event', 'button_click', { useraction: 'Start now - event info' })" id='eventinfostartnow'>
+					Start now
+				</div>
+			</div>
 			
 			<div class="infotoprightgroup">
 				<div class="infotopright pointer tooltip" onclick="clickeventinfodelete(event);gtag('event', 'button_click', { useraction: 'Delete - event info' })" id="eventinfodelete">
@@ -1153,18 +1160,6 @@
 				</div>
 				
 				<div class="infotopright pointer tooltip" onclick="clickeventinfoedit(event)" id="eventinfoedit">
-				</div>
-
-				<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="startnow(selectedeventid);gtag('event', 'button_click', { useraction: 'Start now - event info' })" id='eventinfostartnow'>
-					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-					<g>
-					<path d="M45.6353 28.72L45.6353 227.28" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-					<path d="M210.365 128L45.6353 227.28" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-					<path d="M210.365 128L45.6353 28.72" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-					</g>
-					</svg>
-
-					<span class="tooltiptextcenter">Start now</span>
 				</div>
 				
 				<div class="infotopright pointer" onclick="closeeventinfo(event)">

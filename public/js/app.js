@@ -1532,11 +1532,17 @@ class Calendar {
 					eventinfodelete.classList.remove('display-none')
 				}
 
+
+				let eventinfomarkcomplete = getElement('eventinfomarkcomplete')
 				if(item.type != 1 || Calendar.Event.isReadOnly(item)){
 					eventinfostartnow.classList.add('display-none')
+					eventinfomarkcomplete.classList.add('display-none')
 				}else{
 					eventinfostartnow.classList.remove('display-none')
+					eventinfomarkcomplete.classList.remove('display-none')
+					eventinfomarkcomplete.innerHTML = `Mark ${item.completed == 1 ? 'uncomplete' : 'complete'}`
 				}
+
 
 
 				if (editinfo) {
@@ -1560,7 +1566,6 @@ class Calendar {
 						//important and completed
 						infodata.push(`<div class="infogroup">
 							<div class="display-flex flex-row align-center gap-12px width-full">
-								${item.type == 1 ? `<div class="display-flex flex-row" id="infocompleted"></div>` : ''}
 				 				<div class="infotitle" id="eventinfotitle"></div>
 								${item.type == 1 ? `<div class="display-flex flex-row" id="infopriority"></div>` : ''}
 							</div>
@@ -1577,14 +1582,14 @@ class Calendar {
 								</div>
 							</div>
 			 
-			 				<div class="horizontalbar"></div>
-			 
 							<div class="infogroup">
 			 					<div class="inputgroup">
 								 	<div class="text-14px text-primary width90px">Type</div>
 									<div class="display-flex" id="eventinfosmartschedule"></div>
 				 				</div>
-							</div>`)
+							</div>
+							
+							<div class="horizontalbar"></div>`)
 
 						if (item.type == 0) {
 							infodata.push(`
@@ -1861,13 +1866,6 @@ class Calendar {
 								:
 								''
 							}`
-
-						//completed
-						let infocompleted = getElement('infocompleted')
-						infocompleted.innerHTML = `
-						<div class="todoitemcheckbox tooltip display-flex" onclick="eventcompleted(event, '${item.id}')">
-							${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
-						</div>`
 					}
 
 					//repeat
