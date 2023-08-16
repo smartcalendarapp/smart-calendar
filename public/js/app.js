@@ -947,7 +947,7 @@ class Calendar {
 				for (let item of calendar.events) {
 					let olditem = oldeventsdata.find(d => d.id == item.id)
 					if (!olditem) { //create event
-						olditem.lastmodified = Date.now()
+						item.lastmodified = Date.now()
 					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit event
 						//check for change
 						if (new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() != new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute).getTime() || new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() != new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute).getTime() || item.title != olditem.title || item.notes != olditem.notes || getRecurrenceString(item) != getRecurrenceString(olditem)) {
@@ -959,7 +959,7 @@ class Calendar {
 				for (let item of calendar.calendars) {
 					let olditem = oldcalendarsdata.find(d => d.id == item.id)
 					if (!olditem) { //create calendar
-						olditem.lastmodified = Date.now()
+						item.lastmodified = Date.now()
 					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit calendar
 						//check for change
 						olditem.lastmodified = Date.now()
