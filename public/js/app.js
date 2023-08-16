@@ -974,38 +974,38 @@ class Calendar {
 					for (let item of calendar.events) {
 						let olditem = oldeventsdata.find(d => d.id == item.id)
 						if (!olditem) { //create event
-							requestchanges.push({ type: 'createevent', item: item })
+							requestchanges.push({ type: 'createevent', item: item, requestid: generateID() })
 						} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit event
 							//check for change
 							if (new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() != new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute).getTime() || new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() != new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute).getTime() || item.title != olditem.title || item.notes != olditem.notes || getRecurrenceString(item) != getRecurrenceString(olditem)) {
-								requestchanges.push({ type: 'editevent', item: item, oldgooglecalendarid: olditem.googlecalendarid })
+								requestchanges.push({ type: 'editevent', item: item, oldgooglecalendarid: olditem.googlecalendarid, requestid: generateID() })
 							}
 						}
 					}
 					for (let item of oldeventsdata) {
 						if (!calendar.events.find(d => d.id == item.id)) { //delete event
-							requestchanges.push({ type: 'deleteevent', googleeventid: item.googleeventid, googlecalendarid: item.googlecalendarid })
+							requestchanges.push({ type: 'deleteevent', googleeventid: item.googleeventid, googlecalendarid: item.googlecalendarid, requestid: generateID() })
 						}
 					}
 
 					for (let item of calendar.calendars) {
 						let olditem = oldcalendarsdata.find(d => d.id == item.id)
 						if (!olditem) { //create calendar
-							requestchanges.push({ type: 'createcalendar', item: item })
+							requestchanges.push({ type: 'createcalendar', item: item, requestid: generateID() })
 						} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit calendar
 							//check for change
 							if (olditem.title != item.title || olditem.notes != item.notes) {
-								requestchanges.push({ type: 'editcalendar', item: item })
+								requestchanges.push({ type: 'editcalendar', item: item, requestid: generateID() })
 							}
 						}
 					}
 					for (let item of oldcalendarsdata) {
 						if (!calendar.calendars.find(d => d.id == item.id)) { //delete calendar
-							requestchanges.push({ type: 'deletecalendar', googleid: item.googleid })
+							requestchanges.push({ type: 'deletecalendar', googleid: item.googleid, requestid: generateID() })
 						}
 					}
 
-					setclientgooglecalendar(requestchanges)
+					setclientgooglecalendar()
 				}
 
 			}
@@ -5178,7 +5178,7 @@ async function setclientgooglecalendar(requestchanges) {
 			const data = await response.json()
 
 			//make changes
-			let responsechanges = data.data
+			let responsechanges = data.data.responsechanges
 			for (let responsechange of responsechanges) {
 				if (responsechange.type == 'createevent') {
 					let item = calendar.events.find(d => d.id == responsechange.id)
