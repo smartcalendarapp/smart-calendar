@@ -1005,7 +1005,7 @@ class Calendar {
 						}
 					}
 
-					setclientgooglecalendar()
+					setclientgooglecalendar(requestchanges)
 				}
 
 			}
