@@ -5178,7 +5178,7 @@ async function setclientgooglecalendar(requestchanges) {
 			const data = await response.json()
 
 			//make changes
-			let responsechanges = data.data.responsechanges
+			let responsechanges = data.responsechanges
 			for (let responsechange of responsechanges) {
 				if (responsechange.type == 'createevent') {
 					let item = calendar.events.find(d => d.id == responsechange.id)
