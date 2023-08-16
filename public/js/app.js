@@ -627,6 +627,7 @@ class Calendar {
 			this.color = 3
 			this.id = generateID()
 			this.googleid = null
+			this.lastmodified = 0
 		}
 	}
 
@@ -688,6 +689,7 @@ class Calendar {
 					endminute: null
 				}
 			}
+			this.lastmodified = 0
 		}
 
 		static isEvent(item){
@@ -931,12 +933,40 @@ class Calendar {
 				let oldeventsdata = JSON.parse(historydata[historydata.length - 1]).events
 				let oldcalendarsdata = JSON.parse(historydata[historydata.length - 1]).calendars
 
-				//dynamic schedule
+
+				//auto schedule
 				if (smartschedule != false) {
 					if (JSON.stringify(neweventsdata) != JSON.stringify(oldeventsdata)) {
 						startAutoSchedule([], false)
 					}
 				}
+
+
+
+				//last modified changes
+				for (let item of calendar.events) {
+					let olditem = oldeventsdata.find(d => d.id == item.id)
+					if (!olditem) { //create event
+						olditem.lastmodified = Date.now()
+					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit event
+						//check for change
+						if (new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() != new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute).getTime() || new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() != new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute).getTime() || item.title != olditem.title || item.notes != olditem.notes || getRecurrenceString(item) != getRecurrenceString(olditem)) {
+							item.lastmodified = Date.now()
+						}
+					}
+				}
+
+				for (let item of calendar.calendars) {
+					let olditem = oldcalendarsdata.find(d => d.id == item.id)
+					if (!olditem) { //create calendar
+						olditem.lastmodified = Date.now()
+					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit calendar
+						//check for change
+						olditem.lastmodified = Date.now()
+					}
+				}
+
+
 
 				//google calendar changes
 				if (syncgoogle != false && calendar.settings.issyncingtogooglecalendar) {
@@ -5347,6 +5377,11 @@ function getdatafromgooglecalendar(listdata) {
 			//modify existing event or create new event
 			let myevent = calendar.events.find(d => d.googleeventid == id)
 			if (myevent) {
+				//check for last modified
+				if(new Date(event.updated).getTime() < myevent.lastmodified){
+					continue
+				}
+
 				myevent.start.year = startdate.getFullYear()
 				myevent.start.month = startdate.getMonth()
 				myevent.start.day = startdate.getDate()

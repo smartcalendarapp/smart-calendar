@@ -253,9 +253,9 @@ class User{
 const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, sleep: { startminute: 1380, endminute: 420 }, eventspacing: 15, militarytime: false, theme: 0 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, syncgooglecalendar: { deletedevents: [], editedevents: [], createdevents: [], createdcalendars: [], editedcalendars: [], deletedcalendars: [] }, onboarding: { start: false, connectcalendars: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickaddtitle: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: false }
 const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null }
-const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, title: null, type: 0, notes: null, completed: false, priority: 0, color: 3, reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } } }
+const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, title: null, type: 0, notes: null, completed: false, priority: 0, color: 3, reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0 }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, completed: false, priority: 0, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } } }
-const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, color: 3, isprimary: false, subscriptionurl: null }
+const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, color: 3, isprimary: false, subscriptionurl: null, lastmodified: 0  }
 const MODELNOTIFICATION = { id: null, read: false, timestamp: null }
 
 
@@ -1179,8 +1179,8 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 		}
 
 		if(!req.session.tokens && !user.accountdata.refreshtoken) {
-      return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
-    }
+			return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
+		}
 
 		if(!req.session.tokens || !req.session.tokens.access_token){
 			let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
