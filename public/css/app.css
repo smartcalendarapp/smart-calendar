@@ -1462,6 +1462,10 @@ body {
 	flex-shrink: 0
 }
 
+.width120px{
+	width:120px;
+}
+
 
 .collapsible {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, max-height 0.2s ease-in-out;
