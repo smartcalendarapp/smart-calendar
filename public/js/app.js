@@ -2152,12 +2152,7 @@ class Calendar {
 	updateTodoList() {
 		let output = []
 
-		let todolistnotscheduledyettext = getElement('todolistnotscheduledyettext')
-		let todolistscheduledtaskstext = getElement('todolistscheduledtaskstext')
-		todolistnotscheduledyettext.innerHTML = calendar.todos.length
-		todolistscheduledtaskstext.innerHTML = calendar.events.filter(d => d.type == 1).length
-
-		if(todomode == 0){
+		if(true){
 			let mytodos = calendar.todos
 
 			let duetodos = sortduedate(mytodos.filter(d => d.endbefore.year != null && d.endbefore.month != null && d.endbefore.day != null && d.endbefore.minute != null))
@@ -2170,7 +2165,7 @@ class Calendar {
 				let item = duetodos[i]
 				let tempduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 				if (!lastduedate || tempduedate.getDate() != lastduedate.getDate() || lastduedate.getMonth() != tempduedate.getMonth() || lastduedate.getFullYear() != tempduedate.getFullYear()) {
-					tempoutput.push(`<div class="text-18px text-quaternary">Due ${getDMDYText(tempduedate)}</div>`)
+					tempoutput.push(`<div class="text-18px text-quaternary">Not scheduled • Due ${getDMDYText(tempduedate)}</div>`)
 				}
 
 				tempoutput2.push(gettododata(item))
@@ -2193,7 +2188,7 @@ class Calendar {
 			for (let i = 0; i < notduetodos.length; i++) {
 				let item = notduetodos[i]
 				if (i == 0) {
-					tempoutput.push(`<div class="text-18px text-quaternary">No due date</div>`)
+					tempoutput.push(`<div class="text-18px text-quaternary">Not scheduled • No due date</div>`)
 				}
 				tempoutput2.push(gettododata(item))
 				if (i == notduetodos.length - 1) {
@@ -2212,7 +2207,9 @@ class Calendar {
 				alltodolist.innerHTML = output.join('')
 			}
 			
-		}else if(todomode == 1){
+		}
+		
+		if(true){
 			let mytodos = calendar.events.filter(d => d.type == 1)
 			let sortedtodos = sortstartdate(mytodos)
 
