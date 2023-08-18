@@ -2158,7 +2158,6 @@ class Calendar {
 			let sortedtodos = sortstartdate(mytodos)
 
 
-			let laststartdate;
 			let tempoutput = []
 			let tempoutput2 = []
 			for (let i = 0; i < sortedtodos.length; i++) {
@@ -2167,9 +2166,7 @@ class Calendar {
 
 				tempoutput2.push(gettododata(item))
 
-				let nextitem = sortedtodos[i + 1]
-				let nextstartdate = nextitem ? new Date(nextitem.start.year, nextitem.start.month, nextitem.start.day, 0, nextitem.start.minute) : null
-				if (!nextstartdate || nextstartdate.getDate() != tempstartdate.getDate() || nextstartdate.getMonth() != tempstartdate.getMonth() || nextstartdate.getFullYear() != tempstartdate.getFullYear()) {
+				if (i == sortedtodos.length - 1) {
 					output.push(`<div class="display-flex flex-column gap-12px">
 						${tempoutput.join('')}
 				
@@ -2179,7 +2176,6 @@ class Calendar {
 					tempoutput2 = []
 				}
 
-				laststartdate = tempstartdate
 			}
 		}
 
