@@ -2166,7 +2166,7 @@ class Calendar {
 					tempoutput.push(`<div class="text-18px text-bold text-green">Scheduled tasks</div>`)
 				}
 
-				let item = duetodos[i]
+				let item = sortedtodos[i]
 				let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 				if (!laststartdate || tempstartdate.getDate() != laststartdate.getDate() || laststartdate.getMonth() != tempstartdate.getMonth() || laststartdate.getFullYear() != tempstartdate.getFullYear()) {
 					tempoutput.push(`<div class="text-18px text-quaternary">Scheduled for ${getDMDYText(tempstartdate)}</div>`)
