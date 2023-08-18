@@ -2162,14 +2162,10 @@ class Calendar {
 			let tempoutput = []
 			let tempoutput2 = []
 			for (let i = 0; i < sortedtodos.length; i++) {
-				if(i == 0){
-					tempoutput.push(`<div class="text-18px text-bold text-green">Scheduled tasks</div>`)
-				}
-
 				let item = sortedtodos[i]
 				let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 				if (!laststartdate || tempstartdate.getDate() != laststartdate.getDate() || laststartdate.getMonth() != tempstartdate.getMonth() || laststartdate.getFullYear() != tempstartdate.getFullYear()) {
-					tempoutput.push(`<div class="text-18px text-quaternary">Scheduled for ${getDMDYText(tempstartdate)}</div>`)
+					tempoutput.push(`<div class="text-18px text-green text-bold">Scheduled for ${getDMDYText(tempstartdate)}</div>`)
 				}
 
 				tempoutput2.push(gettododata(item))
@@ -2201,14 +2197,10 @@ class Calendar {
 			let tempoutput = []
 			let tempoutput2 = []
 			for (let i = 0; i < duetodos.length; i++) {
-				if(i == 0){
-					tempoutput.push(`<div class="text-18px text-bold text-blue">Not scheduled tasks</div>`)
-				}
-
 				let item = duetodos[i]
 				let tempduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 				if (!lastduedate || tempduedate.getDate() != lastduedate.getDate() || lastduedate.getMonth() != tempduedate.getMonth() || lastduedate.getFullYear() != tempduedate.getFullYear()) {
-					tempoutput.push(`<div class="text-18px text-quaternary">Not scheduled • Due ${getDMDYText(tempduedate)}</div>`)
+					tempoutput.push(`<div class="text-18px text-quaternary">Due ${getDMDYText(tempduedate)}</div>`)
 				}
 
 				tempoutput2.push(gettododata(item))
@@ -2231,7 +2223,7 @@ class Calendar {
 			for (let i = 0; i < notduetodos.length; i++) {
 				let item = notduetodos[i]
 				if (i == 0) {
-					tempoutput.push(`<div class="text-18px text-quaternary">Not scheduled • No due date</div>`)
+					tempoutput.push(`<div class="text-18px text-quaternary">No due date</div>`)
 				}
 				tempoutput2.push(gettododata(item))
 				if (i == notduetodos.length - 1) {
