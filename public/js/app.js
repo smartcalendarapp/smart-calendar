@@ -2158,15 +2158,25 @@ class Calendar {
 			let sortedtodos = sortstartdate(mytodos)
 
 
+			let laststartdate;
 			let tempoutput = []
 			let tempoutput2 = []
 			for (let i = 0; i < sortedtodos.length; i++) {
-				let item = sortedtodos[i]
-				tempoutput.push(`<div class="text-18px text-green text-bold">Scheduled in calendar</div>`)
+				if(i == 0){
+					tempoutput.push(`<div class="text-18px text-bold text-green">Scheduled tasks</div>`)
+				}
+
+				let item = duetodos[i]
+				let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+				if (!laststartdate || tempstartdate.getDate() != laststartdate.getDate() || laststartdate.getMonth() != tempstartdate.getMonth() || laststartdate.getFullYear() != tempstartdate.getFullYear()) {
+					tempoutput.push(`<div class="text-18px text-quaternary">Scheduled for ${getDMDYText(tempstartdate)}</div>`)
+				}
 
 				tempoutput2.push(gettododata(item))
 
-				if (i == sortedtodos.length - 1) {
+				let nextitem = sortedtodos[i + 1]
+				let nextstartdate = nextitem ? new Date(nextitem.start.year, nextitem.start.month, nextitem.start.day, 0, nextitem.start.minute) : null
+				if (!nextstartdate || nextstartdate.getDate() != tempstartdate.getDate() || nextstartdate.getMonth() != tempstartdate.getMonth() || nextstartdate.getFullYear() != tempstartdate.getFullYear()) {
 					output.push(`<div class="display-flex flex-column gap-12px">
 						${tempoutput.join('')}
 				
@@ -2176,6 +2186,7 @@ class Calendar {
 					tempoutput2 = []
 				}
 
+				laststartdate = tempstartdate
 			}
 		}
 
@@ -2190,10 +2201,14 @@ class Calendar {
 			let tempoutput = []
 			let tempoutput2 = []
 			for (let i = 0; i < duetodos.length; i++) {
+				if(i == 0){
+					tempoutput.push(`<div class="text-18px text-bold text-blue">Not scheduled tasks</div>`)
+				}
+
 				let item = duetodos[i]
 				let tempduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 				if (!lastduedate || tempduedate.getDate() != lastduedate.getDate() || lastduedate.getMonth() != tempduedate.getMonth() || lastduedate.getFullYear() != tempduedate.getFullYear()) {
-					tempoutput.push(`<div class="text-18px text-quaternary text-bold">Due ${getDMDYText(tempduedate)}</div>`)
+					tempoutput.push(`<div class="text-18px text-quaternary">Not scheduled • Due ${getDMDYText(tempduedate)}</div>`)
 				}
 
 				tempoutput2.push(gettododata(item))
