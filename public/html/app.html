@@ -1525,14 +1525,13 @@
 							</div>
 						</div>
 
-						<div class="align-center display-flex overflow-hidden bordertertiary flex-row gap-12px width-full">
-							<div class="border-8px flex-1 relative">
+						<div class="align-center display-flex flex-row gap-12px width-full">
+							<div class="border-8px background-tint-1 box-shadow overflow-hidden flex-1 relative">
 								<input oninput="typeaddtask(event)" class="infoinput addtaskplaceholder text-16px padding-12px transparentinput" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on report due tomorrow 6pm" autocomplete="off" id="todoinputtitle2" maxlength="2000">
 								</input>
 								<span class="inputline"></span>
 							</div>
-
-							<div class="margin-6px padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-round height-fit" onclick="submitcreatetodo()">					
+							<div class="padding-8px-12px pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-round height-fit" onclick="submitcreatetodo()">					
 								<div class="text-16px text-white pointer-none nowrap transition-none">Add</div>
 							</div>
 						</div>
