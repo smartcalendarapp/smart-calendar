@@ -1493,7 +1493,7 @@
 							</div>
 
 							<div class="flex-1 display-flex flex-row justify-flex-end">
-								<div class="padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px" onclick="readinteractivetourpopup('clickaddtask');opencreatetodo(event);gtag('event', 'button_click', { useraction: 'Add task - to do list' })" id="addtaskbutton">
+								<div class="padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px display-none" onclick="readinteractivetourpopup('clickaddtask');opencreatetodo(event);gtag('event', 'button_click', { useraction: 'Add task - to do list' })" id="addtaskbutton">
 									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 									<g>
 									<g opacity="1">
@@ -1525,11 +1525,15 @@
 							</div>
 						</div>
 
-						<div class="display-flex flex-row gap-12px">
-							<div class="flex-1 bordertertiary">
-								<input oninput="typeaddtask(event);readinteractivetourpopup('clickaddtitle')" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add task' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.keyCode == 13){ submitcreatetodo(event) }" placeholder="Start typing here" autocomplete="off" id="todoinputtitle" maxlength="2000">
+						<div class="display-flex flex-row gap-12px width-full">
+							<div class="border-8px overflow-hidden flex-1 bordertertiary relative">
+								<input oninput="typeaddtask(event)" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.keyCode == 13){ submitcreatetodo(event) }" placeholder="Start typing here" autocomplete="off" id="todoinputtitle" maxlength="2000">
+								</input>
+								<span class="inputline"></span>
 							</div>
+							<div class="padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px display-none" onclick="submitcreatetodo()">Add</div>
 						</div>
+
 					</div>
 					
 					<div class="todocontainer" id="todocontainer">	
