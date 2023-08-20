@@ -7017,6 +7017,7 @@ function submitcreatetodo(event) {
 	calendar.updateTodo()
 	calendar.updateHistory()
 
+	resetcreatetodo()
 	closecreatetodo()
 }
 

@@ -2348,7 +2348,6 @@ body {
 
 
 .addtaskplaceholder::placeholder{
-	font-weight:600;
 	color: var(--text-quaternary) !important;
 }
 
