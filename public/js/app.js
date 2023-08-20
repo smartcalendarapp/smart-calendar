@@ -2165,7 +2165,7 @@ class Calendar {
 				let item = sortedtodos[i]
 				let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 				if (!laststartdate || tempstartdate.getDate() != laststartdate.getDate() || laststartdate.getMonth() != tempstartdate.getMonth() || laststartdate.getFullYear() != tempstartdate.getFullYear()) {
-					tempoutput.push(`<div class="text-18px text-green text-bold">Scheduled for ${getDMDYText(tempstartdate)}</div>`)
+					tempoutput.push(`<div class="text-18px text-quaternary">Scheduled for ${getDMDYText(tempstartdate)}</div>`)
 				}
 
 				tempoutput2.push(gettododata(item))

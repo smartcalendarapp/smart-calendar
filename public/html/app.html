@@ -1524,6 +1524,12 @@
 								<span class="buttonunderline"></span>
 							</div>
 						</div>
+
+						<div class="display-flex flex-row gap-12px">
+							<div class="flex-1 bordertertiary">
+								<input oninput="typeaddtask(event);readinteractivetourpopup('clickaddtitle')" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add task' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.keyCode == 13){ submitcreatetodo(event) }" placeholder="Start typing here" autocomplete="off" id="todoinputtitle" maxlength="2000">
+							</div>
+						</div>
 					</div>
 					
 					<div class="todocontainer" id="todocontainer">	
