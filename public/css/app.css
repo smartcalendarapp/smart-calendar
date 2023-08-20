@@ -2350,6 +2350,9 @@ body {
 .addtaskplaceholder::placeholder{
 	color: var(--text-quaternary) !important;
 }
+.addtaskbackground{
+	background-color:var(--background-primary) !important;
+}
 
 .nobackground {
 	background-color: transparent !important;
