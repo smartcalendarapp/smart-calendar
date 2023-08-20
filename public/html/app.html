@@ -944,7 +944,7 @@
 				<div class="text-14px text-quaternary nowrap">TIP</div>
 				<div class="text-18px text-primary nowrap text-bold">Add task</div>
 			</div>
-			<div class="text-18px text-quaternary">Jotting down your tasks is the first step to organize your life. Any time you have a task on mind, add it here.</div>
+			<div class="text-18px text-quaternary">Quickly jot down your tasks here. You will become more productive, we promise.</div>
 				 
 			<div class="display-flex flex-row justify-space-between align-center">
 				<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
@@ -1038,7 +1038,7 @@
 			
 			<div id="createtodobutton" class="flex-shrink-0 bordertertiary border-8px transition-duration-100">
 				<div class="inputgroup" id="todoinputtitlegroup">
-					<input oninput="typeaddtask(event);readinteractivetourpopup('clickaddtitle')" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add task' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.keyCode == 13){ submitcreatetodo(event) }" placeholder="Work on report due tomorrow 6pm" autocomplete="off" id="todoinputtitle" maxlength="2000"></input>
+					<input oninput="typeaddtask(event);readinteractivetourpopup('clickaddtitle')" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add task' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.keyCode == 13){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle" maxlength="2000"></input>
 					<span class="inputline"></span>
 				</div>
 
@@ -1527,7 +1527,7 @@
 
 						<div class="align-center display-flex flex-row gap-12px width-full">
 							<div class="border-8px background-primary box-shadow overflow-hidden flex-1 relative">
-								<input oninput="typeaddtask(event)" class="infoinput addtaskplaceholder text-16px padding-12px transparentinput" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on report due tomorrow 6pm" autocomplete="off" id="todoinputtitle2" maxlength="2000">
+								<input oninput="typeaddtask(event)" onclick="readinteractivetourpopup('clickaddtask')" class="infoinput addtaskplaceholder text-16px padding-12px transparentinput" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle2" maxlength="2000">
 								</input>
 								<span class="inputline"></span>
 							</div>

@@ -3580,7 +3580,7 @@ function updateinteractivetour() {
 
 		if (key == 'clickaddtask') {
 
-			let tourbutton = getElement('addtaskbutton')
+			let tourbutton = getElement('todoinputtitle2')
 			if (isviewable(tourbutton)) {
 				let rect = tourbutton.getBoundingClientRect()
 
