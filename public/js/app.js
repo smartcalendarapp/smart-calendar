@@ -6452,6 +6452,8 @@ function resetcreatetodo() {
 	todoinputtitle.value = ''
 	let todoinputnotes = getElement('todoinputnotes')
 	todoinputnotes.value = ''
+	let todoinputtitle2 = getElement('todoinputtitle2')
+	todoinputtitle2.value = ''
 
 	createtododurationvalue = 60
 	createtododuedatevalue = {

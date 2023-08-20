@@ -1038,7 +1038,7 @@
 			
 			<div id="createtodobutton" class="flex-shrink-0 bordertertiary border-8px transition-duration-100">
 				<div class="inputgroup" id="todoinputtitlegroup">
-					<input oninput="typeaddtask(event);readinteractivetourpopup('clickaddtitle')" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add task' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.keyCode == 13){ submitcreatetodo(event) }" placeholder="Work on report by tomorrow 6pm takes 1h" autocomplete="off" id="todoinputtitle" maxlength="2000"></input>
+					<input oninput="typeaddtask(event);readinteractivetourpopup('clickaddtitle')" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add task' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.keyCode == 13){ submitcreatetodo(event) }" placeholder="Work on report due tomorrow 6pm" autocomplete="off" id="todoinputtitle" maxlength="2000"></input>
 					<span class="inputline"></span>
 				</div>
 
@@ -1527,12 +1527,12 @@
 
 						<div class="align-center display-flex flex-row gap-12px width-full">
 							<div class="border-8px overflow-hidden flex-1 bordertertiary relative">
-								<input oninput="typeaddtask(event)" class="addtaskplaceholder infoinput text-16px padding-12px transparentinput" onkeydown="if(event.keyCode == 13){ submitcreatetodo(event) }" placeholder="Work on report by tomorrow 6pm takes 1h" autocomplete="off" id="todoinputtitle" maxlength="2000">
+								<input oninput="typeaddtask(event)" class="infoinput addtaskplaceholder text-14px padding-12px transparentinput" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on report due tomorrow 6pm" autocomplete="off" id="todoinputtitle2" maxlength="2000">
 								</input>
 								<span class="inputline"></span>
 							</div>
 							<div class="padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodo()">					
-								<div class="text-16px text-white pointer-none nowrap transition-none">Add task</div>
+								<div class="text-16px text-white pointer-none nowrap transition-none">Add</div>
 							</div>
 						</div>
 
