@@ -2347,6 +2347,9 @@ body {
 }
 
 
+.addtaskplaceholder::placeholder{
+	color: var(--text-quaternary);
+}
 
 .nobackground {
 	background-color: transparent !important;

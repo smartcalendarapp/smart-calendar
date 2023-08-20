@@ -885,6 +885,9 @@ class Calendar {
 		paneldivider.classList.add('display-none')
 
 		if (calendartabs.includes(1)) {
+			resetcreatetodo()
+			updatecreatetodo()
+			
 			this.updateTodo()
 			todowrap.classList.remove('display-none')
 			todowrap.style.flex = '1'
@@ -896,6 +899,7 @@ class Calendar {
 		}
 
 		if (calendartabs.includes(0)) {
+			
 			this.updateCalendar()
 			calendarwrap.classList.remove('display-none')
 			calendarwrap.style.flex = '2'
