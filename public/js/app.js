@@ -6915,7 +6915,7 @@ function closecreatetodoitempriority() {
 
 
 function typeaddtask(event, submit) {
-	let todoinputtitle = getElement('todoinputtitle')
+	let todoinputtitle = getElement('todoinputtitle2')
 	let finalstring = todoinputtitle.value
 
 	let currentdate = new Date()
