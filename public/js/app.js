@@ -1386,6 +1386,19 @@ class Calendar {
 				})
 			}
 
+
+			let rangestartdate = new Date(calendar.getDate())
+			let rangeenddate = new Date(calendar.getDate())
+			if (calendarmode == 1) {
+				rangestartdate = rangestartdate.setDate(rangestartdate.getDate() - rangestartdate.getDay() - 7)
+				rangeenddate = rangeenddate.setDate(rangeenddate.getDate() - rangeenddate.getDay() + 21 - 7)
+			} else if (calendarmode == 0) {
+				rangestartdate = rangestartdate.setDate(rangestartdate.getDate() - 1)
+				rangeenddate = rangeenddate.setDate(rangeenddate.getDate() + 3 - 1)
+			}
+			let alltempevents = getevents(rangestartdate, rangeenddate)
+
+
 			for (let i = 0; i < [3, 21][calendarmode]; i++) {
 				let currentdate = new Date(calendar.getDate())
 				if (calendarmode == 1) {
@@ -1403,7 +1416,7 @@ class Calendar {
 				let dayoutput = [];
 				let daydisplayoutput = [];
 
-				let tempevents = getevents(currentdate, nextdate).filter(d => !autoscheduleeventslist.find(f => f.id == d.id) && d.id != editeventid)
+				let tempevents = getevents(currentdate, nextdate, alltempevents).filter(d => !autoscheduleeventslist.find(f => f.id == d.id) && d.id != editeventid)
 				let tempborders = getborders(currentdate, nextdate)
 
 				for (let item of tempevents) {
@@ -1452,6 +1465,12 @@ class Calendar {
 				}
 			}
 		} else if (calendarmode == 2) {
+			let rangestartdate = new Date(calendar.getDate())
+			let rangeenddate = new Date(calendar.getDate())
+			rangestartdate = rangestartdate.setDate(rangestartdate.getDate() - 35)
+			rangeenddate = rangeenddate.setDate(rangeenddate.getDate() + 35*2)
+			let alltempevents = getevents(rangestartdate, rangeenddate)
+
 
 			let startdate = new Date(calendaryear, calendarmonth, 1)
 			startdate.setDate(startdate.getDate() - startdate.getDay() - 35)
@@ -1470,7 +1489,7 @@ class Calendar {
 
 				let timeindex;
 
-				let myevents = getevents(currentdate, nextdate).sort((h, j) => {
+				let myevents = getevents(currentdate, nextdate, alltempevents).sort((h, j) => {
 					let tempstartdate1 = new Date(h.start.year, h.start.month, h.start.day, 0, h.start.minute)
 					let tempstartdate2 = new Date(j.start.year, j.start.month, j.start.day, 0, j.start.minute)
 					return (tempstartdate1.getTime() - tempstartdate2.getTime())
