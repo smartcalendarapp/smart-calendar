@@ -1390,11 +1390,11 @@ class Calendar {
 			let rangestartdate = new Date(calendar.getDate())
 			let rangeenddate = new Date(calendar.getDate())
 			if (calendarmode == 1) {
-				rangestartdate = rangestartdate.setDate(rangestartdate.getDate() - rangestartdate.getDay() - 7)
-				rangeenddate = rangeenddate.setDate(rangeenddate.getDate() - rangeenddate.getDay() + 21 - 7)
+				rangestartdate.setDate(rangestartdate.getDate() - rangestartdate.getDay() - 7)
+				rangeenddate.setDate(rangeenddate.getDate() - rangeenddate.getDay() + 21 - 7)
 			} else if (calendarmode == 0) {
-				rangestartdate = rangestartdate.setDate(rangestartdate.getDate() - 1)
-				rangeenddate = rangeenddate.setDate(rangeenddate.getDate() + 3 - 1)
+				rangestartdate.setDate(rangestartdate.getDate() - 1)
+				rangeenddate.setDate(rangeenddate.getDate() + 3 - 1)
 			}
 			let alltempevents = getevents(rangestartdate, rangeenddate)
 
@@ -1467,8 +1467,8 @@ class Calendar {
 		} else if (calendarmode == 2) {
 			let rangestartdate = new Date(calendar.getDate())
 			let rangeenddate = new Date(calendar.getDate())
-			rangestartdate = rangestartdate.setDate(rangestartdate.getDate() - 35)
-			rangeenddate = rangeenddate.setDate(rangeenddate.getDate() + 35*2)
+			rangestartdate.setDate(rangestartdate.getDate() - 35)
+			rangeenddate.setDate(rangeenddate.getDate() + 35*2)
 			let alltempevents = getevents(rangestartdate, rangeenddate)
 
 
@@ -4040,9 +4040,9 @@ function keydowndocument(event) {
 			calendar.updateEvents()
 			calendar.updateTodo()
 			calendar.updateInfo()
-		} else if (event.key.toLowerCase() == 'ArrowLeft' && calendartabs.includes(0)) { //left arrow
+		} else if (event.key == 'ArrowLeft' && calendartabs.includes(0)) { //left arrow
 			prevcalendar()
-		} else if (event.key.toLowerCase() == 'ArrowRight' && calendartabs.includes(0)) { //right arrow
+		} else if (event.key == 'ArrowRight' && calendartabs.includes(0)) { //right arrow
 			nextcalendar()
 		} else if (event.key.toLowerCase() == 't' && calendartabs.includes(0)) { //T
 			todaycalendar()
