@@ -6919,6 +6919,13 @@ function typeaddtask(event, submit) {
 	let todoinputtitle2 = getElement('todoinputtitle2')
 	let finalstring = todoinputtitle.value || todoinputtitle2.value
 
+	let addtodobuttons = getElement('addtodobuttons')
+	if(finalstring.length > 0){
+		addtodobuttons.classList.remove('hiddenfade')
+	}else{
+		addtodobuttons.classList.add('hiddenfade')
+	}
+
 	let currentdate = new Date()
 
 	let finalyear, finalmonth, finalday, finalminute, finalduration, finalpriority;
