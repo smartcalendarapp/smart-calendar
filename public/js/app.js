@@ -8958,13 +8958,13 @@ function getsleepingevents(data) {
 
 
 
-//get events between range given existing events (including repeating)
+//get events between range, given existing events (including repeating)
 function geteventslite(startrange, endrange, filterevents){
-	return filterevents.filter(d => {
+	return filterevents.filter(item => {
 		let itemstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 		let itemenddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
 
-		if(!Calendar.Event.isHidden(d)){
+		if(!Calendar.Event.isHidden(item)){
 			if (!startrange || !endrange || (itemenddate.getTime() > startrange.getTime() && itemstartdate.getTime() < endrange.getTime())) {
 				return true
 			}
