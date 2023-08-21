@@ -6919,11 +6919,11 @@ function typeaddtask(event, submit) {
 	let todoinputtitle2 = getElement('todoinputtitle2')
 	let finalstring = todoinputtitle.value || todoinputtitle2.value
 
-	let addtodobuttons = getElement('addtodobuttons')
+	let addtodooptionspopup = getElement('addtodooptionspopup')
 	if(finalstring.length > 0){
-		addtodobuttons.classList.remove('hiddenfade')
+		addtodooptionspopup.classList.remove('hiddenfade')
 	}else{
-		addtodobuttons.classList.add('hiddenfade')
+		addtodooptionspopup.classList.add('hiddenfade')
 	}
 
 	let currentdate = new Date()
