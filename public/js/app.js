@@ -7058,7 +7058,9 @@ function submitcreatetodo(event) {
 	resetcreatetodo()
 	closecreatetodo()
 
-	scrolltodoY(getElement(item.id).offsetTop)
+	setTimeout(function(){
+		scrolltodoY(getElement(item.id).offsetTop)
+	}, 300)
 }
 
 
