@@ -6914,17 +6914,20 @@ function closecreatetodoitempriority() {
 
 
 
+function focusinaddtask(){
+	let addtodooptionspopup = getElement('addtodooptionspopup')
+	addtodooptionspopup.classList.remove('hiddenfade')
+}
+
+function bluraddtask(){
+	let addtodooptionspopup = getElement('addtodooptionspopup')
+	addtodooptionspopup.classList.add('hiddenfade')
+}
+
 function typeaddtask(event, submit) {
 	let todoinputtitle = getElement('todoinputtitle')
 	let todoinputtitle2 = getElement('todoinputtitle2')
 	let finalstring = todoinputtitle.value || todoinputtitle2.value
-
-	let addtodooptionspopup = getElement('addtodooptionspopup')
-	if(finalstring.length > 0){
-		addtodooptionspopup.classList.remove('hiddenfade')
-	}else{
-		addtodooptionspopup.classList.add('hiddenfade')
-	}
 
 	let currentdate = new Date()
 

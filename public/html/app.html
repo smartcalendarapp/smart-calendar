@@ -184,7 +184,7 @@
 		<div class="infogroup">
 			<div class="inputgroup">
 				<div class="inputgroupitem flex-1">
-					<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtodoitemduration(event)" id="todoitemdurationinput" class="infoinput" placeholder="Custom time needed" type="text">
+					<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtodoitemduration(event)" id="todoitemdurationinput" class="infoinput" placeholder="Custom time needed" type="text">
 						<span class="inputline"></span>
 					</input>
 				</div>
@@ -222,7 +222,7 @@
 		<div class="infogroup">
 			<div class="inputgroup">
 				<div class="inputgroupitem flex-1">
-					<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputcreatetodoitemduration(event)" id="createtodoitemdurationinput" class="infoinput" placeholder="Custom time needed" type="text">
+					<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputcreatetodoitemduration(event)" id="createtodoitemdurationinput" class="infoinput" placeholder="Custom time needed" type="text">
 						<span class="inputline"></span>
 					</input>
 				</div>
@@ -275,7 +275,7 @@
 				<div class="infogroup">
 					<div class="inputgroup">
 						<div class="inputgroupitem flex-1">
-							<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtodoitemduedate(event)" id="todoitemduedateinput" class="infoinput" placeholder="Custom date" type="text">
+							<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtodoitemduedate(event)" id="todoitemduedateinput" class="infoinput" placeholder="Custom date" type="text">
 								<span class="inputline"></span>
 							</input>
 						</div>
@@ -288,7 +288,7 @@
 				<div class="infogroup">
 					<div class="inputgroup">
 						<div class="inputgroupitem flex-1">
-							<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtodoitemduetime(event)" id="todoitemduetimeinput" class="infoinput" placeholder="Custom time" type="text">
+							<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtodoitemduetime(event)" id="todoitemduetimeinput" class="infoinput" placeholder="Custom time" type="text">
 								<span class="inputline"></span>
 							</input>
 						</div>
@@ -344,7 +344,7 @@
 				<div class="infogroup">
 					<div class="inputgroup">
 						<div class="inputgroupitem flex-1">
-							<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputcreatetodoitemduedate(event)" id="createtodoitemduedateinput" class="infoinput" placeholder="Custom date" type="text">
+							<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputcreatetodoitemduedate(event)" id="createtodoitemduedateinput" class="infoinput" placeholder="Custom date" type="text">
 								<span class="inputline"></span>
 							</input>
 						</div>
@@ -357,7 +357,7 @@
 				<div class="infogroup">
 					<div class="inputgroup">
 						<div class="inputgroupitem flex-1">
-							<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputcreatetodoitemduetime(event)" id="createtodoitemduetimeinput" class="infoinput" placeholder="Custom time" type="text">
+							<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputcreatetodoitemduetime(event)" id="createtodoitemduetimeinput" class="infoinput" placeholder="Custom time" type="text">
 								<span class="inputline"></span>
 							</input>
 						</div>
@@ -484,7 +484,7 @@
 			<div class="width-fit display-flex flex-row gap-6px align-center text-14px text-white"><span class="display-flex flex-row align-center pointer" onclick="togglesavetimeframe(event)" id="savetimeframecheckbox"></span> Save template</div>
 			
 			<div class="inputgroupitem display-none" id="savetimeframeinput">
-				<input onkeydown="if(event.keyCode == 13){ this.blur() }" id="timeframetemplateinput" class="infoinput" type="text" placeholder="Template name">
+				<input onkeydown="if(event.key == 'Enter'){ this.blur() }" id="timeframetemplateinput" class="infoinput" type="text" placeholder="Template name">
 					<span class="inputline"></span>
 				</input>
 			</div>
@@ -505,7 +505,7 @@
 	
 				<div class="inputgroup">
 					<div class="inputgroupitem">
-						<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputrepeatinterval(event)" id="repeatintervalinput" class="infoinput width-96px" type="number" min="1" placeholder="Interval">
+						<input onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputrepeatinterval(event)" id="repeatintervalinput" class="infoinput width-96px" type="number" min="1" placeholder="Interval">
 							<span class="inputline"></span>
 						</input>
 					</div>
@@ -820,13 +820,13 @@
 
 				<div class="inputgroup gap-6px">
 					<div class="inputgroupitem flex-1">
-						<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepstart(event)" id="settingssleepstart" class="infoinput inputtimepicker" placeholder="Add start time" type="text">
+						<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputsettingssleepstart(event)" id="settingssleepstart" class="infoinput inputtimepicker" placeholder="Add start time" type="text">
 							<span class="inputline"></span>
 						</input>
 					</div>
 					<div class="text-14px text-primary">to</div>
 					<div class="inputgroupitem flex-1">
-						<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepend(event)" id="settingssleepend" class="infoinput inputtimepicker" placeholder="Add end time" type="text">
+						<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputsettingssleepend(event)" id="settingssleepend" class="infoinput inputtimepicker" placeholder="Add end time" type="text">
 							<span class="inputline"></span>
 						</input>
 					</div>
@@ -1018,7 +1018,7 @@
 			
 			<div id="createtodobutton" class="flex-shrink-0 bordertertiary border-8px transition-duration-100">
 				<div class="inputgroup" id="todoinputtitlegroup">
-					<input oninput="typeaddtask(event)" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add task' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.keyCode == 13){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle" maxlength="2000"></input>
+					<input oninput="typeaddtask(event)" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add task' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle" maxlength="2000"></input>
 					<span class="inputline"></span>
 				</div>
 
@@ -1090,7 +1090,7 @@
 			
 			<div class="flex-shrink-0 transition-duration-100">
 				<div class="border-8px flex-1 overflow-hidden bordertertiary inputgroup">
-					<input oninput="typeaddevent(event)" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add event' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.keyCode == 13){ submitcreateevent(event) }" placeholder="Meeting with Cathy tomorrow 9:00 1 hour" autocomplete="off" maxlength="2000" id="createeventtitle"></input>
+					<input oninput="typeaddevent(event)" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add event' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.key == 'Enter'){ submitcreateevent(event) }" placeholder="Meeting with Cathy tomorrow 9:00 1 hour" autocomplete="off" maxlength="2000" id="createeventtitle"></input>
 					<span class="inputline"></span>
 				</div>
 			</div>
@@ -1510,12 +1510,12 @@
 						<div class="align-center display-flex flex-row gap-12px width-full">
 							<div class="relative display-flex flex-column width-full">
 								<div class="border-8px background-primary-transparent backdrop-blur box-shadow overflow-hidden flex-1 relative">
-									<input oninput="typeaddtask(event)" onclick="readinteractivetourpopup('clickaddtask')" class="infoinput addtaskplaceholder text-16px padding-12px transparentinput" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle2" maxlength="2000">
+									<input oninput="typeaddtask(event)" onfocus="focusinaddtask()" onblur="bluraddtask()" onclick="readinteractivetourpopup('clickaddtask')" class="infoinput addtaskplaceholder text-16px padding-12px transparentinput" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle2" maxlength="2000">
 									</input>
 									<span class="inputline"></span>
 								</div>
 
-								<div class="fadetransition addtodooptionspopup z-index-100 background-primary-transparent backdrop-blur box-shadow border-8px display-flex flex-column hiddenfade overflow-hidden" id="addtodooptionspopup">
+								<div class="width-full fadetransition addtodooptionspopup z-index-100 background-primary-transparent backdrop-blur box-shadow border-8px display-flex flex-column hiddenfade overflow-hidden" id="addtodooptionspopup">
 									
 									<div class="z-index-100 padding-12px border-box flex-1 align-center display-flex flex-row gap-12px padding-12px width-full flex-wrap-wrap">
 										<div class="border-8px padding-left-12px padding-right-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap popupbutton text-14px pointer-auto pointer transition-duration-100" onclick="readinteractivetourpopup('clickduedate');clickcreatetododuedate(event)" id="createtododuedate">
@@ -1838,13 +1838,13 @@
 											<div class="text-14px text-quaternary">This will help our app schedule your tasks for when you're awake.</div>
 											<div class="inputgroup gap-6px">
 												<div class="inputgroupitem flex-1">
-													<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepstart(event)" id="settingssleepstart2" class="infoinput inputtimepicker" placeholder="Add start time" type="text">
+													<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputsettingssleepstart(event)" id="settingssleepstart2" class="infoinput inputtimepicker" placeholder="Add start time" type="text">
 														<span class="inputline"></span>
 													</input>
 												</div>
 												<div class="text-14px text-primary">to</div>
 												<div class="inputgroupitem flex-1">
-													<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepend(event)" id="settingssleepend2" class="infoinput inputtimepicker" placeholder="Add end time" type="text">
+													<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputsettingssleepend(event)" id="settingssleepend2" class="infoinput inputtimepicker" placeholder="Add end time" type="text">
 														<span class="inputline"></span>
 													</input>
 												</div>
@@ -1859,7 +1859,7 @@
 											<div class="text-14px text-quaternary">The app includes a break between events when planning your tasks.</div>
 											<div class="inputgroup">
 												<div class="inputgroupitem flex-1">
-													<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingseventspacing(event)" id="settingseventspacing2" class="infoinput inputdurationpicker" placeholder="Add duration" type="text">
+													<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputsettingseventspacing(event)" id="settingseventspacing2" class="infoinput inputdurationpicker" placeholder="Add duration" type="text">
 														<span class="inputline"></span>
 													</input>
 												</div>
@@ -1889,7 +1889,7 @@
 											<div class="display-flex flex-row gap-12px">
 												<div class="inputgroup flex-1">
 													<div class="inputgroupitem flex-1">
-														<input placeholder="https://example.com/calendar.ics" onkeydown="if(event.keyCode == 13){ inputsubscribecalendar(event) }" id="inputsubscribecalendar" class="infoinput" type="url">
+														<input placeholder="https://example.com/calendar.ics" onkeydown="if(event.key == 'Enter'){ inputsubscribecalendar(event) }" id="inputsubscribecalendar" class="infoinput" type="url">
 															<span class="inputline"></span>
 														</input>
 													</div>
