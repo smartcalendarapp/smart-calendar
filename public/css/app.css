@@ -3649,6 +3649,12 @@ body {
 }
 
 
+.addtodobuttons{
+	top:100%;
+	position:absolute;
+	margin-top:12px;
+}
+
 
 .switch {
 	position: relative;

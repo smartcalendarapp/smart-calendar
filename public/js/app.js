@@ -6921,7 +6921,6 @@ function typeaddtask(event, submit) {
 
 	let addtodobuttons = getElement('addtodobuttons')
 	if(finalstring.length > 0){
-		addtodobuttons.style.maxHeight = addtodobuttons.scrollHeight + 'px'
 		addtodobuttons.classList.remove('hiddenfade')
 	}else{
 		addtodobuttons.classList.add('hiddenfade')
