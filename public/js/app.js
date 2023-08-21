@@ -1416,7 +1416,7 @@ class Calendar {
 				let dayoutput = [];
 				let daydisplayoutput = [];
 
-				let tempevents = getevents(currentdate, nextdate, alltempevents).filter(d => !autoscheduleeventslist.find(f => f.id == d.id) && d.id != editeventid)
+				let tempevents = geteventslite(currentdate, nextdate, alltempevents).filter(d => !autoscheduleeventslist.find(f => f.id == d.id) && d.id != editeventid)
 				let tempborders = getborders(currentdate, nextdate)
 
 				for (let item of tempevents) {
@@ -1489,7 +1489,7 @@ class Calendar {
 
 				let timeindex;
 
-				let myevents = getevents(currentdate, nextdate, alltempevents).sort((h, j) => {
+				let myevents = geteventslite(currentdate, nextdate, alltempevents).sort((h, j) => {
 					let tempstartdate1 = new Date(h.start.year, h.start.month, h.start.day, 0, h.start.minute)
 					let tempstartdate2 = new Date(j.start.year, j.start.month, j.start.day, 0, j.start.minute)
 					return (tempstartdate1.getTime() - tempstartdate2.getTime())
@@ -8958,8 +8958,24 @@ function getsleepingevents(data) {
 
 
 
+//get events between range given existing events (including repeating)
+function geteventslite(startrange, endrange, filterevents){
+	return filterevents.filter(d => {
+		let itemstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+		let itemenddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
+
+		if(!Calendar.Event.isHidden(d)){
+			if (!startrange || !endrange || (itemenddate.getTime() > startrange.getTime() && itemstartdate.getTime() < endrange.getTime())) {
+				return true
+			}
+		}
+		return false
+	})
+}
+
+
 //get all calendar events if no parameters
-//get events between start and end date if parameters
+//get events between range if parameters
 function getevents(startrange, endrange, filterevents) {
 	let maxdate = new Date(calendar.getDate().getTime())
 	maxdate.setFullYear(maxdate.getFullYear() + 1)
