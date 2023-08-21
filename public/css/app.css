@@ -3038,13 +3038,6 @@ body {
 }
 
 
-.addtodobuttonsabsolute{
-	top:100%;
-	margin:12px;
-	right:0;
-	position:absolute;
-}
-
 
 .width60px {
 	width: 60px;
@@ -3639,6 +3632,10 @@ body {
 	visibility: hidden;
 	left: -99999px !important;
 	top: -99999px !important;
+}
+
+.heighttransition{
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, max-height 0.2s ease-in-out;
 }
 
 .hiddenheight {

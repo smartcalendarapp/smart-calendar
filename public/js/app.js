@@ -6921,9 +6921,10 @@ function typeaddtask(event, submit) {
 
 	let addtodobuttons = getElement('addtodobuttons')
 	if(finalstring.length > 0){
-		addtodobuttons.classList.remove('hiddenfade')
+		addtodobuttons.style.maxHeight = addtodobuttons.scrollHeight + 'px'
+		addtodobuttons.classList.remove('hiddenheight')
 	}else{
-		addtodobuttons.classList.add('hiddenfade')
+		addtodobuttons.classList.add('hiddenheight')
 	}
 
 	let currentdate = new Date()
