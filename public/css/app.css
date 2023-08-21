@@ -3038,6 +3038,13 @@ body {
 }
 
 
+.addtodobuttonsabsolute{
+	top:100%;
+	margin:12px;
+	right:0;
+	position:absolute;
+}
+
 
 .width60px {
 	width: 60px;
