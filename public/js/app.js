@@ -3635,32 +3635,7 @@ function updateinteractivetour() {
 				movepopup(mypopup, rect.top + rect.height, rect.left + rect.width / 2 - mypopup.offsetWidth / 2)
 			}
 
-		} else if (key == 'clickaddtitle') {
-
-			let tourbutton = getElement('todoinputtitle')
-			if (isviewable(tourbutton)) {
-				let rect = tourbutton.getBoundingClientRect()
-
-				if (value == false && key != selectedinteractivetourpopupindex) {
-					showbeacon(mybeacon)
-					movebeacon(mybeacon, rect.top + 12, rect.left + 330)
-				} else {
-					hidebeacon(mybeacon)
-				}
-
-				if (key == selectedinteractivetourpopupindex) {
-					showpopup(mypopup)
-				} else {
-					hidepopup(mypopup)
-				}
-
-				movepopup(mypopup, rect.top + rect.height, rect.left)
-			} else {
-				hidebeacon(mybeacon)
-				hidepopup(mypopup)
-			}
-
-		} else if (key == 'clickscheduleoncalendar') {
+		}  else if (key == 'clickscheduleoncalendar') {
 
 			let tourbutton = getElement('scheduleoncalendar')
 			if (isviewable(tourbutton)) {
@@ -8722,7 +8697,6 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 	if (tempstartdate.getTime() >= currentdate.getTime() && tempstartdate.getTime() < nextdate.getTime()) {
 		itemclasses.push('eventwraptop')
-		itemclicks.push(`<div class="eventtop" onmousedown="clickeventtop(event, ${timestamp})"></div>`)
 
 		if (tempenddate.getTime() > nextdate.getTime()) {
 			mytop = item.start.minute
@@ -8734,9 +8708,12 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 			itemclasses.push('eventwrapbottom')
 			itemclicks.push(`<div class="eventbottom" onmousedown="clickeventbottom(event, ${timestamp})"></div>`)
 		}
+
+		if(myheight > 15){
+			itemclicks.push(`<div class="eventtop" onmousedown="clickeventtop(event, ${timestamp})"></div>`)
+		}
 	} else if (tempenddate.getTime() > currentdate.getTime() && tempenddate.getTime() <= nextdate.getTime()) {
 		itemclasses.push('eventwrapbottom')
-		itemclicks.push(`<div class="eventbottom" onmousedown="clickeventbottom(event, ${timestamp})"></div>`)
 
 		if (tempstartdate.getTime() < currentdate.getTime()) {
 			mytop = 0
@@ -8747,6 +8724,10 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 			itemclasses.push('eventwraptop')
 			itemclicks.push(`<div class="eventtop" onmousedown="clickeventtop(event, ${timestamp})"></div>`)
+		}
+
+		if(myheight > 15){
+			itemclicks.push(`<div class="eventbottom" onmousedown="clickeventbottom(event, ${timestamp})"></div>`)
 		}
 	} else if (tempstartdate.getTime() < currentdate.getTime() && tempenddate.getTime() > nextdate.getTime()) {
 		mytop = 0

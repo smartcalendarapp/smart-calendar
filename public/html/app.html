@@ -890,17 +890,6 @@
 			</g>
 			</svg>
 		</div>
-		
-		<div class="absolute hiddenfade popupbutton beaconwrap z-index-1001" onclick="openinteractivetourpopup('clickaddtitle');gtag('event', 'button_click', { useraction: 'Add title beacon' })" id="interactivetourbeaconclickaddtitle">
-			<div class="beacon pointer-none"></div>
-			
-			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
-			<g>
-			<path d="M128.001 0C114.798 0 103.421 14.0434 104.219 27.0996L110.806 159.354C111.129 170.465 117.509 178.33 128.001 178.33C138.483 178.33 144.621 170.687 145.197 159.354L151.783 27.0369C152.542 13.1194 141.568-5.10502e-06 128.001 0Z" fill-rule="nonzero" opacity="1" ></path>
-			<path d="M128.001 207.607C114.826 207.607 104.132 218.3 104.132 231.476C104.132 244.651 114.826 255.313 128.001 255.313C141.176 255.313 151.87 244.651 151.87 231.476C151.87 218.3 141.176 207.607 128.001 207.607Z" fill-rule="nonzero" opacity="1" ></path>
-			</g>
-			</svg>
-		</div>
 
 	
 		
@@ -952,19 +941,6 @@
 			</div>
 		</div>
 
-		<div class="interactivetourpopup hiddenpopup popupbutton" id="interactivetourpopupclickaddtitle">
-			<div>
-				<div class="text-14px text-quaternary nowrap">TIP</div>
-				<div class="text-18px text-primary nowrap text-bold">Add a task</div>
-			</div>
-			<div class="text-18px text-quaternary">You can include a due date, time needed (e.g. takes 1 hour), and priority (e.g. high priority).</div>
-					 
-			<div class="display-flex flex-row justify-space-between align-center">
-				<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
-				<div class="text-14px pointer pointer-auto padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="readinteractivetourpopup('clickaddtitle')">Got it</div>
-			</div>
-		</div>
-
 
 		<div class="interactivetourpopup hiddenpopup popupbutton" id="interactivetourpopupclickscheduleoncalendar">
 			<div>
@@ -998,8 +974,9 @@
 				<div class="text-18px text-primary nowrap text-bold">Event type</div>
 			</div>
 			<div class="text-18px text-quaternary">
-				<span class="text-bold">Task</span>: the app will automatically schedule it.
 				<span class="text-bold">Event</span>: takes place at a fixed time.
+				<br>
+				<span class="text-bold">Task</span>: the app will automatically schedule it.
 			</div>
 					 
 			<div class="display-flex flex-row justify-space-between align-center">
@@ -1041,7 +1018,7 @@
 			
 			<div id="createtodobutton" class="flex-shrink-0 bordertertiary border-8px transition-duration-100">
 				<div class="inputgroup" id="todoinputtitlegroup">
-					<input oninput="typeaddtask(event);readinteractivetourpopup('clickaddtitle')" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add task' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.keyCode == 13){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle" maxlength="2000"></input>
+					<input oninput="typeaddtask(event)" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add task' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.keyCode == 13){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle" maxlength="2000"></input>
 					<span class="inputline"></span>
 				</div>
 
