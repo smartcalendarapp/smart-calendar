@@ -2954,6 +2954,41 @@ function scrollcalendarX(targetdate) {
 }
 
 
+
+//scroll todo Y
+let scrolltodoYAnimationFrameId;
+function scrolltodoY(targetminute) {
+	cancelAnimationFrame(scrolltodoYAnimationFrameId)
+
+	let todocontainer = getElement('todocontainer')
+	let target = targetminute - todocontainer.offsetHeight / 2
+
+	let duration = 500
+	let start = todocontainer.scrollTop
+	let end = target
+	let change = end - start
+	let increment = 20
+	let currentTime = 0
+
+	function animateScroll() {
+		function easeinoutquad(t, b, c, d) {
+			t /= d / 2
+			if (t < 1) return c / 2 * t * t + b
+			t--
+			return -c / 2 * (t * (t - 2) - 1) + b
+		}
+
+		currentTime += increment
+		const val = easeinoutquad(currentTime, start, change, duration)
+		todocontainer.scrollTo(0, val)
+		if (currentTime < duration) {
+			scrolltodoYAnimationFrameId = requestAnimationFrame(animateScroll, increment)
+		}
+	}
+	scrolltodoYAnimationFrameId = requestAnimationFrame(animateScroll, increment)
+}
+
+
 //load data
 let clientinfo;
 
@@ -3652,7 +3687,7 @@ function updateinteractivetour() {
 
 		} else if (key == 'autoschedule') {
 
-			let tourbutton = getElement('eventinfosmartscheduletext')
+			let tourbutton = getElement('eventinfosmartschedule')
 			if (isviewable(tourbutton)) {
 				let rect = tourbutton.getBoundingClientRect()
 
@@ -7019,6 +7054,8 @@ function submitcreatetodo(event) {
 
 	resetcreatetodo()
 	closecreatetodo()
+
+	scrolltodoY(getElement(item.id).offsetTop)
 }
 
 
@@ -7054,7 +7091,7 @@ function gettododata(item) {
 	if (selectededittodoid == item.id) {
 
 		//edit
-		output = `<div class="todoitem todoedititemwrap box-shadow-2 bordertertiary border-8px margin-left-12px margin-right-12px border-box">
+		output = `<div class="todoitem todoedititemwrap box-shadow-2 bordertertiary border-8px margin-left-12px margin-right-12px border-box" id="${item.id}">
 		<div class="todoitemcontainer padding-12px">
 			<div class="text-16px text-primary text-bold">Edit ${item.title ? cleanInput(item.title) : 'New Task'}</div>
 			<div class="display-flex flex-column gap-12px">
@@ -7135,7 +7172,7 @@ function gettododata(item) {
 	} else {
 		//view
 
-		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''}>
+		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''} id="${item.id}">
 
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
