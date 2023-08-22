@@ -1507,19 +1507,19 @@
 							</div>
 						</div>
 
-						<div class="align-center display-flex flex-row gap-12px width-full">
-							<div class="relative display-flex flex-column width-full">
+						<div class="relative align-center display-flex flex-row gap-12px width-full">
+							<div class="display-flex flex-column width-full">
 								<div class="border-8px background-primary-transparent backdrop-blur box-shadow overflow-hidden flex-1 relative">
 									<input oninput="typeaddtask(event)" onblur="hideaddtodosuggestions()" onfocus="showaddtodosuggestions()" onclick="readinteractivetourpopup('clickaddtask')" class="infoinput addtaskplaceholder text-16px padding-12px transparentinput" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle2" maxlength="2000">
 									</input>
 									<span class="inputline"></span>
 								</div>
 
-								<div class="width-full fadetransition addtodosuggestions z-index-100 border-8px display-flex gap-12px flex-wrap-wrap flex-column hiddenfade overflow-hidden" id="addtodosuggestions">
-									<div class="bordertertiary addtodosuggestionitem box-shadow border-8px padding-12px text-14px text hover:background-tint-1 backdrop-blur transition-duration-100">Work on project</div>
-									<div class="bordertertiary addtodosuggestionitem box-shadow border-8px padding-12px text-14px text hover:background-tint-1 backdrop-blur transition-duration-100">Read a book</div>
-									<div class="bordertertiary addtodosuggestionitem box-shadow border-8px padding-12px text-14px text hover:background-tint-1 backdrop-blur transition-duration-100">Reply to emails</div>
-									<div class="bordertertiary addtodosuggestionitem box-shadow border-8px padding-12px text-14px text hover:background-tint-1 backdrop-blur transition-duration-100">Plan tomorrow's schedule</div>
+								<div class="width-full fadetransition addtodosuggestions z-index-100 border-8px display-flex gap-12px flex-row flex-wrap-wrap hiddenfade overflow-hidden" id="addtodosuggestions">
+									<div class="flex-1 bordertertiary pointer addtodosuggestionitem box-shadow border-8px padding-12px text-14px text backdrop-blur transition-duration-100">Work on project</div>
+									<div class="flex-1 bordertertiary pointer addtodosuggestionitem box-shadow border-8px padding-12px text-14px text backdrop-blur transition-duration-100">Read a book</div>
+									<div class="flex-1 bordertertiary pointer addtodosuggestionitem box-shadow border-8px padding-12px text-14px text backdrop-blur transition-duration-100">Get some exercise</div>
+									<div class="flex-1 bordertertiary pointer addtodosuggestionitem box-shadow border-8px padding-12px text-14px text backdrop-blur transition-duration-100">Plan tomorrow's schedule</div>
 								</div>
 
 								<div class="width-full fadetransition addtodooptionspopup z-index-100 background-primary-transparent backdrop-blur box-shadow border-8px display-flex flex-column hiddenfade overflow-hidden" id="addtodooptionspopup">

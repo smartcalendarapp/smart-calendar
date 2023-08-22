@@ -3656,7 +3656,12 @@ body {
 }
 
 .addtodosuggestionitem{
-	flex:0.5
+	min-width:160px;
+}
+.addtodosuggestions{
+	position:absolute;
+	top:100%;
+	margin-top:12px;
 }
 
 
