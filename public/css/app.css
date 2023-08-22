@@ -3573,6 +3573,11 @@ body {
 	top: -99999px !important;
 }
 
+.hiddenpopupnoposition{
+	left: revert !important;
+	top: revert !important;
+}
+
 
 @media (max-width: 600px) {
 
