@@ -6922,13 +6922,14 @@ function clickaddtodosuggestion(event){
 	//use dataset value for things, add type option in function param
 	let todoinputtitle2 = getElement('todoinputtitle2')
 	todoinputtitle2.value = event.target.innerHTML
+	todoinputtitle2.focus()
 
 	typeaddtask(event)
 }
 
 function updateaddtodosuggestions(finalstring){
 	let addtodosuggestionstitle = getElement('addtodosuggestionstitle')
-	if(finalstring.length == 0){
+	if(finalstring.length == 0 && document.activeElement === getElement('todoinputtitle2')){
 		addtodosuggestionstitle.classList.remove('hiddenpopup')
 	}else{
 		addtodosuggestionstitle.classList.add('hiddenpopup')
