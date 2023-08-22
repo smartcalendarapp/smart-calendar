@@ -1510,12 +1510,14 @@
 						<div class="relative align-center display-flex flex-row gap-12px width-full">
 							<div class="display-flex flex-column width-full">
 								<div class="border-8px background-primary-transparent backdrop-blur box-shadow overflow-hidden flex-1 relative">
-									<input oninput="typeaddtask(event)" onclick="readinteractivetourpopup('clickaddtask');clicktypeaddtask()" class="infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle2" maxlength="2000">
+									<input oninput="typeaddtask(event)" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle2" maxlength="2000">
 									</input>
 									<span class="inputline"></span>
 								</div>
 
-								<div class="width-full popuptransition addtodosuggestions z-index-100 border-8px display-flex popup gap-12px flex-row flex-wrap-wrap hiddenpopup" id="addtodosuggestions">
+								
+								<!-- suggestions -->
+								<div class="width-full popuptransition addtodosuggestions z-index-100 border-8px display-flex popup gap-12px flex-row flex-wrap-wrap hiddenpopup" id="addtodosuggestionstitle">
 									<div class="overflow-hidden flex-1 bordertertiary background-primary addtodosuggestionitem box-shadow border-8px text-14px text transition-duration-100">
 										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event)">Work on project</div>
 									</div>
@@ -1529,6 +1531,8 @@
 										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event)">Plan tomorrow's schedule</div>
 									</div>
 								</div>
+
+
 
 								<div class="width-full fadetransition addtodooptionspopup z-index-100 background-primary-transparent backdrop-blur box-shadow border-8px display-flex flex-column hiddenfade overflow-hidden" id="addtodooptionspopup">
 									

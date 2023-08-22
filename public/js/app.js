@@ -6914,16 +6914,25 @@ function closecreatetodoitempriority() {
 
 
 
-function clicktypeaddtask(){
-	let addtodosuggestions = getElement('addtodosuggestions')
-	addtodosuggestions.classList.remove('hiddenpopup')
+function clicktypeaddtask(event){
+	typeaddtask(event)
 }
 
 function clickaddtodosuggestion(event){
+	//use dataset value for things, add type option in function param
 	let todoinputtitle2 = getElement('todoinputtitle2')
 	todoinputtitle2.value = event.target.innerHTML
 
 	typeaddtask(event)
+}
+
+function updateaddtodosuggestions(finalstring){
+	let addtodosuggestionstitle = getElement('addtodosuggestionstitle')
+	if(finalstring.length == 0){
+		addtodosuggestionstitle.classList.remove('hiddenpopup')
+	}else{
+		addtodosuggestionstitle.classList.add('hiddenpopup')
+	}
 }
 
 
@@ -7025,6 +7034,7 @@ function typeaddtask(event, submit) {
 
 
 	updatecreatetodo()
+	updateaddtodosuggestions(finalstring)
 
 	if (submit) {
 		return finalstring
