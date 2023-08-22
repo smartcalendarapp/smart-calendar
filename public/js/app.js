@@ -2185,6 +2185,14 @@ class Calendar {
 			let tempoutput = []
 			let tempoutput2 = []
 			for (let i = 0; i < sortedtodos.length; i++) {
+				if(i == 0){
+					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
+						<div class="horizontalbar flex-1"></div>
+						<div class="text-quaternary text-16px">Scheduled tasks</div>
+						<div class="horizontalbar flex-1"></div>
+					</div>`)
+				}
+
 				let item = sortedtodos[i]
 				let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 				if (!laststartdate || tempstartdate.getDate() != laststartdate.getDate() || laststartdate.getMonth() != tempstartdate.getMonth() || laststartdate.getFullYear() != tempstartdate.getFullYear()) {
@@ -2220,6 +2228,14 @@ class Calendar {
 			let tempoutput = []
 			let tempoutput2 = []
 			for (let i = 0; i < duetodos.length; i++) {
+				if(i == 0){
+					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
+						<div class="horizontalbar flex-1"></div>
+						<div class="text-quaternary text-16px">Not scheduled yet</div>
+						<div class="horizontalbar flex-1"></div>
+					</div>`)
+				}
+
 				let item = duetodos[i]
 				let tempduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 				if (!lastduedate || tempduedate.getDate() != lastduedate.getDate() || lastduedate.getMonth() != tempduedate.getMonth() || lastduedate.getFullYear() != tempduedate.getFullYear()) {
@@ -7235,13 +7251,16 @@ function gettododata(item) {
 				
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 				 
-									<div class="gap-6px display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton" onclick="clicktodoitemduedate(event, '${item.id}')">
-										<div class="pointer-auto pointer ${!endbeforedate ? 'text-quaternary hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-blue hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${Calendar.Event.getDueText(item)}` : 'No due date'}</div>
-									</div>
+									${!Calendar.Event.isEvent(item) ? 
+										`<div class="gap-6px display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton" onclick="clicktodoitemduedate(event, '${item.id}')">
+											<div class="pointer-auto pointer ${!endbeforedate ? 'text-quaternary hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-blue hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.start.minute)}` : 'No due date'}</div>
+										</div>`
+										: ''
+									}
 									
 									${Calendar.Event.isEvent(item) ? 
 										`<div class="gap-6px display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton">
-											<div class="text-green ${itemclasses.join(' ')}">Scheduled for ${Calendar.Event.getStartText(item)}</div>
+											<div class="text-green ${itemclasses.join(' ')}">Scheduled for ${getHMText(item.start.minute)}</div>
 										</div>`
 										:
 										``

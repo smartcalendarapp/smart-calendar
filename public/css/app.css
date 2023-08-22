@@ -3573,11 +3573,6 @@ body {
 	top: -99999px !important;
 }
 
-.hiddenpopupnoposition{
-	left: revert !important;
-	top: revert !important;
-}
-
 
 @media (max-width: 600px) {
 
@@ -3669,7 +3664,8 @@ body {
 }
 .addtodosuggestions{
 	position:absolute;
-	top:100%;
+	top:100% !important;
+	left:0 !important;
 	margin-top:12px;
 }
 
