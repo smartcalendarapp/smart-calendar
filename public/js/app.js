@@ -6915,16 +6915,17 @@ function closecreatetodoitempriority() {
 
 
 function clicktypeaddtask(event){
-	//typeaddtask(event)
 	let addtodooptionspopup = getElement('addtodooptionspopup')
 	addtodooptionspopup.classList.remove('hiddenpopup')
 }
 
+
+/*
 function clickaddtodosuggestion(event, data){
 	event.stopPropagation()
 
 	let todoinputtitle2 = getElement('todoinputtitle2')
-	if(!todoinputtitle2.value.endsWith(' ')){
+	if(!todoinputtitle2.value.endsWith(' ') && todoinputtitle2.value.length != 0){
 		todoinputtitle2.value += ' '
 	}
 	todoinputtitle2.value += data
@@ -6949,6 +6950,7 @@ function updateaddtodosuggestions(finalstring){
 		}
 	}
 }
+*/
 
 
 function typeaddtask(event, submit) {
@@ -7049,7 +7051,6 @@ function typeaddtask(event, submit) {
 
 
 	updatecreatetodo()
-	updateaddtodosuggestions(finalstring)
 
 	if (submit) {
 		return finalstring
