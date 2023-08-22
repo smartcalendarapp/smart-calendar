@@ -6916,7 +6916,7 @@ function closecreatetodoitempriority() {
 
 function clicktypeaddtask(){
 	let addtodosuggestions = getElement('addtodosuggestions')
-	addtodosuggestions.classList.remove('hiddenfade')
+	addtodosuggestions.classList.remove('hiddenpopup')
 }
 
 function clickaddtodosuggestion(event){
