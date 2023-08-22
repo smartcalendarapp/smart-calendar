@@ -6915,7 +6915,9 @@ function closecreatetodoitempriority() {
 
 
 function clicktypeaddtask(event){
-	typeaddtask(event)
+	//typeaddtask(event)
+	let addtodooptionspopup = getElement('addtodooptionspopup')
+	addtodooptionspopup.classList.remove('hiddenpopup')
 }
 
 function clickaddtodosuggestion(event, data){
@@ -6931,8 +6933,8 @@ function clickaddtodosuggestion(event, data){
 	typeaddtask(event)
 }
 
+
 function updateaddtodosuggestions(finalstring){
-	console.log(finalstring)
 	let addtodosuggestionstitle = getElement('addtodosuggestionstitle')
 	let addtodosuggestionsduedate = getElement('addtodosuggestionsduedate')
 
