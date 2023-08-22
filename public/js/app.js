@@ -6918,10 +6918,14 @@ function clicktypeaddtask(event){
 	typeaddtask(event)
 }
 
-function clickaddtodosuggestion(event){
-	//use dataset value for things, add type option in function param
+function clickaddtodosuggestion(event, data){
+	event.stopPropagation()
+
 	let todoinputtitle2 = getElement('todoinputtitle2')
-	todoinputtitle2.value = event.target.innerHTML
+	if(!todoinputtitle2.endsWith(' ')){
+		todoinputtitle2 += ' '
+	}
+	todoinputtitle2.value += data
 	todoinputtitle2.focus()
 
 	typeaddtask(event)
@@ -6929,10 +6933,18 @@ function clickaddtodosuggestion(event){
 
 function updateaddtodosuggestions(finalstring){
 	let addtodosuggestionstitle = getElement('addtodosuggestionstitle')
+	let addtodosuggestionsduedate = getElement('addtodosuggestionsduedate')
+
 	if(finalstring.length == 0 && document.activeElement === getElement('todoinputtitle2')){
 		addtodosuggestionstitle.classList.remove('hiddenpopup')
 	}else{
 		addtodosuggestionstitle.classList.add('hiddenpopup')
+		
+		if(createtododuedatevalue.year != null || createtododuedatevalue.month != null || createtododuedatevalue.day != null || createtododuedatevalue.minute != null){
+			addtodosuggestionsduedate.classList.remove('hiddenpopup')
+		}else{
+			addtodosuggestionsduedate.classList.add('hiddenpopup')
+		}
 	}
 }
 

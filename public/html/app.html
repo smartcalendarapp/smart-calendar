@@ -1515,20 +1515,29 @@
 									<span class="inputline"></span>
 								</div>
 
-								
+
 								<!-- suggestions -->
 								<div class="width-full popuptransition addtodosuggestions z-index-100 border-8px display-flex popup gap-12px flex-row flex-wrap-wrap hiddenpopup" id="addtodosuggestionstitle">
 									<div class="overflow-hidden flex-1 bordertertiary background-primary addtodosuggestionitem box-shadow border-8px text-14px text transition-duration-100">
-										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event)">Work on project</div>
+										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event, 'Work on project')">Work on project</div>
 									</div>
 									<div class="overflow-hidden flex-1 bordertertiary background-primary addtodosuggestionitem box-shadow border-8px text-14px text transition-duration-100">
-										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event)">Read a book</div>
+										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event, 'Read a book')">Read a book</div>
 									</div>
 									<div class="overflow-hidden flex-1 bordertertiary background-primary addtodosuggestionitem box-shadow border-8px text-14px text transition-duration-100">
-										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event)">Exercise</div>
+										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event, 'Exercise')">Exercise</div>
 									</div>
 									<div class="overflow-hidden flex-1 bordertertiary background-primary addtodosuggestionitem box-shadow border-8px text-14px text transition-duration-100">
-										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event)">Plan tomorrow's schedule</div>
+										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event, 'Plan tomorrow\'s schedule')">Plan tomorrow's schedule</div>
+									</div>
+								</div>
+
+								<div class="width-full popuptransition addtodosuggestions z-index-100 border-8px display-flex popup gap-12px flex-row flex-wrap-wrap hiddenpopup" id="addtodosuggestionsduedate">
+									<div class="overflow-hidden flex-1 bordertertiary background-primary addtodosuggestionitem box-shadow border-8px text-14px text transition-duration-100">
+										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event, 'due tomorrow')">Due tomorrow</div>
+									</div>
+									<div class="overflow-hidden flex-1 bordertertiary background-primary addtodosuggestionitem box-shadow border-8px text-14px text transition-duration-100">
+										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event, `${getDHMText(new Date((new Date()).setTime(Date.now() + 604800000)).setHours(23, 59, 0, 0))}`)">Due next week</div>
 									</div>
 								</div>
 
