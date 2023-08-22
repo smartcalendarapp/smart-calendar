@@ -6913,18 +6913,16 @@ function closecreatetodoitempriority() {
 }
 
 
-function updateaddtodosuggestions(event){
+
+function clicktypeaddtask(){
 	let addtodosuggestions = getElement('addtodosuggestions')
-	if(document.activeElement === getElement('todoinputtitle2')){
-		addtodosuggestions.classList.remove('hiddenfade')
-	}else if(!event.target.classList.contains('todosuggestionpopup')){
-		addtodosuggestions.classList.add('hiddenfade')
-	}
+	addtodosuggestions.classList.remove('hiddenfade')
 }
 
 function clickaddtodosuggestion(event){
 	let todoinputtitle2 = getElement('todoinputtitle2')
 	todoinputtitle2.value = event.target.innerHTML
+
 	typeaddtask(event)
 }
 
