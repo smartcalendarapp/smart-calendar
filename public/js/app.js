@@ -6913,6 +6913,14 @@ function closecreatetodoitempriority() {
 }
 
 
+function showaddtodosuggestions(){
+	let addtodosuggestions = getElement('addtodosuggestions')
+	addtodosuggestions.classList.remove('hiddenfade')
+}
+function hideaddtodosuggestions(){
+	let addtodosuggestions = getElement('addtodosuggestions')
+	addtodosuggestions.classList.add('hiddenfade')
+}
 
 function typeaddtask(event, submit) {
 	let todoinputtitle = getElement('todoinputtitle')
@@ -6921,7 +6929,7 @@ function typeaddtask(event, submit) {
 
 	let addtodooptionspopup = getElement('addtodooptionspopup')
 	if(finalstring.length > 0){
-		addtodooptionspopup.classList.remove('hiddenfade')
+		//addtodooptionspopup.classList.remove('hiddenfade')
 	}else{
 		addtodooptionspopup.classList.add('hiddenfade')
 	}
@@ -7285,7 +7293,7 @@ function gettododata(item) {
 				</div>
 
 
-				${schedulemytasksenabled && Calendar.Todo.isSchedulable(item) ?
+				${schedulemytasksenabled && Calendar.Todo.isSchedulable(item) && Calendar.Todo.isTodo(item) ?
 					`<div class="absolute todoitemselectcheck background-secondary box-shadow pointer pointer-auto" onclick="toggleschedulemytask(event, '${item.id}')">
 						${getbigcheckbox(schedulemytaskslist.find(g => g == item.id))}
 					</div>`
@@ -9771,7 +9779,6 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 
 	if (showui || addedtodos.length > 0) {
 		let firstitemdate = new Date(Math.min(...modifiedevents.map(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime())))
-		console.log(firstitemdate)
 
 		if(!isNaN(firstitemdate.getTime())){
 			//horizontal
@@ -9784,6 +9791,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 
 			let target = firstitemdate.getHours() * 60 + firstitemdate.getMinutes() - barcolumncontainer.offsetHeight / 2
 			barcolumncontainer.scrollTo(0, target)
+			console.log(barcolumncontainer.scrollTop)
 		}
 	}
 
