@@ -2188,7 +2188,7 @@ class Calendar {
 				if(i == 0){
 					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
 						<div class="horizontalbar flex-1"></div>
-						<div class="text-quaternary text-16px text-bold">In progress</div>
+						<div class="text-quaternary allsmallcaps text-18px text-bold">In progress</div>
 						<div class="horizontalbar flex-1"></div>
 					</div>`)
 				}
@@ -2196,7 +2196,7 @@ class Calendar {
 				let item = sortedtodos[i]
 				let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 				if (!laststartdate || tempstartdate.getDate() != laststartdate.getDate() || laststartdate.getMonth() != tempstartdate.getMonth() || laststartdate.getFullYear() != tempstartdate.getFullYear()) {
-					tempoutput.push(`<div class="text-18px text-green">Scheduled for ${getDMDYText(tempstartdate)}</div>`)
+					tempoutput.push(`<div class="text-18px text-quaternary">Scheduled for ${getDMDYText(tempstartdate)}</div>`)
 				}
 
 				tempoutput2.push(gettododata(item))
@@ -2231,7 +2231,7 @@ class Calendar {
 				if(i == 0){
 					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
 						<div class="horizontalbar flex-1"></div>
-						<div class="text-quaternary text-16px text-bold">Unscheduled tasks</div>
+						<div class="text-quaternary allsmallcaps text-18px text-bold">Unscheduled tasks</div>
 						<div class="horizontalbar flex-1"></div>
 					</div>`)
 				}
@@ -2239,7 +2239,7 @@ class Calendar {
 				let item = duetodos[i]
 				let tempduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 				if (!lastduedate || tempduedate.getDate() != lastduedate.getDate() || lastduedate.getMonth() != tempduedate.getMonth() || lastduedate.getFullYear() != tempduedate.getFullYear()) {
-					tempoutput.push(`<div class="text-18px text-blue">Due ${getDMDYText(tempduedate)}</div>`)
+					tempoutput.push(`<div class="text-18px text-quaternary">Due ${getDMDYText(tempduedate)}</div>`)
 				}
 
 				tempoutput2.push(gettododata(item))

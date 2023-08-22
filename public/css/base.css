@@ -953,3 +953,7 @@
 .outline-none{
 	outline:none
 }
+
+.allsmallcaps{
+	font-variant:all-small-caps
+}
