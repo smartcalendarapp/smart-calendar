@@ -655,12 +655,6 @@ body {
 }
 
 
-.fadetransition {
-	transition: opacity 0.2s, visibility 0.2s;
-}
-.popuptransition {
-	transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
-}
 
 .welcomepopupbuttonrow {
 	display: flex;
@@ -3622,6 +3616,14 @@ body {
 }
 
 
+.fadetransition {
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s;
+}
+.popuptransition {
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s, opacity 0.2s;
+}
+
+
 .darktransparentbackground {
 	background-color: var(--black-transparent-2);
 }
@@ -3713,3 +3715,4 @@ input:focus+.slider {
 input:checked+.slider:before {
 	transform: translateX(18px);
 }
+
