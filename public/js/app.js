@@ -6930,8 +6930,6 @@ function clickaddtodosuggestion(event){
 
 
 function typeaddtask(event, submit) {
-	updateaddtodosuggestions(event)
-	
 	let todoinputtitle = getElement('todoinputtitle')
 	let todoinputtitle2 = getElement('todoinputtitle2')
 	let finalstring = todoinputtitle.value || todoinputtitle2.value
