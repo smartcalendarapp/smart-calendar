@@ -6533,7 +6533,7 @@ function updatecreatetodo() {
 			</svg>
 	 		<span class="tooltiptextcenter">Remove due date</span>
 	 	</div>
-	</div>` : '<div class="pointer-none text-quaternary padding-top-6px padding-bottom-6px">No due date</div>'
+	</div>` : '<div class="pointer-none text-quaternary padding-top-8px padding-bottom-8px">No due date</div>'
 	createtodopriority.innerHTML = `<span class="pointer-none ${['text-quaternary', 'text-orange', 'text-red'][createtodopriorityvalue]}">${['Low', 'Medium', ' High'][createtodopriorityvalue]} priority</span>`
 }
 
