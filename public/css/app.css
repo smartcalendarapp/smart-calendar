@@ -439,6 +439,14 @@ body {
 	background-color:var(--white-hover)
 }
 
+.fadetransition {
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s;
+}
+
+
+.popuptransition {
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s, opacity 0.2s;
+}
 
 
 .schedulemenu {
@@ -3616,12 +3624,6 @@ body {
 }
 
 
-.fadetransition {
-	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s;
-}
-.popuptransition {
-	transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s, opacity 0.2s;
-}
 
 
 .darktransparentbackground {
