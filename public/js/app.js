@@ -6922,8 +6922,8 @@ function clickaddtodosuggestion(event, data){
 	event.stopPropagation()
 
 	let todoinputtitle2 = getElement('todoinputtitle2')
-	if(!todoinputtitle2.endsWith(' ')){
-		todoinputtitle2 += ' '
+	if(!todoinputtitle2.value.endsWith(' ')){
+		todoinputtitle2.value += ' '
 	}
 	todoinputtitle2.value += data
 	todoinputtitle2.focus()
@@ -6935,15 +6935,15 @@ function updateaddtodosuggestions(finalstring){
 	let addtodosuggestionstitle = getElement('addtodosuggestionstitle')
 	let addtodosuggestionsduedate = getElement('addtodosuggestionsduedate')
 
-	if(finalstring.length == 0 && document.activeElement === getElement('todoinputtitle2')){
-		addtodosuggestionstitle.classList.remove('hiddenpopup')
-	}else{
+	if(document.activeElement !== getElement('todoinputtitle2')){
 		addtodosuggestionstitle.classList.add('hiddenpopup')
-		
-		if(createtododuedatevalue.year != null || createtododuedatevalue.month != null || createtododuedatevalue.day != null || createtododuedatevalue.minute != null){
+		addtodosuggestionsduedate.classList.add('hiddenpopup')
+	}else{
+
+		if(finalstring.length == 0){
+			addtodosuggestionstitle.classList.remove('hiddenpopup')
+		}else if(createtododuedatevalue.year == null || createtododuedatevalue.month == null || createtododuedatevalue.day == null || createtododuedatevalue.minute == null){
 			addtodosuggestionsduedate.classList.remove('hiddenpopup')
-		}else{
-			addtodosuggestionsduedate.classList.add('hiddenpopup')
 		}
 	}
 }
