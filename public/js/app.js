@@ -6913,26 +6913,28 @@ function closecreatetodoitempriority() {
 }
 
 
-function showaddtodosuggestions(){
+function updateaddtodosuggestions(event){
 	let addtodosuggestions = getElement('addtodosuggestions')
-	addtodosuggestions.classList.remove('hiddenfade')
-}
-function hideaddtodosuggestions(){
-	let addtodosuggestions = getElement('addtodosuggestions')
-	addtodosuggestions.classList.add('hiddenfade')
+	if(document.activeElement === getElement('todoinputtitle2')){
+		addtodosuggestions.classList.remove('hiddenfade')
+	}else if(!event.target.classList.contains('todosuggestionpopup')){
+		addtodosuggestions.classList.add('hiddenfade')
+	}
 }
 
+function clickaddtodosuggestion(event){
+	let todoinputtitle2 = getElement('todoinputtitle2')
+	todoinputtitle2.value = event.target.innerHTML
+	typeaddtask(event)
+}
+
+
 function typeaddtask(event, submit) {
+	updateaddtodosuggestions(event)
+	
 	let todoinputtitle = getElement('todoinputtitle')
 	let todoinputtitle2 = getElement('todoinputtitle2')
 	let finalstring = todoinputtitle.value || todoinputtitle2.value
-
-	let addtodooptionspopup = getElement('addtodooptionspopup')
-	if(finalstring.length > 0){
-		//addtodooptionspopup.classList.remove('hiddenfade')
-	}else{
-		addtodooptionspopup.classList.add('hiddenfade')
-	}
 
 	let currentdate = new Date()
 
