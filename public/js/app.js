@@ -6932,6 +6932,7 @@ function clickaddtodosuggestion(event, data){
 }
 
 function updateaddtodosuggestions(finalstring){
+	console.log(finalstring)
 	let addtodosuggestionstitle = getElement('addtodosuggestionstitle')
 	let addtodosuggestionsduedate = getElement('addtodosuggestionsduedate')
 
@@ -6939,7 +6940,6 @@ function updateaddtodosuggestions(finalstring){
 		addtodosuggestionstitle.classList.add('hiddenpopup')
 		addtodosuggestionsduedate.classList.add('hiddenpopup')
 	}else{
-
 		if(finalstring.length == 0){
 			addtodosuggestionstitle.classList.remove('hiddenpopup')
 		}else if(createtododuedatevalue.year == null || createtododuedatevalue.month == null || createtododuedatevalue.day == null || createtododuedatevalue.minute == null){
