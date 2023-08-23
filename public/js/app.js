@@ -7084,7 +7084,7 @@ function submitcreatetodo(event) {
 	let title = typeaddtask(event, true)
 
 	let todoinputnotes = getElement('todoinputnotes')
-	let todoinputnotesonboarding = getElement('todoinptodoinputnotesonboardingutnotes')
+	let todoinputnotesonboarding = getElement('todoinputnotesonboarding')
 
 	let duedate = new Date(createtododuedatevalue.year, createtododuedatevalue.month, createtododuedatevalue.day, 0, createtododuedatevalue.minute)
 
@@ -7258,14 +7258,14 @@ function gettododata(item) {
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 				 
 									${!Calendar.Event.isEvent(item) ? 
-										`<div class="gap-6px display-flex transition-duration-100 flex-row align-center width-fit todoitemtext badgepadding ${!endbeforedate ? 'background-tint-1 hover:background-tint-2' : (isoverdue ? 'background-red' : 'background-blue hover:background-blue-hover')} border-round nowrap popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduedate(event, '${item.id}')">
-											<div class="pointer-auto pointer ${!endbeforedate ? 'text-primary' : (isoverdue ? 'text-white' : 'text-white')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}</div>
+										`<div class="gap-6px pointer-auto pointer display-flex transition-duration-100 flex-row align-center width-fit todoitemtext badgepadding ${!endbeforedate ? 'background-tint-1 hover:background-tint-2' : (isoverdue ? 'background-red' : 'background-blue hover:background-blue-hover')} border-round nowrap popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduedate(event, '${item.id}')">
+											<div class="pointer-none ${!endbeforedate ? 'text-primary' : (isoverdue ? 'text-white' : 'text-white')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}</div>
 										</div>`
 										: ''
 									}
 									
 									${Calendar.Event.isEvent(item) ? 
-										`<div class="gap-6px background-green hover:background-green-hover transition-duration-100 badgepadding border-round display-flex flex-row align-center width-fit todoitemtext nowrap popupbutton">
+										`<div class="gap-6px background-green hover:background-green-hover transition-duration-100 badgepadding border-round display-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}">
 											<div class="text-white ${itemclasses.join(' ')}">Scheduled for ${getHMText(item.start.minute)}</div>
 										</div>`
 										:
@@ -7273,7 +7273,7 @@ function gettododata(item) {
 									}
 		
 									${Calendar.Event.isEvent(item) ? `` : 
-										`<div class="width-fit background-green transition-duration-100 hover:background-green-hover badgepadding border-round todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-white pointer-auto pointer transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
+										`<div class="width-fit background-green transition-duration-100 hover:background-green-hover badgepadding border-round todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-white transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
 											Takes ${getDHMText(myduration)}
 										</div>`
 									}
