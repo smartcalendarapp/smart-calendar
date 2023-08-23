@@ -7252,22 +7252,22 @@ function gettododata(item) {
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 				 
 									${!Calendar.Event.isEvent(item) ? 
-										`<div class="gap-6px display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton" onclick="clicktodoitemduedate(event, '${item.id}')">
-											<div class="text-bold pointer-auto pointer ${!endbeforedate ? 'text-quaternary hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-blue hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}</div>
+										`<div class="gap-6px display-flex flex-row align-center width-fit todoitemtext background-blue priorityiconpadding border-round nowrap pointer-none popupbutton" onclick="clicktodoitemduedate(event, '${item.id}')">
+											<div class="text-bold pointer-auto pointer ${!endbeforedate ? 'text-white hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-white hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}</div>
 										</div>`
 										: ''
 									}
 									
 									${Calendar.Event.isEvent(item) ? 
-										`<div class="gap-6px display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton">
-											<div class="text-green text-bold ${itemclasses.join(' ')}">Scheduled for ${getHMText(item.start.minute)}</div>
+										`<div class="gap-6px background-green priorityiconpadding border-round display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton">
+											<div class="text-white text-bold ${itemclasses.join(' ')}">Scheduled for ${getHMText(item.start.minute)}</div>
 										</div>`
 										:
 										``
 									}
 		
 									${Calendar.Event.isEvent(item) ? `` : 
-										`<div class="width-fit text-bold todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-green hoverunderlinegreen pointer-auto pointer transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
+										`<div class="width-fit background-green priorityiconpadding border-round text-bold todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-white hoverunderlinegreen pointer-auto pointer transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
 											Takes ${getDHMText(myduration)}
 										</div>`
 									}
