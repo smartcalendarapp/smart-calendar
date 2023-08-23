@@ -7252,8 +7252,8 @@ function gettododata(item) {
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 				 
 									${!Calendar.Event.isEvent(item) ? 
-										`<div class="gap-6px display-flex flex-row align-center width-fit todoitemtext background-blue priorityiconpadding border-round nowrap pointer-none popupbutton" onclick="clicktodoitemduedate(event, '${item.id}')">
-											<div class="text-bold pointer-auto pointer ${!endbeforedate ? 'text-white hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-white hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}</div>
+										`<div class="gap-6px display-flex flex-row align-center width-fit todoitemtext priorityiconpadding ${!endbeforedate ? 'background-tint-1' : (isoverdue ? 'background-red' : 'background-blue')} border-round nowrap pointer-none popupbutton" onclick="clicktodoitemduedate(event, '${item.id}')">
+											<div class="text-bold pointer-auto pointer ${!endbeforedate ? 'hoverunderlinequaternary text-primary' : (isoverdue ? 'text-white hoverunderlinered' : 'text-white hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}</div>
 										</div>`
 										: ''
 									}
@@ -7272,7 +7272,7 @@ function gettododata(item) {
 										</div>`
 									}
 	
-									<div class="text-14px text-bold nowrap pointer-auto pointer popupbutton transition-duration-100 ${['text-quaternary hoverunderlinequaternary visibility-hidden hoverpriority small:visibility-visible', 'text-orange hoverunderlineorange', 'text-red hoverunderlinered'][item.priority]} ${itemclasses.join(' ')}" onclick="clicktodoitempriority(event, '${item.id}')">
+									<div class="text-14px text-bold nowrap pointer-auto pointer popupbutton transition-duration-100 ${['background-tint-1 text-primary hoverunderlinequaternary visibility-hidden hoverpriority small:visibility-visible', 'background-orange text-white hoverunderlineorange', 'background-red text-white hoverunderlinered'][item.priority]} ${itemclasses.join(' ')}" onclick="clicktodoitempriority(event, '${item.id}')">
 										${['Low', 'Medium', 'High'][item.priority]} priority
 									</div>
 	
