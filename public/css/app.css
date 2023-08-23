@@ -3201,13 +3201,6 @@ body {
 	padding:0 !important;
 }
 
-.completedtext.background-blue:hover,
-.completedtext.background-green:hover,
-.completedtext.background-orange:hover,
-.completedtext.background-red:hover,
-.completedtext.background-tint-1:hover {
-    background-color: var(--background-tint-1) !important;
-}
 
 
 .calendaritem:hover .calendaritembutton {
