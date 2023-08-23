@@ -3309,7 +3309,7 @@ body {
 
 
 .checkcircletop{
-	top:3px;
+	top:1px;
 }
 
 
@@ -3518,6 +3518,9 @@ body {
 
 .priorityiconpadding {
 	padding: 2px 6px;
+}
+.badgepadding{
+	padding: 2px 8px;
 }
 
 .width400px {
