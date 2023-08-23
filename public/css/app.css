@@ -3192,20 +3192,13 @@ body {
 	text-decoration-color: var(--text-secondary) !important;
 }
 
-.completedtext.background-blue{
-	background-color:transparent !important
-}
-.completedtext.background-green{
-	background-color:transparent !important
-}
-.completedtext.background-orange{
-	background-color:transparent !important
-}
-.completedtext.background-red{
-	background-color:transparent !important
-}
-.completedtext.background-tint-1{
-	background-color:transparent !important
+.completedtext.background-blue,
+.completedtext.background-green,
+.completedtext.background-orange,
+.completedtext.background-red,
+.completedtext.background-tint-1 {
+    background-color: transparent !important;
+	padding:0 !important;
 }
 
 .calendaritem:hover .calendaritembutton {
