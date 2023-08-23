@@ -458,6 +458,9 @@
 	gap:192px
 }
 
+.static{
+	position:static
+}
 .absolute{
 	position:absolute
 }
