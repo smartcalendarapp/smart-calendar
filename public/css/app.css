@@ -1363,6 +1363,7 @@ body {
 	color: var(--text-secondary) !important
 }
 
+
 .selectedevent .starboxfilledgray {
 	fill: var(--white) !important;
 }
@@ -3189,6 +3190,22 @@ body {
 
 .completedtext.hoverunderlinequaternary {
 	text-decoration-color: var(--text-secondary) !important;
+}
+
+.completedtext.background-blue{
+	background-color:transparent !important
+}
+.completedtext.background-green{
+	background-color:transparent !important
+}
+.completedtext.background-orange{
+	background-color:transparent !important
+}
+.completedtext.background-red{
+	background-color:transparent !important
+}
+.completedtext.background-tint-1{
+	background-color:transparent !important
 }
 
 .calendaritem:hover .calendaritembutton {
