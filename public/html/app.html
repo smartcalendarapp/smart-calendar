@@ -848,19 +848,49 @@
 					<div class="text-18px text-quaternary">Get in the habit of adding your tasks, projects, and plans here.</div>
 				</div>
 
+
+				<!-- add task -->
 				<div class="overflow-y-auto width-full display-flex align-center flex-column gap-12px">
-					<div class="padding-8px-12px pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-round" onclick="opencreatetodo(event)">
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
-						<g>
-						<g opacity="1">
-						<path d="M128.004 10.0039L128.004 246.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-						<path d="M246.004 128.004L10.0039 128.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-						</g>
-						</g>
-						</svg>
-			
-						<div class="text-18px text-white pointer-none nowrap transition-none">Add task</div>
+
+					<div class="relative align-center display-flex flex-row gap-12px width-full">
+						<div class="display-flex flex-column width-full">
+							<div class="border-8px background-primary-transparent backdrop-blur box-shadow overflow-hidden flex-1 relative">
+								<input oninput="typeaddtask(event)" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleonboarding" maxlength="2000">
+								</input>
+								<span class="inputline"></span>
+							</div>
+
+
+							<!-- popup -->
+							<div class="width-full popuptransition overflow-hidden background-primary box-shadow addtodosuggestions z-index-100 border-8px display-flex popup flex-column hiddenpopup" id="addtodooptionspopuponboarding">
+								
+								<div class="z-index-100 padding-12px border-box flex-1 align-center display-flex flex-row gap-12px padding-12px width-full flex-wrap-wrap">
+									<div class="popupbutton border-8px padding-left-12px padding-right-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap popupbutton text-14px pointer-auto pointer transition-duration-100" onclick="readinteractivetourpopup('clickduedate');clickcreatetododuedate(event)" id="createtododuedateonboarding">
+									</div>
+				
+									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-green pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetododuration(event)" id="createtododurationonboarding">
+									</div>
+				
+									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetodopriority(event)" id="createtodopriorityonboarding">
+									</div>
+								</div>
+
+								<div class="horizontalbar"></div>
+
+								<div class="inputgroup border-8px">
+									<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotesonboarding" maxlength="2000"></textarea>
+									<span class="inputline"></span>
+								</div>
+							</div>
+
+						</div>
+
+
+						<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodo()">					
+							<div class="text-16px text-white pointer-none nowrap transition-none">Add</div>
+						</div>
 					</div>
+
 
 					<div id="onboardingaddtasktodolist" class="flex-column display-flex gap-24px overflow-y-auto width-full"></div>
 				</div>
@@ -1514,35 +1544,6 @@
 									</input>
 									<span class="inputline"></span>
 								</div>
-
-
-								<!-- suggestions -->
-								<!--
-								<div class="width-full popuptransition addtodosuggestions z-index-100 border-8px display-flex popup gap-12px flex-row flex-wrap-wrap hiddenpopup" id="addtodosuggestionstitle">
-									<div class="overflow-hidden flex-1 bordertertiary background-primary addtodosuggestionitem box-shadow border-8px text-14px text transition-duration-100">
-										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event, 'Work on project')">Work on project</div>
-									</div>
-									<div class="overflow-hidden flex-1 bordertertiary background-primary addtodosuggestionitem box-shadow border-8px text-14px text transition-duration-100">
-										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event, 'Read a book')">Read a book</div>
-									</div>
-									<div class="overflow-hidden flex-1 bordertertiary background-primary addtodosuggestionitem box-shadow border-8px text-14px text transition-duration-100">
-										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event, 'Exercise')">Exercise</div>
-									</div>
-									<div class="overflow-hidden flex-1 bordertertiary background-primary addtodosuggestionitem box-shadow border-8px text-14px text transition-duration-100">
-										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event, 'Plan tomorrow\'s schedule')">Plan tomorrow's schedule</div>
-									</div>
-								</div>
-
-								<div class="width-full popuptransition addtodosuggestions z-index-100 border-8px display-flex popup gap-12px flex-row flex-wrap-wrap hiddenpopup" id="addtodosuggestionsduedate">
-									<div class="overflow-hidden flex-1 bordertertiary background-primary addtodosuggestionitem box-shadow border-8px text-14px text transition-duration-100">
-										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event, 'due tomorrow')">Due tomorrow</div>
-									</div>
-									<div class="overflow-hidden flex-1 bordertertiary background-primary addtodosuggestionitem box-shadow border-8px text-14px text transition-duration-100">
-										<div class="popupbutton transition-duration-100 border-box padding-12px width-full height-full hover:background-tint-1 pointer" onclick="clickaddtodosuggestion(event, `${getDHMText(new Date((new Date()).setTime(Date.now() + 604800000)).setHours(23, 59, 0, 0))}`)">Due next week</div>
-									</div>
-								</div>
-								-->
-
 
 
 								<!-- popup -->

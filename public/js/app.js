@@ -6497,8 +6497,14 @@ function resetcreatetodo() {
 	todoinputtitle.value = ''
 	let todoinputnotes = getElement('todoinputnotes')
 	todoinputnotes.value = ''
+
 	let todoinputtitle2 = getElement('todoinputtitle2')
 	todoinputtitle2.value = ''
+
+	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
+	todoinputtitleonboarding.value = ''
+	let todoinputnotesonboarding = getElement('todoinputnotesonboarding')
+	todoinputnotesonboarding.value = ''
 
 	createtododurationvalue = 60
 	createtododuedatevalue = {
@@ -6527,40 +6533,59 @@ function updatecreatetodo() {
 	let createtododuedate = getElement('createtododuedate')
 	let createtodopriority = getElement('createtodopriority')
 
+	let createtododurationonboarding = getElement('createtododurationonboarding')
+	let createtododuedateonboarding = getElement('createtododuedateonboarding')
+	let createtodopriorityonboarding = getElement('createtodopriorityonboarding')
+
 	let currentdate = new Date()
 
 	let duedate;
 	if (createtododuedatevalue.year != null && createtododuedatevalue.month != null && createtododuedatevalue.day != null && createtododuedatevalue.minute != null) {
 		duedate = new Date(createtododuedatevalue.year, createtododuedatevalue.month, createtododuedatevalue.day, 0, createtododuedatevalue.minute)
 	}
-	createtododuration.innerHTML = `Takes ${getDHMText(createtododurationvalue)}`
-	createtododuedate.innerHTML = duedate ? `
- 	<div class="display-flex pointer-none flex-row align-center gap-6px">
- 		<div class="${duedate.getTime() < currentdate.getTime() ? 'text-red ' : 'text-blue'} text-14px padding-top-6px padding-bottom-6px">Due ${getDMDYText(duedate)} ${getHMText(duedate.getHours() * 60 + duedate.getMinutes())}</div>
-	
-	 	<div class="tooltip pointer display-flex pointer-auto padding-6px hover:background-tint-1 transition-duration-100 border-8px" onclick="inputcreatetodoitemnotdue(event)">
-			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallquaternary">
-			<g>
-			<g opacity="1">
-			<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-			<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-			</g>
-			</g>
-			</svg>
-	 		<span class="tooltiptextcenter">Remove due date</span>
-	 	</div>
-	</div>` : '<div class="pointer-none text-quaternary padding-top-8px padding-bottom-8px">No due date</div>'
-	createtodopriority.innerHTML = `<span class="pointer-none ${['text-quaternary', 'text-orange', 'text-red'][createtodopriorityvalue]}">${['Low', 'Medium', ' High'][createtodopriorityvalue]} priority</span>`
+
+	let tempdurationvalue = `Takes ${getDHMText(createtododurationvalue)}`
+	createtododuration.innerHTML = tempdurationvalue
+	createtododurationonboarding.innerHTML = tempdurationvalue
+
+	let tempduedatevalue = duedate ? `
+	<div class="display-flex pointer-none flex-row align-center gap-6px">
+		<div class="${duedate.getTime() < currentdate.getTime() ? 'text-red ' : 'text-blue'} text-14px padding-top-6px padding-bottom-6px">Due ${getDMDYText(duedate)} ${getHMText(duedate.getHours() * 60 + duedate.getMinutes())}</div>
+   
+		<div class="tooltip pointer display-flex pointer-auto padding-6px hover:background-tint-1 transition-duration-100 border-8px" onclick="inputcreatetodoitemnotdue(event)">
+		   <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallquaternary">
+		   <g>
+		   <g opacity="1">
+		   <path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+		   <path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+		   </g>
+		   </g>
+		   </svg>
+			<span class="tooltiptextcenter">Remove due date</span>
+		</div>
+   </div>` : '<div class="pointer-none text-quaternary padding-top-8px padding-bottom-8px">No due date</div>'
+	createtododuedate.innerHTML = tempduedatevalue
+	createtododuedateonboarding.innerHTML = tempduedatevalue
+
+	let temppriorityvalue = `<span class="pointer-none ${['text-quaternary', 'text-orange', 'text-red'][createtodopriorityvalue]}">${['Low', 'Medium', ' High'][createtodopriorityvalue]} priority</span>`
+	createtodopriority.innerHTML = temppriorityvalue
+	createtodopriorityonboarding.innerHTML = temppriorityvalue
 }
 
 
 function closetodoitemduration() {
 	let createtododuration = getElement('createtododuration')
 	createtododuration.classList.add('hiddenpopup')
+
+	let createtododurationonboarding = getElement('createtododurationonboarding')
+	createtododurationonboarding.classList.add('hiddenpopup')
 }
 function closetodoitemduedate() {
 	let createtododuedate = getElement('createtododuedate')
 	createtododuedate.classList.add('hiddenpopup')
+
+	let createtododuedateonboarding = getElement('createtododuedateonboarding')
+	createtododuedateonboarding.classList.add('hiddenpopup')
 }
 
 
@@ -6936,43 +6961,13 @@ function clicktypeaddtask(event){
 }
 
 
-/*
-function clickaddtodosuggestion(event, data){
-	event.stopPropagation()
-
-	let todoinputtitle2 = getElement('todoinputtitle2')
-	if(!todoinputtitle2.value.endsWith(' ') && todoinputtitle2.value.length != 0){
-		todoinputtitle2.value += ' '
-	}
-	todoinputtitle2.value += data
-	todoinputtitle2.focus()
-
-	typeaddtask(event)
-}
-
-
-function updateaddtodosuggestions(finalstring){
-	let addtodosuggestionstitle = getElement('addtodosuggestionstitle')
-	let addtodosuggestionsduedate = getElement('addtodosuggestionsduedate')
-
-	if(document.activeElement !== getElement('todoinputtitle2')){
-		addtodosuggestionstitle.classList.add('hiddenpopup')
-		addtodosuggestionsduedate.classList.add('hiddenpopup')
-	}else{
-		if(finalstring.length == 0){
-			addtodosuggestionstitle.classList.remove('hiddenpopup')
-		}else if(createtododuedatevalue.year == null || createtododuedatevalue.month == null || createtododuedatevalue.day == null || createtododuedatevalue.minute == null){
-			addtodosuggestionsduedate.classList.remove('hiddenpopup')
-		}
-	}
-}
-*/
 
 
 function typeaddtask(event, submit) {
 	let todoinputtitle = getElement('todoinputtitle')
 	let todoinputtitle2 = getElement('todoinputtitle2')
-	let finalstring = todoinputtitle.value || todoinputtitle2.value
+	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
+	let finalstring = todoinputtitle.value || todoinputtitle2.value || todoinputtitleonboarding.value
 
 	let currentdate = new Date()
 
