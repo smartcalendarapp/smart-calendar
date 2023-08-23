@@ -7253,7 +7253,7 @@ function gettododata(item) {
 				 
 									${!Calendar.Event.isEvent(item) ? 
 										`<div class="gap-6px display-flex transition-duration-100 flex-row align-center width-fit todoitemtext priorityiconpadding ${!endbeforedate ? 'background-tint-1 hover:background-tint-2' : (isoverdue ? 'background-red' : 'background-blue hover:background-blue-hover')} border-round nowrap pointer-none popupbutton" onclick="clicktodoitemduedate(event, '${item.id}')">
-											<div class="text-bold pointer-auto pointer ${!endbeforedate ? 'hoverunderlinequaternary text-primary' : (isoverdue ? 'text-white hoverunderlinered' : 'text-white hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}</div>
+											<div class="text-bold pointer-auto pointer ${!endbeforedate ? 'text-primary' : (isoverdue ? 'text-white' : 'text-white')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}</div>
 										</div>`
 										: ''
 									}
@@ -7267,12 +7267,12 @@ function gettododata(item) {
 									}
 		
 									${Calendar.Event.isEvent(item) ? `` : 
-										`<div class="width-fit background-green transition-duration-100 hover:background-green-hover priorityiconpadding border-round text-bold todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-white hoverunderlinegreen pointer-auto pointer transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
+										`<div class="width-fit background-green transition-duration-100 hover:background-green-hover priorityiconpadding border-round text-bold todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-white pointer-auto pointer transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
 											Takes ${getDHMText(myduration)}
 										</div>`
 									}
 	
-									<div class="text-14px priorityiconpadding border-round text-bold nowrap pointer-auto transition-duration-100 pointer popupbutton transition-duration-100 ${['background-tint-1 text-primary hover:background-tint-2 hoverunderlinequaternary visibility-hidden hoverpriority small:visibility-visible', 'background-orange hover:background-orange-hover text-white hoverunderlineorange', 'background-red hover:background-red-hover text-white hoverunderlinered'][item.priority]} ${itemclasses.join(' ')}" onclick="clicktodoitempriority(event, '${item.id}')">
+									<div class="text-14px priorityiconpadding border-round text-bold nowrap pointer-auto transition-duration-100 pointer popupbutton transition-duration-100 ${['background-tint-1 text-primary hover:background-tint-2 visibility-hidden hoverpriority small:visibility-visible', 'background-orange hover:background-orange-hover text-white', 'background-red hover:background-red-hover text-white'][item.priority]} ${itemclasses.join(' ')}" onclick="clicktodoitempriority(event, '${item.id}')">
 										${['Low', 'Medium', 'High'][item.priority]} priority
 									</div>
 	
