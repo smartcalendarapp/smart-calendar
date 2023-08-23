@@ -7084,12 +7084,13 @@ function submitcreatetodo(event) {
 	let title = typeaddtask(event, true)
 
 	let todoinputnotes = getElement('todoinputnotes')
+	let todoinputnotesonboarding = getElement('todoinptodoinputnotesonboardingutnotes')
 
 	let duedate = new Date(createtododuedatevalue.year, createtododuedatevalue.month, createtododuedatevalue.day, 0, createtododuedatevalue.minute)
 
 	let myduration = createtododurationvalue
 
-	let notes = todoinputnotes.value
+	let notes = todoinputnotes.value || todoinputnotesonboarding.value
 
 	let item = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), myduration, title, notes)
 	if (createtododuedatevalue.year == null || createtododuedatevalue.month == null || createtododuedatevalue.day == null || createtododuedatevalue.minute == null) {
