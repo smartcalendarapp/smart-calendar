@@ -61,23 +61,23 @@
 	--text-quaternary:#ffffffB3;
 	--text-quinary:#ffffff80;
 
-	--red:#e6413c;
-	--orange:#f09f13;
+	--red:#e63832;
+	--orange:#e8980e;
 	--yellow:#f2d91b;
-	--green:#21c44a;
+	--green:#148530;
 	--blue:#258df5;
 	--purple:#8d68f2;
 
-	--red-hover:#b3322e;
-	--orange-hover:#bd7d0f;
+	--red-hover:#b32c27;
+	--orange-hover:#b5770b;
 	--green-hover:#199137;
 	--blue-hover:#1d6fc2;
 	--purple-hover:#6f52bf;
 	
-	--red-transparent:#e6413c80;
-	--orange-transparent:#f09f1380;
+	--red-transparent:#e6383280;
+	--orange-transparent:#e8980e80;
 	--yellow-transparent:#f2d91b80;
-	--green-transparent:#21c44a80;
+	--green-transparent:#1cb84380;
 	--blue-transparent:#258df580;
 	--purple-transparent:#8d68f280;
 
