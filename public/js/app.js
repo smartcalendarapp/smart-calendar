@@ -7300,7 +7300,7 @@ function gettododata(item) {
 						</div>
 	
 	
-						<div class="gap-6px todoitembuttongroup height-fit justify-flex-end flex-row small:visibility-visible">						
+						<div class="gap-6px todoitembuttongroup z-index-1 absolute margin-top-12px right-0 top-0 height-fit justify-flex-end flex-row small:visibility-visible">						
 							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="edittodo('${item.id}');gtag('event', 'button_click', { useraction: 'Edit - task' })">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 								<g>
@@ -8806,7 +8806,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 			itemclicks.push(`<div class="eventbottom" onmousedown="clickeventbottom(event, ${timestamp})"></div>`)
 		}
 
-		if(myheight > 15){
+		if(myheight >= 30){
 			itemclicks.push(`<div class="eventtop" onmousedown="clickeventtop(event, ${timestamp})"></div>`)
 		}
 	} else if (tempenddate.getTime() > currentdate.getTime() && tempenddate.getTime() <= nextdate.getTime()) {
@@ -8823,7 +8823,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 			itemclicks.push(`<div class="eventtop" onmousedown="clickeventtop(event, ${timestamp})"></div>`)
 		}
 
-		if(myheight > 15){
+		if(myheight >= 30){
 			itemclicks.push(`<div class="eventbottom" onmousedown="clickeventbottom(event, ${timestamp})"></div>`)
 		}
 	} else if (tempstartdate.getTime() < currentdate.getTime() && tempenddate.getTime() > nextdate.getTime()) {
