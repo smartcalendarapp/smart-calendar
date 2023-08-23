@@ -3533,6 +3533,10 @@ function updateonboardingscreen(){
 	getElement('createtodoitemduedate').classList.remove('z-index-10001')
 	getElement('createtodoitemduration').classList.remove('z-index-10001')
 	getElement('createtodoitempriority').classList.remove('z-index-10001')
+	getElement('todoitempriority').classList.remove('z-index-10001')
+	getElement('todoitemduedate').classList.remove('z-index-10001')
+	getElement('todoitemduration').classList.remove('z-index-10001')
+
 
 	if(currentonboarding == 'connectcalendars'){
 		let onboardingconnectcalendarsgooglecalendar = getElement('onboardingconnectcalendarsgooglecalendar')
@@ -3559,6 +3563,9 @@ function updateonboardingscreen(){
 		getElement('createtodoitemduedate').classList.add('z-index-10001')
 		getElement('createtodoitemduration').classList.add('z-index-10001')
 		getElement('createtodoitempriority').classList.add('z-index-10001')
+		getElement('todoitempriority').classList.add('z-index-10001')
+		getElement('todoitemduedate').classList.add('z-index-10001')
+		getElement('todoitemduration').classList.add('z-index-10001')
 	}
 
 }
@@ -6958,6 +6965,9 @@ function closecreatetodoitempriority() {
 function clicktypeaddtask(event){
 	let addtodooptionspopup = getElement('addtodooptionspopup')
 	addtodooptionspopup.classList.remove('hiddenpopup')
+
+	let addtodooptionspopuponboarding = getElement('addtodooptionspopuponboarding')
+	addtodooptionspopuponboarding.classList.remove('hiddenpopup')
 }
 
 
