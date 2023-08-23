@@ -2188,7 +2188,7 @@ class Calendar {
 				if(i == 0){
 					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
 						<div class="horizontalbar flex-1"></div>
-						<div class="text-quaternary allsmallcaps text-18px text-bold">In progress</div>
+						<div class="text-quaternary allsmallcaps text-18px text-bold">Scheduled</div>
 						<div class="horizontalbar flex-1"></div>
 					</div>`)
 				}
@@ -2231,7 +2231,7 @@ class Calendar {
 				if(i == 0){
 					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
 						<div class="horizontalbar flex-1"></div>
-						<div class="text-quaternary allsmallcaps text-18px text-bold">Unscheduled tasks</div>
+						<div class="text-quaternary allsmallcaps text-18px text-bold">Unscheduled</div>
 						<div class="horizontalbar flex-1"></div>
 					</div>`)
 				}
@@ -2277,7 +2277,7 @@ class Calendar {
 			}
 
 			if(output.length == 0){
-				output.push(`<div class="text-18px text-secondary align-self-center padding-top-192px padding-bottom-192px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
+				output.push(`<div class="text-18px text-secondary align-self-center text-center padding-top-192px padding-bottom-192px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
 			}
 
 			let alltodolist = getElement('alltodolist')
