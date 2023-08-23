@@ -1394,6 +1394,7 @@ body {
 	display: flex;
 	pointer-events: none;
 	visibility: hidden;
+	z-index:1;
 }
 
 .todoitemcontainer:hover .todoitembuttongroup {
