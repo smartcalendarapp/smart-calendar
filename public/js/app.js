@@ -2276,6 +2276,10 @@ class Calendar {
 				}
 			}
 
+			if(output.length == 0){
+				output.push(`<div class="text-18px text-secondary align-self-center padding-top-192px padding-bottom-192px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
+			}
+
 			let alltodolist = getElement('alltodolist')
 			if(alltodolist.innerHTML != output.join('')){
 				alltodolist.innerHTML = output.join('')
@@ -6970,6 +6974,13 @@ function clicktypeaddtask(event){
 	addtodooptionspopuponboarding.classList.remove('hiddenpopup')
 }
 
+function clickaddonetask(){
+	if(!calendar.onboarding.addtask){
+		getElement('todoinputtitleonboarding').focus()
+	}else{
+		getElement('todoinputtitle2').focus()
+	}
+}
 
 
 
