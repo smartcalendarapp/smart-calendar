@@ -7605,6 +7605,10 @@ function inputtodoitemnotdue(event, id) {
 	calendar.updateHistory()
 
 	closetodoitemduedate()
+
+	setTimeout(function(){
+		scrolltodoY(getElement(item.id).offsetTop)
+	}, 300)
 }
 
 //input due date
@@ -7676,6 +7680,10 @@ function inputtodoitemduetime(event, duetime) {
 	updatetodotimeinput(inputtodoid)
 
 	closetodoitemduedate()
+	
+	setTimeout(function(){
+		scrolltodoY(getElement(item.id).offsetTop)
+	}, 300)
 }
 
 
@@ -8270,6 +8278,10 @@ function submitedittodo(event) {
 		}
 		calendar.updateHistory()
 		calendar.updateInfo()
+		
+		setTimeout(function(){
+			scrolltodoY(getElement(item.id).offsetTop)
+		}, 300)
 	}
 }
 
