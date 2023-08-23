@@ -19,20 +19,20 @@
 	--yellow:#FFE41C;
 	--green:#2bc451;
 	--blue:#2693ff;
-	--purple:#8d68f2;
+	--purple:#916bfa;
 
 	--red-hover:#cc2b2b;
 	--orange-hover:#c78410;
 	--green-hover:#20913c;
 	--blue-hover:#1f75cc;
-	--purple-hover:#6f52bf;
+	--purple-hover:#7456c7;
 	
 	--red-transparent:#f2333380;
 	--orange-transparent:#faa61480;
 	--yellow-transparent:#FFE41C80;
 	--green-transparent:#2bc45180;
 	--blue-transparent:#2693ff80;
-	--purple-transparent:#8d68f280;
+	--purple-transparent:#916bfa80;
 	
 	--white:#ffffff;
 	--white-hover:#f5f5f5;
@@ -60,6 +60,26 @@
 	--text-tertiary:#ffffff1A;
 	--text-quaternary:#ffffffB3;
 	--text-quinary:#ffffff80;
+
+	--red:#e6413c;
+	--orange:#f09f13;
+	--yellow:#f2d91b;
+	--green:#21c44a;
+	--blue:#258df5;
+	--purple:#8d68f2;
+
+	--red-hover:#b3322e;
+	--orange-hover:#bd7d0f;
+	--green-hover:#199137;
+	--blue-hover:#1d6fc2;
+	--purple-hover:#6f52bf;
+	
+	--red-transparent:#e6413c80;
+	--orange-transparent:#f09f1380;
+	--yellow-transparent:#f2d91b80;
+	--green-transparent:#21c44a80;
+	--blue-transparent:#258df580;
+	--purple-transparent:#8d68f280;
 
 	--white-hover:#cccccc;
 	--black-transparent:#000000E6;
