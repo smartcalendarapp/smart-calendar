@@ -379,7 +379,7 @@ async function processReminders(){
 			
 
 		//email
-		/*await sendEmail({
+		await sendEmail({
 			from: 'Smart Calendar <reminders@smartcalendar.us>',
 			to: item.user.email,
 			subject: `Friendly reminder: ${item.event.title}`,
@@ -436,7 +436,7 @@ Smart Calendar | Your Personal Time Management Assistant
 
 If you wish to stop receiving these notifications, you can update your preferences in the app.
 (c) 2023 James Tsaggaris. All rights reserved.`
-		})*/
+		})
 	}
 }
 
