@@ -7123,7 +7123,7 @@ function submitcreatetodo(event) {
 	closecreatetodo()
 
 	setTimeout(function(){
-		scrolltodoY(getElement(item.id).offsetTop)
+		scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
 	}, 300)
 }
 
@@ -7160,7 +7160,7 @@ function gettododata(item) {
 	if (selectededittodoid == item.id) {
 
 		//edit
-		output = `<div class="todoitem todoedititemwrap box-shadow-2 bordertertiary border-8px margin-left-12px margin-right-12px border-box" id="${item.id}">
+		output = `<div class="todoitem todoedititemwrap box-shadow-2 bordertertiary border-8px margin-left-12px margin-right-12px border-box" id="todo-${item.id}">
 		<div class="todoitemcontainer padding-12px">
 			<div class="text-16px text-primary text-bold">Edit ${item.title ? cleanInput(item.title) : 'New Task'}</div>
 			<div class="display-flex flex-column gap-12px">
@@ -7241,7 +7241,7 @@ function gettododata(item) {
 	} else {
 		//view
 
-		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''} id="${item.id}">
+		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''} id="todo-${item.id}">
 
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
@@ -7300,7 +7300,7 @@ function gettododata(item) {
 						</div>
 	
 	
-						<div class="gap-6px todoitembuttongroup z-index-1 absolute margin-top-12px right-0 top-0 small:static small:margin-0 height-fit justify-flex-end flex-row small:visibility-visible">						
+						<div class="gap-6px todoitembuttongroup z-index-1 height-fit justify-flex-end flex-row small:visibility-visible">						
 							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="edittodo('${item.id}');gtag('event', 'button_click', { useraction: 'Edit - task' })">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 								<g>
@@ -7595,7 +7595,7 @@ function inputtodoitemnotdue(event, id) {
 	closetodoitemduedate()
 
 	setTimeout(function(){
-		scrolltodoY(getElement(item.id).offsetTop)
+		scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
 	}, 300)
 }
 
@@ -7670,7 +7670,7 @@ function inputtodoitemduetime(event, duetime) {
 	closetodoitemduedate()
 	
 	setTimeout(function(){
-		scrolltodoY(getElement(item.id).offsetTop)
+		scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
 	}, 300)
 }
 
@@ -8268,7 +8268,7 @@ function submitedittodo(event) {
 		calendar.updateInfo()
 		
 		setTimeout(function(){
-			scrolltodoY(getElement(item.id).offsetTop)
+			scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
 		}, 300)
 	}
 }
