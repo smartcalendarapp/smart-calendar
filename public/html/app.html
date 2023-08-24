@@ -810,6 +810,45 @@
 			</div>
 		</div>
 
+
+
+		<div class="flex-1 width-full display-flex flex-column align-center display-none" id="onboardingeventreminders">
+			
+			<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
+				<div class="display-flex flex-column gap-12px">
+					<div class="text-24px text-primary text-bold">Choose your event reminders</div>
+					<div class="text-18px text-quaternary">Get notified when an events starts with a web notification or email.</div>
+				</div>
+
+				<div class="display-flex align-self-center flex-column gap-24px">
+					<div class="infogroup">
+						<div class="display-flex justify-space-between flex-row gap-12px align-center">
+							<div class="infotext text-16px text-bold">Web Notifications</div>
+							<label class="switch">
+								<input type="checkbox" oninput="togglePushNotifs(event)" id="enablepushnotif2">
+								<span class="slider"></span>
+							</label>
+						</div>
+					</div>
+					<div class="infogroup">
+						<div class="display-flex justify-space-between flex-row gap-12px align-center">
+							<div class="infotext text-16px text-bold">Email Notifications</div>
+							<label class="switch">
+								<input type="checkbox" oninput="toggleemailnotifs(event)" id="enableemailnotif2">
+								<span class="slider"></span>
+							</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="display-flex flex-row gap-24px justify-center align-center">
+					<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="continueonboarding('eventreminders')">Skip</div>
+					<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('eventreminders')">Continue</div>
+				</div>
+
+			</div>
+		</div>
+
 		
 		<div class="height-full width-full display-flex align-center flex-column display-none" id="onboardingsleeptime">
 			<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
@@ -1274,8 +1313,8 @@
 
 
 			<!-- middle -->
-			<div class="display-flex flex-row nowrap align-center flex-1 justify-center gap-24px">
-				<div class="padding-top-6px padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="hometab">
+			<div class="display-flex flex-row align-center flex-1 justify-center gap-24px">
+				<div class="padding-top-6px nowrap padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="hometab">
 					Calendar
 					<span class="buttonunderline"></span>
 				</div>
@@ -1959,7 +1998,16 @@
 													<span class="slider"></span>
 												</label>
 											</div>
-											<div class="text-14px text-quaternary">You will get a reminder when an event starts.</div>
+											<div class="infogroup">
+												<div class="display-flex justify-space-between flex-row gap-12px align-center">
+													<div class="infotext text-16px text-bold">Get Email Notifications</div>
+													<label class="switch">
+														<input type="checkbox" oninput="toggleemailnotifs(event)" id="enableemailnotif">
+														<span class="slider"></span>
+													</label>
+												</div>
+											</div>
+											<div class="text-14px text-quaternary">Get a reminder when an event starts.</div>
 										</div>
 									</div>
 						
