@@ -11082,6 +11082,8 @@ function clickevent(event, timestamp) {
 	selectedeventinitialy = event.clientY - item.start.minute + barcolumncontainer.scrollTop
 	selectedeventbyday = item.repeat.byday
 
+	updatedeventsaftermove = false
+
 	calendar.updateEvents()
 
 	movingevent = true
@@ -11141,9 +11143,9 @@ function clickborder(event, id, timestamp) {
 }
 
 //move event
+let updatedeventsaftermove = false
 function moveevent(event) {
-	let doupdateevents = false
-	if(editeventid == null) doupdateevents = true
+	editeventid = selectedeventid
 	movingevent = true
 
 	let barcolumngroup = getElement('barcolumngroup')
@@ -11210,10 +11212,10 @@ function moveevent(event) {
 	item.end.month = tempdate2.getMonth()
 	item.end.year = tempdate2.getFullYear()
 
-	if(doupdateevents){
+	if(!updatedeventsaftermove){
 		calendar.updateEvents()
+		updatedeventsaftermove = true
 	}
-	editeventid = selectedeventid
 	calendar.updateAnimatedEvents()
 	calendar.updateInfo()
 	//here4
