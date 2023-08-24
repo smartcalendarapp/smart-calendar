@@ -1417,7 +1417,6 @@ class Calendar {
 				let daydisplayoutput = [];
 
 				let tempevents = geteventslite(currentdate, nextdate, alltempevents).filter(d => !autoscheduleeventslist.find(f => f.id == d.id) && d.id != editeventid)
-				console.log(tempevents.find(d => d.title == 'bugfix'))
 				let tempborders = getborders(currentdate, nextdate)
 
 				for (let item of tempevents) {
@@ -11145,8 +11144,6 @@ function clickborder(event, id, timestamp) {
 function moveevent(event) {
 	let doupdateevents = false
 	if(editeventid == null) doupdateevents = true
-	console.log(doupdateevents)
-	editeventid = selectedeventid
 	movingevent = true
 
 	let barcolumngroup = getElement('barcolumngroup')
@@ -11216,6 +11213,7 @@ function moveevent(event) {
 	if(doupdateevents){
 		calendar.updateEvents()
 	}
+	editeventid = selectedeventid
 	calendar.updateAnimatedEvents()
 	calendar.updateInfo()
 	//here4
