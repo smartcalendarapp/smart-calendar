@@ -368,7 +368,6 @@ async function processReminders(){
 	for(let item of sendreminders){
 		//push notifications
 		if(item.pushSubscription){
-			console.log("push subscription")
 			try{
 				let difference = Math.floor((Date.now() - new Date(item.event.start).getTime())/60000)
 		    	await webpush.sendNotification(item.pushSubscription, `REMINDER: ${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`)
@@ -597,17 +596,25 @@ let lastreminderdate = Date.now()
 
 async function initializeReminders(){
 	try {
-    const response = await dynamoclient.send(new ScanCommand({ TableName: 'smartcalendarusers' }))
-    const items = response.Items.map(item => addmissingpropertiestouser(unmarshall(item)))
+		const response = await dynamoclient.send(new ScanCommand({ TableName: 'smartcalendarusers' }))
+		const items = response.Items.map(item => addmissingpropertiestouser(unmarshall(item)))
 
-    for(let user of items){
-		cacheReminders(user)
+		for(let user of items){
+			cacheReminders(user)
+		}
+	} catch (error) {
+		console.error(error)
 	}
-  } catch (error) {
-    console.error(error)
-  }
-	
-	setInterval(processReminders, 1000)
+
+	processReminders()
+	setInterval(tickreminders, 1000)
+	function tickreminders(){
+		let currentminutes = Math.floor(Date.now() / 60000)
+  		let lastreminderminutes = Math.floor(lastreminderdate / 60000)
+		if(currentminutes > lastreminderminutes){
+			processReminders()
+		}
+	}
 }
 initializeReminders()
 

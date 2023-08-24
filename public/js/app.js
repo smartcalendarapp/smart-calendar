@@ -11213,9 +11213,8 @@ function moveevent(event) {
 
 	if(doupdateevents){
 		calendar.updateEvents()
-	}else{
-		calendar.updateAnimatedEvents()
 	}
+	calendar.updateAnimatedEvents()
 	calendar.updateInfo()
 }
 
