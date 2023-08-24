@@ -11144,6 +11144,7 @@ function clickborder(event, id, timestamp) {
 function moveevent(event) {
 	let doupdateevents = false
 	if(editeventid == null) doupdateevents = true
+	console.log(doupdateevents)
 	editeventid = selectedeventid
 	movingevent = true
 
@@ -11216,6 +11217,7 @@ function moveevent(event) {
 	}
 	calendar.updateAnimatedEvents()
 	calendar.updateInfo()
+	//here4
 }
 
 //move border
