@@ -2005,13 +2005,11 @@ class Calendar {
 					}
 
 
-					if(!Calendar.Event.isReadOnly(item) ){
 						output.push('<div class="horizontalbar"></div>')
 						
 						output.push(`
-						
 						<div class="display-flex flex-row flex-wrap-wrap gap-12px">
-							${item.type == 1 ? 
+							${!Calendar.Event.isReadOnly(item) && item.type == 1 ? 
 							`<div class="text-primary display-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-tint-1 hover:background-tint-2 pointer-auto transition-duration-100 border-8px pointer" onclick="todocompleted(event, selectedeventid)">
 								<div class="pointer-none nowrap text-primary text-14px">${item.completed ? `Mark uncomplete` : 'Mark complete'}</div>
 							</div>
@@ -2025,6 +2023,7 @@ class Calendar {
 								</svg>
 								<div class="pointer-none nowrap text-white text-14px">Start now</div>
 							</div>` : ''}
+							
 						
 							<div class="text-14px display-flex flex-row align-center gap-6px padding-8px-12px tooltip infotopright background-blue hover:background-blue-hover text-white pointer-auto transition-duration-100 border-8px pointer popupbutton" id="remindmebutton" onclick="clickeventremindme('${item.id}')">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 246 256" width="100%" class="buttonwhite">
@@ -2041,7 +2040,6 @@ class Calendar {
 							</div>
 						</div>
 						`)
-					}
 
 					info.innerHTML = output.join('')
 				}
@@ -3587,6 +3585,8 @@ function updateonboardingscreen(){
 		getElement('todoitempriority').classList.add('z-index-10001')
 		getElement('todoitemduedate').classList.add('z-index-10001')
 		getElement('todoitemduration').classList.add('z-index-10001')
+	}else if(currentonboarding == 'eventreminders'){
+		calendar.updateSettings()
 	}
 
 }
@@ -11072,7 +11072,6 @@ function clickevent(event, timestamp) {
 	let barcolumncontainer = getElement('barcolumncontainer')
 
 	selectedeventid = event.target.id
-	editeventid = selectedeventid
 
 	let item = calendar.events.find(d => d.id == selectedeventid)
 	if (!item) return
@@ -11143,7 +11142,11 @@ function clickborder(event, id, timestamp) {
 
 //move event
 function moveevent(event) {
+	let doupdateevents = false
+	if(editeventid == null) doupdateevents = true
+	editeventid = selectedeventid
 	movingevent = true
+
 	let barcolumngroup = getElement('barcolumngroup')
 	let barcolumncontainer = getElement('barcolumncontainer')
 
@@ -11208,7 +11211,11 @@ function moveevent(event) {
 	item.end.month = tempdate2.getMonth()
 	item.end.year = tempdate2.getFullYear()
 
-	calendar.updateAnimatedEvents()
+	if(doupdateevents){
+		calendar.updateEvents()
+	}else{
+		calendar.updateAnimatedEvents()
+	}
 	calendar.updateInfo()
 }
 
@@ -11490,7 +11497,7 @@ async function removePushNotifs() {
 let subscription;
 async function enablePushNotifs() {
 	const Notifications = await import("/notifications.mjs")
-	if (!Notifications.pushNotificationsSupported()) return;
+	if (!Notifications.pushNotificationsSupported()) return
 	console.log("Setting up Push Notifications...")
 
 	// to make sure duplicates don't exist, remove existing SW
