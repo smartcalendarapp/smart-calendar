@@ -7045,8 +7045,8 @@ function clickaddonetask(){
 
 function resizeaddtask(event){
 	let element = event.target
-	element.style.height = 'auto'
-	element.style.height = (element.scrollHeight) + 'px'
+	element.style.height = '0'
+	element.style.height = Math.min(element.scrollHeight, parseInt(getComputedStyle(element).maxHeight)) + 'px'
 }
 
 

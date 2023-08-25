@@ -339,9 +339,10 @@ body {
 }
 
 .createtodotextarea{
-	overflow:hidden;
+	overflow:auto;
 	resize:none;
-	max-height:120px;
+	line-height:normal;
+	max-height:200px;
 }
 
 .formgroup {
