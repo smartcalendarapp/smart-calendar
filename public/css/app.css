@@ -338,6 +338,11 @@ body {
 	border:1px solid var(--red)
 }
 
+.createtodotextarea{
+	overflow:hidden;
+	resize:none;
+	max-height:120px;
+}
 
 .formgroup {
 	gap: 6px;

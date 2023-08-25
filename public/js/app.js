@@ -7043,6 +7043,12 @@ function clickaddonetask(){
 }
 
 
+function resizeaddtask(event){
+	let element = event.target
+	element.style.height = 'auto'
+	element.style.height = (element.scrollHeight) + 'px'
+}
+
 
 function typeaddtask(event, submit) {
 	let todoinputtitle = getElement('todoinputtitle')

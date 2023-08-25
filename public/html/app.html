@@ -586,7 +586,7 @@
 				</div>
 			</div>
 			
-			<input type="submit" value="Submit" class="formsubmit"/>
+			<input type="submit" value="Confirm" class="formsubmit background-red hover:background-red-hover"/>
 		</form>
 	</div>
 
@@ -1594,8 +1594,8 @@
 						<div class="relative align-center display-flex flex-row gap-12px width-full">
 							<div class="display-flex flex-column width-full">
 								<div class="border-8px background-primary-transparent backdrop-blur box-shadow overflow-hidden flex-1 relative">
-									<input oninput="typeaddtask(event)" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle2" maxlength="2000">
-									</input>
+									<textarea oninput="resizeaddtask(event);typeaddtask(event)" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle2">
+									</textarea>
 									<span class="inputline"></span>
 								</div>
 
@@ -1878,7 +1878,7 @@
 
 										<div class="horizontalbar"></div>
 
-										<div class="deleteaccount pointer transition-duration-100 text-14px hover:background-red hover:text-white padding-8px-12px text-primary border-8px width-fit" onclick="opendeleteaccount(event)">Delete account</div>
+										<div class="deleteaccount popupbutton pointer transition-duration-100 text-14px hover:background-red hover:text-white padding-8px-12px text-primary border-8px width-fit" onclick="opendeleteaccount(event)">Delete account</div>
 									</div>
 					
 									<!-- general -->
