@@ -736,7 +736,7 @@
 			
 			<img src="../todotocalendar.png" class="objectfitcontain border-8px flex-shrink-0 max-width-600px width-full height-auto" width="1024" height="360" alt="Plan tasks on calendar"></img>
 
-			<div class="sticky margin-24px bottom-0 border-round padding-8px-12px text-18px whitebutton transition-duration-100 pointer" onclick="closewelcomepopup('calendar')">Got it</div>
+			<div class="sticky margin-24px bottom-0 border-round padding-8px-12px text-18px whitebackgroundbutton transition-duration-100 pointer" onclick="closewelcomepopup('calendar')">Got it</div>
 		</div>
 	</div>
 
@@ -908,15 +908,14 @@
 
 
 				<!-- add task -->
-				<div class="relative display-flex align-center flex-row gap-12px">
-					<div class="border-8px background-primary-transparent backdrop-blur box-shadow overflow-hidden flex-1 relative">
+				<div class="width-full relative display-flex align-center flex-row gap-12px">
+					<div class="display-flex flex-row border-8px background-primary-transparent backdrop-blur box-shadow overflow-hidden flex-1 relative">
 						<textarea rows="1" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleonboarding">
 						</textarea>
 						<span class="inputline"></span>
 					</div>
 					<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodo()">					
-						<div class="text-16px text-white pointer-none nowrap transition-none">Add</div>
-						<div id="submitcreatetodoaddnumberonboarding" class="text-black background-white text-14px border-round circlehighlight"></div>
+						<div class="text-16px text-white pointer-none nowrap transition-none"  id="submitcreatetodoaddnumberonboarding">Add</div>
 					</div>
 
 					<!-- popup -->
@@ -1594,19 +1593,18 @@
 
 
 						<!-- add task -->
-						<div class="relative display-flex align-center flex-row gap-12px">
-							<div class="border-8px background-primary-transparent backdrop-blur box-shadow overflow-hidden flex-1 relative">
+						<div class="width-full relative display-flex align-center flex-row gap-12px">
+							<div class="display-flex flex-row border-8px background-primary-transparent backdrop-blur box-shadow overflow-hidden flex-1 relative">
 								<textarea rows="1" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle">
 								</textarea>
 								<span class="inputline"></span>
 							</div>
 							<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodo()">					
-								<div class="text-16px text-white pointer-none nowrap transition-none">Add</div>
-								<div id="submitcreatetodoaddnumber" class="text-black background-white text-14px border-round circlehighlight"></div>
+								<div class="text-16px text-white pointer-none nowrap transition-none" id="submitcreatetodoaddnumber">Add</div>
 							</div>
 
 							<!-- popup -->
-							<div class="width-full popuptransition overflow-hidden background-primary box-shadow addtodosuggestions z-index-1 border-8px display-flex popup flex-column hiddenpopup" id="addtodooptionspopup">
+							<div class="width-full popuptransition overflow-hidden background-primary box-shadow addtodosuggestions z-index-100 border-8px display-flex popup flex-column hiddenpopup" id="addtodooptionspopup">
 										
 								<div class="z-index-100 padding-12px border-box flex-1 align-center display-flex flex-row gap-12px padding-12px width-full flex-wrap-wrap">
 									<div class="popupbutton border-8px padding-left-12px padding-right-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap popupbutton text-14px pointer-auto pointer transition-duration-100" onclick="readinteractivetourpopup('clickduedate');clickcreatetododuedate(event)" id="createtododuedate">

@@ -1813,12 +1813,12 @@ body {
 }
 
 
-.whitebutton {
+.whitebackgroundbutton {
 	background-color: var(--white);
 	color: var(--black);
 }
 
-.whitebutton:hover {
+.whitebackgroundbutton:hover {
 	background-color: var(--white-hover);
 }
 

@@ -6647,11 +6647,12 @@ function updatecreatetodo() {
 	finalstring = finalstring.split('\n').filter(d => d != '')
 	let length = finalstring.length
 
+	let string = `Add ${length == 0 ? `` : `<span class="text-black whitebackgroundbutton text-14px border-round circlehighlight">${length}</span>`}`
 	let submitcreatetodoaddnumber = getElement('submitcreatetodoaddnumber')
-	submitcreatetodoaddnumber.innerHTML = length == 0 ? '' : length
+	submitcreatetodoaddnumber.innerHTML = string
 
 	let submitcreatetodoaddnumberonboarding = getElement('submitcreatetodoaddnumberonboarding')
-	submitcreatetodoaddnumberonboarding.innerHTML = length == 0 ? '' : length
+	submitcreatetodoaddnumberonboarding.innerHTML = string
 }
 
 
