@@ -4793,6 +4793,43 @@ function opensetpassword() {
 }
 
 
+function opendeleteaccount(event) {
+	let button = event.target
+	let deleteaccountmenu = getElement('deleteaccountmenu')
+	deleteaccountmenu.classList.toggle('hiddenpopup')
+
+	deleteaccountmenu.style.top = (button.getBoundingClientRect().top + button.offsetHeight) + 'px'
+	deleteaccountmenu.style.left = fixleft(button.getBoundingClientRect().left, deleteaccountmenu) + 'px'
+
+	let form = getElement('deleteaccountform')
+	form.reset()
+}
+
+async function submitdeleteaccount(event) {
+	event.preventDefault()
+
+	let deleteaccountmenu = getElement('deleteaccountmenu')
+	let deleteaccounterrorwrap = getElement('deleteaccounterrorwrap')
+	deleteaccounterrorwrap.classList.add('display-none')
+
+	let deleteaccountform = getElement('deleteaccountform')
+	const formdata = new FormData(deleteaccountform)
+
+	const response = await fetch(`/deleteaccount`, {
+		method: 'POST',
+		body: formdata
+	})
+	if (response.status == 401) {
+		const data = await response.json()
+		deleteaccounterrorwrap.innerHTML = data.error
+		deleteaccounterrorwrap.classList.remove('display-none')
+	} else if (response.status == 200) {
+		deleteaccountmenu.classList.add('hiddenpopup')
+		deleteaccountmenu.reset()
+	}
+}
+
+
 async function submitchangeusername(event) {
 	event.preventDefault()
 

@@ -572,6 +572,25 @@
 	</div>
 
 
+	<div class="schedulemenu hiddenpopup popup z-index-1000 width300px" id="deleteaccountmenu" >
+		<div class="infotitle text-center">Delete Account</div>
+		<div class="text-14px text-quaternary">Are you sure you want to delete your account? This action is irreversible. All of your data including tasks and events will be deleted from Smart Calendar.</div>
+		
+		<div class="errorwrap display-none" id="deleteaccounterrorwrap"></div>
+		
+		<form class="form" id="deleteaccountform" onsubmit="submitdeleteaccount(event)">
+			<div class="formgroup">
+				<div class="forminputwrap">
+					<input placeholder="Confirm password" type="password" name="password" class="infoinput"></input>
+					<span class="inputline"></span>
+				</div>
+			</div>
+			
+			<input type="submit" value="Submit" class="formsubmit"/>
+		</form>
+	</div>
+
+
 
 	<div class="schedulemenu hiddenpopup popup z-index-1000 width300px" id="setpasswordmenu" >
 		<div class="infotitle text-center">Set Password</div>
@@ -1856,6 +1875,10 @@
 											
 											<div id="importgooglecalendarerror" class="errorwrap display-none"></div>
 										</div>
+
+										<div class="horizontalbar"></div>
+
+										<div class="deleteaccount hover:background-red hover:text-white padding-8px-12px text-primary border-8px width-fit" onclick="opendeleteaccount(event)">Delete account</div>
 									</div>
 					
 									<!-- general -->

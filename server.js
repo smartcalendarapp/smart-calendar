@@ -53,6 +53,7 @@ async function setUser(user){
 	return user
 }
 
+
 async function getUserById(userid){
 	const params = {
     TableName: 'smartcalendarusers',
@@ -733,7 +734,7 @@ app.get('/auth/google', async (req, res, next) => {
 			scope: ['profile', 'email','https://www.googleapis.com/auth/calendar'],
 			redirect_uri: REDIRECT_URI,
 		}
-		//here4
+
 		if(req.session.user){
 			const userid = req.session.user.userid
 			const user = await getUserById(userid)
@@ -1711,6 +1712,43 @@ app.post('/setpassword', async (req, res, next) => {
 		
 		user.password = newpassword
 		await setUser(user)
+		return res.end()
+	} catch (error) {
+		console.error(error)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
+app.post('/deleteaccount', async (req, res, next) => {
+	const form = new formidable.IncomingForm()
+	try {
+		const fields = await new Promise((resolve, reject) => {
+			form.parse(req, (err, fields) => {
+				if (err) {
+					reject(err)
+				} else {
+					resolve(fields)
+				}
+			})
+		})
+		let password = fields.password
+
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		const user = await getUserById(userid)
+		if(!user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+
+		if(password != user.password){
+			return res.status(401).json({ error: 'Incorrect password.' })
+		}
+
+		await deleteUser(user.userid)
 		return res.end()
 	} catch (error) {
 		console.error(error)

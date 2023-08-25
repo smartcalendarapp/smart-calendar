@@ -334,6 +334,10 @@ body {
 	background-color: var(--red-hover)
 }
 
+.deleteaccount{
+	border:1px solid var(--red)
+}
+
 
 .formgroup {
 	gap: 6px;
