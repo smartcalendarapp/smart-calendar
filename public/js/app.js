@@ -6585,8 +6585,7 @@ function resetcreatetodo() {
 		minute: nextdate.getHours() * 60 + nextdate.getMinutes()
 	}
 	createtodopriorityvalue = 0
-
-	resizeaddtask()
+	
 	typeaddtask()
 }
 
@@ -7196,6 +7195,8 @@ function submitcreatetodo(event) {
 
 			resetcreatetodo()
 			closecreatetodo()
+
+			resizeaddtask()
 
 
 			setTimeout(function(){
