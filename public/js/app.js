@@ -6586,7 +6586,7 @@ function resetcreatetodo() {
 	}
 	createtodopriorityvalue = 0
 
-	resizecreatetodo()
+	resizeaddtask()
 	typeaddtask()
 }
 
