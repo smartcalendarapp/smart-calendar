@@ -910,12 +910,13 @@
 				<!-- add task -->
 				<div class="relative display-flex align-center flex-row gap-12px">
 					<div class="border-8px background-primary-transparent backdrop-blur box-shadow overflow-hidden flex-1 relative">
-						<input oninput="typeaddtask(event)" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleonboarding" maxlength="2000">
-						</input>
+						<textarea rows="1" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleonboarding">
+						</textarea>
 						<span class="inputline"></span>
 					</div>
 					<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodo()">					
 						<div class="text-16px text-white pointer-none nowrap transition-none">Add</div>
+						<div id="submitcreatetodoaddnumberonboarding" class="text-black background-white text-14px border-round circlehighlight"></div>
 					</div>
 
 					<!-- popup -->
@@ -1102,7 +1103,7 @@
 			
 			<div id="createtodobutton" class="flex-shrink-0 bordertertiary border-8px transition-duration-100">
 				<div class="inputgroup" id="todoinputtitlegroup">
-					<input oninput="typeaddtask(event)" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add task' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle" maxlength="2000"></input>
+					<input oninput="typeaddtask(event)" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add task' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleold" maxlength="2000"></input>
 					<span class="inputline"></span>
 				</div>
 
@@ -1591,46 +1592,43 @@
 							</div>
 						</div>
 
-						<div class="relative align-center display-flex flex-row gap-12px width-full">
-							<div class="display-flex flex-column width-full">
-								<div class="display-flex flex-row border-8px background-primary-transparent backdrop-blur box-shadow overflow-hidden relative">
-									<textarea rows="1" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle2">
-									</textarea>
-									<span class="inputline"></span>
-								</div>
 
-
-								<!-- popup -->
-								<div class="width-full popuptransition overflow-hidden background-primary box-shadow addtodosuggestions z-index-100 border-8px display-flex popup flex-column hiddenpopup" id="addtodooptionspopup">
-									
-									<div class="z-index-100 padding-12px border-box flex-1 align-center display-flex flex-row gap-12px padding-12px width-full flex-wrap-wrap">
-										<div class="popupbutton border-8px padding-left-12px padding-right-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap popupbutton text-14px pointer-auto pointer transition-duration-100" onclick="readinteractivetourpopup('clickduedate');clickcreatetododuedate(event)" id="createtododuedate">
-										</div>
-					
-										<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-green pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetododuration(event)" id="createtododuration">
-										</div>
-					
-										<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetodopriority(event)" id="createtodopriority">
-										</div>
-									</div>
-
-									<div class="horizontalbar"></div>
-
-									<div class="inputgroup border-8px">
-										<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotes" maxlength="2000"></textarea>
-										<span class="inputline"></span>
-									</div>
-
-									<div class="text-14px text-quaternary">Tip: you can paste a list of tasks in the input above, and we'll add them for you</div>
-								</div>
-
+						<!-- add task -->
+						<div class="relative display-flex align-center flex-row gap-12px">
+							<div class="border-8px background-primary-transparent backdrop-blur box-shadow overflow-hidden flex-1 relative">
+								<textarea rows="1" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle">
+								</textarea>
+								<span class="inputline"></span>
 							</div>
-
-
 							<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodo()">					
 								<div class="text-16px text-white pointer-none nowrap transition-none">Add</div>
+								<div id="submitcreatetodoaddnumber" class="text-black background-white text-14px border-round circlehighlight"></div>
+							</div>
+
+							<!-- popup -->
+							<div class="width-full popuptransition overflow-hidden background-primary box-shadow addtodosuggestions z-index-1 border-8px display-flex popup flex-column hiddenpopup" id="addtodooptionspopup">
+										
+								<div class="z-index-100 padding-12px border-box flex-1 align-center display-flex flex-row gap-12px padding-12px width-full flex-wrap-wrap">
+									<div class="popupbutton border-8px padding-left-12px padding-right-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap popupbutton text-14px pointer-auto pointer transition-duration-100" onclick="readinteractivetourpopup('clickduedate');clickcreatetododuedate(event)" id="createtododuedate">
+									</div>
+				
+									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-green pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetododuration(event)" id="createtododuration">
+									</div>
+				
+									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetodopriority(event)" id="createtodopriority">
+									</div>
+								</div>
+
+								<div class="horizontalbar"></div>
+
+								<div class="inputgroup border-8px">
+									<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotes" maxlength="2000"></textarea>
+									<span class="inputline"></span>
+								</div>
 							</div>
 						</div>
+
+						
 
 					</div>
 					

@@ -3678,7 +3678,7 @@ function updateinteractivetour() {
 
 		if (key == 'clickaddtask') {
 
-			let tourbutton = getElement('todoinputtitle2')
+			let tourbutton = getElement('todoinputtitle')
 			if (isviewable(tourbutton)) {
 				let rect = tourbutton.getBoundingClientRect()
 
@@ -6545,16 +6545,16 @@ function opencreatetodo(event) {
 
 
 	if (!todopopup.classList.contains('hiddenpopup')) {
-		let todoinputtitle = getElement('todoinputtitle')
-		todoinputtitle.focus()
+		let todoinputtitleold = getElement('todoinputtitleold')
+		todoinputtitleold.focus()
 	}
 }
 function closecreatetodo() {
 	let todopopup = getElement('todopopup')
 	todopopup.classList.add('hiddenpopup')
 
-	let todoinputtitle = getElement('todoinputtitle')
-	todoinputtitle.blur()
+	let todoinputtitleold = getElement('todoinputtitleold')
+	todoinputtitleold.blur()
 }
 
 
@@ -6564,13 +6564,13 @@ function resetcreatetodo() {
 	nextdate.setDate(nextdate.getDate() + 1)
 	nextdate.setMinutes(-1)
 
-	let todoinputtitle = getElement('todoinputtitle')
-	todoinputtitle.value = ''
+	let todoinputtitleold = getElement('todoinputtitleold')
+	todoinputtitleold.value = ''
 	let todoinputnotes = getElement('todoinputnotes')
 	todoinputnotes.value = ''
 
-	let todoinputtitle2 = getElement('todoinputtitle2')
-	todoinputtitle2.value = ''
+	let todoinputtitle = getElement('todoinputtitle')
+	todoinputtitle.value = ''
 
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
 	todoinputtitleonboarding.value = ''
@@ -6641,6 +6641,17 @@ function updatecreatetodo() {
 	let temppriorityvalue = `<span class="pointer-none ${['text-quaternary', 'text-orange', 'text-red'][createtodopriorityvalue]}">${['Low', 'Medium', ' High'][createtodopriorityvalue]} priority</span>`
 	createtodopriority.innerHTML = temppriorityvalue
 	createtodopriorityonboarding.innerHTML = temppriorityvalue
+
+	//add button # of tasks
+	let finalstring = todoinputtitleold.value || todoinputtitle.value || todoinputtitleonboarding.value
+	finalstring = finalstring.split('\n').filter(d => d != '')
+	let length = finalstring.length
+
+	let submitcreatetodoaddnumber = getElement('submitcreatetodoaddnumber')
+	submitcreatetodoaddnumber.innerHTML = length == 0 ? '' : length
+
+	let submitcreatetodoaddnumberonboarding = getElement('submitcreatetodoaddnumberonboarding')
+	submitcreatetodoaddnumberonboarding.innerHTML = length == 0 ? '' : length
 }
 
 
@@ -7038,23 +7049,27 @@ function clickaddonetask(){
 	if(!calendar.onboarding.addtask){
 		getElement('todoinputtitleonboarding').focus()
 	}else{
-		getElement('todoinputtitle2').focus()
+		getElement('todoinputtitle').focus()
 	}
 }
 
 
 function resizeaddtask(event){
-	let element = getElement('todoinputtitle2')
+	let element = getElement('todoinputtitle')
 	element.style.height = '0'
 	element.style.height = Math.min(element.scrollHeight, parseInt(getComputedStyle(element).maxHeight)) + 'px'
+
+	let element2 = getElement('todoinputtitleonboarding')
+	element2.style.height = '0'
+	element2.style.height = Math.min(element2.scrollHeight, parseInt(getComputedStyle(element2).maxHeight)) + 'px'
 }
 
 
 function typeaddtask(event, submit, index) {
+	let todoinputtitleold = getElement('todoinputtitleold')
 	let todoinputtitle = getElement('todoinputtitle')
-	let todoinputtitle2 = getElement('todoinputtitle2')
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
-	let finalstring = todoinputtitle.value || todoinputtitle2.value || todoinputtitleonboarding.value
+	let finalstring = todoinputtitleold.value || todoinputtitle.value || todoinputtitleonboarding.value
 	finalstring = finalstring.split('\n').filter(d => d != '')[index || 0] || ''
 
 	let currentdate = new Date()
@@ -7159,10 +7174,10 @@ function typeaddtask(event, submit, index) {
 
 
 function submitcreatetodo(event) {
+	let todoinputtitleold = getElement('todoinputtitleold')
 	let todoinputtitle = getElement('todoinputtitle')
-	let todoinputtitle2 = getElement('todoinputtitle2')
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
-	let finalstring = todoinputtitle.value || todoinputtitle2.value || todoinputtitleonboarding.value
+	let finalstring = todoinputtitleold.value || todoinputtitle.value || todoinputtitleonboarding.value
 	finalstring = finalstring.split('\n').filter(d => d != '')
 
 	let length = finalstring.length || 1
