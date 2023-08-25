@@ -6641,6 +6641,8 @@ function updatecreatetodo() {
 	let temppriorityvalue = `<span class="pointer-none ${['text-quaternary', 'text-orange', 'text-red'][createtodopriorityvalue]}">${['Low', 'Medium', ' High'][createtodopriorityvalue]} priority</span>`
 	createtodopriority.innerHTML = temppriorityvalue
 	createtodopriorityonboarding.innerHTML = temppriorityvalue
+
+	resizeaddtask()
 }
 
 
@@ -7055,7 +7057,7 @@ function typeaddtask(event, submit, index) {
 	let todoinputtitle2 = getElement('todoinputtitle2')
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
 	let finalstring = todoinputtitle.value || todoinputtitle2.value || todoinputtitleonboarding.value
-	finalstring = finalstring.split('\n')[index || 0]
+	finalstring = finalstring.split('\n').filter(d => d != '')[index || 0]
 
 	let currentdate = new Date()
 
@@ -7163,7 +7165,7 @@ function submitcreatetodo(event) {
 	let todoinputtitle2 = getElement('todoinputtitle2')
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
 	let finalstring = todoinputtitle.value || todoinputtitle2.value || todoinputtitleonboarding.value
-	finalstring = finalstring.split('\n')
+	finalstring = finalstring.split('\n').filter(d => d != '')
 
 	for(let i = 0; i < finalstring.length; i++){
 		let title = typeaddtask(event, true, i)
