@@ -2320,7 +2320,7 @@ class Calendar {
 			let difference = Math.floor((currentdate.getTime() - tempenddate.getTime()) / 60000)
 
 			output.push(`
-	 			<div class="display-flex flex-column">
+	 			<div class="display-flex flex-column gap-6px">
 		 			<div class="display-flex flex-row justify-space-between flex-wrap-wrap">
 						<div class="text-16px text-bold text-primary break-word overflow-hidden">${item.title ? cleanInput(item.title) : 'New Event'}</div>
 						<div class="text-16px text-quaternary nowrap">Ends at ${getHMText(tempenddate.getHours() * 60 + tempenddate.getMinutes())} (${getDHMText(Math.abs(difference))} left)</div>
@@ -11218,7 +11218,6 @@ function moveevent(event) {
 	}
 	calendar.updateAnimatedEvents()
 	calendar.updateInfo()
-	//here4
 }
 
 //move border
@@ -11292,6 +11291,8 @@ function clickeventbottom(event, timestamp) {
 
 	selectedeventinitialy = event.clientY
 
+	updatedeventsaftermove = false
+
 	calendar.updateEvents()
 
 	movingevent = true
@@ -11324,6 +11325,8 @@ function clickeventtop(event, timestamp) {
 	selectedeventdate = new Date(item.start.year, item.start.month, item.start.day)
 
 	selectedeventinitialy = event.clientY
+
+	updatedeventsaftermove = false
 
 	calendar.updateEvents()
 
@@ -11410,6 +11413,11 @@ function moveeventbottom(event) {
 			document.removeEventListener("mouseup", finishfunction, false);
 		}
 	}
+	
+	if(!updatedeventsaftermove){
+		calendar.updateEvents()
+		updatedeventsaftermove = true
+	}
 
 	calendar.updateAnimatedEvents()
 	calendar.updateInfo()
@@ -11479,6 +11487,11 @@ function moveeventtop(event) {
 		document.addEventListener("mouseup", function () {
 			document.removeEventListener("mousemove", moveeventbottom, false);
 		}, false);
+	}
+
+	if(!updatedeventsaftermove){
+		calendar.updateEvents()
+		updatedeventsaftermove = true
 	}
 
 	calendar.updateAnimatedEvents()

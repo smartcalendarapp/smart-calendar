@@ -468,7 +468,7 @@ function cacheReminders(user){
 
 
 		let maxdate = new Date()
-		maxdate.setFullYear(maxdate.getDate() + 1)
+		maxdate.setDate(maxdate.getDate() + 1)
 		
 		let output = []
 		let shownevents = calendar.events.filter(d => {
