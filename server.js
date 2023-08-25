@@ -1570,6 +1570,7 @@ app.post('/signup', async (req, res, next) => {
 })
 
 async function sendwelcomeemail(user){
+	return
 	let email = user.google_email || user.username
 	if(isEmail(email)){
 		await sendEmail({
@@ -1765,7 +1766,6 @@ app.post('/deleteaccount', async (req, res, next) => {
 			if(err) {
 				console.error(err)
 			}
-			return res.redirect(301, '/')
 		})
 
 		return res.redirect(301, '/')

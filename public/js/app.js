@@ -9911,7 +9911,6 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 
 			let target = firstitemdate.getHours() * 60 + firstitemdate.getMinutes() - barcolumncontainer.offsetHeight / 2
 			barcolumncontainer.scrollTo(0, target)
-			console.log(barcolumncontainer.scrollTop)
 		}
 	}
 
