@@ -9877,7 +9877,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 
 
 
-	let modifiedevents = oldsmartevents.filter(item1 => {
+	let modifiedevents = sortstartdate(oldsmartevents.filter(item1 => {
 		let item2 = smartevents.find(f => f.id == item1.id)
 		if (!item2) return false
 
@@ -9887,7 +9887,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 			return false
 		}
 		return true
-	})
+	}))
 
 	//stats
 	autoschedulestats.scheduleduration = performance.now() - startautoscheduleprocess
@@ -9915,8 +9915,9 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 	let oldcalendarmonth = calendarmonth
 	let oldcalendarday = calendarday
 
-	if (showui || addedtodos.length > 0) {
-		let firstitemdate = new Date(Math.min(...modifiedevents.map(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime())))
+	if ((showui || addedtodos.length > 0) && modifiedevents.length > 0) {
+		let firstitem = modifiedevents[0]
+		let firstitemdate = new Date(firstitem.start.year, firstitem.start.month, firstitem.start.day, 0, firstitem.start.minute).getTime()
 
 		if(!isNaN(firstitemdate.getTime())){
 			//horizontal
