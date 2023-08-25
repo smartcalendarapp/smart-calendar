@@ -6586,6 +6586,7 @@ function resetcreatetodo() {
 	}
 	createtodopriorityvalue = 0
 
+	resizecreatetodo()
 	typeaddtask()
 }
 
@@ -6641,8 +6642,6 @@ function updatecreatetodo() {
 	let temppriorityvalue = `<span class="pointer-none ${['text-quaternary', 'text-orange', 'text-red'][createtodopriorityvalue]}">${['Low', 'Medium', ' High'][createtodopriorityvalue]} priority</span>`
 	createtodopriority.innerHTML = temppriorityvalue
 	createtodopriorityonboarding.innerHTML = temppriorityvalue
-
-	resizeaddtask()
 }
 
 
