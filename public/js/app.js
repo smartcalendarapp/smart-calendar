@@ -11278,7 +11278,6 @@ function moveborder(event) {
 function clickeventbottom(event, timestamp) {
 	event.stopPropagation()
 	selectedeventid = event.target.parentNode.id
-	editeventid = selectedeventid
 
 	let item = calendar.events.find(d => d.id == selectedeventid)
 	if (!item) return
@@ -11316,7 +11315,6 @@ function clickeventbottom(event, timestamp) {
 function clickeventtop(event, timestamp) {
 	event.stopPropagation()
 	selectedeventid = event.target.parentNode.id
-	editeventid = selectedeventid
 
 	let item = calendar.events.find(d => d.id == selectedeventid)
 	if (!item) return
@@ -11348,6 +11346,7 @@ function clickeventtop(event, timestamp) {
 
 //move event bottom
 function moveeventbottom(event) {
+	editeventid = selectedeventid
 	movingevent = true
 	event.stopPropagation()
 	let barcolumngroup = getElement('barcolumngroup')
@@ -11425,6 +11424,7 @@ function moveeventbottom(event) {
 
 //move event top
 function moveeventtop(event) {
+	editeventid = selectedeventid
 	movingevent = true
 	event.stopPropagation()
 	let barcolumngroup = getElement('barcolumngroup')

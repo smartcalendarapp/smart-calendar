@@ -596,12 +596,22 @@ let lastreminderdate = Date.now()
 
 async function initializeReminders(){
 	try {
-		const response = await dynamoclient.send(new ScanCommand({ TableName: 'smartcalendarusers' }))
+		let ExclusiveStartKey;
+		do {
+		const command = new ScanCommand({
+			TableName: 'smartcalendarusers',
+			ExclusiveStartKey
+		})
+
+		const response = await dynamoclient.send(command)
 		const items = response.Items.map(item => addmissingpropertiestouser(unmarshall(item)))
 
-		for(let user of items){
+		for (let user of items) {
 			cacheReminders(user)
 		}
+
+		ExclusiveStartKey = response.LastEvaluatedKey
+		} while (ExclusiveStartKey)
 	} catch (error) {
 		console.error(error)
 	}
