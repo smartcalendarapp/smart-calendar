@@ -341,7 +341,6 @@ body {
 .createtodotextarea{
 	overflow:auto;
 	resize:none;
-	line-height:normal;
 	max-height:200px;
 }
 

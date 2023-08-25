@@ -7050,11 +7050,12 @@ function resizeaddtask(event){
 }
 
 
-function typeaddtask(event, submit) {
+function typeaddtask(event, submit, index) {
 	let todoinputtitle = getElement('todoinputtitle')
 	let todoinputtitle2 = getElement('todoinputtitle2')
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
 	let finalstring = todoinputtitle.value || todoinputtitle2.value || todoinputtitleonboarding.value
+	finalstring = finalstring.split('\n')[index || 0]
 
 	let currentdate = new Date()
 
@@ -7158,39 +7159,49 @@ function typeaddtask(event, submit) {
 
 
 function submitcreatetodo(event) {
-	let title = typeaddtask(event, true)
+	let todoinputtitle = getElement('todoinputtitle')
+	let todoinputtitle2 = getElement('todoinputtitle2')
+	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
+	let finalstring = todoinputtitle.value || todoinputtitle2.value || todoinputtitleonboarding.value
+	finalstring = finalstring.split('\n')
 
-	let todoinputnotes = getElement('todoinputnotes')
-	let todoinputnotesonboarding = getElement('todoinputnotesonboarding')
+	for(let i = 0; i < finalstring.length; i++){
+		let title = typeaddtask(event, true, i)
 
-	let duedate = new Date(createtododuedatevalue.year, createtododuedatevalue.month, createtododuedatevalue.day, 0, createtododuedatevalue.minute)
+		let todoinputnotes = getElement('todoinputnotes')
+		let todoinputnotesonboarding = getElement('todoinputnotesonboarding')
 
-	let myduration = createtododurationvalue
+		let duedate = new Date(createtododuedatevalue.year, createtododuedatevalue.month, createtododuedatevalue.day, 0, createtododuedatevalue.minute)
 
-	let notes = todoinputnotes.value || todoinputnotesonboarding.value
+		let myduration = createtododurationvalue
 
-	let item = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), myduration, title, notes)
-	if (createtododuedatevalue.year == null || createtododuedatevalue.month == null || createtododuedatevalue.day == null || createtododuedatevalue.minute == null) {
-		item.endbefore.year = null
-		item.endbefore.month = null
-		item.endbefore.day = null
-		item.endbefore.minute = null
+		let notes = todoinputnotes.value || todoinputnotesonboarding.value
+
+		let item = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), myduration, title, notes)
+		if (createtododuedatevalue.year == null || createtododuedatevalue.month == null || createtododuedatevalue.day == null || createtododuedatevalue.minute == null) {
+			item.endbefore.year = null
+			item.endbefore.month = null
+			item.endbefore.day = null
+			item.endbefore.minute = null
+		}
+		item.priority = createtodopriorityvalue
+
+		calendar.todos.push(item)
+
+
+		if(i == finalstring.length - 1){
+			calendar.updateTodo()
+			calendar.updateHistory()
+
+			resetcreatetodo()
+			closecreatetodo()
+
+
+			setTimeout(function(){
+				scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
+			}, 300)
+		}
 	}
-	item.priority = createtodopriorityvalue
-
-	calendar.todos.push(item)
-
-	todomode = 0
-
-	calendar.updateTodo()
-	calendar.updateHistory()
-
-	resetcreatetodo()
-	closecreatetodo()
-
-	setTimeout(function(){
-		scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
-	}, 300)
 }
 
 
