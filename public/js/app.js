@@ -7190,20 +7190,19 @@ function submitcreatetodo(event) {
 
 
 		if(i == finalstring.length - 1){
-			calendar.updateTodo()
-			calendar.updateHistory()
-
-			resetcreatetodo()
-			closecreatetodo()
-
-			resizeaddtask()
-
-
 			setTimeout(function(){
 				scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
 			}, 300)
 		}
 	}
+
+	calendar.updateTodo()
+	calendar.updateHistory()
+
+	resetcreatetodo()
+	closecreatetodo()
+
+	resizeaddtask()
 }
 
 
