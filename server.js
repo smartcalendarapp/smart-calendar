@@ -1744,6 +1744,10 @@ app.post('/deleteaccount', async (req, res, next) => {
 			return res.status(401).json({ error: 'User is not signed in.' })
 		}
 
+		if(!user.password){
+			return res.status(401).json({ error: 'You need to set a password before deleting your account.' })
+		}
+
 		if(password != user.password){
 			return res.status(401).json({ error: 'Incorrect password.' })
 		}
@@ -1754,10 +1758,10 @@ app.post('/deleteaccount', async (req, res, next) => {
 			if(err) {
 				console.error(err)
 			}
-			return res.redirect(301, '/login')
+			return res.redirect(301, '/')
 		})
-		
-		return res.redirect(301, '/login')
+
+		return res.redirect(301, '/')
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })

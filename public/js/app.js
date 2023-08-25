@@ -3209,7 +3209,7 @@ function run() {
 
 	//welcome popup
 	setTimeout(function () {
-		if (calendar.welcomepopup.calendar == false) {
+		if (calendar.welcomepopup.calendar == false && calendar.onboarding.addtask == true) {
 			getElement(welcomepopupdata.calendar).classList.remove('hiddenfade')
 		}
 	}, 10000)
@@ -4817,16 +4817,14 @@ async function submitdeleteaccount(event) {
 
 	const response = await fetch(`/deleteaccount`, {
 		method: 'POST',
-		body: formdata
+		body: formdata,
+		redirect: 'follow'
 	})
 	if (response.status == 401) {
 		const data = await response.json()
 		deleteaccounterrorwrap.innerHTML = data.error
 		deleteaccounterrorwrap.classList.remove('display-none')
 	} else if (response.status == 200) {
-		deleteaccountmenu.classList.add('hiddenpopup')
-		deleteaccountmenu.reset()
-
 		if (response.redirected) {
 			window.location.replace(response.url)
 		}
@@ -4856,7 +4854,8 @@ async function submitchangeusername(event) {
 		changeusernamemenu.classList.add('hiddenpopup')
 		changeusernameform.reset()
 
-		getclientinfo()
+		await getclientinfo()
+		calendar.updateSettings()
 	}
 }
 
@@ -4882,7 +4881,8 @@ async function submitsetusername(event) {
 		setusernamemenu.classList.add('hiddenpopup')
 		setusernameform.reset()
 
-		getclientinfo()
+		await getclientinfo()
+		calendar.updateSettings()
 	}
 }
 
@@ -4910,7 +4910,8 @@ async function submitchangepassword(event) {
 		changepasswordmenu.classList.add('hiddenpopup')
 		changepasswordform.reset()
 
-		getclientinfo()
+		await getclientinfo()
+		calendar.updateSettings()
 	}
 }
 
@@ -4937,7 +4938,8 @@ async function submitsetpassword(event) {
 		setpasswordmenu.classList.add('hiddenpopup')
 		setpasswordform.reset()
 
-		getclientinfo()
+		await getclientinfo()
+		calendar.updateSettings()
 	}
 }
 
