@@ -7046,7 +7046,7 @@ function clickaddonetask(){
 
 
 function resizeaddtask(event){
-	let element = event.target
+	let element = getElement('todoinputtitle2')
 	element.style.height = '0'
 	element.style.height = Math.min(element.scrollHeight, parseInt(getComputedStyle(element).maxHeight)) + 'px'
 }
