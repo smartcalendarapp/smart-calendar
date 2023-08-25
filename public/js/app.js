@@ -9917,7 +9917,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 
 	if ((showui || addedtodos.length > 0) && modifiedevents.length > 0) {
 		let firstitem = modifiedevents[0]
-		let firstitemdate = new Date(firstitem.start.year, firstitem.start.month, firstitem.start.day, 0, firstitem.start.minute).getTime()
+		let firstitemdate = new Date(firstitem.start.year, firstitem.start.month, firstitem.start.day, 0, firstitem.start.minute)
 
 		if(!isNaN(firstitemdate.getTime())){
 			//horizontal
