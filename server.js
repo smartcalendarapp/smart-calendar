@@ -1749,7 +1749,15 @@ app.post('/deleteaccount', async (req, res, next) => {
 		}
 
 		await deleteUser(user.userid)
-		return res.end()
+
+		req.session.destroy((err) => {
+			if(err) {
+				console.error(err)
+			}
+			return res.redirect(301, '/login')
+		})
+		
+		return res.redirect(301, '/login')
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })

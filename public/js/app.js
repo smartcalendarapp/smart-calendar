@@ -4826,6 +4826,10 @@ async function submitdeleteaccount(event) {
 	} else if (response.status == 200) {
 		deleteaccountmenu.classList.add('hiddenpopup')
 		deleteaccountmenu.reset()
+
+		if (response.redirected) {
+			window.location.replace(response.url)
+		}
 	}
 }
 
