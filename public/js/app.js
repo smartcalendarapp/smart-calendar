@@ -6645,9 +6645,9 @@ function updatecreatetodo() {
 	//add button # of tasks
 	let finalstring = todoinputtitleold.value || todoinputtitle.value || todoinputtitleonboarding.value
 	finalstring = finalstring.split('\n').filter(d => d != '')
-	let length = finalstring.length
+	let length = finalstring.length || 1
 
-	let string = `Add ${length == 0 ? `` : `<span class="text-black whitebackgroundbutton text-14px border-round circlehighlight">${length}</span>`}`
+	let string = `Add ${length == 1 ? `` : `<span class="text-black whitebackgroundbutton text-14px border-round circlehighlight">${length}</span>`}`
 	let submitcreatetodoaddnumber = getElement('submitcreatetodoaddnumber')
 	submitcreatetodoaddnumber.innerHTML = string
 
