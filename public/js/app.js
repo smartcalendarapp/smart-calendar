@@ -3534,7 +3534,7 @@ function updateonboardingscreen(){
 		currentonboarding = 'connectcalendars'
 	}else if(!calendar.onboarding.eventreminders){
 		currentonboarding = 'eventreminders'
-	}if(!calendar.onboarding.sleeptime){
+	}else if(!calendar.onboarding.sleeptime){
 		currentonboarding = 'sleeptime'
 	}else if(!calendar.onboarding.addtask){
 		currentonboarding = 'addtask'
