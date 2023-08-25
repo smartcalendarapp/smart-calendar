@@ -428,7 +428,7 @@ Just a quick reminder that your event ${item.event.title || 'New Event'} is star
 
 If you have other tasks to plan, consider adding them to your to-do list. Then, you can simply have Smart Calendar schedule them for you.
 
-If you have any questions or have feedback, please contact us. We're here for you!
+If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
 
 Kind regards,
 Smart Calendar | Your Personal Time Management Assistant
@@ -1555,6 +1555,70 @@ app.post('/signup', async (req, res, next) => {
 		const user = new User({ username: username, password: password})
 		await createUser(user)
 		req.session.user = { userid: user.userid }
+
+
+		//email
+		await sendEmail({
+			from: 'Smart Calendar <welcome@smartcalendar.us>',
+			to: item.user.email,
+			subject: `Welcome to Smart Calendar!`,
+			htmlbody: `
+<!DOCTYPE html>
+<html>
+<head>
+		<title>Your Newfound Productivity Starts Now With Smart Calendar</title>
+		<style>
+				@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
+		</style>
+</head>
+<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
+		<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px;">
+				<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
+				<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
+						Hello [user],
+				</p>
+				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+				<p style="font-size: 18px; color: #333;">
+						You are now a part of a group of [x] people who use Smart Calendar to find productivity and peace in life. That's special!
+				</p>
+				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+				<p style="font-size: 18px; color: #333;">
+				 	We know you're excited to explore Smart Calendar. Check out [this] on some basic tips on how to make the most of Smart Calendar.
+				</p>
+				<p style="font-size: 18px; color: #333;">
+						If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">click here</a> to contact us. We're here for you!
+				</p>
+				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+				<p style="text-align: center; font-size: 20px; color: #333;">
+						Warm regards,<br>
+						Smart Calendar | Your Smart Time Management Assistant
+				</p>
+
+		<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+				<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
+					<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+				<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
+				</div>
+
+		</div>
+</body>
+</html>`,
+			textbody: `Hello [user],
+
+You are now a part of a group of [x] people who use Smart Calendar to find productivity and peace in life. That's special!
+
+We know you're excited to explore Smart Calendar. Check out [this] on some basic tips on how to make the most of Smart Calendar.
+
+If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
+
+Warm regards,
+Smart Calendar | Your Personal Time Management Assistant
+
+If you wish to stop receiving these notifications, you can update your preferences in the app.
+(c) 2023 James Tsaggaris. All rights reserved.`
+		})
+
+
 		return res.redirect(301, '/app')
 	} catch (error) {
 		console.error(error)
