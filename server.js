@@ -440,14 +440,15 @@ If you wish to stop receiving these notifications, you can update your preferenc
 	}
 }
 
+function isEmail(str) {
+	let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+	return pattern.test(str)
+}
 
 //cache reminders
 function cacheReminders(user){
 
-	function isEmail(str) {
-	  let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-	  return pattern.test(str)
-	}
+	
 	
 	//get calendar events within 1 day
 	function getevents(){
@@ -816,6 +817,8 @@ app.get('/auth/google/callback', async (req, res, next) => {
 
 				req.session.user = { userid: user3.userid }
 				req.session.tokens = tokens
+
+				await sendwelcomeemail(user3)
 			}
 		}
 
@@ -1557,22 +1560,32 @@ app.post('/signup', async (req, res, next) => {
 		await createUser(user)
 		req.session.user = { userid: user.userid }
 
+		await sendwelcomeemail(user)
 
-		//email
+		return res.redirect(301, '/app')
+	} catch (error) {
+		console.error(error)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
+async function sendwelcomeemail(user){
+	let email = user.google_email || user.username
+	if(isEmail(email)){
 		await sendEmail({
 			from: 'Smart Calendar <welcome@smartcalendar.us>',
-			to: item.user.email,
+			to: email,
 			subject: `Welcome to Smart Calendar!`,
 			htmlbody: `
-<!DOCTYPE html>
-<html>
-<head>
+	<!DOCTYPE html>
+	<html>
+	<head>
 		<title>Your Newfound Productivity Starts Now With Smart Calendar</title>
 		<style>
 				@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
 		</style>
-</head>
-<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
+	</head>
+	<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
 		<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px;">
 				<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
 				<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
@@ -1584,7 +1597,7 @@ app.post('/signup', async (req, res, next) => {
 				</p>
 				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<p style="font-size: 18px; color: #333;">
-				 	We know you're excited to explore Smart Calendar. Check out [this] on some basic tips on how to make the most of Smart Calendar.
+					We know you're excited to explore Smart Calendar. Check out [this] on some basic tips on how to make the most of Smart Calendar.
 				</p>
 				<p style="font-size: 18px; color: #333;">
 						If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">click here</a> to contact us. We're here for you!
@@ -1602,30 +1615,24 @@ app.post('/signup', async (req, res, next) => {
 				</div>
 
 		</div>
-</body>
-</html>`,
+	</body>
+	</html>`,
 			textbody: `Hello [user],
 
-You are now a part of a group of [x] people who use Smart Calendar to find productivity and peace in life. That's special!
+	You are now a part of a group of [x] people who use Smart Calendar to find productivity and peace in life. That's special!
 
-We know you're excited to explore Smart Calendar. Check out [this] on some basic tips on how to make the most of Smart Calendar.
+	We know you're excited to explore Smart Calendar. Check out [this] on some basic tips on how to make the most of Smart Calendar.
 
-If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
+	If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
 
-Warm regards,
-Smart Calendar | Your Personal Time Management Assistant
+	Warm regards,
+	Smart Calendar | Your Personal Time Management Assistant
 
-If you wish to stop receiving these notifications, you can update your preferences in the app.
-(c) 2023 James Tsaggaris. All rights reserved.`
+	If you wish to stop receiving these notifications, you can update your preferences in the app.
+	(c) 2023 James Tsaggaris. All rights reserved.`
 		})
-
-
-		return res.redirect(301, '/app')
-	} catch (error) {
-		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
 	}
-})
+}
 
 
 app.post('/changepassword', async (req, res, next) => {
