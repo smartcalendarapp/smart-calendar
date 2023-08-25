@@ -7055,7 +7055,7 @@ function typeaddtask(event, submit, index) {
 	let todoinputtitle2 = getElement('todoinputtitle2')
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
 	let finalstring = todoinputtitle.value || todoinputtitle2.value || todoinputtitleonboarding.value
-	finalstring = finalstring.split('\n')[index] || ''
+	finalstring = finalstring.split('\n').filter(d => d != '')[index] || ''
 
 	let currentdate = new Date()
 
@@ -7163,9 +7163,9 @@ function submitcreatetodo(event) {
 	let todoinputtitle2 = getElement('todoinputtitle2')
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
 	let finalstring = todoinputtitle.value || todoinputtitle2.value || todoinputtitleonboarding.value
-	finalstring = finalstring.split('\n')
+	finalstring = finalstring.split('\n').filter(d => d != '')
 
-	for(let i = 0; i < finalstring.length; i++){
+	for(let i = 0; i < finalstring.length || 1; i++){
 		let title = typeaddtask(event, true, i)
 
 		let todoinputnotes = getElement('todoinputnotes')
