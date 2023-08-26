@@ -3228,7 +3228,7 @@ function run() {
 	}, 10)
 
 	//time display
-	setInterval(function () {
+	setInterval(function(){
 		updatetime()
 		calendar.updateHistory(false)
 	}, 1000)
@@ -9681,7 +9681,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 		let rescheduletaskpopupbuttons = getElement('rescheduletaskpopupbuttons')
 		rescheduletaskpopupbuttons.innerHTML = `
 			<div class="border-8px background-tint-1 hover:background-tint-2 padding-8px-12px text-primary text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction()">No, reschedule it</div>
-			<div class="border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction(true)">Yes, mark as done</div>`
+			<div class="border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction(true)">Yes, mark completed</div>`
 
 		let rescheduletaskpopup = getElement('rescheduletaskpopup')
 		rescheduletaskpopup.classList.remove('hiddenpopup')
