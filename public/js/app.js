@@ -941,7 +941,7 @@ class Calendar {
 				//auto schedule
 				if (smartschedule != false) {
 					if (JSON.stringify(neweventsdata) != JSON.stringify(oldeventsdata)) {
-						startAutoSchedule([], false)
+						startAutoSchedule([])
 					}
 				}
 
@@ -3227,10 +3227,11 @@ function run() {
 		}
 	}, 10)
 
-	//time display
+
+	//minute interval
 	setInterval(function(){
 		updatetime()
-		calendar.updateHistory(false)
+		startAutoSchedule([])
 	}, 1000)
 
 
@@ -6148,13 +6149,13 @@ function submitschedulemytasks() {
 
 	if (mytodos.length > 0) {
 		closeschedulemytasks()
-		startAutoSchedule(mytodos, true)
+		startAutoSchedule(mytodos)
 	}
 }
 
 
 
-function startAutoSchedule(scheduletodos, showui) {
+function startAutoSchedule(scheduletodos) {
 	if (isautoscheduling == true) return
 
 	let oldcalendartabs = [...calendartabs]
@@ -6196,7 +6197,7 @@ function startAutoSchedule(scheduletodos, showui) {
 	calendar.updateTodo()
 
 	//start
-	autoScheduleV2(scheduleitems, showui, addedtodos)
+	autoScheduleV2(scheduleitems, addedtodos)
 }
 
 
@@ -7987,7 +7988,7 @@ function dragtodo(event, id) {
 			}
 
 
-			startAutoSchedule([item], true)
+			startAutoSchedule([item])
 		}
 
 		dragtodohighlight.classList.add('hiddenfade')
@@ -9489,7 +9490,7 @@ let isautoscheduling = false;
 
 let rescheduletaskfunction;
 
-async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtodos) {
+async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 	//functions
 	function sleep(time) {
 		return new Promise(resolve => {
@@ -9671,7 +9672,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 
 			await sleep(300)
 
-			autoScheduleV2(smartevents, showui, addedtodos, newresolvedpassedtodos)
+			autoScheduleV2(smartevents, addedtodos, newresolvedpassedtodos)
 		}
 
 		//show popup
@@ -9688,44 +9689,6 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 		return
 	}
 
-
-	//loader
-	/*
-	let loading;
-	function updateloaderprogress() {
-		const increments = [0, 40, 70, 85, 95, 100]
-		const maxtime = 2000
-
-		let milliseconds = performance.now() - startautoscheduleprocess;
-		let normalizedTime = milliseconds / maxtime;
-
-		let currentindex = Math.floor(normalizedTime * (increments.length - 1));
-
-		let remainder = (normalizedTime * (increments.length - 1)) - currentindex;
-
-		let startValue = increments[Math.min(currentindex, increments.length - 1)];
-		let endValue = increments[Math.min(currentindex + 1, increments.length - 1)];
-
-		let progress = startValue + (endValue - startValue) * remainder;
-
-		let schedulingscreenloader = getElement('schedulingscreenloader')
-		schedulingscreenloader.children[0].style.left = `${(progress / 100 - 1) * 100}%`
-
-		if (!loading) return
-
-		requestAnimationFrame(updateloaderprogress)
-	}
-	if (showui) {
-		let schedulingscreen = getElement('schedulingscreen')
-		schedulingscreen.classList.remove('hiddenfade')
-
-		loading = true
-		requestAnimationFrame(updateloaderprogress)
-
-		let schedulingscreentext = getElement('schedulingscreentext')
-		schedulingscreentext.innerHTML = `Scheduling ${smartevents.length} task${smartevents.length == 1 ? '' : 's'}...`
-	}
-	*/
 
 	if (calendar.smartschedule.mode == 0) {
 		//FOCUS
@@ -9908,25 +9871,17 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 		return true
 	}))
 
+	//stop if no change
+	if(modifiedevents.length == 0){
+		closeanimate()
+		return
+	}
+
 	//stats
 	autoschedulestats.scheduleduration = performance.now() - startautoscheduleprocess
 	autoschedulestats.iteratedeventslength = iteratedevents.length
 	autoschedulestats.smarteventslength = smartevents.length
 	autoschedulestats.modifiedeventslength = modifiedevents.length
-
-	//ui
-	/*
-	if (showui) {
-		await sleep(2000)
-
-		schedulingscreentext.innerHTML = 'Success!'
-
-		await sleep(1000)
-
-		loading = false
-		schedulingscreen.classList.add('hiddenfade')
-	}
-	*/
 
 
 	//scroll
@@ -9934,7 +9889,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 	let oldcalendarmonth = calendarmonth
 	let oldcalendarday = calendarday
 
-	if ((showui || addedtodos.length > 0) && modifiedevents.length > 0) {
+	if (modifiedevents.length > 0) {
 		let firstitem = modifiedevents[0]
 		let firstitemdate = new Date(firstitem.start.year, firstitem.start.month, firstitem.start.day, 0, firstitem.start.minute)
 
@@ -10069,7 +10024,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 		})
 	}
 
-
+	
 	function animateitems(items) {
 		return new Promise(resolve => {
 
@@ -10287,7 +10242,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedpassedtod
 	let animateindex = 0
 	closeanimate()
 
-	if(showui){
+	if(addedtodos.length > 0){
 		displayalert(`${addedtodos.length} task${addedtodos.length == 1 ? ' was' : 's were'} successfully scheduled`)
 	}
 
