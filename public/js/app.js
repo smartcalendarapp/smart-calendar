@@ -3231,8 +3231,13 @@ function run() {
 	//minute interval
 	setInterval(function(){
 		updatetime()
-		startAutoSchedule([])
 	}, 1000)
+
+	setInterval(function(){
+		if(calendartabs.includes(0)){
+			startAutoSchedule([])
+		}
+	}, 60000)
 
 
 	//sync with google
@@ -6194,7 +6199,9 @@ function startAutoSchedule(scheduletodos) {
 		calendar.updateEvents()
 	}
 
-	calendar.updateTodo()
+	if(addedtodos.length > 0){
+		calendar.updateTodo()
+	}
 
 	//start
 	autoScheduleV2(scheduleitems, addedtodos)
@@ -7209,7 +7216,7 @@ function submitcreatetodo(event) {
 		calendar.todos.push(item)
 
 
-		if(i == finalstring.length - 1){
+		if(i == length - 1){
 			setTimeout(function(){
 				scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
 			}, 300)
@@ -9873,7 +9880,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 
 	//stop if no change
 	if(modifiedevents.length == 0){
-		closeanimate()
+		isautoscheduling = false
 		return
 	}
 
