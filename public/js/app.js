@@ -3230,6 +3230,7 @@ function run() {
 	//time display
 	setInterval(function () {
 		updatetime()
+		calendar.updateHistory(false)
 	}, 1000)
 
 

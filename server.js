@@ -417,7 +417,7 @@ async function processReminders(){
 
 		<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-					<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+					<p>If you wish to stop receiving these notifications, you can update your preferences in the app > settings > notifications.<br><a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
 				<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 				</div>
 
