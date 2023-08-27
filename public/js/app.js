@@ -9909,9 +9909,9 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			//vertical
 			let barcolumncontainer = getElement('barcolumncontainer')
 
-			let target = firstitemdate.getHours() * 60 + firstitemdate.getMinutes() - barcolumncontainer.offsetHeight / 2
+			let target = firstitemdate.getHours() * 60 + firstitemdate.getMinutes()
 			if (oldcalendaryear != calendaryear || oldcalendarmonth != calendarmonth || oldcalendarday != calendarday) {
-				barcolumncontainer.scrollTo(0, target)
+				barcolumncontainer.scrollTo(0, target - barcolumncontainer.offsetHeight / 2)
 			}else{
 				scrollcalendarY(target)
 			}
