@@ -9575,7 +9575,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		  
 		  if (idleTime >= 17) {
 			if (timeSinceLastBreak >= 52) {
-			  return 17;
+			  return round(timeSinceLastBreak * 1/3 * 60000, 60000)
 			} else {
 			  return 0;
 			}
@@ -9587,7 +9587,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		}
 	  
 		if (timeSinceLastBreak >= 52) { 
-		  return 17;
+		  return round(timeSinceLastBreak * 1/3 * 60000, 60000)
 		} else {
 		  return 0;
 		}
@@ -9806,7 +9806,6 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 				if (outofrange) {
 					fixrange(item)
 				}
-				console.log(getconflictingevent(tempiteratedevents, item))
 
 				let [conflictitem, spacing] = getconflictingevent(tempiteratedevents, item)
 				if (conflictitem) {
