@@ -1547,8 +1547,8 @@
 					
 					<div class="todobar relative padding-12px display-flex flex-column align-center gap-12px">
 
-						<div class="z-index-100 display-flex align-center justify-center absolute hiddenfade right-0 left-0 top-0 bottom-0 fadetransition border-box background-secondary small:background-primary" id="schedulemytasksactivepopup">
-							<div class="text-blue text-18px">Select tasks to schedule</div>
+						<div class="z-index-100 display-flex background-blue border-8px align-center justify-center absolute hiddenfade right-0 left-0 top-0 bottom-0 fadetransition border-box" id="schedulemytasksactivepopup">
+							<div class="text-blue text-18px">Select tasks to schedule in calendar</div>
 						</div>
 
 						<div class="display-flex align-center flex-row width-full">
@@ -1656,9 +1656,9 @@
 
 								<div class="display-flex border-box flex-1 justify-flex-end flex-row gap-12px align-center" id="schedulemytasksactive">
 									<div class="display-flex align-center flex-row gap-12px">
-										<div class="hover:background-tint-1 transition-duration-100 pointer text-primary pointer-auto nowrap border-8px padding-8px-12px text-14px" onclick="closeschedulemytasks(event)">Cancel</div>
+										<div class="hover:background-tint-1 backdrop-blur transition-duration-100 pointer text-primary pointer-auto nowrap border-8px padding-8px-12px text-14px" onclick="closeschedulemytasks(event)">Cancel</div>
 
-										<div id="plantaskssubmit" class="pointer-auto"></div>
+										<div id="plantaskssubmit" class="backdrop-blur pointer-auto"></div>
 									</div>
 								</div>
 
@@ -1943,8 +1943,8 @@
 										<div class="horizontalbar"></div>
 										
 										<div class="infogroup">
-											<div class="infotext text-16px text-bold">Break between events</div>
-											<div class="text-14px text-quaternary">The app includes a break between events when planning your tasks.</div>
+											<div class="infotext text-16px text-bold">Break per hour</div>
+											<div class="text-14px text-quaternary">The app includes a break every hour of work to ensure you peak productivity.</div>
 											<div class="inputgroup">
 												<div class="inputgroupitem flex-1">
 													<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputsettingseventspacing(event)" id="settingseventspacing2" class="infoinput inputdurationpicker" placeholder="Add duration" type="text">

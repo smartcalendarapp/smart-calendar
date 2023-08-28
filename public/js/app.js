@@ -6057,6 +6057,9 @@ function clickeventpriority(index) {
 	calendar.updateEvents()
 	calendar.updateInfo()
 	calendar.updateHistory()
+	if(item.type == 1){
+		calendar.updateTodo()
+	}
 }
 
 //time windows
@@ -9013,6 +9016,7 @@ function eventtype(type) {
 	calendar.updateInfo(true)
 	calendar.updateEvents()
 	calendar.updateHistory()
+	calendar.updateTodo()
 
 	if (item.type == 0) {
 		gtag('event', 'button_click', { useraction: 'Event - event info' })
@@ -9513,7 +9517,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		let differenceA = Math.abs(new Date(conflictitem.end.year, conflictitem.end.month, conflictitem.end.day, 0, conflictitem.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))
 		let differenceB = Math.abs(new Date(conflictitem.start.year, conflictitem.start.month, conflictitem.start.day, 0, conflictitem.start.minute).getTime() - new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute))
 
-		let spacing = calendar.settings.eventspacing * 60000
+		let spacing = Math.min(Math.max(5*60000, floor((new Date(conflictitem.end.year, conflictitem.end.month, conflictitem.end.day, 0, conflictitem.end.minute).getTime() - new Date(conflictitem.start.year, conflictitem.start.month, conflictitem.start.day, 0, conflictitem.start.minute).getTime()) * 0.25, 60000 * 5)), 60 * 60000)
 		let penetration = Math.min(differenceA, differenceB) + spacing
 
 		//move time
@@ -9546,7 +9550,8 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			let tempstartdate2 = new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute)
 			let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
 
-			let spacing = calendar.settings.eventspacing * 60000
+			let spacing = Math.min(Math.max(5*60000, floor((tempenddate2.getTime() - tempstartdate2.getTime()) * 0.25, 60000 * 5)), 60 * 60000)
+
 			if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
 				return item2
 			}
@@ -9666,6 +9671,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			if(complete){
 				if(tempitem){
 					tempitem.completed = true
+					calendar.updateTodo()
 				}
 				calendar.updateEvents()
 			}
@@ -9686,7 +9692,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 
 		//show popup
 		let rescheduletaskpopuptext = getElement('rescheduletaskpopuptext')
-		rescheduletaskpopuptext.innerHTML = `We want to keep your schedule up-to-date. Have you completed your task <span class="text-bold">${overdueitem.title ? cleanInput(overdueitem.title) : 'New Event'}</span>?`
+		rescheduletaskpopuptext.innerHTML = `We want to keep your schedule up-to-date. Have you completed <span class="text-bold">${overdueitem.title ? cleanInput(overdueitem.title) : 'New Event'}</span>?`
 
 		let rescheduletaskpopupbuttons = getElement('rescheduletaskpopupbuttons')
 		rescheduletaskpopupbuttons.innerHTML = `
@@ -9699,6 +9705,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 	}
 
 
+	//start
 	if (calendar.smartschedule.mode == 0) {
 		//FOCUS
 
@@ -10987,6 +10994,9 @@ async function eventcompleted(event, id) {
 	if (!item) return
 	item.completed = !item.completed
 
+	if(item.type == 1){
+		calendar.updateTodo()
+	}
 	calendar.updateEvents()
 	calendar.updateInfo()
 	calendar.updateHistory()
@@ -11158,6 +11168,9 @@ function clickevent(event, timestamp) {
 
 		editeventid = null
 		calendar.updateEvents()
+		if(item.type == 1){
+			calendar.updateTodo()
+		}
 	}
 }
 
@@ -11355,6 +11368,9 @@ function clickeventbottom(event, timestamp) {
 
 		editeventid = null
 		calendar.updateEvents()
+		if(item.type == 1){
+			calendar.updateTodo()
+		}
 	}
 }
 
@@ -11389,6 +11405,9 @@ function clickeventtop(event, timestamp) {
 
 		editeventid = null
 		calendar.updateEvents()
+		if(item.type == 1){
+			calendar.updateTodo()
+		}
 	}
 }
 
