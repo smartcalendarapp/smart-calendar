@@ -109,9 +109,6 @@ img{
 	}
 }
 
-.dynamicbackground{
-	filter:blur(10px);
-}
 
 .menubackground{
 	background-color:var(--background-secondary-transparent);

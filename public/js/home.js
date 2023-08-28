@@ -10,7 +10,7 @@ class Rectangle {
 		this.x = Math.random() * canvas.width
 		this.y = Math.random() * canvas.height
 		this.width = 100 + Math.random() * 100
-		this.height = 30 + Math.random() * 30
+		this.height = 40 + Math.random() * 30
 		this.z = Math.random() * 2
 		this.radius = 10
 		this.angle = Math.random() * Math.PI * 2
@@ -31,21 +31,20 @@ class Rectangle {
 		ctx.lineTo(this.x, this.y + radius)
 		ctx.arcTo(this.x, this.y, this.x + radius, this.y, radius)
 		ctx.closePath()
-		ctx.fillStyle = `rgba(34, 82, 240, ${this.z * 0.25 * 0.5})`
+		ctx.fillStyle = `rgba(31, 64, 255 ${this.z * 0.25 * 0.5})`
 		ctx.fill()
 	}
 
 	update(scrollY) {
 		this.y -= scrollY * this.z * 0.25
 		this.x += this.amplitude * Math.sin(this.angle)
-		this.y += this.amplitude * Math.sin(this.angle + Math.PI / 4)
 		this.angle += this.frequency
 		if (this.y + this.height < 0) this.y += canvas.height + this.height
 		if (this.y > canvas.height) this.y -= canvas.height + this.height
 	}
 }
 
-const numRectangles = 30
+const numRectangles = 20
 let rectangles = Array.from({ length: numRectangles }, () => new Rectangle())
 let lastScrollY = document.documentElement.scrollTop || document.body.scrollTop
 
