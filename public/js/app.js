@@ -6180,10 +6180,12 @@ function startAutoSchedule(scheduletodos) {
 	}
 
 
-	if ('matchMedia' in window) {
-		let smallscreen = window.matchMedia('(max-width: 600px)')
-		if (smallscreen.matches) {
-			calendartabs = [0]
+	if(scheduletodos.length > 0){
+		if ('matchMedia' in window) {
+			let smallscreen = window.matchMedia('(max-width: 600px)')
+			if (smallscreen.matches) {
+				calendartabs = [0]
+			}
 		}
 	}
 

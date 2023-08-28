@@ -1,3 +1,73 @@
+
+//background
+const canvas = document.getElementById('dynamicbackground')
+const ctx = canvas.getContext('2d')
+canvas.width = window.innerWidth
+canvas.height = window.innerHeight
+
+class Rectangle {
+	constructor() {
+		this.x = Math.random() * canvas.width
+		this.y = Math.random() * canvas.height
+		this.width = 100 + Math.random() * 100
+		this.height = 20 + Math.random() * 30
+		this.z = Math.random()
+		this.radius = 10
+		this.angle = Math.random() * Math.PI * 2
+		this.amplitude = Math.random() * 0.5
+		this.frequency = 0.01 + Math.random() * 0.01
+	}
+
+	draw() {
+		const radius = this.radius
+		ctx.beginPath()
+		ctx.moveTo(this.x + radius, this.y)
+		ctx.lineTo(this.x + this.width - radius, this.y)
+		ctx.arcTo(this.x + this.width, this.y, this.x + this.width, this.y + radius, radius)
+		ctx.lineTo(this.x + this.width, this.y + this.height - radius)
+		ctx.arcTo(this.x + this.width, this.y + this.height, this.x + this.width - radius, this.y + this.height, radius)
+		ctx.lineTo(this.x + radius, this.y + this.height)
+		ctx.arcTo(this.x, this.y + this.height, this.x, this.y + this.height - radius, radius)
+		ctx.lineTo(this.x, this.y + radius)
+		ctx.arcTo(this.x, this.y, this.x + radius, this.y, radius)
+		ctx.closePath()
+		ctx.fillStyle = `rgba(0, 41, 167, ${this.z * 0.5})`
+		ctx.fill()
+	}
+
+	update(scrollY) {
+		this.y -= scrollY * this.z
+		this.x += this.amplitude * Math.sin(this.angle)
+		this.y += this.amplitude * Math.sin(this.angle + Math.PI / 4)
+		this.angle += this.frequency
+		if (this.y + this.height < 0) this.y += canvas.height + this.height
+		if (this.y > canvas.height) this.y -= canvas.height + this.height
+	}
+}
+
+const numRectangles = 30
+let rectangles = Array.from({ length: numRectangles }, () => new Rectangle())
+let lastScrollY = document.documentElement.scrollTop || document.body.scrollTop
+
+function draw() {
+	const currentScrollY = document.documentElement.scrollTop || document.body.scrollTop
+	const scrollDelta = currentScrollY - lastScrollY
+	ctx.clearRect(0, 0, canvas.width, canvas.height)
+	rectangles.forEach(rect => {
+		rect.update(scrollDelta)
+		rect.draw()
+	})
+	lastScrollY = currentScrollY
+	requestAnimationFrame(draw)
+}
+
+draw()
+
+
+
+
+
+/*
 window.onload = async () => {
 	return
   
@@ -35,6 +105,7 @@ window.onload = async () => {
 
   })
 }
+*/
 
 
 function getElement(id){
