@@ -9810,8 +9810,9 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 				}
 
 
-				let [conflictitem, spacing] = getconflictingevent(tempiteratedevents, item)
-				console.log(conflictitem, spacing)
+				let temp = getconflictingevent(tempiteratedevents, item)
+				let conflictitem, spacing;
+				if(temp) [conflictitem, spacing] = temp[0]
 				if (conflictitem) {
 					fixconflict(item, conflictitem, spacing)
 				}
@@ -9921,9 +9922,11 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 					fixrange(item)
 				}
 
-				let [conflictitem] = getconflictingevent(tempiteratedevents, item)
+				let temp = getconflictingevent(tempiteratedevents, item)
+				let conflictitem, spacing;
+				if(temp) [conflictitem, spacing] = temp[0]
 				if (conflictitem) {
-					fixconflict(item, conflictitem)
+					fixconflict(item, conflictitem, spacing)
 				}
 
 				//exit
