@@ -31,7 +31,7 @@ class Rectangle {
 		ctx.lineTo(this.x, this.y + radius)
 		ctx.arcTo(this.x, this.y, this.x + radius, this.y, radius)
 		ctx.closePath()
-		ctx.fillStyle = `rgba(64, 153, 255, ${this.z * 0.25 * 0.5})`
+		ctx.fillStyle = `rgba(34, 82, 240, ${this.z * 0.25 * 0.5})`
 		ctx.fill()
 	}
 
