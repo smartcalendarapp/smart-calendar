@@ -8831,6 +8831,10 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 		itemclasses.push(BACKGROUNDCOLORLISTTRANSPARENT[item.color])
 	}
 
+	if(myheight <= 15){
+		itemclasses2.push('smalleventtext')
+	}
+
 
 	let newstartdate = new Date(newitem.start.year, newitem.start.month, newitem.start.day)
 	let oldstartdate = new Date(olditem.start.year, olditem.start.month, olditem.start.day)

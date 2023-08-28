@@ -3273,7 +3273,7 @@ body {
 	z-index: 2;
 	overflow: hidden;
 	display: flex;
-	min-height: 20px;
+	min-height: 15px;
 	box-sizing: border-box;
 }
 
@@ -3281,15 +3281,7 @@ body {
 	z-index: 6;
 }
 
-.eventleft {
-	border-left-width: 4px;
-	border-left-style: solid;
-}
 
-.eventleftsmart {
-	border-left-width: 4px;
-	border-left-style: dotted;
-}
 
 .eventwrapbottom {
 	border-bottom-left-radius: 6px;
