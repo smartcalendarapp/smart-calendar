@@ -2515,13 +2515,11 @@ class Calendar {
 		let settingssleepend = getElement('settingssleepend')
 		let settingssleepstart2 = getElement('settingssleepstart2')
 		let settingssleepend2 = getElement('settingssleepend2')
-		let settingseventspacing2 = getElement('settingseventspacing2')
 
 		if(settingssleepstart) settingssleepstart.value = getHMText(calendar.settings.sleep.startminute)
 		if(settingssleepend) settingssleepend.value = getHMText(calendar.settings.sleep.endminute)
 		settingssleepstart2.value = getHMText(calendar.settings.sleep.startminute)
 		settingssleepend2.value = getHMText(calendar.settings.sleep.endminute)
-		settingseventspacing2.value = getDHMText(calendar.settings.eventspacing)
 
 
 		//tabs
@@ -5772,16 +5770,6 @@ function inputsettingssleepend(event) {
 	calendar.updateHistory()
 }
 
-function inputsettingseventspacing(event) {
-	let string = event.target.value.toLowerCase()
-	let myduration = getDuration(string).value
-
-	if (myduration != null) {
-		calendar.settings.eventspacing = myduration
-	}
-	calendar.updateSettings()
-	calendar.updateHistory()
-}
 
 function clicksettingstheme(theme) {
 	calendar.settings.theme = theme
@@ -8955,6 +8943,10 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 		itemclasses.push('greyedoutevent')
 	}
 
+	if(myheight <= 15){
+		itemclasses2.push('smalleventtext')
+	}
+
 	let output = ''
 	output = `
 	<div class="absolute pointer-none ${itemclasses3.join(' ')}" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
@@ -9511,13 +9503,19 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		})
 	}
 
+
+	function getbreaktime(tempitem){
+		return Math.min(Math.max(5*60000, round((new Date(tempitem.end.year, tempitem.end.month, tempitem.end.day, 0, tempitem.end.minute).getTime() - new Date(tempitem.start.year, tempitem.start.month, tempitem.start.day, 0, tempitem.start.minute).getTime()) * 0.25, 60000 * 5)), 30 * 60000)
+	}
+
+
 	function fixconflict(item, conflictitem) {
 		let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 		//get penetration
 		let differenceA = Math.abs(new Date(conflictitem.end.year, conflictitem.end.month, conflictitem.end.day, 0, conflictitem.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))
 		let differenceB = Math.abs(new Date(conflictitem.start.year, conflictitem.start.month, conflictitem.start.day, 0, conflictitem.start.minute).getTime() - new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute))
 
-		let spacing = Math.min(Math.max(5*60000, floor((new Date(conflictitem.end.year, conflictitem.end.month, conflictitem.end.day, 0, conflictitem.end.minute).getTime() - new Date(conflictitem.start.year, conflictitem.start.month, conflictitem.start.day, 0, conflictitem.start.minute).getTime()) * 0.25, 60000 * 5)), 60 * 60000)
+		let spacing = getbreaktime(conflictitem)
 		let penetration = Math.min(differenceA, differenceB) + spacing
 
 		//move time
@@ -9550,7 +9548,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			let tempstartdate2 = new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute)
 			let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
 
-			let spacing = Math.min(Math.max(5*60000, floor((tempenddate2.getTime() - tempstartdate2.getTime()) * 0.25, 60000 * 5)), 60 * 60000)
+			let spacing = getbreaktime(item2)
 
 			if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
 				return item2

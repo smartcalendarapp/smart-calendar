@@ -3328,6 +3328,9 @@ body {
 	flex-direction: column;
 }
 
+.smalleventtext{
+	font-size:12px !important;
+}
 
 .checkcircletop{
 	top:2px;
