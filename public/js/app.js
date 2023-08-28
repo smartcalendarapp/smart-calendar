@@ -9536,7 +9536,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		let differenceB = Math.abs(new Date(conflictitem.start.year, conflictitem.start.month, conflictitem.start.day, 0, conflictitem.start.minute).getTime() - new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute))
 
 		let spacing = myspacing || 0
-		console.log('9539' , spacing, myspacing)
+		console.log('LINE 9539:' , spacing, myspacing)
 		let penetration = Math.min(differenceA, differenceB) + spacing
 
 		//move time
@@ -9609,8 +9609,8 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			let tempstartdate2 = new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute)
 			let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
 
-			let spacing = 15*60000//getbreaktime(sortdata)
-			console.log(spacing)
+			let spacing = getbreaktime(sortdata)
+			console.log('LINE 9613: '+spacing)
 
 			if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
 				return [item2, spacing]
