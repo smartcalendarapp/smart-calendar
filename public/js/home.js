@@ -10,8 +10,8 @@ class Rectangle {
 		this.x = Math.random() * canvas.width
 		this.y = Math.random() * canvas.height
 		this.width = 100 + Math.random() * 100
-		this.height = 20 + Math.random() * 30
-		this.z = Math.random()
+		this.height = 30 + Math.random() * 30
+		this.z = Math.random() * 2
 		this.radius = 10
 		this.angle = Math.random() * Math.PI * 2
 		this.amplitude = Math.random() * 0.5
@@ -31,12 +31,12 @@ class Rectangle {
 		ctx.lineTo(this.x, this.y + radius)
 		ctx.arcTo(this.x, this.y, this.x + radius, this.y, radius)
 		ctx.closePath()
-		ctx.fillStyle = `rgba(0, 41, 167, ${this.z * 0.5})`
+		ctx.fillStyle = `rgba(64, 153, 255, ${this.z * 0.25 * 0.5})`
 		ctx.fill()
 	}
 
 	update(scrollY) {
-		this.y -= scrollY * this.z
+		this.y -= scrollY * this.z * 0.25
 		this.x += this.amplitude * Math.sin(this.angle)
 		this.y += this.amplitude * Math.sin(this.angle + Math.PI / 4)
 		this.angle += this.frequency
