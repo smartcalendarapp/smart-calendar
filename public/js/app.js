@@ -9538,7 +9538,6 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		let spacing = myspacing || 0
 		let penetration = Math.min(differenceA, differenceB) + spacing
 
-		console.log(penetration)
 		//move time
 		let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 		startdate.setTime(startdate.getTime() + penetration)
@@ -9814,6 +9813,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 				let temp = getconflictingevent(tempiteratedevents, item)
 				let conflictitem, spacing;
 				if(temp) [conflictitem, spacing] = temp
+				console.log(conflictitem)
 				if (conflictitem) {
 					fixconflict(item, conflictitem, spacing)
 				}
