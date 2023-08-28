@@ -9536,6 +9536,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		let differenceB = Math.abs(new Date(conflictitem.start.year, conflictitem.start.month, conflictitem.start.day, 0, conflictitem.start.minute).getTime() - new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute))
 
 		let spacing = myspacing || 0
+		console.log('9539' , spacing, myspacing)
 		let penetration = Math.min(differenceA, differenceB) + spacing
 
 		//move time
