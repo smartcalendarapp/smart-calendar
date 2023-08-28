@@ -9555,7 +9555,12 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 	}
 
 
-	function getbreaktime(tempevents) {
+	function getbreaktime(item) {
+		let duration = (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
+		return Math.min(Math.max(round(duration * 0.25, 60000 * 5), 60000 * 5), 60 * 60000)
+		
+
+		/*
 		let events = sortstartdate(tempevents);
 		let timeSinceLastBreak = 0;
 		
@@ -9590,6 +9595,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		} else {
 		  return 0;
 		}
+		*/
 	  }
 	  
 
@@ -9607,10 +9613,9 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			let tempstartdate2 = new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute)
 			let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
 
-			let spacing = getbreaktime(sortdata)
-			let spacing2 = getbreaktime([...sortdata, item1])
-//here4
-			if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing2 > tempstartdate2.getTime()) {
+			let spacing = getbreaktime(item2)
+
+			if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
 				return [item2, spacing]
 			}
 		}
