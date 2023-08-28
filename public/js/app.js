@@ -348,6 +348,26 @@ function getwhitecheckcircle(boolean, tooltip) {
 	}
 }
 
+//get small white check circle
+function getwhitecheckcircle(boolean, tooltip) {
+	if (boolean) {
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallerinline checkboxfilledprimary">
+			<g>
+			<path d="M128 7.19484C61.2812 7.19484 7.19484 61.2812 7.19484 128C7.19484 194.719 61.2812 248.805 128 248.805C194.719 248.805 248.805 194.719 248.805 128C248.805 61.2812 194.719 7.19484 128 7.19484ZM190.851 66.0048C194.206 65.7071 197.649 66.7098 200.436 69.0426C206.01 73.7082 206.753 81.9906 202.088 87.5645L115.524 190.969C110.264 197.253 100.582 197.253 95.3213 190.969L52.0249 139.266C47.3593 133.693 48.1026 125.41 53.6765 120.745C59.2504 116.079 67.5623 116.822 72.2279 122.396L105.408 162.035L181.885 70.6942C184.217 67.9073 187.495 66.3024 190.851 66.0048Z" fill-rule="nonzero" opacity="1" ></path>
+			<path d="M128 0C57.3076 0 0 57.3076 0 128C0 198.692 57.3076 256 128 256C198.692 256 256 198.692 256 128C256 57.3076 198.692 0 128 0ZM128 7.75758C194.408 7.75758 248.242 61.5919 248.242 128C248.242 194.408 194.408 248.242 128 248.242C61.5919 248.242 7.75758 194.408 7.75758 128C7.75758 61.5919 61.5919 7.75758 128 7.75758Z" fill-rule="nonzero" opacity="1" ></path>
+			</g>
+			</svg>
+	 		${tooltip || ''}`
+	} else {
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallerinline checkboxunfilled">
+			<g>
+			<path d="M128 10L128 10C193.17 10 246 62.8304 246 128L246 128C246 193.17 193.17 246 128 246L128 246C62.8304 246 10 193.17 10 128L10 128C10 62.8304 62.8304 10 128 10Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+			</g>
+			</svg>
+	 		${tooltip || ''}`
+	}
+}
+
 
 //get check
 function getcheck(boolean) {
@@ -8851,7 +8871,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 					
 					${item.type == 1 ? 
 						`<span class="todoitemcheckbox tooltip checkcircletop">
-							${getwhitecheckcircle(item.completed)}
+							${myheight <= 15 ? `${getwhitecheckcircle(item.completed)}` : `${getwhitecheckcircle(item.completed)}`}
 						</span>` 
 						: ''
 					}
@@ -8962,7 +8982,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 					
 					${item.type == 1 ? 
 						`<span class="todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="eventcompleted(event, '${item.id}')">
-							${getwhitecheckcircle(item.completed)}
+							${myheight <= 15 ? `${getwhitecheckcircle(item.completed)}` : `${getwhitecheckcircle(item.completed)}`}
 						</span>` 
 						: ''
 					}
@@ -9508,18 +9528,14 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 	}
 
 
-	function getbreaktime(tempitem){
-		return Math.min(Math.max(5*60000, round((new Date(tempitem.end.year, tempitem.end.month, tempitem.end.day, 0, tempitem.end.minute).getTime() - new Date(tempitem.start.year, tempitem.start.month, tempitem.start.day, 0, tempitem.start.minute).getTime()) * 0.25, 60000 * 5)), 30 * 60000)
-	}
 
-
-	function fixconflict(item, conflictitem) {
+	function fixconflict(item, conflictitem, myspacing) {
 		let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 		//get penetration
 		let differenceA = Math.abs(new Date(conflictitem.end.year, conflictitem.end.month, conflictitem.end.day, 0, conflictitem.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))
 		let differenceB = Math.abs(new Date(conflictitem.start.year, conflictitem.start.month, conflictitem.start.day, 0, conflictitem.start.minute).getTime() - new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute))
 
-		let spacing = getbreaktime(conflictitem)
+		let spacing = myspacing || 0
 		let penetration = Math.min(differenceA, differenceB) + spacing
 
 		//move time
@@ -9539,11 +9555,51 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
 	}
 
+
+	function getbreaktime(tempevents) {
+		let events = sortstartdate(tempevents);
+		let timeSinceLastBreak = 0;
+		
+		for (let i = 1; i < events.length; i++) {
+		  const prevEvent = events[i - 1];
+		  const currentEvent = events[i];
+		  
+		  const prevEventEndTime = new Date(prevEvent.end.year, prevEvent.end.month, prevEvent.end.day, 0, prevEvent.end.minute).getTime();
+		  const currentEventStartTime = new Date(currentEvent.start.year, currentEvent.start.month, currentEvent.start.day, 0, currentEvent.start.minute).getTime();
+		  
+		  const prevEventStartTime = new Date(prevEvent.start.year, prevEvent.start.month, prevEvent.start.day, 0, prevEvent.start.minute).getTime();
+		  const prevEventDuration = (prevEventEndTime - prevEventStartTime) / 60000;
+		  timeSinceLastBreak += prevEventDuration;
+		  
+		  const idleTime = (currentEventStartTime - prevEventEndTime) / 60000;
+		  
+		  if (idleTime >= 17) {
+			if (timeSinceLastBreak >= 52) {
+			  return 17;
+			} else {
+			  return 0;
+			}
+		  }
+		  
+		  if (idleTime < 5) { 
+			timeSinceLastBreak += idleTime;
+		  }
+		}
+	  
+		if (timeSinceLastBreak >= 52) { 
+		  return 17;
+		} else {
+		  return 0;
+		}
+	  }
+	  
+
 	function getconflictingevent(data, item1) {
 		let sortdata = data.sort((a, b) => {
 			return new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime() - new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime()
 		})
 
+		
 		for (let item2 of sortdata) {
 			if (item1.id == item2.id || Calendar.Event.isAllDay(item2)) continue
 			let tempstartdate1 = new Date(item1.start.year, item1.start.month, item1.start.day, 0, item1.start.minute)
@@ -9552,10 +9608,10 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			let tempstartdate2 = new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute)
 			let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
 
-			let spacing = getbreaktime(item2)
+			let spacing = getbreaktime(sortdata)
 
 			if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
-				return item2
+				return [item2, spacing]
 			}
 		}
 	}
@@ -9711,6 +9767,8 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 	if (calendar.smartschedule.mode == 0) {
 		//FOCUS
 
+		let totalworktime = 0
+
 		let donesmartevents = []
 		for (let item of smartevents) {
 			donesmartevents.push(item)
@@ -9750,9 +9808,9 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 					fixrange(item)
 				}
 
-				let conflictitem = getconflictingevent(tempiteratedevents, item)
+				let [conflictitem, spacing] = getconflictingevent(tempiteratedevents, item)
 				if (conflictitem) {
-					fixconflict(item, conflictitem)
+					fixconflict(item, conflictitem, spacing)
 				}
 
 				//exit
@@ -9860,7 +9918,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 					fixrange(item)
 				}
 
-				let conflictitem = getconflictingevent(tempiteratedevents, item)
+				let [conflictitem] = getconflictingevent(tempiteratedevents, item)
 				if (conflictitem) {
 					fixconflict(item, conflictitem)
 				}

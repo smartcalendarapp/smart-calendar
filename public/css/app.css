@@ -992,6 +992,15 @@ body {
 	display: inline;
 	vertical-align: middle;
 }
+.buttonsmallerinline{
+	height: 12px;
+	width: 12px;
+	stroke: var(--text-primary);
+	fill: none;
+	pointer-events: none;
+	display: inline;
+	vertical-align: middle;
+}
 
 
 .buttonsmallquaternary {
