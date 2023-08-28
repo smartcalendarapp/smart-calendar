@@ -9608,6 +9608,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
 
 			let spacing = getbreaktime(sortdata)
+			console.log(tempstartdate1, new Date(tempenddate2.getTime() ))
 
 			if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() > tempstartdate2.getTime()) {
 				return [item2, spacing]
@@ -9711,6 +9712,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 	//check for todos that are currently being done - don't reschedule first one
 	let doingtodos = sortstartdate(smartevents).filter(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now())
 	if(doingtodos[0]){
+		iteratedevents.push(smartevents.filter(d => d.id != doingtodos[0].id).filter(d => !iteratedevents.find(f => f.id == d.id)))
 		smartevents = smartevents.filter(d => d.id != doingtodos[0].id)
 	}
 
@@ -9812,7 +9814,6 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 				let temp = getconflictingevent(tempiteratedevents, item)
 				let conflictitem, spacing;
 				if(temp) [conflictitem, spacing] = temp
-				console.log(conflictitem)
 				if (conflictitem) {
 					fixconflict(item, conflictitem, spacing)
 				}
