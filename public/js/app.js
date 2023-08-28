@@ -9767,7 +9767,6 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 	if (calendar.smartschedule.mode == 0) {
 		//FOCUS
 
-		let totalworktime = 0
 
 		let donesmartevents = []
 		for (let item of smartevents) {
@@ -9807,6 +9806,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 				if (outofrange) {
 					fixrange(item)
 				}
+				console.log(getconflictingevent(tempiteratedevents, item))
 
 				let [conflictitem, spacing] = getconflictingevent(tempiteratedevents, item)
 				if (conflictitem) {
