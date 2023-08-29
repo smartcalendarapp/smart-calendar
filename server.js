@@ -368,12 +368,14 @@ async function processReminders(){
 	//send reminders
 	for(let item of sendreminders){
 		//push notifications
-		if(item.pushSubscription){
-			try{
-				let difference = Math.floor((Date.now() - new Date(item.event.start).getTime())/60000)
-		    	await webpush.sendNotification(item.pushSubscription, `REMINDER: ${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`)
-			}catch(error){
-				console.error(error)
+		if(item.pushSubscriptionEnabled){
+			if(item.pushSubscription){
+				try{
+					let difference = Math.floor((Date.now() - new Date(item.event.start).getTime())/60000)
+					await webpush.sendNotification(item.pushSubscription, `REMINDER: ${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`)
+				}catch(error){
+					console.error(error)
+				}
 			}
 		}
 			
@@ -585,7 +587,8 @@ function cacheReminders(user){
 					timestamp: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() - itemreminder.timebefore + timezoneoffset * 60000,
 				},
 				pushSubscription: user.calendardata.pushSubscription,
-				emailreminderenabled: user.calendardata.emailreminderenabled
+				emailreminderenabled: user.calendardata.emailreminderenabled,
+				pushSubscriptionEnabled: user.calendardata.pushSubscriptionEnabled
 			})
 		}
 		
@@ -1640,8 +1643,9 @@ app.post('/signup', async (req, res, next) => {
 })
 
 async function sendwelcomeemail(user){
-	return
 	let email = user.google_email || user.username
+	let name = user.google_email ? user.accountdata.google.name || user.google_email : user.username
+
 	if(isEmail(email)){
 		await sendEmail({
 			from: 'Smart Calendar <welcome@smartcalendar.us>',
@@ -1660,15 +1664,15 @@ async function sendwelcomeemail(user){
 		<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px;">
 				<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
 				<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
-						Hello [user],
+						Greetings ${name},
 				</p>
 				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<p style="font-size: 18px; color: #333;">
-						You are now a part of a group of [x] people who use Smart Calendar to find productivity and peace in life. That's special!
+						You are now a part of a group of hundreds of people who use Smart Calendar to find productivity and peace in life. That's special!
 				</p>
 				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<p style="font-size: 18px; color: #333;">
-					We know you're excited to explore Smart Calendar. Check out [this] on some basic tips on how to make the most of Smart Calendar.
+					We know you're excited to explore Smart Calendar. Check out our blog on some basic tips on how to make the most of Smart Calendar.
 				</p>
 				<p style="font-size: 18px; color: #333;">
 						If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">click here</a> to contact us. We're here for you!
@@ -1688,11 +1692,11 @@ async function sendwelcomeemail(user){
 		</div>
 	</body>
 	</html>`,
-			textbody: `Hello [user],
+			textbody: `Hello ${name},
 
-	You are now a part of a group of [x] people who use Smart Calendar to find productivity and peace in life. That's special!
+	You are now a part of a group of hundreds people who use Smart Calendar to find productivity and peace in life. That's special!
 
-	We know you're excited to explore Smart Calendar. Check out [this] on some basic tips on how to make the most of Smart Calendar.
+	We know you're excited to explore Smart Calendar. Check out our blog on some basic tips on how to make the most of Smart Calendar.
 
 	If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
 
