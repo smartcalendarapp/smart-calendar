@@ -378,65 +378,67 @@ async function processReminders(){
 		}
 			
 
-		//email
-		await sendEmail({
-			from: 'Smart Calendar <reminders@smartcalendar.us>',
-			to: item.user.email,
-			subject: `Friendly reminder: ${item.event.title}`,
-			htmlbody: `
-<!DOCTYPE html>
-<html>
-<head>
-		<title>Smart Calendar | Your Event Reminder</title>
-		<style>
-				@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
-		</style>
-</head>
-<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
-		<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px;">
-				<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
-				<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
-						Hi ${item.user.name},
-				</p>
-				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
-				<p style="font-size: 18px; color: #333;">
-						Just a quick reminder that your event <strong>${item.event.title || 'New Event'}</strong> is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}. 
-				</p>
-				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
-				<p style="font-size: 18px; color: #333;">
-				 If you have other tasks to plan, consider adding them to your to-do list. Then, you can simply have Smart Calendar schedule them for you. 
-				</p>
-				<p style="font-size: 18px; color: #333;">
-						If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">click here</a> to contact us. We're here for you!
-				</p>
-				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
-				<p style="text-align: center; font-size: 20px; color: #333;">
-						Kind regards,<br>
-						Smart Calendar | Your Smart Time Management Assistant
-				</p>
+		if(item.emailreminderenabled){
+			//email
+			await sendEmail({
+				from: 'Smart Calendar <reminders@smartcalendar.us>',
+				to: item.user.email,
+				subject: `Friendly reminder: ${item.event.title}`,
+				htmlbody: `
+	<!DOCTYPE html>
+	<html>
+	<head>
+			<title>Smart Calendar | Your Event Reminder</title>
+			<style>
+					@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
+			</style>
+	</head>
+	<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
+			<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px;">
+					<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
+					<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
+							Hi ${item.user.name},
+					</p>
+					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+					<p style="font-size: 18px; color: #333;">
+							Just a quick reminder that your event <strong>${item.event.title || 'New Event'}</strong> is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}. 
+					</p>
+					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+					<p style="font-size: 18px; color: #333;">
+					If you have other tasks to plan, consider adding them to your to-do list. Then, you can simply have Smart Calendar schedule them for you. 
+					</p>
+					<p style="font-size: 18px; color: #333;">
+							If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">click here</a> to contact us. We're here for you!
+					</p>
+					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+					<p style="text-align: center; font-size: 20px; color: #333;">
+							Kind regards,<br>
+							Smart Calendar | Your Smart Time Management Assistant
+					</p>
 
-		<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
-				<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-					<p>If you wish to stop receiving these notifications, you can update your preferences in the app > settings > notifications.<br><a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
-				<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
-				</div>
+			<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+					<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
+						<p>If you wish to stop receiving these notifications, you can update your preferences in the app > settings > notifications.<br><a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+					<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
+					</div>
 
-		</div>
-</body>
-</html>`,
-			textbody: `Hi ${item.user.name},
-Just a quick reminder that your event ${item.event.title || 'New Event'} is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}.
+			</div>
+	</body>
+	</html>`,
+				textbody: `Hi ${item.user.name},
+	Just a quick reminder that your event ${item.event.title || 'New Event'} is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}.
 
-If you have other tasks to plan, consider adding them to your to-do list. Then, you can simply have Smart Calendar schedule them for you.
+	If you have other tasks to plan, consider adding them to your to-do list. Then, you can simply have Smart Calendar schedule them for you.
 
-If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
+	If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
 
-Kind regards,
-Smart Calendar | Your Personal Time Management Assistant
+	Kind regards,
+	Smart Calendar | Your Personal Time Management Assistant
 
-If you wish to stop receiving these notifications, you can update your preferences in the app.
-(c) 2023 James Tsaggaris. All rights reserved.`
-		})
+	If you wish to stop receiving these notifications, you can update your preferences in the app.
+	(c) 2023 James Tsaggaris. All rights reserved.`
+			})
+		}
 	}
 }
 
@@ -582,7 +584,8 @@ function cacheReminders(user){
 				reminder: {
 					timestamp: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() - itemreminder.timebefore + timezoneoffset * 60000,
 				},
-				pushSubscription: user.calendardata.pushSubscription
+				pushSubscription: user.calendardata.pushSubscription,
+				emailreminderenabled: user.calendardata.emailreminderenabled
 			})
 		}
 		
