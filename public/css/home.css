@@ -101,7 +101,7 @@ img{
 	flex-basis:auto;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 600px) {
 	.navbarspace{
 		max-width:24px;
 		width:100%;
