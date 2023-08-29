@@ -7533,7 +7533,7 @@ function gettododata(item) {
 									</div>
 
 									${item.notes ?
-									`<div class="pre-wrap break-word todoitemtext text-quaternary text-14px overflow-hidden ${itemclasses.join(' ')}">${formatURL(cleanInput(item.notes))}</div>` : ''}
+									`<div class="pointer-auto pre-wrap break-word todoitemtext text-quaternary text-14px overflow-hidden ${itemclasses.join(' ')}">${formatURL(cleanInput(item.notes))}</div>` : ''}
 	
 								</div>
 				
@@ -7571,7 +7571,7 @@ function gettododata(item) {
 						</div>
 	
 						
-						${item.googlecalendarid == null ? `
+						${item.googleclassroomid == null ? `
 						<div class="gap-6px todoitembuttongroup z-index-1 height-fit justify-flex-end flex-row small:visibility-visible">						
 							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="edittodo('${item.id}');gtag('event', 'button_click', { useraction: 'Edit - task' })">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -8118,7 +8118,7 @@ function dragtodo(event, id) {
 
 	let dragtododiv = getElement('dragtododiv')
 	dragtododiv.classList.remove('display-none')
-	dragtododiv.innerHTML = event.target.innerHTML
+	dragtododiv.innerHTML = getElement(`todo-${id}`).innerHTML
 
 	let rect = event.target.getBoundingClientRect()
 
