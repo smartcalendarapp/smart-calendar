@@ -807,7 +807,7 @@
 
 
 
-		<div class="flex-1 width-full display-flex flex-column align-center display-none" id="onboardingstart">
+		<div class="flex-1 width-full display-flex flex-column align-center hiddenright id="onboardingstart">
 			
 			<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px border-box flex-column flex-1 justify-space-evenly">
 				<div class="display-flex flex-column gap-12px">
@@ -822,7 +822,7 @@
 			</div>
 		</div>
 
-		<div class="flex-1 width-full display-flex flex-column align-center display-none" id="onboardingconnectcalendars">
+		<div class="flex-1 width-full display-flex flex-column align-center hiddenright" id="onboardingconnectcalendars">
 			
 			<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
 				<div class="display-flex flex-column gap-12px">
@@ -863,7 +863,7 @@
 
 
 
-		<div class="flex-1 width-full display-flex flex-column align-center display-none" id="onboardingeventreminders">
+		<div class="flex-1 width-full display-flex flex-column align-center hiddenright" id="onboardingeventreminders">
 			
 			<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
 				<div class="display-flex flex-column gap-12px">
@@ -901,7 +901,7 @@
 		</div>
 
 		
-		<div class="height-full width-full display-flex align-center flex-column display-none" id="onboardingsleeptime">
+		<div class="height-full width-full display-flex align-center flex-column hiddenright" id="onboardingsleeptime">
 			<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
 				<div class="display-flex flex-column gap-12px">
 					<div class="text-24px text-primary text-bold">Set sleep schedule</div>
@@ -922,7 +922,7 @@
 					</div>
 				</div>
 
-				<div class="display-flex flex-row gap-24px justify-center align-center">
+				<div class="display-flex flex-row gap-24px justify-center hiddenright">
 					<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="continueonboarding('sleeptime')">Skip</div>
 					<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('sleeptime')">Continue</div>
 				</div>
@@ -931,7 +931,7 @@
 		</div>
 
 
-		<div class="height-full width-full display-flex align-center flex-column display-none" id="onboardingaddtask">
+		<div class="height-full width-full display-flex align-center flex-column hiddenright" id="onboardingaddtask">
 			<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px border-box flex-column flex-1 justify-space-between">
 				<div class="display-flex flex-column gap-12px">
 					<div class="text-24px text-primary text-bold">Add your first task</div>
@@ -1909,20 +1909,21 @@
 
 										<div class="infogroup">
 											<div class="display-flex justify-space-between flex-row gap-12px align-center">
-												<div class="infotext text-16px text-bold"><img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png"></img> Sync Google Classroom To-dos</div>
-
-												<div class="display-flex flex-row gap-12px align-center">
-													<div id="lastsyncedgoogleclassroom" class="gap-6px display-flex flex-row align-center"></div>
-													<div class="display-flex flex-row gap-12px">
-														<div id="syncnowgoogleclassroom" onclick="syncnowgoogleclassroom()" class="flex-1 text-center display-none text-14px text-white border-8px padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 pointer">Sync now</div>
-													</div>
-												</div>
+												<div class="infotext text-16px text-bold"><img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png"></img> Sync Google Classroom To-do list</div>
 
 												<label class="switch">
 													<input type="checkbox" oninput="togglesyncgoogleclassroom(event)" id="syncgoogleclassroomtoggle">
 													<span class="slider"></span>
 												</label>
 											</div>
+
+											<div class="display-flex flex-row gap-12px align-center">
+												<div id="lastsyncedgoogleclassroom" class="gap-6px display-flex flex-row align-center"></div>
+												<div class="display-flex flex-row gap-12px">
+													<div id="syncnowgoogleclassroom" onclick="syncnowgoogleclassroom()" class="flex-1 text-center display-none text-14px text-white border-8px padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 pointer">Sync now</div>
+												</div>
+											</div>
+
 
 											<div id="importgoogleclassroomerror" class="errorwrap display-none"></div>
 										</div>
