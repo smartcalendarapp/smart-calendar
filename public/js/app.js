@@ -3264,7 +3264,7 @@ function run() {
 
 
 	//sync with google
-	async function runsyncwithgoogle() {
+	async function runsyncwithgooglecalendar() {
 		if (document.visibilityState === 'visible') {
 			await getclientgooglecalendar()
 		}
@@ -3276,7 +3276,21 @@ function run() {
 			}
 		}, 1000)
 	}
-	runsyncwithgoogle()
+	runsyncwithgooglecalendar()
+
+	async function runsyncwithgoogleclassroom() {
+		if (document.visibilityState === 'visible') {
+			await getclientgoogleclassroom()
+		}
+		let lasttriedsyncgoogleclassroomdate = Date.now()
+		setInterval(async function () {
+			if (document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgoogleclassroomdate > 60000 && Date.now() - lasttriedsyncgoogleclassroomdate > 60000) {
+				await getclientgoogleclassroom()
+				lasttriedsyncgoogleclassroomdate = Date.now()
+			}
+		}, 1000)
+	}
+	runsyncwithgoogleclassroom()
 }
 
 //update status indicator
@@ -5100,6 +5114,8 @@ async function getclientgoogleclassroom(){
 		}else if(response.status == 200){
 			const data = await response.json()
 			console.log(data.data)
+
+			calendar.lastsyncedgoogleclassroomdate = Date.now()
 		}
 	}catch(err){
 		console.log(err)
