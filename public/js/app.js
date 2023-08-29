@@ -2970,6 +2970,35 @@ function setHistory(json) {
 	historyindex = historydata.length - 1
 }
 
+
+//mobile device
+let mobilescreen = false
+if ('matchMedia' in window) {
+	let smallscreen = window.matchMedia('(max-width: 600px)')
+	if (smallscreen.matches) {
+		mobilescreen = true
+	}
+
+	smallscreen.addEventListener('change', changedevicescreen)
+}
+
+function changedevicescreen(event){
+	if(event.matches){
+		smallscreen = true
+	}else{
+		smallscreen = false
+	}
+
+	if (calendarmode == 1) {
+		calendarmode = 0
+	}
+	if(calendartabs.includes(0) && calendartabs.includes(1)){
+		calendartabs = [0]
+	}
+	calendar.updateTabs()
+}
+
+
 //initialize
 let historydata = []
 let historyindex = 0
@@ -2984,28 +3013,22 @@ let autoscheduleeventslist = []
 let oldautoscheduleeventslist = []
 let newautoscheduleeventslist = []
 
+
 //new calendar
 let calendarmode = 1
 let calendarmodestorage = getStorage('calendarmode')
 if (calendarmodestorage != null) {
 	calendarmode = calendarmodestorage
 }
-if ('matchMedia' in window) {
-	let smallscreen = window.matchMedia('(max-width: 600px)')
-	if (smallscreen.matches) {
-		if (calendarmode == 1) {
-			calendarmode = 0
-		}
+if(mobilescreen){
+	if (calendarmode == 1) {
+		calendarmode = 0
 	}
 }
 
-
 let calendartabs = [0, 1]
-if ('matchMedia' in window) {
-	let smallscreen = window.matchMedia('(max-width: 600px)')
-	if (smallscreen.matches) {
-		calendartabs = [1]
-	}
+if(mobilescreen){
+	calendartabs = [1]
 }
 
 let todomode = 0
@@ -3652,9 +3675,9 @@ function updateonboardingscreen(){
 	function updatescreen(key, boolean){
 		let tempdiv = getElement(`onboarding${key}`)
 		if(boolean){
-			tempdiv.classList.remove('hiddenfade')
+			tempdiv.classList.remove('display-none')
 		}else{
-			tempdiv.classList.add('hiddenfade')
+			tempdiv.classList.add('display-none')
 		}
 	}
 
@@ -3941,11 +3964,8 @@ function clicktakeinteractivetour() {
 	closehelp()
 	restartinteractivetour()
 	calendartabs = [0,1]
-	if ('matchMedia' in window) {
-		let smallscreen = window.matchMedia('(max-width: 600px)')
-		if (smallscreen.matches) {
-			calendartabs = [0]
-		}
+	if(mobilescreen){
+		calendartabs = [0]
 	}
 	calendar.updateTabs()
 }
@@ -4056,7 +4076,8 @@ if ('matchMedia' in window) {
 	}
 	themedata.addEventListener('change', changedevicetheme)
 }
-settheme(devicetheme)
+
+settheme(getStorage('theme') || devicetheme)
 
 function changedevicetheme(event) {
 	if (event.matches) {
@@ -4089,6 +4110,7 @@ function toggletheme() {
 
 function settheme(theme) {
 	rootdataset.theme = theme
+	setStorage('theme', theme)
 	updatetoggletheme()
 }
 
@@ -6469,11 +6491,8 @@ function startAutoSchedule(scheduletodos) {
 
 
 	if(scheduletodos.length > 0){
-		if ('matchMedia' in window) {
-			let smallscreen = window.matchMedia('(max-width: 600px)')
-			if (smallscreen.matches) {
-				calendartabs = [0]
-			}
+		if(mobilescreen){
+			calendartabs = [0]
 		}
 	}
 
@@ -8229,11 +8248,8 @@ let initialdragtodox, initialdragtodoy;
 function dragtodo(event, id) {
 	event.preventDefault()
 
-	if ('matchMedia' in window) {
-		let smallscreen = window.matchMedia('(max-width: 600px)')
-		if (smallscreen.matches) {
-			return
-		}
+	if(mobilescreen){
+		return
 	}
 
 	let item = calendar.todos.find(x => x.id == id)
@@ -8404,12 +8420,9 @@ function startnow(id){
 		barcolumncontainer.scrollTo(0, target)
 	}
 
-	if ('matchMedia' in window) {
-		let smallscreen = window.matchMedia('(max-width: 600px)')
-		if (smallscreen.matches) {
-			calendartabs = [0]
-			calendar.updateTabs()
-		}
+	if(mobilescreen){
+		calendartabs = [0]
+		calendar.updateTabs()
 	}
 
 	calendar.updateTodo()
