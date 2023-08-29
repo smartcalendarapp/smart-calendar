@@ -852,6 +852,10 @@ class Calendar {
 		static isTodo(item){
 			return calendar.todos.find(d => d.id == item.id)
 		}
+
+		static isReadOnly(item){
+			return !!item.googleclassroomid
+		}
 	}
 
 
@@ -7540,7 +7544,7 @@ function gettododata(item) {
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 				 
 									${!Calendar.Event.isEvent(item) ? 
-										`<div class="gap-6px pointer-auto pointer display-flex transition-duration-100 flex-row align-center width-fit todoitemtext badgepadding ${!endbeforedate ? 'background-tint-1 hover:background-tint-2' : (isoverdue ? 'background-red hover:background-red-hover' : 'background-blue hover:background-blue-hover')} border-round nowrap popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduedate(event, '${item.id}')">
+										`<div class="gap-6px pointer-auto pointer display-flex transition-duration-100 flex-row align-center width-fit todoitemtext badgepadding ${!endbeforedate ? 'background-tint-1 hover:background-tint-2' : (isoverdue ? 'background-red hover:background-red-hover' : 'background-blue hover:background-blue-hover')} border-round nowrap popupbutton ${itemclasses.join(' ')}" ${!Calendar.Todo.isReadOnly(item) ? `onclick="clicktodoitemduedate(event, '${item.id}')"` : ''}>
 											<div class="pointer-none ${!endbeforedate ? 'text-primary' : (isoverdue ? 'text-white' : 'text-white')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}</div>
 										</div>`
 										: ''
@@ -7571,7 +7575,7 @@ function gettododata(item) {
 						</div>
 	
 						
-						${item.googleclassroomid == null ? `
+						${!Calendar.Todo.isReadOnly(item) ? `
 						<div class="gap-6px todoitembuttongroup z-index-1 height-fit justify-flex-end flex-row small:visibility-visible">						
 							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="edittodo('${item.id}');gtag('event', 'button_click', { useraction: 'Edit - task' })">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -8115,12 +8119,13 @@ function dragtodo(event, id) {
 	let item = calendar.todos.find(x => x.id == id)
 	if (!item) return
 
+	let todoelement = getElement(`todo-${id}`)
 
 	let dragtododiv = getElement('dragtododiv')
 	dragtododiv.classList.remove('display-none')
-	dragtododiv.innerHTML = getElement(`todo-${id}`).innerHTML
+	dragtododiv.innerHTML = todoelement.innerHTML
 
-	let rect = event.target.getBoundingClientRect()
+	let rect = todoelement.getBoundingClientRect()
 
 	dragtododiv.style.width = rect.width + 'px'
 	dragtododiv.style.height = rect.height + 'px'
@@ -8590,6 +8595,7 @@ function geteventfromtodo(item) {
 	newitem.priority = item.priority
 	newitem.completed = item.completed
 	newitem.id = item.id
+	newitem.googleclassroomid = item.googleclassroomid
 
 	newitem.timewindow = deepCopy(item.timewindow)
 
@@ -8607,6 +8613,7 @@ function gettodofromevent(item) {
 	newitem.priority = item.priority
 	newitem.completed = item.completed
 	newitem.id = item.id
+	newitem.googleclassroomid = item.googleclassroomid
 
 	newitem.timewindow = deepCopy(item.timewindow)
 
