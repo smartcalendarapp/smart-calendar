@@ -5134,7 +5134,7 @@ async function getclientgoogleclassroom(){
 			for(let googleitem of data.data){
 				let mytodo = [...calendar.events, ...calendar.todos].find(d => d.googleclassroomid == googleitem.id)
 				if(!mytodo){
-					let endbeforeyear, endbeforemonth, endbeforeday, endbeforeminute;
+					let endbeforeyear, endbeforemonth, endbeforeday, endbeforeminute = null;
 					if(googleitem.dueDate){
 						endbeforeyear = googleitem.dueDate.year
 						endbeforemonth = googleitem.dueDate.month - 1
@@ -5159,7 +5159,7 @@ async function getclientgoogleclassroom(){
 
 					calendar.todos.push(newtodo)
 				}else{
-					let endbeforeyear, endbeforemonth, endbeforeday, endbeforeminute;
+					let endbeforeyear, endbeforemonth, endbeforeday, endbeforeminute = null;
 					if(googleitem.dueDate){
 						endbeforeyear = googleitem.dueDate.year
 						endbeforemonth = googleitem.dueDate.month - 1
@@ -10168,11 +10168,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 				let barcolumncontainer = getElement('barcolumncontainer')
 
 				let target = firstitemdate.getHours() * 60 + firstitemdate.getMinutes()
-				if (oldcalendaryear != calendaryear || oldcalendarmonth != calendarmonth || oldcalendarday != calendarday) {
-					barcolumncontainer.scrollTo(0, target - barcolumncontainer.offsetHeight / 2)
-				}else{
-					scrollcalendarY(target)
-				}
+				scrollcalendarY(target)
 			}
 		}
 	}
@@ -10486,6 +10482,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 
 		calendar.updateHistory()
 		calendar.updateInfo(true)
+		calendar.updateTodo()
 
 		clickscheduleframeclose()
 
