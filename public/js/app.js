@@ -3635,6 +3635,7 @@ function clickmonthdate(event, timestamp) {
 
 
 //ONBOARDING
+
 function updateonboardingscreen(){
 	let onboardingscreen = getElement('onboardingscreen')
 	onboardingscreen.classList.add('hiddenfade')
