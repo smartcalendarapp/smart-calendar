@@ -5124,26 +5124,52 @@ async function getclientgoogleclassroom(){
 					let endbeforeyear, endbeforemonth, endbeforeday, endbeforeminute;
 					if(googleitem.dueDate){
 						endbeforeyear = googleitem.dueDate.year
-						endbeforemonth = googleitem.dueDate.month
+						endbeforemonth = googleitem.dueDate.month - 1
 						endbeforeday = googleitem.dueDate.day
 					}
 					if(googleitem.dueTime){
 						endbeforeminute = googleitem.dueTime.hours * 60 + googleitem.dueTime.minutes
 					}
 
+					//utc due date
+					if(endbeforeyear && endbeforemonth && endbeforeday && endbeforeminute){
+						let utcduedate = new Date(Date.UTC(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute))
+
+						endbeforeyear = utcduedate.getFullYear()
+						endbeforemonth = utcduedate.getMonth()
+						endbeforeday = utcduedate.getDate()
+						endbeforeminute = utcduedate.getHours() * 60 + utcduedate.getMinutes()
+					}
+
 					let newtodo = new Calendar.Todo(endbeforeyear, endbeforemonth, endbeforeday, endbeforeminute, 60, googleitem.title, googleitem.alternateLink)
-					newtodo.id = googleitem.id
+					newtodo.googleclassroomid = googleitem.id
 
 					calendar.todos.push(newtodo)
 				}else{
+					let endbeforeyear, endbeforemonth, endbeforeday, endbeforeminute;
 					if(googleitem.dueDate){
-						mytodo.endbefore.year = googleitem.dueDate.year
-						mytodo.endbefore.month = googleitem.dueDate.month
-						mytodo.endbefore.day = googleitem.dueDate.day
+						endbeforeyear = googleitem.dueDate.year
+						endbeforemonth = googleitem.dueDate.month - 1
+						endbeforeday = googleitem.dueDate.day
 					}
 					if(googleitem.dueTime){
-						mytodo.endbefore.minute = googleitem.dueTime.hours * 60 + googleitem.dueTime.minutes
+						endbeforeminute = googleitem.dueTime.hours * 60 + googleitem.dueTime.minutes
 					}
+
+					//utc due date
+					if(endbeforeyear && endbeforemonth && endbeforeday && endbeforeminute){
+						let utcduedate = new Date(Date.UTC(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute))
+
+						endbeforeyear = utcduedate.getFullYear()
+						endbeforemonth = utcduedate.getMonth()
+						endbeforeday = utcduedate.getDate()
+						endbeforeminute = utcduedate.getHours() * 60 + utcduedate.getMinutes()
+					}
+
+					mytodo.endbefore.year = endbeforeyear
+					mytodo.endbefore.month = endbeforemonth
+					mytodo.endbefore.day = endbeforeday
+					mytodo.endbefore.minute = endbeforeminute
 
 					mytodo.title = googleitem.title
 					mytodo.notes = googleitem.alternateLink
@@ -5153,6 +5179,7 @@ async function getclientgoogleclassroom(){
 
 			
 			calendar.updateEvents()
+			calendar.updateTodo()
 			calendar.updateHistory(false, false)
 
 			calendar.updateSettings()
