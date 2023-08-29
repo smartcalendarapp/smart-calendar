@@ -255,7 +255,7 @@ const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: true, emailreminderenabled: true }
 const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null }
 const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, title: null, type: 0, notes: null, completed: false, priority: 0, color: 3, reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0 }
-const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null }
+const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, color: 3, isprimary: false, subscriptionurl: null, lastmodified: 0  }
 const MODELNOTIFICATION = { id: null, read: false, timestamp: null }
 
@@ -2055,6 +2055,42 @@ app.post('/setclientdata', async (req, res, next) => {
 		}
 
 		let calendardata = req.body.calendardata
+
+
+		//compare last modified
+		for(let index = 0; index < calendardata.events.length; index++){
+			let item = calendardata.events[index]
+
+			let clouditem = user.calendardata.events.find(d => d.id == item.id)
+			if(!clouditem) continue
+
+			if(clouditem.lastmodified > item.lastmodified){
+				calendardata.events[index] = clouditem
+			}
+		}
+		for(let index = 0; index < calendardata.todos.length; index++){
+			let item = calendardata.todos[index]
+
+			let clouditem = user.calendardata.todos.find(d => d.id == item.id)
+			if(!clouditem) continue
+
+			if(clouditem.lastmodified > item.lastmodified){
+				calendardata.todos[index] = clouditem
+			}
+		}
+		for(let index = 0; index < calendardata.calendars.length; index++){
+			let item = calendardata.calendars[index]
+
+			let clouditem = user.calendardata.calendars.find(d => d.id == item.id)
+			if(!clouditem) continue
+
+			if(clouditem.lastmodified > item.lastmodified){
+				calendardata.calendars[index] = clouditem
+			}
+		}
+
+
+		//set data
 		user.calendardata = calendardata
 		
 		cacheReminders(user)

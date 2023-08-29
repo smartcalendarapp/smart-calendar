@@ -834,6 +834,7 @@ class Calendar {
 			this.googleclassroomid = null
 			this.completed = false
 			this.reminder = [{ timebefore: 0 }]
+			this.lastmodified = 0
 
 			this.timewindow = {
 				day: {
@@ -963,14 +964,7 @@ class Calendar {
 				let neweventsdata = this.events
 				let oldeventsdata = JSON.parse(historydata[historydata.length - 1]).events
 				let oldcalendarsdata = JSON.parse(historydata[historydata.length - 1]).calendars
-
-
-				//auto schedule
-				if (smartschedule != false) {
-					if (JSON.stringify(neweventsdata) != JSON.stringify(oldeventsdata)) {
-						startAutoSchedule([])
-					}
-				}
+				let oldtodosdata = JSON.parse(historydata[historydata.length - 1]).todos
 
 
 
@@ -980,10 +974,16 @@ class Calendar {
 					if (!olditem) { //create event
 						item.lastmodified = Date.now()
 					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit event
-						//check for change
-						if (new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() != new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute).getTime() || new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() != new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute).getTime() || item.title != olditem.title || item.notes != olditem.notes || getRecurrenceString(item) != getRecurrenceString(olditem)) {
-							item.lastmodified = Date.now()
-						}
+						item.lastmodified = Date.now()
+					}
+				}
+
+				for (let item of calendar.todos) {
+					let olditem = oldtodosdata.find(d => d.id == item.id)
+					if (!olditem) { //create todo
+						item.lastmodified = Date.now()
+					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit todo
+						item.lastmodified = Date.now()
 					}
 				}
 
@@ -992,8 +992,16 @@ class Calendar {
 					if (!olditem) { //create calendar
 						item.lastmodified = Date.now()
 					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit calendar
-						//check for change
 						item.lastmodified = Date.now()
+					}
+				}
+
+
+
+				//auto schedule
+				if (smartschedule != false) {
+					if (JSON.stringify(neweventsdata) != JSON.stringify(oldeventsdata)) {
+						startAutoSchedule([])
 					}
 				}
 
