@@ -687,6 +687,7 @@ class Calendar {
 			this.calendarid = null
 			this.googleeventid = null
 			this.googlecalendarid = null
+			this.googleclassroomid = null
 			this.title = title
 			this.type = type
 			this.notes = notes
@@ -830,6 +831,7 @@ class Calendar {
 			this.duration = duration
 			this.title = title
 			this.id = generateID()
+			this.googleclassroomid = null
 			this.completed = false
 
 			this.timewindow = {
@@ -5112,10 +5114,47 @@ async function getclientgoogleclassroom(){
 			importgoogleclassroomerror.innerHTML = data.error
 			importgoogleclassroomerror.classList.remove('display-none')
 		}else if(response.status == 200){
-			const data = await response.json()
-			console.log(data.data)
-
 			calendar.lastsyncedgoogleclassroomdate = Date.now()
+
+			const data = await response.json()
+
+			for(let googleitem of data.data){
+				let mytodo = [...calendar.events, ...calendar.todos].find(d => d.googleclassroomid == googleitem.id)
+				if(!mytodo){
+					let endbeforeyear, endbeforemonth, endbeforeday, endbeforeminute;
+					if(googleitem.dueDate){
+						endbeforeyear = googleitem.dueDate.year
+						endbeforemonth = googleitem.dueDate.month
+						endbeforeday = googleitem.dueDate.day
+					}
+					if(googleitem.dueTime){
+						endbeforeminute = googleitem.dueTime.hours * 60 + googleitem.dueTime.minutes
+					}
+
+					let newtodo = new Todo(endbeforeyear, endbeforemonth, endbeforeday, endbeforeminute, 60, googleitem.title)
+					newtodo.id = googleitem.id
+
+					calendar.todos.push(newtodo)
+				}else{
+					if(googleitem.dueDate){
+						mytodo.endbefore.year = googleitem.dueDate.year
+						mytodo.endbefore.month = googleitem.dueDate.month
+						mytodo.endbefore.day = googleitem.dueDate.day
+					}
+					if(googleitem.dueTime){
+						mytodo.endbefore.minute = googleitem.dueTime.hours * 60 + googleitem.dueTime.minutes
+					}
+
+					mytodo.title = googleitem.title
+				}
+
+			}
+
+			
+			calendar.updateEvents()
+			calendar.updateHistory(false, false)
+
+			calendar.updateSettings()
 		}
 	}catch(err){
 		console.log(err)
@@ -7503,7 +7542,8 @@ function gettododata(item) {
 	
 						</div>
 	
-	
+						
+						${item.googlecalendarid == null ? `
 						<div class="gap-6px todoitembuttongroup z-index-1 height-fit justify-flex-end flex-row small:visibility-visible">						
 							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="edittodo('${item.id}');gtag('event', 'button_click', { useraction: 'Edit - task' })">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -7539,6 +7579,7 @@ function gettododata(item) {
 							</div>
 		
 						</div>
+						` : ''}
 			
 			 
 					</div>
