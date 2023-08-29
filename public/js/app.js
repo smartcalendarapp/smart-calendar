@@ -5094,6 +5094,9 @@ function disablesyncgoogleclassroom(){
 	let importgoogleclassroomerror = getElement('importgoogleclassroomerror')
 	importgoogleclassroomerror.classList.add('display-none')
 
+	let loginwithgoogleclassroomscreen = getElement('loginwithgoogleclassroomscreen')
+	loginwithgoogleclassroomscreen.classList.add('hiddenfade')
+
 	calendar.settings.issyncingtogoogleclassroom = false
 	calendar.updateSettings()
 }
@@ -5101,6 +5104,7 @@ function disablesyncgoogleclassroom(){
 
 //get data
 let isgettingclientgoogleclassroom = false
+let hidegoogleclassroomloginpopup = false
 async function getclientgoogleclassroom(){
 	if (!calendar.settings.issyncingtogoogleclassroom) return
 	if (isgettingclientgoogleclassroom) return
@@ -5117,6 +5121,11 @@ async function getclientgoogleclassroom(){
 			const data = await response.json()
 			importgoogleclassroomerror.innerHTML = data.error
 			importgoogleclassroomerror.classList.remove('display-none')
+
+			if(!hidegoogleclassroomloginpopup){
+				let loginwithgoogleclassroomscreen = getElement('loginwithgoogleclassroomscreen')
+				loginwithgoogleclassroomscreen.classList.remove('hiddenfade')
+			}
 		}else if(response.status == 200){
 			calendar.lastsyncedgoogleclassroomdate = Date.now()
 
@@ -5196,6 +5205,12 @@ async function getclientgoogleclassroom(){
 	isgettingclientgoogleclassroom = false
 }
 //here4
+
+function closeloginwithgoogleclassroompopup(){
+	hidegoogleclassroomloginpopup = true
+	let loginwithgoogleclassroomscreen = getElement('loginwithgoogleclassroomscreen')
+	loginwithgoogleclassroomscreen.classList.add('hiddenfade')
+}
 
 
 
