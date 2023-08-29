@@ -2202,7 +2202,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = calendar.events.filter(d => d.type == 1)
+			let mytodos = calendar.events.filter(d => d.type == 1 && !d.completed)
 			let sortedtodos = sortstartdate(mytodos)
 
 
@@ -2244,7 +2244,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = calendar.todos
+			let mytodos = calendar.todos.filter(d => !d.completed)
 
 			let duetodos = sortduedate(mytodos.filter(d => d.endbefore.year != null && d.endbefore.month != null && d.endbefore.day != null && d.endbefore.minute != null))
 			let notduetodos = mytodos.filter(d => d.endbefore.year == null || d.endbefore.month == null || d.endbefore.day == null || d.endbefore.minute == null)
@@ -2300,6 +2300,33 @@ class Calendar {
 					tempoutput2 = []
 				}
 			}
+			
+		}
+
+
+		if(true){
+			let mytodos = [...calendar.todos.filter(d => d.completed), ...calendar.events.filter(d => d.type == 1 && d.completed)]
+
+
+			let tempoutput = []
+			let tempoutput2 = []
+
+			for (let i = 0; i < mytodos.length; i++) {
+				let item = mytodos[i]
+				if (i == 0) {
+					tempoutput.push(`<div class="text-18px text-quaternary">Completed</div>`)
+				}
+				tempoutput2.push(gettododata(item))
+				if (i == mytodos.length - 1) {
+					output.push(`
+					<div class="display-flex flex-column gap-12px">
+						${tempoutput.join('')}
+						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
+					</div>`)
+					tempoutput = []
+					tempoutput2 = []
+				}
+			}
 
 			if(output.length == 0){
 				output.push(`<div class="text-18px text-secondary align-self-center text-center padding-top-192px padding-bottom-192px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
@@ -2311,11 +2338,13 @@ class Calendar {
 			}
 			
 		}
-		
 
+		if(output.length == 0){
+			output.push(`<div class="text-18px text-secondary align-self-center text-center padding-top-192px padding-bottom-192px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
+		}
 
 		let alltodolist = getElement('alltodolist')
-		if(alltodolist.innerHTML != output.join()){
+		if(alltodolist.innerHTML != output.join('')){
 			alltodolist.innerHTML = output.join('')
 		}
 
