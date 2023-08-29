@@ -732,7 +732,7 @@ app.get('/auth/google', async (req, res, next) => {
 	try{
 		const authoptions = {
 			access_type: 'offline',
-			scope: ['profile', 'email','https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/classroom.coursework.students.readonly'],
+			scope: ['profile', 'email','https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/classroom.courses.readonly'],
 			redirect_uri: REDIRECT_URI,
 		}
 
@@ -1539,7 +1539,7 @@ app.post('/getclientgoogleclassroom', async (req, res, next) => {
 			  }
 			}
 		} catch (error) {
-			return res.status(401).json({ error: `An unexpected error occurred, please try again or contact us.` + error })
+			return res.status(401).json({ error: `Cannot access your Google Classroom, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
 		}
 
 		return res.json({ data: allTasks })
