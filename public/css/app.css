@@ -3259,6 +3259,9 @@ body {
 	stroke:var(--white) !important
 }
 
+.whitebackground{
+	background-color: var(--white);
+}
 
 .logopng{
 	display:inline;
