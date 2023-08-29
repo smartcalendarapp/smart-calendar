@@ -732,7 +732,7 @@ app.get('/auth/google', async (req, res, next) => {
 	try{
 		const authoptions = {
 			access_type: 'offline',
-			scope: ['profile', 'email','https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/classroom.courses.readonly'],
+			scope: ['profile', 'email','https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/classroom.courses.readonly', 'https://www.googleapis.com/auth/classroom.coursework.me.readonly'],
 			redirect_uri: REDIRECT_URI,
 		}
 
@@ -1524,25 +1524,25 @@ app.post('/getclientgoogleclassroom', async (req, res, next) => {
 		const classroom = google.classroom({ version: 'v1', auth: googleclient })
 
 
-		let allTasks = []
+		let userToDos = []
 
 		try {
-			const courseRes = await classroom.courses.list()
-			const courses = courseRes.data.courses
-		
-			if (courses && courses.length) {
-			  for (const course of courses) {
-				const courseId = course.id
-				const courseworkRes = await classroom.courses.courseWork.list({ courseId })
-				const tasks = courseworkRes.data.courseWork || [];
-				allTasks = [...allTasks, ...tasks.map(task => ({ courseId, ...task }))]
-			  }
+			const courseRes = await classroom.courses.list();
+			const courses = courseRes.data.courses || [];
+
+			for (const course of courses) {
+				const courseId = course.id;
+				const courseworkRes = await classroom.courses.courseWork.list({ courseId });
+				const courseWorkItems = courseworkRes.data.courseWork || [];
+				
+				const toDos = courseWorkItems.filter(item => item.workType === 'ASSIGNMENT')
+				userToDos = [...userToDos, ...toDos.map(todo => ({ courseId, ...todo }))]
 			}
 		} catch (error) {
 			return res.status(401).json({ error: `Cannot access your Google Classroom, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
 		}
 
-		return res.json({ data: allTasks })
+		return res.json({ data: userToDos })
 
 	} catch (error) {
 		console.error(error)
