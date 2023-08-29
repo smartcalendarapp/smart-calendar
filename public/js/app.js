@@ -5818,9 +5818,11 @@ function getdatafromgooglecalendar(listdata) {
 			let myevent = calendar.events.find(d => d.googleeventid == id)
 			if (myevent) {
 				//check for last modified
+				/*
 				if(myevent.lastmodified > new Date(event.updated).getTime()){
 					continue
 				}
+				*/
 
 				myevent.start.year = startdate.getFullYear()
 				myevent.start.month = startdate.getMonth()
