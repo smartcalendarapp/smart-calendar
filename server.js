@@ -252,7 +252,7 @@ class User{
 }
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
-const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, onboarding: { start: false, connectcalendars: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false }
+const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, onboarding: { start: false, connectcalendars: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false }
 const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null }
 const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, title: null, type: 0, notes: null, completed: false, priority: 0, color: 3, reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0 }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, completed: false, priority: 0, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } } }
@@ -732,7 +732,7 @@ app.get('/auth/google', async (req, res, next) => {
 	try{
 		const authoptions = {
 			access_type: 'offline',
-			scope: ['profile', 'email','https://www.googleapis.com/auth/calendar'],
+			scope: ['profile', 'email','https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/classroom.coursework.students.readonly'],
 			redirect_uri: REDIRECT_URI,
 		}
 
@@ -1177,7 +1177,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 		return res.json({ data: newgooglecalendardata, calendar: smartcalendar })
 	}catch(error){
 		console.error(error)
-	  return res.status(401).json({ error: `Cannot access your Google Calendar, try to <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
+	  return res.status(401).json({ error: `Cannot access your Google Calendar, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
 	}
 })
 */
@@ -1376,7 +1376,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 		return res.json({ data: responsechanges })
 	}catch(error){
 		console.error(error)
-	  return res.status(401).json({ error: `Cannot access your Google Calendar, try to <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
+	  return res.status(401).json({ error: `Cannot access your Google Calendar, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
 	}
 })
 
@@ -1449,7 +1449,7 @@ app.post('/getclientgooglecalendar', async (req, res, next) => {
 		return res.json({ data: googlecalendardata })
 	}catch(error){
 		console.error(error)
-		return res.status(401).json({ error: `Cannot access your Google Calendar, try to <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
+		return res.status(401).json({ error: `Cannot access your Google Calendar, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
 	}
 })
 
@@ -1480,6 +1480,73 @@ app.post('/disconnectgoogle', async (req, res, next) => {
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
+
+app.post('/getclientgoogleclassroom', async (req, res, next) => {
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+
+		const userid = req.session.user.userid
+		const user = await getUserById(userid)
+		if(!user){
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+		if(!user.google_email){
+			return res.status(401).json({ error: 'Google login is not connected, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
+		}
+
+		if(!req.session.tokens && !user.accountdata.refreshtoken) {
+			return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
+		}
+
+		if(!req.session.tokens || !req.session.tokens.access_token){
+			let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
+			if(!accesstoken){
+				return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
+			}
+			req.session.tokens = req.session.tokens || {}
+			req.session.tokens.access_token = accesstoken
+		}
+		if(!req.session.tokens.refresh_token){
+			req.session.tokens.refresh_token = user.accountdata.refreshtoken
+		}
+
+
+		//google calendar
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
+		googleclient.setCredentials(req.session.tokens)
+
+		const classroom = google.classroom({ version: 'v1', auth: googleclient })
+
+
+		let allTasks = []
+
+		try {
+			const courseRes = await classroom.courses.list()
+			const courses = courseRes.data.courses
+		
+			if (courses && courses.length) {
+			  for (const course of courses) {
+				const courseId = course.id
+				const courseworkRes = await classroom.courses.courseWork.list({ courseId })
+				const tasks = courseworkRes.data.courseWork || [];
+				allTasks = [...allTasks, ...tasks.map(task => ({ courseId, ...task }))]
+			  }
+			}
+		} catch (error) {
+			return res.status(401).json({ error: `An unexpected error occurred, please try again or contact us.` })
+		}
+
+		return res.json({ data: allTasks })
+
+	} catch (error) {
+		console.error(error)
+		return res.status(401).json({ error: `Cannot access your Google Classroom, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
 	}
 })
 

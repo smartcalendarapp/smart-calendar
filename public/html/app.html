@@ -1857,8 +1857,7 @@
 										
 										<div class="infogroup">
 											<div class="display-flex justify-space-between flex-row gap-12px align-center">
-												<div class="infotext text-16px text-bold">Sync with Google Calendar</div>
-												<label class="switch">
+												<div class="infotext text-16px text-bold">Sync with <img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png"></img> Google Calendar</div>
 													<input type="checkbox" oninput="togglesyncgooglecalendar(event)" id="syncgooglecalendartoggle">
 													<span class="slider"></span>
 												</label>
@@ -1872,6 +1871,20 @@
 											</div>
 											
 											<div id="importgooglecalendarerror" class="errorwrap display-none"></div>
+										</div>
+
+
+										<div class="infogroup">
+											<div class="display-flex justify-space-between flex-row gap-12px align-center"></div>
+												<div class="infotext text-16px text-bold">Sync to do list with <img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png"></img> Google Classroom</div>
+
+												<label class="switch">
+													<input type="checkbox" oninput="togglesyncgoogleclassroom(event)" id="syncgoogleclassroomtoggle">
+													<span class="slider"></span>
+												</label>
+											</div>
+
+											<div id="importgoogleclassroomerror" class="errorwrap display-none"></div>
 										</div>
 
 										<div class="horizontalbar"></div>
@@ -1903,7 +1916,7 @@
 			
 										<div class="horizontalbar"></div>
 			
-										<div class="infogroup">
+										<div class="infogroup display-none">
 											<div class="infotext text-16px text-bold">Scheduling mode</div>
 											<div class="text-14px text-quaternary">Choose how the app automatically schedules tasks.<br>The app will only schedule tasks you want it to, and events like meetings or appointments will not be touched.</div>
 											<div class="flex-wrap-wrap justify-center display-flex flex-row background-tint-1 border-8px overflow-hidden" id="autoschedulemodes2">
@@ -1990,7 +2003,8 @@
 			
 										<div class="infogroup">
 											<div class="display-flex justify-space-between flex-row gap-12px align-center">
-												<div class="infotext text-16px text-bold">Sync with Google Calendar</div>
+												<div class="infotext text-16px text-bold">Sync with <img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png"></img> Google Calendar</div>
+												<label class="switch">
 												<label class="switch">
 													<input type="checkbox" oninput="togglesyncgooglecalendar(event)" id="syncgooglecalendartoggle2">
 													<span class="slider"></span>

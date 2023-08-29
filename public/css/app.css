@@ -3259,6 +3259,13 @@ body {
 	stroke:var(--white) !important
 }
 
+.logopng{
+	display:inline;
+	height:24px;
+	width:auto;
+	vertical-align:middle;
+}
+
 .eventtextdisplay {
 	font-size: 14px;
 	color: var(--text-primary);

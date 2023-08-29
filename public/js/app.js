@@ -2698,6 +2698,11 @@ class Calendar {
 		}
 
 
+		//sync with google classroom
+		let syncgoogleclassroomtoggle = getElement('syncgoogleclassroomtoggle')
+		syncgoogleclassroomtoggle.checked = calendar.settings.issyncingtogoogleclassroom
+
+
 		//account
 		if (clientinfo) {
 			//google login
@@ -5044,8 +5049,70 @@ function displayalert(title) {
 	})
 }
 
+
+
 //SETTINGS
 
+
+//google classroom code
+
+function togglesyncgoogleclassroom(event){
+	if(event.target.checked){
+		enablesyncgoogleclassroom()
+	}else{
+		disablesyncgoogleclassroom()
+	}
+}
+
+function enablesyncgoogleclassroom(){
+	calendar.settings.issyncingtogoogleclassroom = true
+	calendar.updateSettings()
+	getclientgoogleclassroom()
+}
+
+function disablesyncgoogleclassroom(){
+	let importgoogleclassroomerror = getElement('importgoogleclassroomerror')
+	importgoogleclassroomerror.classList.add('display-none')
+
+	calendar.settings.issyncingtogoogleclassroom = false
+	calendar.updateSettings()
+}
+
+
+//get data
+let isgettingclientgoogleclassroom = false
+async function getclientgoogleclassroom(){
+	if (!calendar.settings.issyncingtogoogleclassroom) return
+	if (isgettingclientgoogleclassroom) return
+
+	isgettingclientgoogleclassroom = true
+
+	try {
+		//request
+		const response = await fetch('/getclientgoogleclassroom', {
+			method: 'POST'
+		})
+
+		if (response.status == 401) {
+			const data = await response.json()
+			importgoogleclassroomerror.innerHTML = data.error
+			importgoogleclassroomerror.classList.remove('display-none')
+		}else if(response.status == 200){
+			const data = await response.json()
+			console.log(data.data)
+		}
+	}catch(err){
+		console.log(err)
+		displayalert('Error, could not sync with Google Classroom')
+	}
+
+	isgettingclientgoogleclassroom = false
+}
+//here4
+
+
+
+//icalendar file code
 
 function getdatafromicalendar(text, subscriptionurl) {
 	function getFrequencyNumber(rrule) {
@@ -5233,6 +5300,9 @@ async function subscribecalendar(url) {
 	}
 }
 
+
+
+//google calendar code
 
 function togglesyncgooglecalendar(event) {
 	let isenabled = event.target.checked
@@ -9771,7 +9841,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 
 
 	//start
-	if (calendar.smartschedule.mode == 0) {
+	if (true || calendar.smartschedule.mode == 0) {
 		//FOCUS
 
 
@@ -9971,29 +10041,31 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 	autoschedulestats.modifiedeventslength = modifiedevents.length
 
 
-	//scroll
+	//scroll to first event
 	let oldcalendaryear = calendaryear
 	let oldcalendarmonth = calendarmonth
 	let oldcalendarday = calendarday
 
 	if (modifiedevents.length > 0) {
-		let firstitem = modifiedevents[0]
-		let firstitemdate = new Date(firstitem.start.year, firstitem.start.month, firstitem.start.day, 0, firstitem.start.minute)
+		let firstitem = calendar.events.find(f => f.id == modifiedevents[0].id)
+		if(firstitem){
+			let firstitemdate = new Date(firstitem.start.year, firstitem.start.month, firstitem.start.day, 0, firstitem.start.minute)
 
-		if(!isNaN(firstitemdate.getTime())){
-			//horizontal
-			calendaryear = firstitemdate.getFullYear()
-			calendarmonth = firstitemdate.getMonth()
-			calendarday = firstitemdate.getDate()
+			if(!isNaN(firstitemdate.getTime())){
+				//horizontal
+				calendaryear = firstitemdate.getFullYear()
+				calendarmonth = firstitemdate.getMonth()
+				calendarday = firstitemdate.getDate()
 
-			//vertical
-			let barcolumncontainer = getElement('barcolumncontainer')
+				//vertical
+				let barcolumncontainer = getElement('barcolumncontainer')
 
-			let target = firstitemdate.getHours() * 60 + firstitemdate.getMinutes()
-			if (oldcalendaryear != calendaryear || oldcalendarmonth != calendarmonth || oldcalendarday != calendarday) {
-				barcolumncontainer.scrollTo(0, target - barcolumncontainer.offsetHeight / 2)
-			}else{
-				scrollcalendarY(target)
+				let target = firstitemdate.getHours() * 60 + firstitemdate.getMinutes()
+				if (oldcalendaryear != calendaryear || oldcalendarmonth != calendarmonth || oldcalendarday != calendarday) {
+					barcolumncontainer.scrollTo(0, target - barcolumncontainer.offsetHeight / 2)
+				}else{
+					scrollcalendarY(target)
+				}
 			}
 		}
 	}
