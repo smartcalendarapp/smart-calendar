@@ -1595,6 +1595,8 @@ class Calendar {
 	}
 
 	updateInfo(updateStructure, showinfo) {
+		updateitemreminders()
+
 		requestAnimationFrame(function () {
 			let eventinfo = getElement('eventinfo')
 			let item = calendar.events.find(c => c.id == selectedeventid)
@@ -2105,7 +2107,6 @@ class Calendar {
 				editinfo = false
 			}
 
-			updateitemreminders()
 		})
 	}
 
@@ -4003,7 +4004,7 @@ function openleftmenu(event) {
 function updateAvatar(){
 	let displayname = clientinfo.google_email ? cleanInput(clientinfo.google.name || clientinfo.google_email) : clientinfo.username
 	
-	let avatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : '<img class="border-round avatarimage whitebackground" src="https://static.vecteezy.com/system/resources/previews/021/079/672/original/user-account-icon-for-your-design-only-free-png.png"></img>'}` : ``
+	let avatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : '<img class="border-round avatarimage whitebackground" src="https://static.vecteezy.com/system/resources/previews/021/079/672/original/user-account-icon-for-your-design-only-free-png.png"></img>'}` : '<img class="border-round avatarimage whitebackground" src="https://static.vecteezy.com/system/resources/previews/021/079/672/original/user-account-icon-for-your-design-only-free-png.png"></img>'
 	
 	let leftmenubutton = getElement('leftmenubutton')
 	leftmenubutton.innerHTML = `
@@ -5795,6 +5796,10 @@ function getdatafromgooglecalendar(listdata) {
 			let myevent = calendar.events.find(d => d.googleeventid == id)
 			if (myevent) {
 				//check for last modified
+				if(myevent.lastmodified > new Date(event.updated).getTime()){
+					continue
+				}
+
 				myevent.start.year = startdate.getFullYear()
 				myevent.start.month = startdate.getMonth()
 				myevent.start.day = startdate.getDate()
@@ -9004,7 +9009,6 @@ function remindme(option) {
 	} else {
 		item.reminder.push({ timebefore: reminderlist[option] })
 	}
-	updateitemreminders()
 	calendar.updateInfo()
 }
 
