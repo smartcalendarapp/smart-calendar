@@ -2370,6 +2370,7 @@ body {
 
 .addtaskplaceholder::placeholder{
 	color: var(--text-secondary) !important;
+	white-space:nowrap;
 }
 .addtaskbackground{
 	background-color:var(--background-primary) !important;
