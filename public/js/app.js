@@ -833,6 +833,7 @@ class Calendar {
 			this.id = generateID()
 			this.googleclassroomid = null
 			this.completed = false
+			this.reminder = [{ timebefore: 0 }]
 
 			this.timewindow = {
 				day: {
@@ -5251,7 +5252,7 @@ async function getclientgoogleclassroom(){
 
 	isgettingclientgoogleclassroom = false
 }
-//here4
+
 
 function closeloginwithgoogleclassroompopup(){
 	hidegoogleclassroomloginpopup = true
