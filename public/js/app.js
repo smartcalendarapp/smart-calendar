@@ -2709,10 +2709,10 @@ class Calendar {
 		syncgoogleclassroomtoggle.checked = calendar.settings.issyncingtogoogleclassroom
 
 		let lastsyncedgoogleclassroom = getElement('lastsyncedgoogleclassroom')
-		let synnowcgoogleclassroom = getElement('synnowcgoogleclassroom')
+		let syncnowgoogleclassroombutton = getElement('syncnowgoogleclassroom')
 
 		lastsyncedgoogleclassroom.classList.add('display-none')
-		synnowcgoogleclassroom.classList.add('display-none')
+		syncnowgoogleclassroombutton.classList.add('display-none')
 
 		if(calendar.settings.issyncingtogoogleclassroom){
 
@@ -2723,7 +2723,7 @@ class Calendar {
 			let issynced = calendar.lastsyncedgoogleclassroomdate && Math.floor((currentdate.getTime() - calendar.lastsyncedgoogleclassroomdate) / 60000) <= 1
 
 			if(!issynced){
-				synnowcgoogleclassroom.classList.remove('display-none')
+				syncnowgoogleclassroombutton.classList.remove('display-none')
 			}
 
 			let difference;
