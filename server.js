@@ -933,6 +933,72 @@ app.get('/auth/google/callback', async (req, res, next) => {
 	}
 })
 
+app.post('/auth/google/callback', async (req, res, next) => {
+	try{
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
+		const { tokens } = await googleclient.getToken(req.query.code)
+		googleclient.setCredentials(tokens)
+		const { data } = await googleclient.request({
+			url: 'https://people.googleapis.com/v1/people/me',
+			params: {
+		    personFields: 'emailAddresses,names,photos'
+		  }
+		})
+
+		let email = data.emailAddresses[0].value
+		let name = data.names[0].displayName
+		let profilepicture = data.photos[0].url
+
+		let user = await getUserByAttribute(email)
+		if(user){
+			if(user.google_email == email){
+				req.session.user = { userid: user.userid }
+				req.session.tokens = tokens
+
+				user.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
+				user.accountdata.google.name = name
+				user.accountdata.google.profilepicture = profilepicture
+				user.accountdata.lastloggedindate = Date.now()
+				await setUser(user)
+			}else{
+				throw new Error('Google email is linked to another account')
+			}
+		}else{
+			let user2 = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
+			if(user2){
+				req.session.user = { userid: user2.userid }
+				req.session.tokens = tokens
+				
+				user2.google_email = email
+				user2.calendardata.settings.issyncingtogooglecalendar = true
+				user2.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
+				user2.accountdata.google.name = name
+				user2.accountdata.google.profilepicture = profilepicture
+				user2.accountdata.lastloggedindate = Date.now()
+				await setUser(user2)
+			}else{
+				const user3 = addmissingpropertiestouser(new User({ username: email, google_email: email }))
+				user3.calendardata.settings.issyncingtogooglecalendar = true
+				user3.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
+				user3.accountdata.google.name = name
+				user3.accountdata.google.profilepicture = profilepicture
+				user3.accountdata.lastloggedindate = Date.now()
+				await createUser(user3)
+
+				req.session.user = { userid: user3.userid }
+				req.session.tokens = tokens
+
+				await sendwelcomeemail(user3)
+			}
+		}
+
+		res.redirect(301, '/app')
+	}catch(error){
+		console.error(error)
+		res.redirect(301, '/login')
+	}
+})
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'home.html'))
 })

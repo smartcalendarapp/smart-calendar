@@ -50,6 +50,9 @@
 			
 		}
 	</script>
+
+	<!-- Google one tap login -->
+	<script async defer src="https://accounts.google.com/gsi/client"></script>
 </head>
 
 <!-- Google tag (gtag.js) -->
@@ -68,6 +71,14 @@
 	
 
 <body>
+	<div
+		id="g_id_onload"
+		data-client_id="469742766371-epr4i5o29h0gajtb8cp765qj49b2b9q4.apps.googleusercontent.com"
+		data-login_uri="https://smartcalendar.us/auth/google/callback"
+		data-prompt_parent_id="g_id_onload"
+		style="position: absolute; top: 100px; right: 30px; z-index: 99999;">
+	</div>
+
 	<div class="absolute padding-24px gap-12px bottom-0 right-0 display-flex flex-column align-center justify-flex-end z-index-2000 pointer-none border-box overflow-hidden" id="allalerts">
 	</div>
 
