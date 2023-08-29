@@ -370,11 +370,21 @@ async function processReminders(){
 		//push notifications
 		if(item.pushSubscriptionEnabled){
 			if(item.pushSubscription){
-				try{
-					let difference = Math.floor((Date.now() - new Date(item.event.start).getTime())/60000)
-					await webpush.sendNotification(item.pushSubscription, `REMINDER: ${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`)
-				}catch(error){
-					console.error(error)
+				if(item.type == 'event'){
+					try{
+						let difference = Math.floor((Date.now() - new Date(item.event.start).getTime())/60000)
+						await webpush.sendNotification(item.pushSubscription, `REMINDER: ${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`)
+						await webpush.sendNotification(item.pushSubscription, JSON.stringify({ title: 'SMART CALENDAR REMINDER', message: `${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`, icon: `https://smartcalendar.us/images/logo.png`, url: 'https://smartcalendar.us/app' }))
+					}catch(error){
+						console.error(error)
+					}
+				}else if (item.type == 'task'){
+					try{
+						let difference = Math.floor((Date.now() - new Date(item.event.duedate).getTime())/60000)
+						await webpush.sendNotification(item.pushSubscription, `REMINDER: ${item.event.title || "New Task"} (${getFullRelativeDHMText(difference)})`)
+					}catch(error){
+						console.error(error)
+					}
 				}
 			}
 		}

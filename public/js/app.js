@@ -7604,36 +7604,34 @@ function gettododata(item) {
 	
 								</div>
 				
-								${!item.completed ? `
-									<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
-					
-										${!Calendar.Event.isEvent(item) ? 
-											`<div class="gap-6px pointer-auto pointer display-flex transition-duration-100 flex-row align-center width-fit todoitemtext badgepadding ${!endbeforedate ? `background-tint-1 hover:background-tint-2` : (isoverdue ? `background-red hover:background-red-hover` : `background-blue hover:background-blue-hover`)} border-round nowrap popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduedate(event, '${item.id}')">
-												<div class="pointer-none ${!endbeforedate ? 'text-primary' : (isoverdue ? 'text-white' : 'text-white')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}</div>
-											</div>`
-											: ''
-										}
-										
-										${Calendar.Event.isEvent(item) ? 
-											`<div class="gap-6px background-green hover:background-green-hover transition-duration-100 badgepadding border-round display-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}">
-												<div class="text-white ${itemclasses.join(' ')}">Scheduled for ${getHMText(item.start.minute)}</div>
-											</div>`
-											:
-											``
-										}
-			
-										${Calendar.Event.isEvent(item) ? `` : 
-											`<div class="width-fit background-green transition-duration-100 hover:background-green-hover badgepadding border-round todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-white transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
-												Takes ${getDHMText(myduration)}
-											</div>`
-										}
+								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
+				
+									${!Calendar.Event.isEvent(item) ? 
+										`<div class="gap-6px pointer-auto pointer display-flex transition-duration-100 flex-row align-center width-fit todoitemtext badgepadding ${!endbeforedate ? `background-tint-1 hover:background-tint-2` : (isoverdue ? `background-red hover:background-red-hover` : `background-blue hover:background-blue-hover`)} border-round nowrap popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduedate(event, '${item.id}')">
+											<div class="pointer-none ${!endbeforedate ? 'text-primary' : (isoverdue ? 'text-white' : 'text-white')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}</div>
+										</div>`
+										: ''
+									}
+									
+									${Calendar.Event.isEvent(item) ? 
+										`<div class="gap-6px background-green hover:background-green-hover transition-duration-100 badgepadding border-round display-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}">
+											<div class="text-white ${itemclasses.join(' ')}">Scheduled for ${getHMText(item.start.minute)}</div>
+										</div>`
+										:
+										``
+									}
 		
-										<div class="text-14px badgepadding border-round nowrap pointer-auto transition-duration-100 pointer popupbutton transition-duration-100 ${['background-tint-1 text-primary hover:background-tint-2 visibility-hidden hoverpriority small:visibility-visible', 'background-orange hover:background-orange-hover text-white', 'background-red hover:background-red-hover text-white'][item.priority]} ${itemclasses.join(' ')}" onclick="clicktodoitempriority(event, '${item.id}')">
-											${['Low', 'Medium', 'High'][item.priority]} priority
-										</div>
-		
+									${Calendar.Event.isEvent(item) ? `` : 
+										`<div class="width-fit background-green transition-duration-100 hover:background-green-hover badgepadding border-round todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-white transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
+											Takes ${getDHMText(myduration)}
+										</div>`
+									}
+	
+									<div class="text-14px badgepadding border-round nowrap pointer-auto transition-duration-100 pointer popupbutton transition-duration-100 ${['background-tint-1 text-primary hover:background-tint-2 visibility-hidden hoverpriority small:visibility-visible', 'background-orange hover:background-orange-hover text-white', 'background-red hover:background-red-hover text-white'][item.priority]} ${itemclasses.join(' ')}" onclick="clicktodoitempriority(event, '${item.id}')">
+										${['Low', 'Medium', 'High'][item.priority]} priority
 									</div>
-								` : ''}
+	
+								</div>
 
 							</div>
 					
