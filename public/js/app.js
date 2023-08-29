@@ -5131,7 +5131,7 @@ async function getclientgoogleclassroom(){
 						endbeforeminute = googleitem.dueTime.hours * 60 + googleitem.dueTime.minutes
 					}
 
-					let newtodo = new Todo(endbeforeyear, endbeforemonth, endbeforeday, endbeforeminute, 60, googleitem.title)
+					let newtodo = new Calendar.Todo(endbeforeyear, endbeforemonth, endbeforeday, endbeforeminute, 60, googleitem.title)
 					newtodo.id = googleitem.id
 
 					calendar.todos.push(newtodo)
