@@ -3260,13 +3260,6 @@ body {
 }
 
 
-.hiddenright{
-	visibility:hidden;
-	transform:translateX(50%);
-	transition:all 0.2s;
-	opacity:0;
-}
-
 .logopng{
 	display:inline;
 	height:24px;

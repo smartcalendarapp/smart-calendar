@@ -3612,9 +3612,9 @@ function updateonboardingscreen(){
 	function updatescreen(key, boolean){
 		let tempdiv = getElement(`onboarding${key}`)
 		if(boolean){
-			tempdiv.classList.remove('hiddenright')
+			tempdiv.classList.remove('hiddenfade')
 		}else{
-			tempdiv.classList.add('hiddenright')
+			tempdiv.classList.add('hiddenfade')
 		}
 	}
 
