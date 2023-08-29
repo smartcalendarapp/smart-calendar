@@ -1539,7 +1539,7 @@ app.post('/getclientgoogleclassroom', async (req, res, next) => {
 			  }
 			}
 		} catch (error) {
-			return res.status(401).json({ error: `An unexpected error occurred, please try again or contact us.` })
+			return res.status(401).json({ error: `An unexpected error occurred, please try again or contact us.` + error })
 		}
 
 		return res.json({ data: allTasks })
