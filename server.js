@@ -2056,41 +2056,6 @@ app.post('/setclientdata', async (req, res, next) => {
 
 		let calendardata = req.body.calendardata
 
-
-		//compare last modified
-		for(let index = 0; index < calendardata.events.length; index++){
-			let item = calendardata.events[index]
-
-			let clouditem = user.calendardata.events.find(d => d.id == item.id)
-			if(!clouditem) continue
-
-			if(clouditem.lastmodified > item.lastmodified){
-				calendardata.events[index] = clouditem
-			}
-		}
-		for(let index = 0; index < calendardata.todos.length; index++){
-			let item = calendardata.todos[index]
-
-			let clouditem = user.calendardata.todos.find(d => d.id == item.id)
-			if(!clouditem) continue
-
-			if(clouditem.lastmodified > item.lastmodified){
-				calendardata.todos[index] = clouditem
-			}
-		}
-		for(let index = 0; index < calendardata.calendars.length; index++){
-			let item = calendardata.calendars[index]
-
-			let clouditem = user.calendardata.calendars.find(d => d.id == item.id)
-			if(!clouditem) continue
-
-			if(clouditem.lastmodified > item.lastmodified){
-				calendardata.calendars[index] = clouditem
-			}
-		}
-
-
-		//set data
 		user.calendardata = calendardata
 		
 		cacheReminders(user)
