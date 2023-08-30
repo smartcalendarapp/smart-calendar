@@ -897,13 +897,16 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			}
 		})
 
-		const { data2 } = await googleclient.request({
-			url: 'https://www.googleapis.com/oauth2/v3/userinfo',
+		//get sub
+		const idtoken = tokens.id_token
+		const ticket = await googleClient.verifyIdToken({
+			idToken: idtoken,
+			audience: GOOGLE_CLIENT_ID,
 		})
-		console.warn(data2)
+		const payload = ticket.getPayload()
+		const googleid = payload['sub']
 
-		const googleid = data2.sub
-		
+		//get details
 		const email = data.emailAddresses[0].value
 		const name = data.names[0].displayName
 		const profilepicture = data.photos[0].url
@@ -968,11 +971,11 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 
 		const tokens = { id_token: req.body.token }
 
+		//get sub
 		const ticket = await googleclient.verifyIdToken({
 			idToken: tokens.id_token,
 			audience: GOOGLE_CLIENT_ID,
 		})
-
 		const payload = ticket.getPayload()
 		const googleid = payload['sub']
 
