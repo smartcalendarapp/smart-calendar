@@ -3763,7 +3763,7 @@ input:checked+.slider:before {
 
 .backgroundprimarysync{
 	transition:none !important;
-	background-color:#ffffff;
+	background-color:#ffffff !important;
 }
 .textprimarysync{
 	transition:none !important;
@@ -3771,7 +3771,7 @@ input:checked+.slider:before {
 }
 @media (prefers-color-scheme: dark) {
 	.backgroundprimarysync{
-		background-color:#202124;
+		background-color:#202124 !important;
 	}
 	.textprimarysync{
 		color:#ffffff !important;
