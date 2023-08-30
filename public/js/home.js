@@ -83,7 +83,9 @@ async function getclientinfo() {
 		let navbuttonsloggedin = getElement('navbuttonsloggedin')
 
 		navbuttonsloggedin.classList.remove('display-none')
-		navbuttonsloggedin.classList.add('display-none')
+		navbuttonsloggedout.classList.add('display-none')
+
+		google.accounts.id.cancel()
 	} else if (response2.status == 401) {
 	} else {
 		return setTimeout(function () {
