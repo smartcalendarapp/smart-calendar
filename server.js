@@ -778,6 +778,7 @@ const { OAuth2Client } = require('google-auth-library')
 const express = require('express')
 const session = require('express-session')
 const app = express()
+
 const DynamoDBStore = require('dynamodb-store')
 const { Hash } = require('crypto')
 const dynamostore = new DynamoDBStore({
@@ -898,7 +899,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			}
 		})
 
-		//get sub
+		//get googleid
 		const ticket = await googleclient.verifyIdToken({
 			idToken: tokens.id_token,
 			audience: GOOGLE_CLIENT_ID,
@@ -966,9 +967,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 
 app.post('/auth/google/onetap', async (req, res, next) => {
 	try{
-		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
-		
-		//get sub
+		//get googleid
 		const token = req.body
 		const decodedtoken = jwt.decode(token, {complete: true})
 		const googleid = decodedtoken.payload.sub
