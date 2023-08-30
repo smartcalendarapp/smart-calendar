@@ -711,7 +711,7 @@ function cacheReminders(user){
 	}
 	
 	reminderscache[user.userid] = tempreminders
-	if(user.google_email == 'james.tsaggaris@gmail.com')console.log(tempreminders)
+	if(user.google_email == 'james.tsaggaris@gmail.com')console.warn(tempreminders)
 }
 
 
