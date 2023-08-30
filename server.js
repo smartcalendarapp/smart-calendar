@@ -971,7 +971,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 		//get sub
 		const token = req.body
 		const decodedtoken = jwt.decode(token, {complete: true})
-		const googleid = decodedToken.payload.sub
+		const googleid = decodedtoken.payload.sub
 		
 		let user = getUserByGoogleId(googleid)
 		if(user){
