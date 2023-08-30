@@ -4079,6 +4079,10 @@ if ('matchMedia' in window) {
 
 settheme(getStorage('theme') || devicetheme)
 
+setTimeout(function(){
+	document.documentElement.classList.remove('disabletransition')
+},300)
+
 function changedevicetheme(event) {
 	if (event.matches) {
 		devicetheme = 'dark'

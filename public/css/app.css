@@ -3760,3 +3760,7 @@ input:focus+.slider {
 input:checked+.slider:before {
 	transform: translateX(18px);
 }
+
+.disabletransition * {
+    transition: none !important;
+}
