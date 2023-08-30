@@ -976,12 +976,11 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 		})
 		const payload = ticket.getPayload()
 		const googleid = payload.sub
-		console.warn(payload)
 		
 		let user = getUserByGoogleId(googleid)
 		if(user){
 			req.session.user = { userid: user.userid }
-			return res.end()
+			return res.redirect(301, '/app')
 		}
 
 		res.redirect(301, '/login')
