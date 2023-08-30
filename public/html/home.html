@@ -109,8 +109,13 @@
 					
 					<div class="display-flex flex-row gap-12px small:display-none">
 						<a href="../contact" class="navbutton small:display-none">Contact</a>
-						<a href="../login" class="navbutton">Log in</a>
-						<a href="../signup" class="navbuttonblue">Sign up</a>
+						<div class="display-glex flex-row gap-12px" id="navbuttonsloggedout">
+							<a href="../login" class="navbutton">Log in</a>
+							<a href="../signup" class="navbuttonblue">Sign up</a>
+						</div>
+						<div class="display-glex flex-row gap-12px display-none" id="navbuttonsloggedin">
+							<a href="../app" class="navbuttonblue">Open app</a>
+						</div>
 					</div>
 				</div>
 			</div>

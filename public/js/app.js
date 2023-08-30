@@ -4965,7 +4965,7 @@ function opendeleteaccount(event) {
 	let deleteaccountmenu = getElement('deleteaccountmenu')
 	deleteaccountmenu.classList.toggle('hiddenpopup')
 
-	deleteaccountmenu.style.top = (button.getBoundingClientRect().top + button.offsetHeight) + 'px'
+	deleteaccountmenu.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, deleteaccountmenu) + 'px'
 	deleteaccountmenu.style.left = fixleft(button.getBoundingClientRect().left, deleteaccountmenu) + 'px'
 
 	let form = getElement('deleteaccountform')

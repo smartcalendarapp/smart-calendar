@@ -63,7 +63,35 @@ function draw() {
 draw()
 
 
+//check for logged in user
+let clientinfo;
+async function getclientinfo() {
+	const response2 = await fetch('/getclientinfo', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			timezoneoffset: new Date().getTimezoneOffset()
+		})
+	}).catch(e => e)
+	if (response2.status == 200) {
+		const data = await response2.json()
+		clientinfo = data.data
 
+		let navbuttonsloggedout = getElement('navbuttonsloggedout')
+		let navbuttonsloggedin = getElement('navbuttonsloggedin')
+
+		navbuttonsloggedin.classList.remove('display-none')
+		navbuttonsloggedin.classList.add('display-none')
+	} else if (response2.status == 401) {
+	} else {
+		return setTimeout(function () {
+			getclientinfo()
+		}, 3000)
+	}
+}
+getclientinfo()
 
 
 /*
