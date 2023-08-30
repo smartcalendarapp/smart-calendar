@@ -899,7 +899,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 
 		//get sub
 		const idtoken = tokens.id_token
-		const ticket = await googleClient.verifyIdToken({
+		const ticket = await googleclient.verifyIdToken({
 			idToken: idtoken,
 			audience: GOOGLE_CLIENT_ID,
 		})
