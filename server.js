@@ -1009,6 +1009,7 @@ app.get('/home', (req, res) => {
 
 app.get('/login', (req, res, next) => {
   if (req.session.user && req.session.user.userid) {
+	console.info(req.session.user.userid)
 		res.redirect(301, '/app')
   } else{
 		next()
