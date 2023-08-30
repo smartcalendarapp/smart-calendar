@@ -469,7 +469,7 @@ async function processReminders(){
 					(c) 2023 James Tsaggaris. All rights reserved.`
 				})
 
-			}else if(type == 'task'){
+			}else if(item.type == 'task'){
 
 				await sendEmail({
 					from: 'Smart Calendar <reminders@smartcalendar.us>',
@@ -711,7 +711,6 @@ function cacheReminders(user){
 	}
 	
 	reminderscache[user.userid] = tempreminders
-	if(user.google_email == 'james.tsaggaris@gmail.com')console.warn(tempreminders)
 }
 
 
