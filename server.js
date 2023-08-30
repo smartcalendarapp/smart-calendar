@@ -968,7 +968,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 app.post('/auth/google/onetap', async (req, res, next) => {
 	try{
 		//get googleid
-		const jsontoken = req.body
+		const jsontoken = req.body.credential
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
 		const ticket = await googleclient.verifyIdToken({
 			idToken: jsontoken,
