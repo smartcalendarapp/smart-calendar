@@ -3760,6 +3760,7 @@ input:focus+.slider {
 input:checked+.slider:before {
 	transform: translateX(18px);
 }
+<<<<<<< HEAD
 
 .backgroundprimarysync{
 	transition:none !important;
@@ -3777,3 +3778,5 @@ input:checked+.slider:before {
 		color:#ffffff !important;
 	}
 }
+=======
+>>>>>>> a14a02049545333720cbee2672c92f57b7d90940
