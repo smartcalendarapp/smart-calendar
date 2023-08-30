@@ -3765,8 +3765,15 @@ input:checked+.slider:before {
 	transition:none !important;
 	background-color:#ffffff;
 }
+.textprimarysync{
+	transition:none !important;
+	color:#000000 !important;
+}
 @media (prefers-color-scheme: dark) {
 	.backgroundprimarysync{
 		background-color:#202124;
+	}
+	.textprimarysync{
+		color:#ffffff !important;
 	}
 }
