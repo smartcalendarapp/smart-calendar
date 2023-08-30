@@ -901,7 +901,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			url: 'https://www.googleapis.com/oauth2/v3/userinfo',
 		})
 
-		const googleid = data.sub
+		const googleid = data2.sub
 		
 		const email = data.emailAddresses[0].value
 		const name = data.names[0].displayName
@@ -964,28 +964,28 @@ app.get('/auth/google/callback', async (req, res, next) => {
 app.post('/auth/google/onetap', async (req, res, next) => {
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
-		
-		const { tokens } = await googleclient.getToken(req.query.code)
-		googleclient.setCredentials(tokens)
+
+		const tokens = { id_token: req.body.token }
 
 		const ticket = await googleclient.verifyIdToken({
 			idToken: tokens.id_token,
 			audience: GOOGLE_CLIENT_ID,
-		});
+		})
 
 		const payload = ticket.getPayload()
-
 		const googleid = payload['sub']
 
 		let user = getUserByGoogleId(googleid)
 		if(user){
 			req.session.user = { userid: user.userid }
-		}		
-				
-		res.redirect(301, '/app')
+
+			return res.redirect(301, '/app')
+		}
+
+		res.redirect('/auth/google')
 	}catch(error){
 		console.error(error)
-		res.redirect(301, '/auth/google')
+		res.redirect('/auth/google')
 	}
 })
 
