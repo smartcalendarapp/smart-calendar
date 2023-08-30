@@ -2985,15 +2985,19 @@ if ('matchMedia' in window) {
 function changedevicescreen(event){
 	if(event.matches){
 		smallscreen = true
+
+		if (calendarmode == 1) {
+			calendarmode = 0
+		}
+		if(calendartabs.includes(0) && calendartabs.includes(1)){
+			calendartabs = [0]
+		}
 	}else{
 		smallscreen = false
-	}
 
-	if (calendarmode == 1) {
-		calendarmode = 0
-	}
-	if(calendartabs.includes(0) && calendartabs.includes(1)){
-		calendartabs = [0]
+		if(calendartabs.includes(0) || calendartabs.includes(1)){
+			calendartabs = [0, 1]
+		}
 	}
 	calendar.updateTabs()
 }
