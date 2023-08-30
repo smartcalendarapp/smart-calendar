@@ -687,6 +687,8 @@ function cacheReminders(user){
 	}
 
 	for(let item of user.calendardata.todos){
+		if(item.completed) continue
+
 		for(let itemreminder of item.reminder){
 			tempreminders.push({
 				type: 'task',
@@ -895,7 +897,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		const { data } = await googleclient.request({
 			url: 'https://people.googleapis.com/v1/people/me',
 			params: {
-				personFields: 'emailAddresses,names,photos,metadata'
+				personFields: 'emailAddresses,names,photos'
 			}
 		})
 

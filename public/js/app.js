@@ -417,7 +417,9 @@ function getDuration(string) {
 
 	}
 
-	myduration = Math.floor(myduration)
+	if(myduration != null){
+		myduration = Math.floor(myduration)
+	}
 
 	return { value: myduration, match: match }
 }
@@ -3321,7 +3323,6 @@ function run() {
 		}
 		
 		window.removeEventListener('mousedown', clickforpushnotif, false)
-		('mousedown')
 		window.removeEventListener('touchstart', clickforpushnotif, false)
 	}
 
@@ -11988,7 +11989,7 @@ function moveeventtop(event) {
 async function removePushNotifs() {
 	const existing = await navigator.serviceWorker.getRegistration()
 	if (existing) {
-		console.log("Updating Service Worker...")
+		console.log("Unregistering from push notifications...")
 		existing.unregister()
 	}
 }
@@ -11997,7 +11998,7 @@ let subscription;
 async function enablePushNotifs() {
 	const Notifications = await import("/notifications.mjs")
 	if (!Notifications.pushNotificationsSupported()) return
-	console.log("Setting up Push Notifications...")
+	console.log("Registering for push notifications...")
 
 	// to make sure duplicates don't exist, remove existing SW
 	await Notifications.requestPermission()
