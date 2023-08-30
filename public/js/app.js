@@ -5196,6 +5196,34 @@ function displayalert(title) {
 //SETTINGS
 
 
+//break per hour
+function inputsettingseventspacing(event){
+	let string = event.target.value.toLowerCase()
+	let myduration = getDuration(string).value
+  
+	if(myduration < 0){
+		myduration = 0
+	}
+
+	if(myduration > 60){
+		myduration = 60
+	}
+
+	if (myduration != null){
+	  calendar.settings.eventspacing = myduration
+	}
+	calendar.updateSettings()
+	calendar.updateHistory()
+  }
+  
+  function clicksettingstheme(theme){
+	  calendar.settings.theme = theme
+	calendar.updateSettings()
+	  updatetheme()
+  }
+
+  
+
 //google classroom code
 
 function togglesyncgoogleclassroom(event){
@@ -9857,8 +9885,9 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 
 
 	function getbreaktime(item) {
+		let eventspacingratio = calendar.settings.eventspacing / 60
 		let duration = (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
-		return Math.min(Math.max(round(duration * 0.25, 60000 * 5), 60000 * 5), 60 * 60000)
+		return Math.min(Math.max(round(duration * eventspacingratio, 60000 * 5), 60000 * 5), 60 * 60000)
 		
 
 		/*
