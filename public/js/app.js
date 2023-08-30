@@ -3298,10 +3298,9 @@ function updatetime() {
 
 
 function run() {
-	google.accounts.id.disableAutoSelect()
-
-	
 	//ONCE
+
+	hideloginpopup()
 
 	//theme
 	updatetheme()
@@ -5126,11 +5125,15 @@ function showloginpopup() {
 	let loginpopup = getElement('loginpopup')
 	loginpopup.classList.remove('hiddenfade')
 
+	//show one tap popup
 	google.accounts.id.prompt()
 }
 function hideloginpopup() {
 	let loginpopup = getElement('loginpopup')
 	loginpopup.classList.add('hiddenfade')
+
+	//hide one tap popup
+	google.accounts.id.cancel()
 }
 
 
