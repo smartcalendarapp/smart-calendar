@@ -898,18 +898,12 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		})
 
 		//get sub
-		const idtoken = tokens.id_token
 		const ticket = await googleclient.verifyIdToken({
-			idToken: idtoken,
+			idToken: tokens.id_token,
 			audience: GOOGLE_CLIENT_ID,
 		})
 		const payload = ticket.getPayload()
 		const googleid = payload['sub']
-		try{
-		throw new Error(googleid+'')
-		}catch(e){
-
-		}
 
 		//get details
 		const email = data.emailAddresses[0].value
@@ -928,7 +922,6 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				user.accountdata.google.profilepicture = profilepicture
 				user.accountdata.lastloggedindate = Date.now()
 				user.googleid = googleid
-				console.warn(user.googleid)
 				await setUser(user)
 			}else{
 				throw new Error('Google email is linked to another account')
@@ -974,9 +967,9 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
 
-		const tokens = { id_token: req.body.token }
-
+		console.warn(req.body)
 		//get sub
+		const tokens = { id_token: req.body.token }
 		const ticket = await googleclient.verifyIdToken({
 			idToken: tokens.id_token,
 			audience: GOOGLE_CLIENT_ID,
@@ -987,14 +980,13 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 		let user = getUserByGoogleId(googleid)
 		if(user){
 			req.session.user = { userid: user.userid }
-
 			return res.redirect(301, '/app')
 		}
 
-		res.redirect('/auth/google')
+		res.redirect(301, '/login')
 	}catch(error){
 		console.error(error)
-		res.redirect('/auth/google')
+		res.redirect(301, '/login')
 	}
 })
 
