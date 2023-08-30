@@ -976,14 +976,53 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 		})
 		const payload = ticket.getPayload()
 		const googleid = payload.sub
-		
+
+		//get other data
+		const email = payload.email
+		const name = payload.name
+		const profilepicture = payload.picture
+
+
 		let user = await getUserByGoogleId(googleid)
 		if(user){
-			req.session.user = { userid: user.userid }
-			return res.redirect(301, '/app')
+			if(user.google_email == email){
+				req.session.user = { userid: user.userid }
+
+				user.accountdata.google.name = name
+				user.accountdata.google.profilepicture = profilepicture
+				user.accountdata.lastloggedindate = Date.now()
+				user.googleid = googleid
+				await setUser(user)
+			}else{
+				throw new Error('Google email is linked to another account')
+			}
+		}else{
+			let user2 = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
+			if(user2){
+				req.session.user = { userid: user2.userid }
+				
+				user2.google_email = email
+				user2.calendardata.settings.issyncingtogooglecalendar = true
+				user2.accountdata.google.name = name
+				user2.accountdata.google.profilepicture = profilepicture
+				user2.accountdata.lastloggedindate = Date.now()
+				user2.googleid = googleid
+				await setUser(user2)
+			}else{
+				const user3 = addmissingpropertiestouser(new User({ username: email, google_email: email, googleid: googleid }))
+				user3.calendardata.settings.issyncingtogooglecalendar = true
+				user3.accountdata.google.name = name
+				user3.accountdata.google.profilepicture = profilepicture
+				user3.accountdata.lastloggedindate = Date.now()
+				await createUser(user3)
+
+				req.session.user = { userid: user3.userid }
+
+				await sendwelcomeemail(user3)
+			}
 		}
 
-		res.redirect(301, '/login')
+		res.redirect(301, '/app')
 	}catch(error){
 		console.error(error)
 		res.redirect(301, '/login')
