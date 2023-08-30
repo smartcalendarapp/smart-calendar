@@ -85,6 +85,7 @@ async function getclientinfo() {
 		navbuttonsloggedin.classList.remove('display-none')
 		navbuttonsloggedout.classList.add('display-none')
 
+		//close one tap popup
 		google.accounts.id.cancel()
 	} else if (response2.status == 401) {
 	} else {
