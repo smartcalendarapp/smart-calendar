@@ -86,12 +86,9 @@ async function getclientinfo() {
 		navbuttonsloggedout.classList.add('display-none')
 
 		//close one tap popup
-		let checkReady = setInterval(() => {
-			if (typeof google.accounts.id.cancel === 'function') {
-			  clearInterval(checkReady);
-			  google.accounts.id.cancel();
-			}
-		  }, 100);
+		setInterval(() => {
+			google.accounts.id.cancel()
+		}, 100)
 	} else if (response2.status == 401) {
 	} else {
 		return setTimeout(function () {
