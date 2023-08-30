@@ -5122,10 +5122,16 @@ function hideloadingscreen() {
 function showloginpopup() {
 	let loginpopup = getElement('loginpopup')
 	loginpopup.classList.remove('hiddenfade')
+
+	let g_id_onload = getElement('g_id_onload')
+	g_id_onload.classList.remove('display-none')
 }
 function hideloginpopup() {
 	let loginpopup = getElement('loginpopup')
 	loginpopup.classList.add('hiddenfade')
+
+	let g_id_onload = getElement('g_id_onload')
+	g_id_onload.classList.add('display-none')
 }
 
 

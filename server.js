@@ -764,6 +764,7 @@ const bodyParser = require('body-parser')
 const formidable = require('formidable')
 const compression = require('compression')
 const RRule = require('rrule').RRule
+const jwt = require('jsonwebtoken')
 
 //google
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
@@ -966,17 +967,12 @@ app.get('/auth/google/callback', async (req, res, next) => {
 app.post('/auth/google/onetap', async (req, res, next) => {
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
-
-		console.warn(req.body)
+		
 		//get sub
-		const tokens = { id_token: req.body.token }
-		const ticket = await googleclient.verifyIdToken({
-			idToken: tokens.id_token,
-			audience: GOOGLE_CLIENT_ID,
-		})
-		const payload = ticket.getPayload()
-		const googleid = payload['sub']
-
+		const token = req.body
+		const decodedtoken = jwt.decode(token, {complete: true})
+		const googleid = decodedToken.payload.sub
+		
 		let user = getUserByGoogleId(googleid)
 		if(user){
 			req.session.user = { userid: user.userid }
