@@ -919,6 +919,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				user.accountdata.google.profilepicture = profilepicture
 				user.accountdata.lastloggedindate = Date.now()
 				user.googleid = googleid
+				console.warn(user.googleid)
 				await setUser(user)
 			}else{
 				throw new Error('Google email is linked to another account')
@@ -984,7 +985,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 		res.redirect(301, '/app')
 	}catch(error){
 		console.error(error)
-		res.redirect(301, '/login')
+		res.redirect(301, '/auth/google')
 	}
 })
 
@@ -998,7 +999,6 @@ app.get('/home', (req, res) => {
 
 app.get('/login', (req, res, next) => {
   if (req.session.user && req.session.user.userid) {
-	console.warn(req.session.user.userid)
 		res.redirect(301, '/app')
   } else{
 		next()
