@@ -900,6 +900,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		const { data2 } = await googleclient.request({
 			url: 'https://www.googleapis.com/oauth2/v3/userinfo',
 		})
+		console.warn(data2)
 
 		const googleid = data2.sub
 		
