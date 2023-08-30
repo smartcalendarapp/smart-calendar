@@ -3308,6 +3308,24 @@ function updatetime() {
 function run() {
 	//ONCE
 
+
+	//push notif
+	window.addEventListener('mousedown', clickforpushnotif, false)
+	('mousedown')
+	window.addEventListener('touchstart', clickforpushnotif, false)
+
+	function clickforpushnotif(event){
+		if (calendar.pushSubscriptionEnabled) {
+			enablePushNotifs()
+		} else {
+			removePushNotifs()
+		}
+		
+		window.removeEventListener('mousedown', clickforpushnotif, false)
+		('mousedown')
+		window.removeEventListener('touchstart', clickforpushnotif, false)
+	}
+
 	//theme
 	updatetheme()
 
@@ -3325,15 +3343,6 @@ function run() {
 
 	//check for onboarding
 	updateonboardingscreen()
-
-	
-	//notif
-	if (calendar.pushSubscriptionEnabled) {
-		enablePushNotifs()
-	} else {
-		removePushNotifs()
-	}
-
 
 	//set initial save data
 	lastbodydata = calendar.getChangedJSON()
@@ -4318,6 +4327,7 @@ function mousedowndocument(event) {
 		calendar.updateInfo(true)
 	}
 }
+
 
 
 //EVENT INFO
@@ -9893,7 +9903,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		if(isNaN(eventspacingratio)){
 			eventspacingratio = 15
 		}
-		
+
 		let duration = (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
 		return Math.min(Math.max(round(duration * eventspacingratio, 60000 * 5), 60000 * 5), 60 * 60000)
 		
@@ -11994,7 +12004,6 @@ async function enablePushNotifs() {
 	await Notifications.requestPermission()
 	const registration = await Notifications.registerSW()
 	subscription = await Notifications.subscribe()
-
 }
 
 // actual function that handles the setting
