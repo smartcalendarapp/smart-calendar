@@ -905,7 +905,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			audience: GOOGLE_CLIENT_ID,
 		})
 		const payload = ticket.getPayload()
-		const googleid = payload['sub']
+		const googleid = payload.sub
 
 		//get details
 		const email = data.emailAddresses[0].value
@@ -975,7 +975,8 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 			audience: GOOGLE_CLIENT_ID,
 		})
 		const payload = ticket.getPayload()
-		const googleid = payload['sub']
+		const googleid = payload.sub
+		console.warn(payload)
 		
 		let user = getUserByGoogleId(googleid)
 		if(user){
