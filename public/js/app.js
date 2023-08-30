@@ -4077,11 +4077,7 @@ if ('matchMedia' in window) {
 	themedata.addEventListener('change', changedevicetheme)
 }
 
-document.body.classList.add('notransition')
 settheme(getStorage('theme') || devicetheme)
-setTimeout(function(){
-	document.body.classList.remove('notransition')
-}, 300)
 
 function changedevicetheme(event) {
 	if (event.matches) {

@@ -38,6 +38,9 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+
+	<!-- Google one tap login -->
+	<script async defer src="https://accounts.google.com/gsi/client"></script>
 </head>
 
 <!-- Google tag (gtag.js) -->
@@ -51,6 +54,12 @@
 </script>
 
 <body>
+	<div
+		id="g_id_onload"
+		data-client_id="469742766371-epr4i5o29h0gajtb8cp765qj49b2b9q4.apps.googleusercontent.com"
+		data-login_uri="https://smartcalendar.us/auth/google/onetap">
+	</div>
+	
 	<canvas id="dynamicbackground" class="z-index--1 fixed top-0 left-0 width-full height-full"></canvas>
 	
 	<header class="navbar padding-top-12px padding-bottom-12px" id="navbar">
