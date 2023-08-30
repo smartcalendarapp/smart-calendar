@@ -905,6 +905,11 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		})
 		const payload = ticket.getPayload()
 		const googleid = payload['sub']
+		try{
+		throw new Error(googleid+'')
+		}catch(e){
+
+		}
 
 		//get details
 		const email = data.emailAddresses[0].value
