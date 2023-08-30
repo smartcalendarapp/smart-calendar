@@ -68,6 +68,23 @@ async function getUserById(userid){
 	return null
 }
 
+async function getUserByGoogleId(input){
+	const params = {
+		TableName: 'smartcalendarusers',
+		IndexName: 'googleid-index',
+		KeyConditionExpression: 'googleid = :input',
+		ExpressionAttributeValues: {
+		  ':input': { S: input }
+		}
+	  }
+	
+	  const data = await dynamoclient.send(new QueryCommand(params))
+	
+		if(data.Items[0]){
+			return addmissingpropertiestouser(unmarshall(data.Items[0]))
+		}
+}
+
 async function getUserByAttribute(input){
 	const params = {
     TableName: 'smartcalendarusers',
@@ -238,12 +255,13 @@ class Message{
 }
 
 class User{
-	constructor({ username, password, google_email }){
+	constructor({ username, password, google_email, googleid }){
 		this.userid = generateID()
 
 		this.username = username
 		this.password = password
 		this.google_email = google_email
+		this.googleid = googleid
 
 		this.calendardata = {}
 		this.accountdata = {}
@@ -875,13 +893,20 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		const { data } = await googleclient.request({
 			url: 'https://people.googleapis.com/v1/people/me',
 			params: {
-		    personFields: 'emailAddresses,names,photos'
-		  }
+				personFields: 'emailAddresses,names,photos,metadata'
+			}
 		})
 
-		let email = data.emailAddresses[0].value
-		let name = data.names[0].displayName
-		let profilepicture = data.photos[0].url
+		const { data2 } = await googleclient.request({
+			url: 'https://www.googleapis.com/oauth2/v3/userinfo',
+		})
+
+		const googleid = data.sub
+		
+		const email = data.emailAddresses[0].value
+		const name = data.names[0].displayName
+		const profilepicture = data.photos[0].url
+		
 
 		let user = await getUserByAttribute(email)
 		if(user){
@@ -893,6 +918,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				user.accountdata.google.name = name
 				user.accountdata.google.profilepicture = profilepicture
 				user.accountdata.lastloggedindate = Date.now()
+				user.googleid = googleid
 				await setUser(user)
 			}else{
 				throw new Error('Google email is linked to another account')
@@ -909,9 +935,10 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				user2.accountdata.google.name = name
 				user2.accountdata.google.profilepicture = profilepicture
 				user2.accountdata.lastloggedindate = Date.now()
+				user2.googleid = googleid
 				await setUser(user2)
 			}else{
-				const user3 = addmissingpropertiestouser(new User({ username: email, google_email: email }))
+				const user3 = addmissingpropertiestouser(new User({ username: email, google_email: email, googleid: googleid }))
 				user3.calendardata.settings.issyncingtogooglecalendar = true
 				user3.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
 				user3.accountdata.google.name = name
@@ -933,65 +960,27 @@ app.get('/auth/google/callback', async (req, res, next) => {
 	}
 })
 
-app.post('/auth/google/callback', async (req, res, next) => {
+app.post('/auth/google/onetap', async (req, res, next) => {
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
+		
 		const { tokens } = await googleclient.getToken(req.query.code)
 		googleclient.setCredentials(tokens)
-		const { data } = await googleclient.request({
-			url: 'https://people.googleapis.com/v1/people/me',
-			params: {
-		    personFields: 'emailAddresses,names,photos'
-		  }
-		})
 
-		let email = data.emailAddresses[0].value
-		let name = data.names[0].displayName
-		let profilepicture = data.photos[0].url
+		const ticket = await googleclient.verifyIdToken({
+			idToken: tokens.id_token,
+			audience: GOOGLE_CLIENT_ID,
+		});
 
-		let user = await getUserByAttribute(email)
+		const payload = ticket.getPayload()
+
+		const googleid = payload['sub']
+
+		let user = getUserByGoogleId(googleid)
 		if(user){
-			if(user.google_email == email){
-				req.session.user = { userid: user.userid }
-				req.session.tokens = tokens
-
-				user.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
-				user.accountdata.google.name = name
-				user.accountdata.google.profilepicture = profilepicture
-				user.accountdata.lastloggedindate = Date.now()
-				await setUser(user)
-			}else{
-				throw new Error('Google email is linked to another account')
-			}
-		}else{
-			let user2 = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
-			if(user2){
-				req.session.user = { userid: user2.userid }
-				req.session.tokens = tokens
+			req.session.user = { userid: user.userid }
+		}		
 				
-				user2.google_email = email
-				user2.calendardata.settings.issyncingtogooglecalendar = true
-				user2.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
-				user2.accountdata.google.name = name
-				user2.accountdata.google.profilepicture = profilepicture
-				user2.accountdata.lastloggedindate = Date.now()
-				await setUser(user2)
-			}else{
-				const user3 = addmissingpropertiestouser(new User({ username: email, google_email: email }))
-				user3.calendardata.settings.issyncingtogooglecalendar = true
-				user3.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
-				user3.accountdata.google.name = name
-				user3.accountdata.google.profilepicture = profilepicture
-				user3.accountdata.lastloggedindate = Date.now()
-				await createUser(user3)
-
-				req.session.user = { userid: user3.userid }
-				req.session.tokens = tokens
-
-				await sendwelcomeemail(user3)
-			}
-		}
-
 		res.redirect(301, '/app')
 	}catch(error){
 		console.error(error)
