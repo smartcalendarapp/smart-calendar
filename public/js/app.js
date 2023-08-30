@@ -3311,7 +3311,6 @@ function run() {
 
 	//push notif
 	window.addEventListener('mousedown', clickforpushnotif, false)
-	('mousedown')
 	window.addEventListener('touchstart', clickforpushnotif, false)
 
 	function clickforpushnotif(event){
