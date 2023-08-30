@@ -968,15 +968,19 @@ app.get('/auth/google/callback', async (req, res, next) => {
 app.post('/auth/google/onetap', async (req, res, next) => {
 	try{
 		//get googleid
-		const token = req.body
-		const decodedtoken = jwt.decode(token, {complete: true})
-		console.error(decodedtoken)
-		const googleid = decodedtoken.payload.sub
+		const jsontoken = req.body
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
+		const ticket = await googleclient.verifyIdToken({
+			idToken: jsontoken,
+			audience: GOOGLE_CLIENT_ID,
+		})
+		const payload = ticket.getPayload()
+		const googleid = payload['sub']
 		
 		let user = getUserByGoogleId(googleid)
 		if(user){
 			req.session.user = { userid: user.userid }
-			return res.redirect(301, '/app')
+			return res.end()
 		}
 
 		res.redirect(301, '/login')
