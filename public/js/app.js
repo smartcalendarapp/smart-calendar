@@ -3070,7 +3070,7 @@ function scrollcalendarY(targetminute) {
 	cancelAnimationFrame(scrollYAnimationFrameId)
 
 	let barcolumncontainer = getElement('barcolumncontainer')
-	let target = targetminute - barcolumncontainer.offsetHeight / 2
+	let target = targetminute - 60*2
 
 	let duration = 500
 	let start = barcolumncontainer.scrollTop
@@ -3470,7 +3470,7 @@ function clicktab(index) {
 	if (gototoday) {
 		let barcolumncontainer = getElement('barcolumncontainer')
 
-		let target = currentdate.getHours() * 60 + currentdate.getMinutes() - barcolumncontainer.offsetHeight / 2
+		let target = currentdate.getHours() * 60 + currentdate.getMinutes() - 60*2
 		barcolumncontainer.scrollTo(0, target)
 	}
 }
@@ -8440,7 +8440,7 @@ function startnow(id){
 
 		//scroll
 		let barcolumncontainer = getElement('barcolumncontainer')
-		let target = startdate.getHours() * 60 + startdate.getMinutes() - barcolumncontainer.offsetHeight / 2
+		let target = startdate.getHours() * 60 + startdate.getMinutes() - 60*2
 		barcolumncontainer.scrollTo(0, target)
 	}else{
 		let duration = new Date(tempitem.end.year, tempitem.end.month, tempitem.end.day, 0, tempitem.end.minute).getTime() - new Date(tempitem.start.year, tempitem.start.month, tempitem.start.day, 0, tempitem.start.minute).getTime()
@@ -8465,7 +8465,7 @@ function startnow(id){
 
 		//scroll
 		let barcolumncontainer = getElement('barcolumncontainer')
-		let target = startdate.getHours() * 60 + startdate.getMinutes() - barcolumncontainer.offsetHeight / 2
+		let target = startdate.getHours() * 60 + startdate.getMinutes() - 60*2
 		barcolumncontainer.scrollTo(0, target)
 	}
 
