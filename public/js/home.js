@@ -79,15 +79,6 @@ async function getclientinfo() {
 		const data = await response2.json()
 		clientinfo = data.data
 
-		let navbuttonsloggedout = getElement('navbuttonsloggedout')
-		let navbuttonsloggedin = getElement('navbuttonsloggedin')
-		let navbuttonsloggedout2 = getElement('navbuttonsloggedout2')
-		let navbuttonsloggedin2 = getElement('navbuttonsloggedin2')
-
-		navbuttonsloggedin.classList.remove('display-none')
-		navbuttonsloggedout.classList.add('display-none')
-		navbuttonsloggedin2.classList.remove('display-none')
-		navbuttonsloggedout2.classList.add('display-none')
 
 		//close one tap popup
 		setInterval(() => {
