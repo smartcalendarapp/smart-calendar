@@ -3300,8 +3300,6 @@ function updatetime() {
 function run() {
 	//ONCE
 
-	hideloginpopup()
-
 	//theme
 	updatetheme()
 
@@ -4079,7 +4077,11 @@ if ('matchMedia' in window) {
 	themedata.addEventListener('change', changedevicetheme)
 }
 
+document.body.classList.add('notransition')
 settheme(getStorage('theme') || devicetheme)
+setTimeout(function(){
+	document.body.classList.remove('notransition')
+}, 300)
 
 function changedevicetheme(event) {
 	if (event.matches) {
@@ -5124,16 +5126,11 @@ function hideloadingscreen() {
 function showloginpopup() {
 	let loginpopup = getElement('loginpopup')
 	loginpopup.classList.remove('hiddenfade')
-
-	//show one tap popup
-	google.accounts.id.prompt()
 }
 function hideloginpopup() {
 	let loginpopup = getElement('loginpopup')
 	loginpopup.classList.add('hiddenfade')
-
-	//hide one tap popup
-	google.accounts.id.cancel()
+	
 }
 
 

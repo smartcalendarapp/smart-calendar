@@ -34,6 +34,8 @@ body {
 
 
 
+
+
 .todowidth {
 	width: 100%;
 	max-width: 800px;
@@ -3759,3 +3761,8 @@ input:checked+.slider:before {
 	transform: translateX(18px);
 }
 
+
+
+.notransition{
+	transition:none !important;
+}
