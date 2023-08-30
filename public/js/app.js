@@ -2587,6 +2587,10 @@ class Calendar {
 		settingssleepend2.value = getHMText(calendar.settings.sleep.endminute)
 
 
+		let settingseventspacing = getElement('settingseventspacing')
+		settingseventspacing.value = getDHMText(calendar.settings.eventspacing)
+
+
 		//tabs
 		let settingscontentwrap = getElement('settingscontentwrap')
 		for (let [index, div] of Object.entries(settingscontentwrap.children)) {
@@ -9886,6 +9890,10 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 
 	function getbreaktime(item) {
 		let eventspacingratio = calendar.settings.eventspacing / 60
+		if(isNaN(eventspacingratio)){
+			eventspacingratio = 15
+		}
+		
 		let duration = (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
 		return Math.min(Math.max(round(duration * eventspacingratio, 60000 * 5), 60000 * 5), 60 * 60000)
 		
