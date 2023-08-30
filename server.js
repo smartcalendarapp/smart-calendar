@@ -391,14 +391,14 @@ async function processReminders(){
 				if(item.type == 'event'){
 					try{
 						let difference = Math.floor((Date.now() - new Date(item.event.start).getTime())/60000)
-						await webpush.sendNotification(item.pushSubscription, `REMINDER: ${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`)
+						await webpush.sendNotification(item.pushSubscription, `EVENT STARTING: ${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`)
 					}catch(error){
 						console.error(error)
 					}
 				}else if (item.type == 'task'){
 					try{
 						let difference = Math.floor((Date.now() - new Date(item.event.duedate).getTime())/60000)
-						await webpush.sendNotification(item.pushSubscription, `REMINDER: ${item.event.title || "New Task"} (${getFullRelativeDHMText(difference)})`)
+						await webpush.sendNotification(item.pushSubscription, `TASK DUE: ${item.event.title || "New Task"} (${getFullRelativeDHMText(difference)})`)
 					}catch(error){
 						console.error(error)
 					}
@@ -711,6 +711,7 @@ function cacheReminders(user){
 	}
 	
 	reminderscache[user.userid] = tempreminders
+	if(user.google_email == 'james.tsaggaris@gmail.com')console.log(tempreminders)
 }
 
 
