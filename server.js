@@ -980,6 +980,8 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 		let user = getUserByGoogleId(googleid)
 		if(user){
 			req.session.user = { userid: user.userid }
+			console.warn(user)
+			console.warn(req.session)
 			return res.redirect(301, '/app')
 		}
 
