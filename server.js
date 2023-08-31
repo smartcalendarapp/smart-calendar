@@ -1742,7 +1742,7 @@ app.post('/disconnectgoogle', async (req, res, next) => {
 		
 		delete req.session.tokens
 		
-		user.google_email = null
+		delete user.google_email
 		await setUser(user)
 	
 		return res.end()
