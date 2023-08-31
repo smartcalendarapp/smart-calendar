@@ -225,9 +225,9 @@ function getpriorityicon(value) {
 	if (value == 0) {
 		return ''
 	} else if (value == 1) {
-		return `<span class="text-white priorityiconpadding border-round background-orange text-12px text-bold">medium</span>`
+		return `<span class="text-white priorityiconpadding border-round background-orange text-12px text-bold">Medium</span>`
 	} else if (value == 2) {
-		return `<span class="text-white priorityiconpadding border-round background-red text-12px text-bold">high</span>`
+		return `<span class="text-white priorityiconpadding border-round background-red text-12px text-bold">High</span>`
 	}
 }
 
@@ -348,6 +348,26 @@ function getwhitecheckcircle(boolean, tooltip) {
 	}
 }
 
+//get small white check circle
+function getwhitecheckcircle(boolean, tooltip) {
+	if (boolean) {
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallerinline checkboxfilledprimary">
+			<g>
+			<path d="M128 7.19484C61.2812 7.19484 7.19484 61.2812 7.19484 128C7.19484 194.719 61.2812 248.805 128 248.805C194.719 248.805 248.805 194.719 248.805 128C248.805 61.2812 194.719 7.19484 128 7.19484ZM190.851 66.0048C194.206 65.7071 197.649 66.7098 200.436 69.0426C206.01 73.7082 206.753 81.9906 202.088 87.5645L115.524 190.969C110.264 197.253 100.582 197.253 95.3213 190.969L52.0249 139.266C47.3593 133.693 48.1026 125.41 53.6765 120.745C59.2504 116.079 67.5623 116.822 72.2279 122.396L105.408 162.035L181.885 70.6942C184.217 67.9073 187.495 66.3024 190.851 66.0048Z" fill-rule="nonzero" opacity="1" ></path>
+			<path d="M128 0C57.3076 0 0 57.3076 0 128C0 198.692 57.3076 256 128 256C198.692 256 256 198.692 256 128C256 57.3076 198.692 0 128 0ZM128 7.75758C194.408 7.75758 248.242 61.5919 248.242 128C248.242 194.408 194.408 248.242 128 248.242C61.5919 248.242 7.75758 194.408 7.75758 128C7.75758 61.5919 61.5919 7.75758 128 7.75758Z" fill-rule="nonzero" opacity="1" ></path>
+			</g>
+			</svg>
+	 		${tooltip || ''}`
+	} else {
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallerinline checkboxunfilled">
+			<g>
+			<path d="M128 10L128 10C193.17 10 246 62.8304 246 128L246 128C246 193.17 193.17 246 128 246L128 246C62.8304 246 10 193.17 10 128L10 128C10 62.8304 62.8304 10 128 10Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+			</g>
+			</svg>
+	 		${tooltip || ''}`
+	}
+}
+
 
 //get check
 function getcheck(boolean) {
@@ -397,7 +417,9 @@ function getDuration(string) {
 
 	}
 
-	myduration = Math.floor(myduration)
+	if(myduration != null){
+		myduration = Math.floor(myduration)
+	}
 
 	return { value: myduration, match: match }
 }
@@ -627,6 +649,7 @@ class Calendar {
 			this.color = 3
 			this.id = generateID()
 			this.googleid = null
+			this.lastmodified = 0
 		}
 	}
 
@@ -666,6 +689,7 @@ class Calendar {
 			this.calendarid = null
 			this.googleeventid = null
 			this.googlecalendarid = null
+			this.googleclassroomid = null
 			this.title = title
 			this.type = type
 			this.notes = notes
@@ -688,6 +712,7 @@ class Calendar {
 					endminute: null
 				}
 			}
+			this.lastmodified = 0
 		}
 
 		static isEvent(item){
@@ -808,7 +833,10 @@ class Calendar {
 			this.duration = duration
 			this.title = title
 			this.id = generateID()
+			this.googleclassroomid = null
 			this.completed = false
+			this.reminder = [{ timebefore: 0 }]
+			this.lastmodified = 0
 
 			this.timewindow = {
 				day: {
@@ -827,6 +855,10 @@ class Calendar {
 
 		static isTodo(item){
 			return calendar.todos.find(d => d.id == item.id)
+		}
+
+		static isReadOnly(item){
+			return !!item.googleclassroomid
 		}
 	}
 
@@ -869,7 +901,7 @@ class Calendar {
 		let calendartab2 = getElement('calendartab2')
 		let todolisttab2 = getElement('todolisttab2')
 		let summarytab2 = getElement('summarytab2')
-		let settingstab2 = getElement('settingstab')
+		let settingstab2 = getElement('settingstab2')
 
 		hometab.classList.remove('selectedbuttonunderline')
 		summarytab.classList.remove('selectedbuttonunderline')
@@ -883,6 +915,9 @@ class Calendar {
 		paneldivider.classList.add('display-none')
 
 		if (calendartabs.includes(1)) {
+			resetcreatetodo()
+			updatecreatetodo()
+			
 			this.updateTodo()
 			todowrap.classList.remove('display-none')
 			todowrap.style.flex = '1'
@@ -894,6 +929,7 @@ class Calendar {
 		}
 
 		if (calendartabs.includes(0)) {
+			
 			this.updateCalendar()
 			calendarwrap.classList.remove('display-none')
 			calendarwrap.style.flex = '2'
@@ -930,13 +966,45 @@ class Calendar {
 				let neweventsdata = this.events
 				let oldeventsdata = JSON.parse(historydata[historydata.length - 1]).events
 				let oldcalendarsdata = JSON.parse(historydata[historydata.length - 1]).calendars
+				let oldtodosdata = JSON.parse(historydata[historydata.length - 1]).todos
 
-				//dynamic schedule
+
+				//auto schedule
 				if (smartschedule != false) {
 					if (JSON.stringify(neweventsdata) != JSON.stringify(oldeventsdata)) {
-						startAutoSchedule([], false)
+						startAutoSchedule([])
 					}
 				}
+
+				//last modified changes
+				for (let item of calendar.events) {
+					let olditem = oldeventsdata.find(d => d.id == item.id)
+					if (!olditem) { //create event
+						item.lastmodified = Date.now()
+					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit event
+						item.lastmodified = Date.now()
+					}
+				}
+
+				for (let item of calendar.todos) {
+					let olditem = oldtodosdata.find(d => d.id == item.id)
+					if (!olditem) { //create todo
+						item.lastmodified = Date.now()
+					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit todo
+						item.lastmodified = Date.now()
+					}
+				}
+
+				for (let item of calendar.calendars) {
+					let olditem = oldcalendarsdata.find(d => d.id == item.id)
+					if (!olditem) { //create calendar
+						item.lastmodified = Date.now()
+					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit calendar
+						item.lastmodified = Date.now()
+					}
+				}
+
+
 
 				//google calendar changes
 				if (syncgoogle != false && calendar.settings.issyncingtogooglecalendar) {
@@ -944,34 +1012,34 @@ class Calendar {
 					for (let item of calendar.events) {
 						let olditem = oldeventsdata.find(d => d.id == item.id)
 						if (!olditem) { //create event
-							requestchanges.push({ type: 'createevent', item: item })
+							requestchanges.push({ type: 'createevent', item: item, requestid: generateID() })
 						} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit event
 							//check for change
 							if (new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() != new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute).getTime() || new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() != new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute).getTime() || item.title != olditem.title || item.notes != olditem.notes || getRecurrenceString(item) != getRecurrenceString(olditem)) {
-								requestchanges.push({ type: 'editevent', item: item, oldgooglecalendarid: olditem.googlecalendarid })
+								requestchanges.push({ type: 'editevent', item: item, oldgooglecalendarid: olditem.googlecalendarid, requestid: generateID() })
 							}
 						}
 					}
 					for (let item of oldeventsdata) {
 						if (!calendar.events.find(d => d.id == item.id)) { //delete event
-							requestchanges.push({ type: 'deleteevent', googleeventid: item.googleeventid, googlecalendarid: item.googlecalendarid })
+							requestchanges.push({ type: 'deleteevent', googleeventid: item.googleeventid, googlecalendarid: item.googlecalendarid, requestid: generateID() })
 						}
 					}
 
 					for (let item of calendar.calendars) {
 						let olditem = oldcalendarsdata.find(d => d.id == item.id)
 						if (!olditem) { //create calendar
-							requestchanges.push({ type: 'createcalendar', item: item })
+							requestchanges.push({ type: 'createcalendar', item: item, requestid: generateID() })
 						} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit calendar
 							//check for change
 							if (olditem.title != item.title || olditem.notes != item.notes) {
-								requestchanges.push({ type: 'editcalendar', item: item })
+								requestchanges.push({ type: 'editcalendar', item: item, requestid: generateID() })
 							}
 						}
 					}
 					for (let item of oldcalendarsdata) {
 						if (!calendar.calendars.find(d => d.id == item.id)) { //delete calendar
-							requestchanges.push({ type: 'deletecalendar', googleid: item.googleid })
+							requestchanges.push({ type: 'deletecalendar', googleid: item.googleid, requestid: generateID() })
 						}
 					}
 
@@ -1352,6 +1420,19 @@ class Calendar {
 				})
 			}
 
+
+			let rangestartdate = new Date(calendar.getDate())
+			let rangeenddate = new Date(calendar.getDate())
+			if (calendarmode == 1) {
+				rangestartdate.setDate(rangestartdate.getDate() - rangestartdate.getDay() - 7)
+				rangeenddate.setDate(rangeenddate.getDate() - rangeenddate.getDay() + 21 - 7)
+			} else if (calendarmode == 0) {
+				rangestartdate.setDate(rangestartdate.getDate() - 1)
+				rangeenddate.setDate(rangeenddate.getDate() + 3 - 1)
+			}
+			let alltempevents = getevents(rangestartdate, rangeenddate)
+
+
 			for (let i = 0; i < [3, 21][calendarmode]; i++) {
 				let currentdate = new Date(calendar.getDate())
 				if (calendarmode == 1) {
@@ -1369,7 +1450,7 @@ class Calendar {
 				let dayoutput = [];
 				let daydisplayoutput = [];
 
-				let tempevents = getevents(currentdate, nextdate).filter(d => !autoscheduleeventslist.find(f => f.id == d.id) && d.id != editeventid)
+				let tempevents = geteventslite(currentdate, nextdate, alltempevents).filter(d => !autoscheduleeventslist.find(f => f.id == d.id) && d.id != editeventid)
 				let tempborders = getborders(currentdate, nextdate)
 
 				for (let item of tempevents) {
@@ -1418,6 +1499,12 @@ class Calendar {
 				}
 			}
 		} else if (calendarmode == 2) {
+			let rangestartdate = new Date(calendar.getDate())
+			let rangeenddate = new Date(calendar.getDate())
+			rangestartdate.setDate(rangestartdate.getDate() - 35)
+			rangeenddate.setDate(rangeenddate.getDate() + 35*2)
+			let alltempevents = getevents(rangestartdate, rangeenddate)
+
 
 			let startdate = new Date(calendaryear, calendarmonth, 1)
 			startdate.setDate(startdate.getDate() - startdate.getDay() - 35)
@@ -1436,7 +1523,7 @@ class Calendar {
 
 				let timeindex;
 
-				let myevents = getevents(currentdate, nextdate).sort((h, j) => {
+				let myevents = geteventslite(currentdate, nextdate, alltempevents).sort((h, j) => {
 					let tempstartdate1 = new Date(h.start.year, h.start.month, h.start.day, 0, h.start.minute)
 					let tempstartdate2 = new Date(j.start.year, j.start.month, j.start.day, 0, j.start.minute)
 					return (tempstartdate1.getTime() - tempstartdate2.getTime())
@@ -1504,10 +1591,11 @@ class Calendar {
 				div.classList.remove('selectedbuttongrey')
 			}
 		}
-
 	}
 
 	updateInfo(updateStructure, showinfo) {
+		updateitemreminders()
+
 		requestAnimationFrame(function () {
 			let eventinfo = getElement('eventinfo')
 			let item = calendar.events.find(c => c.id == selectedeventid)
@@ -1533,6 +1621,7 @@ class Calendar {
 				}
 
 
+
 				if (editinfo) {
 					//EDIT EVENT
 
@@ -1554,7 +1643,6 @@ class Calendar {
 						//important and completed
 						infodata.push(`<div class="infogroup">
 							<div class="display-flex flex-row align-center gap-12px width-full">
-								${item.type == 1 ? `<div class="display-flex flex-row" id="infocompleted"></div>` : ''}
 				 				<div class="infotitle" id="eventinfotitle"></div>
 								${item.type == 1 ? `<div class="display-flex flex-row" id="infopriority"></div>` : ''}
 							</div>
@@ -1565,27 +1653,20 @@ class Calendar {
 								<div class="inputgroup">
 				 					<div class="text-14px text-primary width90px">Title</div>
 				 					<div class="inputgroupitem flex-1">
-										<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventtitle(event, '${item.id}')" id="infotitle" class="infoinput" placeholder="Add title" type="text" maxlength="2000"></input>
+										<input onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputeventtitle(event, '${item.id}')" id="infotitle" class="infoinput" placeholder="Add title" type="text" maxlength="2000"></input>
 										<span class="inputline"></span>
 					 				</div>
 								</div>
 							</div>
 			 
-			 				<div class="horizontalbar"></div>
-			 
 							<div class="infogroup">
 			 					<div class="inputgroup">
-				 					<div class="display-flex flex-column">
-										<div class="width90px text-14px text-blue  tooltip" id="eventinfosmartscheduletext">Auto-schedule
-											<span class="tooltiptextright">Automatically schedule your event for the best time.</span>
-										</div>
-					 				</div>
-
-									<div class="todoitemcheckbox display-flex" onclick="toggleeventtype()" id="eventinfosmartschedule"></div>
-					
-					 				</div>
+								 	<div class="text-14px text-primary width90px">Type</div>
+									<div class="display-flex" id="eventinfosmartschedule"></div>
 				 				</div>
-							</div>`)
+							</div>
+							
+							<div class="horizontalbar"></div>`)
 
 						if (item.type == 0) {
 							infodata.push(`
@@ -1594,13 +1675,13 @@ class Calendar {
 									<div class="inputgroup">
 				 						<div class="text-14px text-primary width90px">Starts</div>
 										<div class="inputgroupitem flex-1">
-											<input  onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventstartdate(event, '${item.id}')" id="infostartdate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
+											<input  onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputeventstartdate(event, '${item.id}')" id="infostartdate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
 											<span class="inputline"></span>
 					 					</div>
 	
 										${!Calendar.Event.isAllDay(item) ?
 									`<div class="inputgroupitem flex-1">
-												<input  onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventstartminute(event, '${item.id}')" id="infostarttime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
+												<input  onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputeventstartminute(event, '${item.id}')" id="infostarttime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
 												<span class="inputline"></span>
 											</div>` : ''
 								}
@@ -1612,12 +1693,12 @@ class Calendar {
 									<div class="inputgroup">
 										<div class="text-14px text-primary width90px">Ends</div>
 										<div class="inputgroupitem flex-1">
-											<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventenddate(event, '${item.id}')" id="infoenddate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
+											<input onclick="this.select()"  onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputeventenddate(event, '${item.id}')" id="infoenddate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
 											<span class="inputline"></span>
 					 					</div>
 										${!Calendar.Event.isAllDay(item) ?
 									`<div class="inputgroupitem flex-1">
-											<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventendminute(event, '${item.id}')" id="infoendtime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
+											<input onclick="this.select()"  onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputeventendminute(event, '${item.id}')" id="infoendtime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
 											<span class="inputline"></span>
 					 					</div>` : ''}
 									</div>
@@ -1643,11 +1724,11 @@ class Calendar {
 								<div class="inputgroup">
 									<div class="text-14px text-primary width90px">Due date</div>
 									<div class="inputgroupitem flex-1">
-										<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventduedate(event, '${item.id}')" id="infoendbeforedate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
+										<input onclick="this.select()"  onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputeventduedate(event, '${item.id}')" id="infoendbeforedate" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
 										<span class="inputline"></span>
 									</div>
 									<div class="inputgroupitem flex-1">
-										<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventduetime(event, '${item.id}')" id="infoendbeforetime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
+										<input onclick="this.select()"  onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputeventduetime(event, '${item.id}')" id="infoendbeforetime" class="infoinput inputtimepicker" type="text" placeholder="Add time"></input>
 										<span class="inputline"></span>
 									</div>
 								</div>
@@ -1657,7 +1738,7 @@ class Calendar {
 								<div class="inputgroup">
 									<div class="text-14px text-primary width90px">Time needed</div>
 									<div class="inputgroupitem flex-1">
-										<input onclick="this.select()"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputeventduration(event, '${item.id}')" id="infoduration" class="infoinput inputdurationpicker" type="text" placeholder="Add duration"></input>
+										<input onclick="this.select()"  onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputeventduration(event, '${item.id}')" id="infoduration" class="infoinput inputdurationpicker" type="text" placeholder="Add duration"></input>
 										<span class="inputline"></span>
 								 </div>
 								</div>
@@ -1843,28 +1924,25 @@ class Calendar {
 					}
 
 
-					//auto schedule
+					//event type
 					let eventinfosmartschedule = getElement('eventinfosmartschedule')
-					eventinfosmartschedule.innerHTML = getcheckbox(item.type == 1)
+					eventinfosmartschedule.innerHTML = `
+					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto">
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(0)">Event</div>
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(1)">Task</div>
+					</div>`
 
 					if (item.type == 1) {
 						//priority
 						let infopriority = getElement('infopriority')
 						infopriority.innerHTML = `
 							${item.priority != 0 ?
-								`<div class="todoitemcheckbox tooltip display-flex">
+								`<div class="height-fit display-flex tooltip display-flex">
 									${getpriorityicon(item.priority)}
 								</div>`
 								:
 								''
 							}`
-
-						//completed
-						let infocompleted = getElement('infocompleted')
-						infocompleted.innerHTML = `
-						<div class="todoitemcheckbox tooltip display-flex" onclick="eventcompleted('${item.id}')">
-							${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
-						</div>`
 					}
 
 					//repeat
@@ -1910,17 +1988,11 @@ class Calendar {
 
 					output.push(`<div class="infogroup">
 						<div class="display-flex flex-row align-center gap-12px width-full">
-			 				${item.type == 1 ?
-							`<div class="todoitemcheckbox tooltip display-flex" onclick="eventcompleted('${item.id}')">
-					 				${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
-					 			</div>`
-							:
-							''
-						}
+
 							<div class="infotitle min-width-0 selecttext">${item.title ? cleanInput(item.title) : 'New Event'}</div>
 							${item.type == 1 ?
 							`${item.priority != 0 ?
-								`<div class="todoitemcheckbox tooltip display-flex">
+								`<div class="height-fit display-flex tooltip display-flex">
 					 					${getpriorityicon(item.priority)}
 									</div>`
 								:
@@ -1940,15 +2012,8 @@ class Calendar {
 					if(!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item)){
 						output.push(`<div class="infogroup">
 							<div class="inputgroup">
-								<div class="display-flex flex-column">
-									<div class="text-14px text-blue  tooltip" id="eventinfosmartscheduletext">Auto-schedule
-										<span class="tooltiptextright">Automatically schedule your event for the best time.</span>
-									</div>
-								</div>
-
-								<div class="todoitemcheckbox display-flex" onclick="toggleeventtype()" id="eventinfosmartschedule"></div>
-
-								</div>
+								
+								<div class="display-flex" id="eventinfosmartschedule"></div></div>
 							</div>
 						</div>`)
 					}
@@ -1956,6 +2021,8 @@ class Calendar {
 					if (item.type == 1) {
 						output.push(`
 							<div class="infotext selecttext infotext"><span class="text-bold">Due</span> ${Calendar.Event.getDueText(item)}</div>`)
+						output.push(`
+							<div class="infotext selecttext infotext"><span class="text-bold">Takes</span> ${getDHMText(Math.floor((new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())/60000))}</div>`)
 					}
 
 					if (item.repeat.frequency != null && item.repeat.interval != null) {
@@ -1973,16 +2040,55 @@ class Calendar {
 						</div>`)
 					}
 
-					output.push(`<div class="text-bold schedulebutton popupbutton" id="remindmebutton" onclick="clickeventremindme('${item.id}')">${item.reminder.length == 0 ? 'Set reminder' : `Manage reminders (${item.reminder.length})`}</div>`)
+
+						output.push('<div class="horizontalbar"></div>')
+						
+						output.push(`
+						<div class="display-flex flex-row flex-wrap-wrap gap-12px">
+							${!Calendar.Event.isReadOnly(item) && item.type == 1 ? 
+							`<div class="text-primary display-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-tint-1 hover:background-tint-2 pointer-auto transition-duration-100 border-8px pointer" onclick="todocompleted(event, selectedeventid)">
+								<div class="pointer-none nowrap text-primary text-14px">${item.completed ? `Mark uncomplete` : 'Mark complete'}</div>
+							</div>
+							<div class="text-white display-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-green hover:background-green-hover pointer-auto transition-duration-100 border-8px pointer" onclick="startnow(selectedeventid);gtag('event', 'button_click', { useraction: 'Start now - event info' })">
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+									<g>
+									<path d="M45.6353 28.72L45.6353 227.28" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+									<path d="M210.365 128L45.6353 227.28" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+									<path d="M210.365 128L45.6353 28.72" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+									</g>
+								</svg>
+								<div class="pointer-none nowrap text-white text-14px">Start now</div>
+							</div>` : ''}
+							
+						
+							<div class="text-14px display-flex flex-row align-center gap-6px padding-8px-12px tooltip infotopright background-blue hover:background-blue-hover text-white pointer-auto transition-duration-100 border-8px pointer popupbutton" id="remindmebutton" onclick="clickeventremindme('${item.id}')">
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 246 256" width="100%" class="buttonwhite">
+									<g>
+									<path d="M10 192.42L236 192.42" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+									<path d="M123 10.0582C130.922 9.7034 166.037 9.56067 191.111 54.719C202.976 76.0876 197.404 109.904 203.553 129.081C210.425 150.514 216.819 155.444 226.874 168.604C236.928 181.764 235.77 192.42 235.77 192.42" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+									<path d="M123 10.0582C115.078 9.7034 79.9633 9.56067 54.8887 54.719C43.0237 76.0876 48.5959 109.904 42.4474 129.081C35.5753 150.514 29.1808 155.444 19.1262 168.604C9.07153 181.764 10.23 192.42 10.23 192.42" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+									<path d="M78.4636 192.42C78.4636 192.42 81.2653 246 123.554 246C165.843 246 170.823 192.42 170.823 192.42" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+									</g>
+								</svg>
+
+
+								<div class="pointer-none nowrap text-white text-14px">${item.reminder.length == 0 ? 'Set reminder' : `Manage reminders (${item.reminder.length})`}</div>
+							</div>
+						</div>
+						`)
 
 					info.innerHTML = output.join('')
 				}
 
 
 				if(!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item)){
-					//auto schedule
+					//event type
 					let eventinfosmartschedule = getElement('eventinfosmartschedule')
-					eventinfosmartschedule.innerHTML = getcheckbox(item.type == 1)
+					eventinfosmartschedule.innerHTML = `
+					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto">
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(0)">Event</div>
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(1)">Task</div>
+					</div>`
 				}
 
 
@@ -2000,7 +2106,6 @@ class Calendar {
 				editinfo = false
 			}
 
-			updateitemreminders()
 		})
 	}
 
@@ -2103,13 +2208,51 @@ class Calendar {
 	updateTodoList() {
 		let output = []
 
-		let todolistnotscheduledyettext = getElement('todolistnotscheduledyettext')
-		let todolistscheduledtaskstext = getElement('todolistscheduledtaskstext')
-		todolistnotscheduledyettext.innerHTML = calendar.todos.filter(d => !d.completed).length
-		todolistscheduledtaskstext.innerHTML = calendar.events.filter(d => d.type == 1 && !d.complete).length
 
-		if(todomode == 0){
-			let mytodos = calendar.todos
+		if(true){
+			let mytodos = calendar.events.filter(d => d.type == 1 && !d.completed)
+			let sortedtodos = sortstartdate(mytodos)
+
+
+			let laststartdate;
+			let tempoutput = []
+			let tempoutput2 = []
+			for (let i = 0; i < sortedtodos.length; i++) {
+				if(i == 0){
+					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
+						<div class="horizontalbar flex-1"></div>
+						<div class="text-quaternary allsmallcaps text-18px text-bold">Scheduled</div>
+						<div class="horizontalbar flex-1"></div>
+					</div>`)
+				}
+
+				let item = sortedtodos[i]
+				let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+				if (!laststartdate || tempstartdate.getDate() != laststartdate.getDate() || laststartdate.getMonth() != tempstartdate.getMonth() || laststartdate.getFullYear() != tempstartdate.getFullYear()) {
+					tempoutput.push(`<div class="text-18px text-quaternary">Scheduled for ${getDMDYText(tempstartdate)}</div>`)
+				}
+
+				tempoutput2.push(gettododata(item))
+
+				let nextitem = sortedtodos[i + 1]
+				let nextstartdate = nextitem ? new Date(nextitem.start.year, nextitem.start.month, nextitem.start.day, 0, nextitem.start.minute) : null
+				if (!nextstartdate || nextstartdate.getDate() != tempstartdate.getDate() || nextstartdate.getMonth() != tempstartdate.getMonth() || nextstartdate.getFullYear() != tempstartdate.getFullYear()) {
+					output.push(`<div class="display-flex flex-column gap-12px">
+						${tempoutput.join('')}
+				
+						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
+					</div>`)
+					tempoutput = []
+					tempoutput2 = []
+				}
+
+				laststartdate = tempstartdate
+			}
+		}
+
+
+		if(true){
+			let mytodos = calendar.todos.filter(d => !d.completed)
 
 			let duetodos = sortduedate(mytodos.filter(d => d.endbefore.year != null && d.endbefore.month != null && d.endbefore.day != null && d.endbefore.minute != null))
 			let notduetodos = mytodos.filter(d => d.endbefore.year == null || d.endbefore.month == null || d.endbefore.day == null || d.endbefore.minute == null)
@@ -2118,6 +2261,14 @@ class Calendar {
 			let tempoutput = []
 			let tempoutput2 = []
 			for (let i = 0; i < duetodos.length; i++) {
+				if(i == 0){
+					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
+						<div class="horizontalbar flex-1"></div>
+						<div class="text-quaternary allsmallcaps text-18px text-bold">Unscheduled</div>
+						<div class="horizontalbar flex-1"></div>
+					</div>`)
+				}
+
 				let item = duetodos[i]
 				let tempduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 				if (!lastduedate || tempduedate.getDate() != lastduedate.getDate() || lastduedate.getMonth() != tempduedate.getMonth() || lastduedate.getFullYear() != tempduedate.getFullYear()) {
@@ -2157,49 +2308,52 @@ class Calendar {
 					tempoutput2 = []
 				}
 			}
+			
+		}
+
+
+		if(true){
+			let mytodos = [...calendar.todos.filter(d => d.completed), ...calendar.events.filter(d => d.type == 1 && d.completed)]
+
+
+			let tempoutput = []
+			let tempoutput2 = []
+
+			for (let i = 0; i < mytodos.length; i++) {
+				let item = mytodos[i]
+				if (i == 0) {
+					tempoutput.push(`<div class="text-18px text-quaternary">Completed</div>`)
+				}
+				tempoutput2.push(gettododata(item))
+				if (i == mytodos.length - 1) {
+					output.push(`
+					<div class="display-flex flex-column gap-12px">
+						${tempoutput.join('')}
+						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
+					</div>`)
+					tempoutput = []
+					tempoutput2 = []
+				}
+			}
+
+			if(output.length == 0){
+				output.push(`<div class="text-18px text-secondary align-self-center text-center padding-top-192px padding-bottom-192px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
+			}
 
 			let alltodolist = getElement('alltodolist')
 			if(alltodolist.innerHTML != output.join('')){
 				alltodolist.innerHTML = output.join('')
 			}
 			
-		}else if(todomode == 1){
-			let mytodos = calendar.events.filter(d => d.type == 1)
-			let sortedtodos = sortstartdate(mytodos)
+		}
 
+		if(output.length == 0){
+			output.push(`<div class="text-18px text-secondary align-self-center text-center padding-top-192px padding-bottom-192px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
+		}
 
-			let laststartdate;
-			let tempoutput = []
-			let tempoutput2 = []
-			for (let i = 0; i < sortedtodos.length; i++) {
-				let item = sortedtodos[i]
-				let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-				if (!laststartdate || tempstartdate.getDate() != laststartdate.getDate() || laststartdate.getMonth() != tempstartdate.getMonth() || laststartdate.getFullYear() != tempstartdate.getFullYear()) {
-					tempoutput.push(`<div class="text-18px text-quaternary">Scheduled for ${getDMDYText(tempstartdate)}</div>`)
-				}
-
-				tempoutput2.push(gettododata(item))
-
-				let nextitem = sortedtodos[i + 1]
-				let nextstartdate = nextitem ? new Date(nextitem.start.year, nextitem.start.month, nextitem.start.day, 0, nextitem.start.minute) : null
-				if (!nextstartdate || nextstartdate.getDate() != tempstartdate.getDate() || nextstartdate.getMonth() != tempstartdate.getMonth() || nextstartdate.getFullYear() != tempstartdate.getFullYear()) {
-					output.push(`<div class="display-flex flex-column gap-12px">
-						${tempoutput.join('')}
-				
-						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
-					</div>`)
-					tempoutput = []
-					tempoutput2 = []
-				}
-
-				laststartdate = tempstartdate
-			}
-
-
-			let alltodolist = getElement('alltodolist')
-			if(alltodolist.innerHTML != output.join()){
-				alltodolist.innerHTML = output.join('')
-			}
+		let alltodolist = getElement('alltodolist')
+		if(alltodolist.innerHTML != output.join('')){
+			alltodolist.innerHTML = output.join('')
 		}
 
 	}
@@ -2230,7 +2384,7 @@ class Calendar {
 			let difference = Math.floor((currentdate.getTime() - tempenddate.getTime()) / 60000)
 
 			output.push(`
-	 			<div class="display-flex flex-column">
+	 			<div class="display-flex flex-column gap-6px">
 		 			<div class="display-flex flex-row justify-space-between flex-wrap-wrap">
 						<div class="text-16px text-bold text-primary break-word overflow-hidden">${item.title ? cleanInput(item.title) : 'New Event'}</div>
 						<div class="text-16px text-quaternary nowrap">Ends at ${getHMText(tempenddate.getHours() * 60 + tempenddate.getMinutes())} (${getDHMText(Math.abs(difference))} left)</div>
@@ -2298,13 +2452,13 @@ class Calendar {
 
 		let completedtodos = gettodos(startdate, enddate).filter(d => d.completed)
 		let unfinishedtodos = gettodos(currentdate, enddate).filter(d => !d.completed)
-		let overduetodos = gettodos(null, currentdate).filter(d => !d.completed)
+		let passedtodos = gettodos(null, currentdate).filter(d => !d.completed)
 
-		let totaltodos = completedtodos.length + unfinishedtodos.length + overduetodos.length
+		let totaltodos = completedtodos.length + unfinishedtodos.length + passedtodos.length
 
 		summarytodocompleted.innerHTML = getcircleprogressbar(completedtodos.length, totaltodos, completedtodos.length, 'var(--green)')
 		summarytodounfinished.innerHTML = getcircleprogressbar(unfinishedtodos.length, totaltodos, unfinishedtodos.length, 'var(--blue)')
-		summarytodooverdue.innerHTML = getcircleprogressbar(overduetodos.length, totaltodos, overduetodos.length, 'var(--red)')
+		summarytodooverdue.innerHTML = getcircleprogressbar(passedtodos.length, totaltodos, passedtodos.length, 'var(--red)')
 
 		//today's events
 		let summaryeventtimebusy = getElement('summaryeventtimebusy')
@@ -2425,13 +2579,15 @@ class Calendar {
 		let settingssleepend = getElement('settingssleepend')
 		let settingssleepstart2 = getElement('settingssleepstart2')
 		let settingssleepend2 = getElement('settingssleepend2')
-		let settingseventspacing2 = getElement('settingseventspacing2')
 
 		if(settingssleepstart) settingssleepstart.value = getHMText(calendar.settings.sleep.startminute)
 		if(settingssleepend) settingssleepend.value = getHMText(calendar.settings.sleep.endminute)
 		settingssleepstart2.value = getHMText(calendar.settings.sleep.startminute)
 		settingssleepend2.value = getHMText(calendar.settings.sleep.endminute)
-		settingseventspacing2.value = getDHMText(calendar.settings.eventspacing)
+
+
+		let settingseventspacing = getElement('settingseventspacing')
+		settingseventspacing.value = getDHMText(calendar.settings.eventspacing)
 
 
 		//tabs
@@ -2590,6 +2746,52 @@ class Calendar {
 		}
 
 
+		//sync with google classroom
+		let syncgoogleclassroomtoggle = getElement('syncgoogleclassroomtoggle')
+		syncgoogleclassroomtoggle.checked = calendar.settings.issyncingtogoogleclassroom
+
+		let lastsyncedgoogleclassroom = getElement('lastsyncedgoogleclassroom')
+		let syncnowgoogleclassroombutton = getElement('syncnowgoogleclassroom')
+
+		lastsyncedgoogleclassroom.classList.add('display-none')
+		syncnowgoogleclassroombutton.classList.add('display-none')
+
+		if(calendar.settings.issyncingtogoogleclassroom){
+
+			lastsyncedgoogleclassroom.classList.remove('display-none')
+
+			let currentdate = new Date()
+
+			let issynced = calendar.lastsyncedgoogleclassroomdate && Math.floor((currentdate.getTime() - calendar.lastsyncedgoogleclassroomdate) / 60000) <= 1
+
+			if(!issynced){
+				syncnowgoogleclassroombutton.classList.remove('display-none')
+			}
+
+			let difference;
+			if(calendar.lastsyncedgoogleclassroomdate){
+				difference = Math.floor((currentdate.getTime() - calendar.lastsyncedgoogleclassroomdate) / 60000)
+			}
+
+			let text = `
+			<div class="display-flex flex-row align-center gap-6px tooltip">
+				${issynced ? 
+					`
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline checkboxfilledgreen">
+						<g>
+						<path d="M128 7.19484C61.2812 7.19484 7.19484 61.2812 7.19484 128C7.19484 194.719 61.2812 248.805 128 248.805C194.719 248.805 248.805 194.719 248.805 128C248.805 61.2812 194.719 7.19484 128 7.19484ZM190.851 66.0048C194.206 65.7071 197.649 66.7098 200.436 69.0426C206.01 73.7082 206.753 81.9906 202.088 87.5645L115.524 190.969C110.264 197.253 100.582 197.253 95.3213 190.969L52.0249 139.266C47.3593 133.693 48.1026 125.41 53.6765 120.745C59.2504 116.079 67.5623 116.822 72.2279 122.396L105.408 162.035L181.885 70.6942C184.217 67.9073 187.495 66.3024 190.851 66.0048Z" fill-rule="nonzero" opacity="1"></path>
+						<path d="M128 0C57.3076 0 0 57.3076 0 128C0 198.692 57.3076 256 128 256C198.692 256 256 198.692 256 128C256 57.3076 198.692 0 128 0ZM128 7.75758C194.408 7.75758 248.242 61.5919 248.242 128C248.242 194.408 194.408 248.242 128 248.242C61.5919 248.242 7.75758 194.408 7.75758 128C7.75758 61.5919 61.5919 7.75758 128 7.75758Z" fill-rule="nonzero" opacity="1"></path>
+						</g>
+					</svg>
+					<div class="text-14px text-green">In sync</div>`
+				:
+				`<div class="text-14px text-red">Not synced</div>
+				<span class="tooltiptextright">${difference ? `Last synced ${getRelativeDHMText(difference)}` : `Never synced`}</span>`}
+			</div>`
+			lastsyncedgoogleclassroom.innerHTML = text
+		}
+
+
 		//account
 		if (clientinfo) {
 			//google login
@@ -2639,10 +2841,16 @@ class Calendar {
 		}
 
 
-		//push notif
+		//notif
 		let enablepushnotif = getElement('enablepushnotif')
+		let enablepushnotif2 = getElement('enablepushnotif2')
 		enablepushnotif.checked = calendar.pushSubscriptionEnabled
+		enablepushnotif2.checked = calendar.pushSubscriptionEnabled
 
+		let enableemailnotif = getElement('enableemailnotif')
+		let enableemailnotif2 = getElement('enableemailnotif2')
+		enableemailnotif.checked = calendar.emailreminderenabled
+		enableemailnotif2.checked = calendar.emailreminderenabled
 	}
 
 
@@ -2765,6 +2973,39 @@ function setHistory(json) {
 	historyindex = historydata.length - 1
 }
 
+
+//mobile device
+let mobilescreen = false
+if ('matchMedia' in window) {
+	let smallscreen = window.matchMedia('(max-width: 600px)')
+	if (smallscreen.matches) {
+		mobilescreen = true
+	}
+
+	smallscreen.addEventListener('change', changedevicescreen)
+}
+
+function changedevicescreen(event){
+	if(event.matches){
+		smallscreen = true
+
+		if (calendarmode == 1) {
+			calendarmode = 0
+		}
+		if(calendartabs.includes(0) && calendartabs.includes(1)){
+			calendartabs = [0]
+		}
+	}else{
+		smallscreen = false
+
+		if(calendartabs.includes(0) || calendartabs.includes(1)){
+			calendartabs = [0, 1]
+		}
+	}
+	calendar.updateTabs()
+}
+
+
 //initialize
 let historydata = []
 let historyindex = 0
@@ -2779,28 +3020,22 @@ let autoscheduleeventslist = []
 let oldautoscheduleeventslist = []
 let newautoscheduleeventslist = []
 
+
 //new calendar
 let calendarmode = 1
 let calendarmodestorage = getStorage('calendarmode')
 if (calendarmodestorage != null) {
 	calendarmode = calendarmodestorage
 }
-if ('matchMedia' in window) {
-	let smallscreen = window.matchMedia('(max-width: 600px)')
-	if (smallscreen.matches) {
-		if (calendarmode == 1) {
-			calendarmode = 0
-		}
+if(mobilescreen){
+	if (calendarmode == 1) {
+		calendarmode = 0
 	}
 }
 
-
 let calendartabs = [0, 1]
-if ('matchMedia' in window) {
-	let smallscreen = window.matchMedia('(max-width: 600px)')
-	if (smallscreen.matches) {
-		calendartabs = [1]
-	}
+if(mobilescreen){
+	calendartabs = [1]
 }
 
 let todomode = 0
@@ -2832,7 +3067,7 @@ function scrollcalendarY(targetminute) {
 	cancelAnimationFrame(scrollYAnimationFrameId)
 
 	let barcolumncontainer = getElement('barcolumncontainer')
-	let target = targetminute - barcolumncontainer.offsetHeight / 2
+	let target = targetminute - 60*2
 
 	let duration = 500
 	let start = barcolumncontainer.scrollTop
@@ -2898,6 +3133,41 @@ function scrollcalendarX(targetdate) {
 	}
 	scrollXAnimationFrameId = requestAnimationFrame(animateScroll, increment);
 
+}
+
+
+
+//scroll todo Y
+let scrolltodoYAnimationFrameId;
+function scrolltodoY(targetminute) {
+	cancelAnimationFrame(scrolltodoYAnimationFrameId)
+
+	let todocontainer = getElement('todocontainer')
+	let target = targetminute - todocontainer.offsetHeight / 2
+
+	let duration = 500
+	let start = todocontainer.scrollTop
+	let end = target
+	let change = end - start
+	let increment = 20
+	let currentTime = 0
+
+	function animateScroll() {
+		function easeinoutquad(t, b, c, d) {
+			t /= d / 2
+			if (t < 1) return c / 2 * t * t + b
+			t--
+			return -c / 2 * (t * (t - 2) - 1) + b
+		}
+
+		currentTime += increment
+		const val = easeinoutquad(currentTime, start, change, duration)
+		todocontainer.scrollTo(0, val)
+		if (currentTime < duration) {
+			scrolltodoYAnimationFrameId = requestAnimationFrame(animateScroll, increment)
+		}
+	}
+	scrolltodoYAnimationFrameId = requestAnimationFrame(animateScroll, increment)
 }
 
 
@@ -3037,6 +3307,22 @@ function updatetime() {
 function run() {
 	//ONCE
 
+
+	//push notif
+	window.addEventListener('mousedown', clickforpushnotif, false)
+	window.addEventListener('touchstart', clickforpushnotif, false)
+
+	function clickforpushnotif(event){
+		if (calendar.pushSubscriptionEnabled) {
+			enablePushNotifs()
+		} else {
+			removePushNotifs()
+		}
+		
+		window.removeEventListener('mousedown', clickforpushnotif, false)
+		window.removeEventListener('touchstart', clickforpushnotif, false)
+	}
+
 	//theme
 	updatetheme()
 
@@ -3055,9 +3341,9 @@ function run() {
 	//check for onboarding
 	updateonboardingscreen()
 
-
 	//set initial save data
 	lastbodydata = calendar.getChangedJSON()
+	
 
 	//hide loading screen
 	hideloadingscreen()
@@ -3069,7 +3355,7 @@ function run() {
 
 	//welcome popup
 	setTimeout(function () {
-		if (calendar.welcomepopup.calendar == false) {
+		if (calendar.welcomepopup.calendar == false && calendar.onboarding.addtask == true) {
 			getElement(welcomepopupdata.calendar).classList.remove('hiddenfade')
 		}
 	}, 10000)
@@ -3087,14 +3373,21 @@ function run() {
 		}
 	}, 10)
 
-	//time display
-	setInterval(function () {
+
+	//minute interval
+	setInterval(function(){
 		updatetime()
 	}, 1000)
 
+	setInterval(function(){
+		if(calendartabs.includes(0)){
+			startAutoSchedule([])
+		}
+	}, 60000)
+
 
 	//sync with google
-	async function runsyncwithgoogle() {
+	async function runsyncwithgooglecalendar() {
 		if (document.visibilityState === 'visible') {
 			await getclientgooglecalendar()
 		}
@@ -3106,7 +3399,21 @@ function run() {
 			}
 		}, 1000)
 	}
-	runsyncwithgoogle()
+	runsyncwithgooglecalendar()
+
+	async function runsyncwithgoogleclassroom() {
+		if (document.visibilityState === 'visible') {
+			await getclientgoogleclassroom()
+		}
+		let lasttriedsyncgoogleclassroomdate = Date.now()
+		setInterval(async function () {
+			if (document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgoogleclassroomdate > 60000 && Date.now() - lasttriedsyncgoogleclassroomdate > 60000) {
+				await getclientgoogleclassroom()
+				lasttriedsyncgoogleclassroomdate = Date.now()
+			}
+		}, 1000)
+	}
+	runsyncwithgoogleclassroom()
 }
 
 //update status indicator
@@ -3160,7 +3467,7 @@ function clicktab(index) {
 	if (gototoday) {
 		let barcolumncontainer = getElement('barcolumncontainer')
 
-		let target = currentdate.getHours() * 60 + currentdate.getMinutes() - barcolumncontainer.offsetHeight / 2
+		let target = currentdate.getHours() * 60 + currentdate.getMinutes() - 60*2
 		barcolumncontainer.scrollTo(0, target)
 	}
 }
@@ -3374,6 +3681,7 @@ function clickmonthdate(event, timestamp) {
 
 
 //ONBOARDING
+
 function updateonboardingscreen(){
 	let onboardingscreen = getElement('onboardingscreen')
 	onboardingscreen.classList.add('hiddenfade')
@@ -3392,6 +3700,10 @@ function updateonboardingscreen(){
 		currentonboarding = 'start'
 	}else if(!calendar.onboarding.connectcalendars){
 		currentonboarding = 'connectcalendars'
+	}else if(!calendar.onboarding.connecttodolists){
+		currentonboarding = 'connecttodolists'
+	}else if(!calendar.onboarding.eventreminders){
+		currentonboarding = 'eventreminders'
 	}else if(!calendar.onboarding.sleeptime){
 		currentonboarding = 'sleeptime'
 	}else if(!calendar.onboarding.addtask){
@@ -3405,6 +3717,15 @@ function updateonboardingscreen(){
 	for(let [key, value] of Object.entries(calendar.onboarding)){
 		updatescreen(key, key == currentonboarding)
 	}
+
+	getElement('todopopup').classList.remove('z-index-10000')
+	getElement('createtodoitemduedate').classList.remove('z-index-10001')
+	getElement('createtodoitemduration').classList.remove('z-index-10001')
+	getElement('createtodoitempriority').classList.remove('z-index-10001')
+	getElement('todoitempriority').classList.remove('z-index-10001')
+	getElement('todoitemduedate').classList.remove('z-index-10001')
+	getElement('todoitemduration').classList.remove('z-index-10001')
+
 
 	if(currentonboarding == 'connectcalendars'){
 		let onboardingconnectcalendarsgooglecalendar = getElement('onboardingconnectcalendarsgooglecalendar')
@@ -3421,12 +3742,35 @@ function updateonboardingscreen(){
 
 		let onboardingconnectcalendarsoutlookcalendar = getElement('onboardingconnectcalendarsoutlookcalendar')
 		onboardingconnectcalendarsoutlookcalendar.innerHTML = ``
+	}else if(currentonboarding == 'connecttodolists'){
+		let onboardingconnecttodolistsgoogleclassroom = getElement('onboardingconnecttodolistsgoogleclassroom')
+		onboardingconnecttodolistsgoogleclassroom.innerHTML = clientinfo.google_email ? 
+			`
+			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline checkboxfilledgreen">
+				<g>
+				<path d="M128 7.19484C61.2812 7.19484 7.19484 61.2812 7.19484 128C7.19484 194.719 61.2812 248.805 128 248.805C194.719 248.805 248.805 194.719 248.805 128C248.805 61.2812 194.719 7.19484 128 7.19484ZM190.851 66.0048C194.206 65.7071 197.649 66.7098 200.436 69.0426C206.01 73.7082 206.753 81.9906 202.088 87.5645L115.524 190.969C110.264 197.253 100.582 197.253 95.3213 190.969L52.0249 139.266C47.3593 133.693 48.1026 125.41 53.6765 120.745C59.2504 116.079 67.5623 116.822 72.2279 122.396L105.408 162.035L181.885 70.6942C184.217 67.9073 187.495 66.3024 190.851 66.0048Z" fill-rule="nonzero" opacity="1"></path>
+				<path d="M128 0C57.3076 0 0 57.3076 0 128C0 198.692 57.3076 256 128 256C198.692 256 256 198.692 256 128C256 57.3076 198.692 0 128 0ZM128 7.75758C194.408 7.75758 248.242 61.5919 248.242 128C248.242 194.408 194.408 248.242 128 248.242C61.5919 248.242 7.75758 194.408 7.75758 128C7.75758 61.5919 61.5919 7.75758 128 7.75758Z" fill-rule="nonzero" opacity="1"></path>
+				</g>
+			</svg>
+			<div class="text-14px text-green">Connected</div>` 
+			: ``
 	}else if(currentonboarding == 'sleeptime'){
 		calendar.updateSettings()
 	}else if(currentonboarding == 'addtask'){
 		let onboardingaddtasktodolist = getElement('onboardingaddtasktodolist')
 		onboardingaddtasktodolist.innerHTML = getElement('alltodolist').innerHTML
+
+		getElement('todopopup').classList.add('z-index-10000')
+		getElement('createtodoitemduedate').classList.add('z-index-10001')
+		getElement('createtodoitemduration').classList.add('z-index-10001')
+		getElement('createtodoitempriority').classList.add('z-index-10001')
+		getElement('todoitempriority').classList.add('z-index-10001')
+		getElement('todoitemduedate').classList.add('z-index-10001')
+		getElement('todoitemduration').classList.add('z-index-10001')
+	}else if(currentonboarding == 'eventreminders'){
+		calendar.updateSettings()
 	}
+
 }
 
 
@@ -3516,7 +3860,7 @@ function updateinteractivetour() {
 
 		if (key == 'clickaddtask') {
 
-			let tourbutton = getElement('addtaskbutton')
+			let tourbutton = getElement('todoinputtitle')
 			if (isviewable(tourbutton)) {
 				let rect = tourbutton.getBoundingClientRect()
 
@@ -3536,32 +3880,7 @@ function updateinteractivetour() {
 				movepopup(mypopup, rect.top + rect.height, rect.left + rect.width / 2 - mypopup.offsetWidth / 2)
 			}
 
-		} else if (key == 'clickaddtitle') {
-
-			let tourbutton = getElement('todoinputtitle')
-			if (isviewable(tourbutton)) {
-				let rect = tourbutton.getBoundingClientRect()
-
-				if (value == false && key != selectedinteractivetourpopupindex) {
-					showbeacon(mybeacon)
-					movebeacon(mybeacon, rect.top + 12, rect.left + 330)
-				} else {
-					hidebeacon(mybeacon)
-				}
-
-				if (key == selectedinteractivetourpopupindex) {
-					showpopup(mypopup)
-				} else {
-					hidepopup(mypopup)
-				}
-
-				movepopup(mypopup, rect.top + rect.height, rect.left)
-			} else {
-				hidebeacon(mybeacon)
-				hidepopup(mypopup)
-			}
-
-		} else if (key == 'clickscheduleoncalendar') {
+		}  else if (key == 'clickscheduleoncalendar') {
 
 			let tourbutton = getElement('scheduleoncalendar')
 			if (isviewable(tourbutton)) {
@@ -3588,7 +3907,7 @@ function updateinteractivetour() {
 
 		} else if (key == 'autoschedule') {
 
-			let tourbutton = getElement('eventinfosmartscheduletext')
+			let tourbutton = getElement('eventinfosmartschedule')
 			if (isviewable(tourbutton)) {
 				let rect = tourbutton.getBoundingClientRect()
 
@@ -3659,11 +3978,8 @@ function clicktakeinteractivetour() {
 	closehelp()
 	restartinteractivetour()
 	calendartabs = [0,1]
-	if ('matchMedia' in window) {
-		let smallscreen = window.matchMedia('(max-width: 600px)')
-		if (smallscreen.matches) {
-			calendartabs = [0]
-		}
+	if(mobilescreen){
+		calendartabs = [0]
 	}
 	calendar.updateTabs()
 }
@@ -3722,7 +4038,7 @@ function openleftmenu(event) {
 function updateAvatar(){
 	let displayname = clientinfo.google_email ? cleanInput(clientinfo.google.name || clientinfo.google_email) : clientinfo.username
 	
-	let avatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : ''}` : ``
+	let avatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : '<img class="border-round avatarimage whitebackground" src="https://static.vecteezy.com/system/resources/previews/021/079/672/original/user-account-icon-for-your-design-only-free-png.png"></img>'}` : '<img class="border-round avatarimage whitebackground" src="https://static.vecteezy.com/system/resources/previews/021/079/672/original/user-account-icon-for-your-design-only-free-png.png"></img>'
 	
 	let leftmenubutton = getElement('leftmenubutton')
 	leftmenubutton.innerHTML = `
@@ -3774,7 +4090,9 @@ if ('matchMedia' in window) {
 	}
 	themedata.addEventListener('change', changedevicetheme)
 }
-settheme(devicetheme)
+
+settheme(getStorage('theme') || devicetheme)
+
 
 function changedevicetheme(event) {
 	if (event.matches) {
@@ -3807,6 +4125,7 @@ function toggletheme() {
 
 function settheme(theme) {
 	rootdataset.theme = theme
+	setStorage('theme', theme)
 	updatetoggletheme()
 }
 
@@ -3865,19 +4184,19 @@ function openfocus() {
 window.addEventListener('keydown', keydowndocument, false)
 function keydowndocument(event) {
 	if (!document.activeElement || document.activeElement === document.body) {
-		if (event.keyCode == 68 && calendartabs.includes(0)) { //D
+		if (event.key.toLowerCase() == 'd' && calendartabs.includes(0)) { //D
 			selectedeventid = null
 			calendarmode = 0
 			calendar.updateCalendar()
-		} else if (event.keyCode == 87 && calendartabs.includes(0)) { //W
+		} else if (event.key.toLowerCase() == 'w' && calendartabs.includes(0)) { //W
 			selectedeventid = null
 			calendarmode = 1
 			calendar.updateCalendar()
-		} else if (event.keyCode == 77 && calendartabs.includes(0)) { //M
+		} else if (event.key.toLowerCase() == 'm' && calendartabs.includes(0)) { //M
 			selectedeventid = null
 			calendarmode = 2
 			calendar.updateCalendar()
-		} else if ((event.keyCode == 8 || event.keyCode == 46) && calendartabs.includes(0)) { //backspace or delete
+		} else if ((event.key == 'Backspace' || event.key == 'Delete') && calendartabs.includes(0)) { //backspace or delete
 			let item = calendar.events.find(d => d.id == selectedeventid)
 			if (!item) return
 
@@ -3890,7 +4209,7 @@ function keydowndocument(event) {
 			calendar.updateTodo()
 			calendar.updateEvents()
 			calendar.updateHistory()
-		} else if (event.keyCode == 67 && (event.ctrlKey || event.metaKey) && calendartabs.includes(0)) { //ctrl C
+		} else if (event.key.toLowerCase() == 'c' && (event.ctrlKey || event.metaKey) && calendartabs.includes(0)) { //ctrl C
 			event.stopPropagation()
 			event.preventDefault()
 
@@ -3900,7 +4219,7 @@ function keydowndocument(event) {
 			if (Calendar.Event.isReadOnly(item)) return
 
 			copiedevent = JSON.stringify(item)
-		} else if (event.keyCode == 86 && (event.ctrlKey || event.metaKey) && calendartabs.includes(0)) { //ctrl V
+		} else if (event.key.toLowerCase() == 'v' && (event.ctrlKey || event.metaKey) && calendartabs.includes(0)) { //ctrl V
 			event.stopPropagation()
 			event.preventDefault()
 
@@ -3917,7 +4236,7 @@ function keydowndocument(event) {
 				calendar.updateEvents()
 				calendar.updateHistory()
 			}
-		} else if (event.keyCode == 90 && !event.shiftKey && (event.ctrlKey || event.metaKey)) { //ctrl Z
+		} else if (event.key.toLowerCase() == 'z' && !event.shiftKey && (event.ctrlKey || event.metaKey)) { //ctrl Z
 			event.stopPropagation()
 			event.preventDefault()
 
@@ -3932,7 +4251,7 @@ function keydowndocument(event) {
 			calendar.updateEvents()
 			calendar.updateTodo()
 			calendar.updateInfo()
-		} else if (((event.keyCode == 90 && event.shiftKey) || event.keyCode == 89) && (event.ctrlKey || event.metaKey)) { //ctrl shift Z or ctrl Y
+		} else if (((event.key.toLowerCase() == 'z' && event.shiftKey) || event.key.toLowerCase() == 'y') && (event.ctrlKey || event.metaKey)) { //ctrl shift Z or ctrl Y
 			event.stopPropagation()
 			event.preventDefault()
 
@@ -3947,11 +4266,11 @@ function keydowndocument(event) {
 			calendar.updateEvents()
 			calendar.updateTodo()
 			calendar.updateInfo()
-		} else if (event.keyCode == 37 && calendartabs.includes(0)) { //left arrow
+		} else if (event.key == 'ArrowLeft' && calendartabs.includes(0)) { //left arrow
 			prevcalendar()
-		} else if (event.keyCode == 39 && calendartabs.includes(0)) { //right arrow
+		} else if (event.key == 'ArrowRight' && calendartabs.includes(0)) { //right arrow
 			nextcalendar()
-		} else if (event.keyCode == 84 && calendartabs.includes(0)) { //T
+		} else if (event.key.toLowerCase() == 't' && calendartabs.includes(0)) { //T
 			todaycalendar()
 		}
 
@@ -4005,6 +4324,7 @@ function mousedowndocument(event) {
 		calendar.updateInfo(true)
 	}
 }
+
 
 
 //EVENT INFO
@@ -4656,6 +4976,45 @@ function opensetpassword() {
 }
 
 
+function opendeleteaccount(event) {
+	let button = event.target
+	let deleteaccountmenu = getElement('deleteaccountmenu')
+	deleteaccountmenu.classList.toggle('hiddenpopup')
+
+	deleteaccountmenu.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, deleteaccountmenu) + 'px'
+	deleteaccountmenu.style.left = fixleft(button.getBoundingClientRect().left, deleteaccountmenu) + 'px'
+
+	let form = getElement('deleteaccountform')
+	form.reset()
+}
+
+async function submitdeleteaccount(event) {
+	event.preventDefault()
+
+	let deleteaccountmenu = getElement('deleteaccountmenu')
+	let deleteaccounterrorwrap = getElement('deleteaccounterrorwrap')
+	deleteaccounterrorwrap.classList.add('display-none')
+
+	let deleteaccountform = getElement('deleteaccountform')
+	const formdata = new FormData(deleteaccountform)
+
+	const response = await fetch(`/deleteaccount`, {
+		method: 'POST',
+		body: formdata,
+		redirect: 'follow'
+	})
+	if (response.status == 401) {
+		const data = await response.json()
+		deleteaccounterrorwrap.innerHTML = data.error
+		deleteaccounterrorwrap.classList.remove('display-none')
+	} else if (response.status == 200) {
+		if (response.redirected) {
+			window.location.replace(response.url)
+		}
+	}
+}
+
+
 async function submitchangeusername(event) {
 	event.preventDefault()
 
@@ -4678,7 +5037,8 @@ async function submitchangeusername(event) {
 		changeusernamemenu.classList.add('hiddenpopup')
 		changeusernameform.reset()
 
-		getclientinfo()
+		await getclientinfo()
+		calendar.updateSettings()
 	}
 }
 
@@ -4704,7 +5064,8 @@ async function submitsetusername(event) {
 		setusernamemenu.classList.add('hiddenpopup')
 		setusernameform.reset()
 
-		getclientinfo()
+		await getclientinfo()
+		calendar.updateSettings()
 	}
 }
 
@@ -4732,7 +5093,8 @@ async function submitchangepassword(event) {
 		changepasswordmenu.classList.add('hiddenpopup')
 		changepasswordform.reset()
 
-		getclientinfo()
+		await getclientinfo()
+		calendar.updateSettings()
 	}
 }
 
@@ -4759,7 +5121,8 @@ async function submitsetpassword(event) {
 		setpasswordmenu.classList.add('hiddenpopup')
 		setpasswordform.reset()
 
-		getclientinfo()
+		await getclientinfo()
+		calendar.updateSettings()
 	}
 }
 
@@ -4779,8 +5142,8 @@ function showloginpopup() {
 function hideloginpopup() {
 	let loginpopup = getElement('loginpopup')
 	loginpopup.classList.add('hiddenfade')
+	
 }
-
 
 
 //disconnect google
@@ -4839,8 +5202,186 @@ function displayalert(title) {
 	})
 }
 
+
+
 //SETTINGS
 
+
+//break per hour
+function inputsettingseventspacing(event){
+	let string = event.target.value.toLowerCase()
+	let myduration = getDuration(string).value
+  
+	if(myduration < 0){
+		myduration = 0
+	}
+
+	if(myduration > 60){
+		myduration = 60
+	}
+
+	if (myduration != null){
+	  calendar.settings.eventspacing = myduration
+	}
+	calendar.updateSettings()
+	calendar.updateHistory()
+  }
+  
+  function clicksettingstheme(theme){
+	  calendar.settings.theme = theme
+	calendar.updateSettings()
+	  updatetheme()
+  }
+
+  
+
+//google classroom code
+
+function togglesyncgoogleclassroom(event){
+	if(event.target.checked){
+		enablesyncgoogleclassroom()
+	}else{
+		disablesyncgoogleclassroom()
+	}
+}
+
+function enablesyncgoogleclassroom(){
+	calendar.settings.issyncingtogoogleclassroom = true
+	calendar.updateSettings()
+	getclientgoogleclassroom()
+}
+
+function disablesyncgoogleclassroom(){
+	let importgoogleclassroomerror = getElement('importgoogleclassroomerror')
+	importgoogleclassroomerror.classList.add('display-none')
+
+	let loginwithgoogleclassroomscreen = getElement('loginwithgoogleclassroomscreen')
+	loginwithgoogleclassroomscreen.classList.add('hiddenfade')
+
+	calendar.settings.issyncingtogoogleclassroom = false
+	calendar.updateSettings()
+}
+
+
+
+function syncnowgoogleclassroom() {
+	displayalert('Syncing with Google Classroom...')
+	getclientgoogleclassroom()
+}
+
+//get data
+let isgettingclientgoogleclassroom = false
+let hidegoogleclassroomloginpopup = false
+async function getclientgoogleclassroom(){
+	if (!calendar.settings.issyncingtogoogleclassroom) return
+	if (isgettingclientgoogleclassroom) return
+
+	isgettingclientgoogleclassroom = true
+
+	try {
+		//request
+		const response = await fetch('/getclientgoogleclassroom', {
+			method: 'POST'
+		})
+
+		if (response.status == 401) {
+			const data = await response.json()
+			importgoogleclassroomerror.innerHTML = data.error
+			importgoogleclassroomerror.classList.remove('display-none')
+
+			if(!hidegoogleclassroomloginpopup){
+				let loginwithgoogleclassroomscreen = getElement('loginwithgoogleclassroomscreen')
+				loginwithgoogleclassroomscreen.classList.remove('hiddenfade')
+			}
+		}else if(response.status == 200){
+			calendar.lastsyncedgoogleclassroomdate = Date.now()
+
+			const data = await response.json()
+
+			for(let googleitem of data.data){
+				let mytodo = [...calendar.events, ...calendar.todos].find(d => d.googleclassroomid == googleitem.id)
+				if(!mytodo){
+					let endbeforeyear, endbeforemonth, endbeforeday, endbeforeminute = null;
+					if(googleitem.dueDate){
+						endbeforeyear = googleitem.dueDate.year
+						endbeforemonth = googleitem.dueDate.month - 1
+						endbeforeday = googleitem.dueDate.day
+					}
+					if(googleitem.dueTime){
+						endbeforeminute = googleitem.dueTime.hours * 60 + googleitem.dueTime.minutes
+					}
+
+					//utc due date
+					if(endbeforeyear && endbeforemonth && endbeforeday && endbeforeminute){
+						let utcduedate = new Date(Date.UTC(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute))
+
+						endbeforeyear = utcduedate.getFullYear()
+						endbeforemonth = utcduedate.getMonth()
+						endbeforeday = utcduedate.getDate()
+						endbeforeminute = utcduedate.getHours() * 60 + utcduedate.getMinutes()
+					}
+
+					let newtodo = new Calendar.Todo(endbeforeyear, endbeforemonth, endbeforeday, endbeforeminute, 60, googleitem.title, googleitem.alternateLink)
+					newtodo.googleclassroomid = googleitem.id
+
+					calendar.todos.push(newtodo)
+				}else{
+					let endbeforeyear, endbeforemonth, endbeforeday, endbeforeminute = null;
+					if(googleitem.dueDate){
+						endbeforeyear = googleitem.dueDate.year
+						endbeforemonth = googleitem.dueDate.month - 1
+						endbeforeday = googleitem.dueDate.day
+					}
+					if(googleitem.dueTime){
+						endbeforeminute = googleitem.dueTime.hours * 60 + googleitem.dueTime.minutes
+					}
+
+					//utc due date
+					if(endbeforeyear && endbeforemonth && endbeforeday && endbeforeminute){
+						let utcduedate = new Date(Date.UTC(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute))
+
+						endbeforeyear = utcduedate.getFullYear()
+						endbeforemonth = utcduedate.getMonth()
+						endbeforeday = utcduedate.getDate()
+						endbeforeminute = utcduedate.getHours() * 60 + utcduedate.getMinutes()
+					}
+
+					mytodo.endbefore.year = endbeforeyear
+					mytodo.endbefore.month = endbeforemonth
+					mytodo.endbefore.day = endbeforeday
+					mytodo.endbefore.minute = endbeforeminute
+
+					mytodo.title = googleitem.title
+					mytodo.notes = googleitem.alternateLink
+				}
+
+			}
+
+			
+			calendar.updateEvents()
+			calendar.updateTodo()
+			calendar.updateHistory(false, false)
+
+			calendar.updateSettings()
+		}
+	}catch(err){
+		console.log(err)
+		displayalert('Error, could not sync with Google Classroom')
+	}
+
+	isgettingclientgoogleclassroom = false
+}
+
+
+function closeloginwithgoogleclassroompopup(){
+	hidegoogleclassroomloginpopup = true
+	let loginwithgoogleclassroomscreen = getElement('loginwithgoogleclassroomscreen')
+	loginwithgoogleclassroomscreen.classList.add('hiddenfade')
+}
+
+
+
+//icalendar file code
 
 function getdatafromicalendar(text, subscriptionurl) {
 	function getFrequencyNumber(rrule) {
@@ -5029,6 +5570,9 @@ async function subscribecalendar(url) {
 }
 
 
+
+//google calendar code
+
 function togglesyncgooglecalendar(event) {
 	let isenabled = event.target.checked
 	if (isenabled) {
@@ -5056,10 +5600,21 @@ function disablesyncgooglecalendar() {
 	let importgooglecalendarerror2 = getElement('importgooglecalendarerror2')
 	importgooglecalendarerror2.classList.add('display-none')
 
+	let loginwithgooglescreen = getElement('loginwithgooglescreen')
+	loginwithgooglescreen.classList.add('hiddenfade')
+
 	calendar.settings.issyncingtogooglecalendar = false
 	calendar.updateSettings()
 }
 
+
+//close login with google popup
+let hideloginwithgooglepopup = false
+function closeloginwithgooglepopup(){
+	let loginwithgooglescreen = getElement('loginwithgooglescreen')
+	loginwithgooglescreen.classList.add('hiddenfade')
+	hideloginwithgooglepopup = true
+}
 
 //set google calendar
 let issettingclientgooglecalendar = false
@@ -5068,6 +5623,9 @@ async function setclientgooglecalendar(requestchanges) {
 	importgooglecalendarerror.classList.add('display-none')
 	let importgooglecalendarerror2 = getElement('importgooglecalendarerror2')
 	importgooglecalendarerror2.classList.add('display-none')
+
+	let loginwithgooglescreen = getElement('loginwithgooglescreen')
+	loginwithgooglescreen.classList.add('hiddenfade')
 
 	if (!calendar.settings.issyncingtogooglecalendar) return
 	if (requestchanges.length == 0) return
@@ -5096,6 +5654,10 @@ async function setclientgooglecalendar(requestchanges) {
 			importgooglecalendarerror2.innerHTML = data.error
 			importgooglecalendarerror2.classList.remove('display-none')
 
+			if(!hideloginwithgooglepopup){
+				let loginwithgooglescreen = getElement('loginwithgooglescreen')
+				loginwithgooglescreen.classList.remove('hiddenfade')
+			}
 		} else if (response.status == 200) {
 			const data = await response.json()
 
@@ -5139,6 +5701,9 @@ async function getclientgooglecalendar() {
 	let importgooglecalendarerror2 = getElement('importgooglecalendarerror2')
 	importgooglecalendarerror2.classList.add('display-none')
 
+	let loginwithgooglescreen = getElement('loginwithgooglescreen')
+	loginwithgooglescreen.classList.add('hiddenfade')
+
 	if (!calendar.settings.issyncingtogooglecalendar) return
 	if (isgettingclientgooglecalendar) return
 
@@ -5157,7 +5722,10 @@ async function getclientgooglecalendar() {
 			importgooglecalendarerror2.innerHTML = data.error
 			importgooglecalendarerror2.classList.remove('display-none')
 
-			displayalert('Error, could not sync with Google Calendar')
+			if(!hideloginwithgooglepopup){
+				let loginwithgooglescreen = getElement('loginwithgooglescreen')
+				loginwithgooglescreen.classList.remove('hiddenfade')
+			}
 		} else if (response.status == 200) {
 			const data = await response.json()
 
@@ -5293,6 +5861,13 @@ function getdatafromgooglecalendar(listdata) {
 			//modify existing event or create new event
 			let myevent = calendar.events.find(d => d.googleeventid == id)
 			if (myevent) {
+				//check for last modified
+				/*
+				if(myevent.lastmodified > new Date(event.updated).getTime()){
+					continue
+				}
+				*/
+
 				myevent.start.year = startdate.getFullYear()
 				myevent.start.month = startdate.getMonth()
 				myevent.start.day = startdate.getDate()
@@ -5402,7 +5977,7 @@ function updatecalendaritempopup(id) {
 			<div class="inputgroup">
 				<div class="infotext width90px">Title</div>
 				<div class="inputgroupitem flex-1">
-					<input placeholder="Add title" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="renamecalendar(event, '${item.id}')" id="calendaritemtitle" class="infoinput" value="${item.title ? cleanInput(item.title) : ''}">
+					<input placeholder="Add title" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="renamecalendar(event, '${item.id}')" id="calendaritemtitle" class="infoinput" value="${item.title ? cleanInput(item.title) : ''}">
 						<span class="inputline"></span>
 					</input>
 				</div>
@@ -5411,7 +5986,7 @@ function updatecalendaritempopup(id) {
 			<div class="inputgroup">
 				<div class="infotext width90px">Description</div>
 				<div class="inputgroupitem flex-1">
-					<input placeholder="Add description" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="editdescriptioncalendar(event, '${item.id}')" id="calendaritemdescription" class="infoinput" value="${item.notes ? cleanInput(item.notes) : ''}">
+					<input placeholder="Add description" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="editdescriptioncalendar(event, '${item.id}')" id="calendaritemdescription" class="infoinput" value="${item.notes ? cleanInput(item.notes) : ''}">
 						<span class="inputline"></span>
 					</input>
 				</div>
@@ -5560,16 +6135,6 @@ function inputsettingssleepend(event) {
 	calendar.updateHistory()
 }
 
-function inputsettingseventspacing(event) {
-	let string = event.target.value.toLowerCase()
-	let myduration = getDuration(string).value
-
-	if (myduration != null) {
-		calendar.settings.eventspacing = myduration
-	}
-	calendar.updateSettings()
-	calendar.updateHistory()
-}
 
 function clicksettingstheme(theme) {
 	calendar.settings.theme = theme
@@ -5845,6 +6410,9 @@ function clickeventpriority(index) {
 	calendar.updateEvents()
 	calendar.updateInfo()
 	calendar.updateHistory()
+	if(item.type == 1){
+		calendar.updateTodo()
+	}
 }
 
 //time windows
@@ -5942,13 +6510,13 @@ function submitschedulemytasks() {
 
 	if (mytodos.length > 0) {
 		closeschedulemytasks()
-		startAutoSchedule(mytodos, true)
+		startAutoSchedule(mytodos)
 	}
 }
 
 
 
-function startAutoSchedule(scheduletodos, showui) {
+function startAutoSchedule(scheduletodos) {
 	if (isautoscheduling == true) return
 
 	let oldcalendartabs = [...calendartabs]
@@ -5968,10 +6536,9 @@ function startAutoSchedule(scheduletodos, showui) {
 	}
 
 
-	if ('matchMedia' in window) {
-		let smallscreen = window.matchMedia('(max-width: 600px)')
-		if (smallscreen.matches) {
-			calendartabs = [1]
+	if(scheduletodos.length > 0){
+		if(mobilescreen){
+			calendartabs = [0]
 		}
 	}
 
@@ -5987,10 +6554,12 @@ function startAutoSchedule(scheduletodos, showui) {
 		calendar.updateEvents()
 	}
 
-	calendar.updateTodo()
+	if(addedtodos.length > 0){
+		calendar.updateTodo()
+	}
 
 	//start
-	autoScheduleV2(scheduleitems, showui, addedtodos)
+	autoScheduleV2(scheduleitems, addedtodos)
 }
 
 
@@ -6340,16 +6909,16 @@ function opencreatetodo(event) {
 
 
 	if (!todopopup.classList.contains('hiddenpopup')) {
-		let todoinputtitle = getElement('todoinputtitle')
-		todoinputtitle.focus()
+		let todoinputtitleold = getElement('todoinputtitleold')
+		todoinputtitleold.focus()
 	}
 }
 function closecreatetodo() {
 	let todopopup = getElement('todopopup')
 	todopopup.classList.add('hiddenpopup')
 
-	let todoinputtitle = getElement('todoinputtitle')
-	todoinputtitle.blur()
+	let todoinputtitleold = getElement('todoinputtitleold')
+	todoinputtitleold.blur()
 }
 
 
@@ -6359,10 +6928,18 @@ function resetcreatetodo() {
 	nextdate.setDate(nextdate.getDate() + 1)
 	nextdate.setMinutes(-1)
 
-	let todoinputtitle = getElement('todoinputtitle')
-	todoinputtitle.value = ''
+	let todoinputtitleold = getElement('todoinputtitleold')
+	todoinputtitleold.value = ''
 	let todoinputnotes = getElement('todoinputnotes')
 	todoinputnotes.value = ''
+
+	let todoinputtitle = getElement('todoinputtitle')
+	todoinputtitle.value = ''
+
+	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
+	todoinputtitleonboarding.value = ''
+	let todoinputnotesonboarding = getElement('todoinputnotesonboarding')
+	todoinputnotesonboarding.value = ''
 
 	createtododurationvalue = 60
 	createtododuedatevalue = {
@@ -6372,7 +6949,7 @@ function resetcreatetodo() {
 		minute: nextdate.getHours() * 60 + nextdate.getMinutes()
 	}
 	createtodopriorityvalue = 0
-
+	
 	typeaddtask()
 }
 
@@ -6391,40 +6968,71 @@ function updatecreatetodo() {
 	let createtododuedate = getElement('createtododuedate')
 	let createtodopriority = getElement('createtodopriority')
 
+	let createtododurationonboarding = getElement('createtododurationonboarding')
+	let createtododuedateonboarding = getElement('createtododuedateonboarding')
+	let createtodopriorityonboarding = getElement('createtodopriorityonboarding')
+
 	let currentdate = new Date()
 
 	let duedate;
 	if (createtododuedatevalue.year != null && createtododuedatevalue.month != null && createtododuedatevalue.day != null && createtododuedatevalue.minute != null) {
 		duedate = new Date(createtododuedatevalue.year, createtododuedatevalue.month, createtododuedatevalue.day, 0, createtododuedatevalue.minute)
 	}
-	createtododuration.innerHTML = `Takes ${getDHMText(createtododurationvalue)}`
-	createtododuedate.innerHTML = duedate ? `
- 	<div class="display-flex pointer-none flex-row align-center gap-6px">
- 		<div class="${duedate.getTime() < currentdate.getTime() ? 'text-red ' : 'text-blue'} text-14px padding-top-6px padding-bottom-6px">Due ${getDMDYText(duedate)} ${getHMText(duedate.getHours() * 60 + duedate.getMinutes())}</div>
-	
-	 	<div class="tooltip pointer display-flex pointer-auto padding-6px hover:background-tint-1 transition-duration-100 border-8px" onclick="inputcreatetodoitemnotdue(event)">
-			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallquaternary">
-			<g>
-			<g opacity="1">
-			<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-			<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-			</g>
-			</g>
-			</svg>
-	 		<span class="tooltiptextcenter">Remove due date</span>
-	 	</div>
-	</div>` : '<div class="pointer-none text-quaternary padding-top-6px padding-bottom-6px">No due date</div>'
-	createtodopriority.innerHTML = `<span class="pointer-none ${['text-quaternary', 'text-orange', 'text-red'][createtodopriorityvalue]}">${['Low', 'Medium', ' High'][createtodopriorityvalue]} priority</span>`
+
+	let tempdurationvalue = `Takes ${getDHMText(createtododurationvalue)}`
+	createtododuration.innerHTML = tempdurationvalue
+	createtododurationonboarding.innerHTML = tempdurationvalue
+
+	let tempduedatevalue = duedate ? `
+	<div class="display-flex pointer-none flex-row align-center gap-6px">
+		<div class="${duedate.getTime() < currentdate.getTime() ? 'text-red ' : 'text-blue'} text-14px padding-top-6px padding-bottom-6px">Due ${getDMDYText(duedate)} ${getHMText(duedate.getHours() * 60 + duedate.getMinutes())}</div>
+   
+		<div class="tooltip pointer display-flex pointer-auto padding-6px hover:background-tint-1 transition-duration-100 border-8px" onclick="inputcreatetodoitemnotdue(event)">
+		   <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallquaternary">
+		   <g>
+		   <g opacity="1">
+		   <path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+		   <path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+		   </g>
+		   </g>
+		   </svg>
+			<span class="tooltiptextcenter">Remove due date</span>
+		</div>
+   </div>` : '<div class="pointer-none text-quaternary padding-top-8px padding-bottom-8px">No due date</div>'
+	createtododuedate.innerHTML = tempduedatevalue
+	createtododuedateonboarding.innerHTML = tempduedatevalue
+
+	let temppriorityvalue = `<span class="pointer-none ${['text-quaternary', 'text-orange', 'text-red'][createtodopriorityvalue]}">${['Low', 'Medium', ' High'][createtodopriorityvalue]} priority</span>`
+	createtodopriority.innerHTML = temppriorityvalue
+	createtodopriorityonboarding.innerHTML = temppriorityvalue
+
+	//add button # of tasks
+	let finalstring = todoinputtitleold.value || todoinputtitle.value || todoinputtitleonboarding.value
+	finalstring = finalstring.split('\n').filter(d => d != '')
+	let length = finalstring.length || 1
+
+	let string = `Add ${length == 1 ? `` : `<span class="text-black whitebackgroundbutton text-14px border-round circlehighlight">${length}</span>`}`
+	let submitcreatetodoaddnumber = getElement('submitcreatetodoaddnumber')
+	submitcreatetodoaddnumber.innerHTML = string
+
+	let submitcreatetodoaddnumberonboarding = getElement('submitcreatetodoaddnumberonboarding')
+	submitcreatetodoaddnumberonboarding.innerHTML = string
 }
 
 
 function closetodoitemduration() {
 	let createtododuration = getElement('createtododuration')
 	createtododuration.classList.add('hiddenpopup')
+
+	let createtododurationonboarding = getElement('createtododurationonboarding')
+	createtododurationonboarding.classList.add('hiddenpopup')
 }
 function closetodoitemduedate() {
 	let createtododuedate = getElement('createtododuedate')
 	createtododuedate.classList.add('hiddenpopup')
+
+	let createtododuedateonboarding = getElement('createtododuedateonboarding')
+	createtododuedateonboarding.classList.add('hiddenpopup')
 }
 
 
@@ -6794,9 +7402,40 @@ function closecreatetodoitempriority() {
 
 
 
-function typeaddtask(event, submit) {
+function clicktypeaddtask(event){
+	let addtodooptionspopup = getElement('addtodooptionspopup')
+	addtodooptionspopup.classList.remove('hiddenpopup')
+
+	let addtodooptionspopuponboarding = getElement('addtodooptionspopuponboarding')
+	addtodooptionspopuponboarding.classList.remove('hiddenpopup')
+}
+
+function clickaddonetask(){
+	if(!calendar.onboarding.addtask){
+		getElement('todoinputtitleonboarding').focus()
+	}else{
+		getElement('todoinputtitle').focus()
+	}
+}
+
+
+function resizeaddtask(event){
+	let element = getElement('todoinputtitle')
+	element.style.height = '0'
+	element.style.height = Math.min(element.scrollHeight, parseInt(getComputedStyle(element).maxHeight)) + 'px'
+
+	let element2 = getElement('todoinputtitleonboarding')
+	element2.style.height = '0'
+	element2.style.height = Math.min(element2.scrollHeight, parseInt(getComputedStyle(element2).maxHeight)) + 'px'
+}
+
+
+function typeaddtask(event, submit, index) {
+	let todoinputtitleold = getElement('todoinputtitleold')
 	let todoinputtitle = getElement('todoinputtitle')
-	let finalstring = todoinputtitle.value
+	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
+	let finalstring = todoinputtitleold.value || todoinputtitle.value || todoinputtitleonboarding.value
+	finalstring = finalstring.split('\n').filter(d => d != '')[index || 0] || ''
 
 	let currentdate = new Date()
 
@@ -6900,33 +7539,52 @@ function typeaddtask(event, submit) {
 
 
 function submitcreatetodo(event) {
-	let title = typeaddtask(event, true)
+	let todoinputtitleold = getElement('todoinputtitleold')
+	let todoinputtitle = getElement('todoinputtitle')
+	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
+	let finalstring = todoinputtitleold.value || todoinputtitle.value || todoinputtitleonboarding.value
+	finalstring = finalstring.split('\n').filter(d => d != '')
 
-	let todoinputnotes = getElement('todoinputnotes')
+	let length = finalstring.length || 1
+	
+	for(let i = 0; i < length; i++){
+		let title = typeaddtask(event, true, i)
 
-	let duedate = new Date(createtododuedatevalue.year, createtododuedatevalue.month, createtododuedatevalue.day, 0, createtododuedatevalue.minute)
+		let todoinputnotes = getElement('todoinputnotes')
+		let todoinputnotesonboarding = getElement('todoinputnotesonboarding')
 
-	let myduration = createtododurationvalue
+		let duedate = new Date(createtododuedatevalue.year, createtododuedatevalue.month, createtododuedatevalue.day, 0, createtododuedatevalue.minute)
 
-	let notes = todoinputnotes.value
+		let myduration = createtododurationvalue
 
-	let item = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), myduration, title, notes)
-	if (createtododuedatevalue.year == null || createtododuedatevalue.month == null || createtododuedatevalue.day == null || createtododuedatevalue.minute == null) {
-		item.endbefore.year = null
-		item.endbefore.month = null
-		item.endbefore.day = null
-		item.endbefore.minute = null
+		let notes = todoinputnotes.value || todoinputnotesonboarding.value
+
+		let item = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), myduration, title, notes)
+		if (createtododuedatevalue.year == null || createtododuedatevalue.month == null || createtododuedatevalue.day == null || createtododuedatevalue.minute == null) {
+			item.endbefore.year = null
+			item.endbefore.month = null
+			item.endbefore.day = null
+			item.endbefore.minute = null
+		}
+		item.priority = createtodopriorityvalue
+
+		calendar.todos.push(item)
+
+
+		if(i == length - 1){
+			setTimeout(function(){
+				scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
+			}, 300)
+		}
 	}
-	item.priority = createtodopriorityvalue
-
-	calendar.todos.push(item)
-
-	todomode = 0
 
 	calendar.updateTodo()
 	calendar.updateHistory()
 
+	resetcreatetodo()
 	closecreatetodo()
+
+	resizeaddtask()
 }
 
 
@@ -6962,14 +7620,14 @@ function gettododata(item) {
 	if (selectededittodoid == item.id) {
 
 		//edit
-		output = `<div class="todoitem todoedititemwrap box-shadow-2 bordertertiary border-8px margin-left-12px margin-right-12px border-box">
+		output = `<div class="todoitem todoedititemwrap box-shadow-2 bordertertiary border-8px margin-left-12px margin-right-12px border-box" id="todo-${item.id}">
 		<div class="todoitemcontainer padding-12px">
 			<div class="text-16px text-primary text-bold">Edit ${item.title ? cleanInput(item.title) : 'New Task'}</div>
 			<div class="display-flex flex-column gap-12px">
 				<div class="inputgroup">
 					<div class="text-14px text-primary width90px">Title</div>
 					<div class="inputgroupitem">
-						<input class="infoinput width-192px" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtodotitle(event)" placeholder="Add title" id="edittodoinputtitle" value="${cleanInput(item.title)}" maxlength="2000"></input>
+						<input class="infoinput width-192px" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtodotitle(event)" placeholder="Add title" id="edittodoinputtitle" value="${cleanInput(item.title)}" maxlength="2000"></input>
 						<span class="inputline"></span>
 					</div>
 		 		</div>
@@ -6983,18 +7641,18 @@ function gettododata(item) {
 				<div class="inputgroup">
 					<div class="text-14px text-primary width90px">Due date</div>
 			 		<div class="inputgroupitem">
-						<input class="infoinput inputdatepicker width-192px" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtododuedate(event)" placeholder="Add date" onclick="this.select()" id="edittodoinputduedate" value="${endbeforedate ? getDMDYText(endbeforedate) : 'None'}"></input>
+						<input class="infoinput inputdatepicker width-192px" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtododuedate(event)" placeholder="Add date" onclick="this.select()" id="edittodoinputduedate" value="${endbeforedate ? getDMDYText(endbeforedate) : 'None'}"></input>
 						<span class="inputline"></span>
 					</div>
 		 			<div class="inputgroupitem">
-						<input class="infoinput inputtimepicker width-192px" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtododuetime(event)" placeholder="Add time"  onclick="this.select()" id="edittodoinputduetime" value="${endbeforedate ? getHMText(endbeforedate.getHours() * 60 + endbeforedate.getMinutes()) : 'None'}"></input>
+						<input class="infoinput inputtimepicker width-192px" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtododuetime(event)" placeholder="Add time"  onclick="this.select()" id="edittodoinputduetime" value="${endbeforedate ? getHMText(endbeforedate.getHours() * 60 + endbeforedate.getMinutes()) : 'None'}"></input>
 						<span class="inputline"></span>
 					</div>
 				</div>
 				<div class="inputgroup">
 					<div class="text-14px text-primary width90px">Time needed</div>
 			 		<div class="inputgroupitem">
-						<input onclick="this.select()" class="infoinput inputdurationpicker width-192px"  onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtododuration(event)" placeholder="Add duration" id="edittodoinputduration" value="${getDHMText(myduration)}"></input>
+						<input onclick="this.select()" class="infoinput inputdurationpicker width-192px"  onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtododuration(event)" placeholder="Add duration" id="edittodoinputduration" value="${getDHMText(myduration)}"></input>
 						<span class="inputline"></span>
 					</div>
 				</div>
@@ -7043,7 +7701,7 @@ function gettododata(item) {
 	} else {
 		//view
 
-		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''}>
+		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''} id="todo-${item.id}">
 
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
@@ -7055,7 +7713,7 @@ function gettododata(item) {
 						` : ''}
 		
 						<div class="justify-flex-end flex-1 display-flex flex-row small:flex-column gap-12px">
-	
+
 							<div class="flex-1 display-flex flex-column gap-6px">
 								<div class="width-full display-flex flex-column">
 				 
@@ -7063,43 +7721,47 @@ function gettododata(item) {
 										<span class="text-bold">${item.title ? cleanInput(item.title) : `New Task`}</span>
 									</div>
 
-									${item.notes ?
-									`<div class="pre-wrap break-word todoitemtext text-quaternary text-14px overflow-hidden ${itemclasses.join(' ')}">${formatURL(cleanInput(item.notes))}</div>` : ''}
+									${item.notes && !item.completed ?
+									`<div class="pointer-auto pre-wrap break-word todoitemtext text-quaternary text-14px overflow-hidden ${itemclasses.join(' ')}">${formatURL(cleanInput(item.notes))}</div>` : ''}
 	
 								</div>
 				
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
-				 
-									<div class="gap-6px display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton" onclick="clicktodoitemduedate(event, '${item.id}')">
-										<div class="pointer-auto pointer ${!endbeforedate ? 'text-quaternary hoverunderlinequaternary' : (isoverdue ? 'text-red hoverunderlinered' : 'text-blue hoverunderlineblue')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${Calendar.Event.getDueText(item)}` : 'No due date'}</div>
-									</div>
+				
+									${!Calendar.Event.isEvent(item) ? 
+										`<div class="gap-6px pointer-auto pointer display-flex transition-duration-100 flex-row align-center width-fit todoitemtext badgepadding ${!endbeforedate ? `background-tint-1 hover:background-tint-2` : (isoverdue ? `background-red hover:background-red-hover` : `background-blue hover:background-blue-hover`)} border-round nowrap popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduedate(event, '${item.id}')">
+											<div class="pointer-none ${!endbeforedate ? 'text-primary' : (isoverdue ? 'text-white' : 'text-white')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}</div>
+										</div>`
+										: ''
+									}
 									
 									${Calendar.Event.isEvent(item) ? 
-										`<div class="gap-6px display-flex flex-row align-center width-fit todoitemtext nowrap pointer-none popupbutton">
-											<div class="text-green ${itemclasses.join(' ')}">Scheduled for ${Calendar.Event.getStartText(item)}</div>
+										`<div class="gap-6px background-green hover:background-green-hover transition-duration-100 badgepadding border-round display-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}">
+											<div class="text-white ${itemclasses.join(' ')}">Scheduled for ${getHMText(item.start.minute)}</div>
 										</div>`
 										:
 										``
 									}
 		
 									${Calendar.Event.isEvent(item) ? `` : 
-										`<div class="width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-green hoverunderlinegreen pointer-auto pointer transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
+										`<div class="width-fit background-green transition-duration-100 hover:background-green-hover badgepadding border-round todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-white transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
 											Takes ${getDHMText(myduration)}
 										</div>`
 									}
 	
-									<div class="text-14px nowrap pointer-auto pointer popupbutton transition-duration-100 ${['text-quaternary hoverunderlinequaternary visibility-hidden hoverpriority small:visibility-visible', 'text-orange hoverunderlineorange', 'text-red hoverunderlinered'][item.priority]} ${itemclasses.join(' ')}" onclick="clicktodoitempriority(event, '${item.id}')">
+									<div class="text-14px badgepadding border-round nowrap pointer-auto transition-duration-100 pointer popupbutton transition-duration-100 ${['background-tint-1 text-primary hover:background-tint-2 visibility-hidden hoverpriority small:visibility-visible', 'background-orange hover:background-orange-hover text-white', 'background-red hover:background-red-hover text-white'][item.priority]} ${itemclasses.join(' ')}" onclick="clicktodoitempriority(event, '${item.id}')">
 										${['Low', 'Medium', 'High'][item.priority]} priority
 									</div>
 	
 								</div>
+
 							</div>
 					
 	
 						</div>
 	
-	
-						<div class="gap-12px todoitembuttongroup height-fit justify-flex-end flex-row small:visibility-visible">
+						
+						<div class="gap-6px todoitembuttongroup z-index-1 height-fit justify-flex-end flex-row small:visibility-visible">						
 							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="edittodo('${item.id}');gtag('event', 'button_click', { useraction: 'Edit - task' })">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 								<g>
@@ -7134,13 +7796,14 @@ function gettododata(item) {
 							</div>
 		
 						</div>
+
 			
 			 
 					</div>
 				</div>
 
 
-				${schedulemytasksenabled && Calendar.Todo.isSchedulable(item) ?
+				${schedulemytasksenabled && Calendar.Todo.isSchedulable(item) && Calendar.Todo.isTodo(item) ?
 					`<div class="absolute todoitemselectcheck background-secondary box-shadow pointer pointer-auto" onclick="toggleschedulemytask(event, '${item.id}')">
 						${getbigcheckbox(schedulemytaskslist.find(g => g == item.id))}
 					</div>`
@@ -7392,6 +8055,10 @@ function inputtodoitemnotdue(event, id) {
 	calendar.updateHistory()
 
 	closetodoitemduedate()
+
+	setTimeout(function(){
+		scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
+	}, 300)
 }
 
 //input due date
@@ -7463,6 +8130,10 @@ function inputtodoitemduetime(event, duetime) {
 	updatetodotimeinput(inputtodoid)
 
 	closetodoitemduedate()
+	
+	setTimeout(function(){
+		scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
+	}, 300)
 }
 
 
@@ -7623,22 +8294,20 @@ let initialdragtodox, initialdragtodoy;
 function dragtodo(event, id) {
 	event.preventDefault()
 
-	if ('matchMedia' in window) {
-		let smallscreen = window.matchMedia('(max-width: 600px)')
-		if (smallscreen.matches) {
-			return
-		}
+	if(mobilescreen){
+		return
 	}
 
 	let item = calendar.todos.find(x => x.id == id)
 	if (!item) return
 
+	let todoelement = getElement(`todo-${id}`)
 
 	let dragtododiv = getElement('dragtododiv')
 	dragtododiv.classList.remove('display-none')
-	dragtododiv.innerHTML = event.target.innerHTML
+	dragtododiv.innerHTML = todoelement.innerHTML
 
-	let rect = event.target.getBoundingClientRect()
+	let rect = todoelement.getBoundingClientRect()
 
 	dragtododiv.style.width = rect.width + 'px'
 	dragtododiv.style.height = rect.height + 'px'
@@ -7681,7 +8350,7 @@ function dragtodo(event, id) {
 			}
 
 
-			startAutoSchedule([item], true)
+			startAutoSchedule([item])
 		}
 
 		dragtodohighlight.classList.add('hiddenfade')
@@ -7737,7 +8406,76 @@ async function todocompleted(event, id) {
 }
 
 
+//start task now - adds task to calendar at current time, becomes fixed event
+function startnow(id){
+	let tempitem = [...calendar.events, ...calendar.todos].find(d => d.id == id)
+	if(!tempitem) return
 
+	if(Calendar.Todo.isTodo(tempitem)){
+		let item = geteventfromtodo(tempitem)
+	
+		let startdate = new Date()
+		startdate.setMinutes(ceil(startdate.getMinutes(), 5))
+	
+		let enddate = new Date(startdate)
+		enddate.setMinutes(enddate.getMinutes() + tempitem.duration)
+	
+		item.start.year = startdate.getFullYear()
+		item.start.month = startdate.getMonth()
+		item.start.day = startdate.getDate()
+		item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+	
+		item.end.year = enddate.getFullYear()
+		item.end.month = enddate.getMonth()
+		item.end.day = enddate.getDate()
+		item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+	
+		item.type = 0
+	
+		calendar.events.push(item)
+		calendar.todos = calendar.todos.filter(d => d.id != tempitem.id)
+
+		//scroll
+		let barcolumncontainer = getElement('barcolumncontainer')
+		let target = startdate.getHours() * 60 + startdate.getMinutes() - 60*2
+		barcolumncontainer.scrollTo(0, target)
+	}else{
+		let duration = new Date(tempitem.end.year, tempitem.end.month, tempitem.end.day, 0, tempitem.end.minute).getTime() - new Date(tempitem.start.year, tempitem.start.month, tempitem.start.day, 0, tempitem.start.minute).getTime()
+
+		let startdate = new Date()
+		startdate.setMinutes(ceil(startdate.getMinutes(), 5))
+	
+		let enddate = new Date(startdate)
+		enddate.setTime(enddate.getTime() + duration)
+	
+		tempitem.start.year = startdate.getFullYear()
+		tempitem.start.month = startdate.getMonth()
+		tempitem.start.day = startdate.getDate()
+		tempitem.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+	
+		tempitem.end.year = enddate.getFullYear()
+		tempitem.end.month = enddate.getMonth()
+		tempitem.end.day = enddate.getDate()
+		tempitem.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+	
+		tempitem.type = 0
+
+		//scroll
+		let barcolumncontainer = getElement('barcolumncontainer')
+		let target = startdate.getHours() * 60 + startdate.getMinutes() - 60*2
+		barcolumncontainer.scrollTo(0, target)
+	}
+
+	if(mobilescreen){
+		calendartabs = [0]
+		calendar.updateTabs()
+	}
+
+	calendar.updateTodo()
+	calendar.updateEvents()
+	calendar.updateHistory()
+	calendar.updateInfo()
+}
 
 function deletetodo(id) {
 	let item = [...calendar.events, ...calendar.todos].find(d => d.id == id)
@@ -7985,6 +8723,10 @@ function submitedittodo(event) {
 		}
 		calendar.updateHistory()
 		calendar.updateInfo()
+		
+		setTimeout(function(){
+			scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
+		}, 300)
 	}
 }
 
@@ -8032,6 +8774,7 @@ function geteventfromtodo(item) {
 	newitem.priority = item.priority
 	newitem.completed = item.completed
 	newitem.id = item.id
+	newitem.googleclassroomid = item.googleclassroomid
 
 	newitem.timewindow = deepCopy(item.timewindow)
 
@@ -8049,6 +8792,7 @@ function gettodofromevent(item) {
 	newitem.priority = item.priority
 	newitem.completed = item.completed
 	newitem.id = item.id
+	newitem.googleclassroomid = item.googleclassroomid
 
 	newitem.timewindow = deepCopy(item.timewindow)
 
@@ -8312,8 +9056,7 @@ function clickeventremindme() {
 	updateitemreminders()
 
 	remindmemenu.style.top = fixtop(remindmebutton.getBoundingClientRect().top + remindmebutton.offsetHeight, remindmemenu) + 'px'
-	remindmemenu.style.left = fixleft(remindmebutton.getBoundingClientRect().left, remindmemenu) + 'px'
-	remindmemenu.style.width = remindmebutton.offsetWidth + 'px'
+	remindmemenu.style.left = fixleft(remindmebutton.getBoundingClientRect().left + remindmebutton.offsetWidth/2 - remindmemenu.offsetWidth/2, remindmemenu) + 'px'
 }
 
 //remind me time
@@ -8325,7 +9068,6 @@ function remindme(option) {
 	} else {
 		item.reminder.push({ timebefore: reminderlist[option] })
 	}
-	updateitemreminders()
 	calendar.updateInfo()
 }
 
@@ -8349,15 +9091,13 @@ function getborderdata(item, currentdate, timestamp) {
 	let nextdate = new Date(currentdate.getTime())
 	nextdate.setDate(nextdate.getDate() + 1)
 
-	let barcolumngroup = getElement('barcolumngroup')
-
 	let myheight = 16
 	let mytop = item.endbefore.minute
 	if (mytop == 0) {
-		mytop = barcolumngroup.offsetHeight
+		mytop = 1440
 	}
-	if (mytop + myheight / 2 > barcolumngroup.offsetHeight) {
-		mytop = barcolumngroup.offsetHeight - myheight / 2
+	if (mytop + myheight / 2 > 1440) {
+		mytop = 1440 - myheight / 2
 	}
 
 	let itemclasses = []
@@ -8451,12 +9191,15 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 		itemclasses.push(BACKGROUNDCOLORLISTTRANSPARENT[item.color])
 	}
 
+	if(myheight <= 15){
+		itemclasses2.push('smalleventtext')
+	}
+
 
 	let newstartdate = new Date(newitem.start.year, newitem.start.month, newitem.start.day)
 	let oldstartdate = new Date(olditem.start.year, olditem.start.month, olditem.start.day)
 
 	let difference = Math.floor((newstartdate.getTime() - oldstartdate.getTime()) / 86400000)
-
 
 	let output = ''
 	output = `
@@ -8468,7 +9211,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 					
 					${item.type == 1 ? 
 						`<span class="todoitemcheckbox tooltip checkcircletop">
-							${getwhitecheckcircle(item.completed)}
+							${myheight <= 15 ? `${getwhitecheckcircle(item.completed)}` : `${getwhitecheckcircle(item.completed)}`}
 						</span>` 
 						: ''
 					}
@@ -8513,7 +9256,6 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 	if (tempstartdate.getTime() >= currentdate.getTime() && tempstartdate.getTime() < nextdate.getTime()) {
 		itemclasses.push('eventwraptop')
-		itemclicks.push(`<div class="eventtop" onmousedown="clickeventtop(event, ${timestamp})"></div>`)
 
 		if (tempenddate.getTime() > nextdate.getTime()) {
 			mytop = item.start.minute
@@ -8525,9 +9267,12 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 			itemclasses.push('eventwrapbottom')
 			itemclicks.push(`<div class="eventbottom" onmousedown="clickeventbottom(event, ${timestamp})"></div>`)
 		}
+
+		if(myheight >= 30){
+			itemclicks.push(`<div class="eventtop" onmousedown="clickeventtop(event, ${timestamp})"></div>`)
+		}
 	} else if (tempenddate.getTime() > currentdate.getTime() && tempenddate.getTime() <= nextdate.getTime()) {
 		itemclasses.push('eventwrapbottom')
-		itemclicks.push(`<div class="eventbottom" onmousedown="clickeventbottom(event, ${timestamp})"></div>`)
 
 		if (tempstartdate.getTime() < currentdate.getTime()) {
 			mytop = 0
@@ -8538,6 +9283,10 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 			itemclasses.push('eventwraptop')
 			itemclicks.push(`<div class="eventtop" onmousedown="clickeventtop(event, ${timestamp})"></div>`)
+		}
+
+		if(myheight >= 30){
+			itemclicks.push(`<div class="eventbottom" onmousedown="clickeventbottom(event, ${timestamp})"></div>`)
 		}
 	} else if (tempstartdate.getTime() < currentdate.getTime() && tempenddate.getTime() > nextdate.getTime()) {
 		mytop = 0
@@ -8558,6 +9307,10 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 		itemclasses.push('greyedoutevent')
 	}
 
+	if(myheight <= 15){
+		itemclasses2.push('smalleventtext')
+	}
+
 	let output = ''
 	output = `
 	<div class="absolute pointer-none ${itemclasses3.join(' ')}" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
@@ -8568,8 +9321,8 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
 					
 					${item.type == 1 ? 
-						`<span class="todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="eventcompleted('${item.id}')">
-							${getwhitecheckcircle(item.completed)}
+						`<span class="todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="eventcompleted(event, '${item.id}')">
+							${myheight <= 15 ? `${getwhitecheckcircle(item.completed)}` : `${getwhitecheckcircle(item.completed)}`}
 						</span>` 
 						: ''
 					}
@@ -8597,17 +9350,6 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 }
 
 
-//toggle event type
-function toggleeventtype() {
-	let item = calendar.events.find(d => d.id == selectedeventid)
-	if (item.type == 0) {
-		eventtype(1)
-		gtag('event', 'button_click', { useraction: 'Check auto-schedule - event info' })
-	} else {
-		eventtype(0)
-		gtag('event', 'button_click', { useraction: 'Uncheck auto-schedule - event info' })
-	}
-}
 
 //event type
 function eventtype(type) {
@@ -8620,6 +9362,7 @@ function eventtype(type) {
 		let endbeforedate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
 		endbeforedate.setHours(0, 0, 0, 0)
 		endbeforedate.setDate(endbeforedate.getDate() + 1)
+		endbeforedate.setMinutes(-1)
 		item.endbefore.year = endbeforedate.getFullYear()
 		item.endbefore.month = endbeforedate.getMonth()
 		item.endbefore.day = endbeforedate.getDate()
@@ -8629,6 +9372,13 @@ function eventtype(type) {
 	calendar.updateInfo(true)
 	calendar.updateEvents()
 	calendar.updateHistory()
+	calendar.updateTodo()
+
+	if (item.type == 0) {
+		gtag('event', 'button_click', { useraction: 'Event - event info' })
+	} else {
+		gtag('event', 'button_click', { useraction: 'Task - event info' })
+	}
 }
 
 //get borders
@@ -8753,8 +9503,24 @@ function getsleepingevents(data) {
 
 
 
+//get events between range, given existing events (including repeating)
+function geteventslite(startrange, endrange, filterevents){
+	return filterevents.filter(item => {
+		let itemstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+		let itemenddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
+
+		if(!Calendar.Event.isHidden(item)){
+			if (!startrange || !endrange || (itemenddate.getTime() > startrange.getTime() && itemstartdate.getTime() < endrange.getTime())) {
+				return true
+			}
+		}
+		return false
+	})
+}
+
+
 //get all calendar events if no parameters
-//get events between start and end date if parameters
+//get events between range if parameters
 function getevents(startrange, endrange, filterevents) {
 	let maxdate = new Date(calendar.getDate().getTime())
 	maxdate.setFullYear(maxdate.getFullYear() + 1)
@@ -9093,7 +9859,7 @@ let isautoscheduling = false;
 
 let rescheduletaskfunction;
 
-async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverduetodos) {
+async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 	//functions
 	function sleep(time) {
 		return new Promise(resolve => {
@@ -9101,13 +9867,14 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 		})
 	}
 
-	function fixconflict(item, conflictitem) {
+
+
+	function fixconflict(item, conflictitem, spacing = 0) {
 		let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 		//get penetration
 		let differenceA = Math.abs(new Date(conflictitem.end.year, conflictitem.end.month, conflictitem.end.day, 0, conflictitem.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))
 		let differenceB = Math.abs(new Date(conflictitem.start.year, conflictitem.start.month, conflictitem.start.day, 0, conflictitem.start.minute).getTime() - new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute))
 
-		let spacing = calendar.settings.eventspacing * 60000
 		let penetration = Math.min(differenceA, differenceB) + spacing
 
 		//move time
@@ -9127,11 +9894,62 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 		item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
 	}
 
+
+	function getbreaktime(item) {
+		let eventspacingratio = calendar.settings.eventspacing / 60
+		if(isNaN(eventspacingratio)){
+			eventspacingratio = 15
+		}
+
+		let duration = (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
+		return Math.min(Math.max(round(duration * eventspacingratio, 60000 * 5), 60000 * 5), 60 * 60000)
+		
+
+		/*
+		let events = sortstartdate(tempevents);
+		let timeSinceLastBreak = 0;
+		
+		for (let i = 1; i < events.length; i++) {
+		  const prevEvent = events[i - 1];
+		  const currentEvent = events[i];
+		  
+		  const prevEventEndTime = new Date(prevEvent.end.year, prevEvent.end.month, prevEvent.end.day, 0, prevEvent.end.minute).getTime();
+		  const currentEventStartTime = new Date(currentEvent.start.year, currentEvent.start.month, currentEvent.start.day, 0, currentEvent.start.minute).getTime();
+		  
+		  const prevEventStartTime = new Date(prevEvent.start.year, prevEvent.start.month, prevEvent.start.day, 0, prevEvent.start.minute).getTime();
+		  const prevEventDuration = (prevEventEndTime - prevEventStartTime) / 60000;
+		  timeSinceLastBreak += prevEventDuration;
+		  
+		  const idleTime = (currentEventStartTime - prevEventEndTime) / 60000;
+		  
+		  if (idleTime >= 17) {
+			if (timeSinceLastBreak >= 52) {
+			  return round(timeSinceLastBreak * 1/3 * 60000, 60000)
+			} else {
+			  return 0;
+			}
+		  }
+		  
+		  if (idleTime < 5) { 
+			timeSinceLastBreak += idleTime;
+		  }
+		}
+	  
+		if (timeSinceLastBreak >= 52) { 
+		  return round(timeSinceLastBreak * 1/3 * 60000, 60000)
+		} else {
+		  return 0;
+		}
+		*/
+	  }
+	  
+
 	function getconflictingevent(data, item1) {
 		let sortdata = data.sort((a, b) => {
 			return new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime() - new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime()
 		})
 
+		
 		for (let item2 of sortdata) {
 			if (item1.id == item2.id || Calendar.Event.isAllDay(item2)) continue
 			let tempstartdate1 = new Date(item1.start.year, item1.start.month, item1.start.day, 0, item1.start.minute)
@@ -9140,11 +9958,14 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 			let tempstartdate2 = new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute)
 			let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
 
-			let spacing = calendar.settings.eventspacing * 60000
+			let spacing = getbreaktime(item2)
+
 			if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
-				return item2
+				return [item2, spacing]
 			}
 		}
+
+		return null
 	}
 
 
@@ -9219,7 +10040,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 	//============================================================================
 
 
-	if (isautoscheduling == true && resolvedoverduetodos.length == 0) return
+	if (isautoscheduling == true && resolvedpassedtodos.length == 0) return
 	isautoscheduling = true
 
 
@@ -9238,14 +10059,21 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 	})
 
 
-	//check for overdue todos
-	let overduetodos = calendar.events.filter(d => d.type == 1 && !d.completed && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() < Date.now())
-	if(resolvedoverduetodos){
-		overduetodos = overduetodos.filter(d => !resolvedoverduetodos.find(f => f == d.id))
+	//check for todos that are currently being done - don't reschedule first one
+	let doingtodos = sortstartdate(smartevents).filter(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now())
+	if(doingtodos[0]){
+		smartevents = smartevents.filter(d => d.id != doingtodos[0].id)
+	}
+
+
+	//check for todos that haven't been done - ask to reschedule them
+	let passedtodos = smartevents.filter(d => new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() <= Date.now())
+	if(resolvedpassedtodos){
+		passedtodos = passedtodos.filter(d => !resolvedpassedtodos.find(f => f == d.id))
 	}
 	
-	if(overduetodos.length > 0){
-		let overdueitem = overduetodos[0]
+	if(passedtodos.length > 0){
+		let overdueitem = passedtodos[0]
 
 		rescheduletaskfunction = async function(complete){
 			let tempitem = calendar.events.find(d => d.id == overdueitem.id)
@@ -9253,6 +10081,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 			if(complete){
 				if(tempitem){
 					tempitem.completed = true
+					calendar.updateTodo()
 				}
 				calendar.updateEvents()
 			}
@@ -9260,25 +10089,25 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 			let rescheduletaskpopup = getElement('rescheduletaskpopup')
 			rescheduletaskpopup.classList.add('hiddenpopup')
 
-			let newresolvedoverduetodos = resolvedoverduetodos || []
+			let newresolvedpassedtodos = resolvedpassedtodos || []
 
 			if(tempitem){
-				newresolvedoverduetodos.push(tempitem.id)
+				newresolvedpassedtodos.push(tempitem.id)
 			}
 
 			await sleep(300)
 
-			autoScheduleV2(smartevents, showui, addedtodos, newresolvedoverduetodos)
+			autoScheduleV2(smartevents, addedtodos, newresolvedpassedtodos)
 		}
 
 		//show popup
 		let rescheduletaskpopuptext = getElement('rescheduletaskpopuptext')
-		rescheduletaskpopuptext.innerHTML = `Your task <span class="text-bold">${overdueitem.title ? cleanInput(overdueitem.title) : 'New Event'}</span> is overdue. Have you completed it?`
+		rescheduletaskpopuptext.innerHTML = `We want to keep your schedule up-to-date. Have you completed <span class="text-bold">${overdueitem.title ? cleanInput(overdueitem.title) : 'New Event'}</span>?`
 
 		let rescheduletaskpopupbuttons = getElement('rescheduletaskpopupbuttons')
 		rescheduletaskpopupbuttons.innerHTML = `
 			<div class="border-8px background-tint-1 hover:background-tint-2 padding-8px-12px text-primary text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction()">No, reschedule it</div>
-			<div class="border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction(true)">Yes, mark as done</div>`
+			<div class="border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction(true)">Yes, mark completed</div>`
 
 		let rescheduletaskpopup = getElement('rescheduletaskpopup')
 		rescheduletaskpopup.classList.remove('hiddenpopup')
@@ -9286,52 +10115,16 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 	}
 
 
-	//loader
-	/*
-	let loading;
-	function updateloaderprogress() {
-		const increments = [0, 40, 70, 85, 95, 100]
-		const maxtime = 2000
-
-		let milliseconds = performance.now() - startautoscheduleprocess;
-		let normalizedTime = milliseconds / maxtime;
-
-		let currentindex = Math.floor(normalizedTime * (increments.length - 1));
-
-		let remainder = (normalizedTime * (increments.length - 1)) - currentindex;
-
-		let startValue = increments[Math.min(currentindex, increments.length - 1)];
-		let endValue = increments[Math.min(currentindex + 1, increments.length - 1)];
-
-		let progress = startValue + (endValue - startValue) * remainder;
-
-		let schedulingscreenloader = getElement('schedulingscreenloader')
-		schedulingscreenloader.children[0].style.left = `${(progress / 100 - 1) * 100}%`
-
-		if (!loading) return
-
-		requestAnimationFrame(updateloaderprogress)
-	}
-	if (showui) {
-		let schedulingscreen = getElement('schedulingscreen')
-		schedulingscreen.classList.remove('hiddenfade')
-
-		loading = true
-		requestAnimationFrame(updateloaderprogress)
-
-		let schedulingscreentext = getElement('schedulingscreentext')
-		schedulingscreentext.innerHTML = `Scheduling ${smartevents.length} task${smartevents.length == 1 ? '' : 's'}...`
-	}
-	*/
-
-	if (calendar.smartschedule.mode == 0) {
+	//start
+	if (true || calendar.smartschedule.mode == 0) {
 		//FOCUS
+
 
 		let donesmartevents = []
 		for (let item of smartevents) {
 			donesmartevents.push(item)
 
-			let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !Calendar.Event.isSchedulable(d))
+			let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !smartevents.find(g => g.id == d.id))
 
 			//get basic variables
 			let startafterdate = new Date()
@@ -9366,9 +10159,12 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 					fixrange(item)
 				}
 
-				let conflictitem = getconflictingevent(tempiteratedevents, item)
+
+				let temp = getconflictingevent(tempiteratedevents, item)
+				let conflictitem, spacing;
+				if(temp) [conflictitem, spacing] = temp
 				if (conflictitem) {
-					fixconflict(item, conflictitem)
+					fixconflict(item, conflictitem, spacing)
 				}
 
 				//exit
@@ -9437,7 +10233,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 		for (let item of smartevents) {
 			donesmartevents.push(item)
 
-			let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !Calendar.Event.isSchedulable(d))
+			let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !smartevents.find(g => g.id == d.id))
 
 			//get basic variables
 			let startafterdate = new Date()
@@ -9476,9 +10272,11 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 					fixrange(item)
 				}
 
-				let conflictitem = getconflictingevent(tempiteratedevents, item)
+				let temp = getconflictingevent(tempiteratedevents, item)
+				let conflictitem, spacing;
+				if(temp) [conflictitem, spacing] = temp
 				if (conflictitem) {
-					fixconflict(item, conflictitem)
+					fixconflict(item, conflictitem, spacing)
 				}
 
 				//exit
@@ -9493,7 +10291,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 
 
 
-	let modifiedevents = oldsmartevents.filter(item1 => {
+	let modifiedevents = sortstartdate(oldsmartevents.filter(item1 => {
 		let item2 = smartevents.find(f => f.id == item1.id)
 		if (!item2) return false
 
@@ -9503,7 +10301,14 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 			return false
 		}
 		return true
-	})
+	}))
+	
+
+	//stop if no change
+	if(modifiedevents.length == 0){
+		isautoscheduling = false
+		return
+	}
 
 	//stats
 	autoschedulestats.scheduleduration = performance.now() - startautoscheduleprocess
@@ -9511,39 +10316,30 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 	autoschedulestats.smarteventslength = smartevents.length
 	autoschedulestats.modifiedeventslength = modifiedevents.length
 
-	//ui
-	/*
-	if (showui) {
-		await sleep(2000)
 
-		schedulingscreentext.innerHTML = 'Success!'
-
-		await sleep(1000)
-
-		loading = false
-		schedulingscreen.classList.add('hiddenfade')
-	}
-	*/
-
-
-	//scroll
+	//scroll to first event
 	let oldcalendaryear = calendaryear
 	let oldcalendarmonth = calendarmonth
 	let oldcalendarday = calendarday
 
-	if (showui || addedtodos.length > 0) {
-		let firstitemdate = new Date(Math.min(...calendar.events.filter(d => modifiedevents.find(g => g.id == d.id)).map(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime())))
+	if (modifiedevents.length > 0) {
+		let firstitem = calendar.events.find(f => f.id == modifiedevents[0].id)
+		if(firstitem){
+			let firstitemdate = new Date(firstitem.start.year, firstitem.start.month, firstitem.start.day, 0, firstitem.start.minute)
 
-		//horizontal
-		calendaryear = firstitemdate.getFullYear()
-		calendarmonth = firstitemdate.getMonth()
-		calendarday = firstitemdate.getDate()
+			if(!isNaN(firstitemdate.getTime())){
+				//horizontal
+				calendaryear = firstitemdate.getFullYear()
+				calendarmonth = firstitemdate.getMonth()
+				calendarday = firstitemdate.getDate()
 
-		//vertical
-		let barcolumncontainer = getElement('barcolumncontainer')
+				//vertical
+				let barcolumncontainer = getElement('barcolumncontainer')
 
-		let target = firstitemdate.getHours() * 60 + firstitemdate.getMinutes() - barcolumncontainer.offsetHeight / 2
-		barcolumncontainer.scrollTo(0, target)
+				let target = firstitemdate.getHours() * 60 + firstitemdate.getMinutes()
+				scrollcalendarY(target)
+			}
+		}
 	}
 
 	if (oldcalendaryear != calendaryear || oldcalendarmonth != calendarmonth || oldcalendarday != calendarday) {
@@ -9636,9 +10432,18 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 					item.end.year = newenddate.getFullYear()
 				}
 
+				if(tick >= frames && !todoitem){
+					let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
+					if(autoscheduleitem){
+						autoscheduleitem.percentage = 0
+						calendar.updateAnimatedEvents()
+					}
+				}
+
 
 				if (tick >= frames) {
 					//stop
+					
 					return resolve()
 				} else {
 					//continue
@@ -9654,7 +10459,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 		})
 	}
 
-
+	
 	function animateitems(items) {
 		return new Promise(resolve => {
 
@@ -9846,6 +10651,7 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 
 		calendar.updateHistory()
 		calendar.updateInfo(true)
+		calendar.updateTodo()
 
 		clickscheduleframeclose()
 
@@ -9872,8 +10678,8 @@ async function autoScheduleV2(smartevents, showui, addedtodos, resolvedoverdueto
 	let animateindex = 0
 	closeanimate()
 
-	if(showui){
-		displayalert(`${addedtodos.length} tasks were successfully scheduled.`)
+	if(addedtodos.length > 0){
+		displayalert(`${addedtodos.length} task${addedtodos.length == 1 ? ' was' : 's were'} successfully scheduled`)
 	}
 
 	//stats
@@ -10599,14 +11405,40 @@ function eventallday() {
 
 
 //event completed
-function eventcompleted(id) {
+async function eventcompleted(event, id) {
 	let item = calendar.events.find(f => f.id == id)
 	if (!item) return
 	item.completed = !item.completed
 
+	if(item.type == 1){
+		calendar.updateTodo()
+	}
 	calendar.updateEvents()
 	calendar.updateInfo()
 	calendar.updateHistory()
+
+	if (item.completed) {
+		let confetticanvas = getElement('confetticanvas')
+		let myconfetti = confetti.create(confetticanvas, {
+			resize: true,
+			useWorker: true
+		})
+
+		await myconfetti({
+			particleCount: 20,
+			gravity: 0.75,
+			startVelocity: 15,
+			decay: 0.94,
+			ticks: 100,
+			origin: {
+				x: (event.clientX) / (window.innerWidth || document.body.clientWidth),
+				y: (event.clientY) / (window.innerHeight || document.body.clientHeight)
+			}
+		})
+
+		myconfetti.reset()
+
+	}
 }
 
 //double click column
@@ -10714,7 +11546,6 @@ function clickevent(event, timestamp) {
 	let barcolumncontainer = getElement('barcolumncontainer')
 
 	selectedeventid = event.target.id
-	editeventid = selectedeventid
 
 	let item = calendar.events.find(d => d.id == selectedeventid)
 	if (!item) return
@@ -10724,6 +11555,8 @@ function clickevent(event, timestamp) {
 	selectedeventfromdate = new Date(timestamp)
 	selectedeventinitialy = event.clientY - item.start.minute + barcolumncontainer.scrollTop
 	selectedeventbyday = item.repeat.byday
+
+	updatedeventsaftermove = false
 
 	calendar.updateEvents()
 
@@ -10751,6 +11584,9 @@ function clickevent(event, timestamp) {
 
 		editeventid = null
 		calendar.updateEvents()
+		if(item.type == 1){
+			calendar.updateTodo()
+		}
 	}
 }
 
@@ -10784,8 +11620,11 @@ function clickborder(event, id, timestamp) {
 }
 
 //move event
+let updatedeventsaftermove = false
 function moveevent(event) {
+	editeventid = selectedeventid
 	movingevent = true
+
 	let barcolumngroup = getElement('barcolumngroup')
 	let barcolumncontainer = getElement('barcolumncontainer')
 
@@ -10850,6 +11689,10 @@ function moveevent(event) {
 	item.end.month = tempdate2.getMonth()
 	item.end.year = tempdate2.getFullYear()
 
+	if(!updatedeventsaftermove){
+		calendar.updateEvents()
+		updatedeventsaftermove = true
+	}
 	calendar.updateAnimatedEvents()
 	calendar.updateInfo()
 }
@@ -10912,7 +11755,6 @@ function moveborder(event) {
 function clickeventbottom(event, timestamp) {
 	event.stopPropagation()
 	selectedeventid = event.target.parentNode.id
-	editeventid = selectedeventid
 
 	let item = calendar.events.find(d => d.id == selectedeventid)
 	if (!item) return
@@ -10924,6 +11766,8 @@ function clickeventbottom(event, timestamp) {
 	}
 
 	selectedeventinitialy = event.clientY
+
+	updatedeventsaftermove = false
 
 	calendar.updateEvents()
 
@@ -10940,6 +11784,9 @@ function clickeventbottom(event, timestamp) {
 
 		editeventid = null
 		calendar.updateEvents()
+		if(item.type == 1){
+			calendar.updateTodo()
+		}
 	}
 }
 
@@ -10948,7 +11795,6 @@ function clickeventbottom(event, timestamp) {
 function clickeventtop(event, timestamp) {
 	event.stopPropagation()
 	selectedeventid = event.target.parentNode.id
-	editeventid = selectedeventid
 
 	let item = calendar.events.find(d => d.id == selectedeventid)
 	if (!item) return
@@ -10957,6 +11803,8 @@ function clickeventtop(event, timestamp) {
 	selectedeventdate = new Date(item.start.year, item.start.month, item.start.day)
 
 	selectedeventinitialy = event.clientY
+
+	updatedeventsaftermove = false
 
 	calendar.updateEvents()
 
@@ -10973,11 +11821,15 @@ function clickeventtop(event, timestamp) {
 
 		editeventid = null
 		calendar.updateEvents()
+		if(item.type == 1){
+			calendar.updateTodo()
+		}
 	}
 }
 
 //move event bottom
 function moveeventbottom(event) {
+	editeventid = selectedeventid
 	movingevent = true
 	event.stopPropagation()
 	let barcolumngroup = getElement('barcolumngroup')
@@ -11043,6 +11895,11 @@ function moveeventbottom(event) {
 			document.removeEventListener("mouseup", finishfunction, false);
 		}
 	}
+	
+	if(!updatedeventsaftermove){
+		calendar.updateEvents()
+		updatedeventsaftermove = true
+	}
 
 	calendar.updateAnimatedEvents()
 	calendar.updateInfo()
@@ -11050,6 +11907,7 @@ function moveeventbottom(event) {
 
 //move event top
 function moveeventtop(event) {
+	editeventid = selectedeventid
 	movingevent = true
 	event.stopPropagation()
 	let barcolumngroup = getElement('barcolumngroup')
@@ -11114,6 +11972,11 @@ function moveeventtop(event) {
 		}, false);
 	}
 
+	if(!updatedeventsaftermove){
+		calendar.updateEvents()
+		updatedeventsaftermove = true
+	}
+
 	calendar.updateAnimatedEvents()
 	calendar.updateInfo()
 }
@@ -11124,7 +11987,7 @@ function moveeventtop(event) {
 async function removePushNotifs() {
 	const existing = await navigator.serviceWorker.getRegistration()
 	if (existing) {
-		console.log("Updating Service Worker...")
+		console.log("Unregistering from push notifications...")
 		existing.unregister()
 	}
 }
@@ -11132,14 +11995,13 @@ async function removePushNotifs() {
 let subscription;
 async function enablePushNotifs() {
 	const Notifications = await import("/notifications.mjs")
-	if (!Notifications.pushNotificationsSupported()) return;
-	console.log("Setting up Push Notifications...")
+	if (!Notifications.pushNotificationsSupported()) return
+	console.log("Registering for push notifications...")
 
 	// to make sure duplicates don't exist, remove existing SW
 	await Notifications.requestPermission()
 	const registration = await Notifications.registerSW()
 	subscription = await Notifications.subscribe()
-
 }
 
 // actual function that handles the setting
@@ -11150,10 +12012,10 @@ function togglePushNotifs(event) {
 	} else {
 		removePushNotifs()
 	}
+	calendar.updateSettings()
 }
 
-if (calendar.pushSubscriptionEnabled) {
-	enablePushNotifs()
-} else {
-	removePushNotifs()
+function toggleemailnotifs(event){
+	calendar.emailreminderenabled = event.target.checked
+	calendar.updateSettings()
 }

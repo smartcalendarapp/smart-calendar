@@ -1,4 +1,4 @@
-@media (max-width: 600px) {
+@media only screen and (max-width: 600px) {
 	.small\:border-0{
 		border-radius:0 !important
 	}
@@ -334,6 +334,9 @@
 		gap:192px !important
 	}
 	
+	.small\:static{
+		position:static !important
+	}
 	.small\:absolute{
 		position:absolute !important
 	}

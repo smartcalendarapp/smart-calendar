@@ -39,7 +39,7 @@
 	background-color:var(--yellow)
 }
 .hover\:background-green:hover{
-	background-color:var(--green)
+	background-color:var(--green-hover)
 }
 .hover\:background-blue:hover{
 	background-color:var(--blue)
@@ -70,6 +70,9 @@
 }
 .hover\:background-blue-hover:hover{
 	background-color:var(--blue-hover)
+}
+.hover\:background-green-hover:hover{
+	background-color:var(--green-hover)
 }
 .hover\:background-orange-hover:hover{
 	background-color:var(--orange-hover)

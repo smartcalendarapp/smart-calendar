@@ -84,9 +84,12 @@
 
 	<canvas id="confetticanvas" class="pointer-none height-full width-full absolute top-0 left-0 z-index-2000"></canvas>
 		
-	<div class="absolute top-0 left-0 width-full background-primary z-index-2000 height-full display-flex justify-center align-center fadetransition transition-duration-200 hiddenfade" id="loginpopup">
+	<div class="absolute top-0 left-0 width-full background-primary z-index-10000 height-full display-flex flex-column justify-center gap-24px align-center fadetransition transition-duration-200 hiddenfade" id="loginpopup">
+		<div class="text-24px text-primary">Smart Calendar</div>
+
 		<div class="padding-12px display-flex flex-column gap-12px">
-			<div class="text-primary text-18px">Please log in to continue to Smart Calendar</div>
+			<div class="text-primary text-18px">Please log in to continue to the app</div>
+
 			<a class="border-8px background-blue padding-8px-12px text-white text-14px text-center text-decoration-none hover:background-blue-hover transition-duration-100" href="../login">Log in</a>
 		</div>
 	</div>
@@ -99,7 +102,7 @@
 	<div class="z-index-1000 popup box-shadow backdrop-blur padding-12px border-8px absolute gap-4px display-flex flex-column hiddenpopup picker" onmousedown="event.preventDefault()" id="datepicker"></div>
 
 
-	<div class="helpmenu hiddenpopup popup z-index-10001 padding-12px gap-12px" id="todoitempriority">
+	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="todoitempriority">
 		<div class="display-flex flex-row gap-12px justify-space-between align-center">
 			<div>
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -127,7 +130,7 @@
 	</div>
 
 	
-	<div class="helpmenu hiddenpopup popup z-index-10001 padding-12px gap-12px" id="createtodoitempriority">
+	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="createtodoitempriority">
 		<div class="display-flex flex-row gap-12px justify-space-between align-center">
 			<div>
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -156,7 +159,7 @@
 
 
 	
-	<div class="helpmenu hiddenpopup popup z-index-10001 padding-12px gap-12px" id="todoitemduration">
+	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="todoitemduration">
 		<div class="display-flex flex-row justify-space-between align-center">
 			<div>
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -184,7 +187,7 @@
 		<div class="infogroup">
 			<div class="inputgroup">
 				<div class="inputgroupitem flex-1">
-					<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtodoitemduration(event)" id="todoitemdurationinput" class="infoinput" placeholder="Custom time needed" type="text">
+					<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtodoitemduration(event)" id="todoitemdurationinput" class="infoinput" placeholder="Custom time needed" type="text">
 						<span class="inputline"></span>
 					</input>
 				</div>
@@ -194,7 +197,7 @@
 	</div>
 
 
-	<div class="helpmenu hiddenpopup popup z-index-10001 padding-12px gap-12px" id="createtodoitemduration">
+	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="createtodoitemduration">
 		<div class="display-flex flex-row justify-space-between align-center">
 			<div>
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -222,7 +225,7 @@
 		<div class="infogroup">
 			<div class="inputgroup">
 				<div class="inputgroupitem flex-1">
-					<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputcreatetodoitemduration(event)" id="createtodoitemdurationinput" class="infoinput" placeholder="Custom time needed" type="text">
+					<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputcreatetodoitemduration(event)" id="createtodoitemdurationinput" class="infoinput" placeholder="Custom time needed" type="text">
 						<span class="inputline"></span>
 					</input>
 				</div>
@@ -233,7 +236,7 @@
 	</div>
 
 
-	<div class="helpmenu hiddenpopup popup z-index-10001 padding-12px gap-12px" id="todoitemduedate">
+	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="todoitemduedate">
 		<div class="display-flex flex-row justify-space-between align-center">
 
 			<div>
@@ -275,7 +278,7 @@
 				<div class="infogroup">
 					<div class="inputgroup">
 						<div class="inputgroupitem flex-1">
-							<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtodoitemduedate(event)" id="todoitemduedateinput" class="infoinput" placeholder="Custom date" type="text">
+							<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtodoitemduedate(event)" id="todoitemduedateinput" class="infoinput" placeholder="Custom date" type="text">
 								<span class="inputline"></span>
 							</input>
 						</div>
@@ -288,7 +291,7 @@
 				<div class="infogroup">
 					<div class="inputgroup">
 						<div class="inputgroupitem flex-1">
-							<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputtodoitemduetime(event)" id="todoitemduetimeinput" class="infoinput" placeholder="Custom time" type="text">
+							<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtodoitemduetime(event)" id="todoitemduetimeinput" class="infoinput" placeholder="Custom time" type="text">
 								<span class="inputline"></span>
 							</input>
 						</div>
@@ -302,7 +305,7 @@
 
 
 
-	<div class="helpmenu hiddenpopup popup z-index-10001 padding-12px gap-12px" id="createtodoitemduedate">
+	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="createtodoitemduedate">
 		<div class="display-flex flex-row justify-space-between align-center">
 
 			<div>
@@ -344,7 +347,7 @@
 				<div class="infogroup">
 					<div class="inputgroup">
 						<div class="inputgroupitem flex-1">
-							<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputcreatetodoitemduedate(event)" id="createtodoitemduedateinput" class="infoinput" placeholder="Custom date" type="text">
+							<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputcreatetodoitemduedate(event)" id="createtodoitemduedateinput" class="infoinput" placeholder="Custom date" type="text">
 								<span class="inputline"></span>
 							</input>
 						</div>
@@ -357,7 +360,7 @@
 				<div class="infogroup">
 					<div class="inputgroup">
 						<div class="inputgroupitem flex-1">
-							<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputcreatetodoitemduetime(event)" id="createtodoitemduetimeinput" class="infoinput" placeholder="Custom time" type="text">
+							<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputcreatetodoitemduetime(event)" id="createtodoitemduetimeinput" class="infoinput" placeholder="Custom time" type="text">
 								<span class="inputline"></span>
 							</input>
 						</div>
@@ -377,7 +380,7 @@
 
 	<div class="helpmenu hiddenpopup popup picker z-index-1000 max-height-240px" onmousedown="event.preventDefault()" id="durationpicker"></div>
 
-	<div class="helpmenu hiddenpopup popup picker z-index-10000 max-height-240px" onmousedown="event.preventDefault()" id="timepicker"></div>
+	<div class="helpmenu hiddenpopup popup picker z-index-1000 max-height-240px" onmousedown="event.preventDefault()" id="timepicker"></div>
 
 
 	<div class="helpmenu hiddenpopup popup" id="leftmenuwrap">
@@ -484,7 +487,7 @@
 			<div class="width-fit display-flex flex-row gap-6px align-center text-14px text-white"><span class="display-flex flex-row align-center pointer" onclick="togglesavetimeframe(event)" id="savetimeframecheckbox"></span> Save template</div>
 			
 			<div class="inputgroupitem display-none" id="savetimeframeinput">
-				<input onkeydown="if(event.keyCode == 13){ this.blur() }" id="timeframetemplateinput" class="infoinput" type="text" placeholder="Template name">
+				<input onkeydown="if(event.key == 'Enter'){ this.blur() }" id="timeframetemplateinput" class="infoinput" type="text" placeholder="Template name">
 					<span class="inputline"></span>
 				</input>
 			</div>
@@ -505,7 +508,7 @@
 	
 				<div class="inputgroup">
 					<div class="inputgroupitem">
-						<input onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputrepeatinterval(event)" id="repeatintervalinput" class="infoinput width-96px" type="number" min="1" placeholder="Interval">
+						<input onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputrepeatinterval(event)" id="repeatintervalinput" class="infoinput width-96px" type="number" min="1" placeholder="Interval">
 							<span class="inputline"></span>
 						</input>
 					</div>
@@ -568,6 +571,25 @@
 
 			
 			<input type="submit" value="Submit" class="formsubmit"/>
+		</form>
+	</div>
+
+
+	<div class="schedulemenu hiddenpopup popup z-index-1000 width300px" id="deleteaccountmenu" >
+		<div class="infotitle text-center">Delete Account</div>
+		<div class="text-14px text-quaternary">Are you sure you want to delete your account? This action is irreversible. All of your data including tasks and events will be deleted from Smart Calendar.</div>
+		
+		<div class="errorwrap display-none" id="deleteaccounterrorwrap"></div>
+		
+		<form class="form" id="deleteaccountform" onsubmit="submitdeleteaccount(event)">
+			<div class="formgroup">
+				<div class="forminputwrap">
+					<input placeholder="Enter password" type="password" name="password" class="infoinput"></input>
+					<span class="inputline"></span>
+				</div>
+			</div>
+			
+			<input type="submit" value="Delete account" class="formsubmit background-red hover:background-red-hover"/>
 		</form>
 	</div>
 
@@ -654,8 +676,72 @@
 	</div>
 
 
+	<div class="absolute fadetransition hiddenfade top-0 z-index-2000 left-0 width-full height-full display-flex flex-column align-center justify-center blackbackground" id="loginwithgooglescreen">
+		<div class="box-shadow padding-12px display-flex flex-column gap-12px border-8px background-primary-transparent backdrop-blur max-width-400px width-full border-box">
+			<div class="display-flex gap-12px flex-row align-center justify-space-between">
+				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+				</svg>
+				<div class="infotitle text-center nowrap">Please Authorize Google Calendar</div>
+				<div class="infotopright pointer" onclick="closeloginwithgooglepopup()">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+			</div>
+
+			<div class="text-16px text-primary">Please log in with Google in order to sync your calendars here.</div>
+
+			<div class="display-flex flex-row align-center gap-12px justify-space-between">
+				<div class="border-8px background-tint-1 hover:background-tint-2 padding-8px-12px text-primary nowrap text-14px transition-duration-100 pointer" onclick="closeloginwithgooglepopup()">Not now</div>
+
+				<div class="border-8px nowrap flex-1 googlebutton text-center text-14px padding-8px-12px pointer transition-duration-100" onclick="logingoogle(event)">
+					<svg viewBox="0 0 24 24" width="100%" height="100%" class="buttongoogle"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path><path d="M1 1h22v22H1z" fill="none"></path></svg> Log in with Google
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
+	<div class="absolute fadetransition hiddenfade top-0 z-index-2000 left-0 width-full height-full display-flex flex-column align-center justify-center blackbackground" id="loginwithgoogleclassroomscreen">
+		<div class="box-shadow padding-12px display-flex flex-column gap-12px border-8px background-primary-transparent backdrop-blur max-width-400px width-full border-box">
+			<div class="display-flex gap-12px flex-row align-center justify-space-between">
+				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+				</svg>
+				<div class="infotitle text-center nowrap">Please Authorize Google Classroom</div>
+				<div class="infotopright pointer" onclick="closeloginwithgoogleclassroompopup()">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+			</div>
+
+			<div class="text-16px text-primary">Please log in with Google in order to get your Google Classrom to-dos here.</div>
+
+			<div class="display-flex flex-row align-center gap-12px justify-space-between">
+				<div class="border-8px background-tint-1 hover:background-tint-2 padding-8px-12px text-primary nowrap text-14px transition-duration-100 pointer" onclick="closeloginwithgoogleclassroompopup()">Not now</div>
+
+				<div class="border-8px nowrap flex-1 googlebutton text-center text-14px padding-8px-12px pointer transition-duration-100" onclick="logingoogle(event)">
+					<svg viewBox="0 0 24 24" width="100%" height="100%" class="buttongoogle"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path><path d="M1 1h22v22H1z" fill="none"></path></svg> Log in with Google
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+
 	<div class="absolute pointer-none top-0 z-index-1000 left-0 bottom-0 right-0 display-flex flex-column align-center justify-center">
-		<div class="popuptransition box-shadow padding-12px pointer-auto display-flex flex-column gap-12px border-8px background-primary-transparent backdrop-blur hiddenpopup width300px" id="rescheduletaskpopup">
+		<div class="popuptransition box-shadow padding-12px pointer-auto display-flex flex-column gap-12px border-8px background-primary-transparent backdrop-blur hiddenpopup max-width-400px width-full border-box" id="rescheduletaskpopup">
 			<div class="infotitle text-center">Task completed?</div>
 			<div class="text-16px text-primary" id="rescheduletaskpopuptext"></div>
 			<div class="display-flex flex-row gap-12px justify-flex-end" id="rescheduletaskpopupbuttons"></div>
@@ -675,17 +761,17 @@
 
 	<!-- calendar info image -->
 	<div class="settingsscreen small:padding-0 hiddenfade" id="welcomecalendar">
-		<div class="relative margin-12px overflow-y-auto border-box border-8px box-shadow calendarsplash padding-top-relative gap-48px display-flex padding-48px small:padding-12px flex-column align-center">
-			<div class="text-white text-36px text-center text-bold">Welcome to Smart Calendar!</div>
+		<div class="relative overflow-y-auto border-box border-8px box-shadow calendarsplash padding-top-relative gap-48px display-flex padding-48px small:padding-12px flex-column align-center">
+			<div class="text-white text-36px text-center text-bold">Welcome to Smart Calendar</div>
+			<div class="text-white text-24px text-center">This is not an ordinary calendar! We aim to revolutionize time management by automatically planning your tasks for you.<br>Learn how it works:</div>
 			<div class="display-flex flex-column gap-12px">
-				<div class="text-white text-24px"><span class="text-bold">Organize</span>: Add tasks to your to-do list. </div>
-				<div class="text-white text-24px"><span class="text-bold">Automate</span>: Click "Schedule my tasks" to have us plan your tasks in your calendar.</div>
-				<div class="text-white text-24px"><span class="text-bold">AI Oriented</span>: Your schedule will automatically be rearranged if any changes come up. Don't worry, events like meetings or appointments won't be touched.</div>
+				<div class="text-white text-24px"><span class="text-bold">Task</span>: This is an item on your to do list. Our app will automatically schedule it using our intelligent algorithm.</div>
+				<div class="text-white text-24px"><span class="text-bold">Event</span>: This takes place at a fixed time. Our app will leave it as is.</div>
 			</div>
 			
 			<img src="../todotocalendar.png" class="objectfitcontain border-8px flex-shrink-0 max-width-600px width-full height-auto" width="1024" height="360" alt="Plan tasks on calendar"></img>
 
-			<div class="border-round padding-8px-12px text-18px whitebutton transition-duration-100 pointer" onclick="closewelcomepopup('calendar')">Got it</div>
+			<div class="sticky margin-24px bottom-0 border-round padding-8px-12px text-18px whitebackgroundbutton transition-duration-100 pointer" onclick="closewelcomepopup('calendar')">Got it</div>
 		</div>
 	</div>
 
@@ -722,117 +808,225 @@
 			</a>
 		</div>
 
+		<!-- pages wrapper -->
+		<div class="flex-1 width-full relative">
 
+			<div class="absolute top-0 left-0 width-full height-full display-flex flex-column align-center display-none" id="onboardingstart">
+				
+				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px border-box flex-column flex-1 justify-space-evenly">
+					<div class="display-flex flex-column gap-12px">
+						<div class="text-36px text-primary text-bold text-center">Welcome to Smart Calendar</div>
+						<div class="text-18px text-quaternary">We have just a few quick steps to personalize your experience. Let's get started!</div>
+					</div>
 
-		<div class="flex-1 width-full display-flex flex-column align-center display-none" id="onboardingstart">
-			
-			<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px border-box flex-column flex-1 justify-space-evenly">
-				<div class="display-flex flex-column gap-12px">
-					<div class="text-36px text-primary text-bold text-center">Welcome to Smart Calendar</div>
-					<div class="text-18px text-quaternary">We have just a few quick steps to personalize your experience. Let's get started!</div>
+					<div class="display-flex flex-row gap-24px justify-center align-center">
+						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('start')">Continue</div>
+					</div>
+
 				</div>
-
-				<div class="display-flex flex-row gap-24px justify-center align-center">
-					<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('start')">Continue</div>
-				</div>
-
 			</div>
-		</div>
 
-		<div class="flex-1 width-full display-flex flex-column align-center display-none" id="onboardingconnectcalendars">
-			
-			<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
-				<div class="display-flex flex-column gap-12px">
-					<div class="text-24px text-primary text-bold">Connect your calendars</div>
-					<div class="text-18px text-quaternary">Connect your Google or Outlook calendar to our app. We'll keep your calendars in sync.</div>
-				</div>
+			<div class="absolute top-0 left-0 width-full height-full display-flex flex-column align-center display-none" id="onboardingconnectcalendars">
+				
+				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
+					<div class="display-flex flex-column gap-12px">
+						<div class="text-24px text-primary text-bold">Connect your calendars</div>
+						<div class="text-18px text-quaternary">Link your Google or Outlook calendar to our app. Have all your events in one place.</div>
+					</div>
 
-				<div class="display-flex align-self-center flex-column gap-12px">
-					<div class="display-flex flex-row gap-12px align-center flex-wrap-wrap">
-						
-						<div class="border-8px width300px googlebutton text-center text-14px padding-8px-12px pointer transition-duration-100" onclick="logingoogle(event)">
-							<svg viewBox="0 0 24 24" width="100%" height="100%" class="buttongoogle"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path><path d="M1 1h22v22H1z" fill="none"></path></svg> Log in with Google Calendar
+					<div class="display-flex align-self-center flex-column gap-24px">
+						<div class="display-flex flex-column gap-6px">
+							<div class="text-bold text-16px text-primary"><img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png"></img> Google Calendar</div>
+
+							<div class="display-flex flex-row gap-12px align-center flex-wrap-wrap">
+								<div class="border-8px width300px googlebutton text-center text-14px padding-8px-12px pointer transition-duration-100" onclick="logingoogle(event)">
+									<svg viewBox="0 0 24 24" width="100%" height="100%" class="buttongoogle"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path><path d="M1 1h22v22H1z" fill="none"></path></svg> Log in with Google
+								</div>
+
+								<div class="display-flex flex-row gap-6px align-center" id="onboardingconnectcalendarsgooglecalendar"></div>
+							</div>
 						</div>
 
-						<div class="display-flex flex-row gap-6px align-center" id="onboardingconnectcalendarsgooglecalendar"></div>
+						<div class="display-flex flex-column gap-6px">
+							<div class="text-bold text-16px text-primary"><img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Outlook.com_icon_%282012-2019%29.svg/1200px-Outlook.com_icon_%282012-2019%29.svg.png"></img> Outlook Calendar</div>
+							<div class="display-flex flex-row gap-12px align-center flex-wrap-wrap">
+								<div class="text-primary width300px text-14px text-center padding-8px-12px bordertertiary border-8px">Outlook calendar coming soon!</div>
+
+								<div class="display-flex flex-row gap-6px align-center" id="onboardingconnectcalendarsoutlookcalendar"></div>
+							</div>
+						</div>
 					</div>
 
-					<div class="display-flex flex-row gap-12px align-center flex-wrap-wrap">
-						<div class="text-primary width300px text-14px text-center padding-8px-12px bordertertiary border-8px">Outlook calendar coming soon!</div>
-
-						<div class="display-flex flex-row gap-6px align-center" id="onboardingconnectcalendarsoutlookcalendar"></div>
+					<div class="display-flex flex-row gap-24px justify-center align-center">
+						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="continueonboarding('connectcalendars')">Skip</div>
+						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('connectcalendars')">Continue</div>
 					</div>
-				</div>
 
-				<div class="display-flex flex-row gap-24px justify-center align-center">
-					<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="continueonboarding('connectcalendars')">Skip</div>
-					<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('connectcalendars')">Continue</div>
 				</div>
-
 			</div>
-		</div>
 
-		
-		<div class="height-full width-full display-flex align-center flex-column display-none" id="onboardingsleeptime">
-			<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
-				<div class="display-flex flex-column gap-12px">
-					<div class="text-24px text-primary text-bold">Set sleep schedule</div>
-					<div class="text-18px text-quaternary">This will help our app schedule your tasks for the best time.</div>
-				</div>
 
-				<div class="inputgroup gap-6px">
-					<div class="inputgroupitem flex-1">
-						<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepstart(event)" id="settingssleepstart" class="infoinput inputtimepicker" placeholder="Add start time" type="text">
-							<span class="inputline"></span>
-						</input>
+			<div class="absolute top-0 left-0 width-full height-full display-flex flex-column align-center display-none" id="onboardingconnecttodolists">
+				
+				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
+					<div class="display-flex flex-column gap-12px">
+						<div class="text-24px text-primary text-bold">Connect your to do lists</div>
+						<div class="text-18px text-quaternary">If you use any of the to-do apps below, you can link them to our app. Have all your tasks in one place.</div>
 					</div>
-					<div class="text-14px text-primary">to</div>
-					<div class="inputgroupitem flex-1">
-						<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepend(event)" id="settingssleepend" class="infoinput inputtimepicker" placeholder="Add end time" type="text">
-							<span class="inputline"></span>
-						</input>
+
+					<div class="display-flex align-self-center flex-column gap-24px">
+						<div class="display-flex flex-column gap-6px">
+							<div class="text-bold text-16px text-primary"><img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png"></img> Google Classroom</div>
+
+							<div class="display-flex flex-row gap-12px align-center flex-wrap-wrap">
+								<div class="border-8px width300px googlebutton text-center text-14px padding-8px-12px pointer transition-duration-100" onclick="logingoogle(event)">
+									<svg viewBox="0 0 24 24" width="100%" height="100%" class="buttongoogle"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path><path d="M1 1h22v22H1z" fill="none"></path></svg> Log in with Google
+								</div>
+
+								<div class="display-flex flex-row gap-6px align-center" id="onboardingconnecttodolistsgoogleclassroom"></div>
+							</div>
+						</div>
+
+						<div class="text-primary text-16px">More apps coming soon!</div>
+
 					</div>
-				</div>
 
-				<div class="display-flex flex-row gap-24px justify-center align-center">
-					<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="continueonboarding('sleeptime')">Skip</div>
-					<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('sleeptime')">Continue</div>
-				</div>
+					<div class="display-flex flex-row gap-24px justify-center align-center">
+						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="continueonboarding('connecttodolists')">Skip</div>
+						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('connecttodolists')">Continue</div>
+					</div>
 
+				</div>
 			</div>
-		</div>
 
 
-		<div class="height-full overflow-y-auto width-full display-flex align-center flex-column display-none" id="onboardingaddtask">
-			<div class="overflow-y-auto todowidth display-flex padding-96px gap-48px  small:padding-24px border-box flex-column flex-1 justify-space-between">
-				<div class="display-flex flex-column gap-12px">
-					<div class="text-24px text-primary text-bold">Add your first task</div>
-					<div class="text-18px text-quaternary">Get in the habit of adding your tasks, projects, and plans here.</div>
+
+			<div class="absolute top-0 left-0 width-full height-full display-flex flex-column align-center display-none" id="onboardingeventreminders">
+				
+				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
+					<div class="display-flex flex-column gap-12px">
+						<div class="text-24px text-primary text-bold">Stay on track with reminders</div>
+						<div class="text-18px text-quaternary">Get notified when events start, tasks are due, and more. Right in your browser or email inbox.</div>
+					</div>
+
+					<div class="display-flex align-self-center flex-column gap-24px">
+						<div class="infogroup">
+							<div class="display-flex justify-space-between flex-row gap-12px align-center">
+								<div class="infotext text-16px text-bold">Browser Notifications</div>
+								<label class="switch">
+									<input type="checkbox" oninput="togglePushNotifs(event)" id="enablepushnotif2">
+									<span class="slider"></span>
+								</label>
+							</div>
+						</div>
+						<div class="infogroup">
+							<div class="display-flex justify-space-between flex-row gap-12px align-center">
+								<div class="infotext text-16px text-bold">Email Notifications</div>
+								<label class="switch">
+									<input type="checkbox" oninput="toggleemailnotifs(event)" id="enableemailnotif2">
+									<span class="slider"></span>
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="display-flex flex-row gap-24px justify-center align-center">
+						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="continueonboarding('eventreminders')">Skip</div>
+						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('eventreminders')">Continue</div>
+					</div>
+
 				</div>
+			</div>
 
-				<div class="overflow-y-auto width-full display-flex align-center flex-column gap-12px">
-					<div class="padding-8px-12px pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-round" onclick="opencreatetodo(event)">
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
-						<g>
-						<g opacity="1">
-						<path d="M128.004 10.0039L128.004 246.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-						<path d="M246.004 128.004L10.0039 128.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-						</g>
-						</g>
-						</svg>
 			
-						<div class="text-18px text-white pointer-none nowrap transition-none">Add task</div>
+			<div class="absolute top-0 left-0 height-full width-full display-flex align-center flex-column display-none" id="onboardingsleeptime">
+				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
+					<div class="display-flex flex-column gap-12px">
+						<div class="text-24px text-primary text-bold">Set sleep schedule</div>
+						<div class="text-18px text-quaternary">This will help our app schedule your tasks for when you're awake.</div>
 					</div>
 
-					<div id="onboardingaddtasktodolist" class="overflow-y-auto width-full"></div>
-				</div>
+					<div class="inputgroup gap-6px">
+						<div class="inputgroupitem flex-1">
+							<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputsettingssleepstart(event)" id="settingssleepstart" class="infoinput inputtimepicker" placeholder="Add start time" type="text">
+								<span class="inputline"></span>
+							</input>
+						</div>
+						<div class="text-14px text-primary">to</div>
+						<div class="inputgroupitem flex-1">
+							<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputsettingssleepend(event)" id="settingssleepend" class="infoinput inputtimepicker" placeholder="Add end time" type="text">
+								<span class="inputline"></span>
+							</input>
+						</div>
+					</div>
 
-				<div class="display-flex flex-row gap-24px justify-center align-center">
-					<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="continueonboarding('addtask')">Skip</div>
-					<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('addtask')">Finish</div>
-				</div>
+					<div class="display-flex flex-row gap-24px justify-center align-center">
+						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="continueonboarding('sleeptime')">Skip</div>
+						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('sleeptime')">Continue</div>
+					</div>
 
+				</div>
 			</div>
+
+
+			<div class="absolute top-0 left-0 height-full width-full display-flex align-center flex-column display-none" id="onboardingaddtask">
+				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px border-box flex-column flex-1 justify-space-between">
+					<div class="display-flex flex-column gap-12px">
+						<div class="text-24px text-primary text-bold">Add your first task</div>
+						<div class="text-18px text-quaternary">Get in the habit of adding your tasks, projects, and plans here.</div>
+					</div>
+
+
+					<!-- add task -->
+					<div class="width-full relative display-flex align-center flex-row gap-12px">
+						<div class="display-flex flex-row border-8px background-primary-transparent backdrop-blur box-shadow overflow-hidden flex-1 relative">
+							<textarea rows="1" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleonboarding">
+							</textarea>
+							<span class="inputline"></span>
+						</div>
+						<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodo()">					
+							<div class="text-16px text-white display-flex flex-row gap-6px pointer-none nowrap transition-none"  id="submitcreatetodoaddnumberonboarding">Add</div>
+						</div>
+
+						<!-- popup -->
+						<div class="width-full popuptransition overflow-hidden background-primary box-shadow addtodosuggestions z-index-1 border-8px display-flex popup flex-column hiddenpopup" id="addtodooptionspopuponboarding">
+									
+							<div class="z-index-100 padding-12px border-box flex-1 align-center display-flex flex-row gap-12px padding-12px width-full flex-wrap-wrap">
+								<div class="popupbutton border-8px padding-left-12px padding-right-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap popupbutton text-14px pointer-auto pointer transition-duration-100" onclick="readinteractivetourpopup('clickduedate');clickcreatetododuedate(event)" id="createtododuedateonboarding">
+								</div>
+			
+								<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-green pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetododuration(event)" id="createtododurationonboarding">
+								</div>
+			
+								<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetodopriority(event)" id="createtodopriorityonboarding">
+								</div>
+							</div>
+
+							<div class="horizontalbar"></div>
+
+							<div class="inputgroup border-8px">
+								<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotesonboarding" maxlength="2000"></textarea>
+								<span class="inputline"></span>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="flex-1 relative width-full">
+						<div id="onboardingaddtasktodolist" class="padding-12px border-box background-secondary border-8px absolute top-0 left-0 right-0 bottom-0 flex-column display-flex gap-24px overflow-y-auto width-full"></div>
+					</div>
+
+
+
+
+					<div class="display-flex flex-row gap-24px justify-center align-center">
+						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="continueonboarding('addtask')">Skip</div>
+						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('addtask')">Finish</div>
+					</div>
+
+				</div>
+			</div>
+
 		</div>
 	</div>
 
@@ -852,21 +1046,10 @@
 			</g>
 			</svg>
 		</div>
-		
-		<div class="absolute hiddenfade popupbutton beaconwrap z-index-2000" onclick="openinteractivetourpopup('clickaddtitle');gtag('event', 'button_click', { useraction: 'Add title beacon' })" id="interactivetourbeaconclickaddtitle">
-			<div class="beacon pointer-none"></div>
-			
-			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
-			<g>
-			<path d="M128.001 0C114.798 0 103.421 14.0434 104.219 27.0996L110.806 159.354C111.129 170.465 117.509 178.33 128.001 178.33C138.483 178.33 144.621 170.687 145.197 159.354L151.783 27.0369C152.542 13.1194 141.568-5.10502e-06 128.001 0Z" fill-rule="nonzero" opacity="1" ></path>
-			<path d="M128.001 207.607C114.826 207.607 104.132 218.3 104.132 231.476C104.132 244.651 114.826 255.313 128.001 255.313C141.176 255.313 151.87 244.651 151.87 231.476C151.87 218.3 141.176 207.607 128.001 207.607Z" fill-rule="nonzero" opacity="1" ></path>
-			</g>
-			</svg>
-		</div>
 
 	
 		
-		<div class="absolute hiddenfade popupbutton beaconwrap z-index-2000" onclick="openinteractivetourpopup('clickscheduleoncalendar');gtag('event', 'button_click', { useraction: 'Schedule on calendar beacon' })" id="interactivetourbeaconclickscheduleoncalendar">
+		<div class="absolute hiddenfade popupbutton beaconwrap z-index-1001" onclick="openinteractivetourpopup('clickscheduleoncalendar');gtag('event', 'button_click', { useraction: 'Schedule on calendar beacon' })" id="interactivetourbeaconclickscheduleoncalendar">
 			<div class="beacon pointer-none"></div>
 			
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
@@ -906,24 +1089,11 @@
 				<div class="text-14px text-quaternary nowrap">TIP</div>
 				<div class="text-18px text-primary nowrap text-bold">Add task</div>
 			</div>
-			<div class="text-18px text-quaternary">Jotting down your tasks is the first step to organize your life. Any time you have a task on mind, add it here.</div>
+			<div class="text-18px text-quaternary">Quickly jot down your tasks here. You can also paste a list of tasks, and we'll add them for you.</div>
 				 
 			<div class="display-flex flex-row justify-space-between align-center">
 				<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
 				<div class="text-14px pointer pointer-auto padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="readinteractivetourpopup('clickaddtask')">Got it</div>
-			</div>
-		</div>
-
-		<div class="interactivetourpopup hiddenpopup popupbutton" id="interactivetourpopupclickaddtitle">
-			<div>
-				<div class="text-14px text-quaternary nowrap">TIP</div>
-				<div class="text-18px text-primary nowrap text-bold">Add a task</div>
-			</div>
-			<div class="text-18px text-quaternary">You can include a due date, time needed (e.g. takes 1 hour), and priority (e.g. high priority).</div>
-					 
-			<div class="display-flex flex-row justify-space-between align-center">
-				<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
-				<div class="text-14px pointer pointer-auto padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="readinteractivetourpopup('clickaddtitle')">Got it</div>
 			</div>
 		</div>
 
@@ -933,7 +1103,7 @@
 				<div class="text-14px text-quaternary nowrap">TIP</div>
 				<div class="text-18px text-primary nowrap text-bold">Schedule my tasks</div>
 			</div>
-			<div class="text-18px text-quaternary">Automatically schedule your tasks into your calendar. This is where the magic happens!</div>
+			<div class="text-18px text-quaternary">We'll automatically schedule your tasks into your calendar. This is where the magic happens!</div>
 					 
 			<div class="display-flex flex-row justify-space-between align-center">
 				<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
@@ -957,9 +1127,13 @@
 		<div class="interactivetourpopup hiddenpopup popupbutton" id="interactivetourpopupautoschedule">
 			<div>
 				<div class="text-14px text-quaternary nowrap">TIP</div>
-				<div class="text-18px text-primary nowrap text-bold">Auto-schedule</div>
+				<div class="text-18px text-primary nowrap text-bold">Event type</div>
 			</div>
-			<div class="text-18px text-quaternary">Automatically schedule your event for the best time.<br>Good for tasks that need to be done by a certain date.</div>
+			<div class="text-18px text-quaternary">
+				<span class="text-bold">Event</span>: takes place at a fixed time.
+				<br>
+				<span class="text-bold">Task</span>: auto-scheduled by our app before its due date.
+			</div>
 					 
 			<div class="display-flex flex-row justify-space-between align-center">
 				<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
@@ -971,7 +1145,7 @@
 
 
 	<!-- CREATE TO DO UI -->
-	<div class="schedulemenu z-index-10000 box-shadow hiddenpopup eventinfowidth popup small:width-full small:height-full small:top-0 small:left-0 small:border-0" id="todopopup">
+	<div class="schedulemenu z-index-1000 box-shadow hiddenpopup eventinfowidth popup small:width-full small:height-full small:top-0 small:left-0 small:border-0" id="todopopup">
 		<div class="display-flex flex-column gap-12px">
 
 			<div class="justify-space-between display-flex flex-row align-center">
@@ -1000,10 +1174,11 @@
 			
 			<div id="createtodobutton" class="flex-shrink-0 bordertertiary border-8px transition-duration-100">
 				<div class="inputgroup" id="todoinputtitlegroup">
-					<input oninput="typeaddtask(event);readinteractivetourpopup('clickaddtitle')" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add task' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.keyCode == 13){ submitcreatetodo(event) }" placeholder="Buy groceries by tomorrow 6pm takes 1h" autocomplete="off" id="todoinputtitle" maxlength="2000"></input>
+					<input oninput="typeaddtask(event)" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add task' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleold" maxlength="2000"></input>
 					<span class="inputline"></span>
 				</div>
 
+				<!--
 				<div class="horizontalbar"></div>
 
 				<div class="flex-1 align-center display-flex flex-row gap-12px padding-12px flex-wrap-wrap">
@@ -1022,7 +1197,8 @@
 				<div class="inputgroup border-8px overflow-hidden">
 					<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotes" maxlength="2000"></textarea>
 					<span class="inputline"></span>
-				</div>		
+				</div>	
+				-->	
 				
 			</div>
 
@@ -1070,7 +1246,7 @@
 			
 			<div class="flex-shrink-0 transition-duration-100">
 				<div class="border-8px flex-1 overflow-hidden bordertertiary inputgroup">
-					<input oninput="typeaddevent(event)" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add event' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.keyCode == 13){ submitcreateevent(event) }" placeholder="Meeting with Cathy tomorrow 9:00 1 hour" autocomplete="off" maxlength="2000" id="createeventtitle"></input>
+					<input oninput="typeaddevent(event)" onclick="gtag('event', 'button_click', { useraction: 'Focus title - add event' })" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.key == 'Enter'){ submitcreateevent(event) }" placeholder="Meeting with Cathy tomorrow 9:00 1 hour" autocomplete="off" maxlength="2000" id="createeventtitle"></input>
 					<span class="inputline"></span>
 				</div>
 			</div>
@@ -1229,15 +1405,15 @@
 
 			<!-- middle -->
 			<div class="display-flex flex-row align-center flex-1 justify-center gap-24px">
-				<div class="padding-top-6px padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="hometab">
+				<div class="padding-top-6px nowrap padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="hometab">
 					Calendar
 					<span class="buttonunderline"></span>
 				</div>
-				<div class="padding-top-6px padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab">
+				<div class="padding-top-6px nowrap padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([2]);gtag('event', 'button_click', { useraction: 'Time report - nav bar' }) " id="summarytab">
 					Time report
 					<span class="buttonunderline"></span>
 				</div>
-				<div class="padding-top-6px padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([3]);gtag('event', 'button_click', { useraction: 'Settings - nav bar' }) " id="settingstab">
+				<div class="padding-top-6px nowrap padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([3]);gtag('event', 'button_click', { useraction: 'Settings - nav bar' }) " id="settingstab">
 					Settings
 					<span class="buttonunderline"></span>
 				</div>
@@ -1443,8 +1619,8 @@
 					
 					<div class="todobar relative padding-12px display-flex flex-column align-center gap-12px">
 
-						<div class="z-index-100 display-flex align-center justify-center absolute hiddenfade right-0 left-0 top-0 bottom-0 fadetransition border-box background-secondary" id="schedulemytasksactivepopup">
-							<div class="text-blue text-18px">Select tasks to schedule</div>
+						<div class="z-index-100 display-flex background-blue border-8px align-center justify-center absolute hiddenfade right-0 left-0 top-0 bottom-0 fadetransition border-box" id="schedulemytasksactivepopup">
+							<div class="text-white text-18px">Select tasks to schedule in calendar</div>
 						</div>
 
 						<div class="display-flex align-center flex-row width-full">
@@ -1455,7 +1631,7 @@
 							</div>
 
 							<div class="flex-1 display-flex flex-row justify-flex-end">
-								<div class="padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px" onclick="readinteractivetourpopup('clickaddtask');opencreatetodo(event);gtag('event', 'button_click', { useraction: 'Add task - to do list' })" id="addtaskbutton">
+								<div class="padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px display-none" onclick="readinteractivetourpopup('clickaddtask');opencreatetodo(event);gtag('event', 'button_click', { useraction: 'Add task - to do list' })" id="addtaskbutton">
 									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 									<g>
 									<g opacity="1">
@@ -1470,7 +1646,7 @@
 							</div>
 						</div>
 
-						<div class="display-flex flex-row align-center gap-24px">
+						<div class="display-flex flex-row align-center gap-24px display-none">
 							<div class="padding-top-6px padding-bottom-6px relative hoverchildprimary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktodotab(0);gtag('event', 'button_click', { useraction: 'Not scheduled - to do list' }) " id="todolistnotscheduledyet">
 								<div class="pointer-none display-flex flex-row align-center gap-6px">
 									<div class="text-16px text-quaternary">Not scheduled</div>
@@ -1486,6 +1662,44 @@
 								<span class="buttonunderline"></span>
 							</div>
 						</div>
+
+
+						<!-- add task -->
+						<div class="width-full relative display-flex align-center flex-row gap-12px">
+							<div class="display-flex flex-row border-8px background-primary-transparent backdrop-blur box-shadow overflow-hidden flex-1 relative">
+								<textarea rows="1" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle">
+								</textarea>
+								<span class="inputline"></span>
+							</div>
+							<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodo()">					
+								<div class="text-16px text-white display-flex flex-row gap-6px  pointer-none nowrap transition-none" id="submitcreatetodoaddnumber">Add</div>
+							</div>
+
+							<!-- popup -->
+							<div class="width-full popuptransition overflow-hidden background-primary box-shadow addtodosuggestions z-index-100 border-8px display-flex popup flex-column hiddenpopup" id="addtodooptionspopup">
+										
+								<div class="z-index-100 padding-12px border-box flex-1 align-center display-flex flex-row gap-12px padding-12px width-full flex-wrap-wrap">
+									<div class="popupbutton border-8px padding-left-12px padding-right-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap popupbutton text-14px pointer-auto pointer transition-duration-100" onclick="readinteractivetourpopup('clickduedate');clickcreatetododuedate(event)" id="createtododuedate">
+									</div>
+				
+									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-green pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetododuration(event)" id="createtododuration">
+									</div>
+				
+									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetodopriority(event)" id="createtodopriority">
+									</div>
+								</div>
+
+								<div class="horizontalbar"></div>
+
+								<div class="inputgroup border-8px">
+									<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotes" maxlength="2000"></textarea>
+									<span class="inputline"></span>
+								</div>
+							</div>
+						</div>
+
+						
+
 					</div>
 					
 					<div class="todocontainer" id="todocontainer">	
@@ -1514,9 +1728,9 @@
 
 								<div class="display-flex border-box flex-1 justify-flex-end flex-row gap-12px align-center" id="schedulemytasksactive">
 									<div class="display-flex align-center flex-row gap-12px">
-										<div class="hover:background-tint-1 transition-duration-100 pointer text-primary pointer-auto nowrap border-8px padding-8px-12px text-14px" onclick="closeschedulemytasks(event)">Cancel</div>
+										<div class="hover:background-tint-1 backdrop-blur transition-duration-100 pointer text-primary pointer-auto nowrap border-8px padding-8px-12px text-14px" onclick="closeschedulemytasks(event)">Cancel</div>
 
-										<div id="plantaskssubmit" class="pointer-auto"></div>
+										<div id="plantaskssubmit" class="backdrop-blur pointer-auto"></div>
 									</div>
 								</div>
 
@@ -1548,9 +1762,9 @@
 	
 									
 									<div class="display-flex flex-row align-center pointer-none">
-										<div class="text-bold topbarinfodate nowrap pointer-none small:display-none" id="topbarinfodate"></div>
+										<div class="text-bold width120px topbarinfodate nowrap pointer-none small:display-none" id="topbarinfodate"></div>
 	
-										<div class="text-bold topbarinfodate nowrap display-none small:display-flex" id="topbarinfodate2"></div>	
+										<div class="text-bold width120px topbarinfodate nowrap display-none small:display-flex" id="topbarinfodate2"></div>	
 									</div>
 									
 									<div class="display-flex flex-row align-center">
@@ -1715,7 +1929,7 @@
 										
 										<div class="infogroup">
 											<div class="display-flex justify-space-between flex-row gap-12px align-center">
-												<div class="infotext text-16px text-bold">Sync with Google Calendar</div>
+												<div class="infotext text-16px text-bold"><img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png"></img> Sync with Google Calendar</div>
 												<label class="switch">
 													<input type="checkbox" oninput="togglesyncgooglecalendar(event)" id="syncgooglecalendartoggle">
 													<span class="slider"></span>
@@ -1731,6 +1945,32 @@
 											
 											<div id="importgooglecalendarerror" class="errorwrap display-none"></div>
 										</div>
+
+
+										<div class="infogroup">
+											<div class="display-flex justify-space-between flex-row gap-12px align-center">
+												<div class="infotext text-16px text-bold"><img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png"></img> Sync with Google Classroom To-do list</div>
+
+												<label class="switch">
+													<input type="checkbox" oninput="togglesyncgoogleclassroom(event)" id="syncgoogleclassroomtoggle">
+													<span class="slider"></span>
+												</label>
+											</div>
+
+											<div class="display-flex flex-row gap-12px align-center">
+												<div id="lastsyncedgoogleclassroom" class="gap-6px display-flex flex-row align-center"></div>
+												<div class="display-flex flex-row gap-12px">
+													<div id="syncnowgoogleclassroom" onclick="syncnowgoogleclassroom()" class="flex-1 text-center display-none text-14px text-white border-8px padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 pointer">Sync now</div>
+												</div>
+											</div>
+
+
+											<div id="importgoogleclassroomerror" class="errorwrap display-none"></div>
+										</div>
+
+										<div class="horizontalbar"></div>
+
+										<div class="deleteaccount popupbutton pointer transition-duration-100 text-14px hover:background-red hover:text-white padding-8px-12px text-primary border-8px width-fit" onclick="opendeleteaccount(event)">Delete account</div>
 									</div>
 					
 									<!-- general -->
@@ -1757,9 +1997,9 @@
 			
 										<div class="horizontalbar"></div>
 			
-										<div class="infogroup">
+										<div class="infogroup display-none">
 											<div class="infotext text-16px text-bold">Scheduling mode</div>
-											<div class="text-14px text-quaternary">Choose how the app automatically schedules tasks.<br>The app will only schedule tasks you want it to, and events like meetings or appointments will not be touched.</div>
+											<div class="text-14px text-quaternary">Choose how our app automatically schedules tasks.<br>Our app will only schedule tasks, and events like meetings or appointments will not be touched.</div>
 											<div class="flex-wrap-wrap justify-center display-flex flex-row background-tint-1 border-8px overflow-hidden" id="autoschedulemodes2">
 												<div class="flex-1 display-flex flex-column modeoptionbutton border-8px padding-8px-12px pointer transition-duration-100" onclick="clickschedulemode(0)">
 													<div class="transition-duration-100 text-18px text-primary text-center pointer-none schedulemodetext">Focus</div>
@@ -1780,13 +2020,13 @@
 											<div class="text-14px text-quaternary">This will help our app schedule your tasks for when you're awake.</div>
 											<div class="inputgroup gap-6px">
 												<div class="inputgroupitem flex-1">
-													<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepstart(event)" id="settingssleepstart2" class="infoinput inputtimepicker" placeholder="Add start time" type="text">
+													<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputsettingssleepstart(event)" id="settingssleepstart2" class="infoinput inputtimepicker" placeholder="Add start time" type="text">
 														<span class="inputline"></span>
 													</input>
 												</div>
 												<div class="text-14px text-primary">to</div>
 												<div class="inputgroupitem flex-1">
-													<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingssleepend(event)" id="settingssleepend2" class="infoinput inputtimepicker" placeholder="Add end time" type="text">
+													<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputsettingssleepend(event)" id="settingssleepend2" class="infoinput inputtimepicker" placeholder="Add end time" type="text">
 														<span class="inputline"></span>
 													</input>
 												</div>
@@ -1797,11 +2037,11 @@
 										<div class="horizontalbar"></div>
 										
 										<div class="infogroup">
-											<div class="infotext text-16px text-bold">Break between events</div>
-											<div class="text-14px text-quaternary">The app includes a break between events when planning your tasks.</div>
+											<div class="infotext text-16px text-bold">Break per hour</div>
+											<div class="text-14px text-quaternary">Our app includes a break every hour of work when building your schedule. Recommended: 15 minutes.</div>
 											<div class="inputgroup">
 												<div class="inputgroupitem flex-1">
-													<input onclick="this.select()" onkeydown="if(event.keyCode == 13){ this.blur() }" onblur="inputsettingseventspacing(event)" id="settingseventspacing2" class="infoinput inputdurationpicker" placeholder="Add duration" type="text">
+													<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputsettingseventspacing(event)" id="settingseventspacing" class="infoinput inputdurationpicker" placeholder="Add duration" type="text">
 														<span class="inputline"></span>
 													</input>
 												</div>
@@ -1831,7 +2071,7 @@
 											<div class="display-flex flex-row gap-12px">
 												<div class="inputgroup flex-1">
 													<div class="inputgroupitem flex-1">
-														<input placeholder="https://example.com/calendar.ics" onkeydown="if(event.keyCode == 13){ inputsubscribecalendar(event) }" id="inputsubscribecalendar" class="infoinput" type="url">
+														<input placeholder="https://example.com/calendar.ics" onkeydown="if(event.key == 'Enter'){ inputsubscribecalendar(event) }" id="inputsubscribecalendar" class="infoinput" type="url">
 															<span class="inputline"></span>
 														</input>
 													</div>
@@ -1844,7 +2084,7 @@
 			
 										<div class="infogroup">
 											<div class="display-flex justify-space-between flex-row gap-12px align-center">
-												<div class="infotext text-16px text-bold">Sync with Google Calendar</div>
+												<div class="infotext text-16px text-bold"><img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png"></img> Sync with Google Calendar</div>
 												<label class="switch">
 													<input type="checkbox" oninput="togglesyncgooglecalendar(event)" id="syncgooglecalendartoggle2">
 													<span class="slider"></span>
@@ -1867,13 +2107,22 @@
 									<div class="display-flex flex-column gap-24px">
 										<div class="infogroup">
 											<div class="display-flex justify-space-between flex-row gap-12px align-center">
-												<div class="infotext text-16px text-bold">Get Web Notifications</div>
+												<div class="infotext text-16px text-bold">Browser Notifications</div>
 												<label class="switch">
 													<input type="checkbox" oninput="togglePushNotifs(event)" id="enablepushnotif">
 													<span class="slider"></span>
 												</label>
 											</div>
-											<div class="text-14px text-quaternary">You will get a reminder when an event starts.</div>
+										</div>
+
+										<div class="infogroup">
+											<div class="display-flex justify-space-between flex-row gap-12px align-center">
+												<div class="infotext text-16px text-bold">Email Notifications</div>
+												<label class="switch">
+													<input type="checkbox" oninput="toggleemailnotifs(event)" id="enableemailnotif">
+													<span class="slider"></span>
+												</label>
+											</div>
 										</div>
 									</div>
 						
@@ -1906,7 +2155,7 @@
 
 											
 					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([1]);gtag('event', 'button_click', { useraction: 'To do list - nav bar' }) " id="todolisttab2">
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonlarge">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonfillwhite">
 							<g>
 								<path d="M95.2134 47.3887L223.091 47.3887C230.512 47.3887 236.527 53.404 236.527 60.8241L236.527 60.8241C236.527 68.2443 230.512 74.2595 223.091 74.2595L95.2134 74.2595C87.7932 74.2595 81.778 68.2443 81.778 60.8241L81.778 60.8241C81.778 53.404 87.7932 47.3887 95.2134 47.3887Z" fill-rule="nonzero" opacity="1" ></path>
 								<path d="M36.2675 45.1484C27.6106 45.1484 20.5929 52.1662 20.5929 60.823C20.5929 69.4799 27.6106 76.4977 36.2675 76.4976C44.9244 76.4976 51.9421 69.4799 51.9421 60.823C51.9421 52.1662 44.9244 45.1484 36.2675 45.1484Z" fill-rule="nonzero" opacity="1" ></path>
@@ -1921,7 +2170,7 @@
 					</div>
 
 					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([0]);gtag('event', 'button_click', { useraction: 'Calendar - nav bar' }) " id="calendartab2">
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonlarge">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonfillwhite">
 							<g>
 							<path d="M46-4.10783e-15C20.5949-4.10783e-15 0 20.4899 0 45.7654L0 65.6633L0 85.5613L0 210.235C0 235.51 20.5949 256 46 256L210 256C235.405 256 256 235.51 256 210.235L256 85.5613L256 65.6633L256 45.7654C256 20.4899 235.405-1.01206e-05 210-4.10783e-15L46-4.10783e-15ZM46 59.694L210 59.694C224.359 59.694 236 71.2752 236 85.5613L236 210.235C236 224.521 224.359 236.102 210 236.102L46 236.102C31.6406 236.102 20 224.521 20 210.235L20 85.5613C20 71.2752 31.6406 59.694 46 59.694Z" fill-rule="nonzero" opacity="1" ></path>
 							<path d="M56.4316 90.9174L80.4316 90.9174C84.8499 90.9174 88.4316 94.4991 88.4316 98.9174L88.4316 122.917C88.4316 127.336 84.8499 130.917 80.4316 130.917L56.4316 130.917C52.0134 130.917 48.4316 127.336 48.4316 122.917L48.4316 98.9174C48.4316 94.4991 52.0134 90.9174 56.4316 90.9174Z" fill-rule="nonzero" opacity="1" ></path>
@@ -1977,7 +2226,7 @@
 </div>
 
 		<script src="https://unpkg.com/ical.js"></script>
-		<script src="https://jakubroztocil.github.io/rrule/dist/es5/rrule-tz.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/rrule@2.7.2/dist/es5/rrule.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js" defer></script>
 		<script src="../app.js"></script>
 

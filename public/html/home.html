@@ -38,6 +38,9 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+
+	<!-- Google one tap login -->
+	<script async defer src="https://accounts.google.com/gsi/client"></script>
 </head>
 
 <!-- Google tag (gtag.js) -->
@@ -51,9 +54,15 @@
 </script>
 
 <body>
-	<div class="absolute pointer-none z-index--1 display-flex top-0 left-0 right-0 bottom-0 align-center flex-row">
-		<img src="../splash2.png" width="1920" height="353" class="width-full height-auto"></img>
+	<div
+		id="g_id_onload"
+		data-client_id="469742766371-epr4i5o29h0gajtb8cp765qj49b2b9q4.apps.googleusercontent.com"
+		data-login_uri="https://smartcalendar.us/auth/google/onetap"
+		data-prompt_parent_id="g_id_onload"
+		style="position: fixed; top: 70px; right: 30px; z-index: 99999;">
 	</div>
+
+	<canvas id="dynamicbackground" class="z-index--1 fixed top-0 left-0 width-full height-full"></canvas>
 	
 	<header class="navbar padding-top-12px padding-bottom-12px" id="navbar">
 		<div class="navbarspace"></div>
@@ -100,8 +109,14 @@
 					
 					<div class="display-flex flex-row gap-12px small:display-none">
 						<a href="../contact" class="navbutton small:display-none">Contact</a>
-						<a href="../login" class="navbutton">Log in</a>
-						<a href="../signup" class="navbuttonblue">Sign up</a>
+						<div class="display-flex flex-row gap-12px" id="navbuttonsloggedout">
+							<a href="../login" class="navbutton">Log in</a>
+							<a href="../signup" class="navbuttonblue">Sign up</a>
+						</div>
+						<div class="display-flex flex-row gap-12px display-none" id="navbuttonsloggedin">
+							<a href="../signup" class="navbutton">Sign up</a>
+							<a href="../app" class="navbuttonblue">Open app</a>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -111,10 +126,16 @@
 				<div class="padding-top-12px width-full">
 					<div class="display-flex flex-column flex-1 gap-12px">
 						<a href="../contact" class="border-8px padding-12px text-16px text-decoration-none text-primary hover:background-tint-1">Contact</a>
-						<div class="display-flex flex-row gap-12px">
+						<div class="display-flex flex-row gap-12px" id="navbuttonsloggedout2">
 							<a href="../login" class="flex-1 text-center border-8px padding-12px text-16px text-decoration-none text-primary background-tint-1 hover:background-tint-2">Log in</a>
 							<a href="../signup" class="flex-1 text-center border-8px padding-12px text-16px text-decoration-none text-white background-blue hover:background-blue-hover">Sign up</a>
 						</div>
+
+						<div class="display-flex flex-column gap-12px" id="navbuttonsloggedin2">
+							<a href="../signup" class="flex-1 text-center border-8px padding-12px text-16px text-decoration-none text-primary background-tint-1 hover:background-tint-2">Sign up</a>
+							<a href="../app" class="flex-1 text-center border-8px padding-12px text-16px text-decoration-none text-white background-blue hover:background-blue-hover">Open app</a>
+						</div>
+
 					</div>
 				</div>
 			</div>
@@ -176,9 +197,21 @@
 					<img src="../taskplanner.gif" height="360" width="480" class="fadeslidebefore border-16px width-full box-shadow height-auto"  alt="Tasks are planned on your calendar automatically"/>
 				</div>
 				<div class="display-flex flex-column gap-24px flex-1">
-					<h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue2">Intelligent Task Planner</h2>
+					<h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue2">Automatic Task Planner</h2>
 					<h3 class="text-24px text-primary fadeslidebefore">Plan your day, stress-free.</h3>
-					<p class="text-18px text-primary fadeslidebefore">Simply add your tasks to your to-do list, and Smart Calendar will automatically schedule them in your calendar. It finds the best times for each task based on due dates and priorities, so you don't have to juggle them in your head.</p>
+					<p class="text-18px text-primary fadeslidebefore">Simply add your tasks to your to-do list, and Smart Calendar will automatically schedule them in your calendar. We find the best times for each task based on due dates and priorities, so you don't have to juggle them in your head.</p>
+
+					<a href="../signup" class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
+						<div class="pointer-none text-18px text-white text-bold">Try it now</div>
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+							<g>
+							<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							</g>
+						</svg>
+					</a>
+
 				</div>
 			</div>
 			
@@ -187,6 +220,17 @@
 					<h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue">Automatic Rescheduling</span></h2>
 					<h3 class="text-24px text-primary fadeslidebefore">Stay on track, even when your plans change.</h3>
 					<p class="text-18px text-primary fadeslidebefore">Life can be unpredictable, and plans could change unexpectedly. If any unexpected changes take place, Smart Calendar automatically resolves conflicts and rearranges your schedule to keep you on track.</p>
+
+					<a href="../signup" class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
+						<div class="pointer-none text-18px text-white text-bold">Try it now</div>
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+							<g>
+							<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							</g>
+						</svg>
+					</a>
 				</div>
 				<div class="relative flex-1 padding-left-48px padding-right-48px small:padding-0">
 					<img src="../instantreschedule.gif" height="480" width="435" class="fadeslidebefore border-16px width-full box-shadow height-auto" alt="Events are automatically re-scheduled when changes take place"/>
@@ -200,7 +244,18 @@
 				<div class="display-flex flex-column gap-24px flex-1">
 					<h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue3">Sync with Google Calendar</span></h2>
 					<div class="text-24px text-primary fadeslidebefore">Simply sign in with Google</div>
-					<p class="text-18px text-primary fadeslidebefore">Smart Calendar seamlessly integrates with your Google Calendar. By signing up with Google, your calendar will be synced instantly. Start using Smart Calendar right away!</p>
+					<p class="text-18px text-primary fadeslidebefore">Smart Calendar seamlessly integrates with your Google Calendar. By signing up with Google, your calendar will be synced instantly. Never worry about multiple calendars again!</p>
+
+					<a href="../signup" class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
+						<div class="pointer-none text-18px text-white text-bold">Try it now</div>
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+							<g>
+							<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							</g>
+						</svg>
+					</a>
 				</div>
 			</div>
 
@@ -209,6 +264,17 @@
 					<h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue4">Time Report</span></h2>
 					<h3 class="text-24px text-primary fadeslidebefore">Manage your time like a pro.</h3>
 					<p class="text-18px text-primary fadeslidebefore">Learn how you're managing your time in real time, and make improvements right away. Improving your time management is now easier than ever.</p>
+
+					<a href="../signup" class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
+						<div class="pointer-none text-18px text-white text-bold">Try it now</div>
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+							<g>
+							<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							</g>
+						</svg>
+					</a>
 				</div>
 				<div class="relative flex-1">
 					<img src="../timereport.png" height="360" width="480" class="fadeslidebefore border-16px width-full box-shadow height-auto" alt="View your time report and see how to improve your time management"/>

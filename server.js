@@ -53,6 +53,7 @@ async function setUser(user){
 	return user
 }
 
+
 async function getUserById(userid){
 	const params = {
     TableName: 'smartcalendarusers',
@@ -65,6 +66,23 @@ async function getUserById(userid){
 		return addmissingpropertiestouser(unmarshall(data.Item))
 	}
 	return null
+}
+
+async function getUserByGoogleId(input){
+	const params = {
+		TableName: 'smartcalendarusers',
+		IndexName: 'googleid-index',
+		KeyConditionExpression: 'googleid = :input',
+		ExpressionAttributeValues: {
+		  ':input': { S: input }
+		}
+	  }
+	
+	  const data = await dynamoclient.send(new QueryCommand(params))
+	
+		if(data.Items[0]){
+			return addmissingpropertiestouser(unmarshall(data.Items[0]))
+		}
 }
 
 async function getUserByAttribute(input){
@@ -100,6 +118,27 @@ async function getUserByAttribute(input){
 	
 	return null
 }
+
+async function getUserByUsername(input){
+	const params = {
+    TableName: 'smartcalendarusers',
+    IndexName: 'username-index',
+    KeyConditionExpression: 'username = :input',
+    ExpressionAttributeValues: {
+      ':input': { S: input }
+    }
+  }
+
+  const data = await dynamoclient.send(new QueryCommand(params))
+
+	if(data.Items[0]){
+		return addmissingpropertiestouser(unmarshall(data.Items[0]))
+	}
+
+	return null
+}
+
+
 
 async function deleteUser(userid){
 	const params = {
@@ -237,12 +276,13 @@ class Message{
 }
 
 class User{
-	constructor({ username, password, google_email }){
+	constructor({ username, password, google_email, googleid }){
 		this.userid = generateID()
 
 		this.username = username
 		this.password = password
 		this.google_email = google_email
+		this.googleid = googleid
 
 		this.calendardata = {}
 		this.accountdata = {}
@@ -251,11 +291,11 @@ class User{
 }
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
-const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, sleep: { startminute: 1380, endminute: 420 }, eventspacing: 15, militarytime: false, theme: 0 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, syncgooglecalendar: { deletedevents: [], editedevents: [], createdevents: [], createdcalendars: [], editedcalendars: [], deletedcalendars: [] }, onboarding: { start: false, connectcalendars: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickaddtitle: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: false }
+const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: true, emailreminderenabled: true }
 const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null }
-const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, title: null, type: 0, notes: null, completed: false, priority: 0, color: 3, reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } } }
-const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, completed: false, priority: 0, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } } }
-const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, color: 3, isprimary: false, subscriptionurl: null }
+const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, title: null, type: 0, notes: null, completed: false, priority: 0, color: 3, reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0 }
+const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null }
+const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, color: 3, isprimary: false, subscriptionurl: null, lastmodified: 0  }
 const MODELNOTIFICATION = { id: null, read: false, timestamp: null }
 
 
@@ -367,88 +407,167 @@ async function processReminders(){
 	//send reminders
 	for(let item of sendreminders){
 		//push notifications
-		if(item.pushSubscription){
-			console.log("push subscription")
-			try{
-				let difference = Math.floor((Date.now() - new Date(item.event.start).getTime())/60000)
-		    	await webpush.sendNotification(item.pushSubscription, `REMINDER: ${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`)
-			}catch(error){
-				console.error(error)
+		if(item.pushSubscriptionEnabled){
+			if(item.pushSubscription){
+				if(item.type == 'event'){
+					try{
+						let difference = Math.floor((Date.now() - new Date(item.event.start).getTime())/60000)
+						await webpush.sendNotification(item.pushSubscription, `EVENT STARTING: ${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`)
+					}catch(error){
+						console.error(error)
+					}
+				}else if (item.type == 'task'){
+					try{
+						let difference = Math.floor((Date.now() - new Date(item.event.duedate).getTime())/60000)
+						await webpush.sendNotification(item.pushSubscription, `TASK DUE: ${item.event.title || "New Task"} (${getFullRelativeDHMText(difference)})`)
+					}catch(error){
+						console.error(error)
+					}
+				}
 			}
 		}
 			
 
 		//email
-		/*await sendEmail({
-			from: 'Smart Calendar <reminders@smartcalendar.us>',
-			to: item.user.email,
-			subject: `Friendly reminder: ${item.event.title}`,
-			htmlbody: `
-<!DOCTYPE html>
-<html>
-<head>
-		<title>Smart Calendar | Your Event Reminder</title>
-		<style>
-				@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
-		</style>
-</head>
-<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
-		<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px;">
-				<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
-				<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
-						Hi ${item.user.name},
-				</p>
-				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
-				<p style="font-size: 18px; color: #333;">
-						Just a quick reminder that your event <strong>${item.event.title || 'New Event'}</strong> is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}. 
-				</p>
-				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
-				<p style="font-size: 18px; color: #333;">
-				 If you have other tasks to plan, consider adding them to your to-do list. Then, you can simply have Smart Calendar schedule them for you. 
-				</p>
-				<p style="font-size: 18px; color: #333;">
-						If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">click here</a> to contact us. We're here for you!
-				</p>
-				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
-				<p style="text-align: center; font-size: 20px; color: #333;">
-						Kind regards,<br>
-						Smart Calendar | Your Smart Time Management Assistant
-				</p>
+		if(item.emailreminderenabled){
+			if(item.type == 'event'){
+				await sendEmail({
+					from: 'Smart Calendar <reminders@smartcalendar.us>',
+					to: item.user.email,
+					subject: `Friendly reminder: ${item.event.title}`,
+					htmlbody: `
+					<!DOCTYPE html>
+					<html>
+					<head>
+							<title>Smart Calendar | Your Event Reminder</title>
+							<style>
+									@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
+							</style>
+					</head>
+					<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
+							<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px;">
+									<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
+									<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
+											Hi ${item.user.name},
+									</p>
+									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+									<p style="font-size: 18px; color: #333;">
+											Just a quick reminder that your event <strong>${item.event.title || 'New Event'}</strong> is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}. 
+									</p>
+									<p style="font-size: 18px; color: #333;">
+										<a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Click here</a> to see more details about your event in the app.
+									</p>
 
-		<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
-				<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-					<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
-				<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
-				</div>
+									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+									<p style="font-size: 18px; color: #333;">
+											If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">click here</a> to contact us. We're here for you!
+									</p>
+									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+									<p style="text-align: center; font-size: 20px; color: #333;">
+											Kind regards,<br>
+											Smart Calendar | Your Smart Time Management Assistant
+									</p>
 
-		</div>
-</body>
-</html>`,
-			textbody: `Hi ${item.user.name},
-Just a quick reminder that your event ${item.event.title || 'New Event'} is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}.
+							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
+										<p>If you wish to stop receiving these notifications, you can update your preferences in the app > settings > notifications.<br><a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+									<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
+									</div>
 
-If you have other tasks to plan, consider adding them to your to-do list. Then, you can simply have Smart Calendar schedule them for you.
+							</div>
+					</body>
+					</html>`,
+					textbody: `Hi ${item.user.name},
+					Just a quick reminder that your event ${item.event.title || 'New Event'} is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}.
 
-If you have any questions or have feedback, please contact us. We're here for you!
+					Click https://smartcalendar.us/app to see more details about your event in the app.
 
-Kind regards,
-Smart Calendar | Your Personal Time Management Assistant
+					If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
 
-If you wish to stop receiving these notifications, you can update your preferences in the app.
-(c) 2023 James Tsaggaris. All rights reserved.`
-		})*/
+					Kind regards,
+					Smart Calendar | Your Personal Time Management Assistant
+
+					If you wish to stop receiving these notifications, you can update your preferences in the app.
+					(c) 2023 James Tsaggaris. All rights reserved.`
+				})
+
+			}else if(item.type == 'task'){
+
+				await sendEmail({
+					from: 'Smart Calendar <reminders@smartcalendar.us>',
+					to: item.user.email,
+					subject: `Friendly reminder: ${item.event.title}`,
+					htmlbody: `
+					<!DOCTYPE html>
+					<html>
+					<head>
+							<title>Smart Calendar | Your Task Reminder</title>
+							<style>
+									@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
+							</style>
+					</head>
+					<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
+							<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px;">
+									<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
+									<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
+											Hi ${item.user.name},
+									</p>
+									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+									<p style="font-size: 18px; color: #333;">
+											Just a quick reminder that your task <strong>${item.event.title || 'New Event'}</strong> is due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}. 
+									</p>
+									<p style="font-size: 18px; color: #333;">
+										<a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Click here</a> to see more details about your task in the app.
+									</p>
+
+									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+									<p style="font-size: 18px; color: #333;">
+											If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">click here</a> to contact us. We're here for you!
+									</p>
+									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+									<p style="text-align: center; font-size: 20px; color: #333;">
+											Kind regards,<br>
+											Smart Calendar | Your Smart Time Management Assistant
+									</p>
+
+							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
+										<p>If you wish to stop receiving these notifications, you can update your preferences in the app > settings > notifications.<br><a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+									<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
+									</div>
+
+							</div>
+					</body>
+					</html>`,
+					textbody: `Hi ${item.user.name},
+					Just a quick reminder that your task ${item.event.title || 'New Task'} is due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}.
+
+					Click https://smartcalendar.us/app to see more details about your task in the app.
+
+					If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
+
+					Kind regards,
+					Smart Calendar | Your Personal Time Management Assistant
+
+					If you wish to stop receiving these notifications, you can update your preferences in the app.
+					(c) 2023 James Tsaggaris. All rights reserved.`
+				})
+				
+			}
+		}
+
 	}
 }
 
+function isEmail(str) {
+	let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+	return pattern.test(str)
+}
 
 //cache reminders
 function cacheReminders(user){
 
-	function isEmail(str) {
-	  let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-	  return pattern.test(str)
-	}
-	
+
 	//get calendar events within 1 day
 	function getevents(){
 		function isHidden(item){
@@ -469,7 +588,7 @@ function cacheReminders(user){
 
 
 		let maxdate = new Date()
-		maxdate.setFullYear(maxdate.getDate() + 1)
+		maxdate.setDate(maxdate.getDate() + 1)
 		
 		let output = []
 		let shownevents = calendar.events.filter(d => {
@@ -562,11 +681,13 @@ function cacheReminders(user){
 	let name = user.google_email ? user.accountdata.google.name || user.google_email : user.username
 
 	let tempreminders = []
+
 	let allevents = getevents()
 	for(let item of allevents){
 
 		for(let itemreminder of item.reminder){
 			tempreminders.push({
+				type: 'event',
 				user: {
 					name: name,
 					email: email
@@ -581,13 +702,40 @@ function cacheReminders(user){
 				reminder: {
 					timestamp: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() - itemreminder.timebefore + timezoneoffset * 60000,
 				},
-				pushSubscription: user.calendardata.pushSubscription
+				pushSubscription: user.calendardata.pushSubscription,
+				emailreminderenabled: user.calendardata.emailreminderenabled,
+				pushSubscriptionEnabled: user.calendardata.pushSubscriptionEnabled
+			})
+		}	
+	}
+
+	for(let item of user.calendardata.todos){
+		if(item.completed) continue
+
+		for(let itemreminder of item.reminder){
+			tempreminders.push({
+				type: 'task',
+				user: {
+					name: name,
+					email: email
+				},
+				event: {
+					id: item.id,
+					title: item.title,
+					duedate: new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute).getTime() + timezoneoffset * 60000,
+					notes: item.notes
+				},
+				reminder: {
+					timestamp: new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute).getTime() - itemreminder.timebefore + timezoneoffset * 60000,
+				},
+				pushSubscription: user.calendardata.pushSubscription,
+				emailreminderenabled: user.calendardata.emailreminderenabled,
+				pushSubscriptionEnabled: user.calendardata.pushSubscriptionEnabled
 			})
 		}
-		
 	}
 	
-	reminderscache[user.userid] = tempreminders 
+	reminderscache[user.userid] = tempreminders
 }
 
 
@@ -597,17 +745,35 @@ let lastreminderdate = Date.now()
 
 async function initializeReminders(){
 	try {
-    const response = await dynamoclient.send(new ScanCommand({ TableName: 'smartcalendarusers' }))
-    const items = response.Items.map(item => addmissingpropertiestouser(unmarshall(item)))
+		let ExclusiveStartKey;
+		do {
+		const command = new ScanCommand({
+			TableName: 'smartcalendarusers',
+			ExclusiveStartKey
+		})
 
-    for(let user of items){
-		cacheReminders(user)
+		const response = await dynamoclient.send(command)
+		const items = response.Items.map(item => addmissingpropertiestouser(unmarshall(item)))
+
+		for (let user of items) {
+			cacheReminders(user)
+		}
+
+		ExclusiveStartKey = response.LastEvaluatedKey
+		} while (ExclusiveStartKey)
+	} catch (error) {
+		console.error(error)
 	}
-  } catch (error) {
-    console.error(error)
-  }
-	
-	setInterval(processReminders, 1000)
+
+	processReminders()
+	setInterval(tickreminders, 1000)
+	function tickreminders(){
+		let currentminutes = Math.floor(Date.now() / 60000)
+  		let lastreminderminutes = Math.floor(lastreminderdate / 60000)
+		if(currentminutes > lastreminderminutes){
+			processReminders()
+		}
+	}
 }
 initializeReminders()
 
@@ -623,6 +789,7 @@ const bodyParser = require('body-parser')
 const formidable = require('formidable')
 const compression = require('compression')
 const RRule = require('rrule').RRule
+const jwt = require('jsonwebtoken')
 
 //google
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
@@ -636,6 +803,7 @@ const { OAuth2Client } = require('google-auth-library')
 const express = require('express')
 const session = require('express-session')
 const app = express()
+
 const DynamoDBStore = require('dynamodb-store')
 const { Hash } = require('crypto')
 const dynamostore = new DynamoDBStore({
@@ -674,21 +842,24 @@ async function getNewAccessToken(refreshToken){
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
 		const tokens = await googleclient.refreshToken(refreshToken)
-		return tokens.credentials.access_token
-	}catch(err){ }
-	return
+		return tokens.tokens.access_token
+	}catch(err){
+		return false
+	}
 }
 
 async function isRefreshTokenValid(refreshToken) {
   try {
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
-    googleclient.setCredentials({ refresh_token: refreshToken })
-    const { expiry_date } = await googleclient.getAccessToken()
+		googleclient.setCredentials({ refresh_token: refreshToken })
+		const { expiry_date } = await googleclient.getAccessToken()
 
    	return expiry_date > Date.now()
-  } catch (error) { }
+  } catch (error) {
 	return false
+  }
 }
+
 
 //use routes
 app.use(express.static(path.join(__dirname, 'public')))
@@ -710,10 +881,10 @@ app.get('/auth/google', async (req, res, next) => {
 	try{
 		const authoptions = {
 			access_type: 'offline',
-			scope: ['profile', 'email','https://www.googleapis.com/auth/calendar'],
+			scope: ['profile', 'email','https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/classroom.courses.readonly', 'https://www.googleapis.com/auth/classroom.coursework.me.readonly'],
 			redirect_uri: REDIRECT_URI,
 		}
-		
+
 		if(req.session.user){
 			const userid = req.session.user.userid
 			const user = await getUserById(userid)
@@ -749,52 +920,166 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		const { data } = await googleclient.request({
 			url: 'https://people.googleapis.com/v1/people/me',
 			params: {
-		    personFields: 'emailAddresses,names,photos'
-		  }
+				personFields: 'emailAddresses,names,photos'
+			}
 		})
 
-		let email = data.emailAddresses[0].value
-		let name = data.names[0].displayName
-		let profilepicture = data.photos[0].url
+		//get googleid
+		const ticket = await googleclient.verifyIdToken({
+			idToken: tokens.id_token,
+			audience: GOOGLE_CLIENT_ID,
+		})
+		const payload = ticket.getPayload()
+		const googleid = payload.sub
 
-		let user = await getUserByAttribute(email)
+		//get details
+		const email = data.emailAddresses[0].value
+		const name = data.names[0].displayName
+		const profilepicture = data.photos[0].url
+	
+
+		let user = await getUserByGoogleId(googleid)
 		if(user){
-			if(user.google_email == email){
-				req.session.user = { userid: user.userid }
-				req.session.tokens = tokens
+			//sign in to google account
 
-				user.accountdata.refreshtoken = tokens.refresh_token
-				user.accountdata.google.name = name
-				user.accountdata.google.profilepicture = profilepicture
-				user.accountdata.lastloggedindate = Date.now()
-				await setUser(user)
-			}else{
-				throw new Error('Google email is linked to another account')
-			}
+			req.session.user = { userid: user.userid }
+			req.session.tokens = tokens
+
+			if(tokens.refresh_token) user.accountdata.refreshtoken = tokens.refresh_token
+			user.accountdata.google.name = name
+			user.accountdata.google.profilepicture = profilepicture
+			user.accountdata.lastloggedindate = Date.now()
+			user.googleid = googleid
+			user.google_email = email
+			await setUser(user)
 		}else{
 			let user2 = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
-			if(user2){
-				req.session.user = { userid: user2.userid }
-				req.session.tokens = tokens
-				
-				user2.google_email = email
-				user2.calendardata.settings.issyncingtogooglecalendar = true
-				user2.accountdata.refreshtoken = tokens.refresh_token
-				user2.accountdata.google.name = name
-				user2.accountdata.google.profilepicture = profilepicture
-				user2.accountdata.lastloggedindate = Date.now()
-				await setUser(user2)
-			}else{
-				const user3 = addmissingpropertiestouser(new User({ username: email, google_email: email }))
-				user3.calendardata.settings.issyncingtogooglecalendar = true
-				user3.accountdata.refreshtoken = tokens.refresh_token
-				user3.accountdata.google.name = name
-				user3.accountdata.google.profilepicture = profilepicture
-				user3.accountdata.lastloggedindate = Date.now()
-				await createUser(user3)
+			let user4 = await getUserByUsername(email)
 
-				req.session.user = { userid: user3.userid }
-				req.session.tokens = tokens
+			if(user2 && !user2.google_email){
+				if(!user4 || user4.userid == user2.userid){
+					//add google to logged in account
+
+					req.session.user = { userid: user2.userid }
+					req.session.tokens = tokens
+					
+					delete user2.username
+					user2.google_email = email
+					user2.googleid = googleid
+					user2.calendardata.settings.issyncingtogooglecalendar = true
+					if(tokens.refresh_token) user2.accountdata.refreshtoken = tokens.refresh_token
+					user2.accountdata.google.name = name
+					user2.accountdata.google.profilepicture = profilepicture
+					user2.accountdata.lastloggedindate = Date.now()
+					await setUser(user2)
+				}else{
+					//reject sign in to another user's account
+
+					throw new Error('Email is already used for another account.')
+				}
+			}else{
+				if(user4 && user4.username == email){
+					//reject sign in to regular email account
+
+					throw new Error('Use email and password to log in.')
+				}else{
+					//create account
+
+					const user3 = addmissingpropertiestouser(new User({ google_email: email, googleid: googleid }))
+					user3.calendardata.settings.issyncingtogooglecalendar = true
+					if(tokens.refresh_token) user3.accountdata.refreshtoken = tokens.refresh_token
+					user3.accountdata.google.name = name
+					user3.accountdata.google.profilepicture = profilepicture
+					user3.accountdata.lastloggedindate = Date.now()
+					await createUser(user3)
+
+					req.session.user = { userid: user3.userid }
+					req.session.tokens = tokens
+
+					await sendwelcomeemail(user3)
+				}
+			}
+		}
+
+		res.redirect(301, '/app')
+	}catch(error){
+		console.error(error)
+		res.redirect(301, '/login')
+	}
+})
+
+app.post('/auth/google/onetap', async (req, res, next) => {
+	try{
+		//get googleid
+		const jsontoken = req.body.credential
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
+		const ticket = await googleclient.verifyIdToken({
+			idToken: jsontoken,
+			audience: GOOGLE_CLIENT_ID,
+		})
+		const payload = ticket.getPayload()
+		const googleid = payload.sub
+
+		//get other data
+		const email = payload.email
+		const name = payload.name
+		const profilepicture = payload.picture
+
+
+		let user = await getUserByGoogleId(googleid)
+		if(user){
+			//sign in to google account
+
+			req.session.user = { userid: user.userid }
+
+			user.accountdata.google.name = name
+			user.accountdata.google.profilepicture = profilepicture
+			user.accountdata.lastloggedindate = Date.now()
+			user.googleid = googleid
+			user.google_email = email
+			await setUser(user)
+		}else{
+			let user2 = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
+			let user4 = await getUserByUsername(email)
+
+			if(user2 && !user2.google_email){
+				if(!user4 || user4.userid == user2.userid){
+					//add google to logged in account
+
+					req.session.user = { userid: user2.userid }
+					
+					user2.google_email = email
+					user2.username = undefined
+					user2.googleid = googleid
+					user2.calendardata.settings.issyncingtogooglecalendar = true
+					user2.accountdata.google.name = name
+					user2.accountdata.google.profilepicture = profilepicture
+					user2.accountdata.lastloggedindate = Date.now()
+					await setUser(user2)
+				}else{
+					//reject sign in to another user's account
+
+					throw new Error('Email is already used for another account.')
+				}
+			}else{
+				if(user4 && user4.username == email){
+					//reject sign in to regular email account
+
+					throw new Error('Use email and password to log in')
+				}else{
+					//create account
+
+					const user3 = addmissingpropertiestouser(new User({ google_email: email, googleid: googleid }))
+					user3.calendardata.settings.issyncingtogooglecalendar = true
+					user3.accountdata.google.name = name
+					user3.accountdata.google.profilepicture = profilepicture
+					user3.accountdata.lastloggedindate = Date.now()
+					await createUser(user3)
+
+					req.session.user = { userid: user3.userid }
+
+					await sendwelcomeemail(user3)
+				}
 			}
 		}
 
@@ -813,7 +1098,7 @@ app.get('/home', (req, res) => {
   res.redirect(301, '/')
 })
 
-app.get('/login', (req, res, next) => {
+app.get('/login', async (req, res, next) => {
   if (req.session.user && req.session.user.userid) {
 		res.redirect(301, '/app')
   } else{
@@ -842,6 +1127,7 @@ app.get('*', (req, res) => {
 
 
 //post routes
+/*
 app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 	try{
 		if(!req.session.user){
@@ -858,16 +1144,20 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 			return res.status(401).json({ error: 'Google login is not connected, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
 		}
 
-		if(!req.session.tokens || !user.accountdata.refreshtoken) {
-      return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
-    }
+		if(!req.session.tokens && !user.accountdata.refreshtoken) {
+			return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
+		}
 
-		if(!req.session.tokens.access_token){
+		if(!req.session.tokens || !req.session.tokens.access_token){
 			let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
 			if(!accesstoken){
 				return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
 			}
+			req.session.tokens = req.session.tokens || {}
 			req.session.tokens.access_token = accesstoken
+		}
+		if(!req.session.tokens.refresh_token){
+			req.session.tokens.refresh_token = user.accountdata.refreshtoken
 		}
 
 
@@ -1148,9 +1438,10 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 		return res.json({ data: newgooglecalendardata, calendar: smartcalendar })
 	}catch(error){
 		console.error(error)
-	  return res.status(401).json({ error: `Cannot access your Google Calendar, try to <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
+	  return res.status(401).json({ error: `Cannot access your Google Calendar, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
 	}
 })
+*/
 
 
 app.post('/setclientgooglecalendar', async (req, res, next) => {
@@ -1169,16 +1460,20 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 			return res.status(401).json({ error: 'Google login is not connected, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
 		}
 
-		if(!req.session.tokens || !user.accountdata.refreshtoken) {
-      return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
-    }
+		if(!req.session.tokens && !user.accountdata.refreshtoken) {
+			return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
+		}
 
-		if(!req.session.tokens.access_token){
+		if(!req.session.tokens || !req.session.tokens.access_token){
 			let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
 			if(!accesstoken){
 				return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
 			}
+			req.session.tokens = req.session.tokens || {}
 			req.session.tokens.access_token = accesstoken
+		}
+		if(!req.session.tokens.refresh_token){
+			req.session.tokens.refresh_token = user.accountdata.refreshtoken
 		}
 
 
@@ -1342,7 +1637,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 		return res.json({ data: responsechanges })
 	}catch(error){
 		console.error(error)
-	  return res.status(401).json({ error: `Cannot access your Google Calendar, try to <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
+	  return res.status(401).json({ error: `Cannot access your Google Calendar, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
 	}
 })
 
@@ -1363,16 +1658,20 @@ app.post('/getclientgooglecalendar', async (req, res, next) => {
 			return res.status(401).json({ error: 'Google login is not connected, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
 		}
 
-		if(!req.session.tokens || !user.accountdata.refreshtoken) {
-      return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
-    }
+		if(!req.session.tokens && !user.accountdata.refreshtoken) {
+			return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
+		}
 
-		if(!req.session.tokens.access_token){
+		if(!req.session.tokens || !req.session.tokens.access_token){
 			let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
 			if(!accesstoken){
 				return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
 			}
+			req.session.tokens = req.session.tokens || {}
 			req.session.tokens.access_token = accesstoken
+		}
+		if(!req.session.tokens.refresh_token){
+			req.session.tokens.refresh_token = user.accountdata.refreshtoken
 		}
 
 
@@ -1411,7 +1710,7 @@ app.post('/getclientgooglecalendar', async (req, res, next) => {
 		return res.json({ data: googlecalendardata })
 	}catch(error){
 		console.error(error)
-	  return res.status(401).json({ error: `Cannot access your Google Calendar, try to <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
+		return res.status(401).json({ error: `Cannot access your Google Calendar, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
 	}
 })
 
@@ -1429,19 +1728,96 @@ app.post('/disconnectgoogle', async (req, res, next) => {
 		if(!user){
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
-		if(!user.password || !user.username){
-			return res.status(401).json({ error: 'You need to set an email and password before disconnecting.' })
+		if(!user.password){
+			return res.status(401).json({ error: 'You need to set a password before disconnecting.' })
+		}
+		if(user.google_email){
+			let existinguser = await getUserByUsername(user.google_email)
+			if(existinguser && existinguser.userid != user.userid){
+				return res.status(401).json({ error: 'You need to set a password before disconnecting.' })
+			}
+
+			user.username = user.google_email
 		}
 		
 		delete req.session.tokens
 		
-		user.google_email = ''
+		delete user.google_email
+		delete user.googleid
+		user.calendardata.settings.issyncingtogooglecalendar = true
 		await setUser(user)
 	
 		return res.end()
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
+
+app.post('/getclientgoogleclassroom', async (req, res, next) => {
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+
+		const userid = req.session.user.userid
+		const user = await getUserById(userid)
+		if(!user){
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+		if(!user.google_email){
+			return res.status(401).json({ error: 'Google login is not connected, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
+		}
+
+		if(!req.session.tokens && !user.accountdata.refreshtoken) {
+			return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
+		}
+
+		if(!req.session.tokens || !req.session.tokens.access_token){
+			let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
+			if(!accesstoken){
+				return res.status(401).json({ error: 'Google login is expired, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.' })
+			}
+			req.session.tokens = req.session.tokens || {}
+			req.session.tokens.access_token = accesstoken
+		}
+		if(!req.session.tokens.refresh_token){
+			req.session.tokens.refresh_token = user.accountdata.refreshtoken
+		}
+
+
+		//google calendar
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
+		googleclient.setCredentials(req.session.tokens)
+
+		const classroom = google.classroom({ version: 'v1', auth: googleclient })
+
+
+		let userToDos = []
+
+		try {
+			const courseRes = await classroom.courses.list();
+			const courses = courseRes.data.courses || [];
+
+			for (const course of courses) {
+				const courseId = course.id;
+				const courseworkRes = await classroom.courses.courseWork.list({ courseId });
+				const courseWorkItems = courseworkRes.data.courseWork || [];
+				
+				const toDos = courseWorkItems.filter(item => item.workType === 'ASSIGNMENT')
+				userToDos = [...userToDos, ...toDos.map(todo => ({ courseId, ...todo }))]
+			}
+		} catch (error) {
+			return res.status(401).json({ error: `Cannot access your Google Classroom, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
+		}
+
+		return res.json({ data: userToDos })
+
+	} catch (error) {
+		console.error(error)
+		return res.status(401).json({ error: `Cannot access your Google Classroom, please <span onclick="connectgoogle()" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
 	}
 })
 
@@ -1477,6 +1853,7 @@ app.post('/login', async (req, res, next) => {
 		
 		req.session.user = { userid: user.userid }
 		user.accountdata.lastloggedindate = Date.now()
+
 		await setUser(user)
 		return res.redirect(301, '/app')
 	} catch (error) {
@@ -1518,12 +1895,77 @@ app.post('/signup', async (req, res, next) => {
 		const user = new User({ username: username, password: password})
 		await createUser(user)
 		req.session.user = { userid: user.userid }
+
+		await sendwelcomeemail(user)
+
 		return res.redirect(301, '/app')
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
 	}
 })
+
+async function sendwelcomeemail(user){
+	let email = user.google_email || user.username
+	let name = user.google_email ? user.accountdata.google.name || user.google_email : user.username
+
+	if(isEmail(email)){
+		await sendEmail({
+			from: 'Smart Calendar <welcome@smartcalendar.us>',
+			to: email,
+			subject: `Welcome to Smart Calendar!`,
+			htmlbody: `
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<title>Your Newfound Productivity Starts Now With Smart Calendar</title>
+		<style>
+				@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
+		</style>
+	</head>
+	<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
+		<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px;">
+				<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
+				<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
+						Greetings ${name},
+				</p>
+				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+				<p style="font-size: 18px; color: #333;">
+						You are now a part of a group of hundreds of people who use Smart Calendar to find productivity and peace in life. That's special!
+				</p>
+				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+				<p style="font-size: 18px; color: #333;">
+						We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">click here</a> to contact us. We're here for you!
+				</p>
+				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+				<p style="text-align: center; font-size: 20px; color: #333;">
+						Warm regards,<br>
+						Smart Calendar | Your Smart Time Management Assistant
+				</p>
+
+		<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+				<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
+					<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+				<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
+				</div>
+
+		</div>
+	</body>
+	</html>`,
+			textbody: `Hello ${name},
+
+	You are now a part of a group of hundreds people who use Smart Calendar to find productivity and peace in life. That's special!
+
+	We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
+
+	Warm regards,
+	Smart Calendar | Your Personal Time Management Assistant
+
+	If you wish to stop receiving these notifications, you can update your preferences in the app.
+	(c) 2023 James Tsaggaris. All rights reserved.`
+		})
+	}
+}
 
 
 app.post('/changepassword', async (req, res, next) => {
@@ -1617,6 +2059,54 @@ app.post('/setpassword', async (req, res, next) => {
 	}
 })
 
+app.post('/deleteaccount', async (req, res, next) => {
+	const form = new formidable.IncomingForm()
+	try {
+		const fields = await new Promise((resolve, reject) => {
+			form.parse(req, (err, fields) => {
+				if (err) {
+					reject(err)
+				} else {
+					resolve(fields)
+				}
+			})
+		})
+		let password = fields.password
+
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		const user = await getUserById(userid)
+		if(!user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+
+		if(!user.password){
+			return res.status(401).json({ error: 'You need to set a password before deleting your account.' })
+		}
+
+		if(password != user.password){
+			return res.status(401).json({ error: 'Incorrect password.' })
+		}
+
+		await deleteUser(user.userid)
+
+		req.session.destroy((err) => {
+			if(err) {
+				console.error(err)
+			}
+		})
+
+		return res.redirect(301, '/')
+	} catch (error) {
+		console.error(error)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
 app.post('/changeusername', async (req, res, next) => {
 	const form = new formidable.IncomingForm()
 	try {
@@ -1641,6 +2131,9 @@ app.post('/changeusername', async (req, res, next) => {
 		const user = await getUserById(userid)
 		if(!user){
 			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		if(user.google_email){
+			return res.status(401).json({ error: `Please disconnect your Google account before changing your username.` })
 		}
 		if(!user.password){
 			return res.status(401).json({ error: 'You need to set a password before changing your email.' })
@@ -1725,6 +2218,7 @@ app.post('/setclientdata', async (req, res, next) => {
 		}
 
 		let calendardata = req.body.calendardata
+
 		user.calendardata = calendardata
 		
 		cacheReminders(user)
