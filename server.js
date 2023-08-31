@@ -121,13 +121,13 @@ async function getUserByAttribute(input){
 
 async function getUserByUsername(input){
 	const params = {
-		TableName: 'smartcalendarusers',
-		IndexName: 'username-index',
-		KeyConditionExpression: 'username = :input',
-		ExpressionAttributeValues: {
-		':input': { S: input }
-		}
-	}
+    TableName: 'smartcalendarusers',
+    IndexName: 'username-index',
+    KeyConditionExpression: 'username = :input',
+    ExpressionAttributeValues: {
+      ':input': { S: input }
+    }
+  }
 
   const data = await dynamoclient.send(new QueryCommand(params))
 
@@ -137,6 +137,7 @@ async function getUserByUsername(input){
 
 	return null
 }
+
 
 
 async function deleteUser(userid){
@@ -951,7 +952,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			await setUser(user)
 		}else{
 			let user2 = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
-			let user4 = await getUserByAttribute(email)
+			let user4 = await getUserByUsername(email)
 
 			if(user2 && !user2.google_email){
 				if(!user4 || user4.userid == user2.userid){
@@ -961,7 +962,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 					req.session.tokens = tokens
 					
 					user2.google_email = email
-					user2.username = undefined
+					user2.username = ''
 					user2.googleid = googleid
 					user2.calendardata.settings.issyncingtogooglecalendar = true
 					if(tokens.refresh_token) user2.accountdata.refreshtoken = tokens.refresh_token
@@ -982,7 +983,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				}else{
 					//create account
 
-					const user3 = addmissingpropertiestouser(new User({ username: email, google_email: email, googleid: googleid }))
+					const user3 = addmissingpropertiestouser(new User({ google_email: email, googleid: googleid }))
 					user3.calendardata.settings.issyncingtogooglecalendar = true
 					if(tokens.refresh_token) user3.accountdata.refreshtoken = tokens.refresh_token
 					user3.accountdata.google.name = name
@@ -1039,7 +1040,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 			await setUser(user)
 		}else{
 			let user2 = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
-			let user4 = await getUserByAttribute(email)
+			let user4 = await getUserByUsername(email)
 
 			if(user2 && !user2.google_email){
 				if(!user4 || user4.userid == user2.userid){
@@ -1068,7 +1069,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 				}else{
 					//create account
 
-					const user3 = addmissingpropertiestouser(new User({ username: email, google_email: email, googleid: googleid }))
+					const user3 = addmissingpropertiestouser(new User({ google_email: email, googleid: googleid }))
 					user3.calendardata.settings.issyncingtogooglecalendar = true
 					user3.accountdata.google.name = name
 					user3.accountdata.google.profilepicture = profilepicture
@@ -1727,8 +1728,16 @@ app.post('/disconnectgoogle', async (req, res, next) => {
 		if(!user){
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
-		if(!user.password || !user.username){
-			return res.status(401).json({ error: 'You need to set an email and password before disconnecting.' })
+		if(!user.password){
+			return res.status(401).json({ error: 'You need to set a password before disconnecting.' })
+		}
+		if(user.google_email){
+			let existinguser = await getUserByUsername(user.google_email)
+			if(existinguser && existinguser.userid != user.userid){
+				return res.status(401).json({ error: 'You need to set a password before disconnecting.' })
+			}
+
+			user.username = user.google_email
 		}
 		
 		delete req.session.tokens
@@ -2127,7 +2136,7 @@ app.post('/changeusername', async (req, res, next) => {
 			return res.status(401).json({ error: 'User is not signed in.' })
 		}
 		if(user.google_email){
-			return res.status(401).json({ error: `You already have an email set.` })
+			return res.status(401).json({ error: `You cannot change your username because you signed up with Google.` })
 		}
 		if(!user.password){
 			return res.status(401).json({ error: 'You need to set a password before changing your email.' })
