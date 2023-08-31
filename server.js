@@ -961,8 +961,8 @@ app.get('/auth/google/callback', async (req, res, next) => {
 					req.session.user = { userid: user2.userid }
 					req.session.tokens = tokens
 					
+					delete user2.username
 					user2.google_email = email
-					user2.username = ''
 					user2.googleid = googleid
 					user2.calendardata.settings.issyncingtogooglecalendar = true
 					if(tokens.refresh_token) user2.accountdata.refreshtoken = tokens.refresh_token
@@ -1743,6 +1743,8 @@ app.post('/disconnectgoogle', async (req, res, next) => {
 		delete req.session.tokens
 		
 		delete user.google_email
+		delete user.googleid
+		user.calendardata.settings.issyncingtogooglecalendar = true
 		await setUser(user)
 	
 		return res.end()
@@ -2136,7 +2138,7 @@ app.post('/changeusername', async (req, res, next) => {
 			return res.status(401).json({ error: 'User is not signed in.' })
 		}
 		if(user.google_email){
-			return res.status(401).json({ error: `You cannot change your username because you signed up with Google.` })
+			return res.status(401).json({ error: `Please disconnect your Google account before changing your username.` })
 		}
 		if(!user.password){
 			return res.status(401).json({ error: 'You need to set a password before changing your email.' })
