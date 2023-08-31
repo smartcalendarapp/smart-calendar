@@ -969,6 +969,12 @@ class Calendar {
 				let oldtodosdata = JSON.parse(historydata[historydata.length - 1]).todos
 
 
+				//auto schedule
+				if (smartschedule != false) {
+					if (JSON.stringify(neweventsdata) != JSON.stringify(oldeventsdata)) {
+						startAutoSchedule([])
+					}
+				}
 
 				//last modified changes
 				for (let item of calendar.events) {
@@ -995,15 +1001,6 @@ class Calendar {
 						item.lastmodified = Date.now()
 					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit calendar
 						item.lastmodified = Date.now()
-					}
-				}
-
-
-
-				//auto schedule
-				if (smartschedule != false) {
-					if (JSON.stringify(neweventsdata) != JSON.stringify(oldeventsdata)) {
-						startAutoSchedule([])
 					}
 				}
 
