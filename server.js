@@ -937,7 +937,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				req.session.tokens = tokens
 				
 				user2.google_email = email
-				user2.username = email
+				user2.username = undefined
 				user2.calendardata.settings.issyncingtogooglecalendar = true
 				user2.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
 				user2.accountdata.google.name = name
@@ -1008,7 +1008,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 				req.session.tokens = tokens
 				
 				user2.google_email = email
-				user2.username = email
+				user2.username = undefined
 				user2.calendardata.settings.issyncingtogooglecalendar = true
 				user2.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
 				user2.accountdata.google.name = name
