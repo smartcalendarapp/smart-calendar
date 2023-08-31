@@ -747,17 +747,21 @@ async function initializeReminders(){
 	try {
 		let ExclusiveStartKey;
 		do {
-		const command = new ScanCommand({
-			TableName: 'smartcalendarusers',
-			ExclusiveStartKey
-		})
+			const command = new ScanCommand({
+				TableName: 'smartcalendarusers',
+				ExclusiveStartKey
+			})
 
-		const response = await dynamoclient.send(command)
-		const items = response.Items.map(item => addmissingpropertiestouser(unmarshall(item)))
+			const response = await dynamoclient.send(command)
+			const items = response.Items.map(item => addmissingpropertiestouser(unmarshall(item)))
 
-		for (let user of items) {
-			cacheReminders(user)
-		}
+			for (let user of items) {
+				cacheReminders(user)
+				if(user.google_email == user.username){
+					delete user.username
+					await setUser(user)
+				}
+			}
 
 		ExclusiveStartKey = response.LastEvaluatedKey
 		} while (ExclusiveStartKey)
@@ -1734,7 +1738,7 @@ app.post('/disconnectgoogle', async (req, res, next) => {
 		if(user.google_email){
 			let existinguser = await getUserByUsername(user.google_email)
 			if(existinguser && existinguser.userid != user.userid){
-				return res.status(401).json({ error: 'You need to set a password before disconnecting.' })
+				return res.status(401).json({ error: 'You cannot disconnect your Google account because the username is taken.' })
 			}
 
 			user.username = user.google_email
