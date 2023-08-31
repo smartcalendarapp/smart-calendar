@@ -972,7 +972,6 @@ class Calendar {
 				//auto schedule
 				if (smartschedule != false) {
 					if (JSON.stringify(neweventsdata) != JSON.stringify(oldeventsdata)) {
-						console.log(JSON.stringify(neweventsdata) , JSON.stringify(oldeventsdata))
 						startAutoSchedule([])
 					}
 				}
@@ -10303,6 +10302,8 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		}
 		return true
 	}))
+
+	console.log(modifiedevents.length)
 
 	//stop if no change
 	if(modifiedevents.length == 0){
