@@ -913,7 +913,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		const email = data.emailAddresses[0].value
 		const name = data.names[0].displayName
 		const profilepicture = data.photos[0].url
-		
+	
 
 		let user = await getUserByAttribute(email)
 		if(user){
@@ -928,7 +928,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				user.googleid = googleid
 				await setUser(user)
 			}else{
-				throw new Error('Google email is linked to another account')
+				throw new Error('Log in with email and password to access your account')
 			}
 		}else{
 			let user2 = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
@@ -937,6 +937,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				req.session.tokens = tokens
 				
 				user2.google_email = email
+				user2.username = email
 				user2.calendardata.settings.issyncingtogooglecalendar = true
 				user2.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
 				user2.accountdata.google.name = name
@@ -989,22 +990,27 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 		if(user){
 			if(user.google_email == email){
 				req.session.user = { userid: user.userid }
+				req.session.tokens = tokens
 
+				user.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
 				user.accountdata.google.name = name
 				user.accountdata.google.profilepicture = profilepicture
 				user.accountdata.lastloggedindate = Date.now()
 				user.googleid = googleid
 				await setUser(user)
 			}else{
-				throw new Error('Google email is linked to another account')
+				throw new Error('Log in with email and password to access your account')
 			}
 		}else{
 			let user2 = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
 			if(user2){
 				req.session.user = { userid: user2.userid }
+				req.session.tokens = tokens
 				
 				user2.google_email = email
+				user2.username = email
 				user2.calendardata.settings.issyncingtogooglecalendar = true
+				user2.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
 				user2.accountdata.google.name = name
 				user2.accountdata.google.profilepicture = profilepicture
 				user2.accountdata.lastloggedindate = Date.now()
@@ -1013,12 +1019,14 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 			}else{
 				const user3 = addmissingpropertiestouser(new User({ username: email, google_email: email, googleid: googleid }))
 				user3.calendardata.settings.issyncingtogooglecalendar = true
+				user3.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
 				user3.accountdata.google.name = name
 				user3.accountdata.google.profilepicture = profilepicture
 				user3.accountdata.lastloggedindate = Date.now()
 				await createUser(user3)
 
 				req.session.user = { userid: user3.userid }
+				req.session.tokens = tokens
 
 				await sendwelcomeemail(user3)
 			}
@@ -1782,11 +1790,9 @@ app.post('/login', async (req, res, next) => {
 			return res.status(401).json({ error: 'Incorrect password.' })
 		}
 		
-		if(!req.session.user){
-			req.session.user = {}
-		}
-		req.session.user.userid = user.userid
+		req.session.user = { userid: user.userid }
 		user.accountdata.lastloggedindate = Date.now()
+
 		await setUser(user)
 		return res.redirect(301, '/app')
 	} catch (error) {
@@ -2069,6 +2075,9 @@ app.post('/changeusername', async (req, res, next) => {
 		const user = await getUserById(userid)
 		if(!user){
 			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		if(user.google_email){
+			return res.status(401).json({ error: `You already have an email set.` })
 		}
 		if(!user.password){
 			return res.status(401).json({ error: 'You need to set a password before changing your email.' })
