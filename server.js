@@ -1084,7 +1084,7 @@ app.get('/home', (req, res) => {
 })
 
 app.get('/login', async (req, res, next) => {
-  if (req.session.user && req.session.user.userid && await getUserById(req.session.user.userid) != null) {
+  if (req.session.user && req.session.user.userid) {
 		res.redirect(301, '/app')
   } else{
 		next()
