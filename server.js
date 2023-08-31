@@ -119,6 +119,26 @@ async function getUserByAttribute(input){
 	return null
 }
 
+async function getUserByUsername(input){
+	const params = {
+		TableName: 'smartcalendarusers',
+		IndexName: 'username-index',
+		KeyConditionExpression: 'username = :input',
+		ExpressionAttributeValues: {
+		':input': { S: input }
+		}
+	}
+
+  const data = await dynamoclient.send(new QueryCommand(params))
+
+	if(data.Items[0]){
+		return addmissingpropertiestouser(unmarshall(data.Items[0]))
+	}
+
+	return null
+}
+
+
 async function deleteUser(userid){
 	const params = {
     TableName: 'smartcalendarusers',
