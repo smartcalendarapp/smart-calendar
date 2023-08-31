@@ -915,21 +915,17 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		const profilepicture = data.photos[0].url
 	
 
-		let user = await getUserByAttribute(email)
+		let user = await getUserByGoogleId(googleid)
 		if(user){
-			if(user.google_email == email){
-				req.session.user = { userid: user.userid }
-				req.session.tokens = tokens
+			req.session.user = { userid: user.userid }
+			req.session.tokens = tokens
 
-				user.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
-				user.accountdata.google.name = name
-				user.accountdata.google.profilepicture = profilepicture
-				user.accountdata.lastloggedindate = Date.now()
-				user.googleid = googleid
-				await setUser(user)
-			}else{
-				throw new Error('Log in with email and password to access your account')
-			}
+			user.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
+			user.accountdata.google.name = name
+			user.accountdata.google.profilepicture = profilepicture
+			user.accountdata.lastloggedindate = Date.now()
+			user.googleid = googleid
+			await setUser(user)
 		}else{
 			let user2 = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
 			if(user2){
@@ -938,26 +934,31 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				
 				user2.google_email = email
 				user2.username = undefined
+				user2.googleid = googleid
 				user2.calendardata.settings.issyncingtogooglecalendar = true
 				user2.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
 				user2.accountdata.google.name = name
 				user2.accountdata.google.profilepicture = profilepicture
 				user2.accountdata.lastloggedindate = Date.now()
-				user2.googleid = googleid
 				await setUser(user2)
 			}else{
-				const user3 = addmissingpropertiestouser(new User({ username: email, google_email: email, googleid: googleid }))
-				user3.calendardata.settings.issyncingtogooglecalendar = true
-				user3.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
-				user3.accountdata.google.name = name
-				user3.accountdata.google.profilepicture = profilepicture
-				user3.accountdata.lastloggedindate = Date.now()
-				await createUser(user3)
+				let user4 = await getUserByAttribute(email)
+				if(user4 && user4.username && user4.username == email){
+					throw new Error('Use email and password to log in')
+				}else{
+					const user3 = addmissingpropertiestouser(new User({ username: email, google_email: email, googleid: googleid }))
+					user3.calendardata.settings.issyncingtogooglecalendar = true
+					user3.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
+					user3.accountdata.google.name = name
+					user3.accountdata.google.profilepicture = profilepicture
+					user3.accountdata.lastloggedindate = Date.now()
+					await createUser(user3)
 
-				req.session.user = { userid: user3.userid }
-				req.session.tokens = tokens
+					req.session.user = { userid: user3.userid }
+					req.session.tokens = tokens
 
-				await sendwelcomeemail(user3)
+					await sendwelcomeemail(user3)
+				}
 			}
 		}
 
@@ -988,19 +989,15 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 
 		let user = await getUserByGoogleId(googleid)
 		if(user){
-			if(user.google_email == email){
-				req.session.user = { userid: user.userid }
-				req.session.tokens = tokens
+			req.session.user = { userid: user.userid }
+			req.session.tokens = tokens
 
-				user.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
-				user.accountdata.google.name = name
-				user.accountdata.google.profilepicture = profilepicture
-				user.accountdata.lastloggedindate = Date.now()
-				user.googleid = googleid
-				await setUser(user)
-			}else{
-				throw new Error('Log in with email and password to access your account')
-			}
+			user.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
+			user.accountdata.google.name = name
+			user.accountdata.google.profilepicture = profilepicture
+			user.accountdata.lastloggedindate = Date.now()
+			user.googleid = googleid
+			await setUser(user)
 		}else{
 			let user2 = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
 			if(user2){
@@ -1009,26 +1006,31 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 				
 				user2.google_email = email
 				user2.username = undefined
+				user2.googleid = googleid
 				user2.calendardata.settings.issyncingtogooglecalendar = true
 				user2.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
 				user2.accountdata.google.name = name
 				user2.accountdata.google.profilepicture = profilepicture
 				user2.accountdata.lastloggedindate = Date.now()
-				user2.googleid = googleid
 				await setUser(user2)
 			}else{
-				const user3 = addmissingpropertiestouser(new User({ username: email, google_email: email, googleid: googleid }))
-				user3.calendardata.settings.issyncingtogooglecalendar = true
-				user3.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
-				user3.accountdata.google.name = name
-				user3.accountdata.google.profilepicture = profilepicture
-				user3.accountdata.lastloggedindate = Date.now()
-				await createUser(user3)
+				let user4 = await getUserByAttribute(email)
+				if(user4 && user4.username && user4.username == email){
+					throw new Error('Use email and password to log in')
+				}else{
+					const user3 = addmissingpropertiestouser(new User({ username: email, google_email: email, googleid: googleid }))
+					user3.calendardata.settings.issyncingtogooglecalendar = true
+					user3.accountdata.refreshtoken = tokens.refresh_token || user.accountdata.refreshtoken
+					user3.accountdata.google.name = name
+					user3.accountdata.google.profilepicture = profilepicture
+					user3.accountdata.lastloggedindate = Date.now()
+					await createUser(user3)
 
-				req.session.user = { userid: user3.userid }
-				req.session.tokens = tokens
+					req.session.user = { userid: user3.userid }
+					req.session.tokens = tokens
 
-				await sendwelcomeemail(user3)
+					await sendwelcomeemail(user3)
+				}
 			}
 		}
 
