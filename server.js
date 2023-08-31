@@ -951,7 +951,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			await setUser(user)
 		}else{
 			let user2 = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
-			let user4 = await getUserByUsername(email)
+			let user4 = await getUserByAttribute(email)
 
 			if(user2 && !user2.google_email){
 				if(!user4 || user4.userid == user2.userid){
@@ -970,15 +970,15 @@ app.get('/auth/google/callback', async (req, res, next) => {
 					user2.accountdata.lastloggedindate = Date.now()
 					await setUser(user2)
 				}else{
-					//reject sign in to regular email account
+					//reject sign in to another user's account
 
-					throw new Error('Use email and password to log in')
+					throw new Error('Email is already used for another account.')
 				}
 			}else{
 				if(user4 && user4.username == email){
 					//reject sign in to regular email account
 
-					throw new Error('Use email and password to log in')
+					throw new Error('Use email and password to log in.')
 				}else{
 					//create account
 
@@ -1039,7 +1039,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 			await setUser(user)
 		}else{
 			let user2 = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
-			let user4 = await getUserByUsername(email)
+			let user4 = await getUserByAttribute(email)
 
 			if(user2 && !user2.google_email){
 				if(!user4 || user4.userid == user2.userid){
@@ -1056,9 +1056,9 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 					user2.accountdata.lastloggedindate = Date.now()
 					await setUser(user2)
 				}else{
-					//reject sign in to regular email account
+					//reject sign in to another user's account
 
-					throw new Error('Use email and password to log in')
+					throw new Error('Email is already used for another account.')
 				}
 			}else{
 				if(user4 && user4.username == email){
