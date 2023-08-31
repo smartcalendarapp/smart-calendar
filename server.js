@@ -991,6 +991,8 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			}
 		}
 
+		//here4
+
 		res.redirect(301, '/app')
 	}catch(error){
 		console.error(error)
@@ -1081,8 +1083,8 @@ app.get('/home', (req, res) => {
   res.redirect(301, '/')
 })
 
-app.get('/login', (req, res, next) => {
-  if (req.session.user && req.session.user.userid) {
+app.get('/login', async (req, res, next) => {
+  if (req.session.user && req.session.user.userid && await getUserById(req.session.userid) != null) {
 		res.redirect(301, '/app')
   } else{
 		next()
