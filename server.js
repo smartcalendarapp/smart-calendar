@@ -454,10 +454,11 @@ async function processReminders(){
 									<p style="font-size: 18px; color: #333;">
 											Just a quick reminder that your event <strong>${item.event.title || 'New Event'}</strong> is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}. 
 									</p>
-									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="font-size: 18px; color: #333;">
-									If you have other tasks to plan, consider adding them to your to-do list. Then, you can simply have Smart Calendar schedule them for you. 
+										<a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Click here</a> to see more details about your event in the app.
 									</p>
+
+									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="font-size: 18px; color: #333;">
 											If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">click here</a> to contact us. We're here for you!
 									</p>
@@ -479,7 +480,7 @@ async function processReminders(){
 					textbody: `Hi ${item.user.name},
 					Just a quick reminder that your event ${item.event.title || 'New Event'} is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}.
 
-					If you have other tasks to plan, consider adding them to your to-do list. Then, you can simply have Smart Calendar schedule them for you.
+					Click https://smartcalendar.us/app to see more details about your event in the app.
 
 					If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
 
@@ -515,10 +516,11 @@ async function processReminders(){
 									<p style="font-size: 18px; color: #333;">
 											Just a quick reminder that your task <strong>${item.event.title || 'New Event'}</strong> is due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}. 
 									</p>
-									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="font-size: 18px; color: #333;">
-									If you have other tasks to plan, consider adding them to your to-do list. Then, you can simply have Smart Calendar schedule them for you. 
+										<a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Click here</a> to see more details about your task in the app.
 									</p>
+
+									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="font-size: 18px; color: #333;">
 											If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">click here</a> to contact us. We're here for you!
 									</p>
@@ -540,7 +542,7 @@ async function processReminders(){
 					textbody: `Hi ${item.user.name},
 					Just a quick reminder that your task ${item.event.title || 'New Task'} is due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}.
 
-					If you have other tasks to plan, consider adding them to your to-do list. Then, you can simply have Smart Calendar schedule them for you.
+					Click https://smartcalendar.us/app to see more details about your task in the app.
 
 					If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
 
@@ -998,8 +1000,6 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				}
 			}
 		}
-
-		//here4
 
 		res.redirect(301, '/app')
 	}catch(error){
@@ -1935,10 +1935,7 @@ async function sendwelcomeemail(user){
 				</p>
 				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<p style="font-size: 18px; color: #333;">
-					We know you're excited to explore Smart Calendar. Check out our blog on some basic tips on how to make the most of Smart Calendar.
-				</p>
-				<p style="font-size: 18px; color: #333;">
-						If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">click here</a> to contact us. We're here for you!
+						We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">click here</a> to contact us. We're here for you!
 				</p>
 				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<p style="text-align: center; font-size: 20px; color: #333;">
@@ -1959,9 +1956,7 @@ async function sendwelcomeemail(user){
 
 	You are now a part of a group of hundreds people who use Smart Calendar to find productivity and peace in life. That's special!
 
-	We know you're excited to explore Smart Calendar. Check out our blog on some basic tips on how to make the most of Smart Calendar.
-
-	If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
+	We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
 
 	Warm regards,
 	Smart Calendar | Your Personal Time Management Assistant

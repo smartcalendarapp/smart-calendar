@@ -10302,8 +10302,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		}
 		return true
 	}))
-
-	console.log(modifiedevents.length)
+	
 
 	//stop if no change
 	if(modifiedevents.length == 0){
