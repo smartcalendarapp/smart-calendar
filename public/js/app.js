@@ -972,6 +972,7 @@ class Calendar {
 				//auto schedule
 				if (smartschedule != false) {
 					if (JSON.stringify(neweventsdata) != JSON.stringify(oldeventsdata)) {
+						console.log(JSON.stringify(neweventsdata) , JSON.stringify(oldeventsdata))
 						startAutoSchedule([])
 					}
 				}
