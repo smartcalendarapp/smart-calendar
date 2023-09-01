@@ -9925,7 +9925,6 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			let tempstartdate2 = new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute)
 			let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
 
-			console.log(item1.end)
 			let spacing = getbreaktime(item2)
 
 			if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
@@ -10176,6 +10175,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			while(tempstartdate.getTime() <= (startafterdate.getTime() + range * 0.4) - duration){
 				let tempenddate = new Date(tempstartdate + duration)
 
+				console.log(tempstartdate.getTime(), tempenddate.getTime())
 				item.start.year = tempstartdate.getFullYear()
 				item.start.month = tempstartdate.getMonth()
 				item.start.day = tempstartdate.getDate()
