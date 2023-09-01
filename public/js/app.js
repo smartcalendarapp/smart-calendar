@@ -10196,6 +10196,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 				tempstartdate.setMinutes(tempstartdate.getMinutes() + 5)
 			}
 
+			console.log(freetimes)
 			let lastfreetime = oldstartdatetime
 			if(freetimes.length > 0){
 				lastfreetime = Math.max(...freetimes)
