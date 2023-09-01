@@ -953,32 +953,29 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			user.google_email = email
 			await setUser(user)
 		}else{
-			let user2 = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
-			let user4 = await getUserByUsername(email)
+			let userFromId = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
+			let userFromEmail = await getUserByUsername(email)
 
-			if(user2 && !user2.google_email){
-				if(!user4 || user4.userid == user2.userid){
-					//add google to logged in account
+			if(userFromId && !userFromId.google_email){ // if current user logged in exists and does not have google email set (new user)
+				if (userFromEmail?.userid !== userFromId?.userid) throw new Error("Email is being used for another account");
+				// if there is no user from email or email matches current user
+				//add google to logged in account
 
-					req.session.user = { userid: user2.userid }
-					req.session.tokens = tokens
-					
-					delete user2.username
-					user2.google_email = email
-					user2.googleid = googleid
-					user2.calendardata.settings.issyncingtogooglecalendar = true
-					if(tokens.refresh_token) user2.accountdata.refreshtoken = tokens.refresh_token
-					user2.accountdata.google.name = name
-					user2.accountdata.google.profilepicture = profilepicture
-					user2.accountdata.lastloggedindate = Date.now()
-					await setUser(user2)
-				}else{
-					//reject sign in to another user's account
-
-					throw new Error('Email is already used for another account.')
-				}
-			}else{
-				if(user4 && user4.username == email){
+				req.session.user = { userid: userFromId.userid }
+				req.session.tokens = tokens
+				
+				delete userFromId.username
+				userFromId.google_email = email
+				userFromId.googleid = googleid
+				userFromId.calendardata.settings.issyncingtogooglecalendar = true
+				if(tokens.refresh_token) userFromId.accountdata.refreshtoken = tokens.refresh_token
+				userFromId.accountdata.google.name = name
+				userFromId.accountdata.google.profilepicture = profilepicture
+				userFromId.accountdata.lastloggedindate = Date.now()
+				await setUser(userFromId)
+				
+			} else{ // if user has google_email or current logged in user does not exist
+				if(userFromEmail && userFromEmail.username == email){
 					//reject sign in to regular email account
 
 					throw new Error('Use email and password to log in.')
