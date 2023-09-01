@@ -10186,7 +10186,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 				item.end.day = tempenddate.getDate()
 				item.end.minute = tempenddate.getHours() * 60 + tempenddate.getMinutes()
 
-				if(!getconflictingevent(iteratedevents, item)){
+				if(!getconflictingevent(iteratedevents, item) && !isoutofrange(item)){
 					//here4
 					freetimes.push(tempstartdate.getTime())
 				}
