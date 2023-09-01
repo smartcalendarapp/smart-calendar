@@ -10151,7 +10151,9 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		}
 
 
+		
 		//adjust time
+		/*
 		smartevents = smartevents.sort((a, b) => {
 			return new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime() - new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime()
 		})
@@ -10213,6 +10215,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			item.end.day = lastfreeenddate.getDate()
 			item.end.minute = lastfreeenddate.getHours() * 60 + lastfreeenddate.getMinutes()
 		}
+		*/
 	} else if (calendar.smartschedule.mode == 1) {
 		//BALANCED
 
