@@ -10082,16 +10082,22 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 	if (true) {
 		//FOCUS
 
-		//here4
-
 		//set to best time
 		for(let item of smartevents){
 			let startafterdate = new Date()
 			startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
 
+			let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
+			if (endbeforedate.getTime() < startafterdate.getTime()) {
+				endbeforedate.setTime(startafterdate.getTime())
+			}
+
 			let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 
-			let startdate = new Date(startafterdate)
+			let range = endbeforedate.getTime() - startafterdate.getTime()
+
+			let startdate = new Date(startafterdate.getTime() + range * 0.4)
+			startdate.setMinutes(floor(startdate.getMinutes(), 5))
 			let enddate = new Date(startdate.getTime() + duration)
 
 			item.start.year = startdate.getFullYear()
