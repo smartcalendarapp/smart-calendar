@@ -10193,6 +10193,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			let lastfreetime = Math.max(...freetimes)
 
 			let lastfreestartdate = new Date(lastfreetime)
+			console.log(lastfreestartdate, lastfreetime)
 			let lastfreeenddate = new Date(lastfreetime + duration)
 			
 			item.start.year = lastfreestartdate.getFullYear()
