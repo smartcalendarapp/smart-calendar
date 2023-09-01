@@ -10101,12 +10101,13 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			let range = endbeforedate.getTime() - startafterdate.getTime()
 
 
-			let startdate;
-			if(range <= 86400000){
-				startdate = new Date(startafterdate.getTime())
-			}else{
-				startdate = new Date(startafterdate.getTime() + range * 0.4)
-			}
+			let dayindex = Math.floor(range * 0.4 / 86400000)
+			let daystartafterdate = new Date(startafterdate)
+			daystartafterdate.setHours(0,0,0,0)
+			daystartafterdate.setDate(daystartafterdate.getDate() + dayindex)
+			daystartafterdate.setTime(Math.max(daystartafterdate.getTime(), startafterdate.getTime()))
+
+			let startdate = new Date(daystartafterdate.getTime())
 			let enddate = new Date(startdate.getTime() + duration)
 
 			item.start.year = startdate.getFullYear()
