@@ -10170,6 +10170,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 
 			let freetimes = []
 			let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+			let oldstartdatetime = tempstartdate.getTime()
 			while(tempstartdate.getTime() <= (startafterdate.getTime() + range * 0.4) - duration){
 				let tempenddate = new Date(tempstartdate + duration)
 
@@ -10190,10 +10191,12 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 				tempstartdate.setMinutes(tempstartdate.getMinutes() + 5)
 			}
 
-			let lastfreetime = Math.max(...freetimes)
+			let lastfreetime = oldstartdatetime
+			if(freetimes.length > 0){
+				lastfreetime = Math.max(...freetimes)
+			}
 
 			let lastfreestartdate = new Date(lastfreetime)
-			console.log(lastfreestartdate, lastfreetime)
 			let lastfreeenddate = new Date(lastfreetime + duration)
 			
 			item.start.year = lastfreestartdate.getFullYear()
