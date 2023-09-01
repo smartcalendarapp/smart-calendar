@@ -434,7 +434,7 @@ async function processReminders(){
 				await sendEmail({
 					from: 'Smart Calendar <reminders@smartcalendar.us>',
 					to: item.user.email,
-					subject: `Friendly reminder: ${item.event.title}`,
+					subject: `Friendly reminder: ${item.event.title} (starts ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))})`,
 					htmlbody: `
 					<!DOCTYPE html>
 					<html>
@@ -496,7 +496,7 @@ async function processReminders(){
 				await sendEmail({
 					from: 'Smart Calendar <reminders@smartcalendar.us>',
 					to: item.user.email,
-					subject: `Friendly reminder: ${item.event.title}`,
+					subject: `Friendly reminder: ${item.event.title} (due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))})`,
 					htmlbody: `
 					<!DOCTYPE html>
 					<html>

@@ -2993,7 +2993,7 @@ function changedevicescreen(event){
 			calendarmode = 0
 		}
 		if(calendartabs.includes(0) && calendartabs.includes(1)){
-			calendartabs = [0]
+			calendartabs = [1]
 		}
 	}else{
 		smallscreen = false
@@ -3379,6 +3379,10 @@ function run() {
 		updatetime()
 	}, 1000)
 
+
+	if(calendartabs.includes(0)){
+		startAutoSchedule([])
+	}
 	setInterval(function(){
 		if(calendartabs.includes(0)){
 			startAutoSchedule([])
@@ -10293,7 +10297,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 	let oldcalendarmonth = calendarmonth
 	let oldcalendarday = calendarday
 
-	if (modifiedevents.length > 0) {
+	if (addedtodos.length > 0) {
 		let firstitem = calendar.events.find(f => f.id == modifiedevents[0].id)
 		if(firstitem){
 			let firstitemdate = new Date(firstitem.start.year, firstitem.start.month, firstitem.start.day, 0, firstitem.start.minute)
@@ -10305,8 +10309,6 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 				calendarday = firstitemdate.getDate()
 
 				//vertical
-				let barcolumncontainer = getElement('barcolumncontainer')
-
 				let target = firstitemdate.getHours() * 60 + firstitemdate.getMinutes()
 				scrollcalendarY(target)
 			}
