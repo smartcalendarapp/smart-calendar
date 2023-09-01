@@ -10104,7 +10104,9 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		}
 
 		let donesmartevents = []
-		for (let item of smartevents.reverse()) {
+		for (let item of smartevents.sort((a, b) => {
+			return getcalculatedpriority(a) - getcalculatedpriority(b)
+		})) {
 			donesmartevents.push(item)
 
 			let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !smartevents.find(g => g.id == d.id))
