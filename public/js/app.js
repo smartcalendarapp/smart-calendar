@@ -9922,10 +9922,10 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			let tempstartdate1 = new Date(item1.start.year, item1.start.month, item1.start.day, 0, item1.start.minute)
 			let tempenddate1 = new Date(item1.end.year, item1.end.month, item1.end.day, 0, item1.end.minute)
 
-			console.log(item1.end)
 			let tempstartdate2 = new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute)
 			let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
 
+			console.log(item1.end)
 			let spacing = getbreaktime(item2)
 
 			if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
