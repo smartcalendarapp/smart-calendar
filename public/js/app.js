@@ -6791,7 +6791,7 @@ function typeaddevent(event, submit) {
 
 	//duration
 	if (finalduration == null) {
-		finalduration = 60
+		finalduration = 30
 	}
 
 	//start
@@ -6945,7 +6945,7 @@ function resetcreatetodo() {
 	let todoinputnotesonboarding = getElement('todoinputnotesonboarding')
 	todoinputnotesonboarding.value = ''
 
-	createtododurationvalue = 60
+	createtododurationvalue = 30
 	createtododuedatevalue = {
 		year: nextdate.getFullYear(),
 		month: nextdate.getMonth(),
@@ -10101,13 +10101,13 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			let range = endbeforedate.getTime() - startafterdate.getTime()
 
 
-			let dayindex = Math.floor(range * 0.4 / 86400000)
 			let daystartafterdate = new Date(startafterdate)
 			daystartafterdate.setHours(0,0,0,0)
-			daystartafterdate.setDate(daystartafterdate.getDate() + dayindex)
-			daystartafterdate.setTime(Math.max(daystartafterdate.getTime(), startafterdate.getTime()))
+			let dayindex = Math.floor((endbeforedate.getTime() - daystartafterdate.getTime()) * 0.4 / 86400000)
 
 			let startdate = new Date(daystartafterdate.getTime())
+			startdate.setDate(startdate.getDate() + dayindex)
+			startdate.setTime(Math.max(startdate.getTime(), startafterdate.getTime()))
 			let enddate = new Date(startdate.getTime() + duration)
 
 			item.start.year = startdate.getFullYear()
