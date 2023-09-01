@@ -10173,9 +10173,9 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 			let oldstartdatetime = tempstartdate.getTime()
 			while(tempstartdate.getTime() <= (startafterdate.getTime() + range * 0.4) - duration){
-				let tempenddate = new Date(tempstartdate + duration)
+				let tempenddate = new Date(tempstartdate)
+				tempenddate.setTime(tempenddate.getTime() + duration)
 
-				console.log(tempstartdate.getTime(), tempenddate.getTime())
 				item.start.year = tempstartdate.getFullYear()
 				item.start.month = tempstartdate.getMonth()
 				item.start.day = tempstartdate.getDate()
