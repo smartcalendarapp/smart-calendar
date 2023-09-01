@@ -10168,6 +10168,8 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 
 			let range = endbeforedate.getTime() - startafterdate.getTime()
 
+			let tempiteratedevents = iteratedevents.filter(d => !smartevents.find(g => g.id == d.id))
+
 			let freetimes = []
 			let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 			let oldstartdatetime = tempstartdate.getTime()
@@ -10184,8 +10186,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 				item.end.day = tempenddate.getDate()
 				item.end.minute = tempenddate.getHours() * 60 + tempenddate.getMinutes()
 
-				console.log(iteratedevents)
-				if(!getconflictingevent(iteratedevents, item)){
+				if(!getconflictingevent(tempiteratedevents, item)){
 					freetimes.push(tempstartdate.getTime())
 				}
 
@@ -10196,6 +10197,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			if(freetimes.length > 0){
 				lastfreetime = Math.max(...freetimes)
 			}
+
 
 			let lastfreestartdate = new Date(lastfreetime)
 			let lastfreeenddate = new Date(lastfreetime + duration)
