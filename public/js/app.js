@@ -10023,7 +10023,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 
 
 	//check for todos that are currently being done - don't reschedule first one
-	let doingtodos = sortstartdate(smartevents).filter(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now())
+	let doingtodos = sortstartdate(smartevents).filter(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now() && !getconflictingevent(iteratedevents, d))
 	if(doingtodos[0]){
 		smartevents = smartevents.filter(d => d.id != doingtodos[0].id)
 	}
@@ -10079,10 +10079,12 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 
 
 	//start
-	if (true || calendar.smartschedule.mode == 0) {
+	if (true) {
 		//FOCUS
 
-		//set to ASAP
+		//here4
+
+		//set to best time
 		for(let item of smartevents){
 			let startafterdate = new Date()
 			startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
@@ -10103,6 +10105,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
 		}
 
+		//adjust time
 		let donesmartevents = []
 		smartevents = smartevents.sort((a, b) => {
 			return getcalculatedpriority(b) - getcalculatedpriority(a)
@@ -10637,12 +10640,14 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 	}
 
 	//post animate
+	if(addedtodos.length > 0){
+		displayalert(`${addedtodos.length} task${addedtodos.length == 1 ? ' was' : 's were'} successfully scheduled.`)
+	}else{
+		displayalert(`Your schedule has been optimized.`)
+	}
+
 	let animateindex = 0
 	closeanimate()
-
-	if(addedtodos.length > 0){
-		displayalert(`${addedtodos.length} task${addedtodos.length == 1 ? ' was' : 's were'} successfully scheduled`)
-	}
 
 	//stats
 	autoschedulestats.animateduration = performance.now() - startautoscheduleanimate

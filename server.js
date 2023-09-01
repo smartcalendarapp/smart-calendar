@@ -1734,7 +1734,7 @@ app.post('/disconnectgoogle', async (req, res, next) => {
 		if(user.google_email){
 			let existinguser = await getUserByUsername(user.google_email)
 			if(existinguser && existinguser.userid != user.userid){
-				return res.status(401).json({ error: 'You cannot disconnect your Google account because the username is taken.' })
+				return res.status(401).json({ error: 'You cannot disconnect your Google account because the email is taken.' })
 			}
 
 			user.username = user.google_email
@@ -2133,7 +2133,7 @@ app.post('/changeusername', async (req, res, next) => {
 			return res.status(401).json({ error: 'User is not signed in.' })
 		}
 		if(user.google_email){
-			return res.status(401).json({ error: `Please disconnect your Google account before changing your username.` })
+			return res.status(401).json({ error: `You need to disconnect your Google account before changing your email.` })
 		}
 		if(!user.password){
 			return res.status(401).json({ error: 'You need to set a password before changing your email.' })
