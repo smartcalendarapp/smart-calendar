@@ -10086,7 +10086,6 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 	if (true) {
 		//FOCUS
 
-		let x = performance.now()
 		//set to best time
 		for(let item of smartevents){
 			let startafterdate = new Date()
@@ -10114,8 +10113,6 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
 		}
 
-		console.log(performance.now() - x, 'HERE 1')
-		x = performance.now()
 
 		//fix conflicts
 		let donesmartevents = []
@@ -10152,9 +10149,6 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			}
 
 		}
-
-		console.log(performance.now() - x, 'HERE 2')
-		x = performance.now()
 
 
 		//adjust time
@@ -10197,7 +10191,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 					freetimes.push(tempstartdate.getTime())
 				}
 
-				tempstartdate.setMinutes(tempstartdate.getMinutes() + 5)
+				tempstartdate.setMinutes(tempstartdate.getMinutes() + 60)
 			}
 
 			let lastfreetime = oldstartdatetime
@@ -10219,8 +10213,6 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			item.end.day = lastfreeenddate.getDate()
 			item.end.minute = lastfreeenddate.getHours() * 60 + lastfreeenddate.getMinutes()
 		}
-
-		console.log(performance.now() - x, 'HERE 3')
 	} else if (calendar.smartschedule.mode == 1) {
 		//BALANCED
 
