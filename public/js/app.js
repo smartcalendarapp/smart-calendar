@@ -9926,6 +9926,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
 
 			let spacing = getbreaktime(item2)
+			console.log(tempstartdate1 + '', tempstartdate2 + '', spacing)
 
 			if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
 				return [item2, spacing]
@@ -10168,8 +10169,6 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 
 			let range = endbeforedate.getTime() - startafterdate.getTime()
 
-			let tempiteratedevents = iteratedevents.filter(d => !smartevents.find(g => g.id == d.id))
-
 
 			let freetimes = []
 			let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
@@ -10187,16 +10186,14 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 				item.end.day = tempenddate.getDate()
 				item.end.minute = tempenddate.getHours() * 60 + tempenddate.getMinutes()
 
-				console.log(tempstartdate+'')
-
-				if(!getconflictingevent(tempiteratedevents, item)){
+				if(!getconflictingevent(iteratedevents, item)){
+					//here4
 					freetimes.push(tempstartdate.getTime())
 				}
 
 				tempstartdate.setMinutes(tempstartdate.getMinutes() + 5)
 			}
 
-			console.log(freetimes)
 			let lastfreetime = oldstartdatetime
 			if(freetimes.length > 0){
 				lastfreetime = Math.max(...freetimes)
