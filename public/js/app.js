@@ -9926,7 +9926,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
 
 			let spacing = getbreaktime(item2)
-			console.log( tempenddate1.getTime() + spacing , tempstartdate2.getTime())
+			console.log( tempenddate1.getTime(),  spacing , )
 
 			if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
 				return [item2, spacing]
