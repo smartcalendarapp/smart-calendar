@@ -10184,6 +10184,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 				item.end.day = tempenddate.getDate()
 				item.end.minute = tempenddate.getHours() * 60 + tempenddate.getMinutes()
 
+				console.log(getconflictingevent(iteratedevents, item), getHMText(tempstartdate.getHours() * 60 + tempstartdate.getMinutes()))
 				if(!getconflictingevent(iteratedevents, item)){
 					freetimes.push(tempstartdate.getTime())
 				}
