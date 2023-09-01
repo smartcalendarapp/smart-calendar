@@ -10098,10 +10098,8 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 
 			let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 
-			let range = endbeforedate.getTime() - startafterdate.getTime()
 
-			let startdate = new Date(startafterdate.getTime() + range * 0.4)
-			startdate.setMinutes(floor(startdate.getMinutes(), 5))
+			let startdate = new Date(startafterdate.getTime())
 			let enddate = new Date(startdate.getTime() + duration)
 
 			item.start.year = startdate.getFullYear()
@@ -10115,7 +10113,8 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
 		}
 
-		//adjust time
+
+		//fix conflicts
 		let donesmartevents = []
 		smartevents = smartevents.sort((a, b) => {
 			return getcalculatedpriority(b) - getcalculatedpriority(a)
@@ -10149,6 +10148,62 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 				}
 			}
 
+		}
+
+
+		//adjust time
+		smartevents = smartevents.sort((a, b) => {
+			return new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime() - new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime()
+		})
+		for(let item of smartevents){
+			let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
+
+			let startafterdate = new Date()
+			startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
+
+			let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
+			if (endbeforedate.getTime() < startafterdate.getTime()) {
+				endbeforedate.setTime(startafterdate.getTime())
+			}
+
+			let range = endbeforedate.getTime() - startafterdate.getTime()
+
+			let freetimes = []
+			let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+			while(tempstartdate.getTime() <= (startafterdate.getTime() + range * 0.4) - duration){
+				let tempenddate = new Date(tempstartdate + duration)
+
+				item.start.year = tempstartdate.getFullYear()
+				item.start.month = tempstartdate.getMonth()
+				item.start.day = tempstartdate.getDate()
+				item.start.minute = tempstartdate.getHours() * 60 + tempstartdate.getMinutes()
+
+				item.end.year = tempenddate.getFullYear()
+				item.end.month = tempenddate.getMonth()
+				item.end.day = tempenddate.getDate()
+				item.end.minute = tempenddate.getHours() * 60 + tempenddate.getMinutes()
+
+				if(!getconflictingevent(iteratedevents, item)){
+					freetimes.push(tempstartdate.getTime())
+				}
+
+				tempstartdate.setMinutes(tempstartdate.getMinutes() + 5)
+			}
+
+			let lastfreetime = Math.max(...freetimes)
+
+			let lastfreestartdate = new Date(lastfreetime)
+			let lastfreeenddate = new Date(lastfreetime + duration)
+			
+			item.start.year = lastfreestartdate.getFullYear()
+			item.start.month = lastfreestartdate.getMonth()
+			item.start.day = lastfreestartdate.getDate()
+			item.start.minute = lastfreestartdate.getHours() * 60 + lastfreestartdate.getMinutes()
+
+			item.end.year = lastfreeenddate.getFullYear()
+			item.end.month = lastfreeenddate.getMonth()
+			item.end.day = lastfreeenddate.getDate()
+			item.end.minute = lastfreeenddate.getHours() * 60 + lastfreeenddate.getMinutes()
 		}
 	} else if (calendar.smartschedule.mode == 1) {
 		//BALANCED
