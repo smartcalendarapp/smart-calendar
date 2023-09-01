@@ -9904,43 +9904,6 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		let duration = (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
 		return Math.min(Math.max(round(duration * eventspacingratio, 60000 * 5), 60000 * 5), 60 * 60000)
 		
-
-		/*
-		let events = sortstartdate(tempevents);
-		let timeSinceLastBreak = 0;
-		
-		for (let i = 1; i < events.length; i++) {
-		  const prevEvent = events[i - 1];
-		  const currentEvent = events[i];
-		  
-		  const prevEventEndTime = new Date(prevEvent.end.year, prevEvent.end.month, prevEvent.end.day, 0, prevEvent.end.minute).getTime();
-		  const currentEventStartTime = new Date(currentEvent.start.year, currentEvent.start.month, currentEvent.start.day, 0, currentEvent.start.minute).getTime();
-		  
-		  const prevEventStartTime = new Date(prevEvent.start.year, prevEvent.start.month, prevEvent.start.day, 0, prevEvent.start.minute).getTime();
-		  const prevEventDuration = (prevEventEndTime - prevEventStartTime) / 60000;
-		  timeSinceLastBreak += prevEventDuration;
-		  
-		  const idleTime = (currentEventStartTime - prevEventEndTime) / 60000;
-		  
-		  if (idleTime >= 17) {
-			if (timeSinceLastBreak >= 52) {
-			  return round(timeSinceLastBreak * 1/3 * 60000, 60000)
-			} else {
-			  return 0;
-			}
-		  }
-		  
-		  if (idleTime < 5) { 
-			timeSinceLastBreak += idleTime;
-		  }
-		}
-	  
-		if (timeSinceLastBreak >= 52) { 
-		  return round(timeSinceLastBreak * 1/3 * 60000, 60000)
-		} else {
-		  return 0;
-		}
-		*/
 	  }
 	  
 
@@ -10141,7 +10104,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		}
 
 		let donesmartevents = []
-		for (let item of smartevents) {
+		for (let item of smartevents.reverse()) {
 			donesmartevents.push(item)
 
 			let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !smartevents.find(g => g.id == d.id))
