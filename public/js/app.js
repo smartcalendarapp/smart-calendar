@@ -10172,7 +10172,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			let freetimes = []
 			let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 			let oldstartdatetime = tempstartdate.getTime()
-			while(tempstartdate.getTime() <= (startafterdate.getTime() + range * 0.4) - duration){
+			while(tempstartdate.getTime() <= (startafterdate.getTime() + range * 0.4) - duration){ //0.4 is the magic constant
 				let tempenddate = new Date(tempstartdate)
 				tempenddate.setTime(tempenddate.getTime() + duration)
 
@@ -10340,11 +10340,13 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 		}
 		return true
 	}))
+	console.log(modifiedevents)
 	
 
 	//stop if no change
 	if(modifiedevents.length == 0){
 		isautoscheduling = false
+		calendar.updateHistory(false, false)
 		return
 	}
 
