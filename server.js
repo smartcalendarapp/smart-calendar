@@ -757,13 +757,6 @@ async function initializeReminders(){
 
 			for (let user of items) {
 				cacheReminders(user)
-				if(user.google_email ){
-					if(user.username){
-						console.log(user.username)
-					}
-					//delete user.username
-					//await setUser(user)
-				}
 			}
 
 		ExclusiveStartKey = response.LastEvaluatedKey

@@ -10119,25 +10119,13 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 	if (true || calendar.smartschedule.mode == 0) {
 		//FOCUS
 
-
-		let donesmartevents = []
-		for (let item of smartevents) {
-			donesmartevents.push(item)
-
-			let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !smartevents.find(g => g.id == d.id))
-
-			//get basic variables
+		//set to ASAP
+		for(let item of smartevents){
 			let startafterdate = new Date()
 			startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
 
-			let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
-			if (endbeforedate.getTime() < startafterdate.getTime()) {
-				endbeforedate.setTime(startafterdate.getTime())
-			}
-
 			let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 
-			//set to ASAP
 			let startdate = new Date(startafterdate)
 			let enddate = new Date(startdate.getTime() + duration)
 
@@ -10150,6 +10138,14 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 			item.end.month = enddate.getMonth()
 			item.end.day = enddate.getDate()
 			item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+		}
+
+		let donesmartevents = []
+		for (let item of smartevents) {
+			donesmartevents.push(item)
+
+			let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !smartevents.find(g => g.id == d.id))
+
 
 			//fix conflict
 			let loopindex = 0
