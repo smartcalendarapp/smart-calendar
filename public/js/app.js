@@ -10098,8 +10098,15 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 
 			let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 
+			let range = endbeforedate.getTime() - startafterdate.getTime()
 
-			let startdate = new Date(startafterdate.getTime())
+
+			let startdate;
+			if(range <= 86400000){
+				startdate = new Date(startafterdate.getTime())
+			}else{
+				startdate = new Date(startafterdate.getTime() + range * 0.4)
+			}
 			let enddate = new Date(startdate.getTime() + duration)
 
 			item.start.year = startdate.getFullYear()
@@ -10189,7 +10196,6 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 				item.end.minute = tempenddate.getHours() * 60 + tempenddate.getMinutes()
 
 				if(!getconflictingevent(iteratedevents, item) && !isoutofrange(item)){
-					//here4
 					freetimes.push(tempstartdate.getTime())
 				}
 
@@ -10716,8 +10722,6 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 	//post animate
 	if(addedtodos.length > 0){
 		displayalert(`${addedtodos.length} task${addedtodos.length == 1 ? ' was' : 's were'} successfully scheduled.`)
-	}else{
-		displayalert(`Your schedule has been optimized.`)
 	}
 
 	let animateindex = 0
