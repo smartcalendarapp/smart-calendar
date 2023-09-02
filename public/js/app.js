@@ -5051,8 +5051,12 @@ async function submitdeleteaccount(event) {
 
 
 async function dev(input){
+	function formatoutput(temp){
+		return JSON.stringify(temp)
+	}
+	
 	let devtext = getElement('devtext')
-	devtext.innerHTML += `<div class="padding-6px text-14px text-primary pre-wrap">${input}</div>`
+	devtext.innerHTML += `<div class="selecttext padding-6px text-14px text-primary break-word pre-wrap">${input}</div>`
 
 	let bodydata = { input: input }
 	const response = await fetch(`/dev`, {
@@ -5066,7 +5070,7 @@ async function dev(input){
 		const responsedata = await response.json()
 
 		if(responsedata.error || responsedata.output){
-			devtext.innerHTML += `<div class="padding-6px text-14px text-primary pre-wrap">${[responsedata.error, responsedata.output].filter(d => d != '').join('<br>')}</div>`
+			devtext.innerHTML += `<div class="selecttextpadding-6px text-14px text-primary break-word pre-wrap">${[responsedata.error, responsedata.output].filter(d => d != '').map(d => formatoutput(d)).join('<br>')}</div>`
 		}
 	}
 }

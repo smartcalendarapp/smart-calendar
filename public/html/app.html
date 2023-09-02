@@ -1289,13 +1289,13 @@
 
 			<div class="bordertertiary border-8px devtext overflow-y-auto display-flex flex-column-reverse" id="devtext"></div>
 
-			<div class="border-8px flex-1 overflow-hidden bordertertiary inputgroup">
+			<div class="flex-shrink-0 border-8px flex-1 overflow-hidden bordertertiary inputgroup">
 				<textarea class="infoinput text-16px infonotes padding-12px transparentinput" id="devinput" placeholder="Input" autocomplete="off" maxlength="2000"></textarea>
 				<span class="inputline"></span>
 			</div>
 
 			<div class="display-flex flex-row justify-flex-end">
-				<div class="todoitembutton display-flex text-white flex-row align-center gap-6px border-round padding-8px-16px text-16px bluebutton" onclick="if(!getElement('devinput').value) return;dev(getElement('devinput').value);getElement('devinput').value = ''">Go</div>
+				<div class="todoitembutton display-flex text-white flex-row align-center gap-6px border-round padding-8px-16px text-16px bluebutton" onclick="if(!getElement('devinput').value)return;if(getElement('devinput').value.toLowerCase() == 'clear'){getElement('devtext').innerHTML = '';return};dev(getElement('devinput').value);getElement('devinput').value = ''">Go</div>
 			</div>
 			
 		</div>
