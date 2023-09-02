@@ -450,17 +450,18 @@ async function processReminders(){
 									<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
 											Hi ${item.user.name},
 									</p>
-									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="font-size: 18px; color: #333;">
 											Just a quick reminder that your event <strong>${item.event.title || 'New Event'}</strong> is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}. 
 									</p>
 									<p style="font-size: 18px; color: #333;">
-										<a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Click here</a> to see more details about your event in the app.
+										<a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Open the app</a> to see more details about your event.
+										<br>
+										If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
 									</p>
 
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="font-size: 18px; color: #333;">
-											If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">click here</a> to contact us. We're here for you!
+											If you have questions or feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">contact us</a>. We're here for you!
 									</p>
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="text-align: center; font-size: 20px; color: #333;">
@@ -480,9 +481,11 @@ async function processReminders(){
 					textbody: `Hi ${item.user.name},
 					Just a quick reminder that your event ${item.event.title || 'New Event'} is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}.
 
-					Click https://smartcalendar.us/app to see more details about your event in the app.
+					Open https://smartcalendar.us/app to see more details about your event.
+					
+					If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
 
-					If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
+					If you have questions or feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
 
 					Kind regards,
 					Smart Calendar | Your Personal Time Management Assistant
@@ -496,7 +499,7 @@ async function processReminders(){
 				await sendEmail({
 					from: 'Smart Calendar <reminders@smartcalendar.us>',
 					to: item.user.email,
-					subject: `Friendly reminder: ${item.event.title || 'New Event'} (due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))})`,
+					subject: `Friendly reminder: ${item.event.title || 'New Event'} (due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))})`,
 					htmlbody: `
 					<!DOCTYPE html>
 					<html>
@@ -512,17 +515,18 @@ async function processReminders(){
 									<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
 											Hi ${item.user.name},
 									</p>
-									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="font-size: 18px; color: #333;">
-											Just a quick reminder that your task <strong>${item.event.title || 'New Event'}</strong> is due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}. 
+											Just a quick reminder that your task <strong>${item.event.title || 'New Task'}</strong> is due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}. 
 									</p>
 									<p style="font-size: 18px; color: #333;">
-										<a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Click here</a> to see more details about your task in the app.
+										<a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Open the app</a> to see more details about your event.
+										<br>
+										If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
 									</p>
 
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="font-size: 18px; color: #333;">
-											If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">click here</a> to contact us. We're here for you!
+											If you have questions or feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">contact us</a>. We're here for you!
 									</p>
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="text-align: center; font-size: 20px; color: #333;">
@@ -542,9 +546,11 @@ async function processReminders(){
 					textbody: `Hi ${item.user.name},
 					Just a quick reminder that your task ${item.event.title || 'New Task'} is due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}.
 
-					Click https://smartcalendar.us/app to see more details about your task in the app.
+					Open https://smartcalendar.us/app to see more details about your task.
+					
+					If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
 
-					If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
+					If you have questions or feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
 
 					Kind regards,
 					Smart Calendar | Your Personal Time Management Assistant
