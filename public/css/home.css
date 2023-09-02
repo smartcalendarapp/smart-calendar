@@ -43,6 +43,12 @@ img{
 
 
 
+.gradienttextpink{
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-image: linear-gradient(to bottom, #e03192, #e0316e);
+}
 .gradienttextblue{
 	background-clip: text;
 	-webkit-background-clip: text;
