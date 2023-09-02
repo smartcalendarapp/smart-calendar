@@ -5076,6 +5076,8 @@ async function dev(input){
 	let devtext = getElement('devtext')
 	devtext.innerHTML += `<div class="selecttext padding-6px text-14px text-primary break-word pre-wrap">${input}</div>`
 
+	devtext.scrollTop = devtext.scrollHeight
+
 	let bodydata = { input: input }
 	const response = await fetch(`/dev`, {
 		method: 'POST',
@@ -5086,10 +5088,11 @@ async function dev(input){
 	})
 	if (response.status == 200) {
 		const responsedata = await response.json()
-		console.log(responsedata.output, formatoutput(responsedata.output))
 
 		if(responsedata.error || responsedata.output){
 			devtext.innerHTML += `<div class="selecttext padding-6px text-14px text-primary break-word pre-wrap">${[responsedata.error, responsedata.output].map(d => formatoutput(d)).filter(d => d != '').join('<br>')}</div>`
+
+			devtext.scrollTop = devtext.scrollHeight
 		}
 	}
 }
