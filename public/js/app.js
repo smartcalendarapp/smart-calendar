@@ -5059,9 +5059,9 @@ async function dev(input){
 		method: 'POST',
 		body: bodydata
 	})
+	console.log(response)
 	if (response.status == 200) {
 		const responsedata = await response.json()
-		console.log(responsedata)
 
 		if(responsedata.error || responsedata.output){
 			devtext.innerHTML += `<div class="padding-6px text-14px text-primary pre-wrap">${[responsedata.error, responsedata.output].filter(d => d != '').join('<br>')}</div>`
