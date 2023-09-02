@@ -291,7 +291,7 @@ class User{
 }
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
-const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: true, emailreminderenabled: true }
+const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false }
 const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null }
 const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, title: null, type: 0, notes: null, completed: false, priority: 0, color: 3, reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0 }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null }
@@ -455,13 +455,11 @@ async function processReminders(){
 									</p>
 									<p style="font-size: 18px; color: #333;">
 										<a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Open the app</a> to see more details about your event.
-										<br>
-										If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
 									</p>
 
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="font-size: 18px; color: #333;">
-											If you have questions or feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">contact us</a>. We're here for you!
+										If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
 									</p>
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="text-align: center; font-size: 20px; color: #333;">
@@ -484,8 +482,6 @@ async function processReminders(){
 					Open https://smartcalendar.us/app to see more details about your event.
 					
 					If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
-
-					If you have questions or feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
 
 					Kind regards,
 					Smart Calendar | Your Personal Time Management Assistant
@@ -520,13 +516,11 @@ async function processReminders(){
 									</p>
 									<p style="font-size: 18px; color: #333;">
 										<a href="https://smartcalendar.us/app" style="color: #337ab7; text-decoration: none;">Open the app</a> to see more details about your event.
-										<br>
-										If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
 									</p>
 
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="font-size: 18px; color: #333;">
-											If you have questions or feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">contact us</a>. We're here for you!
+										If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
 									</p>
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="text-align: center; font-size: 20px; color: #333;">
@@ -549,8 +543,6 @@ async function processReminders(){
 					Open https://smartcalendar.us/app to see more details about your task.
 					
 					If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
-
-					If you have questions or feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
 
 					Kind regards,
 					Smart Calendar | Your Personal Time Management Assistant

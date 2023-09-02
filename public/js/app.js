@@ -3780,6 +3780,8 @@ function updateonboardingscreen(){
 		getElement('todoitemduedate').classList.add('z-index-10001')
 		getElement('todoitemduration').classList.add('z-index-10001')
 	}else if(currentonboarding == 'eventreminders'){
+		calendar.emailreminderenabled = true
+		calendar.pushSubscriptionEnabled = true
 		calendar.updateSettings()
 	}
 
