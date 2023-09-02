@@ -2448,6 +2448,9 @@ body {
 	transform: rotate(-90deg);
 }
 
+.devtext > :nth-child(even){
+	background-color:var(--background-tint-1)
+}
 
 
 .infotext {

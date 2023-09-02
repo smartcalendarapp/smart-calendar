@@ -3383,9 +3383,10 @@ function run() {
 		if (document.visibilityState === 'visible') {
 			await getclientgooglecalendar()
 		}
+
 		let lasttriedsyncgooglecalendardate = Date.now()
 		setInterval(async function () {
-			if (document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 60000 && issettingclientgooglecalendar == false && Date.now() - lasttriedsyncgooglecalendardate > 60000 && Date.now() - lastsetclientgooglecalendar > 10000) {
+			if (!isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 60000 && issettingclientgooglecalendar == false && Date.now() - lasttriedsyncgooglecalendardate > 60000 && Date.now() - lastsetclientgooglecalendar > 10000) {
 				await getclientgooglecalendar()
 				lasttriedsyncgooglecalendardate = Date.now()
 			}
@@ -3397,6 +3398,7 @@ function run() {
 		if (document.visibilityState === 'visible') {
 			await getclientgoogleclassroom()
 		}
+
 		let lasttriedsyncgoogleclassroomdate = Date.now()
 		setInterval(async function () {
 			if (document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgoogleclassroomdate > 60000 && Date.now() - lasttriedsyncgoogleclassroomdate > 60000) {
@@ -4336,6 +4338,7 @@ function mousedowndocument(event) {
 	}
 }
 
+//dev
 window.addEventListener('keydown', press1, false)
 function press1(event){
 	if(event.key == 'd'){
@@ -4344,11 +4347,14 @@ function press1(event){
 }
 function press2(event){
 	if(event.key == 'e'){
+		window.removeEventListener('keydown', press2, false)
 		window.addEventListener('keydown', press3, false)
 	}
 }
 function press3(event){
 	if(event.key == 'v'){
+		window.removeEventListener('keydown', press3, false)
+
 		if(clientinfo.google_email == 'james.tsaggaris@gmail.com'){
 			getElement('devpopup').classList.remove('hiddenpopup')
 		}
@@ -5056,7 +5062,9 @@ async function dev(input){
 	if (response.status == 200) {
 		const responsedata = await response.json()
 
-		devtext.innerHTML += `<div class="padding-6px-12px text-14px text-primary pre-wrap">${[responsedata.error, responsedata.error].filter(d => d != '').join('<br>')}</div>`
+		if(responsedata.error || responsedata.output){
+			devtext.innerHTML += `<div class="padding-6px-12px text-14px text-primary pre-wrap">${[responsedata.error, responsedata.output].filter(d => d != '').join('<br>')}</div>`
+		}
 	}
 }
 

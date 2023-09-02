@@ -1261,8 +1261,8 @@
 
 
 
-	<div class="schedulemenu z-index-2000 box-shadow hiddenpopup eventinfowidth small:width-full small:height-full small:top-0 small:left-0" id="devpopup" style="left:50%;right:50%;transform:translate(-50%, -50%)">
-		<div class="display-flex flex-column gap-12px">
+	<div class="schedulemenu overflow-y-auto z-index-2000 box-shadow hiddenpopup eventinfowidth small:width-full small:height-full small:top-0 small:left-0 small:max-height-revert" id="devpopup" style="max-height:50%;left:50%;top:50%;transform:translate(-50%, -50%)">
+		<div class="overflow-y-auto display-flex flex-column gap-12px">
 
 			<div class="justify-space-between display-flex flex-row align-center">
 				<div>
@@ -1287,7 +1287,7 @@
 				
 			</div>
 
-			<div class="display-flex flex-column-reverse" id="devtext"></div>
+			<div class="devtext overflow-y-auto display-flex flex-column-reverse" id="devtext"></div>
 
 			<div class="border-8px flex-1 overflow-hidden bordertertiary inputgroup">
 				<textarea class="infoinput text-16px infonotes padding-12px transparentinput" id="devinput" placeholder="Input" autocomplete="off" maxlength="2000"></textarea>
@@ -1295,7 +1295,7 @@
 			</div>
 
 			<div class="display-flex flex-row justify-flex-end">
-				<div class="todoitembutton display-flex text-white flex-row align-center gap-6px border-round padding-8px-16px text-16px bluebutton" onclick="dev(getElement('devinput').value)">Create</div>
+				<div class="todoitembutton display-flex text-white flex-row align-center gap-6px border-round padding-8px-16px text-16px bluebutton" onclick="dev(getElement('devinput').value)">Go</div>
 			</div>
 			
 		</div>
