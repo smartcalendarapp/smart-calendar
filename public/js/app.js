@@ -5051,8 +5051,23 @@ async function submitdeleteaccount(event) {
 
 
 async function dev(input){
+	getElement('devinput').value = ''
+
+	input = input.trim()
+	if(!input){
+		return
+	}
+
+	if(input.toLowerCase() == 'clear'){
+		getElement('devtext').innerHTML = ''
+		return
+	}
+	
 	function formatoutput(temp){
-		return JSON.stringify(temp)
+		if(typeof temp === 'Object' && temp !== null){
+			return JSON.stringify(temp)
+		}
+		return temp
 	}
 	
 	let devtext = getElement('devtext')
@@ -5070,7 +5085,7 @@ async function dev(input){
 		const responsedata = await response.json()
 
 		if(responsedata.error || responsedata.output){
-			devtext.innerHTML += `<div class="selecttextpadding-6px text-14px text-primary break-word pre-wrap">${[responsedata.error, responsedata.output].filter(d => d != '').map(d => formatoutput(d)).join('<br>')}</div>`
+			devtext.innerHTML += `<div class="selecttext padding-6px text-14px text-primary break-word pre-wrap">${[responsedata.error, responsedata.output].map(d => formatoutput(d)).filter(d => d != '').join('<br>')}</div>`
 		}
 	}
 }
