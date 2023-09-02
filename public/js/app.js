@@ -7761,7 +7761,7 @@ function gettododata(item) {
 									
 									${Calendar.Event.isEvent(item) ? 
 										`<div class="gap-6px background-green hover:background-green-hover transition-duration-100 badgepadding border-round display-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}">
-											<div class="text-white ${itemclasses.join(' ')}">Scheduled for ${getHMText(item.start.minute)}</div>
+											<div class="text-white ${itemclasses.join(' ')}">At ${getHMText(item.start.minute)}</div>
 										</div>`
 										:
 										``

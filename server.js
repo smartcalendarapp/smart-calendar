@@ -986,53 +986,76 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			user.googleid = googleid
 			user.google_email = email
 			await setUser(user)
-		}else{
-			let userFromId = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
-			let userFromEmail = await getUserByUsername(email)
 
-			if(userFromId && !userFromId.google_email){ // if current user logged in exists and does not have google email set (new user)
-				if (userFromEmail?.userid !== userFromId?.userid) throw new Error("Email is being used for another account");
-				// if there is no user from email or email matches current user
-				//add google to logged in account
+			return res.redirect(301, '/app')
+		}
 
-				req.session.user = { userid: userFromId.userid }
+		let loggedInUser = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
+		let userWithEmail = await getUserByAttribute(email)
+
+		if(loggedInUser && !loggedInUser.google_email){ // if current user logged in exists and does not have google email set (they use regular email and password)
+			if (userWithEmail && userWithEmail?.userid !== loggedInUser?.userid) throw new Error("Email is being used for another account")
+			// if there is no user that has email that matches current user
+			// add google to logged in account
+
+			req.session.user = { userid: loggedInUser.userid }
+			req.session.tokens = tokens
+			
+			delete loggedInUser.username
+			loggedInUser.google_email = email
+			loggedInUser.googleid = googleid
+			loggedInUser.calendardata.settings.issyncingtogooglecalendar = true
+			if(tokens.refresh_token) loggedInUser.accountdata.refreshtoken = tokens.refresh_token
+			loggedInUser.accountdata.google.name = name
+			loggedInUser.accountdata.google.profilepicture = profilepicture
+			loggedInUser.accountdata.lastloggedindate = Date.now()
+			await setUser(loggedInUser)
+
+			return res.redirect(301, '/app')
+		}
+
+		if(userWithEmail){
+			if(userWithEmail.username == email){
+				//reject sign in to regular email account
+				throw new Error('Use email and password to log in.')
+			}
+
+			if(userWithEmail.google_email == email){
+				//sign in to google account
+
+				req.session.user = { userid: userWithEmail.userid }
 				req.session.tokens = tokens
-				
-				delete userFromId.username
-				userFromId.google_email = email
-				userFromId.googleid = googleid
-				userFromId.calendardata.settings.issyncingtogooglecalendar = true
-				if(tokens.refresh_token) userFromId.accountdata.refreshtoken = tokens.refresh_token
-				userFromId.accountdata.google.name = name
-				userFromId.accountdata.google.profilepicture = profilepicture
-				userFromId.accountdata.lastloggedindate = Date.now()
-				await setUser(userFromId)
-				
-			} else{ // if user has google_email or current logged in user does not exist
-				if(userFromEmail && userFromEmail.username == email){
-					//reject sign in to regular email account
 
-					throw new Error('Use email and password to log in.')
-				}else{
-					//create account
+				if(tokens.refresh_token) user.accountdata.refreshtoken = tokens.refresh_token
+				userWithEmail.accountdata.google.name = name
+				userWithEmail.accountdata.google.profilepicture = profilepicture
+				userWithEmail.accountdata.lastloggedindate = Date.now()
+				userWithEmail.googleid = googleid
+				userWithEmail.google_email = email
+				await setUser(userWithEmail)
 
-					const user3 = addmissingpropertiestouser(new User({ google_email: email, googleid: googleid }))
-					user3.calendardata.settings.issyncingtogooglecalendar = true
-					if(tokens.refresh_token) user3.accountdata.refreshtoken = tokens.refresh_token
-					user3.accountdata.google.name = name
-					user3.accountdata.google.profilepicture = profilepicture
-					user3.accountdata.lastloggedindate = Date.now()
-					await createUser(user3)
-
-					req.session.user = { userid: user3.userid }
-					req.session.tokens = tokens
-
-					await sendwelcomeemail(user3)
-				}
+				return res.redirect(301, '/app')
 			}
 		}
 
-		res.redirect(301, '/app')
+		
+		
+		if(true){
+			const user3 = addmissingpropertiestouser(new User({ google_email: email, googleid: googleid }))
+			user3.calendardata.settings.issyncingtogooglecalendar = true
+			if(tokens.refresh_token) user3.accountdata.refreshtoken = tokens.refresh_token
+			user3.accountdata.google.name = name
+			user3.accountdata.google.profilepicture = profilepicture
+			user3.accountdata.lastloggedindate = Date.now()
+			await createUser(user3)
+
+			req.session.user = { userid: user3.userid }
+			req.session.tokens = tokens
+
+			await sendwelcomeemail(user3)
+			return res.redirect(301, '/app')
+		}
+
 	}catch(error){
 		console.error(error)
 		res.redirect(301, '/login')
