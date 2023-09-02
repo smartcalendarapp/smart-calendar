@@ -887,6 +887,41 @@ app.get('/auth/google', async (req, res, next) => {
 	try{
 		const authoptions = {
 			access_type: 'offline',
+			scope: ['profile', 'email','https://www.googleapis.com/auth/calendar'],
+			redirect_uri: REDIRECT_URI,
+		}
+
+		if(req.session.user){
+			const userid = req.session.user.userid
+			const user = await getUserById(userid)
+			if(user){
+				if(!user.accountdata.refreshtoken){
+					authoptions.prompt = 'consent'
+				}else{
+					if(!isRefreshTokenValid(user.accountdata.refreshtoken)){
+						authoptions.prompt = 'consent'
+					}
+				}
+			}else{
+				authoptions.prompt = 'consent'
+			}
+		}else{
+			authoptions.prompt = 'consent'
+		}
+
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
+		const authurl = googleclient.generateAuthUrl(authoptions)
+		return res.json({ url: authurl })
+	} catch (error) {
+		console.error(error)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
+app.get('/auth/google/classroom', async (req, res, next) => {
+	try{
+		const authoptions = {
+			access_type: 'offline',
 			scope: ['profile', 'email','https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/classroom.courses.readonly', 'https://www.googleapis.com/auth/classroom.coursework.me.readonly'],
 			redirect_uri: REDIRECT_URI,
 		}
@@ -917,6 +952,7 @@ app.get('/auth/google', async (req, res, next) => {
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
 	}
 })
+
 
 app.get('/auth/google/callback', async (req, res, next) => {
 	try{

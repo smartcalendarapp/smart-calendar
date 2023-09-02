@@ -3733,7 +3733,11 @@ function updateonboardingscreen(){
 
 	if(currentonboarding == 'connectcalendars'){
 		let onboardingconnectcalendarsgooglecalendar = getElement('onboardingconnectcalendarsgooglecalendar')
-		onboardingconnectcalendarsgooglecalendar.innerHTML = clientinfo.google_email ? 
+
+		let currentdate = new Date()
+		let issynced = calendar.settings.issyncingtogooglecalendar && calendar.issyncingtogooglecalendar && Math.floor((currentdate.getTime() - calendar.issyncingtogooglecalendar) / 60000) <= 1
+
+		onboardingconnectcalendarsgooglecalendar.innerHTML = issynced ? 
 			`
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline checkboxfilledgreen">
 				<g>
@@ -3748,7 +3752,11 @@ function updateonboardingscreen(){
 		onboardingconnectcalendarsoutlookcalendar.innerHTML = ``
 	}else if(currentonboarding == 'connecttodolists'){
 		let onboardingconnecttodolistsgoogleclassroom = getElement('onboardingconnecttodolistsgoogleclassroom')
-		onboardingconnecttodolistsgoogleclassroom.innerHTML = clientinfo.google_email ? 
+
+		let currentdate = new Date()
+		let issynced = calendar.settings.issyncingtogoogleclassroom && calendar.lastsyncedgoogleclassroomdate && Math.floor((currentdate.getTime() - calendar.lastsyncedgoogleclassroomdate) / 60000) <= 1
+
+		onboardingconnecttodolistsgoogleclassroom.innerHTML = issynced ? 
 			`
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline checkboxfilledgreen">
 				<g>
@@ -3796,6 +3804,16 @@ async function logingoogle(event){
 	}
 }
 
+async function logingoogleclassroom(event){
+	const response = await fetch('/auth/google/classroom', { 
+		method: 'GET',
+		redirect: 'follow',
+	})
+	if(response.status == 200){
+		const data = await response.json()
+		window.location.replace(data.url)
+	}
+}
 
 
 //INTERACTIVE TOUR
