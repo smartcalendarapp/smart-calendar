@@ -3735,7 +3735,7 @@ function updateonboardingscreen(){
 		let onboardingconnectcalendarsgooglecalendar = getElement('onboardingconnectcalendarsgooglecalendar')
 
 		let currentdate = new Date()
-		let issynced = calendar.settings.issyncingtogooglecalendar && calendar.issyncingtogooglecalendar && Math.floor((currentdate.getTime() - calendar.issyncingtogooglecalendar) / 60000) <= 1
+		let issynced = calendar.settings.issyncingtogooglecalendar && calendar.lastsyncedgooglecalendardate && Math.floor((currentdate.getTime() - calendar.lastsyncedgooglecalendardate) / 60000) <= 1
 
 		onboardingconnectcalendarsgooglecalendar.innerHTML = issynced ? 
 			`
@@ -3821,8 +3821,8 @@ async function logingoogleclassroom(event){
 //INTERACTIVE TOUR
 function updateinteractivetour() {
 	function movepopup(tempdiv, top, left) {
-		const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft
-		const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+		const scrollLeft = document.documentElement.scrollLeft
+		const scrollTop = document.documentElement.scrollTop
 
 		if (!tempdiv) return
 		tempdiv.style.left = fixleft(left + scrollLeft, tempdiv) + 'px'
@@ -3830,8 +3830,8 @@ function updateinteractivetour() {
 	}
 
 	function movebeacon(tempdiv, top, left) {
-		const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft
-		const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+		const scrollLeft = document.documentElement.scrollLeft
+		const scrollTop = document.documentElement.scrollTop
 
 		if (!tempdiv) return
 		tempdiv.style.left = (left + scrollLeft) + 'px'
