@@ -1261,7 +1261,7 @@
 
 
 
-	<div class="schedulemenu overflow-y-auto border-box z-index-2000 box-shadow hiddenpopup max-width-600px width-full small:width-full small:height-full small:top-0 small:left-0 small:margin-0 margin-24px" id="devpopup" style="max-height:100%;left:50%;top:50%;transform:translate(-50%, -50%)">
+	<div class="schedulemenu overflow-y-auto border-box z-index-2000 box-shadow hiddenpopup max-width-600px width-full small:width-full small:height-full small:top-0 small:left-0" id="devpopup" style="max-height:100%;left:50%;top:50%;transform:translate(-50%, -50%)">
 		<div class="overflow-y-auto display-flex flex-column gap-12px">
 
 			<div class="justify-space-between display-flex flex-row align-center">
@@ -1274,7 +1274,7 @@
 				
 				<div class="text-18px text-primary nowrap">Dev</div>
 
-				<div class="infotopright pointer" onclick="getElement('devpopup').add('hiddenpopup')">
+				<div class="infotopright pointer" onclick="getElement('devpopup').classList.add('hiddenpopup')">
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 					<g>
 					<g opacity="1">
@@ -1287,7 +1287,7 @@
 				
 			</div>
 
-			<div class="devtext overflow-y-auto display-flex flex-column-reverse" id="devtext"></div>
+			<div class="bordertertiary border-8px devtext overflow-y-auto display-flex flex-column-reverse" id="devtext"></div>
 
 			<div class="border-8px flex-1 overflow-hidden bordertertiary inputgroup">
 				<textarea class="infoinput text-16px infonotes padding-12px transparentinput" id="devinput" placeholder="Input" autocomplete="off" maxlength="2000"></textarea>
@@ -1295,7 +1295,7 @@
 			</div>
 
 			<div class="display-flex flex-row justify-flex-end">
-				<div class="todoitembutton display-flex text-white flex-row align-center gap-6px border-round padding-8px-16px text-16px bluebutton" onclick="dev(getElement('devinput').value)">Go</div>
+				<div class="todoitembutton display-flex text-white flex-row align-center gap-6px border-round padding-8px-16px text-16px bluebutton" onclick="if(!getElement('devinput').value) return;dev(getElement('devinput').value);getElement('devinput').value = ''">Go</div>
 			</div>
 			
 		</div>

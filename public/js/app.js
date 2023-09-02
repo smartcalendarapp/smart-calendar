@@ -5052,7 +5052,7 @@ async function submitdeleteaccount(event) {
 
 async function dev(input){
 	let devtext = getElement('devtext')
-	devtext.innerHTML += `<div class="padding-6px-12px text-14px text-primary pre-wrap">${input}</div>`
+	devtext.innerHTML += `<div class="padding-6px text-14px text-primary pre-wrap">${input}</div>`
 
 	let bodydata = { input: input }
 	const response = await fetch(`/dev`, {
@@ -5061,9 +5061,10 @@ async function dev(input){
 	})
 	if (response.status == 200) {
 		const responsedata = await response.json()
+		console.log(responsedata)
 
 		if(responsedata.error || responsedata.output){
-			devtext.innerHTML += `<div class="padding-6px-12px text-14px text-primary pre-wrap">${[responsedata.error, responsedata.output].filter(d => d != '').join('<br>')}</div>`
+			devtext.innerHTML += `<div class="padding-6px text-14px text-primary pre-wrap">${[responsedata.error, responsedata.output].filter(d => d != '').join('<br>')}</div>`
 		}
 	}
 }
