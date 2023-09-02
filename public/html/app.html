@@ -1260,6 +1260,48 @@
 	</div>
 
 
+
+	<div class="schedulemenu z-index-2000 box-shadow hiddenpopup eventinfowidth small:width-full small:height-full small:top-0 small:left-0" id="devpopup" style="left:50%;right:50%;transform:translate(-50%, -50%)">
+		<div class="display-flex flex-column gap-12px">
+
+			<div class="justify-space-between display-flex flex-row align-center">
+				<div>
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					</g>
+					</svg>
+				</div>
+				
+				<div class="text-18px text-primary nowrap">Dev</div>
+
+				<div class="infotopright pointer" onclick="getElement('devpopup').add('hiddenpopup')">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+				
+			</div>
+
+			<div class="display-flex flex-column-reverse" id="devtext"></div>
+
+			<div class="border-8px flex-1 overflow-hidden bordertertiary inputgroup">
+				<textarea class="infoinput text-16px infonotes padding-12px transparentinput" id="devinput" placeholder="Input" autocomplete="off" maxlength="2000"></textarea>
+				<span class="inputline"></span>
+			</div>
+
+			<div class="display-flex flex-row justify-flex-end">
+				<div class="todoitembutton display-flex text-white flex-row align-center gap-6px border-round padding-8px-16px text-16px bluebutton" onclick="dev(getElement('devinput').value)">Create</div>
+			</div>
+			
+		</div>
+	</div>
+
+
 	
 	<div class="eventinfowidth eventinfo popup eventinfomaxheight hiddenpopup small:max-height-revert small:width-full small:top-0 small:left-0" id="eventinfo">
 		<div class="infotop justify-space-between cursormove" onmousedown="clickeventinfo(event)" id="drageventinfo">

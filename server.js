@@ -2010,7 +2010,7 @@ async function sendwelcomeemail(user){
 				</p>
 				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<p style="font-size: 18px; color: #333;">
-						We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">click here</a> to contact us. We're here for you!
+						We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #337ab7; text-decoration: none;">contact us</a>. We're here for you!
 				</p>
 				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<p style="text-align: center; font-size: 20px; color: #333;">
@@ -2336,6 +2336,32 @@ app.post('/logout', async (req, res, next) => {
 		}
     return res.redirect(301, '/login')
 	})
+})
+
+
+app.post('/dev', async (req, res) => {
+	if(!req.session.user){
+		return res.status(401).json({ error: 'User is not signed in.' })
+	}
+	
+	let userid = req.session.user.userid
+	
+	let user = await getUserById(userid)
+	if (!user) {
+		return res.status(401).json({ error: 'User does not exist.' })
+	}
+	if(user.google_email != 'james.tsaggaris@gmail.com'){
+		return res.status(401).json({ error: 'Unathorized.' })
+	}
+
+	let errordata, output;
+	try{
+		output = await eval(`(async () => {${req.body.input}})()`)
+	}catch(err){
+		errordata = err
+	}
+
+	return res.json({ error: errordata, output: output })
 })
 
 

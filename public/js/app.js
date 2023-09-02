@@ -3734,7 +3734,7 @@ function updateonboardingscreen(){
 				</g>
 			</svg>
 			<div class="text-14px text-green">Connected</div>` 
-			: `<div class="text-14px text-secondary">Not connected</div>`
+			: `<div class="text-14px text-quaternary">Not connected</div>`
 
 		let onboardingconnectcalendarsoutlookcalendar = getElement('onboardingconnectcalendarsoutlookcalendar')
 		onboardingconnectcalendarsoutlookcalendar.innerHTML = ``
@@ -3753,7 +3753,7 @@ function updateonboardingscreen(){
 				</g>
 			</svg>
 			<div class="text-14px text-green">Connected</div>` 
-			: `<div class="text-14px text-secondary">Not connected</div>`
+			: `<div class="text-14px text-quaternary">Not connected</div>`
 	}else if(currentonboarding == 'sleeptime'){
 		calendar.updateSettings()
 	}else if(currentonboarding == 'addtask'){
@@ -4336,6 +4336,24 @@ function mousedowndocument(event) {
 	}
 }
 
+window.addEventListener('keydown', press1, false)
+function press1(event){
+	if(event.key == 'd'){
+		window.addEventListener('keydown', press2, false)
+	}
+}
+function press2(event){
+	if(event.key == 'e'){
+		window.addEventListener('keydown', press3, false)
+	}
+}
+function press3(event){
+	if(event.key == 'v'){
+		if(clientinfo.google_email == 'james.tsaggaris@gmail.com'){
+			getElement('devpopup').classList.remove('hiddenpopup')
+		}
+	}
+}
 
 
 //EVENT INFO
@@ -5024,6 +5042,24 @@ async function submitdeleteaccount(event) {
 		}
 	}
 }
+
+
+async function dev(input){
+	let devtext = getElement('devtext')
+	devtext.innerHTML += `<div class="padding-6px-12px text-14px text-primary pre-wrap">${input}</div>`
+
+	let bodydata = { input: input }
+	const response = await fetch(`/dev`, {
+		method: 'POST',
+		body: bodydata
+	})
+	if (response.status == 200) {
+		const responsedata = await response.json()
+
+		devtext.innerHTML += `<div class="padding-6px-12px text-14px text-primary pre-wrap">${[responsedata.error, responsedata.error].filter(d => d != '').join('<br>')}</div>`
+	}
+}
+
 
 
 async function submitchangeusername(event) {
