@@ -5059,7 +5059,6 @@ async function dev(input){
 		method: 'POST',
 		body: bodydata
 	})
-	console.log(response)
 	if (response.status == 200) {
 		const responsedata = await response.json()
 

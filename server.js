@@ -2354,9 +2354,11 @@ app.post('/dev', async (req, res) => {
 		return res.status(401).json({ error: 'Unathorized.' })
 	}
 
+	console.log(req.body.input)
 	let errordata, output;
 	try{
 		output = await eval(`(async () => {${req.body.input}})()`)
+		console.log(output)
 	}catch(err){
 		errordata = err
 	}
