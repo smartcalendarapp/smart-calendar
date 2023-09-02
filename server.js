@@ -1954,7 +1954,7 @@ app.post('/signup', async (req, res, next) => {
 		let confirmpassword = fields.confirmpassword
 
 		if(password.length < 6){
-			return res.status(401).json({ error: 'Passwords is too short, must be 6+ letters.' })
+			return res.status(401).json({ error: 'Password is too short, must be 6+ letters.' })
 		}
 		
 		if(password !== confirmpassword){

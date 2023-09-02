@@ -977,6 +977,7 @@ class Calendar {
 				}
 
 				//last modified changes
+				/*
 				for (let item of calendar.events) {
 					let olditem = oldeventsdata.find(d => d.id == item.id)
 					if (!olditem) { //create event
@@ -1003,6 +1004,7 @@ class Calendar {
 						item.lastmodified = Date.now()
 					}
 				}
+				*/
 
 
 
@@ -2692,15 +2694,11 @@ class Calendar {
 		//syncing with google calendar
 		let lastsyncedgooglecalendar = getElement('lastsyncedgooglecalendar')
 		let lastsyncedgooglecalendar2 = getElement('lastsyncedgooglecalendar2')
-		let synnowcgooglecalendar = getElement('synnowcgooglecalendar')
-		let synnowcgooglecalendar2 = getElement('synnowcgooglecalendar2')
 		let syncgooglecalendartoggle = getElement('syncgooglecalendartoggle')
 		let syncgooglecalendartoggle2 = getElement('syncgooglecalendartoggle2')
 
 		lastsyncedgooglecalendar.classList.add('display-none')
 		lastsyncedgooglecalendar2.classList.add('display-none')
-		synnowcgooglecalendar.classList.add('display-none')
-		synnowcgooglecalendar2.classList.add('display-none')
 
 		if (calendar.settings.issyncingtogooglecalendar) {
 			syncgooglecalendartoggle.checked = true
@@ -2713,10 +2711,6 @@ class Calendar {
 
 			let issynced = calendar.lastsyncedgooglecalendardate && Math.floor((currentdate.getTime() - calendar.lastsyncedgooglecalendardate) / 60000) <= 1
 
-			if(!issynced){
-				synnowcgooglecalendar.classList.remove('display-none')
-				synnowcgooglecalendar2.classList.remove('display-none')
-			}
 
 			let difference;
 			if(calendar.lastsyncedgooglecalendardate){
@@ -2751,10 +2745,8 @@ class Calendar {
 		syncgoogleclassroomtoggle.checked = calendar.settings.issyncingtogoogleclassroom
 
 		let lastsyncedgoogleclassroom = getElement('lastsyncedgoogleclassroom')
-		let syncnowgoogleclassroombutton = getElement('syncnowgoogleclassroom')
 
 		lastsyncedgoogleclassroom.classList.add('display-none')
-		syncnowgoogleclassroombutton.classList.add('display-none')
 
 		if(calendar.settings.issyncingtogoogleclassroom){
 
@@ -2763,10 +2755,6 @@ class Calendar {
 			let currentdate = new Date()
 
 			let issynced = calendar.lastsyncedgoogleclassroomdate && Math.floor((currentdate.getTime() - calendar.lastsyncedgoogleclassroomdate) / 60000) <= 1
-
-			if(!issynced){
-				syncnowgoogleclassroombutton.classList.remove('display-none')
-			}
 
 			let difference;
 			if(calendar.lastsyncedgoogleclassroomdate){
@@ -3397,7 +3385,7 @@ function run() {
 		}
 		let lasttriedsyncgooglecalendardate = Date.now()
 		setInterval(async function () {
-			if (document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 60000 && issettingclientgooglecalendar == false && Date.now() - lasttriedsyncgooglecalendardate > 60000) {
+			if (document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 60000 && issettingclientgooglecalendar == false && Date.now() - lasttriedsyncgooglecalendardate > 60000 && Date.now() - lastsetclientgooglecalendar > 10000) {
 				await getclientgooglecalendar()
 				lasttriedsyncgooglecalendardate = Date.now()
 			}
@@ -3746,7 +3734,7 @@ function updateonboardingscreen(){
 				</g>
 			</svg>
 			<div class="text-14px text-green">Connected</div>` 
-			: ``
+			: `<div class="text-14px text-secondary">Not connected</div>`
 
 		let onboardingconnectcalendarsoutlookcalendar = getElement('onboardingconnectcalendarsoutlookcalendar')
 		onboardingconnectcalendarsoutlookcalendar.innerHTML = ``
@@ -3765,7 +3753,7 @@ function updateonboardingscreen(){
 				</g>
 			</svg>
 			<div class="text-14px text-green">Connected</div>` 
-			: ``
+			: `<div class="text-14px text-secondary">Not connected</div>`
 	}else if(currentonboarding == 'sleeptime'){
 		calendar.updateSettings()
 	}else if(currentonboarding == 'addtask'){
@@ -4066,8 +4054,7 @@ function updateAvatar(){
 	
 	let leftmenubutton = getElement('leftmenubutton')
 	leftmenubutton.innerHTML = `
-		${avatar}
-		<span class="tooltiptextleft">${displayname}</span>`
+		${avatar}`
 }
 
 
@@ -5376,7 +5363,7 @@ async function getclientgoogleclassroom(){
 					mytodo.endbefore.minute = endbeforeminute
 
 					mytodo.title = googleitem.title
-					mytodo.notes = googleitem.alternateLink
+					mytodo.notes = `<a href="${googleitem.alternateLink}" class="text-blue" target="_blank" rel="noopener noreferrer">Open Classroom assignment</a>`
 				}
 
 			}
@@ -5641,6 +5628,7 @@ function closeloginwithgooglepopup(){
 }
 
 //set google calendar
+let lastsetclientgooglecalendar = 0
 let issettingclientgooglecalendar = false
 async function setclientgooglecalendar(requestchanges) {
 	let importgooglecalendarerror = getElement('importgooglecalendarerror')
@@ -5683,6 +5671,8 @@ async function setclientgooglecalendar(requestchanges) {
 				loginwithgooglescreen.classList.remove('hiddenfade')
 			}
 		} else if (response.status == 200) {
+			lastsetclientgooglecalendar = Date.now()
+
 			const data = await response.json()
 
 			//make changes
@@ -5885,13 +5875,6 @@ function getdatafromgooglecalendar(listdata) {
 			//modify existing event or create new event
 			let myevent = calendar.events.find(d => d.googleeventid == id)
 			if (myevent) {
-				//check for last modified
-				/*
-				if(myevent.lastmodified > new Date(event.updated).getTime()){
-					continue
-				}
-				*/
-
 				myevent.start.year = startdate.getFullYear()
 				myevent.start.month = startdate.getMonth()
 				myevent.start.day = startdate.getDate()
