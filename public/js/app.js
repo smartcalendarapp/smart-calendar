@@ -5067,6 +5067,9 @@ async function dev(input){
 		if(typeof temp === 'Object' && temp !== null){
 			return JSON.stringify(temp)
 		}
+		if(Array.isArray(temp)){
+			return JSON.stringify(temp)
+		}
 		return temp
 	}
 	
@@ -5083,6 +5086,7 @@ async function dev(input){
 	})
 	if (response.status == 200) {
 		const responsedata = await response.json()
+		console.log(responsedata.output, formatoutput(responsedata.output))
 
 		if(responsedata.error || responsedata.output){
 			devtext.innerHTML += `<div class="selecttext padding-6px text-14px text-primary break-word pre-wrap">${[responsedata.error, responsedata.output].map(d => formatoutput(d)).filter(d => d != '').join('<br>')}</div>`
