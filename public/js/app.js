@@ -5057,7 +5057,10 @@ async function dev(input){
 	let bodydata = { input: input }
 	const response = await fetch(`/dev`, {
 		method: 'POST',
-		body: bodydata
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(bodydata)
 	})
 	if (response.status == 200) {
 		const responsedata = await response.json()
