@@ -120,7 +120,7 @@ img{
 	background-color:var(--background-secondary-transparent);
 }
 
-.navtitle{
+.buttonlogo{
 	display:flex;
 	flex-direction:row;
 	align-items:center;
