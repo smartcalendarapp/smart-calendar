@@ -3370,17 +3370,6 @@ function run() {
 	}, 1000)
 
 
-	if(calendartabs.includes(0)){
-		startAutoSchedule([])
-	}
-	setInterval(function(){
-		if (document.visibilityState === 'visible') {
-			if(calendartabs.includes(0)){
-				startAutoSchedule([])
-			}
-		}
-	}, 60000)
-
 
 	//sync with google
 	async function runsyncwithgooglecalendar() {
@@ -3792,21 +3781,14 @@ function continueonboarding(key){
 
 
 
-async function logingoogle(event){
+async function logingoogle(options){
 	const response = await fetch('/auth/google', { 
 		method: 'GET',
 		redirect: 'follow',
-	})
-	if(response.status == 200){
-		const data = await response.json()
-		window.location.replace(data.url)
-	}
-}
-
-async function logingoogleclassroom(event){
-	const response = await fetch('/auth/google/classroom', { 
-		method: 'GET',
-		redirect: 'follow',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({ options: options })
 	})
 	if(response.status == 200){
 		const data = await response.json()
@@ -5095,6 +5077,7 @@ async function dev(input){
 	})
 	if (response.status == 200) {
 		const responsedata = await response.json()
+		console.log(responsedata)//here4
 
 		if(responsedata.error || responsedata.output){
 			devtext.innerHTML += `<div class="selecttext padding-6px text-14px text-primary break-word pre-wrap">${[responsedata.error, responsedata.output].map(d => formatoutput(d)).filter(d => d != '').join('<br>')}</div>`
@@ -5253,19 +5236,6 @@ async function disconnectgoogle() {
 		const data = await response.json()
 		googleerrorwrap.innerHTML = data.error
 		googleerrorwrap.classList.remove('display-none')
-	}
-}
-
-
-//connect google
-async function connectgoogle() {
-	const response = await fetch('/auth/google', {
-		method: 'GET',
-		redirect: 'follow'
-	})
-	if (response.status == 200) {
-		const data = await response.json()
-		window.location.replace(data.url)
 	}
 }
 
@@ -5451,7 +5421,7 @@ async function getclientgoogleclassroom(){
 			
 			calendar.updateEvents()
 			calendar.updateTodo()
-			calendar.updateHistory(false, false)
+			calendar.updateHistory()
 
 			calendar.updateSettings()
 		}
@@ -5770,7 +5740,7 @@ async function setclientgooglecalendar(requestchanges) {
 
 
 			calendar.updateEvents()
-			calendar.updateHistory(false, false)
+			calendar.updateHistory(false)
 
 			calendar.updateSettings()
 			updatecalendarlist()
@@ -5831,7 +5801,7 @@ async function getclientgooglecalendar() {
 			calendar.calendars.push(...newcalendars)
 
 			calendar.updateEvents()
-			calendar.updateHistory(false, false)
+			calendar.updateHistory(false)
 
 			calendar.updateSettings()
 			updatecalendarlist()
