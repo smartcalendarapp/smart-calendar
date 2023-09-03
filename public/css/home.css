@@ -217,8 +217,7 @@ img{
 }
 .fadeslidebeforedelay{
 	opacity:0;
-	transform:translateY(50px);
-	transition: opacity 1s 3s, transform 0.5s 3s;
+	transition: opacity 2s 5s;
 }
 
 .fadeslideafter{

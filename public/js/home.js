@@ -252,8 +252,8 @@ function clicklearnmore(){
 
 function scrollwindow(destination){
   return new Promise((resolve, reject) => {
-  	const duration = 500
-    const start = window.pageYOffset
+  	const duration = 1000
+    const start = document.documentElement.scrollTop || window.pageYOffset
     const end = destination
     const change = end - start
     const increment = 20

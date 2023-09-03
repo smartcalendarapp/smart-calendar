@@ -3818,8 +3818,8 @@ async function logingoogleclassroom(event){
 //INTERACTIVE TOUR
 function updateinteractivetour() {
 	function movepopup(tempdiv, top, left) {
-		const scrollLeft = document.documentElement.scrollLeft
-		const scrollTop = document.documentElement.scrollTop
+		const scrollLeft = document.documentElement.scrollLeft || window.pageXOffset
+		const scrollTop = document.documentElement.scrollTop || window.pageYOffset
 
 		if (!tempdiv) return
 		tempdiv.style.left = fixleft(left + scrollLeft, tempdiv) + 'px'
@@ -3827,8 +3827,8 @@ function updateinteractivetour() {
 	}
 
 	function movebeacon(tempdiv, top, left) {
-		const scrollLeft = document.documentElement.scrollLeft
-		const scrollTop = document.documentElement.scrollTop
+		const scrollLeft = document.documentElement.scrollLeft || window.pageXOffset
+		const scrollTop = document.documentElement.scrollTop || window.pageYOffset
 
 		if (!tempdiv) return
 		tempdiv.style.left = (left + scrollLeft) + 'px'
