@@ -211,6 +211,17 @@ function updatescroll(event){
 	  }
 	}
 
+	const transitiondivs3 = document.getElementsByClassName('fadeslidebeforedelay')
+	for(let div of Array.from(transitiondivs3)){
+		if (inviewport(div)){
+			if(!div.classList.contains('fadeslideafter')){
+				div.src = div.src
+	    		div.classList.add('fadeslideafter')
+			}
+			
+	  }
+	}
+
 	//background effect
 	let showbackgroundeffectdivs = Array.from(document.getElementsByClassName('showbackgroundeffect'))
 	let windowheight = (window.innerHeight || document.documentElement.clientHeight)

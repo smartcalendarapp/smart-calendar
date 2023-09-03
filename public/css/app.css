@@ -2004,6 +2004,7 @@ body {
 	align-items: center;
 	text-decoration: none;
 	gap: 6px;
+	color:var(--text-primary)
 }
 
 .topbarinfodate {

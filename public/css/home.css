@@ -215,6 +215,12 @@ img{
 	transform:translateY(100px);
 	transition: opacity 4s, transform 2s;
 }
+.fadeslidebeforedelay{
+	opacity:0;
+	transform:translateY(50px);
+	transition: opacity 1s 3s, transform 0.5s 3s;
+}
+
 .fadeslideafter{
 	opacity:1;
 	transform:translateY(0);
