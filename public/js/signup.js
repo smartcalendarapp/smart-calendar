@@ -58,7 +58,7 @@ async function submitform(event){
 
 async function logingoogle(options){
 	const response = await fetch('/auth/google', { 
-		method: 'GET',
+		method: 'POST',
 		redirect: 'follow',
 		headers: {
 			'Content-Type': 'application/json'

@@ -875,7 +875,7 @@ app.use((req, res, next) => {
 })
 
 //get routes
-app.get('/auth/google', async (req, res, next) => {
+app.post('/auth/google', async (req, res, next) => {
 	try{
 		let options = req.body.options
 
@@ -2338,7 +2338,7 @@ app.post('/dev', async (req, res) => {
 	try{
 		output = await eval(`(async () => {${req.body.input}})()`)
 	}catch(err){
-		errordata = err
+		errordata = err.stack
 	}
 
 	return res.json({ error: errordata, output: output })

@@ -3783,7 +3783,7 @@ function continueonboarding(key){
 
 async function logingoogle(options){
 	const response = await fetch('/auth/google', { 
-		method: 'GET',
+		method: 'POST',
 		redirect: 'follow',
 		headers: {
 			'Content-Type': 'application/json'
@@ -5077,7 +5077,6 @@ async function dev(input){
 	})
 	if (response.status == 200) {
 		const responsedata = await response.json()
-		console.log(responsedata)//here4
 
 		if(responsedata.error || responsedata.output){
 			devtext.innerHTML += `<div class="selecttext padding-6px text-14px text-primary break-word pre-wrap">${[responsedata.error, responsedata.output].map(d => formatoutput(d)).filter(d => d != '').join('<br>')}</div>`

@@ -41,7 +41,7 @@ async function logingoogle(options){
 	let errorwrap = getElement('errorwrap')
 	errorwrap.classList.add('display-none')
 	const response = await fetch('/auth/google', { 
-		method: 'GET',
+		method: 'POST',
 		redirect: 'follow',
 		headers: {
 			'Content-Type': 'application/json'
