@@ -120,7 +120,7 @@ img{
 	background-color:var(--background-secondary-transparent);
 }
 
-.navtitle{
+.buttonlogo{
 	display:flex;
 	flex-direction:row;
 	align-items:center;
@@ -129,8 +129,8 @@ img{
 	color:var(--text-primary);
 	text-decoration:none;
 	transition:none;
-	transform: scale(9);
-	transform: translate(75,0);
+	transform: scale(90);
+	transform: translate(200px,0px);
 
 }
 .rotate270{
