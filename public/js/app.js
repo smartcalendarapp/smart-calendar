@@ -3833,11 +3833,11 @@ function updateinteractivetour() {
 
 	function showbeacon(tempdiv) {
 		if (!tempdiv) return
-		tempdiv.classList.remove('hiddenfade')
+		tempdiv.classList.remove('display-none')
 	}
 	function hidebeacon(tempdiv) {
 		if (!tempdiv) return
-		tempdiv.classList.add('hiddenfade')
+		tempdiv.classList.add('display-none')
 	}
 
 	function showpopup(tempdiv) {
@@ -3895,6 +3895,9 @@ function updateinteractivetour() {
 				}
 
 				movepopup(mypopup, rect.top + rect.height, rect.left + rect.width / 2 - mypopup.offsetWidth / 2)
+			} else {
+				hidebeacon(mybeacon)
+				hidepopup(mypopup)
 			}
 
 		}  else if (key == 'clickscheduleoncalendar') {

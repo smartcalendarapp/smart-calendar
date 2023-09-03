@@ -198,6 +198,31 @@ function updatescroll(event){
 			
 	  }
 	}
+
+	const transitiondivs2 = document.getElementsByClassName('fadeslidebeforeslow')
+	for(let div of Array.from(transitiondivs2)){
+		if (inviewport(div)){
+			if(!div.classList.contains('fadeslideafter')){
+				div.src = div.src
+	    	div.classList.add('fadeslideafter')
+			}
+			
+	  }
+	}
+
+	//background effect
+	let showbackgroundeffectdivs = document.getElementsByClassName('showbackgroundeffect')
+	let anyinviewportbackgroundeffectdiv = false
+	for(let div of Array.from(transitiondivs2)){
+		if(inviewport('pagedown')){
+			anyinviewportbackgroundeffectdiv = true
+		}
+	}
+	if(anyinviewportbackgroundeffectdiv){
+		getElement('backgroundeffect').classList.remove('hiddenfadeslow')
+	}else{
+		getElement('backgroundeffect').classList.add('hiddenfadeslow')
+	}
 }
 
 updatescroll()
@@ -210,8 +235,8 @@ function inviewport(element){
 }
 
 function clicklearnmore(){
-	let autoschedule = getElement('auto-schedule')
-	scrollwindow(autoschedule.offsetTop - window.innerHeight/2 + autoschedule.offsetHeight/2)
+	let pagedown = getElement('pagedown')
+	scrollwindow(pagedown.offsetTop - window.innerHeight/2 + pagedown.offsetHeight/2)
 }
 
 function scrollwindow(destination){

@@ -54,6 +54,8 @@
 </script>
 
 <body>
+	<div class="absolute hiddenfadeslow background-primary z-index-100 top-0 left-0 width-full height-full fadetransitionslow" id="backgroundeffect"></div>
+
 	<a href="/" class="navtitle">
 		<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlogo pointer-none">
 				<defs>
@@ -191,10 +193,10 @@
 				<div class="display-flex flex-column gap-48px align-center">
 					<div class="display-flex flex-column gap-24px align-center">
 						<h1 class="text-48px small:text-36px text-bold text-primary text-center transition-none">Your Smart Time<br>Management Assistant.</h1>
-						<p class="text-24px text-primary text-center transition-none">Smart Calendar intelligently schedules your tasks into your calendar.<br>Syncs with Google Calendar. Safe and hassle-free.</p>
+						<p class="text-24px text-primary text-center transition-none">Smart Calendar takes care of scheduling your tasks into your calendar.<br>Get started with your Google Calendar in just seconds.</p>
 					</div>
 					<a href="../signup" class="border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
-						<div class="pointer-none text-18px text-white text-bold">Create my free account</div>
+						<div class="pointer-none text-18px text-white text-bold">Get started now</div>
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 							<g>
 							<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -216,13 +218,64 @@
 			</div>
 
 
+			<!-- intro -->
+			<div id="pagedown" class="showbackgroundeffect z-index-1000 height-100vh padding-top-60px padding-bottom-60px border-box border-box display-flex gap-60px width-full flex-column">
+				<div></div>
+
+				<div class="display-flex flex-row">
+					<div class="flex-1 text-right text-24px text-primary fadeslidebeforeslow padding-top-192px padding-bottom-192px">Ever feel that your day controls you?</div>
+					<div class="flex-1 small:display-none"></div>
+				</div>
+
+				<div class="display-flex flex-row">
+					<div class="flex-1 small:display-none"></div>
+					<div class="text-24px text-primary fadeslidebeforeslow padding-top-192px padding-bottom-192px">Or that there's never enough time...</div>
+				</div>
+
+				<div class="display-flex flex-column gap-12px align-center">
+					<div class="text-18px text-center text-primary pointer-none">Keep reading</div>
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge learnmorebutton">
+						<g>
+						<path d="M226.201 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M29.7992 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						</g>
+						</svg>
+				</div>
+			</div>
+
+			<div class="showbackgroundeffect z-index-1000 height-100vh padding-top-60px padding-bottom-60px border-box border-box display-flex gap-60px width-full flex-column">
+				<div></div>
+
+				<div class="display-flex flex-row">
+					<div class="text-24px text-right text-primary fadeslidebeforeslow padding-top-192px padding-bottom-192px">With Smart Calendar, take back control of your time.</div>
+					<div class="flex-1 small:display-none"></div>
+				</div>
+
+				<div class="display-flex flex-row">
+					<div class="flex-1 small:display-none"></div>
+					<div class="text-24px text-primary fadeslidebeforeslow padding-top-192px padding-bottom-192px">We automatically build your schedule for you, so you can focus on the things that matter.</div>
+				</div>
+
+
+				<div class="display-flex flex-column gap-12px align-center">
+					<div class="text-18px text-center text-primary pointer-none">Keep reading</div>
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge learnmorebutton">
+						<g>
+						<path d="M226.201 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M29.7992 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						</g>
+						</svg>
+				</div>
+			</div>
+
+
 			<!-- features -->
-			<div id="auto-schedule" class="border-box display-flex flex-row gap-60px width-full small:flex-column">
+			<div class="border-box display-flex flex-row gap-60px width-full small:flex-column">
 				<div class="relative flex-1 small:order-1 padding-left-48px padding-right-48px small:padding-0">
 					<img src="../taskplanner.gif" height="360" width="480" class="fadeslidebefore border-16px width-full box-shadow height-auto"  alt="Tasks are planned on your calendar automatically"/>
 				</div>
 				<div class="display-flex flex-column gap-24px flex-1">
-					<h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue2">Automatic Task Planner</h2>
+					<h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue2">Automatic Task Planner</span></h2>
 					<h3 class="text-24px text-primary fadeslidebefore">Plan your day, stress-free.</h3>
 					<p class="text-18px text-primary fadeslidebefore">Simply add your tasks to your to-do list, and Smart Calendar will automatically schedule them in your calendar. We find the best times for each task based on due dates and priorities, so you don't have to juggle them in your head.</p>
 

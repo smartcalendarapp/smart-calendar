@@ -1037,7 +1037,7 @@
 
 	<!-- interactive tour -->
 	<div class="absolute width-full height-full top-0 left-0 overflow-hidden pointer-none" id="interactivetourbeaconlist">
-		<div class="absolute hiddenfade popupbutton beaconwrap z-index-100" onclick="openinteractivetourpopup('clickaddtask');gtag('event', 'button_click', { useraction: 'Add task beacon' })" id="interactivetourbeaconclickaddtask">
+		<div class="absolute display-none popupbutton beaconwrap z-index-100" onclick="openinteractivetourpopup('clickaddtask');gtag('event', 'button_click', { useraction: 'Add task beacon' })" id="interactivetourbeaconclickaddtask">
 			<div class="beacon pointer-none"></div>
 			
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
@@ -1050,7 +1050,7 @@
 
 	
 		
-		<div class="absolute hiddenfade popupbutton beaconwrap z-index-1001" onclick="openinteractivetourpopup('clickscheduleoncalendar');gtag('event', 'button_click', { useraction: 'Schedule on calendar beacon' })" id="interactivetourbeaconclickscheduleoncalendar">
+		<div class="absolute display-none popupbutton beaconwrap z-index-1001" onclick="openinteractivetourpopup('clickscheduleoncalendar');gtag('event', 'button_click', { useraction: 'Schedule on calendar beacon' })" id="interactivetourbeaconclickscheduleoncalendar">
 			<div class="beacon pointer-none"></div>
 			
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
@@ -1061,7 +1061,7 @@
 			</svg>
 		</div>
 		
-		<div class="absolute hiddenfade popupbutton beaconwrap z-index-100" onclick="openinteractivetourpopup('addevent');gtag('event', 'button_click', { useraction: 'Create an event beacon' })" id="interactivetourbeaconaddevent">
+		<div class="absolute display-none popupbutton beaconwrap z-index-100" onclick="openinteractivetourpopup('addevent');gtag('event', 'button_click', { useraction: 'Create an event beacon' })" id="interactivetourbeaconaddevent">
 			<div class="beacon pointer-none"></div>
 			
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
@@ -1072,7 +1072,7 @@
 			</svg>
 		</div>
 		
-		<div class="absolute hiddenfade popupbutton beaconwrap z-index-200" onclick="openinteractivetourpopup('autoschedule');gtag('event', 'button_click', { useraction: 'Schedule time for me beacon' })" id="interactivetourbeaconautoschedule">
+		<div class="absolute display-none popupbutton beaconwrap z-index-200" onclick="openinteractivetourpopup('autoschedule');gtag('event', 'button_click', { useraction: 'Schedule time for me beacon' })" id="interactivetourbeaconautoschedule">
 			<div class="beacon pointer-none"></div>
 			
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
@@ -1131,7 +1131,7 @@
 				<div class="text-18px text-primary nowrap text-bold">Event type</div>
 			</div>
 			<div class="text-18px text-quaternary">
-				<span class="text-bold">Event</span>: takes place at a fixed time.
+				<span class="text-bold">Event</span>: a fixed-time commitment.
 				<br>
 				<span class="text-bold">Task</span>: auto-scheduled by our app before its due date.
 			</div>

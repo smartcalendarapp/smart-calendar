@@ -210,6 +210,11 @@ img{
 	transform:translateY(50px);
 	transition: opacity 1s, transform 0.5s;
 }
+.fadeslidebeforeslow{
+	opacity:0;
+	transform:translateY(50px);
+	transition: opacity 2s, transform 1s;
+}
 .fadeslideafter{
 	opacity:1;
 	transform:translateY(0);
@@ -245,4 +250,30 @@ img{
 }
 .hiddenheight{
 	max-height:0 !important;
+}
+
+.fadetransition {
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s;
+}
+
+.fadetransitionslow {
+	transition: background-color 2s, color 2s, border-color 2s, opacity 2s, visibility 2s;
+}
+
+
+.hiddenfade {
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s, left 0s 0.2s, top 0s 0.2s;
+	opacity: 0;
+	visibility: hidden;
+	left: -99999px !important;
+	top: -99999px !important;
+}
+
+
+.hiddenfadeslow {
+	transition: background-color 2s, color 2s, border-color 2s, opacity 2s, visibility 2s, left 0s 2s, top 0s 2s;
+	opacity: 0;
+	visibility: hidden;
+	left: -99999px !important;
+	top: -99999px !important;
 }
