@@ -2223,7 +2223,7 @@ class Calendar {
 				if(i == 0){
 					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
 						<div class="horizontalbar flex-1"></div>
-						<div class="text-quaternary allsmallcaps text-18px text-bold">Scheduled</div>
+						<div class="text-quaternary all-small-caps text-18px text-bold">Scheduled</div>
 						<div class="horizontalbar flex-1"></div>
 					</div>`)
 				}
@@ -2266,7 +2266,7 @@ class Calendar {
 				if(i == 0){
 					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
 						<div class="horizontalbar flex-1"></div>
-						<div class="text-quaternary allsmallcaps text-18px text-bold">Unscheduled</div>
+						<div class="text-quaternary all-small-caps text-18px text-bold">Unscheduled</div>
 						<div class="horizontalbar flex-1"></div>
 					</div>`)
 				}
@@ -3719,6 +3719,7 @@ function updateonboardingscreen(){
 	getElement('todoitempriority').classList.remove('z-index-10001')
 	getElement('todoitemduedate').classList.remove('z-index-10001')
 	getElement('todoitemduration').classList.remove('z-index-10001')
+	getElement('timepicker').classList.remove('z-index-10001')
 
 
 	if(currentonboarding == 'connectcalendars'){
@@ -3757,6 +3758,8 @@ function updateonboardingscreen(){
 			<div class="text-14px text-green">Connected</div>` 
 			: `<div class="text-14px text-quaternary">Not connected</div>`
 	}else if(currentonboarding == 'sleeptime'){
+		getElement('timepicker').classList.add('z-index-10001')
+
 		calendar.updateSettings()
 	}else if(currentonboarding == 'addtask'){
 		let onboardingaddtasktodolist = getElement('onboardingaddtasktodolist')
@@ -3855,8 +3858,6 @@ function updateinteractivetour() {
 			return false
 		}
 
-		if (style.position === 'fixed') return true
-
 		let positionedAncestor = element.offsetParent
 		if (positionedAncestor) {
 			let ancestorStyle = window.getComputedStyle(positionedAncestor)
@@ -3864,6 +3865,8 @@ function updateinteractivetour() {
 				return false
 			}
 		} else return false
+
+		if(element.offsetHeight == 0 && element.offsetWidth == 0) return false
 
 		return true
 	}
@@ -5065,9 +5068,6 @@ async function dev(input){
 	
 	function formatoutput(temp){
 		if(typeof temp === 'Object' && temp !== null){
-			return JSON.stringify(temp)
-		}
-		if(Array.isArray(temp)){
 			return JSON.stringify(temp)
 		}
 		return temp

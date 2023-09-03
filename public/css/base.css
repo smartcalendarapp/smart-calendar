@@ -250,6 +250,9 @@
 .text-18px{
 	font-size:18px
 }
+.text-20px{
+	font-size:20px
+}
 .text-24px{
 	font-size:24px
 }
@@ -980,6 +983,6 @@
 	outline:none
 }
 
-.allsmallcaps{
+.all-small-caps{
 	font-variant:all-small-caps
 }
