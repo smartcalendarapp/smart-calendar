@@ -3387,6 +3387,7 @@ function run() {
 	}
 	runsyncwithgooglecalendar()
 
+	
 	async function runsyncwithgoogleclassroom() {
 		if (document.visibilityState === 'visible') {
 			await getclientgoogleclassroom()
@@ -5423,6 +5424,7 @@ async function getclientgoogleclassroom(){
 			calendar.updateHistory()
 
 			calendar.updateSettings()
+			updateonboardingscreen()
 		}
 	}catch(err){
 		console.log(err)
@@ -5804,6 +5806,7 @@ async function getclientgooglecalendar() {
 
 			calendar.updateSettings()
 			updatecalendarlist()
+			updateonboardingscreen()
 
 		}
 	} catch (err) {
@@ -11669,7 +11672,7 @@ function clickevent(event, timestamp) {
 		//turn off auto schedule
 		if (item.type == 1) {
 			let newstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-			if (newstartdate.getTime() != selectedeventdatetime.getTime()) {
+			if (newstartdate.getTime() != selectedeventdatetime.getTime() && selectedeventdatetime.getTime() >= Date.now()) {
 				item.type = 0
 				calendar.updateInfo(true)
 			}
