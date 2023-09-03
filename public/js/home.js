@@ -31,21 +31,30 @@ class Rectangle {
 		ctx.lineTo(this.x, this.y + radius)
 		ctx.arcTo(this.x, this.y, this.x + radius, this.y, radius)
 		ctx.closePath()
-		ctx.fillStyle = `rgba(31, 64, 255, ${this.z * 0.25 * 0.5})`
+
+		let showbackgroundeffectdivs = Array.from(document.getElementsByClassName('showbackgroundeffect'))
+		let windowheight = (window.innerHeight || document.documentElement.clientHeight)
+		let rectfirst = showbackgroundeffectdivs[0].getBoundingClientRect()
+		let rectlast = showbackgroundeffectdivs[showbackgroundeffectdivs.length - 1].getBoundingClientRect()
+		if(rectlast.bottom > windowheight){
+			ctx.fillStyle = `rgba(31, 64, 255, ${this.z * 0.25 * 0.5})`
+		}else{
+			ctx.fillStyle = `rgba(255, 98, 31, ${this.z * 0.25 * 0.5})`
+		}
 		ctx.fill()
 	}
 
 	update(scrollY) {
 		this.y -= scrollY * this.z * 0.25
-		this.x += this.amplitude * Math.sin(this.angle)
-		this.y += this.amplitude * Math.cos(this.angle)
+		this.x += this.amplitude * Math.sin(this.angle / 3)
+		this.y += this.amplitude * Math.cos(this.angle / 2)
 		this.angle += this.frequency
 		if (this.y + this.height < 0) this.y += canvas.height + this.height
 		if (this.y > canvas.height) this.y -= canvas.height + this.height
 	}
 }
 
-const numRectangles = 20
+const numRectangles = 30
 let rectangles = Array.from({ length: numRectangles }, () => new Rectangle())
 let lastScrollY = document.documentElement.scrollTop || document.body.scrollTop
 
@@ -213,22 +222,17 @@ function updatescroll(event){
 
 	//background effect
 	let showbackgroundeffectdivs = Array.from(document.getElementsByClassName('showbackgroundeffect'))
-	
-	let showbackgroundeffect = false
-
 	let windowheight = (window.innerHeight || document.documentElement.clientHeight)
 	let rectfirst = showbackgroundeffectdivs[0].getBoundingClientRect()
 	let rectlast = showbackgroundeffectdivs[showbackgroundeffectdivs.length - 1].getBoundingClientRect()
-	if(rectfirst.bottom < windowheight && rectlast.top > 0){
-		showbackgroundeffect = true
-	}
-	
-	if(showbackgroundeffect){
+
+	if(rectfirst.bottom < windowheight && rectlast.bottom > windowheight){
 		getElement('backgroundeffect').classList.remove('hiddenfadeslow')
 	}else{
 		getElement('backgroundeffect').classList.add('hiddenfadeslow')
 	}
 }
+
 
 updatescroll()
 window.addEventListener('scroll', updatescroll)

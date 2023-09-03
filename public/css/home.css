@@ -213,7 +213,7 @@ img{
 .fadeslidebeforeslow{
 	opacity:0;
 	transform:translateY(100px);
-	transition: opacity 2s, transform 1s;
+	transition: opacity 4s, transform 2s;
 }
 .fadeslideafter{
 	opacity:1;
