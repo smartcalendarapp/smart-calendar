@@ -972,6 +972,7 @@ class Calendar {
 				//auto schedule
 				if (smartschedule != false) {
 					if (JSON.stringify(neweventsdata) != JSON.stringify(oldeventsdata)) {
+						lastupdatecalendardate = Date.now()
 						startAutoSchedule([])
 					}
 				}
@@ -3008,7 +3009,6 @@ let autoscheduleeventslist = []
 let oldautoscheduleeventslist = []
 let newautoscheduleeventslist = []
 
-
 //new calendar
 let calendarmode = 1
 let calendarmodestorage = getStorage('calendarmode')
@@ -3286,15 +3286,17 @@ function updatetime() {
 		calendar.updateTodo()
 		calendar.updateSummary()
 		calendar.updateFocus()
+		resetcreatetodo()
+		updatecreatetodo()
 
 		lastupdatedate = currentdate.getDate()
 	}
 }
 
 
+let lastupdatecalendardate = 0
 function run() {
 	//ONCE
-
 
 	//push notif
 	window.addEventListener('mousedown', clickforpushnotif, false)
@@ -3372,8 +3374,10 @@ function run() {
 		startAutoSchedule([])
 	}
 	setInterval(function(){
-		if(calendartabs.includes(0)){
-			startAutoSchedule([])
+		if (document.visibilityState === 'visible') {
+			if(calendartabs.includes(0)){
+				startAutoSchedule([])
+			}
 		}
 	}, 60000)
 
@@ -3386,7 +3390,7 @@ function run() {
 
 		let lasttriedsyncgooglecalendardate = Date.now()
 		setInterval(async function () {
-			if (!isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 60000 && issettingclientgooglecalendar == false && Date.now() - lasttriedsyncgooglecalendardate > 60000 && Date.now() - lastsetclientgooglecalendar > 10000) {
+			if (!isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 60000 && issettingclientgooglecalendar == false && Date.now() - lasttriedsyncgooglecalendardate > 60000 && Date.now() - lastupdatecalendardate > 10000) {
 				await getclientgooglecalendar()
 				lasttriedsyncgooglecalendardate = Date.now()
 			}
@@ -5704,7 +5708,6 @@ function closeloginwithgooglepopup(){
 }
 
 //set google calendar
-let lastsetclientgooglecalendar = 0
 let issettingclientgooglecalendar = false
 async function setclientgooglecalendar(requestchanges) {
 	let importgooglecalendarerror = getElement('importgooglecalendarerror')
@@ -5747,8 +5750,6 @@ async function setclientgooglecalendar(requestchanges) {
 				loginwithgooglescreen.classList.remove('hiddenfade')
 			}
 		} else if (response.status == 200) {
-			lastsetclientgooglecalendar = Date.now()
-
 			const data = await response.json()
 
 			//make changes
@@ -6183,6 +6184,7 @@ function deletecalendar(id) {
 
 function opensettingssleep() {
 	calendartabs = [3]
+	settingstab = 1
 	calendar.updateTabs()
 	closehelp()
 }

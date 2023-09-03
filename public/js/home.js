@@ -45,7 +45,7 @@ class Rectangle {
 	}
 }
 
-const numRectangles = 30
+const numRectangles = 20
 let rectangles = Array.from({ length: numRectangles }, () => new Rectangle())
 let lastScrollY = document.documentElement.scrollTop || document.body.scrollTop
 
