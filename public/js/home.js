@@ -214,7 +214,7 @@ function updatescroll(event){
 	let showbackgroundeffectdivs = document.getElementsByClassName('showbackgroundeffect')
 	let anyinviewportbackgroundeffectdiv = false
 	for(let div of Array.from(transitiondivs2)){
-		if(inviewport('pagedown')){
+		if(inviewport(div)){
 			anyinviewportbackgroundeffectdiv = true
 		}
 	}
