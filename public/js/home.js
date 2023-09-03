@@ -213,7 +213,7 @@ function updatescroll(event){
 	//background effect
 	let showbackgroundeffectdivs = document.getElementsByClassName('showbackgroundeffect')
 	let anyinviewportbackgroundeffectdiv = false
-	for(let div of Array.from(transitiondivs2)){
+	for(let div of Array.from(showbackgroundeffectdivs)){
 		if(inviewport(div)){
 			anyinviewportbackgroundeffectdiv = true
 		}
