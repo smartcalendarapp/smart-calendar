@@ -36,7 +36,7 @@ class Rectangle {
 		let windowheight = (window.innerHeight || document.documentElement.clientHeight)
 		let rectfirst = showbackgroundeffectdivs[0].getBoundingClientRect()
 		let rectlast = showbackgroundeffectdivs[showbackgroundeffectdivs.length - 1].getBoundingClientRect()
-		if(rectlast.bottom > windowheight){
+		if(rectlast.top > windowheight){
 			ctx.fillStyle = `rgba(31, 64, 255, ${this.z * 0.25 * 0.5})`
 		}else{
 			ctx.fillStyle = `rgba(255, 98, 31, ${this.z * 0.25 * 0.5})`
@@ -46,8 +46,7 @@ class Rectangle {
 
 	update(scrollY) {
 		this.y -= scrollY * this.z * 0.25
-		this.x += this.amplitude * Math.sin(this.angle / 3)
-		this.y += this.amplitude * Math.cos(this.angle / 2)
+		this.x += this.amplitude * Math.sin(this.angle)
 		this.angle += this.frequency
 		if (this.y + this.height < 0) this.y += canvas.height + this.height
 		if (this.y > canvas.height) this.y -= canvas.height + this.height
