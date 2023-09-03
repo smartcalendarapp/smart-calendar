@@ -219,7 +219,7 @@ function updatescroll(event){
 	let windowheight = (window.innerHeight || document.documentElement.clientHeight)
 	let rectfirst = showbackgroundeffectdivs[0].getBoundingClientRect()
 	let rectlast = showbackgroundeffectdivs[showbackgroundeffectdivs.length - 1].getBoundingClientRect()
-	if(rectfirst.top < windowheight && rectlast.top > 0){
+	if(rectfirst.bottom < windowheight && rectlast.top > 0){
 		showbackgroundeffect = true
 	}
 	
@@ -240,8 +240,8 @@ function inviewport(element){
 }
 
 function clicklearnmore(){
-	let pagedown = getElement('pagedown')
-	scrollwindow(pagedown.offsetTop - window.innerHeight/2 + pagedown.offsetHeight/2)
+	let nextpage = getElement('nextpage')
+	scrollwindow(nextpage.offsetTop - window.innerHeight/2 + nextpage.offsetHeight/2)
 }
 
 function scrollwindow(destination){
