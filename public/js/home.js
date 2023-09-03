@@ -38,6 +38,7 @@ class Rectangle {
 	update(scrollY) {
 		this.y -= scrollY * this.z * 0.25
 		this.x += this.amplitude * Math.sin(this.angle)
+		this.y += this.amplitude * Math.cos(this.angle)
 		this.angle += this.frequency
 		if (this.y + this.height < 0) this.y += canvas.height + this.height
 		if (this.y > canvas.height) this.y -= canvas.height + this.height
@@ -193,7 +194,7 @@ function updatescroll(event){
 		if (inviewport(div)){
 			if(!div.classList.contains('fadeslideafter')){
 				div.src = div.src
-	    	div.classList.add('fadeslideafter')
+	    		div.classList.add('fadeslideafter')
 			}
 			
 	  }
@@ -204,21 +205,25 @@ function updatescroll(event){
 		if (inviewport(div)){
 			if(!div.classList.contains('fadeslideafter')){
 				div.src = div.src
-	    	div.classList.add('fadeslideafter')
+	    		div.classList.add('fadeslideafter')
 			}
 			
 	  }
 	}
 
 	//background effect
-	let showbackgroundeffectdivs = document.getElementsByClassName('showbackgroundeffect')
-	let anyinviewportbackgroundeffectdiv = false
-	for(let div of Array.from(showbackgroundeffectdivs)){
-		if(inviewport(div)){
-			anyinviewportbackgroundeffectdiv = true
-		}
+	let showbackgroundeffectdivs = Array.from(document.getElementsByClassName('showbackgroundeffect'))
+	
+	let showbackgroundeffect = false
+
+	let windowheight = (window.innerHeight || document.documentElement.clientHeight)
+	let rectfirst = showbackgroundeffectdivs[0].getBoundingClientRect()
+	let rectlast = showbackgroundeffectdivs[showbackgroundeffectdivs.length - 1].getBoundingClientRect()
+	if(rectfirst.top < windowheight && rectlast.top > 0){
+		showbackgroundeffect = true
 	}
-	if(anyinviewportbackgroundeffectdiv){
+	
+	if(showbackgroundeffect){
 		getElement('backgroundeffect').classList.remove('hiddenfadeslow')
 	}else{
 		getElement('backgroundeffect').classList.add('hiddenfadeslow')

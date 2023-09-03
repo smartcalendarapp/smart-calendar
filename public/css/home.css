@@ -212,7 +212,7 @@ img{
 }
 .fadeslidebeforeslow{
 	opacity:0;
-	transform:translateY(50px);
+	transform:translateY(100px);
 	transition: opacity 2s, transform 1s;
 }
 .fadeslideafter{
@@ -257,7 +257,7 @@ img{
 }
 
 .fadetransitionslow {
-	transition: background-color 2s, color 2s, border-color 2s, opacity 2s, visibility 2s;
+	transition: background-color 1s, color 1s, border-color 1s, opacity 1s, visibility 1s;
 }
 
 
@@ -275,7 +275,7 @@ img{
 
 
 .hiddenfadeslow {
-	transition: background-color 2s, color 2s, border-color 2s, opacity 2s, visibility 2s, left 0s 2s, top 0s 2s;
+	transition: background-color 1s, color 1s, border-color 1s, opacity 1s, visibility 1s, left 0s 1s, top 0s 1s;
 	opacity: 0;
 	visibility: hidden;
 	left: -99999px !important;
