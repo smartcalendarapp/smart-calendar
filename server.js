@@ -860,31 +860,6 @@ async function isRefreshTokenValid(refreshToken) {
 
 
 //use routes
-// Content Security Policy
-app.use((req, res, next) => {
-	res.setHeader('Content-Security-Policy', "default-src 'self'")
-	next()
-})
-// X-Content-Type-Options
-app.use((req, res, next) => {
-	res.setHeader('X-Content-Type-Options', 'nosniff')
-	next()
-})
-// HTTP Strict Transport Security
-app.use((req, res, next) => {
-	res.setHeader('Strict-Transport-Security', 'max-age=31536000 includeSubDomains')
-	next()
-})
-// X-Frame-Options
-app.use((req, res, next) => {
-	res.setHeader('X-Frame-Options', 'SAMEORIGIN')
-	next()
-})
-// X-XSS-Protection
-app.use((req, res, next) => {
-	res.setHeader('X-XSS-Protection', '1 mode=block')
-	next()
-})
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'public', 'css')))
