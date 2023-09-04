@@ -62,7 +62,7 @@ function generateID() {
 function formatURL(text) {
 	let regex = /((?:https?:\/\/)?(?:www\.)?(?:[\w-]+\.)+[\w]{2,}(?:\/[\w-_.~%\/#?&=!$()'*+,;:@]+)?)/gi
 	return text.replace(regex, function (url) {
-		return `<a href="${url}" class="text-blue" target="_blank" rel="noopener noreferrer">${url}</a>`
+		return `<a href="${url}" class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">${url}</a>`
 	})
 }
 
@@ -834,6 +834,7 @@ class Calendar {
 			this.title = title
 			this.id = generateID()
 			this.googleclassroomid = null
+			this.googleclassroomlink = null
 			this.completed = false
 			this.reminder = [{ timebefore: 0 }]
 			this.lastmodified = 0
@@ -2031,6 +2032,10 @@ class Calendar {
 					if (item.repeat.frequency != null && item.repeat.interval != null) {
 						output.push(`
 							<div class="infotext selecttext text-14px"><span class="text-bold text-14px">Repeats</span> ${getRepeatText(item)}</div>`)
+					}
+
+					if(item.googleclassroomid){
+						output.push(`<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open Google Classroom assignment</a>`)
 					}
 
 					if (item.notes) {
@@ -5382,8 +5387,9 @@ async function getclientgoogleclassroom(){
 						endbeforeminute = utcduedate.getHours() * 60 + utcduedate.getMinutes()
 					}
 
-					let newtodo = new Calendar.Todo(endbeforeyear, endbeforemonth, endbeforeday, endbeforeminute, 60, googleitem.title, googleitem.alternateLink)
+					let newtodo = new Calendar.Todo(endbeforeyear, endbeforemonth, endbeforeday, endbeforeminute, 60, googleitem.title, googleitem.description)
 					newtodo.googleclassroomid = googleitem.id
+					newtodo.googleclassroomlink = googleitem.alternateLink
 
 					calendar.todos.push(newtodo)
 				}else{
@@ -5413,7 +5419,8 @@ async function getclientgoogleclassroom(){
 					mytodo.endbefore.minute = endbeforeminute
 
 					mytodo.title = googleitem.title
-					mytodo.notes = `<a href="${googleitem.alternateLink}" class="text-blue" target="_blank" rel="noopener noreferrer">Open Classroom assignment</a>`
+					mytodo.notes = googleitem.description
+					mytodo.googleclassroomlink = googleitem.alternateLink
 				}
 
 			}
@@ -7778,6 +7785,8 @@ function gettododata(item) {
 										<span class="text-bold">${item.title ? cleanInput(item.title) : `New Task`}</span>
 									</div>
 
+									${item.googleclassroomid ? `<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open Google Classroom assignment</a>` : ``}
+
 									${item.notes && !item.completed ?
 									`<div class="pointer-auto pre-wrap break-word todoitemtext text-quaternary text-14px overflow-hidden ${itemclasses.join(' ')}">${formatURL(cleanInput(item.notes))}</div>` : ''}
 	
@@ -8832,6 +8841,7 @@ function geteventfromtodo(item) {
 	newitem.completed = item.completed
 	newitem.id = item.id
 	newitem.googleclassroomid = item.googleclassroomid
+	newitem.googleclassroomlink = item.googleclassroomlink
 
 	newitem.timewindow = deepCopy(item.timewindow)
 
@@ -8850,6 +8860,7 @@ function gettodofromevent(item) {
 	newitem.completed = item.completed
 	newitem.id = item.id
 	newitem.googleclassroomid = item.googleclassroomid
+	newitem.googleclassroomlink = item.googleclassroomlink
 
 	newitem.timewindow = deepCopy(item.timewindow)
 
