@@ -2035,7 +2035,7 @@ class Calendar {
 					}
 
 					if(item.googleclassroomid){
-						output.push(`<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open Google Classroom assignment</a>`)
+						output.push(`<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none text-14px hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open Google Classroom assignment</a>`)
 					}
 
 					if (item.notes) {
@@ -7785,7 +7785,7 @@ function gettododata(item) {
 										<span class="text-bold">${item.title ? cleanInput(item.title) : `New Task`}</span>
 									</div>
 
-									${item.googleclassroomid ? `<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open Google Classroom assignment</a>` : ``}
+									${item.googleclassroomid ? `<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none text-14px hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open Google Classroom assignment</a>` : ``}
 
 									${item.notes && !item.completed ?
 									`<div class="pointer-auto pre-wrap break-word todoitemtext text-quaternary text-14px overflow-hidden ${itemclasses.join(' ')}">${formatURL(cleanInput(item.notes))}</div>` : ''}
