@@ -129,7 +129,6 @@ img{
 	color:var(--text-primary);
 	text-decoration:none;
 	transition:none;
-	transform: scale(10) translate(7px,1px);
 
 }
 .rotate270{
