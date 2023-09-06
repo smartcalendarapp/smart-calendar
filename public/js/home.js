@@ -223,12 +223,11 @@ function updatescroll(event){
 	}
 
 	//background effect
-	let showbackgroundeffectdivs = Array.from(document.getElementsByClassName('showbackgroundeffect'))
 	let windowheight = (window.innerHeight || document.documentElement.clientHeight)
-	let rectfirst = showbackgroundeffectdivs[0].getBoundingClientRect()
-	let rectlast = showbackgroundeffectdivs[showbackgroundeffectdivs.length - 1].getBoundingClientRect()
+	let rectfirst = getElement('firstbackgroundeffect')
+	let rectlast = getElement('firstfeature').getBoundingClientRect()
 
-	if(rectfirst.bottom < windowheight && rectlast.bottom > windowheight){
+	if(rectfirst.bottom < windowheight && rectlast.top > windowheight){
 		getElement('backgroundeffect').classList.remove('hiddenfadeslow')
 	}else{
 		getElement('backgroundeffect').classList.add('hiddenfadeslow')
@@ -246,13 +245,13 @@ function inviewport(element){
 }
 
 function clicklearnmore(){
-	let nextpage = getElement('nextpage')
-	scrollwindow(nextpage.offsetTop - window.innerHeight/2 + nextpage.offsetHeight/2)
+	let firstbackgroundeffect = getElement('firstbackgroundeffect')
+	scrollwindow(firstbackgroundeffect.offsetTop - window.innerHeight/2 + firstbackgroundeffect.offsetHeight/2)
 }
 
 function scrollwindow(destination){
   return new Promise((resolve, reject) => {
-  	const duration = 1000
+  	const duration = 500
     const start = document.documentElement.scrollTop || window.pageYOffset
     const end = destination
     const change = end - start
