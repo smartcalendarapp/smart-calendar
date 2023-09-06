@@ -224,7 +224,7 @@ function updatescroll(event){
 
 	//background effect
 	let windowheight = (window.innerHeight || document.documentElement.clientHeight)
-	let rectfirst = getElement('firstbackgroundeffect')
+	let rectfirst = getElement('firstbackgroundeffect').getBoundingClientRect()
 	let rectlast = getElement('firstfeature').getBoundingClientRect()
 
 	if(rectfirst.bottom < windowheight && rectlast.top > windowheight){
