@@ -2011,6 +2011,9 @@ body {
 	color: var(--text-primary);
 	font-size: 18px;
 }
+#topbarinfodate{
+	width:140px
+}
 
 .calendartopbar {
 	border-bottom: 1px solid var(--text-tertiary);
@@ -2496,20 +2499,10 @@ body {
 
 .eventcolor {
 	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
-	padding: 12px;
 	border-radius: 1000px;
 	cursor: pointer;
-	border-width: 4px;
-	border-color: transparent;
-	border-style: solid;
-	height: fit-content;
 }
 
-.eventcolorselected {
-	border-color: var(--text-secondary);
-	border-width: 4px;
-	border-style: solid;
-}
 
 .redbackgroundtransparent {
 	background-color: var(--red-transparent);

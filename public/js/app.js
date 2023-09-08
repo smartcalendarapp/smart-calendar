@@ -386,6 +386,23 @@ function getcheck(boolean) {
 	}
 }
 
+//get check small
+function getchecksmall(boolean) {
+	if (boolean) {
+		return `
+		<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallinline">
+		<g>
+		<path d="M93.2369 211.648L10 120.493" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+		<path d="M93.2369 211.648L246 44.3518" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+		</g>
+		</svg>`
+	} else {
+		return `
+		<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallinline">
+		</svg>`
+	}
+}
+
 
 //REGEX functions
 function getDuration(string) {
@@ -1133,7 +1150,6 @@ class Calendar {
 		</div>` : str
 		let topbarinfodate = getElement('topbarinfodate')
 		topbarinfodate.innerHTML = str
-		topbarinfodate.style.maxWidth = Math.max(window.getComputedStyle(topbarinfodate).maxWidth, topbarinfodate.offsetWidth)
 	}
 
 	updateBarColumnGroup() {
@@ -1713,9 +1729,17 @@ class Calendar {
 								<div class="display-flex flex-row gap-12px align-center">
 				 					<div class="text-14px text-primary width90px">All day</div>
 					 				<div class="todoitemcheckbox tooltip display-flex" onclick="eventallday()" id="infoallday"></div>
-				 				</div>
-				 
-				 				<div class="horizontalbar"></div>`)
+				 				</div>`)
+
+							infodata.push(`
+								<div class="infogroup">
+									<div class="inputgroup">
+										<div class="text-14px text-primary width90px">Repeat</div>
+										<div class="flex-1 border-8px transition-duration-100 pointer background-tint-1 hover:background-tint-2 text-14px text-primary padding-8px-12px popupbutton display-flex flex-row justify-space-between" id="repeatoptionbutton" onclick="clickrepeatoption()"></div>
+									</div>
+								</div>`)
+
+							infodata.push(`<div class="horizontalbar"></div>`)
 						}
 
 						if (item.type == 1) {
@@ -1799,13 +1823,6 @@ class Calendar {
 								</div>
 							</div>`)
 
-						infodata.push(`
-						<div class="infogroup">
-			 				<div class="inputgroup">
-					 			<div class="text-14px text-primary width90px">Repeat</div>
-								<div class="flex-1 border-8px transition-duration-100 pointer background-tint-1 hover:background-tint-2 text-14px text-primary padding-8px-12px popupbutton display-flex flex-row justify-space-between" id="repeatoptionbutton" onclick="clickrepeatoption()"></div>
-							</div>
-						</div>`)
 
 						infodata.push(`
 							<div class="infogroup">
@@ -1879,11 +1896,8 @@ class Calendar {
 					//color
 					let eventcolorgroup = getElement('eventcolorgroup')
 					for (let [index, div] of Object.entries(eventcolorgroup.children)) {
-						if (index == item.color) {
-							div.classList.add('eventcolorselected')
-						} else {
-							div.classList.remove('eventcolorselected')
-						}
+						div.innerHTML = getcheck(index == item.color)
+						//here4
 					}
 
 					if (item.type == 1) {
