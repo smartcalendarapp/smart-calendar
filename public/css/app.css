@@ -2502,7 +2502,6 @@ body {
 	border-radius: 1000px;
 	cursor: pointer;
 	display:flex;
-	padding:6px;
 }
 
 .eventcolorinput{
@@ -2514,13 +2513,15 @@ body {
 	height:100%;
 	width:100%;
 	opacity:0;
-	position:relative;
+	position:absolute;
 	top:0;
 	left:0;
+	cursor:pointer;
+	pointer-events:auto;
 }
-.eventcolorheightwidth{
-	height:14px;
-	width:14px;
+.eventcolorinputwrap{
+	height:26px;
+	width:26px;
 }
 
 .redbackgroundtransparent {
