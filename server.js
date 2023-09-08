@@ -455,7 +455,8 @@ async function processReminders(){
 									</p>
 									<p style="text-align: center;font-size: 18px; color: #333;">
 										To see more details about your event:
-										<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: white; text-decoration: none;">Open the app</a>
+										<br>
+										<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px">Open the app</a>
 									</p>
 
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
@@ -464,13 +465,13 @@ async function processReminders(){
 									</p>
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="text-align: center; font-size: 20px; color: #333;">
-											Kind regards,<br>
+											Stay Productive,<br>
 											Smart Calendar | Your Smart Time Management Assistant
 									</p>
 
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-										<p>If you wish to stop receiving these notifications, you can update your preferences in the app > settings > notifications.<br><a href="https://smartcalendar.us/app" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+										<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
 									<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 									</div>
 
@@ -484,7 +485,7 @@ async function processReminders(){
 					
 					If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
 
-					Kind regards,
+					Stay Productive,
 					Smart Calendar | Your Personal Time Management Assistant
 
 					If you wish to stop receiving these notifications, you can update your preferences in the app.
@@ -517,7 +518,8 @@ async function processReminders(){
 									</p>
 									<p style="text-align: center;font-size: 18px; color: #333;">
 										To see more details about your event:
-										<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: white; text-decoration: none;">Open the app</a>
+										<br>
+										<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px">Open the app</a>
 									</p>
 
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
@@ -526,13 +528,13 @@ async function processReminders(){
 									</p>
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="text-align: center; font-size: 20px; color: #333;">
-											Kind regards,<br>
+											Stay Productive,<br>
 											Smart Calendar | Your Smart Time Management Assistant
 									</p>
 
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-										<p>If you wish to stop receiving these notifications, you can update your preferences in the app > settings > notifications.<br><a href="https://smartcalendar.us/app" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+										<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
 									<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 									</div>
 
@@ -546,7 +548,7 @@ async function processReminders(){
 					
 					If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
 
-					Kind regards,
+					Stay Productive,
 					Smart Calendar | Your Personal Time Management Assistant
 
 					If you wish to stop receiving these notifications, you can update your preferences in the app.
@@ -1995,9 +1997,12 @@ async function sendwelcomeemail(user){
 				<p style="font-size: 18px; color: #333;">
 						We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;">contact us</a>. We're here for you!
 				</p>
+				<p style="font-size: 18px; color: #333;">
+					<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px">Open the app</a>
+				</p>
 				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<p style="text-align: center; font-size: 20px; color: #333;">
-						Warm regards,<br>
+						Stay Productive,<br>
 						Smart Calendar | Your Smart Time Management Assistant
 				</p>
 
@@ -2016,7 +2021,7 @@ async function sendwelcomeemail(user){
 
 	We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
 
-	Warm regards,
+	Stay Productive,
 	Smart Calendar | Your Personal Time Management Assistant
 
 	If you wish to stop receiving these notifications, you can update your preferences in the app.
