@@ -1038,7 +1038,7 @@ class Calendar {
 							requestchanges.push({ type: 'createevent', item: item, requestid: generateID() })
 						} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit event
 							//check for change
-							if (new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() != new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute).getTime() || new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() != new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute).getTime() || item.title != olditem.title || item.notes != olditem.notes || getRecurrenceString(item) != getRecurrenceString(olditem)) {
+							if (new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() != new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute).getTime() || new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() != new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute).getTime() || item.title != olditem.title || item.notes != olditem.notes || getRecurrenceString(item) != getRecurrenceString(olditem) || item.googlecalendarid != olditem.googlecalendarid) {
 								requestchanges.push({ type: 'editevent', item: item, oldgooglecalendarid: olditem.googlecalendarid, requestid: generateID() })
 							}
 						}
@@ -1838,7 +1838,7 @@ class Calendar {
 												<div class="padding-6px display-flex">
 													${getchecksmall(true)}
 												</div>
-												<input type="color" class="eventcolorinput" oninput="eventcolor(event.target.value)"/>
+												<input type="color" value="${item.hexcolor}" class="eventcolorinput" oninput="eventcolor(event.target.value)"/>
 											</div>`
 											:
 											`<div class="relative eventcolorinputwrap border-round text-14px text-primary background-tint-1 pointer transition-duration-100 hover:background-tint-2">
@@ -6090,7 +6090,7 @@ function updatecalendaritempopup(id) {
 							<div class="padding-6px display-flex">
 								${getchecksmall(true)}
 							</div>
-							<input type="color" class="eventcolorinput" oninput="calendarcolor(event, event.target.value, '${item.id}')"/>
+							<input type="color" value="${item.hexcolor}" class="eventcolorinput" oninput="calendarcolor(event, event.target.value, '${item.id}')"/>
 						</div>`
 						:
 						`<div class="relative eventcolorinputwrap border-round text-14px text-primary background-tint-1 pointer transition-duration-100 hover:background-tint-2">
@@ -8435,7 +8435,7 @@ function dragtodo(event, id) {
 		document.removeEventListener('mouseup', finishfunction, false)
 
 		dragtododiv.classList.add('display-none')
-		
+
 		dragtodohighlight.classList.add('hiddenfade')
 
 
