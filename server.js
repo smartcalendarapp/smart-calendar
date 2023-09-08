@@ -163,17 +163,6 @@ async function sendmessage(data){
 	return data
 }
 
-async function logclienterror(data){
-	const params = {
-		TableName: 'smartcalendarerrors',
-		Item: marshall(data, { convertClassInstanceToMap: true, removeUndefinedValues: true })
-	}
-	  
-	await dynamoclient.send(new PutItemCommand(params))
-	return data
-}
-
-
 //DATABASE CLASSES
 function addmissingproperties(model, current) {
   for (let prop in model) {
@@ -285,13 +274,6 @@ class Message{
 	}
 }
 
-class ClientError{
-	constructor({ userid, error }){
-		this.id = generateID()
-		this.userid = userid
-		this.error = error
-	}
-}
 
 class User{
 	constructor({ username, password, google_email, googleid }){
@@ -2307,37 +2289,6 @@ app.post('/setclientdata', async (req, res, next) => {
 		cacheReminders(user)
 		
 		await setUser(user)
-		return res.end()
-	} catch (error) {
-		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
-	}
-})
-
-
-app.post('/logclienterror', async (req, res, next) => {
-	try {
-		if(!req.session.user){
-			return res.status(401).json({ error: 'User is not signed in.' })
-		}
-		
-		let userid = req.session.user.userid
-		
-		let user = await getUserById(userid)
-		if (!user) {
-			return res.status(401).json({ error: 'User does not exist.' })
-		}
-
-		const errordata = req.body.errordata
-
-		const errorobject = new ClientError({ userid: userid, error: errordata })
-
-		try{
-			await logclienterror(errorobject)
-		}catch(error){
-			return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
-		}
-		
 		return res.end()
 	} catch (error) {
 		console.error(error)

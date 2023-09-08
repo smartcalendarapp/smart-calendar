@@ -3254,18 +3254,8 @@ async function getclient() {
 }
 
 window.onerror = async function(message, source, linenumber, columnnumber, error) {
-	const errordata = { stack: error.stack }
-	try{
-		const response = await fetch('/logclienterror', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				errordata: JSON.parse(errordata),
-			})
-		}).catch(e => e)
-	}catch(err){ }
+	console.log(error.stack)
+	return true
 }
 
 
