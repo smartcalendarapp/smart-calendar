@@ -2510,6 +2510,7 @@ body {
 	border-radius: 1000px;
 	cursor: pointer;
 	display:flex;
+	padding:6px;
 }
 
 .eventcolorinput{

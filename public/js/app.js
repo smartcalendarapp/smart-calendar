@@ -1830,11 +1830,14 @@ class Calendar {
 								<div class="inputgroup">
 						 			<div class="text-14px text-primary width90px">Color</div>
 									<div class="display-flex flex-row gap-6px">
-										<div class="eventcolorgroup" id="eventcolorgroup">
-											${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" onclick="eventcolor('${d}')"></div>`).join('')}
+										<div class="eventcolorgroup">
+											${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" onclick="eventcolor('${d}')">${getchecksmall(d == item.hexcolor)}</div>`).join('')}
 										</div>
 										${!DEFAULTCOLORS.find(d => d == item.hexcolor) ? 
 											`<div class="eventcolor eventcolorinputwrap padding-0 overflow-hidden relative" style="background-color:${item.hexcolor}">
+												<div class="padding-6px display-flex">
+													${getchecksmall(true)}
+												</div>
 												<input type="color" class="eventcolorinput" oninput="eventcolor(event.target.value)"/>
 											</div>`
 											:
@@ -1910,11 +1913,6 @@ class Calendar {
 						infoendbeforetime.value = getHMText(item.endbefore.minute)
 					}
 
-					//color
-					let eventcolorgroup = getElement('eventcolorgroup')
-					for (let [index, div] of Object.entries(eventcolorgroup.children)) {
-						div.innerHTML = getchecksmall(DEFAULTCOLORS[index] == item.hexcolor)
-					}
 
 					if (item.type == 1) {
 						//priority
@@ -6084,11 +6082,14 @@ function updatecalendaritempopup(id) {
 			<div class="inputgroup">
 				<div class="infotext width90px">Color</div>
 				<div class="display-flex flex-row gap-6px">
-					<div class="eventcolorgroup" id="calendaritemcolors">
-						${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" onclick="calendarcolor('${d}')"></div>`).join('')}
+					<div class="eventcolorgroup">
+						${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" onclick="calendarcolor(event, '${d}', '${item.id}')">${getchecksmall(d == item.hexcolor)}</div>`).join('')}
 					</div>
 					${!DEFAULTCOLORS.find(d => d == item.hexcolor) ? 
 						`<div class="eventcolor eventcolorinputwrap padding-0 overflow-hidden relative" style="background-color:${item.hexcolor}">
+							<div class="padding-6px display-flex">
+								${getchecksmall(true)}
+							</div>
 							<input type="color" class="eventcolorinput" oninput="calendarcolor(event, event.target.value, '${item.id}')"/>
 						</div>`
 						:
@@ -6109,11 +6110,6 @@ function updatecalendaritempopup(id) {
 
 	 		${!item.isprimary ? `<div class="pointer text-14px width-fit background-red hover:background-red-hover padding-8px-12px border-8px text-white transition-duration-100" onclick="deletecalendar('${item.id}')">Delete calendar</div>` : ''}
 		</div>`
-
-		let calendaritemcolors = getElement('calendaritemcolors')
-		for (let [index, div] of Object.entries(calendaritemcolors.children)) {
-			div.innerHTML = getchecksmall(DEFAULTCOLORS[index] == item.hexcolor)
-		}
 
 }
 
