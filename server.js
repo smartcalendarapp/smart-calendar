@@ -454,8 +454,6 @@ async function processReminders(){
 											Just a quick reminder that your event <strong>${item.event.title || 'New Event'}</strong> is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}. 
 									</p>
 									<p style="text-align: center;font-size: 14px; color: #333;">
-										To see more details about your event:
-										<br>
 										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px">Open the app</a>
 									</p>
 
@@ -517,8 +515,6 @@ async function processReminders(){
 											Just a quick reminder that your task <strong>${item.event.title || 'New Task'}</strong> is due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}. 
 									</p>
 									<p style="text-align: center;font-size: 14px; color: #333;">
-										To see more details about your event:
-										<br>
 										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px">Open the app</a>
 									</p>
 
@@ -1577,20 +1573,18 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 						throw new Error()
 					}
 
-					/*
 					if(item.googlecalendarid != requestchange.oldgooglecalendarid){
 						//move event request
 						const response2 = await googlecalendar.events.move({
-							calendarId: requestchange.oldcalendarid,
-							eventId: item.id,
-							destination: item.calendarid
+							calendarId: requestchange.oldgooglecalendarid || 'primary',
+							eventId: item.googleeventid,
+							destination: item.googlecalendarid || 'primary'
 						})
 		
 						if(response2.status != 200){
 							throw new Error()
 						}
 					}
-		 			*/
 				}catch(error){
 					console.error(error)
 				}
