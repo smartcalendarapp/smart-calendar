@@ -10,6 +10,8 @@ const BORDERCOLORLIST = ['redborder', 'orangeborder', 'greenborder', 'blueborder
 const FILLCOLORLIST = ['fillred', 'fillorange', 'fillgreen', 'fillblue', 'fillpurple']
 const STROKECOLORLIST = ['strokered', 'strokeorange', 'strokegreen', 'strokeblue', 'strokepurple']
 
+const DEFAULTCOLORS = ['#f54842', '#faa614', '#2bc451', '#2693ff', '#916bfa']
+
 const welcomepopupdata = {
 	calendar: 'welcomecalendar',
 }
@@ -253,7 +255,7 @@ function getstar(boolean, tooltip) {
 //get color checkbox
 function getcolorcheckbox(boolean, color, tooltip) {
 	if (boolean) {
-		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="checkboxbutton ${FILLCOLORLIST[color]}">
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="checkboxbutton" style="background-color: ${color}">
 			<g>
 			<path d="M50 0C22.3858 0 0 22.3858 0 50L0 206C0 233.614 22.3858 256 50 256L206 256C233.614 256 256 233.614 256 206L256 50C256 22.3858 233.614 0 206 0L50 0ZM200.688 54.125C204.511 53.7858 208.449 54.9038 211.625 57.5625C217.978 62.8798 218.817 72.3349 213.5 78.6875L114.844 196.562C108.848 203.725 97.8393 203.725 91.8438 196.562L42.5 137.625C37.1827 131.272 38.0224 121.817 44.375 116.5C50.7276 111.183 60.1827 112.022 65.5 118.375L103.344 163.562L190.5 59.4375C193.159 56.2612 196.864 54.4642 200.688 54.125Z" fill-rule="nonzero" opacity="1" stroke="none"/>
 			</g>
@@ -663,7 +665,7 @@ class Calendar {
 			this.subscriptionurl = subscriptionurl
 			this.isprimary = isprimary
 			this.hidden = false
-			this.color = 3
+			this.hexcolor = '#2693ff'
 			this.id = generateID()
 			this.googleid = null
 			this.lastmodified = 0
@@ -711,7 +713,7 @@ class Calendar {
 			this.type = type
 			this.notes = notes
 			this.priority = 0
-			this.color = 3
+			this.hexcolor = '#2693ff'
 			this.reminder = [{ timebefore: 0 }]
 			this.repeat = {
 				frequency: null,
@@ -1823,20 +1825,19 @@ class Calendar {
 								</div>
 							</div>`)
 
-
 						infodata.push(`
 							<div class="infogroup">
 								<div class="inputgroup">
 						 			<div class="text-14px text-primary width90px">Color</div>
 									<div class="eventcolorgroup" id="eventcolorgroup">
-										<div class="eventcolor redbackground" id="eventcolor0" onclick="eventcolor(0)"></div>
-										<div class="eventcolor orangebackground" id="eventcolor1" onclick="eventcolor(1)"></div>
-										<div class="eventcolor greenbackground" id="eventcolor2" onclick="eventcolor(2)"></div>
-										<div class="eventcolor bluebackground" id="eventcolor3" onclick="eventcolor(3)"></div>
-										<div class="eventcolor purplebackground" id="eventcolor4" onclick="eventcolor(4)"></div>
+										${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" id="eventcolor0" onclick="eventcolor('${d}')"></div>`).join('')}
+										<div class="eventcolorinputwrap">
+											<input type="color" class="eventcolorinput" oninput="eventcolor(event.target.value)" value="${item.hexcolor}" />
+										</div>
 									</div>
 								</div>
 							</div>`)
+							//here4
 
 						infodata.push(`
 						<div class="infogroup">
@@ -1896,7 +1897,7 @@ class Calendar {
 					//color
 					let eventcolorgroup = getElement('eventcolorgroup')
 					for (let [index, div] of Object.entries(eventcolorgroup.children)) {
-						div.innerHTML = getcheck(index == item.color)
+						div.innerHTML = getchecksmall(DEFAULTCOLORS[index] == item.hexcolor)
 						//here4
 					}
 
@@ -2673,7 +2674,7 @@ class Calendar {
 			return `
 			<div class="display-flex gap-12px flex-row background-tint-1 padding-8px-12px border-8px align-center">
 				<div class="todoitemcheckbox tooltip" onclick="toggleshowcalendar(event, '${item.id}')">
-					${getcolorcheckbox(!item.hidden, item.color, item.hidden ? '<span class="tooltiptextright">Show calendar</span>' : '<span class="tooltiptextright">Hide calendar</span>')}
+					${getcolorcheckbox(!item.hidden, item.hexcolor, item.hidden ? '<span class="tooltiptextright">Show calendar</span>' : '<span class="tooltiptextright">Hide calendar</span>')}
 				</div>
 		 
 				<div class="display-flex flex-column flex-1">
@@ -4647,9 +4648,6 @@ function getalldayeventdata(item, currentdate, timestamp) {
 	if (selectedeventid == item.id) {
 		itemclasses.push('selectedevent')
 		itemclasses2.push('selectedtext')
-		itemclasses.push(BACKGROUNDCOLORLIST[item.color])
-	} else {
-		itemclasses.push(BACKGROUNDCOLORLISTTRANSPARENT[item.color])
 	}
 
 	if (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() < Date.now()) {
@@ -4657,7 +4655,7 @@ function getalldayeventdata(item, currentdate, timestamp) {
 	}
 
 	let output = ''
-	output = `<div class="popupbutton monthcontainerwrap ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickdayevent(event, ${timestamp})">
+	output = `<div style="background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`}" class="popupbutton monthcontainerwrap ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickdayevent(event, ${timestamp})">
 		<div class="monthcontainerwraptextgroup">
 
 			<div class="monthcontainerwraptext">
@@ -4807,11 +4805,8 @@ function getmontheventdata(item, currentdate, timestamp) {
 	let itemclasses2 = []
 
 	if (selectedeventid == item.id) {
-		itemclasses.push(BACKGROUNDCOLORLIST[item.color])
 		itemclasses.push('selectedevent')
 		itemclasses2.push('selectedtext')
-	} else {
-		itemclasses.push(BACKGROUNDCOLORLISTTRANSPARENT[item.color])
 	}
 
 	if (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() < Date.now()) {
@@ -4821,7 +4816,7 @@ function getmontheventdata(item, currentdate, timestamp) {
 
 	let output = ''
 	output = `
-	<div class="popupbutton monthcontainerwrap ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickmonthcontainer(event, ${timestamp})">
+	<div style="background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`}" class="popupbutton monthcontainerwrap ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickmonthcontainer(event, ${timestamp})">
 		<div class="monthcontainerwraptextgroup">
 			<div class="monthcontainerwraptext">
 				<div class="monthcontainerwraptextdisplay ${itemclasses2.join(' ')}">
@@ -5510,7 +5505,7 @@ function getdatafromicalendar(text, subscriptionurl) {
 		let existingcalendar = calendar.calendars.find(r => r.subscriptionurl == calendaritem.subscriptionurl)
 		if (existingcalendar) {
 			//load some existing properties
-			calendaritem.color = existingcalendar.color
+			calendaritem.hexcolor = existingcalendar.hexcolor
 			calendaritem.title = existingcalendar.title
 			calendaritem.notes = existingcalendar.notes
 			calendaritem.hidden = existingcalendar.hidden
@@ -5556,7 +5551,7 @@ function getdatafromicalendar(text, subscriptionurl) {
 
 		if (calendaritem) {
 			newevent.calendarid = calendaritem.id
-			newevent.color = calendaritem.color
+			newevent.hexcolor = calendaritem.hexcolor
 		}
 
 		outputevents.push(newevent)
@@ -5960,7 +5955,7 @@ function getdatafromgooglecalendar(listdata) {
 				myevent.googleeventid = id
 
 				if (mycalendar) {
-					myevent.color = mycalendar.color
+					myevent.hexcolor = mycalendar.hexcolor
 				}
 			}
 
@@ -6073,11 +6068,7 @@ function updatecalendaritempopup(id) {
 			<div class="inputgroup">
 				<div class="infotext width90px">Color</div>
 				<div class="display-flex flex-row gap-6px">
-					<div class="eventcolor redbackground ${item.color == 0 ? 'eventcolorselected' : ''}" onclick="calendarcolor(event, 0, '${item.id}')"></div>
-					<div class="eventcolor orangebackground ${item.color == 1 ? 'eventcolorselected' : ''}" onclick="calendarcolor(event, 1, '${item.id}')"></div>
-					<div class="eventcolor greenbackground ${item.color == 2 ? 'eventcolorselected' : ''}" onclick="calendarcolor(event, 2, '${item.id}')"></div>
-					<div class="eventcolor bluebackground ${item.color == 3 ? 'eventcolorselected' : ''}" onclick="calendarcolor(event, 3, '${item.id}')"></div>
-					<div class="eventcolor purplebackground ${item.color == 4 ? 'eventcolorselected' : ''}" onclick="calendarcolor(event, 4, '${item.id}')"></div>
+					${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" id="eventcolor0" onclick="calendarcolor(event, '${d}', '${item.id}')"></div>`).join('')}
 				</div>
 			</div>
 
@@ -6085,6 +6076,7 @@ function updatecalendaritempopup(id) {
 
 	 		${!item.isprimary ? `<div class="pointer text-14px width-fit background-red hover:background-red-hover padding-8px-12px border-8px text-white transition-duration-100" onclick="deletecalendar('${item.id}')">Delete calendar</div>` : ''}
 		</div>`
+		//here4
 }
 
 function closecalendaritempopup() {
@@ -6120,17 +6112,17 @@ function calendarcolor(event, index, id) {
 
 	let item = calendar.calendars.find(f => f.id == id)
 	if (!item) return
-	item.color = index
+	item.hexcolor = index
 
 	if (item.id == null) {
 		let calendarevents = calendar.events.filter(f => f.calendarid == null)
 		for (let event of calendarevents) {
-			event.color = item.color
+			event.hexcolor = item.hexcolor
 		}
 	} else {
 		let calendarevents = calendar.events.filter(f => f.calendarid == item.id)
 		for (let event of calendarevents) {
-			event.color = item.color
+			event.hexcolor = item.hexcolor
 		}
 	}
 
@@ -9207,9 +9199,6 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 		itemclasses.push('selectedevent')
 		itemclasses3.push('selectedcalendarevent')
 		itemclasses2.push('selectedtext')
-		itemclasses.push(BACKGROUNDCOLORLIST[item.color])
-	}else{
-		itemclasses.push(BACKGROUNDCOLORLISTTRANSPARENT[item.color])
 	}
 
 	if(myheight <= 15){
@@ -9224,8 +9213,8 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 
 	let output = ''
 	output = `
-	<div class="absolute pointer-none animatedeventwrap ${itemclasses3.join(' ')}" style="transform: ${!addedtodo ? `translateX(${percentage * difference * 100}%)` : ''} ${addedtodo ? `scale(${percentage * 100}%)` : ''};top:${mytop}px;height:${myheight}px;left:0;width:100%;">
-		<div class="popupbutton eventwrap pointer-auto eventborder ${BORDERCOLORLIST[item.color]} ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
+	<div class="absolute pointer-none animatedeventwrap ${itemclasses3.join(' ')}" style="background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`};transform: ${!addedtodo ? `translateX(${percentage * difference * 100}%)` : ''} ${addedtodo ? `scale(${percentage * 100}%)` : ''};top:${mytop}px;height:${myheight}px;left:0;width:100%;">
+		<div class="popupbutton eventwrap pointer-auto eventborder ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})" style="border-color:${item.hexcolor}">
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
 				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
@@ -9319,9 +9308,6 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 		itemclasses.push('selectedevent')
 		itemclasses3.push('selectedcalendarevent')
 		itemclasses2.push('selectedtext')
-		itemclasses.push(BACKGROUNDCOLORLIST[item.color])
-	}else{
-		itemclasses.push(BACKGROUNDCOLORLISTTRANSPARENT[item.color])
 	}
 
 	if (tempenddate.getTime() < Date.now()) {
@@ -9334,8 +9320,8 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 	let output = ''
 	output = `
-	<div class="absolute pointer-none ${itemclasses3.join(' ')}" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
-		<div class="popupbutton eventwrap pointer-auto eventborder ${BORDERCOLORLIST[item.color]} ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})">
+	<div class="absolute pointer-none ${itemclasses3.join(' ')}" style="background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`};top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
+		<div class="popupbutton eventwrap pointer-auto eventborder ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})" style="border-color:${item.hexcolor}">
 			${!Calendar.Event.isReadOnly(item) ? itemclicks.join('') : ''}
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
@@ -11117,7 +11103,7 @@ function updatecalendarlist() {
 		<div class="calendaritem transition-duration-100 justify-space-between display-flex gap-12px padding-top-8px padding-bottom-8px flex-row border-8px align-center">
 			<div class="gap-12px display-flex flex-row overflow-hidden">
 				<div class="todoitemcheckbox tooltip" onclick="toggleshowcalendar(event, '${item.id}')">
-					${getcolorcheckbox(!item.hidden, item.color)}
+					${getcolorcheckbox(!item.hidden, item.hexcolor)}
 				</div>
 		 
 				<div class="pointer-none text-primary calendaritemtext text-overflow-ellipsis text-14px nowrap calendaritemtext">${item.title ? cleanInput(item.title) : 'New Calendar'}</div>
@@ -11204,7 +11190,7 @@ function selectcalendaroption(calendarid) {
 	if (!calendaritem) return
 
 	item.calendarid = calendarid
-	item.color = calendaritem.color
+	item.hexcolor = calendaritem.hexcolor
 
 	calendar.updateInfo()
 	calendar.updateEvents()
@@ -11420,10 +11406,10 @@ function selectrepeatoption(index) {
 
 
 //color event
-function eventcolor(index) {
+function eventcolor(value) {
 	let item = calendar.events.find(f => f.id == selectedeventid)
 	if (!item) return
-	item.color = index
+	item.hexcolor = value
 
 	calendar.updateEvents()
 	calendar.updateInfo()

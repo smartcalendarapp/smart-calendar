@@ -2501,8 +2501,25 @@ body {
 	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
 	border-radius: 1000px;
 	cursor: pointer;
+	display:flex;
+	padding:6px;
 }
 
+.eventcolorinput{
+	appearance: none;
+	border:none;
+	margin:0;
+	padding:0;
+	background:none;
+	height:100%;
+	width:100%;
+}
+.eventcolorinputwrap{
+	border-radius:100px;
+	width:30px;
+	height:30px;
+	overflow:hidden;
+}
 
 .redbackgroundtransparent {
 	background-color: var(--red-transparent);
