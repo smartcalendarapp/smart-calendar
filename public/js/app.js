@@ -5905,6 +5905,7 @@ function getdatafromgooglecalendar(listdata) {
 			mycalendar.readonly = calendardata.accessRole == 'reader' || calendardata.accessRole == 'freeBusyReader'
 		} else {
 			mycalendar = new Calendar.Calendar(calendardata.summary, calendardata.description, calendardata.accessRole == 'reader' || calendardata.accessRole == 'freeBusyReader', null)
+			mycalendar.hexcolor = calendardata.backgroundColor
 		}
 
 		mycalendar.googleid = calendardata.id
