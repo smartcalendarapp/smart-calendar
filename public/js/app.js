@@ -255,7 +255,7 @@ function getstar(boolean, tooltip) {
 //get color checkbox
 function getcolorcheckbox(boolean, color, tooltip) {
 	if (boolean) {
-		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="checkboxbutton" style="background-color: ${color}">
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="checkboxbutton" style="fill: ${color}">
 			<g>
 			<path d="M50 0C22.3858 0 0 22.3858 0 50L0 206C0 233.614 22.3858 256 50 256L206 256C233.614 256 256 233.614 256 206L256 50C256 22.3858 233.614 0 206 0L50 0ZM200.688 54.125C204.511 53.7858 208.449 54.9038 211.625 57.5625C217.978 62.8798 218.817 72.3349 213.5 78.6875L114.844 196.562C108.848 203.725 97.8393 203.725 91.8438 196.562L42.5 137.625C37.1827 131.272 38.0224 121.817 44.375 116.5C50.7276 111.183 60.1827 112.022 65.5 118.375L103.344 163.562L190.5 59.4375C193.159 56.2612 196.864 54.4642 200.688 54.125Z" fill-rule="nonzero" opacity="1" stroke="none"/>
 			</g>
@@ -1831,10 +1831,10 @@ class Calendar {
 						 			<div class="text-14px text-primary width90px">Color</div>
 									<div class="display-flex flex-row gap-6px">
 										<div class="eventcolorgroup" id="eventcolorgroup">
-											${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" id="eventcolor0" onclick="eventcolor('${d}')"></div>`).join('')}
+											${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" onclick="eventcolor('${d}')"></div>`).join('')}
 										</div>
-										<div class="eventcolorinputwrap">
-											<input type="color" class="eventcolorinput" oninput="eventcolor(event.target.value)" value="${item.hexcolor}" />
+										<div class="eventcolorinputwrap" style="${DEFAULTCOLORS.find(d => d == item.hexcolor) ? `background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)` : `background-color: ${item.hexcolor}`}">
+											<input type="color" class="eventcolorinput" oninput="eventcolor(event.target.value)" />
 										</div>
 									</div>
 								</div>
@@ -1900,7 +1900,6 @@ class Calendar {
 					let eventcolorgroup = getElement('eventcolorgroup')
 					for (let [index, div] of Object.entries(eventcolorgroup.children)) {
 						div.innerHTML = getchecksmall(DEFAULTCOLORS[index] == item.hexcolor)
-						//here4
 					}
 
 					if (item.type == 1) {
@@ -6071,8 +6070,8 @@ function updatecalendaritempopup(id) {
 			<div class="inputgroup">
 				<div class="infotext width90px">Color</div>
 				<div class="display-flex flex-row gap-6px">
-					<div class="display-flex flex-row gap-6px">
-						${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" id="eventcolor0" onclick="calendarcolor(event, '${d}', '${item.id}')"></div>`).join('')}
+					<div class="display-flex flex-row gap-6px" id="calendaritemcolors">
+						${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" onclick="calendarcolor(event, '${d}', '${item.id}')"></div>`).join('')}
 					</div>
 					<div class="eventcolorinputwrap">
 						<input type="color" class="eventcolorinput" oninput="calendarcolor(event, event.target.value, '${item.id}')" value="${item.hexcolor}" />
@@ -6084,7 +6083,12 @@ function updatecalendaritempopup(id) {
 
 	 		${!item.isprimary ? `<div class="pointer text-14px width-fit background-red hover:background-red-hover padding-8px-12px border-8px text-white transition-duration-100" onclick="deletecalendar('${item.id}')">Delete calendar</div>` : ''}
 		</div>`
-		//here4
+
+		let calendaritemcolors = getElement('calendaritemcolors')
+		for (let [index, div] of Object.entries(calendaritemcolors.children)) {
+			div.innerHTML = getchecksmall(DEFAULTCOLORS[index] == item.hexcolor)
+		}
+
 }
 
 function closecalendaritempopup() {
