@@ -1829,8 +1829,10 @@ class Calendar {
 							<div class="infogroup">
 								<div class="inputgroup">
 						 			<div class="text-14px text-primary width90px">Color</div>
-									<div class="eventcolorgroup" id="eventcolorgroup">
-										${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" id="eventcolor0" onclick="eventcolor('${d}')"></div>`).join('')}
+									<div class="display-flex flex-row gap-6px">
+										<div class="eventcolorgroup" id="eventcolorgroup">
+											${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" id="eventcolor0" onclick="eventcolor('${d}')"></div>`).join('')}
+										</div>
 										<div class="eventcolorinputwrap">
 											<input type="color" class="eventcolorinput" oninput="eventcolor(event.target.value)" value="${item.hexcolor}" />
 										</div>
@@ -6068,7 +6070,12 @@ function updatecalendaritempopup(id) {
 			<div class="inputgroup">
 				<div class="infotext width90px">Color</div>
 				<div class="display-flex flex-row gap-6px">
-					${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" id="eventcolor0" onclick="calendarcolor(event, '${d}', '${item.id}')"></div>`).join('')}
+					<div class="display-flex flex-row gap-6px">
+						${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" id="eventcolor0" onclick="calendarcolor(event, '${d}', '${item.id}')"></div>`).join('')}
+					</div>
+					<div class="eventcolorinputwrap">
+						<input type="color" class="eventcolorinput" oninput="calendarcolor(event, event.target.value, '${item.id}')" value="${item.hexcolor}" />
+					</div>
 				</div>
 			</div>
 
@@ -9213,8 +9220,8 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 
 	let output = ''
 	output = `
-	<div class="absolute pointer-none animatedeventwrap ${itemclasses3.join(' ')}" style="background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`};transform: ${!addedtodo ? `translateX(${percentage * difference * 100}%)` : ''} ${addedtodo ? `scale(${percentage * 100}%)` : ''};top:${mytop}px;height:${myheight}px;left:0;width:100%;">
-		<div class="popupbutton eventwrap pointer-auto eventborder ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})" style="border-color:${item.hexcolor}">
+	<div class="absolute pointer-none animatedeventwrap ${itemclasses3.join(' ')}" style="transform: ${!addedtodo ? `translateX(${percentage * difference * 100}%)` : ''} ${addedtodo ? `scale(${percentage * 100}%)` : ''};top:${mytop}px;height:${myheight}px;left:0;width:100%;">
+		<div class="popupbutton eventwrap pointer-auto eventborder ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})" style="background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`};border-color:${item.hexcolor}">
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
 				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
@@ -9320,8 +9327,8 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 	let output = ''
 	output = `
-	<div class="absolute pointer-none ${itemclasses3.join(' ')}" style="background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`};top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
-		<div class="popupbutton eventwrap pointer-auto eventborder ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})" style="border-color:${item.hexcolor}">
+	<div class="absolute pointer-none ${itemclasses3.join(' ')}" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
+		<div class="popupbutton eventwrap pointer-auto eventborder ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})" style="background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`};border-color:${item.hexcolor}">
 			${!Calendar.Event.isReadOnly(item) ? itemclicks.join('') : ''}
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
