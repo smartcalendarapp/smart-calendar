@@ -5458,7 +5458,6 @@ async function getclientgoogleclassroom(){
 		}
 	}catch(err){
 		console.log(err)
-		displayalert('Error, could not sync with Google Classroom')
 	}
 
 	isgettingclientgoogleclassroom = false
@@ -5783,7 +5782,6 @@ async function setclientgooglecalendar(requestchanges) {
 		}
 	} catch (err) {
 		console.log(err)
-		displayalert('Error, could not sync with Google Calendar')
 	}
 
 	issettingclientgooglecalendar = false
@@ -5846,7 +5844,6 @@ async function getclientgooglecalendar() {
 		}
 	} catch (err) {
 		console.log(err)
-		displayalert('Error, could not sync with Google Calendar')
 	}
 
 	isgettingclientgooglecalendar = false
@@ -6216,6 +6213,7 @@ function opensettingssleep() {
 
 function opencreatecalendarbutton() {
 	calendartabs = [3]
+	settingstab = 2
 	calendar.updateTabs()
 
 	closecalendaroptionmenu()

@@ -451,7 +451,9 @@ async function processReminders(){
 											Hi ${item.user.name},
 									</p>
 									<p style="font-size: 18px; color: #333;">
-											Just a quick reminder that your event <strong>${item.event.title || 'New Event'}</strong> is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}. 
+											Just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}:
+											<br>
+											<strong>${item.event.title || 'New Event'}</strong> (${getHMText(new Date(item.event.start).getHours() * 60 + new Date(item.event.start).getMinutes())} – ${getHMText(new Date(item.event.end).getHours() * 60 + new Date(item.event.end).getMinutes())})
 									</p>
 									<p style="text-align: center;font-size: 14px; color: #333;">
 										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px">Open the app</a>
@@ -477,7 +479,8 @@ async function processReminders(){
 					</body>
 					</html>`,
 					textbody: `Hi ${item.user.name},
-					Just a quick reminder that your event ${item.event.title || 'New Event'} is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}.
+					Just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}:
+					${item.event.title || 'New Event'} (${getHMText(new Date(item.event.start).getHours() * 60 + new Date(item.event.start).getMinutes())} – ${getHMText(new Date(item.event.end).getHours() * 60 + new Date(item.event.end).getMinutes())})
 
 					Open https://smartcalendar.us/app to see more details about your event.
 					
@@ -512,7 +515,9 @@ async function processReminders(){
 											Hi ${item.user.name},
 									</p>
 									<p style="font-size: 18px; color: #333;">
-											Just a quick reminder that your task <strong>${item.event.title || 'New Task'}</strong> is due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}. 
+											Just a quick reminder that you have a task due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}
+											<br>
+											<strong>${item.event.title || 'New Task'}</strong>
 									</p>
 									<p style="text-align: center;font-size: 14px; color: #333;">
 										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px">Open the app</a>
@@ -538,7 +543,8 @@ async function processReminders(){
 					</body>
 					</html>`,
 					textbody: `Hi ${item.user.name},
-					Just a quick reminder that your task ${item.event.title || 'New Task'} is due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}.
+					Just a quick reminder that you have a task due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}:
+					${item.event.title || 'New Task'}.
 
 					Open https://smartcalendar.us/app to see more details about your task.
 					
