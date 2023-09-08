@@ -8662,8 +8662,12 @@ function inputtododuedate(event){
 	}
 
 
+	let endbeforedate;
+	if (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null) {
+		endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
+	}
 	let edittodoinputduedate = getElement('edittodoinputduedate')
-	edittodoinputduedate.value = tempdate ? getDMDYText(tempdate) : 'None'
+	edittodoinputduedate.value = endbeforedate ? getDMDYText(endbeforedate) : 'None'
 
 	calendar.updateHistory()
 }
@@ -8680,8 +8684,12 @@ function inputtododuetime(event){
 		item.endbefore.minute = myendbeforeminute
 	}
 
+	let endbeforedate;
+	if (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null) {
+		endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
+	}
 	let edittodoinputduetime = getElement('edittodoinputduetime')
-	edittodoinputduetime.value = item.endbefore.minute ? getHMText(endbeforedate.getHours() * 60 + endbeforedate.getMinutes()) : 'None'
+	edittodoinputduetime.value = endbeforedate ? getHMText(endbeforedate.getHours() * 60 + endbeforedate.getMinutes()) : 'None'
 
 	calendar.updateHistory()
 }
@@ -8695,7 +8703,9 @@ function inputtododuration(event){
 	if(Calendar.Todo.isTodo(item)){
 		let myduration = getDuration(string).value
 
-		item.duration = myduration
+		if(myduration != null){
+			item.duration = myduration
+		}
 	}else{
 		let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 		let myduration = getDuration(string).value
@@ -8723,98 +8733,6 @@ function inputtododuration(event){
 	calendar.updateHistory()
 }
 
-
-function submitedittodo(event) {
-	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
-	if (!item) return
-
-	let edittodoinputtitle = getElement('edittodoinputtitle')
-	let edittodoinputduedate = getElement('edittodoinputduedate')
-	let edittodoinputduetime = getElement('edittodoinputduetime')
-	let edittodoinputduration = getElement('edittodoinputduration')
-	let edittodoinputnotes = getElement('edittodoinputnotes')
-
-	let string = edittodoinputduedate.value
-	let string2 = edittodoinputduetime.value
-	let string3 = edittodoinputduration.value
-
-	let tempdate = new Date()
-
-	let [myendbeforeyear, myendbeforemonth, myendbeforeday] = getDate(string).value
-	let myendbeforeminute = getMinute(string2).value
-
-	if ((myendbeforeyear == null || myendbeforemonth == null || myendbeforeday == null) && myendbeforeminute == null) {
-		myendbeforeyear = tempdate.getFullYear()
-		myendbeforemonth = tempdate.getMonth()
-		myendbeforeday = tempdate.getDate() + 1
-		myendbeforeminute = -1
-	}
-	if (myendbeforeyear == null || myendbeforemonth == null || myendbeforeday == null) {
-		myendbeforeyear = tempdate.getFullYear()
-		myendbeforemonth = tempdate.getMonth()
-		myendbeforeday = tempdate.getDate()
-	}
-	if (myendbeforeminute == null) {
-		myendbeforeminute = 0
-	}
-
-	let myduration = getDuration(string3).value
-	if (myduration == null) {
-		if(Calendar.Todo.isTodo(item)){
-			myduration = item.duration
-		}else{
-			myduration = Math.floor((new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()) / 60000)
-		}
-	}
-
-	let tempendbeforedate = new Date(myendbeforeyear, myendbeforemonth, myendbeforeday, 0, myendbeforeminute)
-	let title = edittodoinputtitle.value
-	let notes = edittodoinputnotes.value
-
-	if (!isNaN(tempendbeforedate.getTime())) {
-		item.endbefore.year = tempendbeforedate.getFullYear()
-		item.endbefore.month = tempendbeforedate.getMonth()
-		item.endbefore.day = tempendbeforedate.getDate()
-		item.endbefore.minute = tempendbeforedate.getHours() * 60 + tempendbeforedate.getMinutes()
-		item.title = title
-		item.notes = notes
-
-		if(Calendar.Todo.isTodo(item)){
-			item.duration = myduration
-		}else{
-			let tempenddate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-			tempenddate.setMinutes(tempenddate.getMinutes() + myduration)
-			
-			item.end.year = tempenddate.getFullYear()
-			item.end.month = tempenddate.getMonth()
-			item.end.day = tempenddate.getDate()
-			item.end.minute = tempenddate.getHours() * 60 + tempenddate.getMinutes()
-		}
-
-		let option = daytimewindowoptiondata[edittodopreferredday]
-		if (option) {
-			item.timewindow.day.byday = option.byday
-		}
-		let option2 = timetimewindowoptiondata[edittodopreferredtime]
-		if (option2) {
-			item.timewindow.time.startminute = option2.startminute
-			item.timewindow.time.endminute = option2.endminute
-		}
-		item.priority = edittodopriority
-
-		selectededittodoid = null
-		calendar.updateTodo()
-		if(Calendar.Event.isEvent(item)){
-			calendar.updateEvents()
-		}
-		calendar.updateHistory()
-		calendar.updateInfo()
-		
-		setTimeout(function(){
-			scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
-		}, 300)
-	}
-}
 
 function closeedittodo() {
 	selectededittodoid = null
