@@ -8593,7 +8593,7 @@ function clickedittodotimewindowtime(index) {
 		item.timewindow.time.endminute = option2.endminute
 	}
 	
-	calendar.updateTodo()
+	calendar.updateEditTodo()
 	calendar.updateHistory()
 }
 
@@ -8606,7 +8606,7 @@ function clickedittodotimewindowday(index) {
 		item.timewindow.day.byday = option.byday
 	}
 
-	calendar.updateTodo()
+	calendar.updateEditTodo()
 	calendar.updateHistory()
 }
 
@@ -8615,9 +8615,10 @@ function clickedittodopriority(index) {
 	if (!item) return
 
 	item.priority = index
-	calendar.updateTodo()
+	calendar.updateEditTodo()
 	calendar.updateHistory()
 }
+
 
 function inputtodotitle(event){
 	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
@@ -8625,7 +8626,9 @@ function inputtodotitle(event){
 
 	item.title = event.target.value
 
-	calendar.updateTodo()
+	let edittodoinputtitle = getElement('edittodoinputtitle')
+	edittodoinputtitle.value = cleanInput(item.title)
+
 	calendar.updateHistory()
 }
 
@@ -8635,9 +8638,12 @@ function inputtodonotes(event){
 
 	item.notes = event.target.value
 
-	calendar.updateTodo()
+	let edittodoinputnotes = getElement('edittodoinputnotes')
+	edittodoinputnotes.value = cleanInput(item.notes)
+
 	calendar.updateHistory()
 }
+
 
 function inputtododuedate(event){
 	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
@@ -8656,7 +8662,9 @@ function inputtododuedate(event){
 	}
 
 
-	calendar.updateTodo()
+	let edittodoinputduedate = getElement('edittodoinputduedate')
+	edittodoinputduedate.value = tempdate ? getDMDYText(tempdate) : 'None'
+
 	calendar.updateHistory()
 }
 
@@ -8672,7 +8680,9 @@ function inputtododuetime(event){
 		item.endbefore.minute = myendbeforeminute
 	}
 
-	calendar.updateTodo()
+	let edittodoinputduetime = getElement('edittodoinputduetime')
+	edittodoinputduetime.value = item.endbefore.minute ? getHMText(endbeforedate.getHours() * 60 + endbeforedate.getMinutes()) : 'None'
+
 	calendar.updateHistory()
 }
 
@@ -8699,7 +8709,17 @@ function inputtododuration(event){
 		}
 	}
 
-	calendar.updateTodo()
+
+	let myduration;
+	if(Calendar.Todo.isTodo(item)){
+		myduration = item.duration
+	}else{
+		myduration = Math.floor((new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()) / 60000)
+	}
+
+	let edittodoinputduration = getElement('edittodoinputduration')
+	edittodoinputduration.value = getDHMText(myduration)
+
 	calendar.updateHistory()
 }
 
