@@ -1038,8 +1038,8 @@ class Calendar {
 							requestchanges.push({ type: 'createevent', item: item, requestid: generateID() })
 						} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit event
 							//check for change
-							if (new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() != new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute).getTime() || new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() != new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute).getTime() || item.title != olditem.title || item.notes != olditem.notes || getRecurrenceString(item) != getRecurrenceString(olditem) || item.googlecalendarid != olditem.googlecalendarid) {
-								requestchanges.push({ type: 'editevent', item: item, oldgooglecalendarid: olditem.googlecalendarid, requestid: generateID() })
+							if (new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() != new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute).getTime() || new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() != new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute).getTime() || item.title != olditem.title || item.notes != olditem.notes || getRecurrenceString(item) != getRecurrenceString(olditem) || Calendar.Event.getCalendar(item)?.googleid != olditem.googlecalendarid) {
+								requestchanges.push({ type: 'editevent', item: item, oldgooglecalendarid: olditem.googlecalendarid, newgooglecalendarid: Calendar.Event.getCalendar(item)?.googleid, requestid: generateID() })
 							}
 						}
 					}
@@ -5766,6 +5766,11 @@ async function setclientgooglecalendar(requestchanges) {
 					if (!item) continue
 
 					item.googleid = responsechange.googleid
+				}else if(responsechange.type == 'editevent'){
+					let item = calendar.events.find(d => d.id == responsechange.id)
+					if (!item) continue
+
+					item.googlecalendarid = responsechange.googlecalendarid
 				}
 			}
 

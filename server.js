@@ -1572,20 +1572,20 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 					if(response.status != 200){
 						throw new Error()
 					}
-					console.warn(item.googlecalendarid , requestchange.oldgooglecalendarid)
 
-					if(item.googlecalendarid != requestchange.oldgooglecalendarid){
+					if(requestchange.newgooglecalendarid != requestchange.oldgooglecalendarid){
 						//move event request
 						const response2 = await googlecalendar.events.move({
 							calendarId: requestchange.oldgooglecalendarid || 'primary',
 							eventId: item.googleeventid,
-							destination: item.googlecalendarid || 'primary'
+							destination: requestchange.newgooglecalendarid || 'primary'
 						})
-						console.warn(response2)
 		
 						if(response2.status != 200){
 							throw new Error()
 						}
+
+						responsechanges.push({ type: 'editevent', id: item.id, googlecalendarid: requestchange.newgooglecalendarid })
 					}
 				}catch(error){
 					console.error(error)
