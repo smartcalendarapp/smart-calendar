@@ -1838,12 +1838,14 @@ class Calendar {
 												<input type="color" class="eventcolorinput" oninput="eventcolor(event.target.value)"/>
 											</div>`
 											:
-											`<div class="relative eventcolorinputwrap border-round text-14px padding-6px-12px text-primary background-tint-1 pointer transition-duration-100 hover:background-tint-2">
-												<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallinline">
-													<g>
-													<path d="M128 6.1875C121.925 6.1875 117 11.1124 117 17.1875L117 117L17.1875 117C11.1124 117 6.1875 121.925 6.1875 128C6.1875 134.075 11.1124 139 17.1875 139L117 139L117 238.812C117 244.888 121.925 249.813 128 249.812C134.075 249.812 139 244.888 139 238.812L139 139L238.812 139C244.888 139 249.813 134.075 249.812 128C249.812 121.925 244.888 117 238.812 117L139 117L139 17.1875C139 11.1124 134.075 6.1875 128 6.1875Z" fill-rule="nonzero" opacity="1" ></path>
-													</g>
-												</svg>
+											`<div class="relative eventcolorinputwrap border-round text-14px text-primary background-tint-1 pointer transition-duration-100 hover:background-tint-2">
+												<div class="padding-6px display-flex">
+													<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallfill">
+														<g>
+														<path d="M128 6.1875C121.925 6.1875 117 11.1124 117 17.1875L117 117L17.1875 117C11.1124 117 6.1875 121.925 6.1875 128C6.1875 134.075 11.1124 139 17.1875 139L117 139L117 238.812C117 244.888 121.925 249.813 128 249.812C134.075 249.812 139 244.888 139 238.812L139 139L238.812 139C244.888 139 249.813 134.075 249.812 128C249.812 121.925 244.888 117 238.812 117L139 117L139 17.1875C139 11.1124 134.075 6.1875 128 6.1875Z" fill-rule="nonzero" opacity="1" ></path>
+														</g>
+													</svg>
+												</div>
 												<input type="color" class="eventcolorinput" oninput="eventcolor(event.target.value)"/>
 											</div>`}
 											
@@ -6083,16 +6085,21 @@ function updatecalendaritempopup(id) {
 				<div class="infotext width90px">Color</div>
 				<div class="display-flex flex-row gap-6px">
 					<div class="eventcolorgroup" id="calendaritemcolors">
-						${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" onclick="eventcolor('${d}')"></div>`).join('')}
+						${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" onclick="calendarcolor('${d}')"></div>`).join('')}
 					</div>
 					${!DEFAULTCOLORS.find(d => d == item.hexcolor) ? 
-						`<div class="eventcolor relative" style="background-color:${item.hexcolor}">
-							<div class="eventcolorheightwidth"></div>
+						`<div class="eventcolor eventcolorinputwrap padding-0 overflow-hidden relative" style="background-color:${item.hexcolor}">
 							<input type="color" class="eventcolorinput" oninput="calendarcolor(event, event.target.value, '${item.id}')"/>
 						</div>`
 						:
-						`<div class="relative border-round text-14px padding-6px-12px text-primary background-tint-1 pointer transition-duration-100 hover:background-tint-2">
-							Custom
+						`<div class="relative eventcolorinputwrap border-round text-14px text-primary background-tint-1 pointer transition-duration-100 hover:background-tint-2">
+							<div class="padding-6px display-flex">
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallfill">
+									<g>
+									<path d="M128 6.1875C121.925 6.1875 117 11.1124 117 17.1875L117 117L17.1875 117C11.1124 117 6.1875 121.925 6.1875 128C6.1875 134.075 11.1124 139 17.1875 139L117 139L117 238.812C117 244.888 121.925 249.813 128 249.812C134.075 249.812 139 244.888 139 238.812L139 139L238.812 139C244.888 139 249.813 134.075 249.812 128C249.812 121.925 244.888 117 238.812 117L139 117L139 17.1875C139 11.1124 134.075 6.1875 128 6.1875Z" fill-rule="nonzero" opacity="1" ></path>
+									</g>
+								</svg>
+							</div>
 							<input type="color" class="eventcolorinput" oninput="calendarcolor(event, event.target.value, '${item.id}')"/>
 						</div>`}
 				</div>

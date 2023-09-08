@@ -985,6 +985,14 @@ body {
 	pointer-events: none;
 }
 
+.buttonsmallfill{
+	height: 14px;
+	width: 14px;
+	fill: var(--text-primary);
+	stroke: none;
+	pointer-events: none;
+}
+
 .buttonsmallinline {
 	height: 14px;
 	width: 14px;
