@@ -489,7 +489,7 @@ function getMinute(string) {
 		myminute = 24 * 60
 	}
 
-	let tempmatch7 = string.match(/\b(night|nighttime)\b/)
+	let tempmatch7 = string.match(/\b(tonight|night|nighttime)\b/)
 	if (tempmatch7) {
 		match = tempmatch7[0]
 
@@ -1133,6 +1133,7 @@ class Calendar {
 		</div>` : str
 		let topbarinfodate = getElement('topbarinfodate')
 		topbarinfodate.innerHTML = str
+		topbarinfodate.style.maxWidth = Math.max(window.getComputedStyle(topbarinfodate).maxWidth, topbarinfodate.offsetWidth)
 	}
 
 	updateBarColumnGroup() {
@@ -6851,7 +6852,7 @@ function typeaddevent(event, submit) {
 
 	//duration
 	if (finalduration == null) {
-		finalduration = 30
+		finalduration = 60
 	}
 
 	//start

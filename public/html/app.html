@@ -264,9 +264,9 @@
 
 		<div class="display-flex flex-row gap-12px flex-wrap-wrap">
 			<div class="bordertertiary transition-duration-100 width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemnotdue(event, inputtodoid)">No due date</div>
-			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputtodoitemduetime(event, 1440-1)">Today</div>
-			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);inputtodoitemduetime(event, 1440-1)">Tomorrow</div>
-			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7);inputtodoitemduetime(event, 1440-1)">In 1 week</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputtodoitemduetime(event, 21*60)">Tonight</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);inputtodoitemduetime(event, 1440)">Tomorrow</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7);inputtodoitemduetime(event, 1440)">In 1 week</div>
 		</div>
 
 		<div class="horizontalbar"></div>
@@ -333,9 +333,9 @@
 
 		<div class="display-flex flex-row gap-12px flex-wrap-wrap">
 			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemnotdue(event)">No due date</div>
-			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputcreatetodoitemduetime(event, 1440-1)">Today</div>
-			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);inputcreatetodoitemduetime(event, 1440-1)">Tomorrow</div>
-			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7);inputcreatetodoitemduetime(event, 1440-1)">In 1 week</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputcreatetodoitemduetime(event, 21*60)">Tonight</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);inputcreatetodoitemduetime(event, 1440)">Tomorrow</div>
+			<div class="bordertertiary transition-duration-100 nowrap width-fit border-8px hover:background-tint-1 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7);inputcreatetodoitemduetime(event, 1440)">In 1 week</div>
 		</div>
 
 		<div class="horizontalbar"></div>
@@ -1789,9 +1789,9 @@
 	
 									
 									<div class="display-flex flex-row align-center pointer-none">
-										<div class="text-bold width120px topbarinfodate nowrap pointer-none small:display-none" id="topbarinfodate"></div>
+										<div class="text-bold topbarinfodate nowrap pointer-none small:display-none" id="topbarinfodate"></div>
 	
-										<div class="text-bold width120px topbarinfodate nowrap display-none small:display-flex" id="topbarinfodate2"></div>	
+										<div class="text-bold topbarinfodate nowrap display-none small:display-flex" id="topbarinfodate2"></div>	
 									</div>
 									
 									<div class="display-flex flex-row align-center">
@@ -1837,7 +1837,7 @@
 	
 
 								<!-- right -->
-								<div class="display-flex flex-row align-center justify-flex-end flex-1">				
+								<div class="small:display-none display-flex flex-row align-center justify-flex-end flex-1">				
 
 									<div class="topbarmiddle small:display-none" id="topbarmiddle">
 										<div class="topbarmodechild flex-1 text-center" onclick="setcalendarmode(0);gtag('event', 'button_click', { useraction: 'Day - calendar' })">Day</div>
