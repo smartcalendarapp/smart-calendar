@@ -4419,14 +4419,14 @@ function clickeventinfoedit(event) {
 
 	editinfo = !editinfo
 
+	calendar.updateInfo(true)
+
 	//analytics
 	if (editinfo) {
 		gtag('event', 'button_click', { useraction: 'Edit - event info' })
 	} else {
 		gtag('event', 'button_click', { useraction: 'Done - event info' })
 	}
-
-	calendar.updateInfo(true)
 }
 
 function clickeventinfo(event) {
@@ -8435,6 +8435,8 @@ function dragtodo(event, id) {
 		document.removeEventListener('mouseup', finishfunction, false)
 
 		dragtododiv.classList.add('display-none')
+		
+		dragtodohighlight.classList.add('hiddenfade')
 
 
 		//drop
@@ -8443,8 +8445,6 @@ function dragtodo(event, id) {
 		let x = event.clientX
 		let y = event.clientY
 		if (x >= rect2.left && x < rect2.right && y >= rect2.top && y < rect2.bottom) {
-			gtag('event', 'button_click', { useraction: 'Drop task - calendar' })
-
 			if (item.endbefore.year == null || item.endbefore.month == null || item.endbefore.day == null || item.endbefore.minute == null) {
 				let tempdate = new Date()
 				tempdate.setHours(0, 0, 0, 0)
@@ -8458,9 +8458,9 @@ function dragtodo(event, id) {
 
 
 			startAutoSchedule([item])
-		}
 
-		dragtodohighlight.classList.add('hiddenfade')
+			gtag('event', 'button_click', { useraction: 'Drop task - calendar' })
+		}
 
 	}
 }
