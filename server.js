@@ -163,6 +163,16 @@ async function sendmessage(data){
 	return data
 }
 
+async function logclienterror(data){
+	const params = {
+		TableName: 'smartcalendarerrors',
+		Item: marshall(data, { convertClassInstanceToMap: true, removeUndefinedValues: true })
+	}
+	  
+	await dynamoclient.send(new PutItemCommand(params))
+	return data
+}
+
 
 //DATABASE CLASSES
 function addmissingproperties(model, current) {
@@ -272,6 +282,14 @@ class Message{
 		this.content = content
 		this.userid = userid
 		this.email = email
+	}
+}
+
+class ClientError{
+	constructor({ userid, error }){
+		this.id = generateID()
+		this.userid = userid
+		this.error = error
 	}
 }
 
@@ -453,7 +471,7 @@ async function processReminders(){
 									<p style="font-size: 18px; color: #333;">
 											Just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}:
 											<br>
-											<strong>${item.event.title || 'New Event'}</strong> (${getHMText(new Date(item.event.start).getHours() * 60 + new Date(item.event.start).getMinutes())} – ${getHMText(new Date(item.event.end).getHours() * 60 + new Date(item.event.end).getMinutes())})
+											<strong>${item.event.title || 'New Event'}</strong> <span class="font-size:16px">(${getHMText(new Date(item.event.start).getHours() * 60 + new Date(item.event.start).getMinutes())} – ${getHMText(new Date(item.event.end).getHours() * 60 + new Date(item.event.end).getMinutes())})</span>
 									</p>
 									<p style="text-align: center;font-size: 14px; color: #333;">
 										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px">Open the app</a>
@@ -2289,6 +2307,37 @@ app.post('/setclientdata', async (req, res, next) => {
 		cacheReminders(user)
 		
 		await setUser(user)
+		return res.end()
+	} catch (error) {
+		console.error(error)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
+
+app.post('/logclienterror', async (req, res, next) => {
+	try {
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		let user = await getUserById(userid)
+		if (!user) {
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+		const errordata = req.body.errordata
+
+		const errorobject = new ClientError({ userid: userid, error: errordata })
+
+		try{
+			await logclienterror(errorobject)
+		}catch(error){
+			return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		}
+		
 		return res.end()
 	} catch (error) {
 		console.error(error)

@@ -2086,7 +2086,7 @@ class Calendar {
 							`<div class="text-primary display-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-tint-1 hover:background-tint-2 pointer-auto transition-duration-100 border-8px pointer" onclick="todocompleted(event, selectedeventid)">
 								<div class="pointer-none nowrap text-primary text-14px">${item.completed ? `Mark uncomplete` : 'Mark complete'}</div>
 							</div>
-							<div class="text-white display-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-green hover:background-green-hover pointer-auto transition-duration-100 border-8px pointer" onclick="startnow(selectedeventid);gtag('event', 'button_click', { useraction: 'Start now - event info' })">
+							<div class="text-white display-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-green hover:background-green-hover pointer-auto transition-duration-100 border-8px pointer" onclick="startnow(selectedeventid);if(gtag){gtag('event', 'button_click', { useraction: 'Start now - event info' })}">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 									<g>
 									<path d="M45.6353 28.72L45.6353 227.28" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -3252,6 +3252,22 @@ async function getclient() {
 	await getclientinfo()
 	await getclientdata()
 }
+
+window.onerror = async function(message, source, linenumber, columnnumber, error) {
+	const errordata = { stack: error.stack }
+	try{
+		const response = await fetch('/logclienterror', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				errordata: JSON.parse(errordata),
+			})
+		}).catch(e => e)
+	}catch(err){ }
+}
+
 
 //save data
 let lastbodydata;
@@ -4423,9 +4439,9 @@ function clickeventinfoedit(event) {
 
 	//analytics
 	if (editinfo) {
-		gtag('event', 'button_click', { useraction: 'Edit - event info' })
+		if(gtag){gtag('event', 'button_click', { useraction: 'Edit - event info' })}
 	} else {
-		gtag('event', 'button_click', { useraction: 'Done - event info' })
+		if(gtag){gtag('event', 'button_click', { useraction: 'Done - event info' })}
 	}
 }
 
@@ -7815,7 +7831,7 @@ function gettododata(item) {
 		 
 						<div class="display-flex flex-row gap-12px">
 						${!schedulemytasksenabled ? `
-							<div class="todoitemcheckbox tooltip display-flex" onclick="todocompleted(event, '${item.id}');gtag('event', 'button_click', { useraction: '${item.completed ? 'Mark uncomplete - task' : 'Mark complete - task'}' })">
+							<div class="todoitemcheckbox tooltip display-flex" onclick="todocompleted(event, '${item.id}');if(gtag){gtag('event', 'button_click', { useraction: '${item.completed ? 'Mark uncomplete - task' : 'Mark complete - task'}' })}">
 							${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
 						</div>
 						` : ''}
@@ -7872,7 +7888,7 @@ function gettododata(item) {
 	
 						
 						<div class="gap-6px todoitembuttongroup z-index-1 height-fit justify-flex-end flex-row small:visibility-visible">						
-							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="edittodo('${item.id}');gtag('event', 'button_click', { useraction: 'Edit - task' })">
+							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="edittodo('${item.id}');if(gtag){gtag('event', 'button_click', { useraction: 'Edit - task' })}">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 								<g>
 								<path d="M178.389 21.6002L31.105 168.884M234.4 77.6109L87.1156 224.895M178.389 21.6002C193.856 6.13327 218.933 6.13327 234.4 21.6002C249.867 37.0671 249.867 62.1439 234.4 77.6109M10 245.998L31.105 168.884M10.0017 246L87.1156 224.895" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -7882,7 +7898,7 @@ function gettododata(item) {
 								<span class="tooltiptextcenter" id="eventinfoedittooltiptext">Edit</span>
 							</div>
 				
-							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="deletetodo('${item.id}');gtag('event', 'button_click', { useraction: 'Delete - task' })">
+							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="deletetodo('${item.id}');if(gtag){gtag('event', 'button_click', { useraction: 'Delete - task' })}">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 								<g>
 								<path d="M207.414 223.445L207.414 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -8462,7 +8478,7 @@ function dragtodo(event, id) {
 
 			startAutoSchedule([item])
 
-			gtag('event', 'button_click', { useraction: 'Drop task - calendar' })
+			if(gtag){gtag('event', 'button_click', { useraction: 'Drop task - calendar' })}
 		}
 
 	}
@@ -9419,9 +9435,9 @@ function eventtype(type) {
 	calendar.updateTodo()
 
 	if (item.type == 0) {
-		gtag('event', 'button_click', { useraction: 'Event - event info' })
+		if(gtag){gtag('event', 'button_click', { useraction: 'Event - event info' })}
 	} else {
-		gtag('event', 'button_click', { useraction: 'Task - event info' })
+		if(gtag){gtag('event', 'button_click', { useraction: 'Task - event info' })}
 	}
 }
 
