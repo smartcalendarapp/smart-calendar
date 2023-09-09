@@ -515,7 +515,7 @@ async function processReminders(){
 											Hi ${item.user.name},
 									</p>
 									<p style="font-size: 18px; color: #333;">
-											Just a quick reminder that you have a task due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}
+											Just a quick reminder that you have a task due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}:
 											<br>
 											<strong>${item.event.title || 'New Task'}</strong>
 									</p>

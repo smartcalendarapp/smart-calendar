@@ -1627,7 +1627,7 @@ class Calendar {
 				if(Calendar.Event.isReadOnly(item)){
 					editinfo = false
 				}
-				
+
 				if (showinfo) {
 					eventinfo.classList.remove('hiddenpopup')
 					return
@@ -1842,7 +1842,7 @@ class Calendar {
 												<div class="padding-6px display-flex">
 													${getchecksmall(true)}
 												</div>
-												<input type="color" value="${item.hexcolor}" class="eventcolorinput" oninput="eventcolor(event.target.value)"/>
+												<input type="color" value="${item.hexcolor}" class="eventcolorinput" onchange="eventcolor(event.target.value)"/>
 											</div>`
 											:
 											`<div class="relative eventcolorinputwrap border-round text-14px text-primary background-tint-1 pointer transition-duration-100 hover:background-tint-2">
@@ -1853,7 +1853,7 @@ class Calendar {
 														</g>
 													</svg>
 												</div>
-												<input type="color" class="eventcolorinput" oninput="eventcolor(event.target.value)"/>
+												<input type="color" class="eventcolorinput" onchange="eventcolor(event.target.value)"/>
 											</div>`}
 											
 										</div>
@@ -1982,18 +1982,20 @@ class Calendar {
 							}`
 					}
 
-					//repeat
-					let repeatoptionbutton = getElement('repeatoptionbutton')
+					if(item.type == 0){
+						//repeat
+						let repeatoptionbutton = getElement('repeatoptionbutton')
 
-					let repeattext = getRepeatText(item)
-					repeattext += `<span><svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline rotate90">
-					<g>
-					<path d="M88.6229 47.8879L167.377 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-					<path d="M88.6229 208.112L167.377 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-					</g>
-					</svg></span>`
+						let repeattext = getRepeatText(item)
+						repeattext += `<span><svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline rotate90">
+						<g>
+						<path d="M88.6229 47.8879L167.377 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M88.6229 208.112L167.377 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						</g>
+						</svg></span>`
 
-					repeatoptionbutton.innerHTML = repeattext
+						repeatoptionbutton.innerHTML = repeattext
+					}
 
 
 					//calendar
@@ -6102,7 +6104,7 @@ function updatecalendaritempopup(id) {
 							<div class="padding-6px display-flex">
 								${getchecksmall(true)}
 							</div>
-							<input type="color" value="${item.hexcolor}" class="eventcolorinput" oninput="calendarcolor(event, event.target.value, '${item.id}')"/>
+							<input type="color" value="${item.hexcolor}" class="eventcolorinput" onchange="calendarcolor(event, event.target.value, '${item.id}')"/>
 						</div>`
 						:
 						`<div class="relative eventcolorinputwrap border-round text-14px text-primary background-tint-1 pointer transition-duration-100 hover:background-tint-2">
@@ -6113,7 +6115,7 @@ function updatecalendaritempopup(id) {
 									</g>
 								</svg>
 							</div>
-							<input type="color" class="eventcolorinput" oninput="calendarcolor(event, event.target.value, '${item.id}')"/>
+							<input type="color" class="eventcolorinput" onchange="calendarcolor(event, event.target.value, '${item.id}')"/>
 						</div>`}
 				</div>
 			</div>
