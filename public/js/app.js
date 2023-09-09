@@ -1624,6 +1624,10 @@ class Calendar {
 			let item = calendar.events.find(c => c.id == selectedeventid)
 
 			if (item) {
+				if(Calendar.Event.isReadOnly(item)){
+					editinfo = false
+				}
+				
 				if (showinfo) {
 					eventinfo.classList.remove('hiddenpopup')
 					return

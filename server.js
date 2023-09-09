@@ -453,7 +453,7 @@ async function processReminders(){
 									<p style="font-size: 18px; color: #333;">
 											Just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}:
 											<br>
-											<strong>${item.event.title || 'New Event'}</strong> <span class="font-size:16px">(${getHMText(new Date(item.event.start).getHours() * 60 + new Date(item.event.start).getMinutes())} – ${getHMText(new Date(item.event.end).getHours() * 60 + new Date(item.event.end).getMinutes())})</span>
+											<strong>${item.event.title || 'New Event'}</strong> <span class="font-size:16px !important">(${getHMText(new Date(item.event.start).getHours() * 60 + new Date(item.event.start).getMinutes())} – ${getHMText(new Date(item.event.end).getHours() * 60 + new Date(item.event.end).getMinutes())})</span>
 									</p>
 									<p style="text-align: center;font-size: 14px; color: #333;">
 										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px">Open the app</a>
