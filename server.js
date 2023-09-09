@@ -453,7 +453,7 @@ async function processReminders(){
 									<p style="font-size: 18px; color: #333;">
 											Just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}:
 											<br>
-											<strong>${item.event.title || 'New Event'}</strong> <span class="font-size:16px !important">(${getHMText(new Date(item.event.start).getHours() * 60 + new Date(item.event.start).getMinutes())} – ${getHMText(new Date(item.event.end).getHours() * 60 + new Date(item.event.end).getMinutes())})</span>
+											<strong>${item.event.title || 'New Event'}</strong> <span class="font-size:16px !important">(${getHMText(new Date(item.event.start + item.user.timezoneoffset).getHours() * 60 + new Date(item.event.start + item.user.timezoneoffset).getMinutes())} – ${getHMText(new Date(item.event.end + item.user.timezoneoffset).getHours() * 60 + new Date(item.event.end + item.user.timezoneoffset).getMinutes())})</span>
 									</p>
 									<p style="text-align: center;font-size: 14px; color: #333;">
 										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span class="color: #ffffff">Open the app</span></a>
@@ -480,7 +480,7 @@ async function processReminders(){
 					</html>`,
 					textbody: `Hi ${item.user.name},
 					Just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}:
-					${item.event.title || 'New Event'} (${getHMText(new Date(item.event.start).getHours() * 60 + new Date(item.event.start).getMinutes())} – ${getHMText(new Date(item.event.end).getHours() * 60 + new Date(item.event.end).getMinutes())})
+					${item.event.title || 'New Event'} (${getHMText(new Date(item.event.start + item.user.timezoneoffset).getHours() * 60 + new Date(item.event.start + item.user.timezoneoffset).getMinutes())} – ${getHMText(new Date(item.event.end + item.user.timezoneoffset).getHours() * 60 + new Date(item.event.end + item.user.timezoneoffset).getMinutes())})
 
 					Open https://smartcalendar.us/app to see more details about your event.
 					
@@ -694,7 +694,8 @@ function cacheReminders(user){
 				type: 'event',
 				user: {
 					name: name,
-					email: email
+					email: email,
+					timezoneoffset: timezoneoffset
 				},
 				event: {
 					id: item.id,
@@ -721,7 +722,8 @@ function cacheReminders(user){
 				type: 'task',
 				user: {
 					name: name,
-					email: email
+					email: email,
+					timezoneoffset: timezoneoffset
 				},
 				event: {
 					id: item.id,
