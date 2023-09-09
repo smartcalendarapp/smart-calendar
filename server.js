@@ -456,7 +456,7 @@ async function processReminders(){
 											<strong>${item.event.title || 'New Event'}</strong> <span class="font-size:16px !important">(${getHMText(new Date(item.event.start).getHours() * 60 + new Date(item.event.start).getMinutes())} – ${getHMText(new Date(item.event.end).getHours() * 60 + new Date(item.event.end).getMinutes())})</span>
 									</p>
 									<p style="text-align: center;font-size: 14px; color: #333;">
-										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px">Open the app</a>
+										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span class="color: #ffffff">Open the app</span></a>
 									</p>
 
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
@@ -520,7 +520,7 @@ async function processReminders(){
 											<strong>${item.event.title || 'New Task'}</strong>
 									</p>
 									<p style="text-align: center;font-size: 14px; color: #333;">
-										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px">Open the app</a>
+										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span class="color: #ffffff">Open the app</span></a>
 									</p>
 
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
@@ -2000,7 +2000,7 @@ async function sendwelcomeemail(user){
 						We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;">contact us</a>. We're here for you!
 				</p>
 				<p style="font-size: 18px; color: #333;">
-					<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px">Open the app</a>
+					<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span class="color: #ffffff">Open the app</span></a>
 				</p>
 				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<p style="text-align: center; font-size: 20px; color: #333;">
