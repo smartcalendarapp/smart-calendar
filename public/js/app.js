@@ -892,12 +892,6 @@ class Calendar {
 		return JSON.stringify(this)
 	}
 
-	getChangedJSON() {
-		let tempthis = deepCopy(this)
-		delete tempthis.lastnotificationdate
-		return JSON.stringify(tempthis)
-	}
-
 	//main
 	updateTabs() {
 		//tabs
@@ -3275,10 +3269,9 @@ let lastbodydata;
 let lastsavedate = 0;
 async function setclientdata() {
 	let bodydata = calendar.getJSON()
-	let tempbodydata = calendar.getChangedJSON()
 
 	let currenttime = Date.now()
-	if (lastbodydata != tempbodydata) {
+	if (lastbodydata != bodydata) {
 		updatestatus(1)
 
 		if (currenttime - lastsavedate > 3000) {
@@ -3293,7 +3286,7 @@ async function setclientdata() {
 			}).catch(e => e)
 
 			if (response.status == 200) {
-				lastbodydata = tempbodydata
+				lastbodydata = bodydata
 
 				const data = await response.json()
 				const lastmodified = data.lastmodified
@@ -3307,6 +3300,8 @@ async function setclientdata() {
 
 				console.log(userdata)
 				Object.assign(calendar, userdata)
+
+				lastbodydata = calendar.getJSON()
 
 				calendar.updateTabs()
 				calendar.updateHistory(false)
@@ -3396,7 +3391,7 @@ function run() {
 	updateonboardingscreen()
 
 	//set initial save data
-	lastbodydata = calendar.getChangedJSON()
+	lastbodydata = calendar.getJSON()
 	
 
 	//hide loading screen
