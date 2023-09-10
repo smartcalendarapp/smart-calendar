@@ -3299,10 +3299,6 @@ async function setclientdata() {
 			if (response.status == 200) {
 				lastbodydata = tempbodydata
 
-				const data = await response.json()
-				const lastmodified = data.lastmodified
-				calendar.lastmodified = lastmodified
-
 				updatestatus(0)
 				hideloginpopup()
 			}else if (response.status == 401) {

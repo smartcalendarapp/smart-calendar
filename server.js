@@ -2295,11 +2295,10 @@ app.post('/setclientdata', async (req, res, next) => {
 
 		let newcalendardata = req.body.calendardata
 		user.calendardata = newcalendardata
-		user.calendardata.lastmodified = Date.now()
 		cacheReminders(user)
 		await setUser(user)
 
-		return res.status(200).json({ lastmodified: user.calendardata.lastmodified })
+		return res.end()
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
