@@ -2287,12 +2287,13 @@ app.post('/setclientdata', async (req, res, next) => {
 		cacheReminders(user)
 
 		let newcalendardata = req.body.calendardata
-		if(true || user.calendardata.lastmodified < newcalendardata.lastmodified){
+		if(newcalendardata.lastmodified >= user.calendardata.lastmodified){
 			user.calendardata = newcalendardata
 			await setUser(user)
 
-			return res.end()
+			return res.status(200).json({ lastmodified: Date.now() })
 		}else{
+			user.calendardata.lastmodified = Date.now()
 			return res.status(409).json({ data: user.calendardata })
 		}
 	} catch (error) {
