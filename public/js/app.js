@@ -979,7 +979,7 @@ class Calendar {
 	}
 
 
-	updateHistory(syncgoogle, smartschedule) {
+	updateHistory(syncgoogle, smartschedule, setlastmodified) {
 		let newjson = JSON.stringify({ events: this.events, todos: this.todos, calendars: this.calendars })
 		if (newjson != historydata[historydata.length - 1]) {
 			if (historydata.length > 0) {
@@ -997,9 +997,11 @@ class Calendar {
 					}
 				}
 
-				//lastmodified
-				if(JSON.stringify(this.events) != JSON.stringify(oldeventsdata) || JSON.stringify(oldtodosdata) != JSON.stringify(this.todos) || JSON.stringify(this.calendars) != JSON.stringify(oldcalendarsdata)){
-					this.lastmodified = Date.now()
+				//last modified
+				if(setlastmodified != false){
+					if(JSON.stringify(this.events) != JSON.stringify(oldeventsdata) || JSON.stringify(oldtodosdata) != JSON.stringify(this.todos) || JSON.stringify(this.calendars) != JSON.stringify(oldcalendarsdata)){
+						this.lastmodified = Date.now()
+					}
 				}
 
 				//last modified changes
@@ -3476,12 +3478,19 @@ function run() {
 			if(!data.nochange){
 				const userdata = data.data
 				Object.assign(calendar, userdata)
+
+				calendar.updateEvents()
+				calendar.updateTodo()
+				calendar.updateSettings()
+				calendar.updateHistory(false, false, false)
 			}
 		}
 
 		return setTimeout(function () {
-			getclientdata()
-		}, 3000)
+			if (document.visibilityState === 'visible') {
+				getclientdata()
+			}
+		}, 10000)
 	}
 	getclientdata()
 }
