@@ -3485,7 +3485,7 @@ function run() {
 
 		return setTimeout(function () {
 			getclientdata()
-		}, 10000)
+		}, 3000)
 	}
 	getclientdata()
 }
