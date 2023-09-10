@@ -2284,18 +2284,15 @@ app.post('/setclientdata', async (req, res, next) => {
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
 
+		cacheReminders(user)
+
 		let newcalendardata = req.body.calendardata
-		if(user.calendardata.lastmodified < newcalendardata.lastmodified){
+		if(true || user.calendardata.lastmodified < newcalendardata.lastmodified){
 			user.calendardata = newcalendardata
-
-			cacheReminders(user)
-
 			await setUser(user)
 
 			return res.end()
 		}else{
-			cacheReminders(user)
-
 			return res.status(409).json({ data: user.calendardata })
 		}
 	} catch (error) {
