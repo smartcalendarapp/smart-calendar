@@ -3305,6 +3305,7 @@ async function setclientdata() {
 				const data = await response.json()
 				const userdata = data.data
 
+				console.log(userdata)
 				if(userdata){
 					Object.assign(calendar, userdata)
 				}
