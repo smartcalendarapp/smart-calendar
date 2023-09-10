@@ -3476,25 +3476,16 @@ function run() {
 		}).catch(e => e)
 		if (response.status == 200) {
 			const data = await response.json()
-			const userdata = data.data
 
-			//load data
-			Object.assign(calendar, userdata)
-
-			//default data
-			if (!calendar.calendars.find(d => d.isprimary)) {
-				let tempcalendar = new Calendar.Calendar('Primary', '', false, null, true)
-				calendar.calendars.unshift(tempcalendar)
+			if(!data.nochange){
+				const userdata = data.data
+				Object.assign(calendar, userdata)
 			}
-
-			run()
-		} else if (response.status == 401) {
-			showloginpopup()
-		} else {
-			return setTimeout(function () {
-				getclientdata()
-			}, 10000)
 		}
+
+		return setTimeout(function () {
+			getclientdata()
+		}, 10000)
 	}
 	getclientdata()
 }

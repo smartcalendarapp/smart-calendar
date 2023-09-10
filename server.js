@@ -2266,7 +2266,7 @@ app.post('/getclientdata', async (req, res, next) => {
 
 		let lastmodified = req.body.lastmodified
 		if(lastmodified != null){
-			if(lastmodified < user.calendar.lastmodified){
+			if(lastmodified < user.calendardata.lastmodified){
 				return res.json({ data: user.calendardata })
 			}else{
 				return res.json({ nochange: true })
