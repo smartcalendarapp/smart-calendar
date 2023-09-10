@@ -2263,8 +2263,17 @@ app.post('/getclientdata', async (req, res, next) => {
 		if (!user) {
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
-		
-		return res.json({ data: user.calendardata })
+
+		let lastmodified = req.body.lastmodified
+		if(lastmodified != null){
+			if(lastmodified < user.calendar.lastmodified){
+				return res.json({ data: user.calendardata })
+			}else{
+				return res.json({ nochange: true })
+			}
+		}else{
+			return res.json({ data: user.calendardata })
+		}
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
@@ -2284,18 +2293,12 @@ app.post('/setclientdata', async (req, res, next) => {
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
 
-		cacheReminders(user)
-
 		let newcalendardata = req.body.calendardata
-		if(newcalendardata.lastmodified >= user.calendardata.lastmodified){
-			user.calendardata = newcalendardata
-			await setUser(user)
+		user.calendardata = newcalendardata
+		cacheReminders(user)
+		await setUser(user)
 
-			return res.status(200).json({ lastmodified: Date.now() })
-		}else{
-			user.calendardata.lastmodified = Date.now()
-			return res.status(409).json({ data: user.calendardata })
-		}
+		return res.status(200).json({ lastmodified: Date.now() })
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })

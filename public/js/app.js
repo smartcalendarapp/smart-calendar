@@ -3209,7 +3209,11 @@ let clientinfo;
 
 async function getclientdata() {
 	const response = await fetch('/getclientdata', {
-		method: 'POST'
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({})
 	}).catch(e => e)
 	if (response.status == 200) {
 		const data = await response.json()
@@ -3233,6 +3237,7 @@ async function getclientdata() {
 		}, 3000)
 	}
 }
+
 async function getclientinfo() {
 	const response2 = await fetch('/getclientinfo', {
 		method: 'POST',
@@ -3300,17 +3305,6 @@ async function setclientdata() {
 
 				updatestatus(0)
 				hideloginpopup()
-			} else if(response.status == 409){
-				const data = await response.json()
-				const userdata = data.data
-
-				console.log(userdata)
-				Object.assign(calendar, userdata)
-
-				lastbodydata = calendar.getChangedJSON()
-
-				calendar.updateTabs()
-				calendar.updateHistory(false)
 			}else if (response.status == 401) {
 				updatestatus(2)
 
@@ -3467,6 +3461,42 @@ function run() {
 		}, 1000)
 	}
 	runsyncwithgoogleclassroom()
+
+
+
+	async function getclientdata() {
+		const response = await fetch('/getclientdata', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				lastmodified: calendar.lastmodified
+			})
+		}).catch(e => e)
+		if (response.status == 200) {
+			const data = await response.json()
+			const userdata = data.data
+
+			//load data
+			Object.assign(calendar, userdata)
+
+			//default data
+			if (!calendar.calendars.find(d => d.isprimary)) {
+				let tempcalendar = new Calendar.Calendar('Primary', '', false, null, true)
+				calendar.calendars.unshift(tempcalendar)
+			}
+
+			run()
+		} else if (response.status == 401) {
+			showloginpopup()
+		} else {
+			return setTimeout(function () {
+				getclientdata()
+			}, 10000)
+		}
+	}
+	getclientdata()
 }
 
 //update status indicator
