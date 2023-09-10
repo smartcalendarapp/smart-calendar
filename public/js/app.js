@@ -3295,23 +3295,8 @@ async function setclientdata() {
 			if (response.status == 200) {
 				lastbodydata = tempbodydata
 
-				const data = await response.json()
-				const lastmodified = data.lastmodified
-				calendar.lastmodified = lastmodified
-
 				updatestatus(0)
 				hideloginpopup()
-			} else if(response.status == 409){
-				const data = await response.json()
-				const userdata = data.data
-
-				console.log(userdata)
-				if(userdata){
-					Object.assign(calendar, userdata)
-				}
-
-				calendar.updateTabs()
-				calendar.updateHistory(false)
 			}else if (response.status == 401) {
 				updatestatus(2)
 
