@@ -997,6 +997,11 @@ class Calendar {
 					}
 				}
 
+				//lastmodified
+				if(JSON.stringify(this.events) != JSON.stringify(oldeventsdata) || JSON.stringify(oldtodosdata) != JSON.stringify(this.todos) || JSON.stringify(this.calendars) != JSON.stringify(oldcalendarsdata)){
+					this.lastmodified = Date.now()
+				}
+
 				//last modified changes
 				/*
 				for (let item of calendar.events) {
@@ -3208,7 +3213,7 @@ async function getclientdata() {
 	}).catch(e => e)
 	if (response.status == 200) {
 		const data = await response.json()
-		let userdata = data.data
+		const userdata = data.data
 
 		//load data
 		Object.assign(calendar, userdata)
@@ -3292,7 +3297,17 @@ async function setclientdata() {
 
 				updatestatus(0)
 				hideloginpopup()
-			} else if (response.status == 401) {
+			} else if(response.status == 409){
+				const data = await response.json()
+				const userdata = data.data
+
+				if(userdata){
+					Object.assign(calendar, userdata)
+				}
+
+				calendar.updateTabs()
+				calendar.updateHistory(false)
+			}else if (response.status == 401) {
 				updatestatus(2)
 
 				showloginpopup()
