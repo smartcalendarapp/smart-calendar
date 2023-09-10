@@ -3485,14 +3485,13 @@ function run() {
 				calendar.updateHistory(false, false, false)
 			}
 		}
-
-		return setTimeout(function () {
-			if (document.visibilityState === 'visible') {
-				getclientdata()
-			}
-		}, 10000)
 	}
-	getclientdata()
+	setInterval(async function () {
+		if (document.visibilityState === 'visible') {
+			await getclientdata()
+		}
+	}, 3000)
+
 }
 
 //update status indicator
