@@ -7611,6 +7611,7 @@ function typeaddtask(event, submit, index) {
 	if (tempmatch1.match || tempmatch5.match) {
 		let regex = new RegExp(`\\b(due|by|due\\s+at|due\\s+on|deadline|deadline\\s+at|deadline\\s+on|due\\s+by|finish\\s+by|done\\s+by|complete\\s+by)\\s+((${tempmatch1.match}\\s+((at|by|on)\\s+)?${tempmatch5.match})|(${tempmatch5.match}\\s+((at|by|on)\\s+)?${tempmatch1.match})|(${tempmatch1.match})|(${tempmatch5.match}))\\b`, 'i')
 		let tempmatch2 = finalstring.match(regex)
+		console.log(tempmatch2)
 		if (tempmatch2) {
 			let tempmatch6 = getDate(tempmatch2[0])
 			if (tempmatch6) {
