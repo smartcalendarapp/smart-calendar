@@ -452,10 +452,14 @@ async function processReminders(){
 									</p>
 									<p style="font-size: 18px; color: #333;">
 											Just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}:
-											<br>
-											<strong>${item.event.title || 'New Event'}</strong> <span style="font-size:16px !important">(${getHMText(new Date(item.event.start + item.user.timezoneoffset).getHours() * 60 + new Date(item.event.start + item.user.timezoneoffset).getMinutes())} – ${getHMText(new Date(item.event.end + item.user.timezoneoffset).getHours() * 60 + new Date(item.event.end + item.user.timezoneoffset).getMinutes())})</span>
+
+											<div style="background-color:#f4f4f4;border-radius:8px;font-size:18px">
+												<div style="padding:12px">
+													<strong>${item.event.title || 'New Event'}</strong> <span style="color:#595959;">${getHMText(new Date(item.event.start + item.user.timezoneoffset).getHours() * 60 + new Date(item.event.start + item.user.timezoneoffset).getMinutes())} – ${getHMText(new Date(item.event.end + item.user.timezoneoffset).getHours() * 60 + new Date(item.event.end + item.user.timezoneoffset).getMinutes())}</span>
+												</div>
+											</div>
 									</p>
-									<p style="text-align: center;font-size: 14px; color: #333;">
+									<p style="text-align: center;font-size: 14px; color: #333;padding:12px;">
 										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
 									</p>
 
@@ -464,7 +468,7 @@ async function processReminders(){
 										If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
 									</p>
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
-									<p style="text-align: center; font-size: 20px; color: #333;">
+									<p style="text-align: center; font-size: 18px; color: #333;">
 											Stay Productive,<br>
 											Smart Calendar | Your Smart Time Management Assistant
 									</p>
@@ -516,10 +520,14 @@ async function processReminders(){
 									</p>
 									<p style="font-size: 18px; color: #333;">
 											Just a quick reminder that you have a task due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}:
-											<br>
-											<strong>${item.event.title || 'New Task'}</strong>
+
+											<div style="background-color:#f4f4f4;border-radius:8px;font-size:18px">
+												<div style="padding:12px">
+													<strong>${item.event.title || 'New Task'}</strong>
+												</div>
+											</div>
 									</p>
-									<p style="text-align: center;font-size: 14px; color: #333;">
+									<p style="text-align: center;font-size: 14px; color: #333;padding:12px;">
 										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
 									</p>
 
@@ -528,7 +536,7 @@ async function processReminders(){
 										If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
 									</p>
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
-									<p style="text-align: center; font-size: 20px; color: #333;">
+									<p style="text-align: center; font-size: 18px; color: #333;">
 											Stay Productive,<br>
 											Smart Calendar | Your Smart Time Management Assistant
 									</p>
@@ -2005,7 +2013,7 @@ async function sendwelcomeemail(user){
 					<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
 				</p>
 				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
-				<p style="text-align: center; font-size: 20px; color: #333;">
+				<p style="text-align: center; font-size: 18px; color: #333;">
 						Stay Productive,<br>
 						Smart Calendar | Your Smart Time Management Assistant
 				</p>
