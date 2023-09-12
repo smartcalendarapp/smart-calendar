@@ -33,6 +33,12 @@
 	--green-transparent:#2bc45180;
 	--blue-transparent:#2693ff80;
 	--purple-transparent:#916bfa80;
+
+	--red-transparent-hover:#cc2b2b80;
+	--orange-transparent-hover:#c7841080;
+	--green-transparent-hover:#20913c80;
+	--blue-transparent-hover:#1f75cc80;
+	--purple-transparent-hover:#7456c780;
 	
 	--white:#ffffff;
 	--white-hover:#f5f5f5;
@@ -80,6 +86,12 @@
 	--green-transparent:#1cb84380;
 	--blue-transparent:#258df580;
 	--purple-transparent:#8d68f280;
+
+	--red-transparent-hover:#b32c2780;
+	--orange-transparent-hover:#b5770b80;
+	--green-transparent-hover:#14853080;
+	--blue-transparent-hover:#1d6fc280;
+	--purple-transparent-hover:#6f52bf80;
 
 	--white-hover:#cccccc;
 	--black-transparent:#000000E6;
@@ -170,6 +182,21 @@
 }
 .background-purple-hover{
 	background-color:var(--purple-hover)
+}
+.background-red-transparent-hover{
+	background-color:var(--red-transparent-hover)
+}
+.background-orange-transparent-hover{
+	background-color:var(--orange-transparent-hover)
+}
+.background-green-transparent-hover{
+	background-color:var(--green-transparent-hover)
+}
+.background-blue-transparent-hover{
+	background-color:var(--blue-transparent-hover)
+}
+.background-purple-transparent-hover{
+	background-color:var(--purple-transparent-hover)
 }
 
 .text-transparent{
