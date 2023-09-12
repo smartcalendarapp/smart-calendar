@@ -3453,8 +3453,8 @@ function run() {
 		let lasttriedsyncgooglecalendardate = Date.now()
 		setInterval(async function () {
 			if (!isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 60000 && issettingclientgooglecalendar == false && Date.now() - lasttriedsyncgooglecalendardate > 60000 && Date.now() - lastupdatecalendardate > 10000) {
-				await getclientgooglecalendar()
 				lasttriedsyncgooglecalendardate = Date.now()
+				await getclientgooglecalendar()
 			}
 		}, 100)
 	}
@@ -3467,8 +3467,8 @@ function run() {
 		let lasttriedsyncgoogleclassroomdate = Date.now()
 		setInterval(async function () {
 			if (document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgoogleclassroomdate > 60000 && Date.now() - lasttriedsyncgoogleclassroomdate > 60000) {
-				await getclientgoogleclassroom()
 				lasttriedsyncgoogleclassroomdate = Date.now()
+				await getclientgoogleclassroom()
 			}
 		}, 100)
 	}

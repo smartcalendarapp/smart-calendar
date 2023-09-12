@@ -3167,25 +3167,6 @@ body {
 	text-decoration-color: var(--text-quaternary)
 }
 
-.completedtext.hoverunderlineblue {
-	text-decoration-color: var(--text-secondary) !important;
-}
-
-.completedtext.hoverunderlinegreen {
-	text-decoration-color: var(--text-secondary) !important;
-}
-
-.completedtext.hoverunderlineorange {
-	text-decoration-color: var(--text-secondary) !important;
-}
-
-.completedtext.hoverunderlinered {
-	text-decoration-color: var(--text-secondary) !important;
-}
-
-.completedtext.hoverunderlinequaternary {
-	text-decoration-color: var(--text-secondary) !important;
-}
 
 .completedtext.background-blue,
 .completedtext.background-green,
