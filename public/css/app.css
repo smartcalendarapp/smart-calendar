@@ -769,6 +769,22 @@ body {
 	width: 500px;
 }
 
+.bordergreen{
+	border:1px solid var(--green)
+}
+.borderblue{
+	border:1px solid var(--blue)
+}
+.bordertint2{
+	border:1px solid var(--background-tint-2)
+}
+.borderred{
+	border:1px solid var(--red)
+}
+.borderorange{
+	border:1px solid var(--orange)
+}
+
 
 @keyframes spin {
 	0% {

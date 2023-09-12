@@ -445,7 +445,7 @@ async function processReminders(){
 							</style>
 					</head>
 					<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
-							<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 8px;">
+							<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 6px;">
 									<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
 									<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
 											Hi ${item.user.name},
@@ -453,7 +453,7 @@ async function processReminders(){
 									<p style="font-size: 18px; color: #333;">
 											Just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}:
 
-											<div style="background-color:#f4f4f4;border-radius:8px;font-size:18px">
+											<div style="background-color:#f4f4f4;border-radius:6px;font-size:18px">
 												<div style="padding:12px">
 													<strong>${item.event.title || 'New Event'}</strong> <span style="color:#595959;">${getHMText(new Date(item.event.start + item.user.timezoneoffset).getHours() * 60 + new Date(item.event.start + item.user.timezoneoffset).getMinutes())} – ${getHMText(new Date(item.event.end + item.user.timezoneoffset).getHours() * 60 + new Date(item.event.end + item.user.timezoneoffset).getMinutes())}</span>
 												</div>
@@ -513,7 +513,7 @@ async function processReminders(){
 							</style>
 					</head>
 					<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
-							<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 8px;">
+							<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 6px;">
 									<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
 									<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
 											Hi ${item.user.name},
@@ -521,7 +521,7 @@ async function processReminders(){
 									<p style="font-size: 18px; color: #333;">
 											Just a quick reminder that you have a task due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}:
 
-											<div style="background-color:#f4f4f4;border-radius:8px;font-size:18px">
+											<div style="background-color:#f4f4f4;border-radius:6px;font-size:18px">
 												<div style="padding:12px">
 													<strong>${item.event.title || 'New Task'}</strong>
 												</div>
@@ -1996,7 +1996,7 @@ async function sendwelcomeemail(user){
 		</style>
 	</head>
 	<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
-		<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 8px;">
+		<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 6px;">
 				<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
 				<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
 						Greetings ${name},
