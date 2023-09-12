@@ -10807,7 +10807,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 	})
 
 	let promises = []
-	for (let item of modifiedevents) {
+	for (let item of modifiedevents.find(g => addedtodos.find(f => f.id == g.id))) {
 		let itemelement = getElement(item.id)
 		if (!itemelement) continue
 		let itemrect = itemelement.getBoundingClientRect()
