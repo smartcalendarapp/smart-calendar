@@ -484,7 +484,7 @@ async function processReminders(){
 					</html>`,
 					textbody: `Hi ${item.user.name},
 					Just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}:
-					${item.event.title || 'New Event'} (${getHMText(new Date(item.event.start + item.user.timezoneoffset).getHours() * 60 + new Date(item.event.start + item.user.timezoneoffset).getMinutes())} – ${getHMText(new Date(item.event.end + item.user.timezoneoffset).getHours() * 60 + new Date(item.event.end + item.user.timezoneoffset).getMinutes())})
+					${item.event.title || 'New Event'} (${getHMText(new Date(item.event.start - item.user.timezoneoffset).getHours() * 60 + new Date(item.event.start - item.user.timezoneoffset).getMinutes())} – ${getHMText(new Date(item.event.end - item.user.timezoneoffset).getHours() * 60 + new Date(item.event.end - item.user.timezoneoffset).getMinutes())})
 
 					Open https://smartcalendar.us/app to see more details about your event.
 					
