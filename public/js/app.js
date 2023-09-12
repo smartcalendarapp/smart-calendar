@@ -3338,7 +3338,7 @@ function updatetime() {
 
 		lastupdateminute = currentdate.getMinutes()
 
-		startAutoSchedule({scheduletodos: [], checkpassedtodosonly: true})
+		startAutoSchedule({scheduletodos: []})
 	}
 	if (currentdate.getDate() != lastupdatedate) {
 		//show new day
@@ -3413,7 +3413,7 @@ function run() {
 
 
 	//auto schedule for overdue tasks
-	startAutoSchedule({scheduletodos: [], checkpassedtodosonly: true})
+	startAutoSchedule({scheduletodos: []})
 
 
 	//welcome popup
@@ -6638,7 +6638,7 @@ function submitschedulemytasks() {
 
 
 
-function startAutoSchedule({scheduletodos, checkpassedtodosonly}) {
+function startAutoSchedule({scheduletodos}) {
 	if (isautoscheduling == true) return
 
 	let oldcalendartabs = [...calendartabs]
@@ -6681,7 +6681,7 @@ function startAutoSchedule({scheduletodos, checkpassedtodosonly}) {
 	}
 
 	//start
-	autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos, checkpassedtodosonly: checkpassedtodosonly})
+	autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos})
 }
 
 
@@ -9917,7 +9917,7 @@ let isautoscheduling = false;
 
 let rescheduletaskfunction;
 
-async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, checkpassedtodosonly}) {
+async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 	//functions
 	function sleep(time) {
 		return new Promise(resolve => {
@@ -10134,13 +10134,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, che
 		rescheduletaskpopup.classList.remove('hiddenpopup')
 		return
 	}
-
-	if(checkpassedtodosonly){
-		isautoscheduling = false
-		return
-	}
-
-
+	
 	//start
 	if (true) {
 		//FOCUS
