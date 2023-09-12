@@ -993,7 +993,7 @@ class Calendar {
 				if (smartschedule != false) {
 					if (JSON.stringify(neweventsdata) != JSON.stringify(oldeventsdata)) {
 						lastupdatecalendardate = Date.now()
-						startAutoSchedule({scheduletodos: []})
+						needtoautoschedule = true
 					}
 				}
 
@@ -2343,6 +2343,14 @@ class Calendar {
 			}
 
 			for (let i = 0; i < notduetodos.length; i++) {
+				if(i == 0 && duetodos.length == 0){
+					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
+						<div class="horizontalbar flex-1"></div>
+						<div class="text-quaternary all-small-caps text-18px text-bold">Unscheduled</div>
+						<div class="horizontalbar flex-1"></div>
+					</div>`)
+				}
+
 				let item = notduetodos[i]
 				if (i == 0) {
 					tempoutput.push(`<div class="text-16px text-primary text-bold">No due date</div>`)
@@ -3327,6 +3335,7 @@ async function setclientdata() {
 //update time
 let lastupdateminute = new Date().getMinutes()
 let lastupdatedate = new Date().getDate()
+let needtoautoschedule = false
 function updatetime() {
 	let currentdate = new Date()
 
@@ -3338,9 +3347,7 @@ function updatetime() {
 
 		lastupdateminute = currentdate.getMinutes()
 
-		if (document.visibilityState === 'visible') {
-			startAutoSchedule({scheduletodos: []})
-		}
+		needtoautoschedule = true
 	}
 	if (currentdate.getDate() != lastupdatedate) {
 		//show new day
@@ -3444,6 +3451,15 @@ function run() {
 		updatetime()
 	}, 100)
 
+
+	setInterval(async function(){
+		if (document.visibilityState === 'visible') {
+			if (needtoautoschedule) {
+				needtoautoschedule = false
+				startAutoSchedule({scheduletodos: []})
+			}
+		}
+	}, 100)
 
 
 	//sync with google
