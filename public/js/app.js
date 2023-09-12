@@ -993,7 +993,7 @@ class Calendar {
 				if (smartschedule != false) {
 					if (JSON.stringify(neweventsdata) != JSON.stringify(oldeventsdata)) {
 						lastupdatecalendardate = Date.now()
-						startAutoSchedule([])
+						startAutoSchedule({scheduletodos: []})
 					}
 				}
 
@@ -3337,6 +3337,8 @@ function updatetime() {
 		calendar.updateFocus()
 
 		lastupdateminute = currentdate.getMinutes()
+
+		startAutoSchedule({scheduletodos: [], checkpassedtodosonly: true})
 	}
 	if (currentdate.getDate() != lastupdatedate) {
 		//show new day
@@ -6684,13 +6686,13 @@ function submitschedulemytasks() {
 
 	if (mytodos.length > 0) {
 		closeschedulemytasks()
-		startAutoSchedule(mytodos)
+		startAutoSchedule({scheduletodos: mytodos})
 	}
 }
 
 
 
-function startAutoSchedule(scheduletodos) {
+function startAutoSchedule({scheduletodos, checkpassedtodosonly}) {
 	if (isautoscheduling == true) return
 
 	let oldcalendartabs = [...calendartabs]
@@ -6733,7 +6735,7 @@ function startAutoSchedule(scheduletodos) {
 	}
 
 	//start
-	autoScheduleV2(scheduleitems, addedtodos)
+	autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos, checkpassedtodosonly: checkpassedtodosonly})
 }
 
 
@@ -8526,7 +8528,7 @@ function dragtodo(event, id) {
 			}
 
 
-			startAutoSchedule([item])
+			startAutoSchedule({scheduletodos: [item]})
 
 			if(gtag){gtag('event', 'button_click', { useraction: 'Drop task - calendar' })}
 		}
@@ -9969,7 +9971,7 @@ let isautoscheduling = false;
 
 let rescheduletaskfunction;
 
-async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
+async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, checkpassedtodosonly}) {
 	//functions
 	function sleep(time) {
 		return new Promise(resolve => {
@@ -10170,7 +10172,7 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 
 			await sleep(300)
 
-			autoScheduleV2(smartevents, addedtodos, newresolvedpassedtodos)
+			autoScheduleV2({smartevents: smartevents, addedtodos: addedtodos, resolvedpassedtodos: newresolvedpassedtodos})
 		}
 
 		//show popup
@@ -10184,6 +10186,11 @@ async function autoScheduleV2(smartevents, addedtodos, resolvedpassedtodos) {
 
 		let rescheduletaskpopup = getElement('rescheduletaskpopup')
 		rescheduletaskpopup.classList.remove('hiddenpopup')
+		return
+	}
+
+	if(checkpassedtodosonly){
+		isautoscheduling = false
 		return
 	}
 

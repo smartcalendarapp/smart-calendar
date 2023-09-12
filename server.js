@@ -412,7 +412,7 @@ async function processReminders(){
 				if(item.type == 'event'){
 					try{
 						let difference = Math.floor((Date.now() - new Date(item.event.start).getTime())/60000)
-						await webpush.sendNotification(item.pushSubscription, `EVENT STARTING: ${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`)
+						await webpush.sendNotification(item.pushSubscription, `EVENT: ${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`)
 					}catch(error){
 						console.error(error)
 					}
