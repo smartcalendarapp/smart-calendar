@@ -445,7 +445,7 @@ async function processReminders(){
 							</style>
 					</head>
 					<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
-							<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px;">
+							<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 8px;">
 									<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
 									<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
 											Hi ${item.user.name},
@@ -513,7 +513,7 @@ async function processReminders(){
 							</style>
 					</head>
 					<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
-							<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px;">
+							<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 8px;">
 									<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
 									<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
 											Hi ${item.user.name},
@@ -1996,7 +1996,7 @@ async function sendwelcomeemail(user){
 		</style>
 	</head>
 	<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
-		<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 5px;">
+		<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 8px;">
 				<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
 				<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
 						Greetings ${name},

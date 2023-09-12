@@ -3338,7 +3338,9 @@ function updatetime() {
 
 		lastupdateminute = currentdate.getMinutes()
 
-		startAutoSchedule({scheduletodos: []})
+		if (document.visibilityState === 'visible') {
+			startAutoSchedule({scheduletodos: []})
+		}
 	}
 	if (currentdate.getDate() != lastupdatedate) {
 		//show new day
@@ -3446,9 +3448,7 @@ function run() {
 
 	//sync with google
 	async function runsyncwithgooglecalendar() {
-		if (document.visibilityState === 'visible') {
-			await getclientgooglecalendar()
-		}
+		await getclientgooglecalendar()
 
 		let lasttriedsyncgooglecalendardate = Date.now()
 		setInterval(async function () {
@@ -3462,9 +3462,7 @@ function run() {
 
 	
 	async function runsyncwithgoogleclassroom() {
-		if (document.visibilityState === 'visible') {
-			await getclientgoogleclassroom()
-		}
+		await getclientgoogleclassroom()
 
 		let lasttriedsyncgoogleclassroomdate = Date.now()
 		setInterval(async function () {
@@ -10134,7 +10132,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 		rescheduletaskpopup.classList.remove('hiddenpopup')
 		return
 	}
-	
+
 	//start
 	if (true) {
 		//FOCUS
