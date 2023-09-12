@@ -1334,21 +1334,6 @@ body {
 
 
 
-.bordergreen{
-	border:1px solid var(--green)
-}
-.borderblue{
-	border:1px solid var(--blue)
-}
-.bordertint2{
-	border:1px solid var(--background-tint-2)
-}
-.borderred{
-	border:1px solid var(--red)
-}
-.borderorange{
-	border:1px solid var(--orange)
-}
 
 .completedtext {
 	color: var(--text-secondary) !important
@@ -3202,21 +3187,15 @@ body {
 	text-decoration-color: var(--text-secondary) !important;
 }
 
-.completedtext.background-blue-transparent,
-.completedtext.background-green-transparent,
-.completedtext.background-orange-transparent,
-.completedtext.background-red-transparent,
-.completedtext.background-tint-1{
+.completedtext.background-blue,
+.completedtext.background-green,
+.completedtext.background-orange,
+.completedtext.background-red,
+.completedtext.background-tint-1 {
     background-color: transparent !important;
 	padding:0 !important;
 }
-.completedtext.borderred,
-.completedtext.borderblue,
-.completedtext.borderorange,
-.completedtext.bordergreen,
-.completedtext.bordertint2 {
-	border: none !important;
-}
+
 
 
 .calendaritem:hover .calendaritembutton {
