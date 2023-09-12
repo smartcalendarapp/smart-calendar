@@ -770,60 +770,6 @@ body {
 }
 
 
-.notificationsscreen {
-	transition: opacity 0.2s, visibility 0.2s;
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	top: 0;
-	left: 0;
-	z-index: 999;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-	opacity: 1;
-	background-color: var(--black-transparent-2);
-}
-
-.notificationsscreenitem {
-	backdrop-filter: blur(20px);
-	-webkit-backdrop-filter: blur(20px);
-	width: 300px;
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-	padding: 12px;
-	background-color: var(--background-primary-transparent);
-	border-radius: 8px;
-}
-
-.notificationsscreenitemtitle {
-	color: var(--text-primary);
-	font-size: 18px;
-	word-wrap: break-word;
-}
-
-.notificationsscreenitemtext {
-	color: var(--text-primary);
-	font-size: 14px;
-}
-
-.notificationsscreenitembutton {
-	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
-	text-align: center;
-	background-color: var(--background-tint-1);
-	border-radius: 8px;
-	padding: 8px 12px;
-	color: var(--text-primary);
-	font-size: 14px;
-	cursor: pointer;
-}
-
-.notificationsscreenitembutton:hover {
-	background-color: var(--background-tint-2);
-}
-
 @keyframes spin {
 	0% {
 		transform: rotate(0deg)

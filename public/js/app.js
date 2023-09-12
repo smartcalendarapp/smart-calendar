@@ -3412,6 +3412,10 @@ function run() {
 	scrollcalendarY(currentdate.getHours() * 60 + currentdate.getMinutes())
 
 
+	//auto schedule for overdue tasks
+	startAutoSchedule({scheduletodos: [], checkpassedtodosonly: true})
+
+
 	//welcome popup
 	setTimeout(function () {
 		if (calendar.welcomepopup.calendar == false && calendar.onboarding.addtask == true) {
@@ -3436,7 +3440,7 @@ function run() {
 	//minute interval
 	setInterval(function(){
 		updatetime()
-	}, 1000)
+	}, 100)
 
 
 
@@ -3452,7 +3456,7 @@ function run() {
 				await getclientgooglecalendar()
 				lasttriedsyncgooglecalendardate = Date.now()
 			}
-		}, 1000)
+		}, 100)
 	}
 	runsyncwithgooglecalendar()
 
@@ -3468,7 +3472,7 @@ function run() {
 				await getclientgoogleclassroom()
 				lasttriedsyncgoogleclassroomdate = Date.now()
 			}
-		}, 1000)
+		}, 100)
 	}
 	runsyncwithgoogleclassroom()
 
@@ -6341,9 +6345,6 @@ function closehelp() {
 
 //NOTIFICATIONS
 
-//storage
-let pushnotificationdata = []
-
 //browser notification
 function browsernotification(id) {
 	let item = calendar.events.find(d => d.id == id)
@@ -6365,61 +6366,6 @@ function browsernotification(id) {
 			})
 		}
 	}
-}
-
-
-
-//display notification
-function displaynotification(data) {
-	let item = calendar.events.find(d => d.id == data.id)
-
-	let notificationsscreen = getElement('notificationsscreen')
-	notificationsscreen.classList.remove('hiddenfade')
-
-	let notificationsscreenitem = getElement('notificationsscreenitem')
-
-	//display
-	let currentdate = new Date()
-
-	let realstartdate = new Date(data.timestamp)
-	let difference = Math.floor((currentdate.getTime() - realstartdate.getTime()) / 60000)
-
-	let output = `
-		<div class="text-24px text-bold text-center text-primary">Reminder</div>
-		<div class="horizontalbar"></div>
-			<div class="display-flex flex-column">
-			<div class="text-18px text-center text-bold text-primary">${item.title ? cleanInput(item.title) : 'New Event'}</div>
-			<div class="text-16px text-center text-quaternary">Starts at ${getHMText(realstartdate.getHours() * 60 + realstartdate.getMinutes())} (${getRelativeDHMText(difference)})</div>
-		</div>
-		<div class="notificationsscreenitembutton" onclick="nextdisplaynotification(event)">Close</div>`
-	notificationsscreenitem.innerHTML = output
-}
-
-//click notification button
-function nextdisplaynotification() {
-	if (pushnotificationdata.length > 0) {
-		//next loop
-		let item = calendar.events.find(d => d.id == pushnotificationdata[0].id)
-		if (item) {
-			displaynotification(pushnotificationdata[0])
-		}
-		pushnotificationdata.shift()
-	} else {
-		//restart loop
-		notificationsscreen.classList.add('hiddenfade')
-
-		setTimeout(function () {
-			getnotifications()
-		}, 1000)
-	}
-}
-
-function broadcastnotifications() {
-	for (let item of pushnotificationdata) {
-		browsernotification(item)
-	}
-
-	nextdisplaynotification()
 }
 
 //start loop
