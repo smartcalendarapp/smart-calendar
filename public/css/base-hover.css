@@ -77,19 +77,19 @@
 .hover\:background-orange-hover:hover{
 	background-color:var(--orange-hover)
 }
-.hover\:.background-red-transparent-hover:hover{
+.hover\:background-red-transparent-hover:hover{
 	background-color:var(--red-transparent-hover)
 }
-.hover\:.background-orange-transparent-hover:hover{
+.hover\:background-orange-transparent-hover:hover{
 	background-color:var(--orange-transparent-hover)
 }
-.hover\:.background-green-transparent-hover:hover{
+.hover\:background-green-transparent-hover:hover{
 	background-color:var(--green-transparent-hover)
 }
-.hover\:.background-blue-transparent-hover:hover{
+.hover\:background-blue-transparent-hover:hover{
 	background-color:var(--blue-transparent-hover)
 }
-.hover\:.background-purple-transparent-hover:hover{
+.hover\:background-purple-transparent-hover:hover{
 	background-color:var(--purple-transparent-hover)
 }
 
