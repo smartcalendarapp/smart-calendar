@@ -7851,15 +7851,15 @@ function gettododata(item) {
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 				
 									${!Calendar.Event.isEvent(item) ? 
-										`<div class="gap-6px pointer-auto pointer display-flex transition-duration-100 flex-row align-center width-fit todoitemtext badgepadding ${!endbeforedate ? `bordertint2 background-tint-1 hover:background-tint-2` : (isoverdue ? `hover:text-white  borderred background-red-transparent hover:background-red` : `hover:text-white borderblue background-blue-transparent hover:background-blue`)} border-round nowrap popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduedate(event, '${item.id}')">
-											<div class="pointer-none ${!endbeforedate ? 'text-primary' : (isoverdue ? 'text-primary' : 'text-primary')} text-14px ${itemclasses.join(' ')}">${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}</div>
+										`<div class="gap-6px pointer-auto pointer display-flex transition-duration-100 flex-row align-center width-fit todoitemtext badgepadding text-primary ${!endbeforedate ? `bordertint2 background-tint-1 hover:background-tint-2` : (isoverdue ? `hover:text-white borderred background-red-transparent hover:background-red` : `hover:text-white borderblue background-blue-transparent hover:background-blue`)} border-round nowrap popupbutton ${itemclasses.join(' ')} " onclick="clicktodoitemduedate(event, '${item.id}')">
+											${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}
 										</div>`
 										: ''
 									}
 									
 									${Calendar.Event.isEvent(item) ? 
-										`<div class="gap-6px bordergreen background-green-transparent hover:background-green transition-duration-100 badgepadding border-round display-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}">
-											<div class="text-primary ${itemclasses.join(' ')}">At ${getHMText(item.start.minute)}</div>
+										`<div class="gap-6px text-primary bordergreen background-green-transparent hover:background-green hover:text-white transition-duration-100 badgepadding border-round display-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}">
+											${itemclasses.join(' ')}">At ${getHMText(item.start.minute)}
 										</div>`
 										:
 										``
