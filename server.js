@@ -703,7 +703,7 @@ function cacheReminders(user){
 				user: {
 					name: name,
 					email: email,
-					timezoneoffset: timezoneoffset
+					timezoneoffset: timezoneoffset * 60000
 				},
 				event: {
 					id: item.id,
