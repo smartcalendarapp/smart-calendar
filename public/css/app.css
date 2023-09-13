@@ -3291,7 +3291,7 @@ body {
 	top: 0px;
 	position: absolute;
 	width: 100%;
-	height: 6px;
+	height: 8px;
 	cursor: ns-resize;
 }
 
@@ -3299,7 +3299,7 @@ body {
 	bottom: 0px;
 	position: absolute;
 	width: 100%;
-	height: 6px;
+	height: 8px;
 	cursor: ns-resize;
 }
 

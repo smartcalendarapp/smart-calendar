@@ -2122,7 +2122,7 @@ class Calendar {
 								</svg>
 
 
-								<div class="pointer-none nowrap text-white text-14px">${item.reminder.length == 0 ? 'Set reminder' : `Manage reminders (${item.reminder.length})`}</div>
+								<div class="pointer-none nowrap text-white text-14px">${item.reminder.length == 0 ? 'Remind me' : `Remind me (${item.reminder.length})`}</div>
 							</div>
 						</div>
 						`)
