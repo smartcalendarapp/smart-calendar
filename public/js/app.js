@@ -9340,11 +9340,11 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 			myheight = Math.floor((tempenddate.getTime() - tempstartdate.getTime()) / 60000)
 
 			itemclasses.push('eventwrapbottom')
-			itemclicks.push(`<div class="eventbottom" onmousedown="clickeventbottom(event, ${timestamp})"></div>`)
+			itemclicks.push(`<div class="${myheight <= 15 ? 'eventbottomsmall' : 'eventbottom'}" onmousedown="clickeventbottom(event, ${timestamp})"></div>`)
 		}
 
 		if(myheight >= 30){
-			itemclicks.push(`<div class="eventtop" onmousedown="clickeventtop(event, ${timestamp})"></div>`)
+			itemclicks.push(`<div class="${myheight <= 15 ? 'eventtopsmall' : 'eventtop'}" onmousedown="clickeventtop(event, ${timestamp})"></div>`)
 		}
 	} else if (tempenddate.getTime() > currentdate.getTime() && tempenddate.getTime() <= nextdate.getTime()) {
 		itemclasses.push('eventwrapbottom')
@@ -9357,12 +9357,12 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 			myheight = Math.floor((tempenddate.getTime() - tempstartdate.getTime()) / 60000)
 
 			itemclasses.push('eventwraptop')
-			itemclicks.push(`<div class="eventtop" onmousedown="clickeventtop(event, ${timestamp})"></div>`)
+			if(myheight >= 30){
+				itemclicks.push(`<div class="${myheight <= 15 ? 'eventtopsmall' : 'eventtop'}" onmousedown="clickeventtop(event, ${timestamp})"></div>`)
+			}
 		}
 
-		if(myheight >= 30){
-			itemclicks.push(`<div class="eventbottom" onmousedown="clickeventbottom(event, ${timestamp})"></div>`)
-		}
+		itemclicks.push(`<div class="${myheight <= 15 ? 'eventbottomsmall' : 'eventbottom'}" onmousedown="clickeventbottom(event, ${timestamp})"></div>`)
 	} else if (tempstartdate.getTime() < currentdate.getTime() && tempenddate.getTime() > nextdate.getTime()) {
 		mytop = 0
 		myheight = 1440

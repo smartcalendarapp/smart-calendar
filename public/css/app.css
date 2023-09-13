@@ -3287,6 +3287,22 @@ body {
 	cursor: ns-resize;
 }
 
+.eventtopsmall {
+	top: 0px;
+	position: absolute;
+	width: 100%;
+	height: 6px;
+	cursor: ns-resize;
+}
+
+.eventbottomsmall {
+	bottom: 0px;
+	position: absolute;
+	width: 100%;
+	height: 6px;
+	cursor: ns-resize;
+}
+
 .eventtext {
 	flex: 1;
 	padding-left: 6px;
