@@ -70,7 +70,7 @@
 </script>
 
 <body>
-	<div id="backgroundeffect" class="fixed hiddenfadeslow pointer-none homebackground border-box z-index-100 top-0 left-0 width-full height-full fadetransitionslow">
+	<div id="backgroundeffect" class="fixed hiddenfade pointer-none homebackground border-box z-index-100 top-0 left-0 width-full height-full fadetransition">
 		<div class="padding-left-60px small:padding-left-24px padding-top-12px width-full backdrop-blur">
 			<a href="/" class="z-index-2000 navtitle">
 				<img src="logo.png" class="buttonlogo"></img>
@@ -294,20 +294,10 @@
 
 
 			<!-- intro -->
-			<div class="z-index-1000 border-box border-box display-flex gap-60px width-full flex-column">
+			<div class="relative z-index-1000 border-box border-box display-flex gap-60px width-full flex-column">
 				<div id="firstbackgroundeffect" class="showbackgroundeffect display-flex flex-row padding-top-96px padding-bottom-96px">
 					<p class="flex-1 small:text-center text-right text-24px text-primary fadeslidebeforeslow">Ever feel that your day controls you?</p>
 					<div class="flex-1 small:display-none"></div>
-				</div>
-
-				<div class="fadeslidebeforedelay display-flex flex-column gap-12px align-center learnmoregroup">
-					<div class="text-14px text-center text-primary pointer-none">Keep scrolling</div>
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge learnmorebutton">
-						<g>
-						<path d="M226.201 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M29.7992 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-						</g>
-						</svg>
 				</div>
 
 				<div class="showbackgroundeffect display-flex flex-row padding-top-96px padding-bottom-96px">
@@ -325,6 +315,19 @@
 					<p class="flex-1 small:text-center text-24px text-primary fadeslidebeforeslow">Using our science-based algorithm, we automatically build your schedule, to ensure you have optimal productivity and balance in life.</p>
 				</div>
 
+
+				<div class="pointer-none left-0 right-0 height-100vh fixed border-box padding-60px top-0 display-flex flex-row justify-center align-flex-end" id="keepscrolling">
+					<div class="fadeslidebeforedelay display-flex flex-column gap-12px align-center learnmoregroup">
+						<div class="text-14px text-center text-primary pointer-none">Keep scrolling</div>
+							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge learnmorebutton">
+							<g>
+							<path d="M226.201 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M29.7992 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							</g>
+							</svg>
+					</div>
+				</div>
+
 			</div>
 
 
@@ -336,7 +339,7 @@
 				<div class="display-flex flex-column gap-24px flex-1">
 					<h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue2">Automatic Task Planner</span></h2>
 					<h3 class="text-24px text-primary fadeslidebefore">We plan your day, for you.</h3>
-					<p class="text-18px text-primary fadeslidebefore">Simply add your tasks to your to-do list, and Smart Calendar will automatically schedule them in your calendar. We find the best times for each task based on their due dates and priorities, so you don't have to juggle them in your head.</p>
+					<p class="text-18px text-primary fadeslidebefore">Simply add your tasks to your to-do list, and Smart Calendar will automatically schedule them in your calendar. We find the best times to do each task based on their due dates and priorities, so you don't have to juggle them in your head.</p>
 
 					<a href="../signup" class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
 						<div class="pointer-none text-18px text-white text-bold">Try it now</div>

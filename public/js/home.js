@@ -228,15 +228,24 @@ function updatescroll(event){
 	let rectlast = getElement('firstfeature').getBoundingClientRect()
 
 	if(rectfirst.bottom < windowheight && rectlast.top > windowheight){
-		getElement('backgroundeffect').classList.remove('hiddenfadeslow')
+		getElement('backgroundeffect').classList.remove('hiddenfade')
 	}else{
-		getElement('backgroundeffect').classList.add('hiddenfadeslow')
+		getElement('backgroundeffect').classList.add('hiddenfade')
 	}
 
 
 	//finalsplash
 	let finalsplash = getElement('finalsplash')
 	finalsplash.style.transform = `scale(${1 - Math.max(window.scrollY, 0)/2000})`
+
+
+	//keep scrollling
+	let keepscrolling = getElement('keepscrolling')
+	if(rectfirst.bottom > 0){
+		keepscrolling.classList.remove('hiddenfade')
+	}else{
+		keepscrolling.classList.add('hiddenfade')
+	}
 }
 
 
