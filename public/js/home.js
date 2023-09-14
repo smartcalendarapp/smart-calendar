@@ -228,9 +228,9 @@ function updatescroll(event){
 	let rectlast = getElement('firstfeature').getBoundingClientRect()
 
 	if(rectfirst.bottom < windowheight && rectlast.top > windowheight){
-		getElement('backgroundeffect').classList.remove('hiddenfade')
+		getElement('backgroundeffect').classList.remove('hiddenfadeslow')
 	}else{
-		getElement('backgroundeffect').classList.add('hiddenfade')
+		getElement('backgroundeffect').classList.add('hiddenfadeslow')
 	}
 
 
@@ -241,7 +241,7 @@ function updatescroll(event){
 
 	//keep scrollling
 	let keepscrolling = getElement('keepscrolling')
-	if(rectfirst.bottom > 0){
+	if(rectfirst.bottom < windowheight && rectlast.top > windowheight && rectfirst.bottom > 0){
 		keepscrolling.classList.remove('hiddenfade')
 	}else{
 		keepscrolling.classList.add('hiddenfade')
@@ -260,7 +260,7 @@ function inviewport(element){
 
 function clicklearnmore(){
 	let firstbackgroundeffect = getElement('firstbackgroundeffect')
-	scrollwindow(firstbackgroundeffect.offsetTop - window.innerHeight/2 + firstbackgroundeffect.offsetHeight/2)
+	scrollwindow(firstbackgroundeffect.getBoundingClientRect().top - window.innerHeight/2 + firstbackgroundeffect.offsetHeight/2)
 }
 
 function scrollwindow(destination){

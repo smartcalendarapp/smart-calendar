@@ -280,6 +280,10 @@ img{
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s;
 }
 
+.fadetransitionslow {
+	transition: background-color 1s, color 1s, border-color 1s, opacity 1s, visibility 1s;
+}
+
 
 .homebackground{
 	background-color:var(--background-primary-home)
@@ -287,6 +291,15 @@ img{
 
 .hiddenfade {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s, left 0s 0.2s, top 0s 0.2s;
+	opacity: 0;
+	visibility: hidden;
+	left: -99999px !important;
+	top: -99999px !important;
+}
+
+
+.hiddenfadeslow {
+	transition: background-color 1s, color 1s, border-color 1s, opacity 1s, visibility 1s, left 0s 1s, top 0s 1s;
 	opacity: 0;
 	visibility: hidden;
 	left: -99999px !important;
