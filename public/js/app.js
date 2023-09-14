@@ -2403,7 +2403,7 @@ class Calendar {
 								</g>
 								</svg>
 		
-								<span class="tooltiptextleft">Delete all</span>
+								<span class="tooltiptextleft">Delete completed task</span>
 							</div>
 					</div>`)
 				}
@@ -9595,9 +9595,9 @@ function getsleepingevents(data) {
 	for (let item of data) {
 		let tempstartdate1 = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 		let tempenddate1 = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
-		let sleepstartdate1 = new Date(item.start.year, item.start.month, item.start.day, 0, calendar.settings.sleep.startminute)
+		let sleepstartdate1 = new Date(item.start.year, item.start.month, item.start.day, 0, calendar.settings.sleep.startminute + 30)
 		let sleependdate1 = new Date(item.start.year, item.start.month, item.start.day + 1, 0, calendar.settings.sleep.endminute)
-		let sleepstartdate2 = new Date(item.start.year, item.start.month, item.start.day - 1, 0, calendar.settings.sleep.startminute)
+		let sleepstartdate2 = new Date(item.start.year, item.start.month, item.start.day - 1, 0, calendar.settings.sleep.startminute + 30)
 		let sleependdate2 = new Date(item.start.year, item.start.month, item.start.day, 0, calendar.settings.sleep.endminute)
 
 		if ((tempstartdate1.getTime() < sleependdate1.getTime() && tempenddate1.getTime() > sleepstartdate1.getTime()) || (tempstartdate1.getTime() < sleependdate2.getTime() && tempenddate1.getTime() > sleepstartdate2.getTime())) {
@@ -9726,9 +9726,9 @@ function getLeastBusyDateV1(item, myevents) {
 	let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 
 	//fix due date to before sleep
-	let sleepstartdate1 = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, calendar.settings.sleep.startminute)
+	let sleepstartdate1 = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, calendar.settings.sleep.startminute + 30)
 	let sleependdate1 = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day + 1, 0, calendar.settings.sleep.endminute)
-	let sleepstartdate2 = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day - 1, 0, calendar.settings.sleep.startminute)
+	let sleepstartdate2 = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day - 1, 0, calendar.settings.sleep.startminute + 30)
 	let sleependdate2 = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, calendar.settings.sleep.endminute)
 	if (endbeforedate.getTime() > sleepstartdate1.getTime() && endbeforedate.getTime() < sleependdate1.getTime()) {
 		endbeforedate.setTime(sleepstartdate1.getTime())
@@ -9752,8 +9752,8 @@ function getLeastBusyDateV1(item, myevents) {
 		let otherevents = myevents.filter(b => b.id != item.id)
 
 		//sleep
-		otherevents.push({ start: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate() - 1, minute: calendar.settings.sleep.startminute }, end: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate(), minute: calendar.settings.sleep.endminute } })
-		otherevents.push({ start: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate(), minute: calendar.settings.sleep.startminute }, end: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate() + 1, minute: calendar.settings.sleep.endminute } })
+		otherevents.push({ start: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate() - 1, minute: calendar.settings.sleep.startminute + 30 }, end: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate(), minute: calendar.settings.sleep.endminute } })
+		otherevents.push({ start: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate(), minute: calendar.settings.sleep.startminute + 30 }, end: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate() + 1, minute: calendar.settings.sleep.endminute } })
 
 		let inverteddistance = 0
 		for (let otheritem of otherevents) {
@@ -9844,8 +9844,8 @@ function getLeastBusyDateV2(item, myevents, availabletime) {
 			let otherevents = myevents.filter(b => b.id != item.id)
 
 			//sleep
-			otherevents.push({ start: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate() - 1, minute: calendar.settings.sleep.startminute }, end: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate(), minute: calendar.settings.sleep.endminute } })
-			otherevents.push({ start: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate(), minute: calendar.settings.sleep.startminute }, end: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate() + 1, minute: calendar.settings.sleep.endminute } })
+			otherevents.push({ start: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate() - 1, minute: calendar.settings.sleep.startminute + 30 }, end: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate(), minute: calendar.settings.sleep.endminute } })
+			otherevents.push({ start: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate(), minute: calendar.settings.sleep.startminute + 30 }, end: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate() + 1, minute: calendar.settings.sleep.endminute } })
 
 			let inverteddistance = 0
 			for (let otheritem of otherevents) {
@@ -9917,7 +9917,7 @@ function getavailabletime(item, startrange, endrange) {
 		tempenddate.setDate(tempenddate.getDate() + 1)
 
 		let sleepstart = new Date(tempstartdate)
-		sleepstart.setHours(0, calendar.settings.sleep.startminute, 0, 0)
+		sleepstart.setHours(0, calendar.settings.sleep.startminute + 30, 0, 0)
 		let sleepend = new Date(tempstartdate)
 		sleepend.setHours(0, calendar.settings.sleep.endminute, 0, 0)
 
@@ -11044,9 +11044,9 @@ async function autoScheduleV1(currentevents, showsummary) {
 
 				let tempstartdate1 = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 				let tempenddate1 = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
-				let sleepstartdate1 = new Date(item.start.year, item.start.month, item.start.day, 0, calendar.settings.sleep.startminute)
+				let sleepstartdate1 = new Date(item.start.year, item.start.month, item.start.day, 0, calendar.settings.sleep.startminute + 30)
 				let sleependdate1 = new Date(item.start.year, item.start.month, item.start.day + 1, 0, calendar.settings.sleep.endminute)
-				let sleepstartdate2 = new Date(item.start.year, item.start.month, item.start.day - 1, 0, calendar.settings.sleep.startminute)
+				let sleepstartdate2 = new Date(item.start.year, item.start.month, item.start.day - 1, 0, calendar.settings.sleep.startminute + 30)
 				let sleependdate2 = new Date(item.start.year, item.start.month, item.start.day, 0, calendar.settings.sleep.endminute)
 
 				if (tempstartdate1.getTime() < sleependdate1.getTime() && tempenddate1.getTime() > sleepstartdate1.getTime()) {
