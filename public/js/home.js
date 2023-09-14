@@ -241,8 +241,10 @@ function updatescroll(event){
 
 	//keep scrollling
 	let keepscrolling = getElement('keepscrolling')
-	if(rectfirst.bottom < windowheight && rectlast.top > windowheight && rectfirst.top > 0){
+	if(rectfirst.bottom < windowheight && rectlast.top > windowheight && rectfirst.top > 0 && keepscrollingstate != 2){
 		keepscrolling.classList.remove('hiddenfade')
+
+		if(keepscrollingstate == 0) keepscrollingstate = 1
 
 		setTimeout(function(){
 			let keepscrollingtext = getElement('keepscrollingtext')
@@ -250,8 +252,11 @@ function updatescroll(event){
 		}, 4000)
 	}else{
 		keepscrolling.classList.add('hiddenfade')
+
+		if(keepscrollingstate == 1) keepscrollingstate = 2
 	}
 }
+let keepscrollingstate = 0
 
 
 updatescroll()
