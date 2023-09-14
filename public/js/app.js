@@ -2380,7 +2380,32 @@ class Calendar {
 			for (let i = 0; i < mytodos.length; i++) {
 				let item = mytodos[i]
 				if (i == 0) {
-					tempoutput.push(`<div class="text-18px text-quaternary">Completed</div>`)
+					tempoutput.push(`<div class="display-flex flex-row justify-space-between align-center">
+						<div class="text-16px text-bold text-primary">Completed</div>
+
+						<div class="popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="deletecompletedtodos()">
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+								<g>
+								<path d="M207.414 223.445L207.414 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M71.3433 246L184.657 246" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M207.414 223.445C207.414 235.902 197.226 246 184.657 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M238 57.6433L18 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M48.5864 223.445L48.5864 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M48.5864 223.445C48.5864 235.902 58.775 246 71.3433 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M96.1228 10L159.881 10" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M173.737 23.7283C173.737 16.1464 167.534 10 159.881 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M82.2668 23.7283C82.2668 16.1464 88.4703 10 96.1228 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M82.2668 23.7283L82.2668 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M173.737 23.7283L173.737 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M165.379 101.49L165.379 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+								<path d="M90.6212 101.49L90.6212 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+								<path d="M128 101.49L128 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+								</g>
+								</svg>
+		
+								<span class="tooltiptextcenter" id="eventinfoedittooltiptext">Delete all</span>
+							</div>
+					</div>`)
 				}
 				tempoutput2.push(gettododata(item))
 				if (i == mytodos.length - 1) {
@@ -8504,6 +8529,19 @@ function movedragtodo(event) {
 	dragtododiv.style.top = event.clientY - initialdragtodoy + 'px'
 }
 
+
+
+
+//delete all completed
+function deletecompletedtodos(){
+	calendar.todos = calendar.todos.filter(d => !d.completed)
+	calendar.events = calendar.events.filter(d => d.type != 1 || (d.type == 1 && !d.completed))
+
+	calendar.updateEvents()
+	calendar.updateTodo()
+	calendar.updateInfo()
+	calendar.updateHistory()
+}
 
 
 //check completed

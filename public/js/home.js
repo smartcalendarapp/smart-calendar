@@ -211,7 +211,7 @@ function updatescroll(event){
 	  }
 	}
 
-	const transitiondivs3 = document.getElementsByClassName('fadeslidebeforedelay')
+	
 	for(let div of Array.from(transitiondivs3)){
 		if (inviewport(div)){
 			if(!div.classList.contains('fadeslideafter')){
