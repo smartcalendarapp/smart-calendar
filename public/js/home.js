@@ -264,8 +264,7 @@ function clicklearnmore(){
 }
 
 function clickkeepscrolling(){
-	let rectfirst = getElement('firstbackgroundeffect').getBoundingClientRect()
-	scrollwindow(rectfirst.bottom + rectfirst.height + window.innerHeight/2)
+	scrollwindow(window.scrollY + window.innerHeight/2)
 }
 
 
