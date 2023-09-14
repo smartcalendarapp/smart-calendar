@@ -232,6 +232,11 @@ function updatescroll(event){
 	}else{
 		getElement('backgroundeffect').classList.add('hiddenfadeslow')
 	}
+
+
+	//finalsplash
+	let finalsplash = getElement('finalsplash')
+	finalsplash.style.transform = `scale(${1 - Math.max(window.scrollY, 0)/2000})`
 }
 
 

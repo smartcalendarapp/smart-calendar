@@ -175,6 +175,38 @@
 			</div>
 
 			<!-- front screen -->
+			<div class="relative height-100vh display-flex flex-column align-center justify-space-between padding-top-60px padding-bottom-60px border-box display-none">
+				<div></div>
+				<div class="display-flex flex-column gap-48px align-center">
+					<div class="display-flex flex-column gap-24px align-center">
+						<h1 class="text-48px small:text-36px text-bold text-primary text-center transition-none">Your Smart Time<br>Management Assistant.</h1>
+						<p class="text-24px text-primary text-center transition-none">Smart Calendar intelligently schedules your tasks into your calendar.<br>Get started with your Google Calendar in just seconds.</p>
+					</div>
+					<a href="../signup" class="border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
+						<div class="pointer-none text-18px text-white text-bold">Get Started Now</div>
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+							<g>
+							<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							</g>
+						</svg>
+					</a>
+				</div>
+
+				<div class="pointer-auto display-flex flex-column gap-12px pointer learnmoregroup" onclick="clicklearnmore()">
+					<div class="text-18px text-center nowrap text-white pointer-none small:text-primary">Learn more about Smart Calendar</div>
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite learnmorebutton">
+					<g>
+					<path d="M226.201 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					<path d="M29.7992 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					</g>
+					</svg>
+				</div>
+
+			</div>
+
+
 			<div class="relative height-100vh display-flex flex-column align-center justify-space-between padding-top-60px small:padding-bottom-60px border-box">
 				<div></div>
 				<div class="display-flex flex-column gap-48px align-center">
@@ -197,17 +229,17 @@
 				<div class="absolute bottom-0 padding-bottom-60px z-index-1 pointer-none left-0 right-0 display-flex flex-row justify-center">
 					<div class="pointer-auto display-flex flex-column gap-12px pointer learnmoregroup" onclick="clicklearnmore()">
 						<div class="text-18px text-center nowrap text-white pointer-none small:text-primary">Learn more about Smart Calendar</div>
-							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite learnmorebutton">
-							<g>
-							<path d="M226.201 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M29.7992 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							</g>
-							</svg>
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite learnmorebutton">
+						<g>
+						<path d="M226.201 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M29.7992 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						</g>
+						</svg>
 					</div>
 				</div>
 
 				<div class="width-full small:display-none">
-					<img src="../finalsplash.png" width="1024" height="380" alt="In-app interface showing calendar and to-do list." class="width-full height-auto"></img>
+					<img src="../finalsplash.png" width="1024" height="380" alt="In-app interface showing calendar and to-do list." class="width-full height-auto" id="finalsplash"></img>
 				</div>
 
 				<div class="display-none small:display-block"></div>
