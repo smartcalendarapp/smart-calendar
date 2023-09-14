@@ -143,6 +143,13 @@ img{
 	fill: none;
 	display: block;
 }
+.buttonwhite {
+	height:18px;
+	width:auto;
+	stroke: var(--white);
+	fill: none;
+	display: block;
+}
 .buttoninlinebluegradient{
 	height:36px;
 	width:auto;
