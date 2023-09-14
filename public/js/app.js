@@ -2403,7 +2403,7 @@ class Calendar {
 								</g>
 								</svg>
 		
-								<span class="tooltiptextleft">Delete completed task</span>
+								<span class="tooltiptextleft">Delete completed tasks</span>
 							</div>
 					</div>`)
 				}

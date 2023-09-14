@@ -243,6 +243,11 @@ function updatescroll(event){
 	let keepscrolling = getElement('keepscrolling')
 	if(rectfirst.bottom < windowheight && rectlast.top > windowheight && rectfirst.top > 0){
 		keepscrolling.classList.remove('hiddenfade')
+
+		setTimeout(function(){
+			let keepscrollingtext = getElement('keepscrollingtext')
+			keepscrollingtext.classList.remove('hiddenfade')
+		}, 4000)
 	}else{
 		keepscrolling.classList.add('hiddenfade')
 	}
