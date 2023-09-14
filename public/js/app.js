@@ -2403,7 +2403,7 @@ class Calendar {
 								</g>
 								</svg>
 		
-								<span class="tooltiptextcenter" id="eventinfoedittooltiptext">Delete all</span>
+								<span class="tooltiptextleft">Delete all</span>
 							</div>
 					</div>`)
 				}
@@ -8535,9 +8535,7 @@ function movedragtodo(event) {
 //delete all completed
 function deletecompletedtodos(){
 	calendar.todos = calendar.todos.filter(d => !d.completed)
-	calendar.events = calendar.events.filter(d => d.type != 1 || (d.type == 1 && !d.completed))
 
-	calendar.updateEvents()
 	calendar.updateTodo()
 	calendar.updateInfo()
 	calendar.updateHistory()
