@@ -243,8 +243,8 @@ function updatescroll(event){
 
 
 	//finalsplash
-	let finalsplash = getElement('finalsplash')
-	finalsplash.style.transform = `scale(${1 - Math.max(window.scrollY, 0)/2000})`
+	//let finalsplash = getElement('finalsplash')
+	//finalsplash.style.transform = `scale(${1 - Math.max(window.scrollY, 0)/2000})`
 
 
 	//keep scrollling
