@@ -8,8 +8,8 @@ canvas.height = window.innerHeight
 let card = document.querySelector("#finalsplash");
 
 window.addEventListener("scroll", () => {
-  var top = ((window.scrollY / 10)-50);
-  if (window.scrollY<1000){
+	var top = ((window.scrollY / 20)-10);
+	if (window.scrollY<1000){
   card.style.transform = 'rotate3d(0.5, 0.5, 0.5, ' + top + 'deg)'};
 });
 
