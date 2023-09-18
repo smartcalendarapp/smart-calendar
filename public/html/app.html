@@ -780,13 +780,13 @@
 
 
 				<div class="flex-1 relative width-full">
-					<div id="prompttodotodayaddtasktodolist" class="padding-12px border-box background-primary border-8px absolute top-0 left-0 right-0 bottom-0 flex-column display-flex gap-24px overflow-y-auto width-full"></div>
+					<div id="prompttodotodayaddtasktodolist" class="border-box background-primary border-8px absolute top-0 left-0 right-0 bottom-0 flex-column display-flex gap-24px overflow-y-auto width-full"></div>
 				</div>
 			</div>
 
 			<div class="display-flex flex-row gap-24px justify-center align-center">
 				<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="setprompttodotodaydate();closeprompttodotoday()">Not now</div>
-				<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="setprompttodotodaydate();closeprompttodotoday()">Finish</div>
+				<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" id="prompttodotodaysubmit" onclick="setprompttodotodaydate();closeprompttodotoday()">Finish</div>
 			</div>
 		</div>
 
@@ -836,7 +836,7 @@
 
 
 	<!-- onboarding -->
-	<div class="onboardingscreen display-flex flex-column absolute top-0 left-0 width-full height-full backdrop-blur hiddenfade" id="onboardingscreen">
+	<div class="onboardingscreen display-flex flex-column absolute top-0 left-0 width-full height-full background-primary hiddenfade" id="onboardingscreen">
 
 		<div class="width-full padding-12px borderbottom">
 			<a href="/" class="navtitle">
@@ -912,7 +912,7 @@
 					</div>
 
 					<div class="display-flex flex-row gap-24px justify-center align-center">
-						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="continueonboarding('connectcalendars')">Skip</div>
+						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="backonboarding('start')">Back</div>
 						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('connectcalendars')">Continue</div>
 					</div>
 
@@ -946,7 +946,7 @@
 					</div>
 
 					<div class="display-flex flex-row gap-24px justify-center align-center">
-						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="continueonboarding('connecttodolists')">Skip</div>
+						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="backonboarding('connectcalendars')">Back</div>
 						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('connecttodolists')">Continue</div>
 					</div>
 
@@ -985,7 +985,7 @@
 					</div>
 
 					<div class="display-flex flex-row gap-24px justify-center align-center">
-						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="continueonboarding('eventreminders')">Skip</div>
+						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="backonboarding('connecttodolists')">Back</div>
 						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('eventreminders')">Continue</div>
 					</div>
 
@@ -1015,7 +1015,7 @@
 					</div>
 
 					<div class="display-flex flex-row gap-24px justify-center align-center">
-						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="continueonboarding('sleeptime')">Skip</div>
+						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="backonboarding('eventreminders')">Back</div>
 						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('sleeptime')">Continue</div>
 					</div>
 
@@ -1027,7 +1027,7 @@
 				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px border-box flex-column flex-1 justify-space-between">
 					<div class="display-flex flex-column gap-12px">
 						<div class="text-24px text-primary text-bold">Add your first task</div>
-						<div class="text-18px text-quaternary">Add your tasks, projects, and ideas to Smart Calendar. Research shows that simply planning can increase your productivty by 50%.</div>
+						<div class="text-18px text-quaternary">Add your tasks and projects here. See Smart Calendar's magic at work as we prioritize and build your schedule.</div>
 					</div>
 
 
@@ -1069,7 +1069,7 @@
 
 
 						<div class="flex-1 relative width-full">
-							<div id="onboardingaddtasktodolist" class="padding-12px border-box background-secondary border-8px absolute top-0 left-0 right-0 bottom-0 flex-column display-flex gap-24px overflow-y-auto width-full"></div>
+							<div id="onboardingaddtasktodolist" class="padding-12px border-box background-primary border-8px absolute top-0 left-0 right-0 bottom-0 flex-column display-flex gap-24px overflow-y-auto width-full"></div>
 						</div>
 					</div>
 
@@ -1077,8 +1077,8 @@
 
 
 					<div class="display-flex flex-row gap-24px justify-center align-center">
-						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="continueonboarding('addtask')">Skip</div>
-						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('addtask')">Finish</div>
+						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="backonboarding('sleeptime')">Back</div>
+						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('addtask')" id="onboardingaddtasksubmit">Finish</div>
 					</div>
 
 				</div>
@@ -1107,17 +1107,6 @@
 	
 		
 		<div class="absolute display-none popupbutton beaconwrap z-index-1001" onclick="openinteractivetourpopup('clickscheduleoncalendar');if(gtag){gtag('event', 'button_click', { useraction: 'Schedule on calendar beacon' })}" id="interactivetourbeaconclickscheduleoncalendar">
-			<div class="beacon pointer-none"></div>
-			
-			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
-			<g>
-			<path d="M128.001 0C114.798 0 103.421 14.0434 104.219 27.0996L110.806 159.354C111.129 170.465 117.509 178.33 128.001 178.33C138.483 178.33 144.621 170.687 145.197 159.354L151.783 27.0369C152.542 13.1194 141.568-5.10502e-06 128.001 0Z" fill-rule="nonzero" opacity="1" ></path>
-			<path d="M128.001 207.607C114.826 207.607 104.132 218.3 104.132 231.476C104.132 244.651 114.826 255.313 128.001 255.313C141.176 255.313 151.87 244.651 151.87 231.476C151.87 218.3 141.176 207.607 128.001 207.607Z" fill-rule="nonzero" opacity="1" ></path>
-			</g>
-			</svg>
-		</div>
-		
-		<div class="absolute display-none popupbutton beaconwrap z-index-100" onclick="openinteractivetourpopup('addevent');if(gtag){gtag('event', 'button_click', { useraction: 'Create an event beacon' })}" id="interactivetourbeaconaddevent">
 			<div class="beacon pointer-none"></div>
 			
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
@@ -1160,24 +1149,11 @@
 				<div class="text-14px text-quaternary nowrap">TIP</div>
 				<div class="text-18px text-primary nowrap text-bold">Schedule my tasks</div>
 			</div>
-			<div class="text-18px text-quaternary">Using our science-backed algorithm, we'll automatically schedule your tasks into your calendar.</div>
+			<div class="text-18px text-quaternary">Using our science-based algorithm, we'll automatically prioritize and schedule your tasks into your calendar.</div>
 					 
 			<div class="display-flex flex-row justify-space-between align-center">
 				<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
 				<div class="text-14px pointer pointer-auto padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="readinteractivetourpopup('clickscheduleoncalendar')">Got it</div>
-			</div>
-		</div>
-
-		<div class="interactivetourpopup hiddenpopup popupbutton" id="interactivetourpopupaddevent">
-			<div>
-				<div class="text-14px text-quaternary nowrap">TIP</div>
-				<div class="text-18px text-primary nowrap text-bold">Create an event</div>
-			</div>
-			<div class="text-18px text-quaternary">Click and drag to create an event.</div>
-					 
-			<div class="display-flex flex-row justify-space-between align-center">
-				<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
-				<div class="text-14px pointer pointer-auto padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="readinteractivetourpopup('addevent')">Got it</div>
 			</div>
 		</div>
 
