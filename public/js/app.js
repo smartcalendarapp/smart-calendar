@@ -3400,7 +3400,7 @@ function updatetime() {
 	let sleependdate = new Date(currentdate)
 	sleependdate.setHours(0, calendar.settings.sleep.endminute, 0, 0)
 
-	if(Math.floor(lastprompttodotodaydate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000)){
+	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000)){
 		if(lastprompttodotodaydate.getTime() < sleependdate.getTime() && currentdate.getTime() >= sleependdate.getTime()){
 			prompttodotoday()
 		}
@@ -3826,11 +3826,11 @@ function clickmonthdate(event, timestamp) {
 
 //PROMPT TODO TODAY
 let isprompttodotoday = false
-let prompttodotodayaddedcount = 0
+let prompttodotodayadded = []
 function prompttodotoday(){
 	if(isprompttodotoday) return
 	isprompttodotoday = true
-	prompttodotodayaddedcount = 0
+	prompttodotodayadded = []
 	
 	updateprompttodotoday()
 
@@ -3838,20 +3838,24 @@ function prompttodotoday(){
 	prompttodotodaywrap.classList.remove('hiddenfade')
 }
 function closeprompttodotoday(){
-	calendar.lastprompttodotodaydate = currentdate.getTime()
+	calendar.lastprompttodotodaydate = Date.now()
 	isprompttodotoday = false
 
 	let prompttodotodaywrap = getElement('prompttodotodaywrap')
 	prompttodotodaywrap.classList.add('hiddenfade')
 	
 }
-
 //here4
 
 function updateprompttodotoday(){
 	if(!isprompttodotoday) return
+	
+	let output = []
+	for(let item of prompttodotodayadded){
+		output.push(gettododata(item))
+	}
 	let prompttodotodayaddtasktodolist = getElement('prompttodotodayaddtasktodolist')
-	prompttodotodayaddtasktodolist.innerHTML = getElement('alltodolist').innerHTML
+	prompttodotodayaddtasktodolist.innerHTML = output.join('')
 }
 
 //ONBOARDING
@@ -7631,6 +7635,9 @@ function clicktypeaddtask(event){
 
 	let addtodooptionspopuponboarding = getElement('addtodooptionspopuponboarding')
 	addtodooptionspopuponboarding.classList.remove('hiddenpopup')
+
+	let addtodooptionspopupprompttodotoday = getElement('addtodooptionspopupprompttodotoday')
+	addtodooptionspopupprompttodotoday.classList.remove('hiddenpopup')
 }
 
 function clickaddonetask(){
@@ -7779,10 +7786,6 @@ function submitcreatetodo(event) {
 	let length = Math.max(finalstring.length, 1)
 	
 	for(let i = 0; i < length; i++){
-		if(isprompttodotoday){
-			prompttodotodayaddedcount++
-		}
-
 		let title = typeaddtask(event, true, i)
 
 		let todoinputnotes = getElement('todoinputnotes')
@@ -7806,6 +7809,10 @@ function submitcreatetodo(event) {
 
 		calendar.todos.push(item)
 
+
+		if(isprompttodotoday){
+			prompttodotodayadded.push(item.id)
+		}
 
 		if(i == length - 1){
 			setTimeout(function(){
