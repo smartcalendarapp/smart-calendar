@@ -2160,11 +2160,15 @@ class Calendar {
 
 	//todo
 	updateTodo() {
-		this.updateTodoList()
-		this.updateEditTodo()
-		this.updateTodoButtons()
-		updateonboardingscreen()
-		updateprompttodotoday()
+		if(!calendar.onboarding.addtask){
+			updateonboardingscreen()
+		}else if(isprompttodotoday){
+			updateprompttodotoday()
+		}else{
+			this.updateTodoList()
+			this.updateEditTodo()
+			this.updateTodoButtons()
+		}
 	}
 
 	updateEditTodo() {
@@ -3402,7 +3406,7 @@ function updatetime() {
 	let sleependdatelater = new Date(sleependdate)
 	sleependdatelater.setHours(sleependdatelater.getHours() + 3) //only prompt within first 3 hours after wake up
 
-	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) && lastprompttodotodaydate.getTime() < sleependdate.getTime() && currentdate.getTime() >= sleependdate.getTime() && currentdate.getTime() < sleependdatelater.getTime()){
+	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) && lastprompttodotodaydate.getTime() < sleependdate.getTime() && currentdate.getTime() >= sleependdate.getTime() && currentdate.getTime() < sleependdatelater.getTime() && document.visibilityState == 'visible'){
 		prompttodotoday()
 	}else{
 		closeprompttodotoday()
@@ -3850,6 +3854,19 @@ function closeprompttodotoday(){
 
 function setprompttodotodaydate(){
 	calendar.lastprompttodotodaydate = Date.now()
+}
+
+function clickcloseprompttodotoday(){
+	setprompttodotodaydate()
+	closeprompttodotoday()
+}
+function clickconfirmprompttodotoday(){
+	setprompttodotodaydate()
+
+	let length = calendar.todos.filter(d => prompttodotodayadded.find(g => g == d.id)).length
+	if(length >= 3){
+		closeprompttodotoday()
+	}
 }
 //here4
 
@@ -7659,12 +7676,12 @@ function closecreatetodoitempriority() {
 
 
 function clicktypeaddtask(event){
-	if(isprompttodotoday){
-		let addtodooptionspopupprompttodotoday = getElement('addtodooptionspopupprompttodotoday')
-		addtodooptionspopupprompttodotoday.classList.remove('hiddenpopup')
-	}else if(!calendar.onboarding.addtask){
+	if(!calendar.onboarding.addtask){
 		let addtodooptionspopuponboarding = getElement('addtodooptionspopuponboarding')
 		addtodooptionspopuponboarding.classList.remove('hiddenpopup')
+	}else if(isprompttodotoday){
+		let addtodooptionspopupprompttodotoday = getElement('addtodooptionspopupprompttodotoday')
+		addtodooptionspopupprompttodotoday.classList.remove('hiddenpopup')
 	}else{
 		let addtodooptionspopup = getElement('addtodooptionspopup')
 		addtodooptionspopup.classList.remove('hiddenpopup')
@@ -7672,11 +7689,11 @@ function clicktypeaddtask(event){
 }
 
 function clickaddonetask(){
-	if(isprompttodotoday){
-		getElement('todoinputtitleprompttodotoday').focus()
-	}else if(!calendar.onboarding.addtask){
+	if(!calendar.onboarding.addtask){
 		getElement('todoinputtitleonboarding').focus()
-	}else{
+	}else if(isprompttodotoday){
+		getElement('todoinputtitleprompttodotoday').focus()
+	}else {
 		getElement('todoinputtitle').focus()
 	}
 }
