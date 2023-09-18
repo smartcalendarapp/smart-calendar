@@ -735,6 +735,61 @@
 		</div>
 	</div>
 
+	<div class="absolute top-0 left-0 width-full height-full display-flex flex-column align-center z-index-1000 backdrop-blur hiddenfade fadetransition" id="prompttodotodaywrap">
+		<div class="todowidth display-flex padding-96px gap-48px small:padding-24px border-box flex-column flex-1 justify-space-between">
+
+			<div class="display-flex flex-column gap-12px">
+				<div class="text-24px text-bold text-primary">Set up Today for Success</div>
+				<div class="text-16px text-quaternary">Research shows that simply planning can increase your productivty by 50%. What are 3 things you want to accomplish today?</div>
+			</div>
+
+			<!-- add task -->
+			<div class="width-full relative display-flex align-center flex-row gap-12px">
+				<div class="display-flex flex-row border-8px background-primary-transparent backdrop-blur box-shadow overflow-hidden flex-1 relative">
+					<textarea rows="1" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleprompttodotoday">
+					</textarea>
+					<span class="inputline"></span>
+				</div>
+				<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodo()">					
+					<div class="text-16px text-white display-flex flex-row gap-6px pointer-none nowrap transition-none"  id="submitcreatetodoaddnumberprompttodotoday">Add</div>
+				</div>
+
+				<!-- popup -->
+				<div class="width-full popuptransition overflow-hidden background-primary box-shadow addtodosuggestions z-index-1 border-8px display-flex popup flex-column hiddenpopup" id="addtodooptionspopupprompttodotoday">
+							
+					<div class="z-index-100 padding-12px border-box flex-1 align-center display-flex flex-row gap-12px padding-12px width-full flex-wrap-wrap">
+						<div class="popupbutton border-8px padding-left-12px padding-right-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap popupbutton text-14px pointer-auto pointer transition-duration-100" onclick="readinteractivetourpopup('clickduedate');clickcreatetododuedate(event)" id="createtododuedateprompttodotoday">
+						</div>
+
+						<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-green pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetododuration(event)" id="createtododurationprompttodotoday">
+						</div>
+
+						<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetodopriority(event)" id="createtodopriorityprompttodotoday">
+						</div>
+					</div>
+
+					<div class="horizontalbar"></div>
+
+					<div class="inputgroup border-8px">
+						<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotesprompttodotoday" maxlength="2000"></textarea>
+						<span class="inputline"></span>
+					</div>
+				</div>
+			</div>
+
+
+			<div class="flex-1 relative width-full">
+				<div id="prompttodotodayaddtasktodolist" class="padding-12px border-box background-secondary border-8px absolute top-0 left-0 right-0 bottom-0 flex-column display-flex gap-24px overflow-y-auto width-full"></div>
+			</div>
+
+			<div class="display-flex flex-row gap-24px justify-center align-center">
+				<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="closeprompttodotoday()">Not now</div>
+				<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="closeprompttodotoday()">Finish</div>
+			</div>
+		</div>
+
+	</div>
+
 
 	<div class="absolute pointer-none top-0 z-index-1000 left-0 bottom-0 right-0 display-flex flex-column align-center justify-center">
 		<div class="popuptransition box-shadow padding-12px pointer-auto display-flex flex-column gap-12px border-8px background-primary-transparent backdrop-blur hiddenpopup max-width-400px width-full border-box" id="rescheduletaskpopup">
@@ -970,7 +1025,7 @@
 				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px border-box flex-column flex-1 justify-space-between">
 					<div class="display-flex flex-column gap-12px">
 						<div class="text-24px text-primary text-bold">Add your first task</div>
-						<div class="text-18px text-quaternary">Add your tasks, projects, and ideas to Smart Calendar—unlock the secret to achieving them all.</div>
+						<div class="text-18px text-quaternary">Add your tasks, projects, and ideas to Smart Calendar. Research shows that simply planning can increase your productivty by 50%.</div>
 					</div>
 
 

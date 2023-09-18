@@ -1867,7 +1867,6 @@ class Calendar {
 									</div>
 								</div>
 							</div>`)
-							//here4
 
 						infodata.push(`
 						<div class="infogroup">
@@ -2165,6 +2164,7 @@ class Calendar {
 		this.updateEditTodo()
 		this.updateTodoButtons()
 		updateonboardingscreen()
+		updateprompttodotoday()
 	}
 
 	updateEditTodo() {
@@ -3364,18 +3364,18 @@ let needtoautoschedule = false
 function updatetime() {
 	let currentdate = new Date()
 
-	if (currentdate.getMinutes() != lastupdateminute) {
+	if (currentdate.getHours() * 60 + currentdate.getMinutes() != lastupdateminute) {
 		calendar.updateEventTime()
 		calendar.updateSummary()
 		calendar.updateTodo()
 		calendar.updateFocus()
 
-		lastupdateminute = currentdate.getMinutes()
+		lastupdateminute = currentdate.getHours() * 60 + currentdate.getMinutes()
 
 		needtoautoschedule = true
 	}
+
 	if (currentdate.getDate() != lastupdatedate) {
-		//show new day
 		calendaryear = currentdate.getFullYear()
 		calendarmonth = currentdate.getMonth()
 		calendarday = currentdate.getDate()
@@ -3393,6 +3393,17 @@ function updatetime() {
 		updatecreatetodo()
 
 		lastupdatedate = currentdate.getDate()
+	}
+
+	let createddate = new Date(clientinfo.createddate)
+	let lastprompttodotodaydate = new Date(calendar.lastprompttodotodaydate)
+	let sleependdate = new Date(currentdate)
+	sleependdate.setHours(0, calendar.settings.sleep.endminute, 0, 0)
+
+	if(Math.floor(lastprompttodotodaydate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) > 86400000){
+		if(lastprompttodotodaydate.getTime() < sleependdate.getTime() && currentdate.getTime() >= sleependdate.getTime()){
+			prompttodotoday()
+		}
 	}
 }
 
@@ -3812,6 +3823,35 @@ function clickmonthdate(event, timestamp) {
 }
 
 
+
+//PROMPT TODO TODAY
+let isprompttodotoday = false
+let prompttodotodayaddedcount = 0
+function prompttodotoday(){
+	if(isprompttodotoday) return
+	isprompttodotoday = true
+	prompttodotodayaddedcount = 0
+	
+	updateprompttodotoday()
+	
+	let prompttodotodaywrap = getElement('prompttodotodaywrap')
+	prompttodotodaywrap.classList.remove('hiddenfade')
+}
+function closeprompttodotoday(){
+	calendar.lastprompttodotodaydate = currentdate.getTime()
+	isprompttodotoday = false
+
+	let prompttodotodaywrap = getElement('prompttodotodaywrap')
+	prompttodotodaywrap.classList.add('hiddenfade')
+	
+}
+
+//here4
+
+function updateprompttodotoday(){
+	let prompttodotodayaddtasktodolist = getElement('prompttodotodayaddtasktodolist')
+	prompttodotodayaddtasktodolist.innerHTML = getElement('alltodolist').innerHTML
+}
 
 //ONBOARDING
 
@@ -7091,9 +7131,9 @@ function resetcreatetodo() {
 
 	let todoinputtitleold = getElement('todoinputtitleold')
 	todoinputtitleold.value = ''
+
 	let todoinputnotes = getElement('todoinputnotes')
 	todoinputnotes.value = ''
-
 	let todoinputtitle = getElement('todoinputtitle')
 	todoinputtitle.value = ''
 
@@ -7101,6 +7141,11 @@ function resetcreatetodo() {
 	todoinputtitleonboarding.value = ''
 	let todoinputnotesonboarding = getElement('todoinputnotesonboarding')
 	todoinputnotesonboarding.value = ''
+
+	let todoinputtitleprompttodotoday = getElement('todoinputtitleprompttodotoday')
+	todoinputtitleprompttodotoday.value = ''
+	let todoinputnotesprompttodotoday = getElement('todoinputnotesprompttodotoday')
+	todoinputnotesprompttodotoday.value = ''
 
 	createtododurationvalue = 30
 	createtododuedatevalue = {
@@ -7133,6 +7178,10 @@ function updatecreatetodo() {
 	let createtododuedateonboarding = getElement('createtododuedateonboarding')
 	let createtodopriorityonboarding = getElement('createtodopriorityonboarding')
 
+	let createtododurationprompttodotoday = getElement('createtododurationprompttodotoday')
+	let createtododuedateprompttodotoday = getElement('createtododuedateprompttodotoday')
+	let createtodopriorityprompttodotoday = getElement('createtodopriorityprompttodotoday')
+
 	let currentdate = new Date()
 
 	let duedate;
@@ -7143,6 +7192,7 @@ function updatecreatetodo() {
 	let tempdurationvalue = `Takes ${getDHMText(createtododurationvalue)}`
 	createtododuration.innerHTML = tempdurationvalue
 	createtododurationonboarding.innerHTML = tempdurationvalue
+	createtododurationprompttodotoday.innerHTML = tempdurationvalue
 
 	let tempduedatevalue = duedate ? `
 	<div class="display-flex pointer-none flex-row align-center gap-6px">
@@ -7162,24 +7212,29 @@ function updatecreatetodo() {
    </div>` : '<div class="pointer-none text-quaternary padding-top-8px padding-bottom-8px">No due date</div>'
 	createtododuedate.innerHTML = tempduedatevalue
 	createtododuedateonboarding.innerHTML = tempduedatevalue
+	createtododuedateprompttodotoday.innerHTML = tempduedatevalue
 
 	let temppriorityvalue = `<span class="pointer-none ${['text-quaternary', 'text-orange', 'text-red'][createtodopriorityvalue]}">${['Low', 'Medium', ' High'][createtodopriorityvalue]} priority</span>`
 	createtodopriority.innerHTML = temppriorityvalue
 	createtodopriorityonboarding.innerHTML = temppriorityvalue
+	createtodopriorityprompttodotoday.innerHTML = temppriorityvalue
 
 	//add button # of tasks
-	let finalstring = todoinputtitleold.value || todoinputtitle.value || todoinputtitleonboarding.value
+	let finalstring = todoinputtitleold.value || todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
 	finalstring = finalstring.split('\n').filter(d => d != '')
-	let length = finalstring.length || 1
+	let length = Math.max(finalstring.length, 1)
 
 	let string = `Add ${length == 1 ? `` : `<span class="text-black whitebackgroundbutton text-14px border-round circlehighlight">${length}</span>`}`
+
 	let submitcreatetodoaddnumber = getElement('submitcreatetodoaddnumber')
 	submitcreatetodoaddnumber.innerHTML = string
 
 	let submitcreatetodoaddnumberonboarding = getElement('submitcreatetodoaddnumberonboarding')
 	submitcreatetodoaddnumberonboarding.innerHTML = string
-}
 
+	let submitcreatetodoaddnumberprompttodotoday = getElement('submitcreatetodoaddnumberprompttodotoday')
+	submitcreatetodoaddnumberprompttodotoday.innerHTML = string
+}
 
 function closetodoitemduration() {
 	let createtododuration = getElement('createtododuration')
@@ -7187,6 +7242,9 @@ function closetodoitemduration() {
 
 	let createtododurationonboarding = getElement('createtododurationonboarding')
 	createtododurationonboarding.classList.add('hiddenpopup')
+
+	let createtododurationprompttodotoday = getElement('createtododurationprompttodotoday')
+	createtododurationprompttodotoday.classList.add('hiddenpopup')
 }
 function closetodoitemduedate() {
 	let createtododuedate = getElement('createtododuedate')
@@ -7194,6 +7252,9 @@ function closetodoitemduedate() {
 
 	let createtododuedateonboarding = getElement('createtododuedateonboarding')
 	createtododuedateonboarding.classList.add('hiddenpopup')
+
+	let createtododuedateprompttodotoday = getElement('createtododuedateprompttodotoday')
+	createtododuedateprompttodotoday.classList.add('hiddenpopup')
 }
 
 
@@ -7572,7 +7633,9 @@ function clicktypeaddtask(event){
 }
 
 function clickaddonetask(){
-	if(!calendar.onboarding.addtask){
+	if(isprompttodotoday){
+		getElement('todoinputtitleprompttodotoday').focus()
+	}else if(!calendar.onboarding.addtask){
 		getElement('todoinputtitleonboarding').focus()
 	}else{
 		getElement('todoinputtitle').focus()
@@ -7588,6 +7651,10 @@ function resizeaddtask(event){
 	let element2 = getElement('todoinputtitleonboarding')
 	element2.style.height = '0'
 	element2.style.height = Math.min(element2.scrollHeight, parseInt(getComputedStyle(element2).maxHeight)) + 'px'
+
+	let element3 = getElement('todoinputtitleprompttodotoday')
+	element3.style.height = '0'
+	element3.style.height = Math.min(element3.scrollHeight, parseInt(getComputedStyle(element3).maxHeight)) + 'px'
 }
 
 
@@ -7595,7 +7662,8 @@ function typeaddtask(event, submit, index) {
 	let todoinputtitleold = getElement('todoinputtitleold')
 	let todoinputtitle = getElement('todoinputtitle')
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
-	let finalstring = todoinputtitleold.value || todoinputtitle.value || todoinputtitleonboarding.value
+	let todoinputtitleprompttodotoday = getElement('todoinputtitleprompttodotoday')
+	let finalstring = todoinputtitleold.value || todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
 	finalstring = finalstring.split('\n').filter(d => d != '')[index || 0] || ''
 
 	let currentdate = new Date()
@@ -7703,22 +7771,28 @@ function submitcreatetodo(event) {
 	let todoinputtitleold = getElement('todoinputtitleold')
 	let todoinputtitle = getElement('todoinputtitle')
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
-	let finalstring = todoinputtitleold.value || todoinputtitle.value || todoinputtitleonboarding.value
+	let todoinputtitleprompttodotoday = getElement('todoinputtitleprompttodotoday')
+	let finalstring = todoinputtitleold.value || todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
 	finalstring = finalstring.split('\n').filter(d => d != '')
 
-	let length = finalstring.length || 1
+	let length = Math.max(finalstring.length, 1)
 	
 	for(let i = 0; i < length; i++){
+		if(isprompttodotoday){
+			prompttodotodayaddedcount++
+		}
+
 		let title = typeaddtask(event, true, i)
 
 		let todoinputnotes = getElement('todoinputnotes')
 		let todoinputnotesonboarding = getElement('todoinputnotesonboarding')
+		let todoinputnotesprompttodotoday = getElement('todoinputnotesprompttodotoday')
 
 		let duedate = new Date(createtododuedatevalue.year, createtododuedatevalue.month, createtododuedatevalue.day, 0, createtododuedatevalue.minute)
 
 		let myduration = createtododurationvalue
 
-		let notes = todoinputnotes.value || todoinputnotesonboarding.value
+		let notes = todoinputnotes.value || todoinputnotesonboarding.value || todoinputnotesprompttodotoday.value
 
 		let item = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), myduration, title, notes)
 		if (createtododuedatevalue.year == null || createtododuedatevalue.month == null || createtododuedatevalue.day == null || createtododuedatevalue.minute == null) {
@@ -7795,7 +7869,7 @@ function gettododata(item) {
 		 		<div class="inputgroup">
 		 			<div class="text-14px text-primary width90px">Notes</div>
 					<div class="width-full inputgroupitem">
-						<textarea class="infonotes infoinput" placeholder="Add notes" id="edittodoinputnotes" onblur="inputtodonotes(event)" placeholder="Add date" onclick="this.select()" maxlength="2000">${cleanInput(item.notes)}</textarea>
+						<textarea class="infonotes infoinput" placeholder="Add notes" id="edittodoinputnotes" onblur="inputtodonotes(event)" placeholder="Add date"  maxlength="2000">${cleanInput(item.notes)}</textarea>
 						<span class="inputline"></span>
 					</div>
 		 		</div>
@@ -10843,7 +10917,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 	})
 
 	let promises = []
-	for (let item of modifiedevents.find(g => addedtodos.find(f => f.id == g.id))) {
+	for (let item of modifiedevents.filter(g => addedtodos.find(f => f.id == g.id))) {
 		let itemelement = getElement(item.id)
 		if (!itemelement) continue
 		let itemrect = itemelement.getBoundingClientRect()
