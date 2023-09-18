@@ -3400,7 +3400,7 @@ function updatetime() {
 	let sleependdate = new Date(currentdate)
 	sleependdate.setHours(0, calendar.settings.sleep.endminute, 0, 0)
 
-	if(Math.floor(lastprompttodotodaydate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) > 86400000){
+	if(Math.floor(lastprompttodotodaydate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000)){
 		if(lastprompttodotodaydate.getTime() < sleependdate.getTime() && currentdate.getTime() >= sleependdate.getTime()){
 			prompttodotoday()
 		}
@@ -3833,7 +3833,7 @@ function prompttodotoday(){
 	prompttodotodayaddedcount = 0
 	
 	updateprompttodotoday()
-	
+
 	let prompttodotodaywrap = getElement('prompttodotodaywrap')
 	prompttodotodaywrap.classList.remove('hiddenfade')
 }
@@ -3849,6 +3849,7 @@ function closeprompttodotoday(){
 //here4
 
 function updateprompttodotoday(){
+	if(!isprompttodotoday) return
 	let prompttodotodayaddtasktodolist = getElement('prompttodotodayaddtasktodolist')
 	prompttodotodayaddtasktodolist.innerHTML = getElement('alltodolist').innerHTML
 }
