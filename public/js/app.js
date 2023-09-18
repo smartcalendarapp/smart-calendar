@@ -2160,15 +2160,11 @@ class Calendar {
 
 	//todo
 	updateTodo() {
-		if(!calendar.onboarding.addtask){
-			updateonboardingscreen()
-		}else if(isprompttodotoday){
-			updateprompttodotoday()
-		}else{
-			this.updateTodoList()
-			this.updateEditTodo()
-			this.updateTodoButtons()
-		}
+		this.updateTodoList()
+		this.updateEditTodo()
+		this.updateTodoButtons()
+		updateonboardingscreen()
+		updateprompttodotoday()
 	}
 
 	updateEditTodo() {
@@ -3447,7 +3443,6 @@ function run() {
 	updatetodotimepickeronce()
 	updatecreatetodotimepickeronce()
 
-
 	//check for onboarding
 	updateonboardingscreen()
 
@@ -3458,19 +3453,20 @@ function run() {
 	//hide loading screen
 	hideloadingscreen()
 
+	//auto schedule for overdue tasks
+	startAutoSchedule({scheduletodos: []})
+
+
+
 	//scroll Y
 	let currentdate = new Date()
 	scrollcalendarY(currentdate.getHours() * 60 + currentdate.getMinutes())
 
 
-	//auto schedule for overdue tasks
-	startAutoSchedule({scheduletodos: []})
-
-
 	//welcome popup
 	setTimeout(function () {
 		if (calendar.welcomepopup.calendar == false && calendar.onboarding.addtask == true) {
-			getElement(welcomepopupdata.calendar).classList.remove('hiddenfade')
+			//getElement(welcomepopupdata.calendar).classList.remove('hiddenfade')
 		}
 	}, 10000)
 
@@ -3861,10 +3857,9 @@ function clickcloseprompttodotoday(){
 	closeprompttodotoday()
 }
 function clickconfirmprompttodotoday(){
-	setprompttodotodaydate()
-
 	let length = calendar.todos.filter(d => prompttodotodayadded.find(g => g == d.id)).length
 	if(length >= 3){
+		setprompttodotodaydate()
 		closeprompttodotoday()
 	}
 }
