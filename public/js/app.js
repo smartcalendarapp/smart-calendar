@@ -3402,7 +3402,7 @@ function updatetime() {
 	let sleependdatelater = new Date(sleependdate)
 	sleependdatelater.setHours(sleependdatelater.getHours() + 3) //only prompt within first 3 hours after wake up
 
-	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) && lastprompttodotodaydate.getTime() < sleependdate.getTime() && currentdate.getTime() >= sleependdate.getTime() && currentdate.getTime() < sleependdatelater.getTime()){
+	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) && lastprompttodotodaydate.getTime() < sleependdate.getTime() && currentdate.getTime() >= sleependdate.getTime() && currentdate.getTime() < sleependdatelater.getTime() && !isprompttodotoday){
 		prompttodotoday()
 	}else{
 		closeprompttodotoday()
@@ -3866,6 +3866,13 @@ function updateprompttodotoday(){
 
 	let prompttodotodayaddtasktodolist = getElement('prompttodotodayaddtasktodolist')
 	prompttodotodayaddtasktodolist.innerHTML = output.join('')
+
+	let prompttodotodaysubmit = getElement('prompttodotodaysubmit')
+	if(output.length < 3){
+		prompttodotodaysubmit.classList.add('greyedoutevent')
+	}else{
+		prompttodotodaysubmit.classList.remove('greyedoutevent')
+	}
 }
 
 
@@ -3967,6 +3974,13 @@ function updateonboardingscreen(){
 		getElement('todoitempriority').classList.add('z-index-10001')
 		getElement('todoitemduedate').classList.add('z-index-10001')
 		getElement('todoitemduration').classList.add('z-index-10001')
+
+		let onboardingaddtasksubmit = getElement('onboardingaddtasksubmit')
+		if(calendar.todos.length < 1){
+			onboardingaddtasksubmit.classList.add('greyedoutevent')
+		}else{
+			onboardingaddtasksubmit.classList.remove('greyedoutevent')
+		}
 	}else if(currentonboarding == 'eventreminders'){
 		calendar.emailreminderenabled = true
 		calendar.pushSubscriptionEnabled = true
@@ -3978,6 +3992,10 @@ function updateonboardingscreen(){
 
 function continueonboarding(key){
 	if(calendar.onboarding[key] != null) calendar.onboarding[key] = true
+	updateonboardingscreen()
+}
+function backonboarding(key){
+	if(calendar.onboarding[key] != null) calendar.onboarding[key] = false
 	updateonboardingscreen()
 }
 
@@ -7641,14 +7659,16 @@ function closecreatetodoitempriority() {
 
 
 function clicktypeaddtask(event){
-	let addtodooptionspopup = getElement('addtodooptionspopup')
-	addtodooptionspopup.classList.remove('hiddenpopup')
-
-	let addtodooptionspopuponboarding = getElement('addtodooptionspopuponboarding')
-	addtodooptionspopuponboarding.classList.remove('hiddenpopup')
-
-	let addtodooptionspopupprompttodotoday = getElement('addtodooptionspopupprompttodotoday')
-	addtodooptionspopupprompttodotoday.classList.remove('hiddenpopup')
+	if(isprompttodotoday){
+		let addtodooptionspopupprompttodotoday = getElement('addtodooptionspopupprompttodotoday')
+		addtodooptionspopupprompttodotoday.classList.remove('hiddenpopup')
+	}else if(!calendar.onboarding.addtask){
+		let addtodooptionspopuponboarding = getElement('addtodooptionspopuponboarding')
+		addtodooptionspopuponboarding.classList.remove('hiddenpopup')
+	}else{
+		let addtodooptionspopup = getElement('addtodooptionspopup')
+		addtodooptionspopup.classList.remove('hiddenpopup')
+	}
 }
 
 function clickaddonetask(){
@@ -11685,7 +11705,6 @@ async function eventcompleted(event, id) {
 
 //double click column
 function dblclickboxcolumn(event, timestamp) {
-	readinteractivetourpopup('addevent')
 
 	let barcolumngroup = getElement('barcolumngroup')
 
@@ -11740,7 +11759,6 @@ function clickboxcolumn(event, timestamp) {
 function moveboxcolumn(event) {
 	movingevent = true
 	if (Math.abs(event.clientY - selectedeventinitialy) > 15) {
-		readinteractivetourpopup('addevent')
 
 		let barcolumngroup = getElement('barcolumngroup')
 
