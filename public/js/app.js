@@ -351,7 +351,7 @@ function getwhitecheckcircle(boolean, tooltip) {
 }
 
 //get small white check circle
-function getwhitecheckcircle(boolean, tooltip) {
+function getwhitecheckcirclesmall(boolean, tooltip) {
 	if (boolean) {
 		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallerinline checkboxfilledprimary">
 			<g>
@@ -3399,11 +3399,13 @@ function updatetime() {
 	let lastprompttodotodaydate = new Date(calendar.lastprompttodotodaydate)
 	let sleependdate = new Date(currentdate)
 	sleependdate.setHours(0, calendar.settings.sleep.endminute, 0, 0)
+	let sleependdatelater = new Date(sleependdate)
+	sleependdatelater.setHours(sleependdatelater.getHours() + 3) //only prompt within first 3 hours after wake up
 
-	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000)){
-		if(lastprompttodotodaydate.getTime() < sleependdate.getTime() && currentdate.getTime() >= sleependdate.getTime()){
-			prompttodotoday()
-		}
+	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) && lastprompttodotodaydate.getTime() < sleependdate.getTime() && currentdate.getTime() >= sleependdate.getTime() && currentdate.getTime() < sleependdatelater.getTime()){
+		prompttodotoday()
+	}else{
+		closeprompttodotoday()
 	}
 }
 
@@ -3829,6 +3831,7 @@ let isprompttodotoday = false
 let prompttodotodayadded = []
 function prompttodotoday(){
 	if(isprompttodotoday) return
+	
 	isprompttodotoday = true
 	prompttodotodayadded = []
 	
@@ -3837,13 +3840,16 @@ function prompttodotoday(){
 	let prompttodotodaywrap = getElement('prompttodotodaywrap')
 	prompttodotodaywrap.classList.remove('hiddenfade')
 }
+
 function closeprompttodotoday(){
-	calendar.lastprompttodotodaydate = Date.now()
 	isprompttodotoday = false
 
 	let prompttodotodaywrap = getElement('prompttodotodaywrap')
 	prompttodotodaywrap.classList.add('hiddenfade')
-	
+}
+
+function setprompttodotodaydate(){
+	calendar.lastprompttodotodaydate = Date.now()
 }
 //here4
 
@@ -3851,12 +3857,17 @@ function updateprompttodotoday(){
 	if(!isprompttodotoday) return
 	
 	let output = []
-	for(let item of prompttodotodayadded){
+	for(let item of calendar.todos.filter(d => prompttodotodayadded.find(g => g == d.id))){
 		output.push(gettododata(item))
 	}
+	if(output.length == 0){
+		output.push(`<div class="text-18px text-secondary align-self-center text-center padding-top-192px padding-bottom-192px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
+	}
+
 	let prompttodotodayaddtasktodolist = getElement('prompttodotodayaddtasktodolist')
 	prompttodotodayaddtasktodolist.innerHTML = output.join('')
 }
+
 
 //ONBOARDING
 
@@ -9404,7 +9415,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 					
 					${item.type == 1 ? 
 						`<span class="todoitemcheckbox tooltip checkcircletop">
-							${myheight <= 15 ? `${getwhitecheckcircle(item.completed)}` : `${getwhitecheckcircle(item.completed)}`}
+							${myheight <= 15 ? `${getwhitecheckcirclesmall(item.completed)}` : `${getwhitecheckcircle(item.completed)}`}
 						</span>` 
 						: ''
 					}
@@ -9458,11 +9469,11 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 			myheight = Math.floor((tempenddate.getTime() - tempstartdate.getTime()) / 60000)
 
 			itemclasses.push('eventwrapbottom')
-			itemclicks.push(`<div class="${myheight <= 15 ? 'eventbottomsmall' : 'eventbottom'}" onmousedown="clickeventbottom(event, ${timestamp})"></div>`)
+			itemclicks.push(`<div class="${myheight <= 30 ? 'eventbottomsmall' : 'eventbottom'}" onmousedown="clickeventbottom(event, ${timestamp})"></div>`)
 		}
 
 		if(myheight >= 30){
-			itemclicks.push(`<div class="${myheight <= 15 ? 'eventtopsmall' : 'eventtop'}" onmousedown="clickeventtop(event, ${timestamp})"></div>`)
+			itemclicks.push(`<div class="${myheight <= 30 ? 'eventtopsmall' : 'eventtop'}" onmousedown="clickeventtop(event, ${timestamp})"></div>`)
 		}
 	} else if (tempenddate.getTime() > currentdate.getTime() && tempenddate.getTime() <= nextdate.getTime()) {
 		itemclasses.push('eventwrapbottom')
@@ -9476,11 +9487,11 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 			itemclasses.push('eventwraptop')
 			if(myheight >= 30){
-				itemclicks.push(`<div class="${myheight <= 15 ? 'eventtopsmall' : 'eventtop'}" onmousedown="clickeventtop(event, ${timestamp})"></div>`)
+				itemclicks.push(`<div class="${myheight <= 30 ? 'eventtopsmall' : 'eventtop'}" onmousedown="clickeventtop(event, ${timestamp})"></div>`)
 			}
 		}
 
-		itemclicks.push(`<div class="${myheight <= 15 ? 'eventbottomsmall' : 'eventbottom'}" onmousedown="clickeventbottom(event, ${timestamp})"></div>`)
+		itemclicks.push(`<div class="${myheight <= 30 ? 'eventbottomsmall' : 'eventbottom'}" onmousedown="clickeventbottom(event, ${timestamp})"></div>`)
 	} else if (tempstartdate.getTime() < currentdate.getTime() && tempenddate.getTime() > nextdate.getTime()) {
 		mytop = 0
 		myheight = 1440
@@ -9512,7 +9523,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 					
 					${item.type == 1 ? 
 						`<span class="todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="eventcompleted(event, '${item.id}')">
-							${myheight <= 15 ? `${getwhitecheckcircle(item.completed)}` : `${getwhitecheckcircle(item.completed)}`}
+							${myheight <= 15 ? `${getwhitecheckcirclesmall(item.completed)}` : `${getwhitecheckcircle(item.completed)}`}
 						</span>` 
 						: ''
 					}
