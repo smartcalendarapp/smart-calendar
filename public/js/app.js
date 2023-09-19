@@ -124,7 +124,7 @@ function getDHMText(input) {
 	return [days, hours, minutes].filter(f => f).join(' ')
 }
 
-function getRelativeDHMText(input) {
+function getShortRelativeDHMText(input) {
 	let temp = Math.abs(input)
 	let days = Math.floor(temp / 1440)
 	temp -= days * 1440
@@ -149,7 +149,33 @@ function getRelativeDHMText(input) {
 	}
 }
 
-function getFullRelativeDHMText(input) {
+function getRelativeYMWDText(input) {
+	let temp = Math.abs(input)
+
+	let minutes = temp
+	let days = Math.ceil(minutes / 1440)
+	let weeks = Math.ceil(days / 7)
+	let months = Math.ceil(days / 30.44)
+	let years = Math.ceil(days / 365.25)
+
+	let output = ''
+
+	if (years > 1) {
+		output = `${years} year${years === 1 ? '' : 's'}`
+	} else if (months > 1) {
+		output = `${months} month${months === 1 ? '' : 's'}`
+	} else if (weeks > 1) {
+		output = `${weeks} week${weeks === 1 ? '' : 's'}`
+	} else if (days >= 1) {
+		output = `${days} day${days === 1 ? '' : 's'}`
+	} else {
+		return ''
+	}
+
+	return input < 0 ? `in ${output}` : `${output} ago`
+}
+  
+function getRelativeDHMText(input) {
 	let temp = Math.abs(input)
 	let days = Math.floor(temp / 1440)
 	temp -= days * 1440
@@ -180,6 +206,7 @@ function getShortDMDText(date) {
 
 function getDMDYText(date) {
 	let today = new Date()
+	today.setHours(0,0,0,0)
 	let tomorrow = new Date(today)
 	tomorrow.setDate(tomorrow.getDate() + 1)
 	let yesterday = new Date(today)
@@ -2322,8 +2349,25 @@ class Calendar {
 				let item = duetodos[i]
 				let tempduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 				if (!lastduedate || tempduedate.getDate() != lastduedate.getDate() || lastduedate.getMonth() != tempduedate.getMonth() || lastduedate.getFullYear() != tempduedate.getFullYear()) {
-					tempoutput.push(`<div class="text-16px text-bold text-primary">Due ${getDMDYText(tempduedate)}</div>`)
+					let tempduedate2 = new Date(tempduedate)
+					let difference = Math.floor((Date.now() - tempduedate2)/60000)
+
+
+					let today = new Date()
+					today.setHours(0,0,0,0)
+					let tomorrow = new Date(today)
+					tomorrow.setDate(tomorrow.getDate() + 1)
+					let yesterday = new Date(today)
+					yesterday.setDate(yesterday.getDate() - 1)
+
+					let showrelative = true
+					if ((tempduedate2.getMonth() == today.getMonth() && tempduedate2.getDate() == today.getDate() && tempduedate2.getFullYear() == today.getFullYear()) || (tempduedate2.getMonth() == tomorrow.getMonth() && tempduedate2.getDate() == tomorrow.getDate() && tempduedate2.getFullYear() == tomorrow.getFullYear()) || (tempduedate2.getMonth() == yesterday.getMonth() && tempduedate2.getDate() == yesterday.getDate() && tempduedate2.getFullYear() == yesterday.getFullYear())){
+						showrelative = false
+					}
+					
+					tempoutput.push(`<div class="text-16px text-bold text-primary">Due ${getDMDYText(tempduedate)} ${showrelative ? `<span class="text-secondary">${getRelativeYMWDText(difference)}</span>` : ''}</div>`)
 				}
+				//here4
 
 				tempoutput2.push(gettododata(item))
 
@@ -2422,11 +2466,6 @@ class Calendar {
 			if(output.length == 0){
 				output.push(`<div class="text-18px text-secondary align-self-center text-center padding-top-192px padding-bottom-192px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
 			}
-
-			let alltodolist = getElement('alltodolist')
-			if(alltodolist.innerHTML != output.join('')){
-				alltodolist.innerHTML = output.join('')
-			}
 			
 		}
 
@@ -2501,7 +2540,7 @@ class Calendar {
 			 		<div class="summarycolumnprogressbargroup">
 			 			<div class="summarytextrow flex-wrap-wrap">
 			 				<div class="text-16px text-bold text-primary break-word overflow-hidden">${item.title ? cleanInput(item.title) : 'New Event'}</div>
-				 			<div class="text-16px text-quaternary nowrap">Starts at ${getHMText(tempstartdate.getHours() * 60 + tempstartdate.getMinutes())} (${getFullRelativeDHMText(difference)})</div>
+				 			<div class="text-16px text-quaternary nowrap">Starts at ${getHMText(tempstartdate.getHours() * 60 + tempstartdate.getMinutes())} (${getRelativeDHMText(difference)})</div>
 						</div>
 					</div>`)
 			}
@@ -2811,7 +2850,7 @@ class Calendar {
 					<div class="text-14px text-green">In sync</div>`
 				:
 				`<div class="text-14px text-red">Not synced</div>
-				<span class="tooltiptextright">${difference ? `Last synced ${getRelativeDHMText(difference)}` : `Never synced`}</span>`}
+				<span class="tooltiptextright">${difference ? `Last synced ${getShortRelativeDHMText(difference)}` : `Never synced`}</span>`}
 			</div>`
 			lastsyncedgooglecalendar.innerHTML = text
 			lastsyncedgooglecalendar2.innerHTML = text
@@ -2855,7 +2894,7 @@ class Calendar {
 					<div class="text-14px text-green">In sync</div>`
 				:
 				`<div class="text-14px text-red">Not synced</div>
-				<span class="tooltiptextright">${difference ? `Last synced ${getRelativeDHMText(difference)}` : `Never synced`}</span>`}
+				<span class="tooltiptextright">${difference ? `Last synced ${getShortRelativeDHMText(difference)}` : `Never synced`}</span>`}
 			</div>`
 			lastsyncedgoogleclassroom.innerHTML = text
 		}
@@ -2982,7 +3021,7 @@ class Calendar {
 				tempoutput.push(`
 				<div class="display-flex flex-column">		
 					<div class="text-24px text-center text-bold text-primary text-bold overflow-hidden break-word">${tempitem.title ? cleanInput(tempitem.title) : 'New Event'}</div>
-					<div class="text-24px text-center text-quaternary nowrap">Starts at ${getHMText(startdate.getHours() * 60 + startdate.getMinutes())} (${getFullRelativeDHMText(difference)})</div>
+					<div class="text-24px text-center text-quaternary nowrap">Starts at ${getHMText(startdate.getHours() * 60 + startdate.getMinutes())} (${getRelativeDHMText(difference)})</div>
 				</div>`)
 			}
 			output.push(`
@@ -3847,19 +3886,21 @@ function prompttodotoday(){
 	startdate.setHours(0, 0, 0, 0)
 	let enddate = new Date(startdate)
 	enddate.setDate(enddate.getDate() + 1)
-	let todosduetoday = gettodos(startdate, enddate)
+	let todosduetoday = gettodos(null, enddate).filter(d => !d.completed)
 
 	prompttodotodayadded = [...todosduetoday.map(d => d.id)]
-	//here4
 	
 	updateprompttodotoday()
 
 	let prompttodotodaywrap = getElement('prompttodotodaywrap')
 	prompttodotodaywrap.classList.remove('hiddenfade')
 }
+//here4
 
 function closeprompttodotoday(){
 	isprompttodotoday = false
+
+	updateprompttodotoday()
 
 	let prompttodotodaywrap = getElement('prompttodotodaywrap')
 	prompttodotodaywrap.classList.add('hiddenfade')
@@ -3882,7 +3923,11 @@ function clickconfirmprompttodotoday(){
 }
 
 function updateprompttodotoday(){
-	if(!isprompttodotoday) return
+	if(!isprompttodotoday) {
+		let prompttodotodayaddtasktodolist = getElement('prompttodotodayaddtasktodolist')
+		prompttodotodayaddtasktodolist.innerHTML = ''
+		return
+	}
 	
 	let output = []
 	for(let item of calendar.todos.filter(d => prompttodotodayadded.find(g => g == d.id))){
@@ -4013,6 +4058,11 @@ function updateonboardingscreen(){
 		calendar.emailreminderenabled = true
 		calendar.pushSubscriptionEnabled = true
 		calendar.updateSettings()
+	}
+
+	if(currentonboarding != 'addtask'){
+		let onboardingaddtasktodolist = getElement('onboardingaddtasktodolist')
+		onboardingaddtasktodolist.innerHTML = ''
 	}
 
 }
@@ -6581,7 +6631,7 @@ function updatenotificationslist() {
 		output.push(`
 		<div class="notificationitem">
 			<div class="notificationitemtitle">${item.title ? cleanInput(item.title) : 'New Event'}</div>
-			<div class="notificationitemtext text-quaternary">${getRelativeDHMText(difference)}</div>
+			<div class="notificationitemtext text-quaternary">${getShortRelativeDHMText(difference)}</div>
 		</div>`)
 	}
 
