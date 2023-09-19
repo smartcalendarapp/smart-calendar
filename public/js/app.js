@@ -3841,7 +3841,16 @@ function prompttodotoday(){
 	if(isprompttodotoday) return
 	
 	isprompttodotoday = true
-	prompttodotodayadded = []
+
+	let currentdate = new Date()
+	let startdate = new Date(currentdate)
+	startdate.setHours(0, 0, 0, 0)
+	let enddate = new Date(startdate)
+	enddate.setDate(enddate.getDate() + 1)
+	let todosduetoday = gettodos(startdate, enddate)
+
+	prompttodotodayadded = [...todosduetoday.map(d => d.id)]
+	//here4
 	
 	updateprompttodotoday()
 
@@ -3871,7 +3880,6 @@ function clickconfirmprompttodotoday(){
 		closeprompttodotoday()
 	}
 }
-//here4
 
 function updateprompttodotoday(){
 	if(!isprompttodotoday) return
