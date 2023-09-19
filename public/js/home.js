@@ -5,12 +5,13 @@ const ctx = canvas.getContext('2d')
 canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 
-let card = document.querySelector("#finalsplash");
+//let card = document.querySelector("#finalsplash");
 
 window.addEventListener("scroll", () => {
 	var top = ((window.scrollY / 20)-10);
 	if (window.scrollY<1000){
-  card.style.transform = 'rotate3d(0.5, 0.5, 0.5, ' + top + 'deg)'};
+  //card.style.transform = 'rotate3d(0.5, 0.5, 0.5, ' + top + 'deg)'
+};
 });
 
 class Rectangle {
@@ -243,8 +244,8 @@ function updatescroll(event){
 
 
 	//finalsplash
-	//let finalsplash = getElement('finalsplash')
-	//finalsplash.style.transform = `scale(${1 - Math.max(window.scrollY, 0)/2000})`
+	let finalsplash = getElement('finalsplash')
+	finalsplash.style.transform = `scale(${1 - Math.max(window.scrollY, 0)/2000})`
 
 
 	//keep scrollling

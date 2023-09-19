@@ -3210,7 +3210,15 @@ let scrolltodoYAnimationFrameId;
 function scrolltodoY(targetminute) {
 	cancelAnimationFrame(scrolltodoYAnimationFrameId)
 
-	let todocontainer = getElement('todocontainer')
+	let todocontainer;
+	if(!calendar.onboarding.addtask){
+		todocontainer = getElement('onboardingaddtasktodolist')
+	}else if(isprompttodotoday){
+		todocontainer = getElement('prompttodotodayaddtasktodolist')
+	}else{
+		todocontainer = getElement('todocontainer')
+	}
+
 	let target = targetminute - todocontainer.offsetHeight / 2
 
 	let duration = 500
