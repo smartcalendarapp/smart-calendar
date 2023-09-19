@@ -150,31 +150,29 @@ function getShortRelativeDHMText(input) {
 }
 
 function getRelativeYMWDText(input) {
-	let temp = Math.abs(input)
+    let temp = Math.abs(input)
+    let days = Math.trunc(temp / 1440)
+    let weeks = Math.trunc(days / 7)
+    let months = Math.trunc(days / 30.44)
+    let years = Math.trunc(days / 365.25)
 
-	let minutes = temp
-	let days = Math.ceil(minutes / 1440)
-	let weeks = Math.ceil(days / 7)
-	let months = Math.ceil(days / 30.44)
-	let years = Math.ceil(days / 365.25)
+    let output = ''
 
-	let output = ''
+    if (years >= 1) {
+        output = `${years} year${years === 1 ? '' : 's'}`
+    } else if (months >= 1 && months < 12) {
+        output = `${months} month${months === 1 ? '' : 's'}`
+    } else if (weeks >= 1 && weeks < 4) {
+        output = `${weeks} week${weeks === 1 ? '' : 's'}`
+    } else if (days >= 1) {
+        output = `${days} day${days === 1 ? '' : 's'}`
+    } else {
+        return ''
+    }
 
-	if (years > 1) {
-		output = `${years} year${years === 1 ? '' : 's'}`
-	} else if (months > 1) {
-		output = `${months} month${months === 1 ? '' : 's'}`
-	} else if (weeks > 1) {
-		output = `${weeks} week${weeks === 1 ? '' : 's'}`
-	} else if (days >= 1) {
-		output = `${days} day${days === 1 ? '' : 's'}`
-	} else {
-		return ''
-	}
-
-	return input < 0 ? `in ${output}` : `${output} ago`
+    return input < 0 ? `in ${output}` : `${output} ago`
 }
-  
+
 function getRelativeDHMText(input) {
 	let temp = Math.abs(input)
 	let days = Math.floor(temp / 1440)
@@ -1612,6 +1610,7 @@ class Calendar {
 	}
 
 	updateEventTime() {
+		if(!calendartabs.includes(0)) return
 		if (calendarmode == 0 || calendarmode == 1) {
 			let timeboxcolumn = getElement('timeboxcolumn')
 
@@ -2350,6 +2349,7 @@ class Calendar {
 				let tempduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 				if (!lastduedate || tempduedate.getDate() != lastduedate.getDate() || lastduedate.getMonth() != tempduedate.getMonth() || lastduedate.getFullYear() != tempduedate.getFullYear()) {
 					let tempduedate2 = new Date(tempduedate)
+					tempduedate2.setHours(0,0,0,0)
 					let difference = Math.floor((Date.now() - tempduedate2)/60000)
 
 
@@ -2367,7 +2367,6 @@ class Calendar {
 					
 					tempoutput.push(`<div class="text-16px text-bold text-primary">Due ${getDMDYText(tempduedate)} ${showrelative ? `<span class="text-secondary">${getRelativeYMWDText(difference)}</span>` : ''}</div>`)
 				}
-				//here4
 
 				tempoutput2.push(gettododata(item))
 
@@ -3289,35 +3288,45 @@ function scrolltodoY(targetminute) {
 //load data
 let clientinfo;
 
+let isgettingclientdata = false;
+
 async function getclientdata() {
-	const response = await fetch('/getclientdata', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({})
-	}).catch(e => e)
-	if (response.status == 200) {
-		const data = await response.json()
-		const userdata = data.data
+	isgettingclientdata = true
+	try{
+		const response = await fetch('/getclientdata', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({})
+		}).catch(e => e)
+		if (response.status == 200) {
+			const data = await response.json()
+			const userdata = data.data
 
-		//load data
-		Object.assign(calendar, userdata)
+			//load data
+			Object.assign(calendar, userdata)
 
-		//default data
-		if (!calendar.calendars.find(d => d.isprimary)) {
-			let tempcalendar = new Calendar.Calendar('Primary', '', false, null, true)
-			calendar.calendars.unshift(tempcalendar)
+			//default data
+			if (!calendar.calendars.find(d => d.isprimary)) {
+				let tempcalendar = new Calendar.Calendar('Primary', '', false, null, true)
+				calendar.calendars.unshift(tempcalendar)
+			}
+
+			run()
+		} else if (response.status == 401) {
+			showloginpopup()
+		} else {
+			return setTimeout(function () {
+				getclientdata()
+			}, 3000)
 		}
-
-		run()
-	} else if (response.status == 401) {
-		showloginpopup()
-	} else {
-		return setTimeout(function () {
-			getclientdata()
-		}, 3000)
+	}catch(error){
+		console.log(error)
+		isgettingclientdata
 	}
+
+	isgettingclientdata = false
 }
 
 async function getclientinfo() {
@@ -3349,11 +3358,6 @@ async function getclientinfo() {
 async function getclient() {
 	await getclientinfo()
 	await getclientdata()
-}
-
-window.onerror = async function(message, source, linenumber, columnnumber, error) {
-	console.log(error.stack)
-	return true
 }
 
 
@@ -3553,7 +3557,7 @@ function run() {
 
 		let lasttriedsyncgooglecalendardate = Date.now()
 		setInterval(async function () {
-			if (!isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 60000 && issettingclientgooglecalendar == false && Date.now() - lasttriedsyncgooglecalendardate > 60000 && Date.now() - lastupdatecalendardate > 10000) {
+			if (!isgettingclientdata && !isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 60000 && issettingclientgooglecalendar == false && Date.now() - lasttriedsyncgooglecalendardate > 60000 && Date.now() - lastupdatecalendardate > 10000) {
 				lasttriedsyncgooglecalendardate = Date.now()
 				await getclientgooglecalendar()
 			}
@@ -3895,7 +3899,6 @@ function prompttodotoday(){
 	let prompttodotodaywrap = getElement('prompttodotodaywrap')
 	prompttodotodaywrap.classList.remove('hiddenfade')
 }
-//here4
 
 function closeprompttodotoday(){
 	isprompttodotoday = false
@@ -7615,8 +7618,8 @@ function updatecreatetododatepicker() {
 		let selected = duedate && currentdate.getFullYear() == duedate.getFullYear() && currentdate.getMonth() == duedate.getMonth() && currentdate.getDate() == duedate.getDate()
 
 		column.push(`
-		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'background-blue hover:background-blue-hover' : ''} ${selected ? 'selecteddatehighlight' : ''}" onclick="inputcreatetodoitemduedate(event, ${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
-			<div class="text-14px text-primary text-center pointer-none ${today ? 'text-white' : ''} ${currentdate.getMonth() == createtododatepickerdate.getMonth() && currentdate.getFullYear() == createtododatepickerdate.getFullYear() ? '' : 'text-secondary'}">${currentdate.getDate()}</div>
+		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'background-blue-transparent hover:background-blue-transparent-hover' : ''} ${selected ? 'selecteddatehighlight' : ''}" onclick="inputcreatetodoitemduedate(event, ${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
+			<div class="text-14px text-primary text-center pointer-none  ${currentdate.getMonth() == createtododatepickerdate.getMonth() && currentdate.getFullYear() == createtododatepickerdate.getFullYear() ? '' : 'text-secondary'}">${currentdate.getDate()}</div>
 		</div>`)
 
 		counter1++
@@ -8376,8 +8379,8 @@ function updatetododatepicker() {
 		let selected = duedate && currentdate.getFullYear() == duedate.getFullYear() && currentdate.getMonth() == duedate.getMonth() && currentdate.getDate() == duedate.getDate()
 
 		column.push(`
-		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'background-blue hover:background-blue-hover' : ''} ${selected ? 'selecteddatehighlight' : ''}" onclick="inputtodoitemduedate(event, ${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
-			<div class="text-14px text-primary text-center pointer-none ${today ? 'text-white' : ''} ${currentdate.getMonth() == tododatepickerdate.getMonth() && currentdate.getFullYear() == tododatepickerdate.getFullYear() ? '' : 'text-secondary'}">${currentdate.getDate()}</div>
+		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'background-blue-transparent hover:background-blue-transparent-hover' : ''} ${selected ? 'selecteddatehighlight' : ''}" onclick="inputtodoitemduedate(event, ${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
+			<div class="text-14px text-primary text-center pointer-none  ${currentdate.getMonth() == tododatepickerdate.getMonth() && currentdate.getFullYear() == tododatepickerdate.getFullYear() ? '' : 'text-secondary'}">${currentdate.getDate()}</div>
 		</div>`)
 
 		counter1++
@@ -9305,8 +9308,8 @@ function updatedatepicker() {
 		let selected = !isNaN(duedate.getTime()) && currentdate.getFullYear() == duedate.getFullYear() && currentdate.getMonth() == duedate.getMonth() && currentdate.getDate() == duedate.getDate()
 
 		column.push(`
-		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'background-blue hover:background-blue-hover' : ''} ${selected ? 'selecteddatehighlight' : ''}" onclick="selectedatepicker(${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
-			<div class="text-14px text-primary text-center pointer-none ${today ? 'text-white' : ''} ${currentdate.getMonth() == datepickerdate.getMonth() && currentdate.getFullYear() == datepickerdate.getFullYear() ? '' : 'text-secondary'}">${currentdate.getDate()}</div>
+		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'background-blue-transparent hover:background-blue-transparent-hover' : ''} ${selected ? 'selecteddatehighlight' : ''}" onclick="selectedatepicker(${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
+			<div class="text-14px text-primary text-center pointer-none  ${currentdate.getMonth() == datepickerdate.getMonth() && currentdate.getFullYear() == datepickerdate.getFullYear() ? '' : 'text-secondary'}">${currentdate.getDate()}</div>
 		</div>`)
 
 		counter1++

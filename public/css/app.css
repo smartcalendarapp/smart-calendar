@@ -416,8 +416,13 @@ body {
 	max-height: 240px;
 }
 
+
 .selecteddatehighlight {
-	border:2px solid var(--blue);
+	background-color:var(--blue) !important;
+	color:white !important;
+}
+.selecteddatehighlight:hover {
+	background-color:var(--blue-hover) !important;
 }
 
 
