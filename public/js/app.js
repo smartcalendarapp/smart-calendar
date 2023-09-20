@@ -4073,7 +4073,7 @@ function updateonboardingscreen(){
 		onboardingaddtasktodolistdiv.innerHTML = output.join('')
 
 		let onboardingaddtasksubmit = getElement('onboardingaddtasksubmit')
-		if(calendar.todos.filter(d => onboardingaddtasksubmit.find(g => g == d.id)).length){
+		if(calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id)).length){
 			onboardingaddtasksubmit.classList.add('greyedoutevent')
 		}else{
 			onboardingaddtasksubmit.classList.remove('greyedoutevent')
