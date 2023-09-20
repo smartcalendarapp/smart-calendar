@@ -3887,9 +3887,9 @@ function prompttodotoday(){
 	startdate.setHours(0, 0, 0, 0)
 	let enddate = new Date(startdate)
 	enddate.setDate(enddate.getDate() + 1)
-	let todosduetoday = gettodos(null, enddate).filter(d => !d.completed)
+	let todosduetoday = [...gettodos(null, enddate), ...calendar.events.filter(d => d.type == 1 && new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute).getTime() < enddate.getTime())].filter(d => !d.completed)
 
-	prompttodotodayadded = [...todosduetoday.map(d => d.id)]
+	prompttodotodayadded = todosduetoday.map(d => d.id)
 	
 	updateprompttodotoday()
 
@@ -3920,7 +3920,7 @@ function clickcloseprompttodotoday(){
 	closeprompttodotoday()
 }
 function clickconfirmprompttodotoday(){
-	let length = calendar.todos.filter(d => prompttodotodayadded.find(g => g == d.id)).length
+	let length = [...calendar.todos, ...calendar.events].filter(d => prompttodotodayadded.find(g => g == d.id)).length
 	if(length >= 3){
 		setprompttodotodaydate()
 		closeprompttodotoday()
@@ -3933,7 +3933,8 @@ function updateprompttodotoday(){
 	}
 	
 	let output = []
-	for(let item of calendar.todos.filter(d => prompttodotodayadded.find(g => g == d.id))){
+	let tempdata = [...calendar.todos, ...calendar.events].filter(d => prompttodotodayadded.find(g => g == d.id))
+	for(let item of tempdata){
 		output.push(gettododata(item))
 	}
 
@@ -4059,10 +4060,11 @@ function updateonboardingscreen(){
 		calendar.updateSettings()
 	}else if(currentonboarding == 'addtask'){
 		let output = []
-		for(let item of calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id))){
+		let tempdata = calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id))
+		for(let item of tempdata){
 			output.push(gettododata(item))
 		}
-
+		
 		let onboardingaddtasktodolistdiv = getElement('onboardingaddtasktodolist')
 		onboardingaddtasktodolistdiv.innerHTML = output.join('')
 

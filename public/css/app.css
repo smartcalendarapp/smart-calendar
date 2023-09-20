@@ -2185,6 +2185,19 @@ body {
 	background-image: linear-gradient(to right, #37e6e0, #37c0e6);
 }
 
+
+.darkbackdropblur{
+	backdrop-filter:blur(20px) brightness(0.9);
+	-webkit-backdrop-filter:blur(20px) brightness(0.9)
+}
+[data-theme="dark"] {
+	.darkbackdropblur{
+		backdrop-filter:blur(20px) brightness(0.7);
+		-webkit-backdrop-filter:blur(20px) brightness(0.7)
+	}
+}
+
+
 .info {
 	overflow: auto;
 	flex-direction: column;
