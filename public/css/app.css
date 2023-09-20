@@ -428,9 +428,11 @@ body {
 }
 
 .specialtodolist .todoitem{
-	border:none !important;
 	background-color:var(--background-primary);
 	border-radius:8px;
+}
+.specialtodolist .todoitemcontainer{
+	border:none !important;
 }
 
 .onboardingscreen{
