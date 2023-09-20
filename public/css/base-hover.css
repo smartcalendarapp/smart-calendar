@@ -224,8 +224,8 @@
 }
 
 .hover\:backdrop-blur:hover{
-	-webkit-backdrop-filter:blur(20px)
-	backdrop-filter:blur(20px)
+	-webkit-backdrop-filter:blur(30px);
+	backdrop-filter:blur(30px)
 }
 .hover\:order-0:hover{
 	order:0

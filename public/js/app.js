@@ -3933,7 +3933,7 @@ function updateprompttodotoday(){
 	}
 	
 	let output = []
-	let tempdata = [...calendar.todos, ...calendar.events].filter(d => prompttodotodayadded.find(g => g == d.id))
+	let tempdata = [...sortstartdate(calendar.events.filter(d => prompttodotodayadded.find(g => g == d.id))), ...sortduedate(calendar.todos.filter(d => prompttodotodayadded.find(g => g == d.id)))]
 	for(let item of tempdata){
 		output.push(gettododata(item))
 	}
@@ -4009,12 +4009,16 @@ function updateonboardingscreen(){
 
 
 	if(currentonboarding == 'addtask'){
+		onboardingscreen.classList.add('darkbackdropblur')
+		
 		if(!isonboardingaddtask){
 			isonboardingaddtask = true
 
 			onboardingaddtasktodolist = []
 		}
 	}else{
+		onboardingscreen.classList.remove('darkbackdropblur')
+
 		isonboardingaddtask = false
 	}
 
@@ -4060,11 +4064,11 @@ function updateonboardingscreen(){
 		calendar.updateSettings()
 	}else if(currentonboarding == 'addtask'){
 		let output = []
-		let tempdata = calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id))
+		let tempdata = sortduedate(calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id)))
 		for(let item of tempdata){
 			output.push(gettododata(item))
 		}
-		
+
 		let onboardingaddtasktodolistdiv = getElement('onboardingaddtasktodolist')
 		onboardingaddtasktodolistdiv.innerHTML = output.join('')
 

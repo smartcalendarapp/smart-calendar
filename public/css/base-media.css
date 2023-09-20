@@ -206,8 +206,8 @@
 	}
 	
 	.small\:backdrop-blur{
-		-webkit-backdrop-filter:blur(20px);
-		backdrop-filter:blur(20px) !important
+		-webkit-backdrop-filter:blur(30px);
+		backdrop-filter:blur(30px) !important
 	}
 	.small\:order-0{
 		order:0 !important

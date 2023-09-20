@@ -205,8 +205,8 @@ body {
 	margin-top: 15px;
 	gap: 12px;
 	z-index: 2000;
-	backdrop-filter: blur(20px);
-	-webkit-backdrop-filter: blur(20px);
+	backdrop-filter: blur(30px);
+	-webkit-backdrop-filter: blur(30px);
 	min-width: 300px;
 }
 
@@ -239,8 +239,8 @@ body {
 	transform: translateY(-15px);
 	gap: 12px;
 	z-index: 1000;
-	backdrop-filter: blur(20px);
-	-webkit-backdrop-filter: blur(20px);
+	backdrop-filter: blur(30px);
+	-webkit-backdrop-filter: blur(30px);
 	min-width: 300px;
 }
 
@@ -484,8 +484,8 @@ body {
 	z-index: 300;
 	border-radius: 8px;
 	background-color: var(--background-primary-transparent);
-	backdrop-filter: blur(20px);
-	-webkit-backdrop-filter: blur(20px);
+	backdrop-filter: blur(30px);
+	-webkit-backdrop-filter: blur(30px);
 	display: flex;
 	flex-direction: column;
 	box-shadow: 0 0 40px 0px var(--black-transparent);
@@ -666,8 +666,8 @@ body {
 	z-index: 300;
 	border-radius: 8px;
 	background-color: var(--background-primary-transparent);
-	backdrop-filter: blur(20px);
-	-webkit-backdrop-filter: blur(20px);
+	backdrop-filter: blur(30px);
+	-webkit-backdrop-filter: blur(30px);
 	display: flex;
 	flex-direction: column;
 	box-shadow: 0 0 40px 0px var(--black-transparent);
@@ -2167,8 +2167,8 @@ body {
 	z-index: 100;
 	border-radius: 8px;
 	background-color: var(--background-primary-transparent);
-	backdrop-filter: blur(20px);
-	-webkit-backdrop-filter: blur(20px);
+	backdrop-filter: blur(30px);
+	-webkit-backdrop-filter: blur(30px);
 	display: flex;
 	flex-direction: column;
 	box-shadow: 0 0 40px 0px var(--black-transparent);
@@ -2186,15 +2186,16 @@ body {
 }
 
 
-.darkbackdropblur{
-	backdrop-filter:blur(20px) brightness(0.9);
-	-webkit-backdrop-filter:blur(20px) brightness(0.9)
+
+:root{
+	--backdropblurbrightness: 0.9
 }
 [data-theme="dark"] {
-	.darkbackdropblur{
-		backdrop-filter:blur(20px) brightness(0.7);
-		-webkit-backdrop-filter:blur(20px) brightness(0.7)
-	}
+	--backdropblurbrightness: 0.7
+}
+.darkbackdropblur{
+	backdrop-filter:blur(30px) brightness(var(--backdropblurbrightness)) !important;
+	-webkit-backdrop-filter:blur(30px) brightness(var(--backdropblurbrightness)) !important;
 }
 
 
