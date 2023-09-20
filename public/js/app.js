@@ -3936,11 +3936,6 @@ function updateprompttodotoday(){
 	for(let item of calendar.todos.filter(d => prompttodotodayadded.find(g => g == d.id))){
 		output.push(gettododata(item))
 	}
-	if(output.length == 0){
-		output.push(`<div class="absolute top-0 left-0 right-0 bottom-0 flex-1 display-flex flex-column align-center justify-center">
-<div class="text-18px text-secondary">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span>.</div>
-</div>`)
-	}
 
 	let prompttodotodayaddtasktodolist = getElement('prompttodotodayaddtasktodolist')
 	prompttodotodayaddtasktodolist.innerHTML = output.join('')
@@ -4067,21 +4062,9 @@ function updateonboardingscreen(){
 		for(let item of calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id))){
 			output.push(gettododata(item))
 		}
-		if(output.length == 0){
-			output.push(`<div class="absolute top-0 left-0 right-0 bottom-0 flex-1 display-flex flex-column align-center justify-center">
-<div class="text-18px text-secondary">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span>.</div>
-</div>`)
-		}
 
 		let onboardingaddtasktodolistdiv = getElement('onboardingaddtasktodolist')
 		onboardingaddtasktodolistdiv.innerHTML = output.join('')
-
-		let onboardingaddtasksubmit = getElement('onboardingaddtasksubmit')
-		if(calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id)).length == 0){
-			onboardingaddtasksubmit.classList.add('greyedoutevent')
-		}else{
-			onboardingaddtasksubmit.classList.remove('greyedoutevent')
-		}
 
 
 		getElement('todopopup').classList.add('z-index-10000')
@@ -8208,7 +8191,7 @@ function gettododata(item) {
 
 
 				${schedulemytasksenabled && Calendar.Todo.isSchedulable(item) && Calendar.Todo.isTodo(item) ?
-					`<div class="absolute todoitemselectcheck background-secondary box-shadow pointer pointer-auto" onclick="toggleschedulemytask(event, '${item.id}')">
+					`<div class="absolute display-flex todoitemselectcheck background-secondary border-8px box-shadow pointer pointer-auto" onclick="toggleschedulemytask(event, '${item.id}')">
 						${getbigcheckbox(schedulemytaskslist.find(g => g == item.id))}
 					</div>`
 				: ''}
