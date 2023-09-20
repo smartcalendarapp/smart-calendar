@@ -2462,7 +2462,9 @@ class Calendar {
 		}
 
 		if(output.length == 0){
-			output.push(`<div class="text-18px text-secondary align-self-center text-center padding-12px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>.`)
+			output.push(`<div class="absolute top-0 left-0 right-0 bottom-0 flex-1 display-flex flex-column align-center justify-center">
+<div class="text-18px text-secondary">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span>.</div>
+</div>`)
 		}
 
 		let alltodolist = getElement('alltodolist')
@@ -3446,8 +3448,10 @@ function updatetime() {
 	let sleependdatelater = new Date(sleependdate)
 	sleependdatelater.setHours(sleependdatelater.getHours() + 3) //only prompt within first 3 hours after wake up
 
-	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) && lastprompttodotodaydate.getTime() < sleependdate.getTime() && currentdate.getTime() >= sleependdate.getTime() && currentdate.getTime() < sleependdatelater.getTime() && document.visibilityState == 'visible'){
-		prompttodotoday()
+	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) && lastprompttodotodaydate.getTime() < sleependdate.getTime() && currentdate.getTime() >= sleependdate.getTime() && currentdate.getTime() < sleependdatelater.getTime()){
+		if(document.visibilityState == 'visible'){
+			prompttodotoday()
+		}
 	}else{
 		closeprompttodotoday()
 	}
@@ -3893,13 +3897,18 @@ function prompttodotoday(){
 	prompttodotodaywrap.classList.remove('hiddenfade')
 }
 
+function hidepropmpttodotoday(){
+	let prompttodotodaywrap = getElement('prompttodotodaywrap')
+	prompttodotodaywrap.classList.add('hiddenfade')
+
+	let prompttodotodayaddtasktodolist = getElement('prompttodotodayaddtasktodolist')
+	prompttodotodayaddtasktodolist.innerHTML = ''
+}
+
 function closeprompttodotoday(){
 	isprompttodotoday = false
 
-	updateprompttodotoday()
-
-	let prompttodotodaywrap = getElement('prompttodotodaywrap')
-	prompttodotodaywrap.classList.add('hiddenfade')
+	hidepropmpttodotoday()
 }
 
 function setprompttodotodaydate(){
@@ -3920,8 +3929,6 @@ function clickconfirmprompttodotoday(){
 
 function updateprompttodotoday(){
 	if(!isprompttodotoday) {
-		let prompttodotodayaddtasktodolist = getElement('prompttodotodayaddtasktodolist')
-		prompttodotodayaddtasktodolist.innerHTML = ''
 		return
 	}
 	
@@ -3930,7 +3937,9 @@ function updateprompttodotoday(){
 		output.push(gettododata(item))
 	}
 	if(output.length == 0){
-		output.push(`<div class="text-18px text-secondary align-self-center text-center padding-12px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
+		output.push(`<div class="absolute top-0 left-0 right-0 bottom-0 flex-1 display-flex flex-column align-center justify-center">
+<div class="text-18px text-secondary">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span>.</div>
+</div>`)
 	}
 
 	let prompttodotodayaddtasktodolist = getElement('prompttodotodayaddtasktodolist')
@@ -4059,7 +4068,9 @@ function updateonboardingscreen(){
 			output.push(gettododata(item))
 		}
 		if(output.length == 0){
-			output.push(`<div class="text-18px text-secondary align-self-center text-center padding-12px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>.`)
+			output.push(`<div class="absolute top-0 left-0 right-0 bottom-0 flex-1 display-flex flex-column align-center justify-center">
+<div class="text-18px text-secondary">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span>.</div>
+</div>`)
 		}
 
 		let onboardingaddtasktodolistdiv = getElement('onboardingaddtasktodolist')
