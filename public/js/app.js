@@ -3,12 +3,7 @@ const MONTHLIST = ['January', 'February', 'March', 'April', 'May', 'June', 'July
 const SHORTMONTHLIST = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const DAYLIST = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 const SHORTDAYLIST = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-
-const BACKGROUNDCOLORLIST = ['redbackground', 'orangebackground', 'greenbackground', 'bluebackground', 'purplebackground']
-const BACKGROUNDCOLORLISTTRANSPARENT = ['redbackgroundtransparent', 'orangebackgroundtransparent', 'greenbackgroundtransparent', 'bluebackgroundtransparent', 'purplebackgroundtransparent']
-const BORDERCOLORLIST = ['redborder', 'orangeborder', 'greenborder', 'blueborder', 'purpleborder']
-const FILLCOLORLIST = ['fillred', 'fillorange', 'fillgreen', 'fillblue', 'fillpurple']
-const STROKECOLORLIST = ['strokered', 'strokeorange', 'strokegreen', 'strokeblue', 'strokepurple']
+const SHORTESTDAYLIST = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 
 const DEFAULTCOLORS = ['#f54842', '#faa614', '#2bc451', '#2693ff', '#916bfa']
 
@@ -49,6 +44,9 @@ const timetimewindowoptiondata = [
 	{ startminute: 540, endminute: 1020, text: 'Work hours' },
 ]
 
+const MAX_TODO_DURATION = 1440
+
+//FUNCTIONS
 function generateID() {
 	let uuid = ''
 	const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
@@ -124,7 +122,7 @@ function getDHMText(input) {
 	return [days, hours, minutes].filter(f => f).join(' ')
 }
 
-function getShortRelativeDHMText(input) {
+function getRelativeDHMText(input) {
 	let temp = Math.abs(input)
 	let days = Math.floor(temp / 1440)
 	temp -= days * 1440
@@ -151,10 +149,10 @@ function getShortRelativeDHMText(input) {
 
 function getRelativeYMWDText(input) {
     let temp = Math.abs(input)
-    let days = Math.trunc(temp / 1440)
-    let weeks = Math.trunc(days / 7)
-    let months = Math.trunc(days / 30.44)
-    let years = Math.trunc(days / 365.25)
+    let days = Math.round(temp / 1440)
+    let weeks = Math.round(days / 7)
+    let months = Math.round(days / 30.44)
+    let years = Math.round(days / 365.25)
 
     let output = ''
 
@@ -173,7 +171,7 @@ function getRelativeYMWDText(input) {
     return input < 0 ? `in ${output}` : `${output} ago`
 }
 
-function getRelativeDHMText(input) {
+function getFullRelativeDHMText(input) {
 	let temp = Math.abs(input)
 	let days = Math.floor(temp / 1440)
 	temp -= days * 1440
@@ -2348,17 +2346,16 @@ class Calendar {
 				let item = duetodos[i]
 				let tempduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 				if (!lastduedate || tempduedate.getDate() != lastduedate.getDate() || lastduedate.getMonth() != tempduedate.getMonth() || lastduedate.getFullYear() != tempduedate.getFullYear()) {
-					let tempduedate2 = new Date(tempduedate)
-					tempduedate2.setHours(0,0,0,0)
-					let difference = Math.floor((Date.now() - tempduedate2)/60000)
-
-
 					let today = new Date()
 					today.setHours(0,0,0,0)
 					let tomorrow = new Date(today)
 					tomorrow.setDate(tomorrow.getDate() + 1)
 					let yesterday = new Date(today)
 					yesterday.setDate(yesterday.getDate() - 1)
+
+					let tempduedate2 = new Date(tempduedate)
+					tempduedate2.setHours(0,0,0,0)
+					let difference = Math.floor((today.getTime() - tempduedate2)/60000)
 
 					let showrelative = true
 					if ((tempduedate2.getMonth() == today.getMonth() && tempduedate2.getDate() == today.getDate() && tempduedate2.getFullYear() == today.getFullYear()) || (tempduedate2.getMonth() == tomorrow.getMonth() && tempduedate2.getDate() == tomorrow.getDate() && tempduedate2.getFullYear() == tomorrow.getFullYear()) || (tempduedate2.getMonth() == yesterday.getMonth() && tempduedate2.getDate() == yesterday.getDate() && tempduedate2.getFullYear() == yesterday.getFullYear())){
@@ -2539,7 +2536,7 @@ class Calendar {
 			 		<div class="summarycolumnprogressbargroup">
 			 			<div class="summarytextrow flex-wrap-wrap">
 			 				<div class="text-16px text-bold text-primary break-word overflow-hidden">${item.title ? cleanInput(item.title) : 'New Event'}</div>
-				 			<div class="text-16px text-quaternary nowrap">Starts at ${getHMText(tempstartdate.getHours() * 60 + tempstartdate.getMinutes())} (${getRelativeDHMText(difference)})</div>
+				 			<div class="text-16px text-quaternary nowrap">Starts at ${getHMText(tempstartdate.getHours() * 60 + tempstartdate.getMinutes())} (${getFullRelativeDHMText(difference)})</div>
 						</div>
 					</div>`)
 			}
@@ -2849,7 +2846,7 @@ class Calendar {
 					<div class="text-14px text-green">In sync</div>`
 				:
 				`<div class="text-14px text-red">Not synced</div>
-				<span class="tooltiptextright">${difference ? `Last synced ${getShortRelativeDHMText(difference)}` : `Never synced`}</span>`}
+				<span class="tooltiptextright">${difference ? `Last synced ${getRelativeDHMText(difference)}` : `Never synced`}</span>`}
 			</div>`
 			lastsyncedgooglecalendar.innerHTML = text
 			lastsyncedgooglecalendar2.innerHTML = text
@@ -2893,7 +2890,7 @@ class Calendar {
 					<div class="text-14px text-green">In sync</div>`
 				:
 				`<div class="text-14px text-red">Not synced</div>
-				<span class="tooltiptextright">${difference ? `Last synced ${getShortRelativeDHMText(difference)}` : `Never synced`}</span>`}
+				<span class="tooltiptextright">${difference ? `Last synced ${getRelativeDHMText(difference)}` : `Never synced`}</span>`}
 			</div>`
 			lastsyncedgoogleclassroom.innerHTML = text
 		}
@@ -3020,7 +3017,7 @@ class Calendar {
 				tempoutput.push(`
 				<div class="display-flex flex-column">		
 					<div class="text-24px text-center text-bold text-primary text-bold overflow-hidden break-word">${tempitem.title ? cleanInput(tempitem.title) : 'New Event'}</div>
-					<div class="text-24px text-center text-quaternary nowrap">Starts at ${getHMText(startdate.getHours() * 60 + startdate.getMinutes())} (${getRelativeDHMText(difference)})</div>
+					<div class="text-24px text-center text-quaternary nowrap">Starts at ${getHMText(startdate.getHours() * 60 + startdate.getMinutes())} (${getFullRelativeDHMText(difference)})</div>
 				</div>`)
 			}
 			output.push(`
@@ -3954,6 +3951,8 @@ function updateprompttodotoday(){
 
 //ONBOARDING
 
+let onboardingaddtasktodolist = []
+let isonboardingaddtask = false
 function updateonboardingscreen(){
 	let onboardingscreen = getElement('onboardingscreen')
 	onboardingscreen.classList.add('hiddenfade')
@@ -3990,6 +3989,9 @@ function updateonboardingscreen(){
 		updatescreen(key, key == currentonboarding)
 	}
 
+
+	//individual pages
+
 	getElement('todopopup').classList.remove('z-index-10000')
 	getElement('createtodoitemduedate').classList.remove('z-index-10001')
 	getElement('createtodoitemduration').classList.remove('z-index-10001')
@@ -3998,6 +4000,25 @@ function updateonboardingscreen(){
 	getElement('todoitemduedate').classList.remove('z-index-10001')
 	getElement('todoitemduration').classList.remove('z-index-10001')
 	getElement('timepicker').classList.remove('z-index-10001')
+
+
+	if(currentonboarding == 'addtask'){
+		if(!isonboardingaddtask){
+			isonboardingaddtask = true
+
+			let currentdate = new Date()
+			let startdate = new Date(currentdate)
+			startdate.setHours(0, 0, 0, 0)
+			let enddate = new Date(startdate)
+			enddate.setDate(enddate.getDate() + 1)
+			let todosduetoday = gettodos(null, enddate).filter(d => !d.completed)
+
+			onboardingaddtasktodolist = [...todosduetoday.map(d => d.id)]
+	
+		}
+	}else{
+		isonboardingaddtask = false
+	}
 
 
 	if(currentonboarding == 'connectcalendars'){
@@ -4040,8 +4061,24 @@ function updateonboardingscreen(){
 
 		calendar.updateSettings()
 	}else if(currentonboarding == 'addtask'){
+		let output = []
+		for(let item of calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id))){
+			output.push(gettododata(item))
+		}
+		if(output.length == 0){
+			output.push(`<div class="text-18px text-secondary align-self-center text-center padding-top-192px padding-bottom-192px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
+		}
+
 		let onboardingaddtasktodolist = getElement('onboardingaddtasktodolist')
-		onboardingaddtasktodolist.innerHTML = getElement('alltodolist').innerHTML
+		onboardingaddtasktodolist.innerHTML = output.join('')
+
+		let onboardingaddtasksubmit = getElement('onboardingaddtasksubmit')
+		if(calendar.todos.filter(d => onboardingaddtasksubmit.find(g => g == d.id)).length){
+			onboardingaddtasksubmit.classList.add('greyedoutevent')
+		}else{
+			onboardingaddtasksubmit.classList.remove('greyedoutevent')
+		}
+
 
 		getElement('todopopup').classList.add('z-index-10000')
 		getElement('createtodoitemduedate').classList.add('z-index-10001')
@@ -4050,13 +4087,6 @@ function updateonboardingscreen(){
 		getElement('todoitempriority').classList.add('z-index-10001')
 		getElement('todoitemduedate').classList.add('z-index-10001')
 		getElement('todoitemduration').classList.add('z-index-10001')
-
-		let onboardingaddtasksubmit = getElement('onboardingaddtasksubmit')
-		if(calendar.todos.length < 1){
-			onboardingaddtasksubmit.classList.add('greyedoutevent')
-		}else{
-			onboardingaddtasksubmit.classList.remove('greyedoutevent')
-		}
 	}else if(currentonboarding == 'eventreminders'){
 		calendar.emailreminderenabled = true
 		calendar.pushSubscriptionEnabled = true
@@ -4735,6 +4765,9 @@ function inputeventduration(event) {
 		let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 
 		let myduration = getDuration(string).value
+		if(myduration > MAX_TODO_DURATION){
+			myduration = MAX_TODO_DURATION
+		}
 
 		let enddate = new Date(startdate.getTime() + (myduration * 60000))
 
@@ -6634,7 +6667,7 @@ function updatenotificationslist() {
 		output.push(`
 		<div class="notificationitem">
 			<div class="notificationitemtitle">${item.title ? cleanInput(item.title) : 'New Event'}</div>
-			<div class="notificationitemtext text-quaternary">${getShortRelativeDHMText(difference)}</div>
+			<div class="notificationitemtext text-quaternary">${getRelativeDHMText(difference)}</div>
 		</div>`)
 	}
 
@@ -7435,6 +7468,10 @@ function inputcreatetodoitemduration(event, duration) {
 		myduration = createtododurationvalue
 	}
 
+	if(myduration > MAX_TODO_DURATION){
+		myduration = MAX_TODO_DURATION
+	}
+
 	if (myduration != null) {
 		createtododurationvalue = myduration
 
@@ -7595,11 +7632,10 @@ function updatecreatetododatepicker() {
 
 	//days of week
 	let topcolumn = []
-	let shortestDAYLIST = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 	for (let i = 0; i < 7; i++) {
 		topcolumn.push(`
 		<div class="flex-1 padding-4px">
-			<div class="text-14px text-secondary text-center pointer-none">${shortestDAYLIST[i]}</div>
+			<div class="text-14px text-secondary text-center pointer-none">${SHORTESTDAYLIST[i]}</div>
 		</div>`)
 	}
 	rows.push(`<div class="display-flex flex-row gap-4px">${topcolumn.join('')}</div>`)
@@ -7868,6 +7904,10 @@ function typeaddtask(event, submit, index) {
 	}
 
 	if (finalduration != null) {
+		if(finalduration > MAX_TODO_DURATION){
+			finalduration = MAX_TODO_DURATION
+		}
+
 		createtododurationvalue = finalduration
 	}
 
@@ -7924,6 +7964,9 @@ function submitcreatetodo(event) {
 
 		if(isprompttodotoday){
 			prompttodotodayadded.push(item.id)
+		}
+		if(isonboardingaddtask){
+			onboardingaddtasktodolist.push(item.id)
 		}
 
 		if(i == length - 1){
@@ -8356,11 +8399,10 @@ function updatetododatepicker() {
 
 	//days of week
 	let topcolumn = []
-	let shortestDAYLIST = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 	for (let i = 0; i < 7; i++) {
 		topcolumn.push(`
 		<div class="flex-1 padding-4px">
-			<div class="text-14px text-secondary text-center pointer-none">${shortestDAYLIST[i]}</div>
+			<div class="text-14px text-secondary text-center pointer-none">${SHORTESTDAYLIST[i]}</div>
 		</div>`)
 	}
 	rows.push(`<div class="display-flex flex-row gap-4px">${topcolumn.join('')}</div>`)
@@ -8607,12 +8649,15 @@ function inputtodoitemduration(event, duration) {
 	}
 
 	if (myduration == null) {
-		let myduration;
 		if(Calendar.Todo.isTodo(item)){
 			myduration = item.duration
 		}else{
 			myduration = Math.floor((new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()) / 60000)
 		}
+	}
+
+	if(myduration > MAX_TODO_DURATION){
+		myduration = MAX_TODO_DURATION
 	}
 
 	if (myduration != null) {
@@ -9005,12 +9050,21 @@ function inputtododuration(event){
 	if(Calendar.Todo.isTodo(item)){
 		let myduration = getDuration(string).value
 
+		if(myduration > MAX_TODO_DURATION){
+			myduration = MAX_TODO_DURATION
+		}
+
 		if(myduration != null){
 			item.duration = myduration
 		}
 	}else{
 		let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 		let myduration = getDuration(string).value
+
+		if(myduration > MAX_TODO_DURATION){
+			myduration = MAX_TODO_DURATION
+		}
+
 		let enddate = new Date(startdate.getTime() + (myduration * 60000))
 
 		if (!isNaN(enddate.getTime()) && myduration != null) {
@@ -9285,11 +9339,10 @@ function updatedatepicker() {
 
 	//days of week
 	let topcolumn = []
-	let shortestDAYLIST = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 	for (let i = 0; i < 7; i++) {
 		topcolumn.push(`
 		<div class="flex-1 padding-4px">
-			<div class="text-14px text-secondary text-center pointer-none">${shortestDAYLIST[i]}</div>
+			<div class="text-14px text-secondary text-center pointer-none">${SHORTESTDAYLIST[i]}</div>
 		</div>`)
 	}
 	rows.push(`<div class="display-flex flex-row gap-4px">${topcolumn.join('')}</div>`)
@@ -10394,8 +10447,6 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 			}
 
 			let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
-
-			let range = endbeforedate.getTime() - startafterdate.getTime()
 
 
 			let daystartafterdate = new Date(startafterdate)

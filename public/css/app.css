@@ -419,12 +419,19 @@ body {
 
 .selecteddatehighlight {
 	background-color:var(--blue) !important;
-	color:white !important;
 }
 .selecteddatehighlight:hover {
 	background-color:var(--blue-hover) !important;
 }
+.selecteddatehighlight div{
+	color:white !important;
+}
 
+.specialtodolist .todoitem{
+	border:none !important;
+	background-color:var(--background-primary);
+	border-radius:8px;
+}
 
 .onboardingscreen{
 	z-index:9999;
