@@ -2458,15 +2458,11 @@ class Calendar {
 					tempoutput2 = []
 				}
 			}
-
-			if(output.length == 0){
-				output.push(`<div class="text-18px text-secondary align-self-center text-center padding-top-192px padding-bottom-192px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
-			}
 			
 		}
 
 		if(output.length == 0){
-			output.push(`<div class="text-18px text-secondary align-self-center text-center padding-top-192px padding-bottom-192px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
+			output.push(`<div class="text-18px text-secondary align-self-center text-center padding-12px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>.`)
 		}
 
 		let alltodolist = getElement('alltodolist')
@@ -3934,7 +3930,7 @@ function updateprompttodotoday(){
 		output.push(gettododata(item))
 	}
 	if(output.length == 0){
-		output.push(`<div class="text-18px text-secondary align-self-center text-center padding-top-192px padding-bottom-192px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
+		output.push(`<div class="text-18px text-secondary align-self-center text-center padding-12px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
 	}
 
 	let prompttodotodayaddtasktodolist = getElement('prompttodotodayaddtasktodolist')
@@ -4011,15 +4007,7 @@ function updateonboardingscreen(){
 		if(!isonboardingaddtask){
 			isonboardingaddtask = true
 
-			let currentdate = new Date()
-			let startdate = new Date(currentdate)
-			startdate.setHours(0, 0, 0, 0)
-			let enddate = new Date(startdate)
-			enddate.setDate(enddate.getDate() + 1)
-			let todosduetoday = gettodos(null, enddate).filter(d => !d.completed)
-
-			onboardingaddtasktodolist = [...todosduetoday.map(d => d.id)]
-	
+			onboardingaddtasktodolist = []
 		}
 	}else{
 		isonboardingaddtask = false
@@ -4071,7 +4059,7 @@ function updateonboardingscreen(){
 			output.push(gettododata(item))
 		}
 		if(output.length == 0){
-			output.push(`<div class="text-18px text-secondary align-self-center text-center padding-top-192px padding-bottom-192px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
+			output.push(`<div class="text-18px text-secondary align-self-center text-center padding-12px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>.`)
 		}
 
 		let onboardingaddtasktodolistdiv = getElement('onboardingaddtasktodolist')
