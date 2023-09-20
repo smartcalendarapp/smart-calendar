@@ -4069,8 +4069,8 @@ function updateonboardingscreen(){
 			output.push(`<div class="text-18px text-secondary align-self-center text-center padding-top-192px padding-bottom-192px">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span></div>`)
 		}
 
-		let onboardingaddtasktodolist = getElement('onboardingaddtasktodolist')
-		onboardingaddtasktodolist.innerHTML = output.join('')
+		let onboardingaddtasktodolistdiv = getElement('onboardingaddtasktodolist')
+		onboardingaddtasktodolistdiv.innerHTML = output.join('')
 
 		let onboardingaddtasksubmit = getElement('onboardingaddtasksubmit')
 		if(calendar.todos.filter(d => onboardingaddtasksubmit.find(g => g == d.id)).length){
