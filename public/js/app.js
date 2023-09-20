@@ -3955,7 +3955,6 @@ let onboardingaddtasktodolist = []
 let isonboardingaddtask = false
 function updateonboardingscreen(){
 	let onboardingscreen = getElement('onboardingscreen')
-	onboardingscreen.classList.add('hiddenfade')
 
 	function updatescreen(key, boolean){
 		let tempdiv = getElement(`onboarding${key}`)
@@ -3982,7 +3981,13 @@ function updateonboardingscreen(){
 	}
 
 	if(currentonboarding){
-		onboardingscreen.classList.remove('hiddenfade')
+		if(onboardingscreen.classList.contains('hiddenfade')){
+			onboardingscreen.classList.remove('hiddenfade')
+		}
+	}else{
+		if(!onboardingscreen.classList.contains('hiddenfade')){
+			onboardingscreen.classList.add('hiddenfade')
+		}
 	}
 
 	for(let [key, value] of Object.entries(calendar.onboarding)){
