@@ -397,7 +397,7 @@ async function processReminders(){
 	function formatURL(text) {
 		let regex = /((?:https?:\/\/)?(?:www\.)?(?:[\w-]+\.)+[\w]{2,}(?:\/[\w-_.~%\/#?&=!$()'*+,;:@]+)?)/gi
 		return text.replace(regex, function (url) {
-			return `<a href="${url}" style="color:#2693ff;text-decoration:none;" class="hovertext" target="_blank" rel="noopener noreferrer">${url}</a>`
+			return `<a href="${url}" style="color:#2693ff;text-decoration:none;" target="_blank" rel="noopener noreferrer">${url}</a>`
 		})
 	}
 
@@ -450,13 +450,6 @@ async function processReminders(){
 							<style>
 									@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
 
-									.hovertext:hover {
-										color: #1f75cc;
-									}
-
-									.hoverbackground:hover {
-										background-color: #1f75cc;
-									}
 							</style>
 					</head>
 					<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
@@ -476,7 +469,7 @@ async function processReminders(){
 											</div>
 									</p>
 									<p style="text-align: center;font-size: 14px; color: #333;padding:12px;">
-										<a href="https://smartcalendar.us/app" class="hoverbackground" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
+										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
 									</p>
 
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
@@ -545,7 +538,7 @@ async function processReminders(){
 											</div>
 									</p>
 									<p style="text-align: center;font-size: 14px; color: #333;padding:12px;">
-										<a href="https://smartcalendar.us/app" class="hoverbackground" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
+										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
 									</p>
 
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
@@ -1189,9 +1182,15 @@ app.get('/home', (req, res) => {
 })
 
 app.get('/login', async (req, res, next) => {
-  if (req.session.user && req.session.user.userid) {
+	const referrer = req.headers.referer
+	if (referrer && referrer.endsWith('/app')) {
+		next()
+		return
+	}
+	
+	if (req.session.user && req.session.user.userid) {
 		res.redirect(301, '/app')
-  } else{
+	} else{
 		next()
 	}
 })
