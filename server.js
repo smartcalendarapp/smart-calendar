@@ -394,6 +394,13 @@ async function processReminders(){
 		return `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')} ${hours >= 12 ? 'PM' : 'AM'}`
 	}	
 
+	function formatURL(text) {
+		let regex = /((?:https?:\/\/)?(?:www\.)?(?:[\w-]+\.)+[\w]{2,}(?:\/[\w-_.~%\/#?&=!$()'*+,;:@]+)?)/gi
+		return text.replace(regex, function (url) {
+			return `<a href="${url}" style="color:#2693ff;text-decoration:none;" class="hovertext" target="_blank" rel="noopener noreferrer">${url}</a>`
+		})
+	}
+
 
 	//check if remind
 	let sendreminders = []
@@ -442,6 +449,14 @@ async function processReminders(){
 							<title>Smart Calendar | Your Event Reminder</title>
 							<style>
 									@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+									.hovertext:hover {
+										color: #1f75cc;
+									}
+
+									.hoverbackground:hover {
+										background-color: #1f75cc;
+									}
 							</style>
 					</head>
 					<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
@@ -456,11 +471,12 @@ async function processReminders(){
 											<div style="background-color:#f4f4f4;border-radius:6px;font-size:18px">
 												<div style="padding:12px">
 													<strong>${item.event.title || 'New Event'}</strong> <span style="color:#595959;">${getHMText(new Date(item.event.start - item.user.timezoneoffset).getHours() * 60 + new Date(item.event.start - item.user.timezoneoffset).getMinutes())} – ${getHMText(new Date(item.event.end - item.user.timezoneoffset).getHours() * 60 + new Date(item.event.end - item.user.timezoneoffset).getMinutes())}</span>
+													${item.notes ? `<div class="font-size:16px;color:#595959;">${formatURL(item.notes)}` : ''}
 												</div>
 											</div>
 									</p>
 									<p style="text-align: center;font-size: 14px; color: #333;padding:12px;">
-										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
+										<a href="https://smartcalendar.us/app" class="hoverbackground" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
 									</p>
 
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
@@ -524,11 +540,12 @@ async function processReminders(){
 											<div style="background-color:#f4f4f4;border-radius:6px;font-size:18px">
 												<div style="padding:12px">
 													<strong>${item.event.title || 'New Task'}</strong>
+													${item.notes ? `<div class="font-size:16px;color:#595959;">${formatURL(item.notes)}` : ''}
 												</div>
 											</div>
 									</p>
 									<p style="text-align: center;font-size: 14px; color: #333;padding:12px;">
-										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
+										<a href="https://smartcalendar.us/app" class="hoverbackground" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
 									</p>
 
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
@@ -696,6 +713,7 @@ function cacheReminders(user){
 
 	let allevents = getevents()
 	for(let item of allevents){
+		if(item.type == 1 && item.completed) continue
 
 		for(let itemreminder of item.reminder){
 			tempreminders.push({
@@ -737,7 +755,7 @@ function cacheReminders(user){
 					id: item.id,
 					title: item.title,
 					duedate: new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute).getTime() + timezoneoffset * 60000,
-					notes: item.notes
+					notes: item.notes,
 				},
 				reminder: {
 					timestamp: new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute).getTime() - itemreminder.timebefore + timezoneoffset * 60000,

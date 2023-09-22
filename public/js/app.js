@@ -149,10 +149,10 @@ function getRelativeDHMText(input) {
 
 function getRelativeYMWDText(input) {
     let temp = Math.abs(input)
-    let days = Math.round(temp / 1440)
-    let weeks = Math.round(days / 7)
-    let months = Math.round(days / 30.44)
-    let years = Math.round(days / 365.25)
+    let days = Math.floor(temp / 1440)
+    let weeks = Math.floor(days / 7)
+    let months = Math.floor(days / 30.44)
+    let years = Math.floor(days / 365.25)
 
     let output = ''
 
@@ -435,7 +435,48 @@ function getDuration(string) {
 	let myduration;
 	let match;
 
-	let allmatch = string.match(/\b((\d+(\.\d+)?\s*(days|day|d))\s*(\d+(\.\d+)?\s*(hours|hour|hrs|hr|h))\s*(\d+(\.\d+)?\s*(minutes|minute|mins|min|m)))|((\d+(\.\d+)?\s*(days|day|d))\s*(\d+(\.\d+)?\s*(hours|hour|hrs|hr|h)))|((\d+(\.\d+)?\s*(days|day|d))\s*(\d+(\.\d+)?\s*(minutes|minute|mins|min|m)))|((\d+(\.\d+)?\s*(hours|hour|hrs|hr|h))\s*(\d+(\.\d+)?\s*(minutes|minute|mins|min|m)))|(\d+(\.\d+)?\s*(days|day|d))|(\d+(\.\d+)?\s*(hours|hour|hrs|hr|h))|(\d+(\.\d+)?\s*(minutes|minute|mins|min|m))\b/)
+	const numwords = {
+		'one': 1, 'an': 1,
+		'two': 2,
+		'three': 3,
+		'four': 4,
+		'five': 5,
+		'six': 6,
+		'seven': 7,
+		'eight': 8,
+		'nine': 9,
+		'ten': 10,
+		'eleven': 11,
+		'twelve': 12,
+		'thirteen': 13,
+		'fourteen': 14,
+		'fifteen': 15,
+		'sixteen': 16,
+		'seventeen': 17,
+		'eighteen': 18,
+		'nineteen': 19,
+		'twenty': 20,
+		'thirty': 30,
+		'forty': 40,
+		'fifty': 50,
+		'sixty': 60,
+		'seventy': 70,
+		'eighty': 80,
+		'ninety': 90,
+		'hundred': 100, 'a hundred': 100, 'one hundred': 100
+	}
+
+	const replacenumwords = (str) => {
+		const numwordspattern = new RegExp(`\\b(${Object.keys(numwords).join('|')})\\b`, 'g')
+		return str.replace(numwordspattern, (match) => {
+		  return numwords[match.toLowerCase()]
+		})
+	}
+	
+
+	string = replacenumwords(string)
+
+	let allmatch = string.match(/\b(((\d+(\.\d+)?\s*(days|day|d))\s*(\d+(\.\d+)?\s*(hours|hour|hrs|hr|h))\s*(\d+(\.\d+)?\s*(minutes|minute|mins|min|m)))|((\d+(\.\d+)?\s*(days|day|d))\s*(\d+(\.\d+)?\s*(hours|hour|hrs|hr|h)))|((\d+(\.\d+)?\s*(days|day|d))\s*(\d+(\.\d+)?\s*(minutes|minute|mins|min|m)))|((\d+(\.\d+)?\s*(hours|hour|hrs|hr|h))\s*(\d+(\.\d+)?\s*(minutes|minute|mins|min|m)))|(\d+(\.\d+)?\s*(days|day|d))|(\d+(\.\d+)?\s*(hours|hour|hrs|hr|h))|(\d+(\.\d+)?\s*(minutes|minute|mins|min|m)))\b/)
 	if (allmatch && allmatch[0]) {
 		match = allmatch[0]
 
@@ -548,11 +589,11 @@ function getDate(string) {
 
 	let currentdate = new Date()
 
-	let tempday2 = string.match(new RegExp(`\\b((this|next|last)\\s+)?(${SHORTDAYLIST.map(d => d.toLowerCase()).join('|')}|${DAYLIST.map(d => d.toLowerCase()).join('|')})\\b`))
+	let tempday2 = string.match(new RegExp(`\\b(((this|next|last)\\s+)?(${SHORTDAYLIST.map(d => d.toLowerCase()).join('|')}|${DAYLIST.map(d => d.toLowerCase()).join('|')}))\\b`))
 	if (tempday2) {
 		match = tempday2[0]
 
-		let tempmatch = tempday2[0].match(new RegExp(`\\b(${SHORTDAYLIST.map(d => d.toLowerCase()).join('|')}|${DAYLIST.map(d => d.toLowerCase()).join('|')})\\b`))
+		let tempmatch = tempday2[0].match(new RegExp(`\\b((${SHORTDAYLIST.map(d => d.toLowerCase()).join('|')}|${DAYLIST.map(d => d.toLowerCase()).join('|')}))\\b`))
 
 		let temp;
 		if (SHORTDAYLIST.map(d => d.toLowerCase()).includes(tempmatch[0])) {
@@ -576,11 +617,14 @@ function getDate(string) {
 		myyear = tempdate.getFullYear()
 	}
 
-	let tempdatestring = string.match(new RegExp(`\\b(${SHORTMONTHLIST.map(d => d.toLowerCase()).join('|')}|${MONTHLIST.map(d => d.toLowerCase()).join('|')})\\s+(0?[1-9]|1[0-9]|2[0-9]|3[0-1])(st|nd|rd|th)?(,?\\s+\\d{4})?\\b`))
+	let tempdatestring = string.match(new RegExp(`\\b((${SHORTMONTHLIST.map(d => d.toLowerCase()).join('|')}|${MONTHLIST.map(d => d.toLowerCase()).join('|')}|sept)\\s+(0?[1-9]|1[0-9]|2[0-9]|3[0-1])(st|nd|rd|th)?(,?\\s+\\d{4})?)\\b`))
 	if (tempdatestring) {
 		match = tempdatestring[0]
 
 		let tempdatelist = tempdatestring[0].split(/\s+/)
+		if (tempdatelist[0].toLowerCase() == 'sept') {
+			tempdatelist[0] = 'sep'
+		}
 
 		let temp;
 		if (SHORTMONTHLIST.map(d => d.toLowerCase()).includes(tempdatelist[0])) {
@@ -596,7 +640,7 @@ function getDate(string) {
 		myyear = +tempdatelist[2] || currentdate.getFullYear()
 	}
 
-	let tempdatestring2 = string.match(new RegExp(`\\b(0?[1-9]|1[0-9]|2[0-9]|3[0-1])(st|nd|rd|th)?\\s+(${SHORTMONTHLIST.map(d => d.toLowerCase()).join('|')}|${MONTHLIST.map(d => d.toLowerCase()).join('|')})(\\s+\\d{4})?\\b`))
+	let tempdatestring2 = string.match(new RegExp(`\\b((0?[1-9]|1[0-9]|2[0-9]|3[0-1])(st|nd|rd|th)?\\s+(${SHORTMONTHLIST.map(d => d.toLowerCase()).join('|')}|${MONTHLIST.map(d => d.toLowerCase()).join('|')})(\\s+\\d{4})?)\\b`))
 	if (tempdatestring2) {
 		match = tempdatestring2[0]
 
@@ -616,7 +660,7 @@ function getDate(string) {
 		myyear = +tempdatelist[2] || currentdate.getFullYear()
 	}
 
-	let tempdate2 = string.match(/\b(0?[1-9]|1[0-2])(\/|-)([1-9]|1[0-9]|2[0-9]|3[0-1])((\/|-)(\d{2}(\d{2})?))?\b/)
+	let tempdate2 = string.match(/\b((0?[1-9]|1[0-2])(\/|-)([1-9]|1[0-9]|2[0-9]|3[0-1])((\/|-)(\d{2}(\d{2})?))?)\b/)
 	if (tempdate2) {
 		match = tempdate2[0]
 
@@ -626,7 +670,7 @@ function getDate(string) {
 		myyear = (+tempdate3[2] && (!tempdate3[2].match(/\d{4}/) ? (floor(currentdate.getFullYear(), 100) + +tempdate3[2]) : (+tempdate3[2]))) || currentdate.getFullYear()
 	}
 
-	let tempdate12 = string.match(/\b(\d{4})(\/|-)(0?[1-9]|1[0-2])(\/|-)([1-9]|1[0-9]|2[0-9]|3[0-1])\b/)
+	let tempdate12 = string.match(/\b((\d{4})(\/|-)(0?[1-9]|1[0-2])(\/|-)([1-9]|1[0-9]|2[0-9]|3[0-1]))\b/)
 	if (tempdate12) {
 		match = tempdate12[0]
 
@@ -3887,7 +3931,7 @@ function prompttodotoday(){
 	startdate.setHours(0, 0, 0, 0)
 	let enddate = new Date(startdate)
 	enddate.setDate(enddate.getDate() + 1)
-	let todosduetoday = [...gettodos(null, enddate), ...calendar.events.filter(d => d.type == 1 && new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute).getTime() < enddate.getTime())].filter(d => !d.completed)
+	let todosduetoday = [...gettodos(null, enddate), ...calendar.events.filter(d => d.type == 1 && new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() < enddate.getTime())].filter(d => !d.completed)
 
 	prompttodotodayadded = todosduetoday.map(d => d.id)
 	
@@ -4009,16 +4053,12 @@ function updateonboardingscreen(){
 
 
 	if(currentonboarding == 'addtask'){
-		onboardingscreen.classList.add('darkbackdropblur')
-		
 		if(!isonboardingaddtask){
 			isonboardingaddtask = true
 
 			onboardingaddtasktodolist = []
 		}
 	}else{
-		onboardingscreen.classList.remove('darkbackdropblur')
-
 		isonboardingaddtask = false
 	}
 
@@ -7115,7 +7155,7 @@ function typeaddevent(event, submit) {
 
 	let tempmatch13 = getDuration(finalstring)
 	if (tempmatch13.match) {
-		let regex = new RegExp(`\\b((takes|needs|requires|takes\\s+me|lasts)\\s+)?${tempmatch13.match}\\b`)
+		let regex = new RegExp(`\\b(((takes|needs|requires|takes\\s+me|lasts)\\s+)?${tempmatch13.match})\\b`)
 		let tempmatch14 = finalstring.match(regex)
 		if (tempmatch14) {
 			finalduration = tempmatch13.value
@@ -7820,10 +7860,11 @@ function typeaddtask(event, submit, index) {
 	let finalyear, finalmonth, finalday, finalminute, finalduration, finalpriority;
 
 
+	//due date
 	let tempmatch1 = getDate(finalstring)
 	let tempmatch5 = getMinute(finalstring)
 	if (tempmatch1.match || tempmatch5.match) {
-		let regex = new RegExp(`\\b(due|by|due\\s+at|due\\s+on|deadline|deadline\\s+at|deadline\\s+on|due\\s+by|finish\\s+by|done\\s+by|complete\\s+by)\\s+((${tempmatch1.match}\\s+${tempmatch5.match})|(${tempmatch5.match}\\s+${tempmatch1.match})|(${tempmatch1.match})|(${tempmatch5.match}))\\b`, 'i')
+		let regex = new RegExp(`\\b((due|by|due\\s+at|due\\s+on|deadline|deadline\\s+at|deadline\\s+on|due\\s+by|finish\\s+by|done\\s+by|complete\\s+by)\\s+((${tempmatch1.match}\\s+((at|on|by)\\s+)?${tempmatch5.match})|(${tempmatch5.match}\\s+((at|on|by)\\s+)?${tempmatch1.match})|(${tempmatch1.match})|(${tempmatch5.match})))\\b`, 'i')
 		let tempmatch2 = finalstring.match(regex)
 		if (tempmatch2) {
 			let tempmatch6 = getDate(tempmatch2[0])
@@ -7840,9 +7881,10 @@ function typeaddtask(event, submit, index) {
 		finalstring = finalstring.replace(regex, '')
 	}
 
+	//duration
 	let tempmatch3 = getDuration(finalstring)
 	if (tempmatch3.match) {
-		let regex = new RegExp(`\\b(takes|needs|requires|takes\\s+me|lasts)\\s+${tempmatch3.match}\\b`)
+		let regex = new RegExp(`\\b((takes|needs|requires|takes\\s+me|lasts)\\s+${tempmatch3.match})\\b`)
 		let tempmatch4 = finalstring.match(regex)
 		if (tempmatch4) {
 			finalduration = tempmatch3.value
@@ -7851,15 +7893,16 @@ function typeaddtask(event, submit, index) {
 		finalstring = finalstring.replace(regex, '')
 	}
 
-	let tempregex = /\b(low\s+priority|medium\s+priority|med\s+priority|high\s+priority|low\s+p|medium\s+p|med\s+p|high\s+p|p1|p2|p3)\b/i
+	//priority
+	let tempregex = /\b((low\s+priority|medium\s+priority|med\s+priority|high\s+priority|low\s+p|medium\s+p|med\s+p|high\s+p|p1|p2|p3|very\s+important|important|not\s+important|medium\s+importance|high\s+importance))\b/i
 	let tempmatch8 = finalstring.match(tempregex)
 	if (tempmatch8) {
-		if (tempmatch8[0].match(/(low\s+priority|low\s+p|p1)/)) {
+		if (tempmatch8[0].match(/(low\s+priority|low\s+p|p1|not\s+important)/)) {
 			finalpriority = 0
-		} else if (tempmatch8[0].match(/(medium\s+priority|med\s+priority|med\s+p|medium\s+p|p2)/)) {
-			finalpriority = 1
-		} else if (tempmatch8[0].match(/(high\s+priority|high\s+p|p3)/)) {
+		} else if (tempmatch8[0].match(/(high\s+priority|high\s+p|p3|very\s+important|high\s+importance)/)) {
 			finalpriority = 2
+		} else if (tempmatch8[0].match(/(medium\s+priority|med\s+priority|med\s+p|medium\s+p|p2|important|medium\s+importance)/)) {
+			finalpriority = 1
 		}
 
 		finalstring = finalstring.replace(tempregex, '')
