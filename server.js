@@ -471,7 +471,7 @@ async function processReminders(){
 											<div style="background-color:#f4f4f4;border-radius:6px;font-size:18px">
 												<div style="padding:12px">
 													<strong>${item.event.title || 'New Event'}</strong> <span style="color:#595959;">${getHMText(new Date(item.event.start - item.user.timezoneoffset).getHours() * 60 + new Date(item.event.start - item.user.timezoneoffset).getMinutes())} – ${getHMText(new Date(item.event.end - item.user.timezoneoffset).getHours() * 60 + new Date(item.event.end - item.user.timezoneoffset).getMinutes())}</span>
-													${item.notes ? `<div class="font-size:16px;color:#595959;">${formatURL(item.notes)}` : ''}
+													${item.event.notes ? `<div class="font-size:16px;color:#595959;">${formatURL(item.event.notes)}` : ''}
 												</div>
 											</div>
 									</p>
@@ -540,7 +540,7 @@ async function processReminders(){
 											<div style="background-color:#f4f4f4;border-radius:6px;font-size:18px">
 												<div style="padding:12px">
 													<strong>${item.event.title || 'New Task'}</strong>
-													${item.notes ? `<div class="font-size:16px;color:#595959;">${formatURL(item.notes)}` : ''}
+													${item.event.notes ? `<div class="font-size:16px;color:#595959;">${formatURL(item.event.notes)}` : ''}
 												</div>
 											</div>
 									</p>
