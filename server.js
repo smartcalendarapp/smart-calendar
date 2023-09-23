@@ -2637,7 +2637,7 @@ app.get('/auth/discord/callback', async (req, res) => {
 			.setColor(0x2693ff)
 		await sendDiscordMessageToId(userobject.id, { embeds: [embed] } )
 
-    	return res.end()
+    	return res.redirect(301, '/app')
   	} catch (error) {
     	console.error(error)
     	return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
