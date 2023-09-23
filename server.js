@@ -581,6 +581,8 @@ async function processReminders(){
 
 		//discord message
 		if(item.discordreminderenabled){
+			if(!item.user.discordid) continue
+
 			const discorduser = await getDiscordUserFromId(item.user.discordid)
 			if(!discorduser) continue
 
@@ -2572,8 +2574,10 @@ async function sendDiscordMessageToUser(user, message){
 
 app.get('/auth/discord/callback', async (req, res) => {
   	try {
-		const code = req.query.code;
-		if (!code) return res.status(401).end()
+		const code = req.query.code
+		if (!code){
+			throw new Error('Invalid code.')
+		}
 		
 		const tokenData = new URLSearchParams({
 			client_id: DISCORD_ID,
@@ -2584,11 +2588,11 @@ app.get('/auth/discord/callback', async (req, res) => {
 		})
 			
 		const response = await fetch('https://discord.com/api/oauth2/token', {
-		method: 'POST',
-		body: tokenData,
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		}
+			method: 'POST',
+			body: tokenData,
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
 		})
 
 		const data = await response.json()
@@ -2599,12 +2603,12 @@ app.get('/auth/discord/callback', async (req, res) => {
 
 		//update user data
 		if(!req.session.user){
-			return res.status(401).json({ error: 'User is not signed in.' })
+			throw new Error('User is not signed in.')
 		}
 		const userid = req.session.user.userid
 		const user = await getUserById(userid)
 		if(!user){
-			return res.status(401).json({ error: 'User is not signed in.' })
+			throw new Error('User is not signed in.')
 		}
 
 		user.accountdata.discord.id = userobject.id
@@ -2640,6 +2644,6 @@ app.get('/auth/discord/callback', async (req, res) => {
     	return res.redirect(301, '/app')
   	} catch (error) {
     	console.error(error)
-    	return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+    	return res.redirect(301, '/app')
   }
 })
