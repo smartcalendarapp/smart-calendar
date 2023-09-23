@@ -28,8 +28,8 @@ html, body{
 }
 
 .buttongoogle{
-	height:18px;
-	width:18px;
+	height:24px;
+	width:24px;
 	display:inline;
 	vertical-align:middle;
 	pointer-events:none;
