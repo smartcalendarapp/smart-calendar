@@ -291,8 +291,8 @@ class User{
 }
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
-const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0  }
-const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null }
+const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0  }
+const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null } }
 const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#2693ff', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0 }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#2693ff', isprimary: false, subscriptionurl: null, lastmodified: 0  }
@@ -578,6 +578,28 @@ async function processReminders(){
 			}
 		}
 
+
+		//discord message
+		if(item.discordreminderenabled){
+			const discorduser = await getDiscordUserFromId(item.user.discordid)
+			if(!discorduser) continue
+
+			if(item.type == 'event'){
+				const embed = new EmbedBuilder()
+					.setTitle(`Friendly reminder: ${item.event.title}`)
+					.setDescription(`Hey ${discorduser.username}, just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}.\n\nStay productive,\nSmart Calendar`)
+					.setColor(0xfaa614)
+				await sendDiscordMessageToUser(discorduser, { embeds: [embed] })
+			}else if(item.type == 'task'){
+				const embed = new EmbedBuilder()
+					.setTitle(`Friendly reminder: ${item.event.title}`)
+					.setDescription(`Hey ${discorduser.username}, just a quick reminder that you have a task due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}.\n\nStay productive,\nSmart Calendar`)
+					.setColor(0xfaa614)
+				await sendDiscordMessageToUser(discorduser, { embeds: [embed] })
+			}
+		}
+		//here4
+
 	}
 }
 
@@ -702,6 +724,8 @@ function cacheReminders(user){
 
 	let name = user.google_email ? user.accountdata.google.name || user.google_email : user.username
 
+	let discordid = user.accountdata.discord.id
+
 	let tempreminders = []
 
 	let allevents = getevents()
@@ -714,7 +738,8 @@ function cacheReminders(user){
 				user: {
 					name: name,
 					email: email,
-					timezoneoffset: timezoneoffset * 60000
+					timezoneoffset: timezoneoffset * 60000,
+					discordid: discordid,
 				},
 				event: {
 					id: item.id,
@@ -728,7 +753,8 @@ function cacheReminders(user){
 				},
 				pushSubscription: user.calendardata.pushSubscription,
 				emailreminderenabled: user.calendardata.emailreminderenabled,
-				pushSubscriptionEnabled: user.calendardata.pushSubscriptionEnabled
+				pushSubscriptionEnabled: user.calendardata.pushSubscriptionEnabled,
+				discordreminderenabled: user.calendardata.discordreminderenabled
 			})
 		}	
 	}
@@ -742,7 +768,8 @@ function cacheReminders(user){
 				user: {
 					name: name,
 					email: email,
-					timezoneoffset: timezoneoffset
+					timezoneoffset: timezoneoffset * 60000,
+					discordid: discordid,
 				},
 				event: {
 					id: item.id,
@@ -755,7 +782,8 @@ function cacheReminders(user){
 				},
 				pushSubscription: user.calendardata.pushSubscription,
 				emailreminderenabled: user.calendardata.emailreminderenabled,
-				pushSubscriptionEnabled: user.calendardata.pushSubscriptionEnabled
+				pushSubscriptionEnabled: user.calendardata.pushSubscriptionEnabled,
+				discordreminderenabled: user.calendardata.discordreminderenabled
 			})
 		}
 	}
@@ -816,15 +844,15 @@ const compression = require('compression')
 const RRule = require('rrule').RRule
 const jwt = require('jsonwebtoken')
 
-//google
+//GOOGLE INITIALIZATION
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
-const REDIRECT_URI = `${DOMAIN}/auth/google/callback`
+const GOOGLE_REDIRECT_URI = `${DOMAIN}/auth/google/callback`
 
 const { google } = require('googleapis')
 const { OAuth2Client } = require('google-auth-library')
 
-//express
+//EXPRESS INITIALIZATION
 const express = require('express')
 const session = require('express-session')
 const app = express()
@@ -863,9 +891,10 @@ app.use(session({
 
 
 //SERVER RUN
+
 async function getNewAccessToken(refreshToken){
 	try{
-		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
 		const tokens = await googleclient.refreshToken(refreshToken)
 		return tokens.tokens.access_token
 	}catch(err){
@@ -875,7 +904,7 @@ async function getNewAccessToken(refreshToken){
 
 async function isRefreshTokenValid(refreshToken) {
   try {
-		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
 		googleclient.setCredentials({ refresh_token: refreshToken })
 		const { expiry_date } = await googleclient.getAccessToken()
 
@@ -910,7 +939,7 @@ app.post('/auth/google', async (req, res, next) => {
 		const authoptions = {
 			access_type: 'offline',
 			scope: ['profile', 'email'],
-			redirect_uri: REDIRECT_URI,
+			GOOGLE_REDIRECT_URI: GOOGLE_REDIRECT_URI,
 		}
 		if(options.scope?.includes('calendar')){
 			authoptions.scope.push('https://www.googleapis.com/auth/calendar')
@@ -931,13 +960,16 @@ app.post('/auth/google', async (req, res, next) => {
 					}
 				}
 
-				if(options.enable?.includes('calendar')){
+				let modifieduser = false
+				if(!user.calendardata.settings.issyncingtogooglecalendar && options.enable?.includes('calendar')){
+					modifieduser = true
 					user.calendardata.settings.issyncingtogooglecalendar = true
 				}
-				if(options.enable?.includes('classroom')){
+				if(!user.calendardata.settings.issyncingtogoogleclassroom && options.enable?.includes('classroom')){
+					modifieduser = true
 					user.calendardata.settings.issyncingtogoogleclassroom = true
 				}
-				if(options.enable.length > 0){
+				if(modifieduser){
 					await setUser(user)
 				}
 			}else{
@@ -947,7 +979,7 @@ app.post('/auth/google', async (req, res, next) => {
 			authoptions.prompt = 'consent'
 		}
 
-		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
 		const authurl = googleclient.generateAuthUrl(authoptions)
 		return res.json({ url: authurl })
 	} catch (error) {
@@ -958,7 +990,7 @@ app.post('/auth/google', async (req, res, next) => {
 
 app.get('/auth/google/callback', async (req, res, next) => {
 	try{
-		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
 		const { tokens } = await googleclient.getToken(req.query.code)
 		googleclient.setCredentials(tokens)
 		const { data } = await googleclient.request({
@@ -1075,7 +1107,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 	try{
 		//get googleid
 		const jsontoken = req.body.credential
-		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
 		const ticket = await googleclient.verifyIdToken({
 			idToken: jsontoken,
 			audience: GOOGLE_CLIENT_ID,
@@ -1187,7 +1219,7 @@ app.get('/login', async (req, res, next) => {
 		next()
 		return
 	}
-	
+
 	if (req.session.user && req.session.user.userid) {
 		res.redirect(301, '/app')
 	} else{
@@ -1251,7 +1283,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 
 
 		//google calendar
-		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
 		googleclient.setCredentials(req.session.tokens)
 		const googlecalendar = await google.calendar({ version: 'v3', auth: googleclient })
 
@@ -1567,7 +1599,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 
 
 		//google calendar
-		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
 		googleclient.setCredentials(req.session.tokens)
 		const googlecalendar = await google.calendar({ version: 'v3', auth: googleclient })
 
@@ -1765,7 +1797,7 @@ app.post('/getclientgooglecalendar', async (req, res, next) => {
 
 
 		//google calendar
-		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
 		googleclient.setCredentials(req.session.tokens)
 		const googlecalendar = await google.calendar({ version: 'v3', auth: googleclient })
 
@@ -1878,7 +1910,7 @@ app.post('/getclientgoogleclassroom', async (req, res, next) => {
 
 
 		//google calendar
-		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, REDIRECT_URI)
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
 		googleclient.setCredentials(req.session.tokens)
 
 		const classroom = google.classroom({ version: 'v1', auth: googleclient })
@@ -2269,7 +2301,7 @@ app.post('/getclientinfo', async (req, res, next) => {
 		
 		await setUser(user)
 		
-		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, createddate: user.accountdata.createddate } })
+		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, createddate: user.accountdata.createddate } })
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
@@ -2426,9 +2458,6 @@ app.post('/subscribecalendar', async (req, res) => {
 */
 
 
-
-
-
 app.post("/push-subscription", async (req, res) => {
   const { offset, subscription } = req.body
 	try{
@@ -2453,8 +2482,164 @@ app.post("/push-subscription", async (req, res) => {
 })
 
 
-
-
 app.listen(port, () => {
   console.error(`Server listening on port ${port}`)
+})
+
+
+
+
+//DISCORD BOT INITIALIZATION
+const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js')
+
+const DISCORD_TOKEN = process.env.DISCORD_TOKEN
+const discordclient = new Client({ intents: [GatewayIntentBits.Guilds] })
+
+discordclient.on('ready', async () => {
+	console.log(`Logged in as ${discordclient.user.tag}.`)
+})
+
+discordclient.login(DISCORD_TOKEN)
+
+
+//DISCORD LOGIN AUTHORIZATION
+const DISCORD_ID = process.env.DISCORD_ID
+const DISCORD_SECRET = process.env.DISCORD_SECRET
+const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID
+const DISCORD_REDIRECT_URI = `${DOMAIN}/auth/discord/callback`
+
+app.post('/auth/discord', async (req, res) => {
+	const scopes = ['identify', 'guilds.join']
+	
+	const encodedscopes = encodeURIComponent(scopes.join(' '))
+	const encodedredirecturi = encodeURIComponent(DISCORD_REDIRECT_URI)
+	
+	const authurl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_ID}&redirect_uri=${encodedredirecturi}&response_type=code&scope=${encodedscopes}`
+	
+	
+	return res.json({ url: authurl })
+})
+
+
+async function getDiscordUserFromAccessToken(access_token) {
+  const url = 'https://discord.com/api/v8/users/@me';
+
+	try{
+	  const response = await fetch(url, {
+	    method: 'GET',
+	    headers: {
+	      'Authorization': `Bearer ${access_token}`
+	    }
+	  })
+	
+	  if (response.ok) {
+	    const data = await response.json()
+	    return data
+	  } else {
+	    return null
+	  }
+	}catch(err){
+		console.error(err)
+		return null
+	}
+}
+
+async function getDiscordUserFromId(userid){
+	try{
+		let user = await discordclient.users.fetch(userid)
+		return user
+	}catch(error){
+		console.error(error)
+		return null
+	}
+}
+async function sendDiscordMessageToId(userid, message){
+	try{
+		let user = await discordclient.users.fetch(userid)
+		await user.send(message)
+	}catch(error){
+		console.error(error)
+	}
+}
+async function sendDiscordMessageToUser(user, message){
+	try{
+		await user.send(message)
+	}catch(error){
+		console.error(error)
+	}
+}
+
+
+app.get('/auth/discord/callback', async (req, res) => {
+  	try {
+		const code = req.query.code;
+		if (!code) return res.status(401).end()
+		
+		const tokenData = new URLSearchParams({
+			client_id: DISCORD_ID,
+			client_secret: DISCORD_SECRET,
+			grant_type: 'authorization_code',
+			code: code,
+			redirect_uri: DISCORD_REDIRECT_URI,
+		})
+			
+		const response = await fetch('https://discord.com/api/oauth2/token', {
+		method: 'POST',
+		body: tokenData,
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+		})
+
+		const data = await response.json()
+		const accessToken = data.access_token
+		
+		const userobject = await getDiscordUserFromAccessToken(accessToken)
+
+
+		//update user data
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		const userid = req.session.user.userid
+		const user = await getUserById(userid)
+		if(!user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+
+		user.accountdata.discord.id = userobject.id
+		user.accountdata.discord.username = userobject.username
+		
+		if(!user.calendardata.discordreminderenabled){
+			user.calendardata.discordreminderenabled = true
+		}
+
+		await setUser(user)
+
+		
+		//join server
+		await fetch(`https://discord.com/api/guilds/${DISCORD_GUILD_ID}/members/${userobject.id}`, {
+		  method: 'PUT',
+		  headers: {
+		    Authorization: `Bot ${DISCORD_TOKEN}`,
+		    'Content-Type': 'application/json',
+		  },
+		  body: JSON.stringify({
+		    access_token: accessToken,
+		  }),
+		})
+
+		
+		//send message
+		const embed = new EmbedBuilder()
+			.setTitle(`Thanks for adding me, ${user}!`)
+			.setDescription(`I'll send you a quick reminder here whenever you have an event or task coming up.\n\nIf you have any questions or comments, please let us know in [our server](https://discord.com/channels/${DISCORD_GUILD_ID}).`)
+			.setColor(0x2693ff)
+		await sendDiscordMessageToId(userobject.id, { embeds: [embed] } )
+
+    	return res.end()
+  	} catch (error) {
+    	console.error(error)
+    	return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+  }
 })

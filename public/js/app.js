@@ -2997,6 +2997,15 @@ class Calendar {
 		let enableemailnotif2 = getElement('enableemailnotif2')
 		enableemailnotif.checked = calendar.emailreminderenabled
 		enableemailnotif2.checked = calendar.emailreminderenabled
+
+		let enablediscordnotif = getElement('enablediscordnotif')
+		enablediscordnotif.checked = calendar.discordreminderenabled
+
+		let loginwithdiscordbutton = getElement('loginwithdiscordbutton')
+		loginwithdiscordbutton.classList.add('display-none')
+		if(!clientinfo.discord.id){
+			loginwithdiscordbutton.classList.remove('display-none')
+		}
 	}
 
 
@@ -4147,6 +4156,22 @@ function backonboarding(key){
 
 async function logingoogle(options){
 	const response = await fetch('/auth/google', { 
+		method: 'POST',
+		redirect: 'follow',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({ options: options })
+	})
+	if(response.status == 200){
+		const data = await response.json()
+		window.location.replace(data.url)
+	}
+}
+
+
+async function logindiscord(options){
+	const response = await fetch('/auth/discord', { 
 		method: 'POST',
 		redirect: 'follow',
 		headers: {
@@ -5626,6 +5651,16 @@ function displayalert(title) {
 
 
 //SETTINGS
+
+function toggleemailnotifs(event){
+	calendar.emailreminderenabled = event.target.checked
+	calendar.updateSettings()
+}
+
+function togglediscordnotifs(event){
+	calendar.discordreminderenabled = event.target.checked
+	calendar.updateSettings()
+}
 
 
 //break per hour
@@ -8169,10 +8204,9 @@ function gettododata(item) {
 											${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}
 										</div>`
 										:
-										`<div class="gap-6px pointer-auto pointer display-flex transition-duration-100 flex-row align-center width-fit todoitemtext badgepadding ${!endbeforedate ? ` background-tint-1 text-primary hover:background-tint-2` : (isoverdue ? ` background-red text-white hover:background-red-hover` : ` background-blue text-white hover:background-blue-hover`)} border-round nowrap popupbutton ${itemclasses.join(' ')} " onclick="clicktodoitemduedate(event, '${item.id}')">
-											Due...
-										</div>`
+										''
 									}
+									
 									
 									${Calendar.Event.isEvent(item) ? 
 										`<div class="gap-6px text-white background-green hover:background-green-hover transition-duration-100 badgepadding border-round display-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}">
@@ -12443,10 +12477,5 @@ function togglePushNotifs(event) {
 	} else {
 		removePushNotifs()
 	}
-	calendar.updateSettings()
-}
-
-function toggleemailnotifs(event){
-	calendar.emailreminderenabled = event.target.checked
 	calendar.updateSettings()
 }

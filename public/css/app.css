@@ -464,6 +464,14 @@ body {
 	background-color:var(--white-hover)
 }
 
+.discordbutton{
+	color:var(--white);
+	background-color:#5865F2;
+}
+.discordbutton:hover{
+	background-color:#454fbf
+}
+
 .fadetransition {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s;
 }
