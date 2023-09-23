@@ -3554,11 +3554,6 @@ function run() {
 	//hide loading screen
 	hideloadingscreen()
 
-	//auto schedule for overdue tasks
-	startAutoSchedule({scheduletodos: []})
-
-
-
 	//scroll Y
 	let currentdate = new Date()
 	scrollcalendarY(currentdate.getHours() * 60 + currentdate.getMinutes())
@@ -3585,7 +3580,7 @@ function run() {
 	}, 10)
 
 
-	//minute interval
+	//time interval
 	setInterval(function(){
 		updatetime()
 	}, 100)
@@ -3599,6 +3594,11 @@ function run() {
 			}
 		}
 	}, 100)
+
+
+	setTimeout(function(){
+		needtoautoschedule = true
+	}, 3000)
 
 
 	//sync with google
@@ -3629,8 +3629,7 @@ function run() {
 	}
 	runsyncwithgoogleclassroom()
 
-
-
+	
 	async function getclientdata() {
 		const response = await fetch('/getclientdata', {
 			method: 'POST',

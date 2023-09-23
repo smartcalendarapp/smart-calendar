@@ -917,7 +917,7 @@ async function isRefreshTokenValid(refreshToken) {
 }
 
 
-//use routes
+//USE ROUTES
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'public', 'css')))
@@ -933,7 +933,9 @@ app.use((req, res, next) => {
   }
 })
 
-//get routes
+
+//GOOGLE ROUTES
+
 app.post('/auth/google', async (req, res, next) => {
 	try{
 		let options = req.body.options
@@ -1207,6 +1209,171 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 	}
 })
 
+
+
+
+//DISCORD BOT INITIALIZATION
+const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js')
+
+const DISCORD_TOKEN = process.env.DISCORD_TOKEN
+const discordclient = new Client({ intents: [GatewayIntentBits.Guilds] })
+
+discordclient.on('ready', async () => {
+	console.log(`Logged in as ${discordclient.user.tag}.`)
+})
+
+discordclient.login(DISCORD_TOKEN)
+
+
+//DISCORD LOGIN AUTHORIZATION
+const DISCORD_ID = process.env.DISCORD_ID
+const DISCORD_SECRET = process.env.DISCORD_SECRET
+const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID
+const DISCORD_REDIRECT_URI = `${DOMAIN}/auth/discord/callback`
+
+app.post('/auth/discord', async (req, res) => {
+	const scopes = ['identify', 'guilds.join']
+	
+	const encodedscopes = encodeURIComponent(scopes.join(' '))
+	const encodedredirecturi = encodeURIComponent(DISCORD_REDIRECT_URI)
+	
+	const authurl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_ID}&redirect_uri=${encodedredirecturi}&response_type=code&scope=${encodedscopes}`
+	
+	
+	return res.json({ url: authurl })
+})
+
+
+async function getDiscordUserFromAccessToken(access_token) {
+  const url = 'https://discord.com/api/v8/users/@me';
+
+	try{
+	  const response = await fetch(url, {
+	    method: 'GET',
+	    headers: {
+	      'Authorization': `Bearer ${access_token}`
+	    }
+	  })
+	
+	  if (response.ok) {
+	    const data = await response.json()
+	    return data
+	  } else {
+	    return null
+	  }
+	}catch(err){
+		console.error(err)
+		return null
+	}
+}
+
+async function getDiscordUserFromId(userid){
+	try{
+		let user = await discordclient.users.fetch(userid)
+		return user
+	}catch(error){
+		console.error(error)
+		return null
+	}
+}
+async function sendDiscordMessageToId(userid, message){
+	try{
+		let user = await discordclient.users.fetch(userid)
+		await user.send(message)
+	}catch(error){
+		console.error(error)
+	}
+}
+async function sendDiscordMessageToUser(user, message){
+	try{
+		await user.send(message)
+	}catch(error){
+		console.error(error)
+	}
+}
+
+
+app.get('/auth/discord/callback', async (req, res) => {
+  	try {
+		const code = req.query.code
+		if (!code){
+			throw new Error('Invalid code.')
+		}
+		
+		const tokenData = new URLSearchParams({
+			client_id: DISCORD_ID,
+			client_secret: DISCORD_SECRET,
+			grant_type: 'authorization_code',
+			code: code,
+			redirect_uri: DISCORD_REDIRECT_URI,
+		})
+			
+		const response = await fetch('https://discord.com/api/oauth2/token', {
+			method: 'POST',
+			body: tokenData,
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			}
+		})
+
+		const data = await response.json()
+		const accessToken = data.access_token
+		
+		const userobject = await getDiscordUserFromAccessToken(accessToken)
+
+
+		//update user data
+		if(!req.session.user){
+			throw new Error('User is not signed in.')
+		}
+		const userid = req.session.user.userid
+		const user = await getUserById(userid)
+		if(!user){
+			throw new Error('User is not signed in.')
+		}
+
+		user.accountdata.discord.id = userobject.id
+		user.accountdata.discord.username = userobject.username
+		
+		if(!user.calendardata.discordreminderenabled){
+			user.calendardata.discordreminderenabled = true
+		}
+
+		await setUser(user)
+
+		
+		//join server
+		await fetch(`https://discord.com/api/guilds/${DISCORD_GUILD_ID}/members/${userobject.id}`, {
+		  method: 'PUT',
+		  headers: {
+		    Authorization: `Bot ${DISCORD_TOKEN}`,
+		    'Content-Type': 'application/json',
+		  },
+		  body: JSON.stringify({
+		    access_token: accessToken,
+		  }),
+		})
+
+		
+		//send message
+		const embed = new EmbedBuilder()
+			.setTitle(`Thanks for adding me, ${user}!`)
+			.setDescription(`I'll send you a quick reminder here whenever you have an event or task coming up.\n\nIf you have any questions or comments, please let us know in [our server](https://discord.com/channels/${DISCORD_GUILD_ID}).`)
+			.setColor(0x2693ff)
+		await sendDiscordMessageToId(userobject.id, { embeds: [embed] } )
+
+    	return res.redirect(301, '/app')
+  	} catch (error) {
+    	console.error(error)
+    	return res.redirect(301, '/app')
+  }
+})
+
+
+
+
+//REGULAR ROUTES
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'html', 'home.html'))
 })
@@ -1243,6 +1410,7 @@ app.get('/:page', (req, res, next) => {
 		next()
 	}
 })
+
 
 app.get('*', (req, res) => {
 	res.status(404).sendFile(path.join(__dirname, 'public', 'html', 'error.html'))
@@ -2485,165 +2653,5 @@ app.post("/push-subscription", async (req, res) => {
 
 
 app.listen(port, () => {
-  console.error(`Server listening on port ${port}`)
-})
-
-
-
-
-//DISCORD BOT INITIALIZATION
-const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js')
-
-const DISCORD_TOKEN = process.env.DISCORD_TOKEN
-const discordclient = new Client({ intents: [GatewayIntentBits.Guilds] })
-
-discordclient.on('ready', async () => {
-	console.log(`Logged in as ${discordclient.user.tag}.`)
-})
-
-discordclient.login(DISCORD_TOKEN)
-
-
-//DISCORD LOGIN AUTHORIZATION
-const DISCORD_ID = process.env.DISCORD_ID
-const DISCORD_SECRET = process.env.DISCORD_SECRET
-const DISCORD_GUILD_ID = process.env.DISCORD_GUILD_ID
-const DISCORD_REDIRECT_URI = `${DOMAIN}/auth/discord/callback`
-
-app.post('/auth/discord', async (req, res) => {
-	const scopes = ['identify', 'guilds.join']
-	
-	const encodedscopes = encodeURIComponent(scopes.join(' '))
-	const encodedredirecturi = encodeURIComponent(DISCORD_REDIRECT_URI)
-	
-	const authurl = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_ID}&redirect_uri=${encodedredirecturi}&response_type=code&scope=${encodedscopes}`
-	
-	
-	return res.json({ url: authurl })
-})
-
-
-async function getDiscordUserFromAccessToken(access_token) {
-  const url = 'https://discord.com/api/v8/users/@me';
-
-	try{
-	  const response = await fetch(url, {
-	    method: 'GET',
-	    headers: {
-	      'Authorization': `Bearer ${access_token}`
-	    }
-	  })
-	
-	  if (response.ok) {
-	    const data = await response.json()
-	    return data
-	  } else {
-	    return null
-	  }
-	}catch(err){
-		console.error(err)
-		return null
-	}
-}
-
-async function getDiscordUserFromId(userid){
-	try{
-		let user = await discordclient.users.fetch(userid)
-		return user
-	}catch(error){
-		console.error(error)
-		return null
-	}
-}
-async function sendDiscordMessageToId(userid, message){
-	try{
-		let user = await discordclient.users.fetch(userid)
-		await user.send(message)
-	}catch(error){
-		console.error(error)
-	}
-}
-async function sendDiscordMessageToUser(user, message){
-	try{
-		await user.send(message)
-	}catch(error){
-		console.error(error)
-	}
-}
-
-
-app.get('/auth/discord/callback', async (req, res) => {
-  	try {
-		const code = req.query.code
-		if (!code){
-			throw new Error('Invalid code.')
-		}
-		
-		const tokenData = new URLSearchParams({
-			client_id: DISCORD_ID,
-			client_secret: DISCORD_SECRET,
-			grant_type: 'authorization_code',
-			code: code,
-			redirect_uri: DISCORD_REDIRECT_URI,
-		})
-			
-		const response = await fetch('https://discord.com/api/oauth2/token', {
-			method: 'POST',
-			body: tokenData,
-			headers: {
-				'Content-Type': 'application/x-www-form-urlencoded'
-			}
-		})
-
-		const data = await response.json()
-		const accessToken = data.access_token
-		
-		const userobject = await getDiscordUserFromAccessToken(accessToken)
-
-
-		//update user data
-		if(!req.session.user){
-			throw new Error('User is not signed in.')
-		}
-		const userid = req.session.user.userid
-		const user = await getUserById(userid)
-		if(!user){
-			throw new Error('User is not signed in.')
-		}
-
-		user.accountdata.discord.id = userobject.id
-		user.accountdata.discord.username = userobject.username
-		
-		if(!user.calendardata.discordreminderenabled){
-			user.calendardata.discordreminderenabled = true
-		}
-
-		await setUser(user)
-
-		
-		//join server
-		await fetch(`https://discord.com/api/guilds/${DISCORD_GUILD_ID}/members/${userobject.id}`, {
-		  method: 'PUT',
-		  headers: {
-		    Authorization: `Bot ${DISCORD_TOKEN}`,
-		    'Content-Type': 'application/json',
-		  },
-		  body: JSON.stringify({
-		    access_token: accessToken,
-		  }),
-		})
-
-		
-		//send message
-		const embed = new EmbedBuilder()
-			.setTitle(`Thanks for adding me, ${user}!`)
-			.setDescription(`I'll send you a quick reminder here whenever you have an event or task coming up.\n\nIf you have any questions or comments, please let us know in [our server](https://discord.com/channels/${DISCORD_GUILD_ID}).`)
-			.setColor(0x2693ff)
-		await sendDiscordMessageToId(userobject.id, { embeds: [embed] } )
-
-    	return res.redirect(301, '/app')
-  	} catch (error) {
-    	console.error(error)
-    	return res.redirect(301, '/app')
-  }
+	console.error(`Server listening on port ${port}`)
 })
