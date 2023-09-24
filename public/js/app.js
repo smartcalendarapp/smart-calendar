@@ -5642,6 +5642,9 @@ async function disconnectgoogle() {
 
 	if (response.status == 200) {
 		await getclientinfo()
+		
+		calendar.settings.issyncingtogooglecalendar = false
+		calendar.settings.issyncingtogoogleclassroom = false
 		calendar.updateSettings()
 	} else if (response.status == 401) {
 		const data = await response.json()

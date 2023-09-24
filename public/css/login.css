@@ -28,10 +28,8 @@ html, body{
 }
 
 .buttongoogle{
-	height:24px;
-	width:24px;
-	display:inline;
-	vertical-align:middle;
+	height:22px;
+	width:22px;
 	pointer-events:none;
 }
 .googlebutton{
@@ -242,7 +240,6 @@ html, body{
 .errorwrap{
 	font-size:14px;
 	color:var(--red);
-	font-weight:600;
 }
 
 .orbar{

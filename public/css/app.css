@@ -295,7 +295,6 @@ body {
 .errorwrap {
 	font-size: 14px;
 	color: var(--red);
-	font-weight: 600;
 }
 
 .form {
@@ -440,10 +439,8 @@ body {
 }
 
 .buttongoogle {
-	height: 24px;
-	width: 24px;
-	display: inline;
-	vertical-align: middle;
+	height: 22px;
+	width: 22px;
 	pointer-events: none;
 }
 
@@ -3266,7 +3263,7 @@ body {
 
 .logopng{
 	display:inline;
-	height:24px;
+	height:22px;
 	width:auto;
 	vertical-align:middle;
 }
