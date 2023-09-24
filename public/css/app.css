@@ -1074,7 +1074,15 @@ body {
 	height: 18px;
 	width: 18px;
 	fill: var(--text-primary);
-	;
+	display: inline;
+	vertical-align: middle;
+	pointer-events: none;
+}
+
+.fillbuttonwhite{
+	height: 18px;
+	width: 18px;
+	fill: var(--white);
 	display: inline;
 	vertical-align: middle;
 	pointer-events: none;
