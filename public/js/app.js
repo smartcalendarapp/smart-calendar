@@ -3334,7 +3334,7 @@ function scrolltodoY(targetminute) {
 
 
 //load data
-let clientinfo;
+let clientinfo = {}
 
 let isgettingclientdata = false;
 

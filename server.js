@@ -292,7 +292,7 @@ class User{
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0  }
-const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null } }
+const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null } }
 const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#2693ff', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0 }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#2693ff', isprimary: false, subscriptionurl: null, lastmodified: 0  }
@@ -588,14 +588,16 @@ async function processReminders(){
 
 			if(item.type == 'event'){
 				const embed = new EmbedBuilder()
-					.setTitle(`Friendly reminder: ${item.event.title}`)
-					.setDescription(`Hey ${discorduser.username}, just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}.\n\nStay productive,\nSmart Calendar`)
+					.setAuthor('Friendly reminder')
+					.setTitle(`Event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}: ${item.event.title}`)
+					.setDescription(`Hey **${discorduser.username}**, just a quick reminder that your event ${item.event.title} is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}.\n\nStay productive,\nSmart Calendar`)
 					.setColor(0xfaa614)
 				await sendDiscordMessageToUser(discorduser, { embeds: [embed] })
 			}else if(item.type == 'task'){
 				const embed = new EmbedBuilder()
-					.setTitle(`Friendly reminder: ${item.event.title}`)
-					.setDescription(`Hey ${discorduser.username}, just a quick reminder that you have a task due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}.\n\nStay productive,\nSmart Calendar`)
+					.setAuthor('Friendly reminder')
+					.setTitle(`Task due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}: ${item.event.title}`)
+					.setDescription(`Hey **${discorduser.username}**, just a quick reminder that your task ${item.event.title} is due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}.\n\nStay productive,\nSmart Calendar`)
 					.setColor(0xfaa614)
 				await sendDiscordMessageToUser(discorduser, { embeds: [embed] })
 			}
@@ -1333,7 +1335,6 @@ app.get('/auth/discord/callback', async (req, res) => {
 		}
 
 		user.accountdata.discord.id = userobject.id
-		user.accountdata.discord.username = userobject.username
 		
 		if(!user.calendardata.discordreminderenabled){
 			user.calendardata.discordreminderenabled = true
@@ -1357,7 +1358,7 @@ app.get('/auth/discord/callback', async (req, res) => {
 		
 		//send message
 		const embed = new EmbedBuilder()
-			.setTitle(`Thanks for adding me, ${user}!`)
+			.setTitle(`Thanks for adding me, ${userobject.username}!`)
 			.setDescription(`I'll send you a quick reminder here whenever you have an event or task coming up.\n\nIf you have any questions or comments, please let us know in [our server](https://discord.com/channels/${DISCORD_GUILD_ID}).`)
 			.setColor(0x2693ff)
 		await sendDiscordMessageToId(userobject.id, { embeds: [embed] } )
