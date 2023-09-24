@@ -3562,9 +3562,7 @@ function run() {
 
 	//scroll Y
 	let currentdate = new Date()
-	setTimeout(function(){
-		scrollcalendarY(currentdate.getHours() * 60 + currentdate.getMinutes())
-	}, 1000)
+	scrollcalendarY(currentdate.getHours() * 60 + currentdate.getMinutes())
 
 
 	//welcome popup

@@ -1215,13 +1215,14 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 
 
 //DISCORD BOT INITIALIZATION
-const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js')
+const { Client, GatewayIntentBits, EmbedBuilder, ActivityType } = require('discord.js')
 
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN
 const discordclient = new Client({ intents: [GatewayIntentBits.Guilds] })
 
 discordclient.on('ready', async () => {
 	console.log(`Logged in as ${discordclient.user.tag}.`)
+	discordclient.user.setActivity('your reminders', { type: ActivityType.Watching });
 })
 
 discordclient.login(DISCORD_TOKEN)
