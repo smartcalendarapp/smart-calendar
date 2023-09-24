@@ -588,16 +588,16 @@ async function processReminders(){
 
 			if(item.type == 'event'){
 				const embed = new EmbedBuilder()
-					.setAuthor({name:'Friendly reminder'})
 					.setTitle(`Event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}: ${item.event.title}`)
-					.setDescription(`Hey **${discorduser.username}**, just a quick reminder that your event ${item.event.title} is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}.\n\nStay productive,\nSmart Calendar`)
+					.setDescription(`Hey ${discorduser.username}, just a quick reminder that your event **${item.event.title}** is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}.`)
+					.setFooter({ text: 'Smart Calendar', iconURL: `https://smartcalendar.us/logo.png` })
 					.setColor(0xfaa614)
 				await sendDiscordMessageToUser(discorduser, { embeds: [embed] })
 			}else if(item.type == 'task'){
 				const embed = new EmbedBuilder()
-					.setAuthor({name:'Friendly reminder'})
 					.setTitle(`Task due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}: ${item.event.title}`)
-					.setDescription(`Hey **${discorduser.username}**, just a quick reminder that your task ${item.event.title} is due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}.\n\nStay productive,\nSmart Calendar`)
+					.setDescription(`Hey ${discorduser.username}, just a quick reminder that your task **${item.event.title}** is due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}.`)
+					.setFooter({ text: 'Smart Calendar', iconURL: `https://smartcalendar.us/logo.png` })
 					.setColor(0xfaa614)
 				await sendDiscordMessageToUser(discorduser, { embeds: [embed] })
 			}
