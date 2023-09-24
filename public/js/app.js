@@ -6948,6 +6948,7 @@ function selectallschedulemytasks(){
 	}else{
 		schedulemytaskslist = [...calendar.todos.filter(item => Calendar.Todo.isSchedulable(item) && (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null)).map(d => d.id)]
 	}
+	calendar.updateTodo()
 }
 
 //select task
@@ -6966,11 +6967,6 @@ function toggleschedulemytask(event, id) {
 	calendar.updateTodo()
 }
 
-//select all
-function selectallschedulemytasks() {
-	schedulemytaskslist = [...calendar.todos.filter(item => Calendar.Todo.isSchedulable(item) && (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null)).map(d => d.id)]
-	calendar.updateTodo()
-}
 
 //confirm schedule tasks
 function submitschedulemytasks() {
