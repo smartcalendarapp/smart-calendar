@@ -693,7 +693,7 @@
 			<div class="text-16px text-primary">Connect to Google Calendar to sync your events here.</div>
 
 			<div class="display-flex flex-row align-center gap-12px justify-space-between">
-				<div class="border-8px flex-1 text-center background-tint-1 hover:background-tint-2 padding-8px-12px text-primary nowrap text-14px transition-duration-100 pointer" onclick="disablesyncgoogleclassroom()">Disable</div>
+				<div class="border-8px flex-1 text-center background-tint-1 hover:background-tint-2 padding-8px-12px text-primary nowrap text-14px transition-duration-100 pointer" onclick="disablesyncgooglecalendar();closeloginwithgooglepopup()">Disable</div>
 
 				<div class="border-8px nowrap flex-1 display-flex flex-row gap-6px align-center googlebutton justify-center text-center text-14px padding-8px-16px pointer transition-duration-100" onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })">
 					<img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png">
@@ -726,7 +726,7 @@
 			<div class="text-16px text-primary">Connect to Google Classroom to sync your to-do list here.</div>
 
 			<div class="display-flex flex-row align-center gap-12px justify-space-between">
-				<div class="border-8px flex-1 text-center background-tint-1 hover:background-tint-2 padding-8px-12px text-primary nowrap text-14px transition-duration-100 pointer" onclick="disablesyncgooglecalendar()">Disable</div>
+				<div class="border-8px flex-1 text-center background-tint-1 hover:background-tint-2 padding-8px-12px text-primary nowrap text-14px transition-duration-100 pointer" onclick="disablesyncgoogleclassroom();closeloginwithgoogleclassroompopup()">Disable</div>
 
 				<div class="border-8px nowrap flex-1 display-flex flex-row gap-6px align-center googlebutton justify-center text-center text-14px padding-8px-16px pointer transition-duration-100" onclick="logingoogle({ scope: ['calendar', 'classroom'], enable: ['classroom'] })">
 					<img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png">
