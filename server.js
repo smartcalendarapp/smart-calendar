@@ -1434,17 +1434,17 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 		}
 
 		if(!user.google_email){
-			return res.status(401).json({ error: `Google login is not connected, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.` })
+			return res.status(401).json({ error: loginwithgooglecalendarhtml })
 		}
 
 		if(!req.session.tokens && !user.accountdata.refreshtoken) {
-			return res.status(401).json({ error: `Google login is expired, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.` })
+			return res.status(401).json({ error: loginwithgooglecalendarhtml })
 		}
 
 		if(!req.session.tokens || !req.session.tokens.access_token){
 			let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
 			if(!accesstoken){
-				return res.status(401).json({ error: `Google login is expired, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.` })
+				return res.status(401).json({ error: loginwithgooglecalendarhtml })
 			}
 			req.session.tokens = req.session.tokens || {}
 			req.session.tokens.access_token = accesstoken
@@ -1731,11 +1731,20 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 		return res.json({ data: newgooglecalendardata, calendar: smartcalendar })
 	}catch(error){
 		console.error(error)
-	  return res.status(401).json({ error: `Cannot access your Google Calendar, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
+	  return res.status(401).json({ error: loginwithgooglecalendarhtml })
 	}
 })
 */
 
+const loginwithgoogleclassroomhtml = `<div class="border-8px nowrap flex-1 display-flex flex-row gap-6px align-center googlebutton justify-center text-center text-14px padding-8px-12px pointer transition-duration-100" onclick="logingoogle({ scope: ['calendar', 'classroom'], enable: ['classroom'] })">
+<svg viewBox="0 0 24 24" width="100%" height="100%" class="buttongoogle"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path><path d="M1 1h22v22H1z" fill="none"></path></svg>
+Log in with Google
+</div>`
+
+const loginwithgooglecalendarhtml = `<div class="border-8px nowrap flex-1 display-flex flex-row gap-6px align-center googlebutton justify-center text-center text-14px padding-8px-12px pointer transition-duration-100" onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })">
+<svg viewBox="0 0 24 24" width="100%" height="100%" class="buttongoogle"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path><path d="M1 1h22v22H1z" fill="none"></path></svg>
+Log in with Google
+</div>`
 
 app.post('/setclientgooglecalendar', async (req, res, next) => {
 	try{
@@ -1750,17 +1759,17 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 		}
 
 		if(!user.google_email){
-			return res.status(401).json({ error: `Google login is not connected, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.` })
+			return res.status(401).json({ error: loginwithgooglecalendarhtml })
 		}
 
 		if(!req.session.tokens && !user.accountdata.refreshtoken) {
-			return res.status(401).json({ error: `Google login is expired, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.` })
+			return res.status(401).json({ error: loginwithgooglecalendarhtml })
 		}
 
 		if(!req.session.tokens || !req.session.tokens.access_token){
 			let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
 			if(!accesstoken){
-				return res.status(401).json({ error: `Google login is expired, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.` })
+				return res.status(401).json({ error: loginwithgooglecalendarhtml })
 			}
 			req.session.tokens = req.session.tokens || {}
 			req.session.tokens.access_token = accesstoken
@@ -1930,7 +1939,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 		return res.json({ data: responsechanges })
 	}catch(error){
 		console.error(error)
-	  return res.status(401).json({ error: `Cannot access your Google Calendar, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
+	  return res.status(401).json({ error: loginwithgooglecalendarhtml })
 	}
 })
 
@@ -1948,17 +1957,17 @@ app.post('/getclientgooglecalendar', async (req, res, next) => {
 		}
 
 		if(!user.google_email){
-			return res.status(401).json({ error: `Google login is not connected, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.` })
+			return res.status(401).json({ error: loginwithgooglecalendarhtml })
 		}
 
 		if(!req.session.tokens && !user.accountdata.refreshtoken) {
-			return res.status(401).json({ error: `Google login is expired, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.` })
+			return res.status(401).json({ error: loginwithgooglecalendarhtml })
 		}
 
 		if(!req.session.tokens || !req.session.tokens.access_token){
 			let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
 			if(!accesstoken){
-				return res.status(401).json({ error: `Google login is expired, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.` })
+				return res.status(401).json({ error: loginwithgooglecalendarhtml })
 			}
 			req.session.tokens = req.session.tokens || {}
 			req.session.tokens.access_token = accesstoken
@@ -2003,7 +2012,7 @@ app.post('/getclientgooglecalendar', async (req, res, next) => {
 		return res.json({ data: googlecalendardata })
 	}catch(error){
 		console.error(error)
-		return res.status(401).json({ error: `Cannot access your Google Calendar, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
+		return res.status(401).json({ error: loginwithgooglecalendarhtml })
 	}
 })
 
@@ -2061,17 +2070,17 @@ app.post('/getclientgoogleclassroom', async (req, res, next) => {
 		}
 
 		if(!user.google_email){
-			return res.status(401).json({ error: `Google login is not connected, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.` })
+			return res.status(401).json({ error: loginwithgoogleclassroomhtml })
 		}
 
 		if(!req.session.tokens && !user.accountdata.refreshtoken) {
-			return res.status(401).json({ error: `Google login is expired, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.` })
+			return res.status(401).json({ error: loginwithgoogleclassroomhtml })
 		}
 
 		if(!req.session.tokens || !req.session.tokens.access_token){
 			let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
 			if(!accesstoken){
-				return res.status(401).json({ error: `Google login is expired, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span>.` })
+				return res.status(401).json({ error: loginwithgoogleclassroomhtml })
 			}
 			req.session.tokens = req.session.tokens || {}
 			req.session.tokens.access_token = accesstoken
@@ -2103,14 +2112,14 @@ app.post('/getclientgoogleclassroom', async (req, res, next) => {
 				userToDos = [...userToDos, ...toDos.map(todo => ({ courseId, ...todo }))]
 			}
 		} catch (error) {
-			return res.status(401).json({ error: `Cannot access your Google Classroom, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
+			return res.status(401).json({ error: loginwithgoogleclassroomhtml })
 		}
 
 		return res.json({ data: userToDos })
 
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: `Cannot access your Google Classroom, please <span onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })" class="pointer text-blue text-decoration-none hover:text-decoration-underline">log in with Google</span> again.` })
+		return res.status(401).json({ error: loginwithgoogleclassroomhtml })
 	}
 })
 
