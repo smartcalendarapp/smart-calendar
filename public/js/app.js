@@ -3492,11 +3492,13 @@ async function getextraclientinfo(){
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify(clientinfo.discord.id)
+		body: JSON.stringify({ id: clientinfo.discord.id })
 	}).catch(e => e)
 	if (response.status == 200) {
 		const data = await response.json()
-		clientinfo.discord.username = data.data
+		if(data.data){
+			clientinfo.discord.username = data.data
+		}
 	}
 }
 
