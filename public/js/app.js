@@ -2993,17 +2993,50 @@ class Calendar {
 		}
 
 
-		//notif
+		//browser notif
 		let enablepushnotif = getElement('enablepushnotif')
 		let enablepushnotif2 = getElement('enablepushnotif2')
 		enablepushnotif.checked = calendar.pushSubscriptionEnabled
 		enablepushnotif2.checked = calendar.pushSubscriptionEnabled
 
+		//email notif
+		function isEmail(str) {
+			let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+			return pattern.test(str)
+		}
+		
 		let enableemailnotif = getElement('enableemailnotif')
 		let enableemailnotif2 = getElement('enableemailnotif2')
 		enableemailnotif.checked = calendar.emailreminderenabled
 		enableemailnotif2.checked = calendar.emailreminderenabled
 
+		let sendtoemail = clientinfo.google_email || clientinfo.username
+		if(!isEmail(sendtoemail)){
+			sendtoemail = null
+		}
+
+		let emailnotificationsstatus = getElement('emailnotificationsstatus')
+		if(calendar.emailreminderenabled){
+			emailnotificationsstatus.classList.remove('display-none')
+			emailnotificationsstatus.innerHTML = `
+			<div class="display-flex flex-row gap-6px">
+				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline checkboxfilledgreen">
+					<g>
+					<path d="M128 7.19484C61.2812 7.19484 7.19484 61.2812 7.19484 128C7.19484 194.719 61.2812 248.805 128 248.805C194.719 248.805 248.805 194.719 248.805 128C248.805 61.2812 194.719 7.19484 128 7.19484ZM190.851 66.0048C194.206 65.7071 197.649 66.7098 200.436 69.0426C206.01 73.7082 206.753 81.9906 202.088 87.5645L115.524 190.969C110.264 197.253 100.582 197.253 95.3213 190.969L52.0249 139.266C47.3593 133.693 48.1026 125.41 53.6765 120.745C59.2504 116.079 67.5623 116.822 72.2279 122.396L105.408 162.035L181.885 70.6942C184.217 67.9073 187.495 66.3024 190.851 66.0048Z" fill-rule="nonzero" opacity="1"></path>
+					<path d="M128 0C57.3076 0 0 57.3076 0 128C0 198.692 57.3076 256 128 256C198.692 256 256 198.692 256 128C256 57.3076 198.692 0 128 0ZM128 7.75758C194.408 7.75758 248.242 61.5919 248.242 128C248.242 194.408 194.408 248.242 128 248.242C61.5919 248.242 7.75758 194.408 7.75758 128C7.75758 61.5919 61.5919 7.75758 128 7.75758Z" fill-rule="nonzero" opacity="1"></path>
+					</g>
+				</svg>
+				<div class="text-14px text-green">${sendtoemail ? `Sending to ${sendtoemail}` : 'No email'}</div>
+			</div>
+			
+			<div class="width-fit text-14px text-primary background-tint-1 padding-8px-12px hover:background-tint-2 border-8px transition-duration-100 pointer" onclick="disconnectdiscord()">Disconnect</div>
+			`
+		}else{
+			emailnotificationsstatus.classList.add('display-none')
+		}
+
+
+		//discord notif
 		let enablediscordnotif = getElement('enablediscordnotif')
 		let enablediscordnotif2 = getElement('enablediscordnotif2')
 		enablediscordnotif.checked = calendar.discordreminderenabled

@@ -602,7 +602,6 @@ async function processReminders(){
 				await sendDiscordMessageToUser(discorduser, { embeds: [embed] })
 			}
 		}
-		//here4
 
 	}
 }
