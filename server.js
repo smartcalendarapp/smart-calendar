@@ -292,7 +292,7 @@ class User{
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0  }
-const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null } }
+const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null } }
 const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#2693ff', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0 }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#2693ff', isprimary: false, subscriptionurl: null, lastmodified: 0  }
@@ -1279,6 +1279,7 @@ async function getDiscordUserFromId(userid){
 		return null
 	}
 }
+
 async function sendDiscordMessageToId(userid, message){
 	try{
 		let user = await discordclient.users.fetch(userid)
@@ -1287,6 +1288,7 @@ async function sendDiscordMessageToId(userid, message){
 		console.error(error)
 	}
 }
+
 async function sendDiscordMessageToUser(user, message){
 	try{
 		await user.send(message)
@@ -2032,6 +2034,29 @@ app.post('/disconnectdiscord', async (req, res, next) => {
 		await setUser(user)
 	
 		return res.end()
+	} catch (error) {
+		console.error(error)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
+app.post('/getdiscordusername', async (req, res, next) => {
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+
+		let userid = req.body.id
+
+		let username;
+		if(userid){
+			let fetcheduser = await getDiscordUserFromId(user)
+			if(fetcheduser){
+				username = fetcheduser.username
+			}
+		}
+	
+		return res.json({ data: username })
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })

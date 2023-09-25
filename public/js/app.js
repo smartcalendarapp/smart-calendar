@@ -3448,6 +3448,23 @@ async function getclientinfo() {
 async function getclient() {
 	await getclientinfo()
 	await getclientdata()
+	await getextraclientinfo()
+}
+
+async function getextraclientinfo(){
+	if(!clientinfo.discord.id) return
+	
+	const response = await fetch('/getdiscordusername', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(cientinfo.discord.id)
+	}).catch(e => e)
+	if (response.status == 200) {
+		const data = await response.json()
+		clientinfo.discord.username = data.data
+	}
 }
 
 
@@ -4215,7 +4232,7 @@ async function logingoogle(options){
 async function disconnectdiscord(){
 	let discorderrorwrap = getElement('discorderrorwrap')
 	discorderrorwrap.classList.add('display-none')
-	
+
 	const response = await fetch('/disconnectdiscord', {
 		method: 'POST'
 	})
