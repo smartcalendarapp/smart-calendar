@@ -2045,11 +2045,11 @@ app.post('/getdiscordusername', async (req, res, next) => {
 			return res.status(401).json({ error: 'User is not signed in.' })
 		}
 
-		let userid = req.body.id
+		let discordid = req.body.id
 
 		let username;
-		if(userid){
-			let fetcheduser = await getDiscordUserFromId(user)
+		if(discordid){
+			let fetcheduser = await getDiscordUserFromId(discordid)
 			if(fetcheduser){
 				username = fetcheduser.username
 			}
