@@ -3024,7 +3024,7 @@ class Calendar {
 					<path d="M128 0C57.3076 0 0 57.3076 0 128C0 198.692 57.3076 256 128 256C198.692 256 256 198.692 256 128C256 57.3076 198.692 0 128 0ZM128 7.75758C194.408 7.75758 248.242 61.5919 248.242 128C248.242 194.408 194.408 248.242 128 248.242C61.5919 248.242 7.75758 194.408 7.75758 128C7.75758 61.5919 61.5919 7.75758 128 7.75758Z" fill-rule="nonzero" opacity="1"></path>
 					</g>
 				</svg>
-				<div class="text-14px text-green">Connected</div>
+				<div class="text-14px text-green">Connected ${clientinfo.discord.username ? `to ${cleanInput(clientinfo.discord.username)}` : ''}</div>
 			</div>
 			
 			<div class="width-fit text-14px text-primary background-tint-1 padding-8px-12px hover:background-tint-2 border-8px transition-duration-100 pointer" onclick="disconnectdiscord()">Disconnect</div>
@@ -3459,7 +3459,7 @@ async function getextraclientinfo(){
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify(cientinfo.discord.id)
+		body: JSON.stringify(clientinfo.discord.id)
 	}).catch(e => e)
 	if (response.status == 200) {
 		const data = await response.json()
