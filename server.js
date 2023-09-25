@@ -2018,6 +2018,28 @@ app.post('/getclientgooglecalendar', async (req, res, next) => {
 
 
 
+app.post('/disconnectdiscord', async (req, res, next) => {
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+
+		let userid = req.session.user.userid
+		
+		const user = await getUserById(userid)
+
+		user.accountdata.discord.id = null
+		await setUser(user)
+	
+		return res.end()
+	} catch (error) {
+		console.error(error)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
+
+
 app.post('/disconnectgoogle', async (req, res, next) => {
 	try{
 		if(!req.session.user){
