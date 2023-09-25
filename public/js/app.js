@@ -3016,9 +3016,12 @@ class Calendar {
 		}
 
 		let emailnotificationsstatus = getElement('emailnotificationsstatus')
+		let emailnotificationsstatus2 = getElement('emailnotificationsstatus2')
 		if(calendar.emailreminderenabled){
 			emailnotificationsstatus.classList.remove('display-none')
-			emailnotificationsstatus.innerHTML = `
+			emailnotificationsstatus2.classList.remove('display-none')
+
+			let emailtext = `
 			<div class="display-flex flex-row gap-6px">
 				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline checkboxfilledgreen">
 					<g>
@@ -3027,12 +3030,13 @@ class Calendar {
 					</g>
 				</svg>
 				<div class="text-14px text-green">${sendtoemail ? `Sending to ${sendtoemail}` : 'No email'}</div>
-			</div>
-			
-			<div class="width-fit text-14px text-primary background-tint-1 padding-8px-12px hover:background-tint-2 border-8px transition-duration-100 pointer" onclick="disconnectdiscord()">Disconnect</div>
-			`
+			</div>`
+
+			emailnotificationsstatus.innerHTML = emailtext
+			emailnotificationsstatus2.innerHTML = emailtext
 		}else{
 			emailnotificationsstatus.classList.add('display-none')
+			emailnotificationsstatus2.classList.add('display-none')
 		}
 
 
