@@ -419,14 +419,20 @@ async function processReminders(){
 				if(item.type == 'event'){
 					try{
 						let difference = Math.floor((Date.now() - new Date(item.event.start).getTime())/60000)
-						await webpush.sendNotification(item.pushSubscription, `EVENT: ${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`)
+						await webpush.sendNotification(item.pushSubscription, `EVENT: ${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`, {
+							TTL: 60*60*12,
+							urgency: 'high'
+						  })
 					}catch(error){
 						console.error(error)
 					}
 				}else if (item.type == 'task'){
 					try{
 						let difference = Math.floor((Date.now() - new Date(item.event.duedate).getTime())/60000)
-						await webpush.sendNotification(item.pushSubscription, `TASK DUE: ${item.event.title || "New Task"} (${getFullRelativeDHMText(difference)})`)
+						await webpush.sendNotification(item.pushSubscription, `TASK DUE: ${item.event.title || "New Task"} (${getFullRelativeDHMText(difference)})`, {
+							TTL: 60*60*12,
+							urgency: 'high'
+						  })
 					}catch(error){
 						console.error(error)
 					}
@@ -463,7 +469,7 @@ async function processReminders(){
 
 											<div style="background-color:#f4f4f4;border-radius:6px;font-size:18px">
 												<div style="padding:12px">
-													<strong>${item.event.title || 'New Event'}</strong> <span style="color:#595959;">${getHMText(new Date(item.event.start - item.user.timezoneoffset).getHours() * 60 + new Date(item.event.start - item.user.timezoneoffset).getMinutes())} – ${getHMText(new Date(item.event.end - item.user.timezoneoffset).getHours() * 60 + new Date(item.event.end - item.user.timezoneoffset).getMinutes())}</span>
+													<strong>${item.event.title || 'New Event'}</strong> <span style="color:#595959;">${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} – ${getHMText(new Date(item.event.utcend).getHours() * 60 + new Date(item.event.utcend).getMinutes())}</span>
 													${item.event.notes ? `<div class="font-size:16px;color:#595959;">${formatURL(item.event.notes)}</div>` : ''}
 												</div>
 											</div>
@@ -493,7 +499,7 @@ async function processReminders(){
 					</html>`,
 					textbody: `Hi ${item.user.name},
 					Just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}:
-					${item.event.title || 'New Event'} (${getHMText(new Date(item.event.start - item.user.timezoneoffset).getHours() * 60 + new Date(item.event.start - item.user.timezoneoffset).getMinutes())} – ${getHMText(new Date(item.event.end - item.user.timezoneoffset).getHours() * 60 + new Date(item.event.end - item.user.timezoneoffset).getMinutes())})
+					${item.event.title || 'New Event'} (${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} – ${getHMText(new Date(item.event.utcend).getHours() * 60 + new Date(item.event.utcend).getMinutes())}).
 
 					Open https://smartcalendar.us/app to see more details about your event.
 					
@@ -532,7 +538,7 @@ async function processReminders(){
 
 											<div style="background-color:#f4f4f4;border-radius:6px;font-size:18px">
 												<div style="padding:12px">
-													<strong>${item.event.title || 'New Task'}</strong>
+													<strong>${item.event.title || 'New Task'}</strong> <span style="color:#595959;">Due ${getHMText(new Date(item.event.utcduedate).getHours() * 60 + new Date(item.event.utcduedate).getMinutes())}</span>
 													${item.event.notes ? `<div class="font-size:16px;color:#595959;">${formatURL(item.event.notes)}</div>` : ''}
 												</div>
 											</div>
@@ -562,7 +568,7 @@ async function processReminders(){
 					</html>`,
 					textbody: `Hi ${item.user.name},
 					Just a quick reminder that you have a task due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}:
-					${item.event.title || 'New Task'}.
+					${item.event.title || 'New Task'} (Due ${getHMText(new Date(item.event.utcduedate).getHours() * 60 + new Date(item.event.utcduedate).getMinutes())}).
 
 					Open https://smartcalendar.us/app to see more details about your task.
 					
@@ -588,23 +594,32 @@ async function processReminders(){
 
 			if(item.type == 'event'){
 				const embed = new EmbedBuilder()
-					.setTitle(`Event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}: ${item.event.title}`)
-					.setDescription(`Hey ${discorduser.username}, just a quick reminder that your event **${item.event.title}** is starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}.`)
+					.setTitle(`Event ${item.event.title} starting <t:${item.event.utcstart}:R>`)
+					.setDescription(`Hey **${discorduser.username}**, just a quick reminder that your event **${item.event.title || 'New Event'}** is starting <t:${item.event.utcstart}:R> (${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} – ${getHMText(new Date(item.event.utcend).getHours() * 60 + new Date(item.event.utcend).getMinutes())}).`)
 					.setFooter({ text: 'Smart Calendar', iconURL: `https://smartcalendar.us/logo.png` })
-					.setColor(0xfaa614)
+					.setColor(item.event.hexcolor)
+				if(item.event.notes){
+					embed.addFields({ name: 'Notes', value: item.event.notes })
+				}
+
 				await sendDiscordMessageToUser(discorduser, { embeds: [embed] })
 			}else if(item.type == 'task'){
 				const embed = new EmbedBuilder()
-					.setTitle(`Task due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}: ${item.event.title}`)
-					.setDescription(`Hey ${discorduser.username}, just a quick reminder that your task **${item.event.title}** is due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}.`)
+					.setTitle(`Task ${item.event.title} due <t:${item.event.utcstart}:R>`)
+					.setDescription(`Hey **${discorduser.username}**, just a quick reminder that your task **${item.event.title || 'New Task'}** is due <t:${item.event.utcstart}:R> (${getHMText(new Date(item.event.utcduedate).getHours() * 60 + new Date(item.event.utcduedate).getMinutes())}).`)
 					.setFooter({ text: 'Smart Calendar', iconURL: `https://smartcalendar.us/logo.png` })
-					.setColor(0xfaa614)
+					.setColor(item.event.hexcolor)
+				if(item.event.notes){
+					embed.addFields({ name: 'Notes', value: item.event.notes })
+				}
+				
 				await sendDiscordMessageToUser(discorduser, { embeds: [embed] })
 			}
 		}
 
 	}
 }
+
 
 function isEmail(str) {
 	let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -667,7 +682,7 @@ function cacheReminders(user){
 					}
 
 		
-				let counter = 0
+					let counter = 0
 					
 					while(repeatstartdate.getTime() < maxdate.getTime()){
 						//create
@@ -741,7 +756,6 @@ function cacheReminders(user){
 				user: {
 					name: name,
 					email: email,
-					timezoneoffset: timezoneoffset * 60000,
 					discordid: discordid,
 				},
 				event: {
@@ -749,6 +763,8 @@ function cacheReminders(user){
 					title: item.title,
 					start: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() + timezoneoffset * 60000,
 					end: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() + timezoneoffset * 60000,
+					utcstart: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime(),
+					utcend: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime(),
 					notes: item.notes
 				},
 				reminder: {
@@ -771,14 +787,15 @@ function cacheReminders(user){
 				user: {
 					name: name,
 					email: email,
-					timezoneoffset: timezoneoffset * 60000,
 					discordid: discordid,
 				},
 				event: {
 					id: item.id,
 					title: item.title,
 					duedate: new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute).getTime() + timezoneoffset * 60000,
+					utcduedate: new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute).getTime(),
 					notes: item.notes,
+					hexcolor: item.hexcolor
 				},
 				reminder: {
 					timestamp: new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute).getTime() - itemreminder.timebefore + timezoneoffset * 60000,

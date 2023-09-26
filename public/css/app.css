@@ -462,7 +462,12 @@ body {
 }
 
 .buttonfilldiscord{
-	fill:var(--5865F2);
+	height: 22px;
+	width: 22px;
+	display: inline;
+	vertical-align: middle;
+	pointer-events: none;
+	fill:#5865F2;
 }
 .discordbutton{
 	color:var(--white);
