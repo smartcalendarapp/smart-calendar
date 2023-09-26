@@ -765,7 +765,8 @@ function cacheReminders(user){
 					end: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() + timezoneoffset * 60000,
 					utcstart: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime(),
 					utcend: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime(),
-					notes: item.notes
+					notes: item.notes,
+					hexcolor: item.hexcolor
 				},
 				reminder: {
 					timestamp: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() - itemreminder.timebefore + timezoneoffset * 60000,
