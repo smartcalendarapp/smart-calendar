@@ -594,8 +594,8 @@ async function processReminders(){
 
 			if(item.type == 'event'){
 				const embed = new EmbedBuilder()
-					.setTitle(`Event ${item.event.title} starting <t:${item.event.utcstart}:R>`)
-					.setDescription(`Hey **${discorduser.username}**, just a quick reminder that your event **${item.event.title || 'New Event'}** is starting <t:${item.event.utcstart}:R> (${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} – ${getHMText(new Date(item.event.utcend).getHours() * 60 + new Date(item.event.utcend).getMinutes())}).`)
+					.setTitle(`Event ${item.event.title} starting <t:${Math.floor(item.event.utcstart/1000)}:R>`)
+					.setDescription(`Hey **${discorduser.username}**, just a quick reminder that your event **${item.event.title || 'New Event'}** is from ${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} to ${getHMText(new Date(item.event.utcend).getHours() * 60 + new Date(item.event.utcend).getMinutes())}.`)
 					.setFooter({ text: 'Smart Calendar', iconURL: `https://smartcalendar.us/logo.png` })
 					.setColor(item.event.hexcolor)
 				if(item.event.notes){
@@ -605,8 +605,8 @@ async function processReminders(){
 				await sendDiscordMessageToUser(discorduser, { embeds: [embed] })
 			}else if(item.type == 'task'){
 				const embed = new EmbedBuilder()
-					.setTitle(`Task ${item.event.title} due <t:${item.event.utcstart}:R>`)
-					.setDescription(`Hey **${discorduser.username}**, just a quick reminder that your task **${item.event.title || 'New Task'}** is due <t:${item.event.utcstart}:R> (${getHMText(new Date(item.event.utcduedate).getHours() * 60 + new Date(item.event.utcduedate).getMinutes())}).`)
+					.setTitle(`Task ${item.event.title} due <t:${Math.floor(item.event.utcstart/1000)}:R>`)
+					.setDescription(`Hey **${discorduser.username}**, just a quick reminder that your task **${item.event.title || 'New Task'}** is due at ${getHMText(new Date(item.event.utcduedate).getHours() * 60 + new Date(item.event.utcduedate).getMinutes())}.`)
 					.setFooter({ text: 'Smart Calendar', iconURL: `https://smartcalendar.us/logo.png` })
 					.setColor(item.event.hexcolor)
 				if(item.event.notes){
