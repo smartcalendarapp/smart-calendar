@@ -461,6 +461,9 @@ body {
 	background-color:var(--white-hover)
 }
 
+.buttonfilldiscord{
+	fill:var(--5865F2);
+}
 .discordbutton{
 	color:var(--white);
 	background-color:#5865F2;
