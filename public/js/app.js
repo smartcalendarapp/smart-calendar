@@ -1059,7 +1059,6 @@ class Calendar {
 				//auto schedule
 				if (smartschedule != false) {
 					if (JSON.stringify(neweventsdata) != JSON.stringify(oldeventsdata)) {
-						lastupdatecalendardate = Date.now()
 						needtoautoschedule = true
 					}
 				}
@@ -2333,6 +2332,10 @@ class Calendar {
 	updateTodoList() {
 		let output = []
 
+		if(selectededittodoid && [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)){
+			return
+		}
+
 
 		if(true){
 			let mytodos = calendar.events.filter(d => d.type == 1 && !d.completed)
@@ -3450,7 +3453,6 @@ async function getclientdata() {
 		}
 	}catch(error){
 		console.log(error)
-		isgettingclientdata
 	}
 
 	isgettingclientdata = false
@@ -3609,7 +3611,6 @@ function updatetime() {
 }
 
 
-let lastupdatecalendardate = 0
 function run() {
 	//ONCE
 
@@ -3650,25 +3651,12 @@ function run() {
 	}
 
 
-
 	//LOOP
 
 	setclientdata()
 
-	//interactive tour
-	setInterval(function () {
-		if (document.visibilityState === 'visible') {
-			updateinteractivetour()
-		}
-	}, 10)
 
-
-	//time interval
-	setInterval(function(){
-		updatetime()
-	}, 100)
-
-
+	//tick
 	setInterval(async function(){
 		if (document.visibilityState === 'visible') {
 			if (needtoautoschedule) {
@@ -3676,72 +3664,86 @@ function run() {
 				startAutoSchedule({scheduletodos: []})
 			}
 		}
+
+		if(document.visibilityState === 'visible'){
+			updatetime()
+		}
+
+		if (document.visibilityState === 'visible') {
+			updateinteractivetour()
+		}
 	}, 100)
+
+
+	//tick
+	async function runtick(){
+		let lasttriedsyncgoogleclassroomdate = Date.now()
+		let lasttriedsyncgooglecalendardate = Date.now()
+		let lastgetclientdatadate = Date.now()
+
+		getclientgooglecalendar()
+		getclientgoogleclassroom()
+
+		setInterval(async function () {
+			//get client data
+			if (document.visibilityState === 'visible' && Date.now() - lastgetclientdatadate > 1000*10) {
+				lastgetclientdatadate = Date.now()
+				getclientdata()
+			}
+
+			//get google calendar
+			if (!isgettingclientdata && !isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 60000 && issettingclientgooglecalendar == false && Date.now() - lasttriedsyncgooglecalendardate > 60000) {
+				lasttriedsyncgooglecalendardate = Date.now()
+				getclientgooglecalendar()
+			}
+
+			//get google classroom
+			if (document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgoogleclassroomdate > 60000 && Date.now() - lasttriedsyncgoogleclassroomdate > 60000) {
+				lasttriedsyncgoogleclassroomdate = Date.now()
+				getclientgoogleclassroom()
+			}
+		}, 100)
+	}
+	runtick()
 
 
 	setTimeout(function(){
 		needtoautoschedule = true
-	}, 3000)
+	}, 5000)
 
 
-	//sync with google
-	async function runsyncwithgooglecalendar() {
-		await getclientgooglecalendar()
-
-		let lasttriedsyncgooglecalendardate = Date.now()
-		setInterval(async function () {
-			if (!isgettingclientdata && !isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 60000 && issettingclientgooglecalendar == false && Date.now() - lasttriedsyncgooglecalendardate > 60000 && Date.now() - lastupdatecalendardate > 10000) {
-				lasttriedsyncgooglecalendardate = Date.now()
-				await getclientgooglecalendar()
-			}
-		}, 100)
-	}
-	runsyncwithgooglecalendar()
-
-	
-	async function runsyncwithgoogleclassroom() {
-		await getclientgoogleclassroom()
-
-		let lasttriedsyncgoogleclassroomdate = Date.now()
-		setInterval(async function () {
-			if (document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgoogleclassroomdate > 60000 && Date.now() - lasttriedsyncgoogleclassroomdate > 60000) {
-				lasttriedsyncgoogleclassroomdate = Date.now()
-				await getclientgoogleclassroom()
-			}
-		}, 100)
-	}
-	runsyncwithgoogleclassroom()
-
-	
 	async function getclientdata() {
-		const response = await fetch('/getclientdata', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				lastmodified: calendar.lastmodified
+		isgettingclientdata = true
+
+		try{
+			const response = await fetch('/getclientdata', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					lastmodified: calendar.lastmodified
+				})
 			})
-		}).catch(e => e)
-		if (response.status == 200) {
-			const data = await response.json()
+			if (response.status == 200) {
+				const data = await response.json()
 
-			if(!data.nochange){
-				const userdata = data.data
-				Object.assign(calendar, userdata)
+				if(!data.nochange){
+					const userdata = data.data
+					Object.assign(calendar, userdata)
 
-				calendar.updateEvents()
-				calendar.updateTodo()
-				calendar.updateSettings()
-				calendar.updateHistory(false, false, false)
+					calendar.updateEvents()
+					calendar.updateTodo()
+					calendar.updateSettings()
+					calendar.updateHistory(false, false, false)
+				}
 			}
+		}catch(error){
+			console.log(error)
 		}
+
+		isgettingclientdata = false
 	}
-	setInterval(async function () {
-		if (document.visibilityState === 'visible') {
-			await getclientdata()
-		}
-	}, 3000)
 
 
 	//push notif
@@ -6297,6 +6299,8 @@ async function getclientgooglecalendar() {
 
 	isgettingclientgooglecalendar = true
 
+	let tempstartgetclientgooglecalendardate = Date.now()
+	
 	try {
 		//request
 		const response = await fetch('/getclientgooglecalendar', {
@@ -6316,6 +6320,11 @@ async function getclientgooglecalendar() {
 			}
 		} else if (response.status == 200) {
 			const data = await response.json()
+
+			if(calendar.lastmodified > tempstartgetclientgooglecalendardate){
+				isgettingclientgooglecalendar = false
+				return
+			}
 
 			calendar.lastsyncedgooglecalendardate = Date.now()
 
@@ -7063,50 +7072,54 @@ function submitschedulemytasks() {
 
 
 
-function startAutoSchedule({scheduletodos}) {
-	if (isautoscheduling == true) return
+async function startAutoSchedule({scheduletodos}) {
+	try{
+		if (isautoscheduling == true) return
 
-	let oldcalendartabs = [...calendartabs]
-
-
-	let finalscheduleevents = calendar.events.filter(d => Calendar.Event.isSchedulable(d))
-	let finalscheduletodos = calendar.todos.filter(d => Calendar.Todo.isSchedulable(d) && scheduletodos.find(g => g.id == d.id))
-
-	let addedtodos = []
-	for (let item of finalscheduletodos) {
-		addedtodos.push(geteventfromtodo(item))
-	}
-	if (addedtodos.length > 0) {
-		calendar.todos = calendar.todos.filter(d => !addedtodos.find(f => f.id == d.id))
-		calendar.events = calendar.events.filter(d => !addedtodos.find(f => f.id == d.id))
-		calendar.events.push(...addedtodos)
-	}
+		let oldcalendartabs = [...calendartabs]
 
 
-	if(scheduletodos.length > 0){
-		if(mobilescreen){
-			calendartabs = [0]
+		let finalscheduleevents = calendar.events.filter(d => Calendar.Event.isSchedulable(d))
+		let finalscheduletodos = calendar.todos.filter(d => Calendar.Todo.isSchedulable(d) && scheduletodos.find(g => g.id == d.id))
+
+		let addedtodos = []
+		for (let item of finalscheduletodos) {
+			addedtodos.push(geteventfromtodo(item))
 		}
+		if (addedtodos.length > 0) {
+			calendar.todos = calendar.todos.filter(d => !addedtodos.find(f => f.id == d.id))
+			calendar.events = calendar.events.filter(d => !addedtodos.find(f => f.id == d.id))
+			calendar.events.push(...addedtodos)
+		}
+
+
+		if(scheduletodos.length > 0){
+			if(mobilescreen){
+				calendartabs = [0]
+			}
+		}
+
+
+		let scheduleitems = calendar.events.filter(d => finalscheduletodos.find(f => f.id == d.id) || finalscheduleevents.find(g => g.id == d.id))
+
+		if (scheduleitems.length == 0) return
+
+		//update
+		if (!isEqualArray(calendartabs, oldcalendartabs)) {
+			calendar.updateTabs()
+		} else  {
+			calendar.updateEvents()
+		}
+
+		if(addedtodos.length > 0){
+			calendar.updateTodo()
+		}
+
+		//start
+		await autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos})
+	}catch(error){
+		console.log(error)
 	}
-
-
-	let scheduleitems = calendar.events.filter(d => finalscheduletodos.find(f => f.id == d.id) || finalscheduleevents.find(g => g.id == d.id))
-
-	if (scheduleitems.length == 0) return
-
-	//update
-	if (!isEqualArray(calendartabs, oldcalendartabs)) {
-		calendar.updateTabs()
-	} else  {
-		calendar.updateEvents()
-	}
-
-	if(addedtodos.length > 0){
-		calendar.updateTodo()
-	}
-
-	//start
-	autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos})
 }
 
 
@@ -10612,9 +10625,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 
 			let newresolvedpassedtodos = resolvedpassedtodos || []
 
-			if(tempitem){
-				newresolvedpassedtodos.push(tempitem.id)
-			}
+			newresolvedpassedtodos.push(overdueitem.id)
 
 			await sleep(300)
 
