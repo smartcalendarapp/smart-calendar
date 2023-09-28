@@ -2332,11 +2332,6 @@ class Calendar {
 	updateTodoList() {
 		let output = []
 
-		if(selectededittodoid && [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)){
-			return
-		}
-
-
 		if(true){
 			let mytodos = calendar.events.filter(d => d.type == 1 && !d.completed)
 			let sortedtodos = sortstartdate(mytodos)
@@ -10648,7 +10643,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 
 	//start
 	if (true) {
-		//FOCUS
+		//SMART FOCUS
 
 		//set to best time
 		for(let item of smartevents){
