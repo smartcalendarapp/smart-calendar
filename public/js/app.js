@@ -807,7 +807,7 @@ class Calendar {
 			}else if(floor(tempstart, 86400000) != floor(Date.now(), 86400000)){
 				this.reminder.push({ timebefore: 3600000 })
 				this.reminder.push({ timebefore: 0 })
-			}else if(tempstart - Date.now() > 3600000 * 3){
+			}else{
 				this.reminder.push({ timebefore: 0 })
 			}
 		}

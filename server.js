@@ -1814,6 +1814,14 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 		let responsechanges = []
 
 		//requests
+		function isAllDay(item) {
+			return !item.start.minute && !item.end.minute
+		}
+
+		function formatISODate(year, month, day){
+			return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+		}
+
 		for(let requestchange of requestchanges){
 			
 			if(requestchange.type == 'editevent'){
@@ -1821,15 +1829,23 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 				let item = requestchange.item
 				
 				try{
-					//edit event request
+					let start, end;
+					if(isAllDay(item)){
+						start = { date: formatISODate(item.start.year, item.start.month, item.start.day) }
+						end = { date: formatISODate(item.end.year, item.end.month, item.end.day) }
+					}else{
+						start = { dateTime: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
+						end = { dateTime: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
+					}
+
 					const response = await googlecalendar.events.patch({
 						calendarId: requestchange.oldgooglecalendarid || 'primary',
 						eventId: item.googleeventid,
 						requestBody: {
 							summary: item.title,
 							description: item.notes,
-							start: { dateTime: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename },
-							end: { dateTime: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename },
+							start: { start },
+							end: { end },
 							recurrence: recurrence = item.repeat.frequency != null && item.repeat.interval != null ? [ getRecurrenceString(item) ] : []
 						}
 					})
@@ -1838,8 +1854,9 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 						throw new Error()
 					}
 
+
+					//move event to different calendar
 					if(requestchange.newgooglecalendarid != requestchange.oldgooglecalendarid){
-						//move event request
 						const response2 = await googlecalendar.events.move({
 							calendarId: requestchange.oldgooglecalendarid || 'primary',
 							eventId: item.googleeventid,
@@ -1861,13 +1878,22 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 				let item = requestchange.item
 
 				try{
+					let start, end;
+					if(isAllDay(item)){
+						start = { date: formatISODate(item.start.year, item.start.month, item.start.day) }
+						end = { date: formatISODate(item.end.year, item.end.month, item.end.day) }
+					}else{
+						start = { dateTime: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
+						end = { dateTime: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
+					}
+
 					const response = await googlecalendar.events.insert({
 						calendarId: item.googlecalendarid || 'primary',
 						requestBody: {
 							summary: item.title,
 							description: item.notes,
-							start: { dateTime: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename },
-							end: { dateTime: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename },
+							start: start,
+							end: end,
 							recurrence: item.repeat.frequency != null && item.repeat.interval != null ? [ getRecurrenceString(item) ] : []
 						},
 					})
