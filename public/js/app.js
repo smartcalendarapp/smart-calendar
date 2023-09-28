@@ -1,3 +1,5 @@
+const { throws } = require("assert")
+
 //CONSTANTS
 const MONTHLIST = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 const SHORTMONTHLIST = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -781,7 +783,6 @@ class Calendar {
 			this.notes = notes
 			this.priority = 0
 			this.hexcolor = '#2693ff'
-			this.reminder = [{ timebefore: 0 }]
 			this.repeat = {
 				frequency: null,
 				interval: null,
@@ -799,6 +800,18 @@ class Calendar {
 				}
 			}
 			this.lastmodified = 0
+
+			this.reminder = []
+			let tempstart = new Date(this.start.year, this.start.month, this.start.day, 0, this.start.minute).getTime()
+			if(tempstart - Date.now() > 86400000 * 7){
+				this.reminder.push({ timebefore: 86400000 })
+				this.reminder.push({ timebefore: 0 })
+			}else if(floor(tempstart, 86400000) != floor(Date.now(), 86400000)){
+				this.reminder.push({ timebefore: 3600000 })
+				this.reminder.push({ timebefore: 0 })
+			}else if(tempstart - Date.now() > 3600000 * 3){
+				this.reminder.push({ timebefore: 0 })
+			}
 		}
 
 		static isEvent(item){
@@ -2728,6 +2741,7 @@ class Calendar {
 	//settings
 	updateSettings() {
 		updatecalendarlist()
+		updateAvatar()
 
 		//mode
 		let autoschedulemodes2 = getElement('autoschedulemodes2')
@@ -3511,7 +3525,7 @@ async function setclientdata() {
 	let tempbodydata = calendar.getChangedJSON()
 
 	let currenttime = Date.now()
-	if (lastbodydata != tempbodydata) {
+	if (lastbodydata != tempbodydata && !movingevent) {
 		updatestatus(1)
 
 		if (currenttime - lastsavedate > 3000) {
@@ -3615,7 +3629,6 @@ function run() {
 	//calendar
 	calendar.updateTabs()
 	calendar.updateHistory()
-	updateAvatar()
 
 	//input pickers
 	updatetimepicker()
@@ -3629,7 +3642,6 @@ function run() {
 	//set initial save data
 	lastbodydata = calendar.getChangedJSON()
 	
-
 	//hide loading screen
 	hideloadingscreen()
 
@@ -4546,8 +4558,15 @@ function openleftmenu(event) {
 
 function updateAvatar(){
 	let displayname = clientinfo.google_email ? cleanInput(clientinfo.google.name || clientinfo.google_email) : clientinfo.username
+
+	const avataricon = `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="avatarsvg">
+	<g>
+	<path d="M64.352 74.7305C64.352 39.5787 92.8482 11.0825 128 11.0825C163.152 11.0825 191.648 39.5787 191.648 74.7305C191.648 109.882 163.152 138.378 128 138.378C92.8482 138.378 64.352 109.882 64.352 74.7305Z" opacity="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-width="20"></path>
+	<path d="M12.1854 260.265C12.1854 196.303 64.0374 144.451 128 144.451C191.963 144.451 243.815 196.303 243.815 260.265C243.815 324.228 191.963 376.08 128 376.08C64.0374 376.08 12.1854 324.228 12.1854 260.265Z" opacity="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-width="20"></path>
+	</g>
+	</svg>`
 	
-	let avatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : '<img class="border-round avatarimage whitebackground" src="https://static.vecteezy.com/system/resources/previews/021/079/672/original/user-account-icon-for-your-design-only-free-png.png"></img>'}` : '<img class="border-round avatarimage whitebackground" src="https://static.vecteezy.com/system/resources/previews/021/079/672/original/user-account-icon-for-your-design-only-free-png.png"></img>'
+	let avatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : avataricon}` : avataricon
 	
 	let leftmenubutton = getElement('leftmenubutton')
 	leftmenubutton.innerHTML = `
@@ -7067,54 +7086,50 @@ function submitschedulemytasks() {
 
 
 
-async function startAutoSchedule({scheduletodos}) {
-	try{
-		if (isautoscheduling == true) return
+function startAutoSchedule({scheduletodos}) {
+	if (isautoscheduling == true) return
 
-		let oldcalendartabs = [...calendartabs]
-
-
-		let finalscheduleevents = calendar.events.filter(d => Calendar.Event.isSchedulable(d))
-		let finalscheduletodos = calendar.todos.filter(d => Calendar.Todo.isSchedulable(d) && scheduletodos.find(g => g.id == d.id))
-
-		let addedtodos = []
-		for (let item of finalscheduletodos) {
-			addedtodos.push(geteventfromtodo(item))
-		}
-		if (addedtodos.length > 0) {
-			calendar.todos = calendar.todos.filter(d => !addedtodos.find(f => f.id == d.id))
-			calendar.events = calendar.events.filter(d => !addedtodos.find(f => f.id == d.id))
-			calendar.events.push(...addedtodos)
-		}
+	let oldcalendartabs = [...calendartabs]
 
 
-		if(scheduletodos.length > 0){
-			if(mobilescreen){
-				calendartabs = [0]
-			}
-		}
+	let finalscheduleevents = calendar.events.filter(d => Calendar.Event.isSchedulable(d))
+	let finalscheduletodos = calendar.todos.filter(d => Calendar.Todo.isSchedulable(d) && scheduletodos.find(g => g.id == d.id))
 
-
-		let scheduleitems = calendar.events.filter(d => finalscheduletodos.find(f => f.id == d.id) || finalscheduleevents.find(g => g.id == d.id))
-
-		if (scheduleitems.length == 0) return
-
-		//update
-		if (!isEqualArray(calendartabs, oldcalendartabs)) {
-			calendar.updateTabs()
-		} else  {
-			calendar.updateEvents()
-		}
-
-		if(addedtodos.length > 0){
-			calendar.updateTodo()
-		}
-
-		//start
-		await autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos})
-	}catch(error){
-		console.log(error)
+	let addedtodos = []
+	for (let item of finalscheduletodos) {
+		addedtodos.push(geteventfromtodo(item))
 	}
+	if (addedtodos.length > 0) {
+		calendar.todos = calendar.todos.filter(d => !addedtodos.find(f => f.id == d.id))
+		calendar.events = calendar.events.filter(d => !addedtodos.find(f => f.id == d.id))
+		calendar.events.push(...addedtodos)
+	}
+
+
+	if(scheduletodos.length > 0){
+		if(mobilescreen){
+			calendartabs = [0]
+		}
+	}
+
+
+	let scheduleitems = calendar.events.filter(d => finalscheduletodos.find(f => f.id == d.id) || finalscheduleevents.find(g => g.id == d.id))
+
+	if (scheduleitems.length == 0) return
+
+	//update
+	if (!isEqualArray(calendartabs, oldcalendartabs)) {
+		calendar.updateTabs()
+	} else  {
+		calendar.updateEvents()
+	}
+
+	if(addedtodos.length > 0){
+		calendar.updateTodo()
+	}
+
+	//start
+	autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos})
 }
 
 

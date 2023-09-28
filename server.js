@@ -595,7 +595,7 @@ async function processReminders(){
 			if(item.type == 'event'){
 				const embed = new EmbedBuilder()
 					.setTitle(`Event "${item.event.title}" starts ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}`)
-					.setDescription(`Hey ${discorduser.username}, just a quick reminder that your event **${item.event.title || 'New Event'}** is from ${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} to ${getHMText(new Date(item.event.utcend).getHours() * 60 + new Date(item.event.utcend).getMinutes())}.\n[Open the app](https://smartcalendar.us/app) to see more details.`)
+					.setDescription(`Hey ${discorduser.username}, just a quick reminder that your event [**${item.event.title || 'New Event'}**](https://smartcalendar.us/app) goes from ${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} to ${getHMText(new Date(item.event.utcend).getHours() * 60 + new Date(item.event.utcend).getMinutes())}.`)
 					.setFooter({ text: 'Smart Calendar', iconURL: `https://smartcalendar.us/logo.png` })
 					.setColor(item.event.hexcolor)
 				if(item.event.notes){
@@ -606,7 +606,7 @@ async function processReminders(){
 			}else if(item.type == 'task'){
 				const embed = new EmbedBuilder()
 					.setTitle(`Task "${item.event.title}" due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}`)
-					.setDescription(`Hey ${discorduser.username}, just a quick reminder that your task **${item.event.title || 'New Task'}** is due at ${getHMText(new Date(item.event.utcduedate).getHours() * 60 + new Date(item.event.utcduedate).getMinutes())}.\n[Open the app](https://smartcalendar.us/app) to see more details.`)
+					.setDescription(`Hey ${discorduser.username}, just a quick reminder that your task [**${item.event.title || 'New Task'}**](https://smartcalendar.us/app) is due at ${getHMText(new Date(item.event.utcduedate).getHours() * 60 + new Date(item.event.utcduedate).getMinutes())}.`)
 					.setFooter({ text: 'Smart Calendar', iconURL: `https://smartcalendar.us/logo.png` })
 					.setColor(item.event.hexcolor)
 				if(item.event.notes){
