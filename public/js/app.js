@@ -6455,15 +6455,18 @@ function getdatafromgooglecalendar(listdata) {
 			if (!start || !end || !id) continue
 
 			let startdate, enddate;
+			if(event.summary == 'School Starts')console.log(startdate, enddate)
 			if (start.dateTime) {
 				startdate = new Date(start.dateTime)
 			} else if (start.date) {
-				startdate = new Date(`${start.date}T00:00:00`)
+				startdate = new Date(`${start.date}T00:00:00Z`)
+				startdate.setHours(0, 0, 0, 0)
 			}
 			if (end.dateTime) {
 				enddate = new Date(end.dateTime)
 			} else if (end.date) {
-				enddate = new Date(`${end.date}T00:00:00`)
+				enddate = new Date(`${end.date}T00:00:00Z`)
+				enddate.setHours(0, 0, 0, 0)
 			}
 
 			if (isNaN(startdate.getTime()) || isNaN(enddate.getTime())) continue
