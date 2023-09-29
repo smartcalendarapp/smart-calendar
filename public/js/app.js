@@ -8044,16 +8044,18 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition.addEventListener('result', event => {
 		const transcript = event.results[0][0].transcript.trim()
 
-		console.log(transcript)
 		if(transcript){
 			let todoinputtitle = getElement('todoinputtitle')
 			todoinputtitle.value = transcript
 			typeaddtask()
 			resizeaddtask()
+			clickaddonetask()
 		}
 	})
 	
 	recognition.addEventListener('start', () => {
+		let recognitionsvg = getElement('recognitionsvg')
+		recognitionsvg.classList.add('recognitionredanimation')
 		console.log("Recognition started")
 	})
 	  
