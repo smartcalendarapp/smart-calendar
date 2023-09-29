@@ -1831,8 +1831,8 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 				try{
 					let start, end;
 					if(isAllDay(item)){
-						start = { date: formatISODate(item.start.year, item.start.month, item.start.day) }
-						end = { date: formatISODate(item.end.year, item.end.month, item.end.day) }
+						start = { date: formatISODate(item.start.year, item.start.month, item.start.day), timeZone: timezonename }
+						end = { date: formatISODate(item.end.year, item.end.month, item.end.day), timeZone: timezonename }
 					}else{
 						start = { dateTime: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
 						end = { dateTime: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
@@ -1880,12 +1880,13 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 				try{
 					let start, end;
 					if(isAllDay(item)){
-						start = { date: formatISODate(item.start.year, item.start.month, item.start.day) }
+						start = { date: formatISODate(item.start.year, item.start.month, item.start.day), timeZone: timezonename }
 						end = { date: formatISODate(item.end.year, item.end.month, item.end.day) }
 					}else{
-						start = { dateTime: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
+						start = { dateTime: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename, timeZone: timezonename }
 						end = { dateTime: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
 					}
+					console.warn(start, end)
 
 					const response = await googlecalendar.events.insert({
 						calendarId: item.googlecalendarid || 'primary',
