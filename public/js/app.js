@@ -1909,7 +1909,9 @@ class Calendar {
 									<div class="text-14px text-primary width90px">Notes</div>
 									<div class="inputgroupitem flex-1">
 										<textarea onblur="inputeventnotes(event, '${item.id}')" id="infonotes" class="infoinput infonotes" placeholder="Add notes"  maxlength="2000"></textarea>
-						 				<span class="inputline"></span>
+										<span class="inputlinewrap">
+											<span class="inputline"></span>
+										</span>
 									</div>
 								</div>
 							</div>`)
@@ -4541,10 +4543,10 @@ function updateAvatar(){
 	let displayname = clientinfo.google_email ? cleanInput(clientinfo.google.name || clientinfo.google_email) : clientinfo.username
 
 	const avataricon = `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="avatarsvg">
-	<g>
-	<path d="M64.352 74.7305C64.352 39.5787 92.8482 11.0825 128 11.0825C163.152 11.0825 191.648 39.5787 191.648 74.7305C191.648 109.882 163.152 138.378 128 138.378C92.8482 138.378 64.352 109.882 64.352 74.7305Z" opacity="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-width="20"></path>
-	<path d="M12.1854 260.265C12.1854 196.303 64.0374 144.451 128 144.451C191.963 144.451 243.815 196.303 243.815 260.265C243.815 324.228 191.963 376.08 128 376.08C64.0374 376.08 12.1854 324.228 12.1854 260.265Z" opacity="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-width="20"></path>
-	</g>
+		<g>
+		<path d="M64.352 74.7305C64.352 39.5787 92.8482 11.0825 128 11.0825C163.152 11.0825 191.648 39.5787 191.648 74.7305C191.648 109.882 163.152 138.378 128 138.378C92.8482 138.378 64.352 109.882 64.352 74.7305Z" opacity="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-width="20"></path>
+		<path d="M13.0743 245.846C20.1727 188.688 68.9202 144.451 128 144.451C187.063 144.451 235.8 188.664 242.92 245.798" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+		</g>
 	</svg>`
 	
 	let avatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : avataricon}` : avataricon
@@ -8099,7 +8101,7 @@ function updaterecognitionui(){
 		let recognitiontooltip = getElement('recognitiontooltip')
 		let recognitiontooltip2 = getElement('recognitiontooltip2')
 
-		let errorhtml = `<span class="text-red text-14px">${recognitionerror}</span>`
+		let errorhtml = `<span class="text-red text-14px">Dictation unsupported by browser</span>`
 		if(recognitiontype == 'task'){
 			recognitiontooltip.innerHTML = errorhtml
 		}else if(recognitiontype == 'event'){
@@ -8343,7 +8345,9 @@ function gettododata(item) {
 		 			<div class="text-14px text-primary width90px">Notes</div>
 					<div class="width-full inputgroupitem">
 						<textarea class="infonotes infoinput" placeholder="Add notes" id="edittodoinputnotes" onblur="inputtodonotes(event)" placeholder="Add date"  maxlength="2000">${cleanInput(item.notes)}</textarea>
-						<span class="inputline"></span>
+						<span class="inputlinewrap">
+							<span class="inputline"></span>
+						</span>
 					</div>
 		 		</div>
 				<div class="inputgroup">

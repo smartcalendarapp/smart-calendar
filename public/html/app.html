@@ -1657,7 +1657,7 @@
 					
 					<div class="todobar relative padding-12px display-flex flex-column align-center gap-12px">
 
-						<div class="z-index-100 display-flex background-blue border-8px align-center justify-center absolute hiddenfade right-0 left-0 top-0 bottom-0 fadetransition border-box" id="schedulemytasksactivepopup">
+						<div class="z-index-200 display-flex background-blue border-8px align-center justify-center absolute hiddenfade right-0 left-0 top-0 bottom-0 fadetransition border-box" id="schedulemytasksactivepopup">
 							<div class="text-white text-18px">Select tasks to schedule in calendar</div>
 						</div>
 
@@ -1924,10 +1924,55 @@
 							<div class="flex-1 display-flex flex-row overflow-y-auto small:flex-column">
 								<!-- left tab -->
 								<div class="border-box border-box padding-left-12px padding-top-12px display-flex flex-column leftcolumn small:display-none" id="settingstablist1">
-									<div class="leftwrapitem" onclick="clicksettingstab(0)">Account</div>
-									<div class="leftwrapitem" onclick="clicksettingstab(1)">General</div>
-									<div class="leftwrapitem" onclick="clicksettingstab(2)">My calendars</div>
-									<div class="leftwrapitem" onclick="clicksettingstab(3)">Notifications</div>
+									<div class="leftwrapitem display-flex flex-row gap-6px align-center" onclick="clicksettingstab(0)">
+										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+											<g>
+											<path d="M64.352 74.7305C64.352 39.5787 92.8482 11.0825 128 11.0825C163.152 11.0825 191.648 39.5787 191.648 74.7305C191.648 109.882 163.152 138.378 128 138.378C92.8482 138.378 64.352 109.882 64.352 74.7305Z" opacity="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-width="20"></path>
+											<path d="M13.0743 245.846C20.1727 188.688 68.9202 144.451 128 144.451C187.063 144.451 235.8 188.664 242.92 245.798" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+											</g>
+										</svg>
+										Account
+									</div>
+									<div class="leftwrapitem display-flex flex-row gap-6px align-center" onclick="clicksettingstab(1)">
+										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+											<g>
+											<path d="M88.6333 128C88.6333 106.258 106.258 88.6333 128 88.6333C149.742 88.6333 167.367 106.258 167.367 128C167.367 149.742 149.742 167.367 128 167.367C106.258 167.367 88.6333 149.742 88.6333 128Z" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+											<path d="M101.521 40.8836L106.742 18.8719C106.742 18.8719 107.824 15.3158 109.952 13.0978C112.08 10.8799 115.254 10 115.254 10L139.987 10C139.987 10 144.189 10.9478 146.546 13.0941C148.903 15.2404 149.416 18.5853 149.416 18.5853L155.745 40.8618L167.367 46.9222" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+											<path d="M154.479 215.119L149.258 237.13C149.258 237.13 148.176 240.686 146.048 242.904C143.92 245.122 140.746 246.002 140.746 246.002L116.013 246.002C116.013 246.002 111.811 245.054 109.454 242.908C107.097 240.762 106.584 237.417 106.584 237.417L100.255 215.14L88.6333 209.08" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+											<path d="M215.118 101.522L237.129 106.743C237.129 106.743 240.685 107.825 242.903 109.953C245.121 112.081 246.001 115.255 246.001 115.255L246.001 139.988C246.001 139.988 245.053 144.19 242.907 146.547C240.761 148.904 237.416 149.417 237.416 149.417L215.139 155.746L209.079 167.368" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+											<path d="M40.8825 154.48L18.8708 149.259C18.8708 149.259 15.3147 148.177 13.0967 146.049C10.8788 143.921 9.9989 140.747 9.9989 140.747L9.9989 116.014C9.9989 116.014 10.9467 111.812 13.093 109.455C15.2393 107.098 18.5842 106.585 18.5842 106.585L40.8607 100.257L46.9211 88.6344" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+											<path d="M208.325 170.879L220.198 190.135C220.198 190.135 221.947 193.415 222.011 196.488C222.075 199.561 220.452 202.428 220.452 202.428L202.963 219.916C202.963 219.916 199.322 222.217 196.137 222.367C192.953 222.516 190.225 220.513 190.225 220.513L169.998 209.236L157.495 213.169" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+											<path d="M47.675 85.1233L35.802 65.867C35.802 65.867 34.0526 62.5874 33.989 59.5143C33.9254 56.4412 35.5477 53.5747 35.5477 53.5747L53.0366 36.0857C53.0366 36.0857 56.678 33.7847 59.8625 33.6356C63.0471 33.4864 65.7747 35.489 65.7747 35.489L86.0015 46.766L98.505 42.8332" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+											<path d="M85.1222 208.326L65.8659 220.199C65.8659 220.199 62.5863 221.948 59.5132 222.012C56.4401 222.076 53.5736 220.453 53.5736 220.453L36.0846 202.965C36.0846 202.965 33.7836 199.323 33.6345 196.139C33.4853 192.954 35.4879 190.226 35.4879 190.226L46.7649 170L42.8321 157.496" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+											<path d="M170.878 47.6761L190.134 35.8031C190.134 35.8031 193.414 34.0537 196.487 33.9901C199.56 33.9265 202.426 35.5488 202.426 35.5488L219.915 53.0377C219.915 53.0377 222.216 56.6791 222.366 59.8636C222.515 63.0482 220.512 65.7758 220.512 65.7758L209.235 86.0026L213.168 98.5061" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+											</g>
+										</svg>
+										General
+									</div>
+									<div class="leftwrapitem display-flex flex-row gap-6px align-center" onclick="clicksettingstab(2)">
+										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite">
+											<g>
+											<path d="M46-4.10783e-15C20.5949-4.10783e-15 0 20.4899 0 45.7654L0 65.6633L0 85.5613L0 210.235C0 235.51 20.5949 256 46 256L210 256C235.405 256 256 235.51 256 210.235L256 85.5613L256 65.6633L256 45.7654C256 20.4899 235.405-1.01206e-05 210-4.10783e-15L46-4.10783e-15ZM46 59.694L210 59.694C224.359 59.694 236 71.2752 236 85.5613L236 210.235C236 224.521 224.359 236.102 210 236.102L46 236.102C31.6406 236.102 20 224.521 20 210.235L20 85.5613C20 71.2752 31.6406 59.694 46 59.694Z" fill-rule="nonzero" opacity="1" ></path>
+											<path d="M56.4316 90.9174L80.4316 90.9174C84.8499 90.9174 88.4316 94.4991 88.4316 98.9174L88.4316 122.917C88.4316 127.336 84.8499 130.917 80.4316 130.917L56.4316 130.917C52.0134 130.917 48.4316 127.336 48.4316 122.917L48.4316 98.9174C48.4316 94.4991 52.0134 90.9174 56.4316 90.9174Z" fill-rule="nonzero" opacity="1" ></path>
+											<path d="M116 90.9174L140 90.9174C144.418 90.9174 148 94.4991 148 98.9174L148 122.917C148 127.336 144.418 130.917 140 130.917L116 130.917C111.582 130.917 108 127.336 108 122.917L108 98.9174C108 94.4991 111.582 90.9174 116 90.9174Z" fill-rule="nonzero" opacity="1" ></path>
+											<path d="M173.596 90.9174L197.596 90.9174C202.014 90.9174 205.596 94.4991 205.596 98.9174L205.596 122.917C205.596 127.336 202.014 130.917 197.596 130.917L173.596 130.917C169.178 130.917 165.596 127.336 165.596 122.917L165.596 98.9174C165.596 94.4991 169.178 90.9174 173.596 90.9174Z" fill-rule="nonzero" opacity="1" ></path>
+											<path d="M56.4316 147.412L80.4316 147.412C84.8499 147.412 88.4316 150.994 88.4316 155.412L88.4316 179.412C88.4316 183.83 84.8499 187.412 80.4316 187.412L56.4316 187.412C52.0134 187.412 48.4316 183.83 48.4316 179.412L48.4316 155.412C48.4316 150.994 52.0134 147.412 56.4316 147.412Z" fill-rule="nonzero" opacity="1" ></path>
+											<path d="M116 147.412L140 147.412C144.418 147.412 148 150.994 148 155.412L148 179.412C148 183.83 144.418 187.412 140 187.412L116 187.412C111.582 187.412 108 183.83 108 179.412L108 155.412C108 150.994 111.582 147.412 116 147.412Z" fill-rule="nonzero" opacity="1" ></path>
+											</g>
+										</svg>
+										My calendars
+									</div>
+									<div class="leftwrapitem display-flex flex-row gap-6px align-center" onclick="clicksettingstab(3)">
+										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 246 256" width="100%" class="buttonlarge">
+											<g>
+											<path d="M10 192.42L236 192.42" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+											<path d="M123 10.0582C130.922 9.7034 166.037 9.56067 191.111 54.719C202.976 76.0876 197.404 109.904 203.553 129.081C210.425 150.514 216.819 155.444 226.874 168.604C236.928 181.764 235.77 192.42 235.77 192.42" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+											<path d="M123 10.0582C115.078 9.7034 79.9633 9.56067 54.8887 54.719C43.0237 76.0876 48.5959 109.904 42.4474 129.081C35.5753 150.514 29.1808 155.444 19.1262 168.604C9.07153 181.764 10.23 192.42 10.23 192.42" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+											<path d="M78.4636 192.42C78.4636 192.42 81.2653 246 123.554 246C165.843 246 170.823 192.42 170.823 192.42" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+											</g>
+										</svg>
+										Notifications
+									</div>
 								</div>
 			
 								<!-- settings page -->

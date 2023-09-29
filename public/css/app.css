@@ -3228,6 +3228,10 @@ body {
 	fill: var(--white);
 }
 
+.selectedbutton .buttonlarge{
+	stroke:var(--white) !important;
+}
+
 .starbox {
 	cursor: pointer;
 	height: 18px;
