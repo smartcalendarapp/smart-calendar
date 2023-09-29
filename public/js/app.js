@@ -3523,7 +3523,7 @@ async function setclientdata() {
 	let tempbodydata = calendar.getChangedJSON()
 
 	let currenttime = Date.now()
-	if (lastbodydata != tempbodydata && !movingevent) {
+	if (lastbodydata != tempbodydata && !movingevent && !isautoscheduling) {
 		updatestatus(1)
 
 		if (currenttime - lastsavedate > 3000) {
@@ -8020,10 +8020,12 @@ async function uploadtaskpicture(event) {
 			const data = await worker.recognize(imageDataURL)
 			await worker.terminate()
 			
-			console.log(JSON.stringify(data))
-			let todoinputtitle = getElement('todoinputtitle')
-			todoinputtitle.value = data.text
-			typeaddtask()
+			let resultstring = data.data.text
+			if(resultstring){
+				let todoinputtitle = getElement('todoinputtitle')
+				todoinputtitle.value = resultstring
+				typeaddtask()
+			}
 		}
 	}
 }
