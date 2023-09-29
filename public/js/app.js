@@ -2286,23 +2286,10 @@ class Calendar {
 
 
 	updateTodoButtons() {
-		//mode buttons
-		let todolistnotscheduledyet = getElement('todolistnotscheduledyet')
-		let todolistscheduledtasks = getElement('todolistscheduledtasks')
-
-		todolistnotscheduledyet.classList.remove('selectedbuttonunderline')
-		todolistscheduledtasks.classList.remove('selectedbuttonunderline')
-
-		if(todomode == 0){
-			todolistnotscheduledyet.classList.add('selectedbuttonunderline')
-		}else if(todomode == 1){
-			todolistscheduledtasks.classList.add('selectedbuttonunderline')
-		}
-
 
 		//schedule button
 		let scheduleoncalendar = getElement('scheduleoncalendar')
-		if (calendar.todos.filter(d => !d.completed).length > 0 && !schedulemytasksenabled && todomode == 0) {
+		if (calendar.todos.filter(d => !d.completed).length > 0 && !schedulemytasksenabled) {
 			scheduleoncalendar.classList.remove('display-none')
 		} else {
 			scheduleoncalendar.classList.add('display-none')
@@ -3281,7 +3268,6 @@ if(mobilescreen){
 	calendartabs = [1]
 }
 
-let todomode = 0
 
 let calendaryear = new Date().getFullYear()
 let calendarmonth = new Date().getMonth()
@@ -3791,10 +3777,6 @@ function updatestatus(newstatus) {
 }
 
 
-function clicktodotab(index){
-	todomode = index
-	calendar.updateTodo()
-}
 
 function clicktab(index) {
 	let currentdate = new Date()
@@ -8120,7 +8102,7 @@ function startrecognition(type){
 		}
 	}
 }
-
+//here4
 
 
 

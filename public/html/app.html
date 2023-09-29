@@ -1240,7 +1240,7 @@
 
 			
 			<div class="flex-shrink-0 transition-duration-100">
-				<div class="border-8px flex-1 overflow-hidden bordertertiary inputgroup">
+				<div class="border-8px flex-1 bordertertiary display-flex flex-row relative">
 					<!-- record button -->
 					<div class="padding-left-12px display-flex flex-column justify-center" id="recognitionwrap2">
 						<div class="tooltip pointer hover:background-tint-2 transition-duration-100 border-round padding-6px display-flex" onclick="startrecognition('event')">
@@ -1252,7 +1252,7 @@
 									<path d="M74.4375 235.812C68.9147 235.812 64.4375 240.29 64.4375 245.812C64.4375 251.335 68.9147 255.812 74.4375 255.812L181.906 255.812C187.429 255.812 191.906 251.335 191.906 245.812C191.906 240.29 187.429 235.812 181.906 235.812L74.4375 235.812Z" fill-rule="nonzero" opacity="1" ></path>
 								</g>
 							</svg>
-							<span class="tooltiptextright">Speak to add task</span>
+							<span class="tooltiptextright">Speak to add event</span>
 						</div>
 					</div>
 
@@ -1682,26 +1682,9 @@
 							</div>
 						</div>
 
-						<div class="display-flex flex-row align-center gap-24px display-none">
-							<div class="padding-top-6px padding-bottom-6px relative hoverchildprimary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktodotab(0);if(gtag){gtag('event', 'button_click', { useraction: 'Not scheduled - to do list' })} " id="todolistnotscheduledyet">
-								<div class="pointer-none display-flex flex-row align-center gap-6px">
-									<div class="text-16px text-quaternary">Not scheduled</div>
-									<div id="todolistnotscheduledyettext" class="background-tint-1 text-14px text-quaternary border-round circlehighlight"></div>
-								</div>
-								<span class="buttonunderline"></span>
-							</div>
-							<div class="padding-top-6px padding-bottom-6px relative hoverchildprimary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktodotab(1);if(gtag){gtag('event', 'button_click', { useraction: 'Scheduled tasks - to do list' })} " id="todolistscheduledtasks">
-								<div class="pointer-none display-flex flex-row align-center gap-6px">
-									<div class="text-16px text-quaternary">Scheduled tasks</div>
-									<div id="todolistscheduledtaskstext" class="background-tint-1 text-14px text-quaternary border-round circlehighlight"></div>
-								</div>
-								<span class="buttonunderline"></span>
-							</div>
-						</div>
-
 
 						<!-- add task -->
-						<div class="width-full relative display-flex align-center flex-row gap-12px">
+						<div class="z-index-100 width-full relative display-flex align-center flex-row gap-12px">
 							<div class="display-flex flex-row border-8px background-primary backdrop-blur box-shadow flex-1 relative">
 
 								<!-- upload button -->
@@ -1739,7 +1722,9 @@
 								<!-- input -->
 								<textarea rows="1" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle">
 								</textarea>
-								<span class="inputline"></span>
+								<span class="inputlinewrap">
+									<span class="inputline"></span>
+								</span>
 							</div>
 							
 							<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodo()">					
