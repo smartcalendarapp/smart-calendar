@@ -8032,20 +8032,45 @@ async function uploadtaskpicture(event) {
 		}
 	}
 }
-//here4
+
 
 //speech recognition to add task
-const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
-recognition.continuous = false
-recognition.lang = 'en-US'
+let recognition;
+if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+	recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
+	recognition.continuous = false
+	recognition.lang = 'en-US'
 
-recognition.addEventListener('result', event => {
-	const transcript = event.results[0][0].transcript.trim()
-	console.log(transcript)
-})
+	recognition.addEventListener('result', event => {
+		const transcript = event.results[0][0].transcript.trim()
+
+		if(transcript){
+			let todoinputtitle = getElement('todoinputtitle')
+			todoinputtitle.value = transcript
+			typeaddtask()
+			resizeaddtask()
+		}
+	})
+	
+	recognition.addEventListener('start', () => {
+		console.log("Recognition started")
+	})
+	  
+	recognition.addEventListener('error', (event) => {
+		console.log("Error occurred: " + event.error)
+	})
+	
+	recognition.addEventListener('end', () => {
+		console.log("Recognition ended")
+	})
+}else{
+	getElement('recognitionwrap').classList.add('display-none')
+}
 
 function startrecognition(event){
-	recognition.start()
+	if(recognition){
+		recognition.start()
+	}
 }
 
 
