@@ -1687,7 +1687,7 @@
 
 						<!-- add task -->
 						<div class="width-full relative display-flex align-center flex-row gap-12px">
-							<div class="display-flex flex-row border-8px background-primary backdrop-blur box-shadow flex-1 relative">
+							<div class="display-flex flex-row border-8px overflow-hidden background-primary backdrop-blur box-shadow flex-1 relative">
 
 								<!-- upload button -->
 								<div class="padding-left-12px display-flex flex-column justify-center display-none">
@@ -1707,11 +1707,13 @@
 
 								<!-- record button -->
 								<div class="padding-left-12px display-flex flex-column justify-center" id="recognitionwrap">
-									<div class="tooltip background-tint-2 pointer hover:background-tint-3 transition-duration-100 border-round padding-6px display-flex" onclick="startrecognition()">
-										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmaller">
-											<g opacity="1">
-											<path d="M128.004 10.0039L128.004 246.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-											<path d="M246.004 128.004L10.0039 128.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+									<div class="tooltip pointer hover:background-tint-2 transition-duration-100 border-round padding-6px display-flex" onclick="startrecognition()">
+										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="fillbutton">
+											<g>
+												<path d="M128 0.46875C103.522 0.46875 83.6875 20.3029 83.6875 44.7812C83.6875 45.3985 83.6875 123.164 83.6875 123.781C83.6875 148.26 103.522 168.125 128 168.125C152.478 168.125 172.344 148.26 172.344 123.781L172.344 44.7812C172.344 20.3029 152.478 0.46875 128 0.46875Z" fill-rule="nonzero" opacity="1" ></path>
+												<path d="M204.031 99.4062C198.521 99.7839 194.341 104.553 194.719 110.062C194.727 110.184 194.762 110.509 194.781 111.031C194.939 115.329 194.812 120.897 194.156 127.25C193.197 136.543 191.256 145.663 188.188 154.094C178.587 180.474 159.919 195.656 128 195.656C96.0861 195.656 77.5059 180.526 68 154.219C64.9794 145.859 63.0898 136.813 62.1562 127.594C61.515 121.261 61.3944 115.681 61.5625 111.344C61.5845 110.777 61.6152 110.417 61.625 110.281C62.0216 104.773 57.8836 99.9904 52.375 99.5938C46.8664 99.1971 42.0529 103.335 41.6562 108.844C41.6309 109.196 41.6245 109.77 41.5938 110.562C41.0188 125.394 42.8265 143.396 49.1875 161C54.6475 176.11 62.9544 188.903 74.625 198.406C88.4407 209.656 106.232 215.656 128 215.656C149.768 215.656 167.591 209.642 181.438 198.375C193.131 188.86 201.494 176.067 207 160.938C210.678 150.83 212.914 140.138 214.031 129.312C214.789 121.967 214.94 115.458 214.75 110.281C214.723 109.544 214.71 109.016 214.688 108.688C214.31 103.178 209.541 99.0286 204.031 99.4062Z" fill-rule="nonzero" opacity="1" ></path>
+												<path d="M128 195.656C122.477 195.656 118 200.133 118 205.656L118 243.156C118 248.679 122.477 253.156 128 253.156C133.523 253.156 138 248.679 138 243.156L138 205.656C138 200.133 133.523 195.656 128 195.656Z" fill-rule="nonzero" opacity="1" ></path>
+												<path d="M74.4375 235.812C68.9147 235.812 64.4375 240.29 64.4375 245.812C64.4375 251.335 68.9147 255.812 74.4375 255.812L181.906 255.812C187.429 255.812 191.906 251.335 191.906 245.812C191.906 240.29 187.429 235.812 181.906 235.812L74.4375 235.812Z" fill-rule="nonzero" opacity="1" ></path>
 											</g>
 										</svg>
 										<span class="tooltiptextright">Speak to add task</span>

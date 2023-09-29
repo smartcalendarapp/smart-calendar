@@ -8044,6 +8044,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition.addEventListener('result', event => {
 		const transcript = event.results[0][0].transcript.trim()
 
+		console.log(transcript)
 		if(transcript){
 			let todoinputtitle = getElement('todoinputtitle')
 			todoinputtitle.value = transcript
