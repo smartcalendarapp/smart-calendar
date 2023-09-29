@@ -7467,42 +7467,12 @@ function submitcreateevent(event) {
 
 
 
-//create todo
-function opencreatetodo(event) {
-	let todopopup = getElement('todopopup')
-	todopopup.classList.toggle('hiddenpopup')
-
-	let button = event.target
-
-	todopopup.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, todopopup) + 'px'
-	todopopup.style.left = fixleft(button.getBoundingClientRect().left - todopopup.offsetWidth * 0.5 + button.offsetWidth * 0.5, todopopup) + 'px'
-
-	resetcreatetodo()
-	updatecreatetodo()
-
-
-	if (!todopopup.classList.contains('hiddenpopup')) {
-		let todoinputtitleold = getElement('todoinputtitleold')
-		todoinputtitleold.focus()
-	}
-}
-function closecreatetodo() {
-	let todopopup = getElement('todopopup')
-	todopopup.classList.add('hiddenpopup')
-
-	let todoinputtitleold = getElement('todoinputtitleold')
-	todoinputtitleold.blur()
-}
-
 
 function resetcreatetodo() {
 	let nextdate = new Date()
 	nextdate.setHours(0, 0, 0, 0)
 	nextdate.setDate(nextdate.getDate() + 1)
 	nextdate.setMinutes(-1)
-
-	let todoinputtitleold = getElement('todoinputtitleold')
-	todoinputtitleold.value = ''
 
 	let todoinputnotes = getElement('todoinputnotes')
 	todoinputnotes.value = ''
@@ -7592,7 +7562,7 @@ function updatecreatetodo() {
 	createtodopriorityprompttodotoday.innerHTML = temppriorityvalue
 
 	//add button # of tasks
-	let finalstring = todoinputtitleold.value || todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
+	let finalstring = todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
 	finalstring = finalstring.split('\n').filter(d => d != '')
 	let length = Math.max(finalstring.length, 1)
 
@@ -8051,18 +8021,22 @@ async function uploadtaskpicture(event) {
 			const worker = await Tesseract.createWorker('eng')
 			const data = await worker.recognize(imageDataURL)
 			await worker.terminate()
-			console.log(data)
+			
+			console.log(JSON.stringify(data))
+			let todoinputtitle = getElement('todoinputtitle')
+			todoinputtitle.value = data.text
+			typeaddtask()
 		}
 	}
 }
+//here4
   
 
 function typeaddtask(event, submit, index) {
-	let todoinputtitleold = getElement('todoinputtitleold')
 	let todoinputtitle = getElement('todoinputtitle')
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
 	let todoinputtitleprompttodotoday = getElement('todoinputtitleprompttodotoday')
-	let finalstring = todoinputtitleold.value || todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
+	let finalstring = todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
 	finalstring = finalstring.split('\n').filter(d => d != '')[index || 0] || ''
 
 	let currentdate = new Date()
@@ -8174,11 +8148,10 @@ function typeaddtask(event, submit, index) {
 
 
 function submitcreatetodo(event) {
-	let todoinputtitleold = getElement('todoinputtitleold')
 	let todoinputtitle = getElement('todoinputtitle')
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
 	let todoinputtitleprompttodotoday = getElement('todoinputtitleprompttodotoday')
-	let finalstring = todoinputtitleold.value || todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
+	let finalstring = todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
 	finalstring = finalstring.split('\n').filter(d => d != '')
 
 	let length = Math.max(finalstring.length, 1)

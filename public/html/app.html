@@ -1209,76 +1209,6 @@
 	</div>
 
 
-	<!-- CREATE TO DO UI -->
-	<div class="schedulemenu z-index-1000 box-shadow hiddenpopup eventinfowidth popup small:width-full small:height-full small:top-0 small:left-0 small:border-0" id="todopopup">
-		<div class="display-flex flex-column gap-12px">
-
-			<div class="justify-space-between display-flex flex-row align-center">
-				<div>
-					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-					<g>
-					</g>
-					</svg>
-				</div>
-				
-				<div class="text-18px text-primary nowrap">Add task</div>
-
-				<div class="infotopright pointer" onclick="closecreatetodo()">
-					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-					<g>
-					<g opacity="1">
-					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-					</g>
-					</g>
-					</svg>
-				</div>
-				
-			</div>
-
-			
-			<div id="createtodobutton" class="flex-shrink-0 bordertertiary border-8px transition-duration-100">
-				<div class="inputgroup" id="todoinputtitlegroup">
-					<input oninput="typeaddtask(event)" onclick="if(gtag){gtag('event', 'button_click', { useraction: 'Focus title - add task' })}" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.key == 'Enter'){ submitcreatetodo(event) }" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleold" maxlength="2000"></input>
-					<span class="inputline"></span>
-				</div>
-
-				<!--
-				<div class="horizontalbar"></div>
-
-				<div class="flex-1 align-center display-flex flex-row gap-12px padding-12px flex-wrap-wrap">
-					<div class="border-8px padding-left-12px padding-right-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap popupbutton text-14px pointer-auto pointer transition-duration-100" onclick="readinteractivetourpopup('clickduedate');clickcreatetododuedate(event)" id="createtododuedate">
-					</div>
-
-					<div class="border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-green pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetododuration(event)" id="createtododuration">
-					</div>
-
-					<div class="border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetodopriority(event)" id="createtodopriority">
-					</div>
-				</div>
-
-				<div class="horizontalbar"></div>
-
-				<div class="inputgroup border-8px overflow-hidden">
-					<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotes" maxlength="2000"></textarea>
-					<span class="inputline"></span>
-				</div>	
-				-->	
-				
-			</div>
-
-			<div class="justify-flex-end display-flex flex-row gap-12px align-center">
-				<div class="display-flex flex-row gap-12px align-center" id="createtodoaddbutton">
-					<div class="todoitembutton display-flex text-white flex-row align-center gap-6px border-round padding-8px-16px text-16px bluebutton" onclick="submitcreatetodo(event, false);if(gtag){gtag('event', 'button_click', { useraction: 'Create - add task' })}">Create</div>
-					
-				</div>
-					
-			</div>
-			
-		</div>
-
-	</div>
-
 
 
 	<!-- CREATE EVENT UI -->
@@ -1757,19 +1687,20 @@
 
 						<!-- add task -->
 						<div class="width-full relative display-flex align-center flex-row gap-12px">
-							<div class="display-flex flex-row border-8px background-primary backdrop-blur box-shadow overflow-hidden flex-1 relative">
+							<div class="display-flex flex-row border-8px background-primary backdrop-blur box-shadow flex-1 relative">
 
 								<!-- upload button -->
 								<div class="padding-left-12px display-flex flex-column justify-center">
 									<input type="file" accept="image/*" class="display-none" onchange="uploadtaskpicture(event)" id="uploadtaskpictureinput"></input>
 
-									<div class="background-tint-2 pointer hover:background-tint-3 transition-duration-100 border-round padding-6px display-flex" onclick="getElement('uploadtaskpictureinput').click()">
-										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmall">
-											<g>
-											<path d="M240.747 128L15.2527 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="29.5557"></path>
-											<path d="M128 15.2527L128 240.747" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="29.5557"></path>
+									<div class="tooltip background-tint-2 pointer hover:background-tint-3 transition-duration-100 border-round padding-6px display-flex" onclick="getElement('uploadtaskpictureinput').click()">
+										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmaller">
+											<g opacity="1">
+											<path d="M128.004 10.0039L128.004 246.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+											<path d="M246.004 128.004L10.0039 128.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
 											</g>
 										</svg>
+										<span class="tooltiptextright">Upload picture</span>
 									</div>
 								</div>
 

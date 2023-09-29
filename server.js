@@ -1840,8 +1840,8 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 						requestBody: {
 							summary: item.title,
 							description: item.notes,
-							start: { start },
-							end: { end },
+							start: start,
+							end: end,
 							recurrence: recurrence = item.repeat.frequency != null && item.repeat.interval != null ? [ getRecurrenceString(item) ] : []
 						}
 					})
@@ -1882,7 +1882,6 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 						start = { dateTime: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
 						end = { dateTime: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
 					}
-					console.warn(start, end)
 
 					const response = await googlecalendar.events.insert({
 						calendarId: item.googlecalendarid || 'primary',
