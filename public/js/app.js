@@ -8035,6 +8035,7 @@ async function uploadtaskpicture(event) {
 
 
 //speech recognition to add task
+let isspeaking = false
 let recognition;
 if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
@@ -8054,16 +8055,29 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	})
 	
 	recognition.addEventListener('start', () => {
+		isspeaking = true
+
 		let recognitionsvg = getElement('recognitionsvg')
 		recognitionsvg.classList.add('recognitionredanimation')
+
 		console.log("Recognition started")
 	})
 	  
 	recognition.addEventListener('error', (event) => {
+		isspeaking = false
+
+		let recognitionsvg = getElement('recognitionsvg')
+		recognitionsvg.classList.remove('recognitionredanimation')
+
 		console.log("Error occurred: " + event.error)
 	})
 	
 	recognition.addEventListener('end', () => {
+		isspeaking = false
+		
+		let recognitionsvg = getElement('recognitionsvg')
+		recognitionsvg.classList.remove('recognitionredanimation')
+
 		console.log("Recognition ended")
 	})
 }else{
@@ -8072,7 +8086,11 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 function startrecognition(event){
 	if(recognition){
-		recognition.start()
+		if(!isspeaking){
+			recognition.start()
+		}else{
+			recognition.stop()
+		}
 	}
 }
 
@@ -11372,7 +11390,9 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 	}
 	await Promise.all(promises)
 
-	myconfetti.reset()
+	try{
+		myconfetti.reset()
+	}catch(e){}
 }
 
 
