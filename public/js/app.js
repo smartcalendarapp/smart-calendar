@@ -8020,6 +8020,7 @@ async function uploadtaskpicture(event) {
 let isspeaking = false
 let recognition;
 let recognitiontype;
+let recognitionerror;
 
 if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
@@ -8056,9 +8057,11 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	  
 	recognition.addEventListener('error', (event) => {
 		isspeaking = false
+
+		recognitionerror = event.error
 		updaterecognitionui()
 
-		console.log("Error occurred: " + event.error)
+		console.log("Recognition error occurred: " + event.error)
 	})
 	
 	recognition.addEventListener('end', () => {
@@ -8076,6 +8079,7 @@ function updaterecognitionui(){
 	let recognitionsvg = getElement('recognitionsvg')
 	let recognitionsvg2 = getElement('recognitionsvg2')
 
+	//display ui
 	if(isspeaking){
 		if(recognitiontype == 'task'){
 			recognitionsvg.classList.add('recognitionredanimation')
@@ -8087,6 +8091,19 @@ function updaterecognitionui(){
 			recognitionsvg.classList.remove('recognitionredanimation')
 		}else if(recognitiontype == 'event'){
 			recognitionsvg2.classList.remove('recognitionredanimation')
+		}
+	}
+
+	//error
+	if(recognitionerror){
+		let recognitiontooltip = getElement('recognitiontooltip')
+		let recognitiontooltip2 = getElement('recognitiontooltip2')
+
+		let errorhtml = `<span class="text-red text-14px">${recognitionerror}</span>`
+		if(recognitiontype == 'task'){
+			recognitiontooltip.innerHTML = errorhtml
+		}else if(recognitiontype == 'event'){
+			recognitiontooltip2.innerHTML = errorhtml
 		}
 	}
 }

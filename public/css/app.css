@@ -2425,11 +2425,16 @@ body {
 	background-color: var(--blue);
 }
 
-.infoinput:focus~.inputlinewrap .inputline {
+.infoinput:focus~.inputline {
 	width: 100%;
 	left: 0;
 }
 
+
+.infoinput:focus~.inputlinewrap .inputline {
+	width: 100%;
+	left: 0;
+}
 
 .infoinput::placeholder {
 	color: var(--text-secondary);
