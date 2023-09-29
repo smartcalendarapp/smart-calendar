@@ -1761,6 +1761,10 @@
 								<textarea rows="1" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle">
 								</textarea>
 								<span class="inputline"></span>
+
+								<div class="absolute top-0 bottom-0 left-0 display-flex flex-column justify-center">
+									<input type="file" accept="image/*" class="" onchange="uploadtaskpicture(event)"></input>
+								</div>
 							</div>
 							<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodo()">					
 								<div class="text-16px text-white display-flex flex-row gap-6px  pointer-none nowrap transition-none" id="submitcreatetodoaddnumber">Add</div>
@@ -2335,6 +2339,7 @@
 		<script src="https://unpkg.com/ical.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/rrule@2.7.2/dist/es5/rrule.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js" defer></script>
+		<script src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js' defer></script>
 		<script src="../app.js"></script>
 
 </body>

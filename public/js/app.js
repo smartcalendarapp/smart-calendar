@@ -8038,6 +8038,25 @@ function resizeaddtask(event){
 }
 
 
+
+//OCR to add task
+async function uploadtaskpicture(event) {
+	const input = event.target
+	const file = input.files[0]
+	if (file) {
+		const reader = new FileReader()
+		reader.readAsDataURL(file)
+		reader.onloadend = async () => {
+			const imageDataURL = reader.result
+			const worker = await Tesseract.createWorker('eng')
+			const data = await worker.recognize(imageDataURL)
+			await worker.terminate()
+			console.log(data)
+		}
+	}
+}
+  
+
 function typeaddtask(event, submit, index) {
 	let todoinputtitleold = getElement('todoinputtitleold')
 	let todoinputtitle = getElement('todoinputtitle')
