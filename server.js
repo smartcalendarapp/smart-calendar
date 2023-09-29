@@ -1818,10 +1818,6 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 			return !item.start.minute && !item.end.minute
 		}
 
-		function formatISODate(year, month, day){
-			return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-		}
-
 		for(let requestchange of requestchanges){
 			
 			if(requestchange.type == 'editevent'){
@@ -1831,8 +1827,8 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 				try{
 					let start, end;
 					if(isAllDay(item)){
-						start = { date: formatISODate(item.start.year, item.start.month, item.start.day), timeZone: timezonename }
-						end = { date: formatISODate(item.end.year, item.end.month, item.end.day), timeZone: timezonename }
+						start = { date: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().slice(0, 10), timeZone: timezonename }
+						end = { date:  new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().slice(0, 10), timeZone: timezonename }
 					}else{
 						start = { dateTime: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
 						end = { dateTime: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
@@ -1880,10 +1876,10 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 				try{
 					let start, end;
 					if(isAllDay(item)){
-						start = { date: formatISODate(item.start.year, item.start.month, item.start.day), timeZone: timezonename }
-						end = { date: formatISODate(item.end.year, item.end.month, item.end.day) }
+						start = { date: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().slice(0, 10), timeZone: timezonename }
+						end = { date:  new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().slice(0, 10), timeZone: timezonename }
 					}else{
-						start = { dateTime: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename, timeZone: timezonename }
+						start = { dateTime: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
 						end = { dateTime: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
 					}
 					console.warn(start, end)
