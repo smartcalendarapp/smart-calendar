@@ -1547,7 +1547,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 				})
 
 				if(response.status != 200){
-					throw new Error()
+					throw new Error(response.data?.error?.message)
 				}
 
 				item.lastsyncedgooglecalendardate = smartcalendar.lastsyncedgooglecalendardate
@@ -1571,7 +1571,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 				})
 
 				if(response.status != 200){
-					throw new Error()
+					throw new Error(response.data?.error?.message)
 				}
 				
 				item.id = response.data.id
@@ -1592,7 +1592,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 				})
 	
 				if(response.status != 200){
-					throw new Error()
+					throw new Error(response.data?.error?.message)
 				}
 			}catch(error){
 				console.error(error)
@@ -1638,7 +1638,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 
 				
 				if(response.status != 200){
-					throw new Error()
+					throw new Error(response.data?.error?.message)
 				}
 
 				if(item.calendarid != googlecalendaritem.calendar.id){
@@ -1650,7 +1650,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 					})
 	
 					if(response2.status != 200){
-						throw new Error()
+						throw new Error(response.data?.error?.message)
 					}
 				}
 
@@ -1688,7 +1688,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 				})
 
 				if(response.status != 200){
-					throw new Error()
+					throw new Error(response.data?.error?.message)
 				}
 
 				item.id = response.data.id
@@ -1714,7 +1714,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 				})
 	
 				if(response.status != 200){
-					throw new Error()
+					throw new Error(response.data?.error?.message)
 				}
 			}catch(error){
 				console.error(error)
@@ -1851,7 +1851,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 					})
 					
 					if(response.status != 200){
-						throw new Error()
+						throw new Error(response.data?.error?.message)
 					}
 
 
@@ -1864,7 +1864,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 						})
 		
 						if(response2.status != 200){
-							throw new Error()
+							throw new Error(response.data?.error?.message)
 						}
 
 						responsechanges.push({ type: 'editevent', id: item.id, googlecalendarid: requestchange.newgooglecalendarid })
@@ -1899,7 +1899,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 					})
 	
 					if(response.status != 200){
-						throw new Error()
+						throw new Error(response.data?.error?.message)
 					}
 
 					responsechanges.push({ type: 'createevent', id: item.id, googleeventid: response.data.id })
@@ -1916,7 +1916,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 					})
 		
 					if(response.status != 200){
-						throw new Error()
+						throw new Error(response.data?.error?.message)
 					}
 				}catch(error){
 					console.error(error)
@@ -1936,7 +1936,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 					})
 	
 					if(response.status != 200){
-						throw new Error()
+						throw new Error(response.data?.error?.message)
 					}
 				}catch(error){
 					console.error(error)
@@ -1955,7 +1955,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 					})
 	
 					if(response.status != 200){
-						throw new Error()
+						throw new Error(response.data?.error?.message)
 					}
 					
 					responsechanges.push({ type: 'createcalendar', id: item.id, googleid: response.data.id })
@@ -1971,7 +1971,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 					})
 		
 					if(response.status != 200){
-						throw new Error()
+						throw new Error(response.data?.error?.message)
 					}
 				}catch(error){
 					console.error(error)

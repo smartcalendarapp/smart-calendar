@@ -3834,6 +3834,9 @@ function todaycalendar() {
 	selectedeventid = null
 
 	calendar.updateCalendar()
+
+	let currentdate = new Date()
+	scrollcalendarY(currentdate.getHours() * 60 + currentdate.getMinutes())
 }
 
 function prevcalendar() {
