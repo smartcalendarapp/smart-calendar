@@ -8021,16 +8021,33 @@ async function uploadtaskpicture(event) {
 			await worker.terminate()
 			
 			let resultstring = data.data.text
-			if(resultstring){
+			if(resultstring){ 
+				resultstring = resultstring.replace(/\n/g,' ')
+
 				let todoinputtitle = getElement('todoinputtitle')
 				todoinputtitle.value = resultstring
 				typeaddtask()
+				resizeaddtask()
 			}
 		}
 	}
 }
 //here4
-  
+
+//speech recognition to add task
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
+recognition.continuous = false
+recognition.lang = 'en-US'
+
+recognition.addEventListener('result', event => {
+	const transcript = event.results[0][0].transcript.trim()
+	console.log(transcript)
+})
+
+function startrecognition(event){
+	recognition.start()
+}
+
 
 function typeaddtask(event, submit, index) {
 	let todoinputtitle = getElement('todoinputtitle')

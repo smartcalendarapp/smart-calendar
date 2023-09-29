@@ -1690,7 +1690,7 @@
 							<div class="display-flex flex-row border-8px background-primary backdrop-blur box-shadow flex-1 relative">
 
 								<!-- upload button -->
-								<div class="padding-left-12px display-flex flex-column justify-center">
+								<div class="padding-left-12px display-flex flex-column justify-center display-none">
 									<input type="file" accept="image/*" class="display-none" onchange="uploadtaskpicture(event)" id="uploadtaskpictureinput"></input>
 
 									<div class="tooltip background-tint-2 pointer hover:background-tint-3 transition-duration-100 border-round padding-6px display-flex" onclick="getElement('uploadtaskpictureinput').click()">
@@ -1701,6 +1701,20 @@
 											</g>
 										</svg>
 										<span class="tooltiptextright">Upload picture</span>
+									</div>
+								</div>
+
+
+								<!-- record button -->
+								<div class="padding-left-12px display-flex flex-column justify-center">
+									<div class="tooltip background-tint-2 pointer hover:background-tint-3 transition-duration-100 border-round padding-6px display-flex" onclick="startrecognition()">
+										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmaller">
+											<g opacity="1">
+											<path d="M128.004 10.0039L128.004 246.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+											<path d="M246.004 128.004L10.0039 128.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+											</g>
+										</svg>
+										<span class="tooltiptextright">Speak to add task</span>
 									</div>
 								</div>
 
