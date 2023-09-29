@@ -29,6 +29,9 @@
 .hover\:background-tint-2:hover{
 	background-color:var(--background-tint-2)
 }
+.hover\:background-tint-3:hover{
+	background-color:var(--background-tint-3)
+}
 .hover\:background-red:hover{
 	background-color:var(--red)
 }

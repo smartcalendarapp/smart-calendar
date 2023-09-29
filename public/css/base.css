@@ -7,6 +7,7 @@
 	--background-secondary-transparent:#f7f7f7b3;
 	--background-tint-1: #0000000F;
 	--background-tint-2: #0000001F;
+	--background-tint-3: #0000002E;
 	
 	--text-primary:#000000;
 	--text-secondary:#00000059;
@@ -60,6 +61,7 @@
 	--background-secondary-transparent:#17171ab3;
 	--background-tint-1: #ffffff0F;
 	--background-tint-2: #ffffff1F;
+	--background-tint-3: #ffffff2E;
 	
 	--text-primary:#ffffff;
 	--text-secondary:#ffffff59;
@@ -131,6 +133,9 @@
 }
 .background-tint-2{
 	background-color:var(--background-tint-2)
+}
+.background-tint-3{
+	background-color:var(--background-tint-3)
 }
 .background-red{
 	background-color:var(--red)

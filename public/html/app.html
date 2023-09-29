@@ -1758,14 +1758,28 @@
 						<!-- add task -->
 						<div class="width-full relative display-flex align-center flex-row gap-12px">
 							<div class="display-flex flex-row border-8px background-primary backdrop-blur box-shadow overflow-hidden flex-1 relative">
+
+								<!-- upload button -->
+								<div class="padding-left-12px display-flex flex-column justify-center">
+									<input type="file" accept="image/*" class="display-none" onchange="uploadtaskpicture(event)" id="uploadtaskpictureinput"></input>
+
+									<div class="background-tint-2 pointer hover:background-tint-3 transition-duration-100 border-round padding-6px display-flex" onclick="getElement('uploadtaskpictureinput').click()">
+										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmall">
+											<g>
+											<path d="M240.747 128L15.2527 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="29.5557"></path>
+											<path d="M128 15.2527L128 240.747" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="29.5557"></path>
+											</g>
+										</svg>
+									</div>
+								</div>
+
+
+								<!-- input -->
 								<textarea rows="1" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle">
 								</textarea>
 								<span class="inputline"></span>
-
-								<div class="absolute top-0 bottom-0 left-0 display-flex flex-column justify-center">
-									<input type="file" accept="image/*" class="" onchange="uploadtaskpicture(event)"></input>
-								</div>
 							</div>
+							
 							<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodo()">					
 								<div class="text-16px text-white display-flex flex-row gap-6px  pointer-none nowrap transition-none" id="submitcreatetodoaddnumber">Add</div>
 							</div>
