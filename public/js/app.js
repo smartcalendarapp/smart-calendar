@@ -4159,7 +4159,6 @@ function updateonboardingscreen(){
 
 	//individual pages
 
-	getElement('todopopup').classList.remove('z-index-10000')
 	getElement('createtodoitemduedate').classList.remove('z-index-10001')
 	getElement('createtodoitemduration').classList.remove('z-index-10001')
 	getElement('createtodoitempriority').classList.remove('z-index-10001')
@@ -4230,7 +4229,6 @@ function updateonboardingscreen(){
 		onboardingaddtasktodolistdiv.innerHTML = output.join('')
 
 
-		getElement('todopopup').classList.add('z-index-10000')
 		getElement('createtodoitemduedate').classList.add('z-index-10001')
 		getElement('createtodoitemduration').classList.add('z-index-10001')
 		getElement('createtodoitempriority').classList.add('z-index-10001')
