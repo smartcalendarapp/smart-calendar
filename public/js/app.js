@@ -801,10 +801,10 @@ class Calendar {
 
 			this.reminder = []
 			let tempstart = new Date(this.start.year, this.start.month, this.start.day, 0, this.start.minute).getTime()
-			if(tempstart - Date.now() > 86400000 * 7){
+			if(tempstart - Date.now() > 86400000 * 7 && !Calendar.Event.isAllDay(this)){
 				this.reminder.push({ timebefore: 86400000 })
 				this.reminder.push({ timebefore: 0 })
-			}else if(floor(tempstart, 86400000) != floor(Date.now(), 86400000)){
+			}else if(floor(tempstart, 86400000) != floor(Date.now(), 86400000) && !Calendar.Event.isAllDay(this)){
 				this.reminder.push({ timebefore: 3600000 })
 				this.reminder.push({ timebefore: 0 })
 			}else{
@@ -11808,9 +11808,7 @@ function fixrepeat(item) {
 	}
 }
 
-let tempinterval;
-let tempfrequency;
-let tempbyday;
+let tempinterval, tempfrequency, tempbyday, tempuntil;
 function submitcustomrepeat() {
 	let item = calendar.events.find(f => f.id == selectedeventid)
 	if (!item) return
@@ -11818,6 +11816,7 @@ function submitcustomrepeat() {
 	item.repeat.frequency = tempfrequency
 	item.repeat.interval = tempinterval
 	item.repeat.byday = deepCopy(tempbyday)
+	item.repeat.until = tempuntil
 	fixrepeat(item)
 
 	calendar.updateEvents()
@@ -11846,6 +11845,7 @@ function updatecustomrepeat() {
 	tempinterval = tempinterval || 1
 	tempfrequency = tempfrequency || 0
 	tempbyday = tempbyday || []
+	tempuntil = tempuntil || null
 
 	let repeatintervalinput = getElement('repeatintervalinput')
 	let repeatfrequencybutton = getElement('repeatfrequencybutton')
@@ -11864,6 +11864,7 @@ function updatecustomrepeat() {
 	}
 
 
+	//day of week
 	let repeatweek = getElement('repeatweek')
 	repeatweek.classList.add('display-none')
 	if (tempfrequency == 1) {
@@ -11878,6 +11879,25 @@ function updatecustomrepeat() {
 		}
 	}
 
+	//until
+	let repeatuntilnever = getElement('repeatuntilnever')
+	let repeatuntilondate = getElement('repeatuntilondate')
+	let repeatuntilondateui = getElement('repeatuntilondateui')
+
+	let repeatuntildate;
+	if(tempuntil && !isNaN(new Date(tempuntil).getTime())){
+		repeatuntildate = new Date(tempuntil)
+	}
+	
+	repeatuntilnever.innerHTML = getcheckcircle(!repeatuntildate)
+	repeatuntilondate.innerHTML = getcheckcircle(!!repeatuntildate)
+	if(repeatuntildate){
+		repeatuntilondateui.classList.remove('greyedoutevent')
+	}else{
+		repeatuntilondateui.classList.add('greyedoutevent')
+	}
+//here4
+
 	let repeatoptionbutton = getElement('repeatoptionbutton')
 	let repeatcustommenu = getElement('repeatcustommenu')
 	repeatcustommenu.classList.remove('hiddenpopup')
@@ -11885,6 +11905,44 @@ function updatecustomrepeat() {
 	repeatcustommenu.style.top = fixtop(repeatoptionbutton.getBoundingClientRect().top + repeatoptionbutton.offsetHeight, repeatcustommenu) + 'px'
 	repeatcustommenu.style.left = fixleft(repeatoptionbutton.getBoundingClientRect().left, repeatcustommenu) + 'px'
 }
+
+
+//input repeat until
+function inputrepeatuntil(event){
+	let repeatuntilinput = getElement('repeatuntilinput')
+	let string = repeatuntilinput.value
+
+	let [myendyear, myendmonth, myendday] = getDate(string).value
+
+	let tempdate = new Date(myendyear, myendmonth, myendday)
+
+	if (!isNaN(tempdate.getTime())) {
+		tempuntil = tempdate.getTime()
+	}
+
+	updatecustomrepeat()
+}
+
+function clickrepeatuntiltype(type){
+	if(type == 0){
+		tempuntil = null
+	}else if(type == 1){
+		let repeatuntildate;
+		if(tempuntil && !isNaN(new Date(tempuntil).getTime())){
+			repeatuntildate = new Date(tempuntil)
+		}
+
+		if(!repeatuntildate){
+			let tempdate = new Date()
+			tempdate.setHours(0,0,0,0)
+			tempdate.setMonth(tempdate.getMonth() + 1)
+			tempuntil = tempdate.getTime()
+		}
+	}
+	
+	updatecustomrepeat()
+}
+
 
 //click day of week
 function clickrepeatdayofweek(index) {
@@ -11948,6 +12006,7 @@ function selectrepeatoption(index) {
 		tempinterval = item.repeat.interval
 		tempfrequency = item.repeat.frequency
 		tempbyday = deepCopy(item.repeat.byday)
+		tempuntil = item.repeat.until
 		updatecustomrepeat()
 
 		let repeatoptionbutton = getElement('repeatoptionbutton')

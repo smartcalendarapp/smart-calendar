@@ -496,25 +496,24 @@
 	</div>
 
 	
-	<div class="schedulemenu hiddenpopup popup z-index-300" id="repeatcustommenu">
-		<div class="infogroup">
-			<div class="text-18px text-primary">Custom repeat</div>
-			<div class="display-flex flex-row gap-6px align-center">
-				<div class="text-primary text-14px nowrap">Repeat every</div>
-	
-				<div class="inputgroup">
-					<div class="inputgroupitem">
-						<input onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputrepeatinterval(event)" id="repeatintervalinput" class="infoinput width-96px" type="number" min="1" placeholder="Interval">
-							<span class="inputline"></span>
-						</input>
-					</div>
-				</div>
-				
-				<div class="border-8px transition-duration-100 pointer background-tint-1 hover:background-tint-2 text-14px text-primary padding-8px-12px popupbutton" onclick="clickrepeatfrequency()" id="repeatfrequencybutton"> 
+	<div class="schedulemenu gap-24px hiddenpopup popup z-index-300" id="repeatcustommenu">
+		<div class="text-18px text-primary">Custom repeat</div>
+
+		<div class="display-flex flex-row gap-6px align-center">
+			<div class="text-primary text-14px nowrap">Repeat every</div>
+
+			<div class="inputgroup">
+				<div class="inputgroupitem">
+					<input onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputrepeatinterval(event)" id="repeatintervalinput" class="infoinput width-96px" type="number" min="1" placeholder="Interval">
+						<span class="inputline"></span>
+					</input>
 				</div>
 			</div>
 			
+			<div class="border-8px transition-duration-100 pointer background-tint-1 hover:background-tint-2 text-14px text-primary padding-8px-12px popupbutton" onclick="clickrepeatfrequency()" id="repeatfrequencybutton"> 
+			</div>
 		</div>
+			
 
 		<div class="infogroup display-none" id="repeatweek">
 			<div class="text-primary text-14px">Repeat on</div>
@@ -526,6 +525,26 @@
 				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(4)">T</div>
 				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(5)">F</div>
 				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(6)">S</div>
+			</div>
+		</div>
+
+		<div class="infogroup display-none">
+			<div class="text-primary text-14px">Ends</div>
+			<div class="display-flex flex-column gap-6px">
+				<div class="display-flex flex-row gap-6px">
+					<div class="todoitemcheckbox tooltip display-flex" id="repeatuntilnever" onclick="clickrepeatuntiltype(0)"></div>
+					<div class="text-14px text-primary">Never</div>
+				</div>
+				<div class="display-flex flex-row gap-6px">
+					<div class="todoitemcheckbox tooltip display-flex" id="repeatuntilondate" onclick="clickrepeatuntiltype(1)"></div>
+					<div class="text-14px text-primary">On date</div>
+
+					<div class="inputgroupitem flex-1" id="repeatuntilondateui">
+						<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputrepeatuntil(event)" id="repeatuntilinput" class="infoinput inputdatepicker" type="text" placeholder="Add date"></input>
+						<span class="inputline"></span>
+					</div>
+
+				</div>
 			</div>
 		</div>
 
