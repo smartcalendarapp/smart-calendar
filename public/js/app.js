@@ -8037,6 +8037,8 @@ async function uploadtaskpicture(event) {
 //speech recognition to add task
 let isspeaking = false
 let recognition;
+let recognitiontype;
+
 if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
 	recognition.continuous = false
@@ -8046,53 +8048,80 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		const transcript = event.results[0][0].transcript.trim()
 
 		if(transcript){
-			let todoinputtitle = getElement('todoinputtitle')
-			todoinputtitle.value = transcript
-			typeaddtask()
-			resizeaddtask()
-			clickaddonetask()
+			if(recognitiontype == 'task'){
+				let todoinputtitle = getElement('todoinputtitle')
+				todoinputtitle.value = transcript
+
+				typeaddtask()
+				clickaddonetask()
+				resizeaddtask()
+			}else if(recognitiontype == 'event'){
+				let createeventtitle = getElement('createeventtitle')
+				createeventtitle.value = transcript
+
+				typeaddevent()
+				createeventtitle.focus()
+			}
 		}
 	})
 	
 	recognition.addEventListener('start', () => {
 		isspeaking = true
-
-		let recognitionsvg = getElement('recognitionsvg')
-		recognitionsvg.classList.add('recognitionredanimation')
+		updaterecognitionui()
 
 		console.log("Recognition started")
 	})
 	  
 	recognition.addEventListener('error', (event) => {
 		isspeaking = false
-
-		let recognitionsvg = getElement('recognitionsvg')
-		recognitionsvg.classList.remove('recognitionredanimation')
+		updaterecognitionui()
 
 		console.log("Error occurred: " + event.error)
 	})
 	
 	recognition.addEventListener('end', () => {
 		isspeaking = false
-		
-		let recognitionsvg = getElement('recognitionsvg')
-		recognitionsvg.classList.remove('recognitionredanimation')
+		updaterecognitionui()
 
 		console.log("Recognition ended")
 	})
 }else{
 	getElement('recognitionwrap').classList.add('display-none')
+	getElement('recognitionwrap2').classList.add('display-none')
 }
 
-function startrecognition(event){
+function updaterecognitionui(){
+	let recognitionsvg = getElement('recognitionsvg')
+	let recognitionsvg2 = getElement('recognitionsvg2')
+
+	if(isspeaking){
+		if(recognitiontype == 'task'){
+			recognitionsvg.classList.add('recognitionredanimation')
+		}else if(recognitiontype == 'event'){
+			recognitionsvg2.classList.add('recognitionredanimation')
+		}
+	}else{
+		if(recognitiontype == 'task'){
+			recognitionsvg.classList.remove('recognitionredanimation')
+		}else if(recognitiontype == 'event'){
+			recognitionsvg2.classList.remove('recognitionredanimation')
+		}
+	}
+}
+
+function startrecognition(type){
 	if(recognition){
 		if(!isspeaking){
+			recognitiontype = type
+
 			recognition.start()
 		}else{
 			recognition.stop()
 		}
 	}
 }
+
+
 
 
 function typeaddtask(event, submit, index) {

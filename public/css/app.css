@@ -1097,15 +1097,15 @@ body {
 
 @keyframes recognitionredanimation {
 	0% {
-		opacity: 0.5;
+		opacity: 1
 	}
 
 	50% {
-		opacity: 1;
+		opacity: 0.5;
 	}
 
 	100% {
-		opacity: 0.5;
+		opacity: 1;
 	}
 }
 
@@ -1114,7 +1114,7 @@ body {
 	animation-duration: 2s;
 	animation-iteration-count: infinite;
 	animation-timing-function: ease-in-out;
-	opacity: 0.5;
+	opacity: 1;
 	fill:var(--red) !important
 }
 
