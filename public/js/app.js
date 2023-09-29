@@ -11883,6 +11883,7 @@ function updatecustomrepeat() {
 	let repeatuntilnever = getElement('repeatuntilnever')
 	let repeatuntilondate = getElement('repeatuntilondate')
 	let repeatuntilondateui = getElement('repeatuntilondateui')
+	let repeatuntilinput = getElement('repeatuntilinput')
 
 	let repeatuntildate;
 	if(tempuntil && !isNaN(new Date(tempuntil).getTime())){
@@ -11896,7 +11897,9 @@ function updatecustomrepeat() {
 	}else{
 		repeatuntilondateui.classList.add('greyedoutevent')
 	}
-//here4
+
+	repeatuntilinput.value = repeatuntildate ? getDMDYText(repeatuntildate) : ''
+
 
 	let repeatoptionbutton = getElement('repeatoptionbutton')
 	let repeatcustommenu = getElement('repeatcustommenu')
@@ -11939,7 +11942,7 @@ function clickrepeatuntiltype(type){
 			tempuntil = tempdate.getTime()
 		}
 	}
-	
+
 	updatecustomrepeat()
 }
 
