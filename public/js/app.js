@@ -1843,7 +1843,6 @@ class Calendar {
 							infodata.push(`<div class="horizontalbar"></div>`)
 						}
 
-						//here4
 						if (item.type == 1) {
 							//due date
 							//time needed
@@ -2047,7 +2046,7 @@ class Calendar {
 							let itemvalue2 = item.timewindow.time
 							let modelvalue = timewindowpresets[+index]
 
-							if (isEqualArray(modelvalue.day.byday, itemvalue.byday) && itemvalue2.time.startminute == modelvalue.time.startminute && itemvalue2.time.endminute == modelvalue.time.endminute) {
+							if (isEqualArray(modelvalue.day.byday, itemvalue.byday) && itemvalue2.startminute == modelvalue.time.startminute && itemvalue2.endminute == modelvalue.time.endminute) {
 								div.classList.add('selectedbutton')
 							} else {
 								div.classList.remove('selectedbutton')
@@ -2307,7 +2306,7 @@ class Calendar {
 			let itemvalue2 = item.timewindow.time
 			let modelvalue = timewindowpresets[+index]
 
-			if (isEqualArray(modelvalue.day.byday, itemvalue.byday) && itemvalue2.time.startminute == modelvalue.time.startminute && itemvalue2.time.endminute == modelvalue.time.endminute) {
+			if (isEqualArray(modelvalue.day.byday, itemvalue.byday) && itemvalue2.startminute == modelvalue.time.startminute && itemvalue2.endminute == modelvalue.time.endminute) {
 				div.classList.add('selectedbutton')
 			} else {
 				div.classList.remove('selectedbutton')
@@ -7030,8 +7029,9 @@ function clickeventtimewindowpreset(index){
 
 	let option = timewindowpresets[index]
 	if (option) {
-		item.timewindow.time.startminute = option.startminute
-		item.timewindow.time.endminute = option.endminute
+		item.timewindow.time.startminute = option.time.startminute
+		item.timewindow.time.endminute = option.time.endminute
+		item.timewindow.day.byday = option.day.byday
 	}
 	
 	calendar.updateEvents()
@@ -8197,7 +8197,6 @@ function startrecognition(type){
 		}
 	}
 }
-//here4
 
 
 
@@ -9342,8 +9341,9 @@ function clicktodotimewindowpreset(index){
 
 	let option = timewindowpresets[index]
 	if (option) {
-		item.timewindow.time.startminute = option.startminute
-		item.timewindow.time.endminute = option.endminute
+		item.timewindow.time.startminute = option.time.startminute
+		item.timewindow.time.endminute = option.time.endminute
+		item.timewindow.day.byday = option.day.byday
 	}
 	
 	calendar.updateEvents()
@@ -9351,7 +9351,6 @@ function clicktodotimewindowpreset(index){
 	calendar.updateInfo()
 	calendar.updateHistory()
 }
-//here4
 
 function clickedittodotimewindowtime(index) {
 	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
