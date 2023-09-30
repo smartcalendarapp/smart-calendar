@@ -44,9 +44,19 @@ const timetimewindowoptiondata = [
 	{ startminute: 540, endminute: 1020, text: 'Work hours' },
 ]
 
+const timewindowpresets = [
+	{ day: { byday: [] }, time: { startminute: null, endminute: null }, text: 'Any time' },
+	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 9*60, endminute: 17*60 }, text: 'Work hours' },
+	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 8*60, endminute: 15*60 }, text: 'School hours' },
+	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 15*60, endminute: 20*60 }, text: 'After school' },
+	{ day: { byday: [] }, time: { startminute: 5*60, endminute: 9*60 }, text: 'Early morning' }
+]
+
 const MAX_TODO_DURATION = 1440
 
+
 //FUNCTIONS
+
 function generateID() {
 	let uuid = ''
 	const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
@@ -1880,10 +1890,11 @@ class Calendar {
 								<div class="inputgroup">
 				 					<div class="text-14px text-primary width90px">Time slot</div>
 					 				<div class="inputeventtype">
-										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset({ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 9*60, endminute: 17*60 } })">Work hours</div>
-										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset({ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 8*60, endminute: 15*60 } })">School hours</div>
-					 					<div class="inputeventtypechild" onclick="clickeventtimewindowpreset({ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 15*60, endminute: 20*60 } })">After school</div>
-										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset({ day: { byday: [] }, time: { startminute: 5*60, endminute: 9*60 } })">Early morning</div>
+									 	<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(0)">Any time</div>
+										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(1)">Work hours</div>
+										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(2)">School hours</div>
+					 					<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(3)">After school</div>
+										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(4)">Early morning</div>
 									</div>
 				 				</div>
 							</div>
@@ -6985,13 +6996,18 @@ function clickeventpriority(index) {
 //time windows
 
 //preset
-function clickeventtimewindowpreset(data){
+function clickeventtimewindowpreset(index){
 	let item = calendar.events.find(x => x.id == selectedeventid)
 	if (!item) return
 
-	item.timewindow = deepCopy(data)
-
+	let option = timewindowpresets[index]
+	if (option) {
+		item.timewindow.time.startminute = option.startminute
+		item.timewindow.time.endminute = option.endminute
+	}
+	
 	calendar.updateEvents()
+	calendar.updateTodo()
 	calendar.updateInfo()
 	calendar.updateHistory()
 }
@@ -8416,10 +8432,11 @@ function gettododata(item) {
 					<div class="inputgroup">
 						<div class="text-14px text-primary width90px">Time slot</div>
 						<div class="inputeventtype">
-							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset({ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 9*60, endminute: 17*60 } })">Work hours</div>
-							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset({ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 8*60, endminute: 15*60 } })">School hours</div>
-							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset({ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 15*60, endminute: 20*60 } })">After school</div>
-							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset({ day: { byday: [] }, time: { startminute: 5*60, endminute: 9*60 } })">Early morning</div>
+							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(0)">Any time</div>
+							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(1)">Work hours</div>
+							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(2)">School hours</div>
+							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(3)">After school</div>
+							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(4)">Early morning</div>
 						</div>
 					</div>
 				</div>
@@ -9291,11 +9308,15 @@ function edittodo(id) {
 
 
 //preset
-function clicktodotimewindowpreset(data){
+function clicktodotimewindowpreset(index){
 	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
 	if (!item) return
 
-	item.timewindow = deepCopy(data)
+	let option = timewindowpresets[index]
+	if (option) {
+		item.timewindow.time.startminute = option.startminute
+		item.timewindow.time.endminute = option.endminute
+	}
 	
 	calendar.updateEvents()
 	calendar.updateTodo()
