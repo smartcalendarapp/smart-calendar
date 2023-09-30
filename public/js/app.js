@@ -1889,7 +1889,7 @@ class Calendar {
 							<div class="infogroup">
 								<div class="inputgroup">
 				 					<div class="text-14px text-primary width90px">Time slot</div>
-					 				<div class="inputeventtype">
+					 				<div class="inputeventtype" id="inputtimewindowpresets">
 									 	<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(0)">Any time</div>
 										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(1)">Work hours</div>
 										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(2)">School hours</div>
@@ -2034,6 +2034,20 @@ class Calendar {
 						let inputeventpriority = getElement('inputeventpriority')
 						for (let [index, div] of Object.entries(inputeventpriority.children)) {
 							if (index == item.priority) {
+								div.classList.add('selectedbutton')
+							} else {
+								div.classList.remove('selectedbutton')
+							}
+						}
+
+						//time window presets
+						let inputtimewindowpresets = getElement('inputtimewindowpresets')
+						for (let [index, div] of Object.entries(inputtimewindowpresets.children)) {
+							let itemvalue = item.timewindow.day
+							let itemvalue2 = item.timewindow.time
+							let modelvalue = timewindowpresets[+index]
+
+							if (isEqualArray(modelvalue.day.byday, itemvalue.byday) && itemvalue2.time.startminute == modelvalue.time.startminute && itemvalue2.time.endminute == modelvalue.time.endminute) {
 								div.classList.add('selectedbutton')
 							} else {
 								div.classList.remove('selectedbutton')
@@ -2280,6 +2294,20 @@ class Calendar {
 		let todoeditpriority = getElement('todoeditpriority')
 		for (let [index, div] of Object.entries(todoeditpriority.children)) {
 			if (index == item.priority) {
+				div.classList.add('selectedbutton')
+			} else {
+				div.classList.remove('selectedbutton')
+			}
+		}
+
+		//time window presets
+		let inputtodotimewindowpresets = getElement('inputtodotimewindowpresets')
+		for (let [index, div] of Object.entries(inputtodotimewindowpresets.children)) {
+			let itemvalue = item.timewindow.day
+			let itemvalue2 = item.timewindow.time
+			let modelvalue = timewindowpresets[+index]
+
+			if (isEqualArray(modelvalue.day.byday, itemvalue.byday) && itemvalue2.time.startminute == modelvalue.time.startminute && itemvalue2.time.endminute == modelvalue.time.endminute) {
 				div.classList.add('selectedbutton')
 			} else {
 				div.classList.remove('selectedbutton')
@@ -8431,7 +8459,7 @@ function gettododata(item) {
 				<div class="infogroup">
 					<div class="inputgroup">
 						<div class="text-14px text-primary width90px">Time slot</div>
-						<div class="inputeventtype">
+						<div class="inputeventtype" id="inputtodotimewindowpresets">
 							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(0)">Any time</div>
 							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(1)">Work hours</div>
 							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(2)">School hours</div>
