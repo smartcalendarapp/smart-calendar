@@ -1833,6 +1833,7 @@ class Calendar {
 							infodata.push(`<div class="horizontalbar"></div>`)
 						}
 
+						//here4
 						if (item.type == 1) {
 							//due date
 							//time needed
@@ -1874,8 +1875,21 @@ class Calendar {
 									</div>
 								</div>
 							</div>
-				 
+
 							<div class="infogroup">
+								<div class="inputgroup">
+				 					<div class="text-14px text-primary width90px">Time slot</div>
+					 				<div class="inputeventtype">
+										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset({ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 9*60, endminute: 17*60 } })">Work hours</div>
+										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset({ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 8*60, endminute: 15*60 } })">School hours</div>
+					 					<div class="inputeventtypechild" onclick="clickeventtimewindowpreset({ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 15*60, endminute: 20*60 } })">After school</div>
+										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset({ day: { byday: [] }, time: { startminute: 5*60, endminute: 9*60 } })">Early morning</div>
+									</div>
+				 				</div>
+							</div>
+						
+				 
+							<div class="infogroup display-none">
 								<div class="inputgroup">
 				 					<div class="text-14px text-primary width90px">Preferred day</div>
 					 				<div class="inputeventtype" id="inputtimewindowday">
@@ -1886,7 +1900,7 @@ class Calendar {
 				 				</div>
 							</div>
 				
-							<div class="infogroup">
+							<div class="infogroup display-none">
 								<div class="inputgroup">
 				 					<div class="text-14px text-primary width90px">Preferred time</div>
 					 				<div class="inputeventtype" id="inputtimewindowtime">
@@ -1898,9 +1912,9 @@ class Calendar {
 									</div>
 				 				</div>
 							</div>
-				
-							<div class="horizontalbar"></div>
 							`)
+
+							infodata.push(`<div class="horizontalbar"></div>`)
 						}
 
 						infodata.push(`
@@ -3702,7 +3716,7 @@ function run() {
 
 	setTimeout(function(){
 		needtoautoschedule = true
-	}, 5000)
+	}, 3000)
 
 
 	async function getclientdata() {
@@ -6318,7 +6332,7 @@ async function getclientgooglecalendar() {
 		} else if (response.status == 200) {
 			const data = await response.json()
 
-			if(calendar.lastmodified > tempstartgetclientgooglecalendardate){
+			if(calendar.lastmodified > tempstartgetclientgooglecalendardate || isautoscheduling){
 				isgettingclientgooglecalendar = false
 				return
 			}
@@ -6966,7 +6980,22 @@ function clickeventpriority(index) {
 	}
 }
 
+
+
 //time windows
+
+//preset
+function clickeventtimewindowpreset(data){
+	let item = calendar.events.find(x => x.id == selectedeventid)
+	if (!item) return
+
+	item.timewindow = deepCopy(data)
+
+	calendar.updateEvents()
+	calendar.updateInfo()
+	calendar.updateHistory()
+}
+
 function clickeventtimewindowday(index) {
 	let item = calendar.events.find(x => x.id == selectedeventid)
 	if (!item) return
@@ -6980,6 +7009,7 @@ function clickeventtimewindowday(index) {
 	calendar.updateInfo()
 	calendar.updateHistory()
 }
+
 function clickeventtimewindowtime(index) {
 	let item = calendar.events.find(x => x.id == selectedeventid)
 	if (!item) return
@@ -6994,6 +7024,7 @@ function clickeventtimewindowtime(index) {
 	calendar.updateInfo()
 	calendar.updateHistory()
 }
+
 
 
 
@@ -8097,11 +8128,12 @@ function updaterecognitionui(){
 	}
 
 	//error
-	if(recognitionerror){
+	const permanentrecognitionerrors = ['service-not-allowed', 'not-allowed']
+	if(recognitionerror && permanentrecognitionerrors.includes(recognitionerror)){
 		let recognitiontooltip = getElement('recognitiontooltip')
 		let recognitiontooltip2 = getElement('recognitiontooltip2')
 
-		let errorhtml = `<span class="text-red text-14px">Dictation unsupported by browser</span>`
+		let errorhtml = `<span class="text-red text-14px">Dictation not supported by browser</span>`
 		if(recognitiontype == 'task'){
 			recognitiontooltip.innerHTML = errorhtml
 		}else if(recognitiontype == 'event'){
@@ -8382,6 +8414,18 @@ function gettododata(item) {
 
 				<div class="infogroup">
 					<div class="inputgroup">
+						<div class="text-14px text-primary width90px">Time slot</div>
+						<div class="inputeventtype">
+							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset({ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 9*60, endminute: 17*60 } })">Work hours</div>
+							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset({ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 8*60, endminute: 15*60 } })">School hours</div>
+							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset({ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 15*60, endminute: 20*60 } })">After school</div>
+							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset({ day: { byday: [] }, time: { startminute: 5*60, endminute: 9*60 } })">Early morning</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="infogroup display-none">
+					<div class="inputgroup">
 						<div class="text-14px text-primary width90px">Preferred day</div>
 						<div class="inputeventtype width-fit flex-grow-0 flex-basis-auto" id="todoedittimewindowday">
 							<div class="inputeventtypechild" onclick="clickedittodotimewindowday(0)">Any day</div>
@@ -8391,7 +8435,7 @@ function gettododata(item) {
 					</div>
 				</div>
 	
-				<div class="infogroup">
+				<div class="infogroup display-none">
 					<div class="inputgroup">
 						<div class="text-14px text-primary width90px">Preferred time</div>
 						<div class="inputeventtype width-fit flex-grow-0 flex-basis-auto" id="todoedittimewindowtime">
@@ -9245,6 +9289,20 @@ function edittodo(id) {
 }
 
 
+
+//preset
+function clicktodotimewindowpreset(data){
+	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
+	if (!item) return
+
+	item.timewindow = deepCopy(data)
+	
+	calendar.updateEvents()
+	calendar.updateTodo()
+	calendar.updateInfo()
+	calendar.updateHistory()
+}
+//here4
 
 function clickedittodotimewindowtime(index) {
 	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)

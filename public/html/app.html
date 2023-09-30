@@ -1241,8 +1241,13 @@
 			
 			<div class="flex-shrink-0 transition-duration-100">
 				<div class="border-8px flex-1 bordertertiary display-flex flex-row relative">
+					<input oninput="typeaddevent(event)" onclick="if(gtag){gtag('event', 'button_click', { useraction: 'Focus title - add event' })}" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.key == 'Enter'){ submitcreateevent(event) }" placeholder="Meeting with Cathy tomorrow 9:00 1 hour" autocomplete="off" maxlength="2000" id="createeventtitle"></input>
+					<span class="inputlinewrap">
+						<span class="inputline"></span>
+					</span>
+
 					<!-- record button -->
-					<div class="padding-left-12px display-flex flex-column justify-center" id="recognitionwrap2">
+					<div class="padding-right-12px display-flex flex-column justify-center" id="recognitionwrap2">
 						<div class="tooltip pointer hover:background-tint-2 transition-duration-100 border-round padding-6px display-flex" onclick="startrecognition('event')">
 							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="fillbutton" id="recognitionsvg2">
 								<g>
@@ -1256,10 +1261,6 @@
 						</div>
 					</div>
 
-					<input oninput="typeaddevent(event)" onclick="if(gtag){gtag('event', 'button_click', { useraction: 'Focus title - add event' })}" class="infoinput text-16px padding-12px transparentinput" onkeydown="if(event.key == 'Enter'){ submitcreateevent(event) }" placeholder="Meeting with Cathy tomorrow 9:00 1 hour" autocomplete="off" maxlength="2000" id="createeventtitle"></input>
-					<span class="inputlinewrap">
-						<span class="inputline"></span>
-					</span>
 				</div>
 			</div>
 
@@ -1705,8 +1706,15 @@
 								</div>
 
 
+								<!-- input -->
+								<textarea rows="1" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle">
+								</textarea>
+								<span class="inputlinewrap">
+									<span class="inputline"></span>
+								</span>
+
 								<!-- record button -->
-								<div class="padding-left-12px display-flex flex-column justify-center" id="recognitionwrap">
+								<div class="padding-right-12px display-flex flex-column justify-center" id="recognitionwrap">
 									<div class="tooltip pointer hover:background-tint-2 transition-duration-100 border-round padding-6px display-flex" onclick="startrecognition('task')">
 										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="fillbutton" id="recognitionsvg">
 											<g>
@@ -1721,12 +1729,6 @@
 								</div>
 
 
-								<!-- input -->
-								<textarea rows="1" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle">
-								</textarea>
-								<span class="inputlinewrap">
-									<span class="inputline"></span>
-								</span>
 							</div>
 							
 							<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodo()">					
