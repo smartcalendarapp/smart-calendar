@@ -959,11 +959,12 @@ app.post('/auth/google', async (req, res, next) => {
 	try{
 		let options = req.body.options
 
+		console.warn(req.query.state)
 		const authoptions = {
 			access_type: 'offline',
 			scope: ['profile', 'email'],
-			state: req.query.state,
 			GOOGLE_REDIRECT_URI: GOOGLE_REDIRECT_URI,
+			state: req.query.state,
 		}
 		if(options.scope?.includes('calendar')){
 			authoptions.scope.push('https://www.googleapis.com/auth/calendar')
