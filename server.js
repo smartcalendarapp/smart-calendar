@@ -959,14 +959,10 @@ app.post('/auth/google', async (req, res, next) => {
 	try{
 		let options = req.body.options
 
-		const stateFromHeader = req.headers['x-app-state'];
-		const stateFromBody = req.body.state;
-		const stateFromQuery = req.query.state;
+		const state = req.header('X-App-State');
     
-		console.warn(`State from header: ${stateFromHeader}`);
-		console.warn(`State from body: ${stateFromBody}`);
-		console.warn(`State from query: ${stateFromQuery}`);
-		
+		console.warn(`State: ${state}`)
+
 
 		const authoptions = {
 			access_type: 'offline',
