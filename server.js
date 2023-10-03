@@ -960,20 +960,15 @@ app.post('/auth/google', async (req, res, next) => {
 		let options = req.body.options
 
 		let state;
-
-		console.warn(req.headers)
-		
 		const useragent = req.headers['user-agent']
 		if (useragent.includes('iPhone')) {
 			state = 'iOSApp'
 		}
 
-
 		const authoptions = {
 			access_type: 'offline',
 			scope: ['profile', 'email'],
 			GOOGLE_REDIRECT_URI: GOOGLE_REDIRECT_URI,
-			state: state
 		}
 		if(options?.scope?.includes('calendar')){
 			authoptions.scope.push('https://www.googleapis.com/auth/calendar')
@@ -1035,8 +1030,8 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		})
 
 
-		let finalredirectsuccess = req.body.state === 'iOSApp' ? `https://smartcalendar.us/oauth-callback?token=${tokens.id_token}` : `/app`
-		console.warn(req.body.state, finalredirectsuccess)
+		let finalredirectsuccess = req.query.state === 'iOSApp' ? `https://smartcalendar.us/oauth-callback?token=${tokens.id_token}` : `/app`
+		console.warn(req.query.state, finalredirectsuccess)
 
 		//get googleid
 		const ticket = await googleclient.verifyIdToken({
