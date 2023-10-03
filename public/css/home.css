@@ -286,9 +286,6 @@ img{
 	background-color:var(--background-primary-home)
 }
 
-.homebackgroundtransparent{
-	background-color:var(--background-primary-home-transparent)
-}
 
 .hiddenfade {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s, left 0s 0.2s, top 0s 0.2s;
