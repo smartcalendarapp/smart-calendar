@@ -959,14 +959,20 @@ app.post('/auth/google', async (req, res, next) => {
 	try{
 		let options = req.body.options
 
-		let state = req.headers['x-app-state']
-		console.warn(state)
+		const stateFromHeader = req.headers['x-app-state'];
+		const stateFromBody = req.body.state;
+		const stateFromQuery = req.query.state;
+    
+		console.warn(`State from header: ${stateFromHeader}`);
+		console.warn(`State from body: ${stateFromBody}`);
+		console.warn(`State from query: ${stateFromQuery}`);
+		
 
 		const authoptions = {
 			access_type: 'offline',
 			scope: ['profile', 'email'],
 			GOOGLE_REDIRECT_URI: GOOGLE_REDIRECT_URI,
-			state: state
+			//state: state
 		}
 		if(options?.scope?.includes('calendar')){
 			authoptions.scope.push('https://www.googleapis.com/auth/calendar')
