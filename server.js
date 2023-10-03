@@ -953,6 +953,13 @@ app.use((req, res, next) => {
 })
 
 
+app.use((req, res, next) => {
+	console.warn("Cookies: ", req.cookies); // Log all cookies
+	console.warn("Session data: ", req.session); // Log session data
+  
+	next();
+  });
+
 //GOOGLE ROUTES
 
 app.post('/auth/google', async (req, res, next) => {
@@ -1029,7 +1036,8 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			state = 'iOSApp'
 		}
 
-		let finalredirectsuccess = state === 'iOSApp' ? `smartcalendar://callback` : `/app`//here4
+		let finalredirectsuccess = state === 'iOSApp' ? `smartcalendar://callback` : `/app`
+		//here4
 
 		//get googleid
 		const ticket = await googleclient.verifyIdToken({
