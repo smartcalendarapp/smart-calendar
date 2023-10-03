@@ -1029,9 +1029,13 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			}
 		})
 
+		let state;
+		const useragent = req.headers['user-agent']
+		if (useragent.includes('iPhone')) {
+			state = 'iOSApp'
+		}
 
-		let finalredirectsuccess = req.query.state === 'iOSApp' ? `https://smartcalendar.us/oauth-callback?token=${tokens.id_token}` : `/app`
-		console.warn(req.query.state, finalredirectsuccess)
+		let finalredirectsuccess = state === 'iOSApp' ? `https://smartcalendar.us/oauth-callback?token=${tokens.id_token}` : `/app`
 
 		//get googleid
 		const ticket = await googleclient.verifyIdToken({
