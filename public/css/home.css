@@ -303,3 +303,9 @@ img{
 	left: -99999px !important;
 	top: -99999px !important;
 }
+
+.hiddenfadeslownavbar {
+	transition: background-color 1s, color 1s, border-color 1s, opacity 1s, visibility 1s, left 0s 1s, top 0s 1s;
+	opacity: 0;
+	visibility: hidden;
+}
