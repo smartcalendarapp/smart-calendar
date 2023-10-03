@@ -959,12 +959,6 @@ app.post('/auth/google', async (req, res, next) => {
 	try{
 		let options = req.body.options
 
-		let state;
-		const useragent = req.headers['user-agent']
-		if (useragent.includes('iPhone')) {
-			state = 'iOSApp'
-		}
-
 		const authoptions = {
 			access_type: 'offline',
 			scope: ['profile', 'email'],
@@ -1035,7 +1029,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			state = 'iOSApp'
 		}
 
-		let finalredirectsuccess = state === 'iOSApp' ? `smartcalendar://callback?token=${tokens}` : `/app`
+		let finalredirectsuccess = state === 'iOSApp' ? `smartcalendar://callback?token=${encodeURIComponent(JSON.stringify(tokens))}` : `/app`
 
 		//get googleid
 		const ticket = await googleclient.verifyIdToken({
