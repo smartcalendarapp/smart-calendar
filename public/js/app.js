@@ -3677,6 +3677,9 @@ function run() {
 	//check for onboarding
 	updateonboardingscreen()
 
+	//avatar
+	updateAvatar()
+
 	//set initial save data
 	lastbodydata = calendar.getChangedJSON()
 	
@@ -3686,6 +3689,7 @@ function run() {
 	//scroll Y
 	let currentdate = new Date()
 	scrollcalendarY(currentdate.getHours() * 60 + currentdate.getMinutes())
+	
 
 
 	//welcome popup
@@ -12449,7 +12453,7 @@ function clickevent(event, timestamp) {
 		if (item.type == 1) {
 			let currentdatemodified = new Date()
 			currentdatemodified.setSeconds(0,0)
-			
+
 			let newstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 			if (newstartdate.getTime() != selectedeventdatetime.getTime() && selectedeventdatetime.getTime() >= currentdatemodified) {
 				item.type = 0

@@ -953,15 +953,10 @@ app.use((req, res, next) => {
 })
 
 
-app.use((req, res, next) => {
-	const useragent = req.headers['user-agent']
-	if (useragent.includes('iPhone')) {
-		console.warn("Cookies: ", req.cookies) 
-		console.warn("Session data: ", req.session) 
-	}
-  
-	next()
+app.get('/debug', (req, res) => {
+	console.warn(req.session)
 })
+  
 
 //GOOGLE ROUTES
 
