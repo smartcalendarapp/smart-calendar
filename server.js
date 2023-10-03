@@ -959,17 +959,16 @@ app.post('/auth/google', async (req, res, next) => {
 	try{
 		let options = req.body.options
 
-		console.warn(req.body.state)
 		const authoptions = {
 			access_type: 'offline',
 			scope: ['profile', 'email'],
 			GOOGLE_REDIRECT_URI: GOOGLE_REDIRECT_URI,
 			state: req.body.state,
 		}
-		if(options.scope?.includes('calendar')){
+		if(options?.scope?.includes('calendar')){
 			authoptions.scope.push('https://www.googleapis.com/auth/calendar')
 		}
-		if(options.scope?.includes('classroom')){
+		if(options?.scope?.includes('classroom')){
 			authoptions.scope.push('https://www.googleapis.com/auth/classroom.courses.readonly', 'https://www.googleapis.com/auth/classroom.coursework.me.readonly')
 		}
 
@@ -986,11 +985,11 @@ app.post('/auth/google', async (req, res, next) => {
 				}
 
 				let modifieduser = false
-				if(!user.calendardata.settings.issyncingtogooglecalendar && options.enable?.includes('calendar')){
+				if(!user.calendardata.settings.issyncingtogooglecalendar && options?.enable?.includes('calendar')){
 					modifieduser = true
 					user.calendardata.settings.issyncingtogooglecalendar = true
 				}
-				if(!user.calendardata.settings.issyncingtogoogleclassroom && options.enable?.includes('classroom')){
+				if(!user.calendardata.settings.issyncingtogoogleclassroom && options?.enable?.includes('classroom')){
 					modifieduser = true
 					user.calendardata.settings.issyncingtogoogleclassroom = true
 				}
