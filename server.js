@@ -954,11 +954,14 @@ app.use((req, res, next) => {
 
 
 app.use((req, res, next) => {
-	console.warn("Cookies: ", req.cookies); // Log all cookies
-	console.warn("Session data: ", req.session); // Log session data
+	const useragent = req.headers['user-agent']
+	if (useragent.includes('iPhone')) {
+		console.warn("Cookies: ", req.cookies) 
+		console.warn("Session data: ", req.session) 
+	}
   
-	next();
-  });
+	next()
+})
 
 //GOOGLE ROUTES
 
