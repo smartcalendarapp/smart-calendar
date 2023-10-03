@@ -101,6 +101,7 @@ img{
 	background-color:var(--background-secondary-transparent);
 }
 
+
 .navbarspace{
 	max-width:60px;
 	width:100%;
@@ -283,6 +284,10 @@ img{
 
 .homebackground{
 	background-color:var(--background-primary-home)
+}
+
+.homebackgroundtransparent{
+	background-color:var(--background-primary-home-transparent)
 }
 
 .hiddenfade {

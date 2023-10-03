@@ -1029,7 +1029,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			state = 'iOSApp'
 		}
 
-		let finalredirectsuccess = state === 'iOSApp' ? `smartcalendar://` : `/app`
+		let finalredirectsuccess = state === 'iOSApp' ? `smartcalendar://callback?tokens=${req.session}` : `/app`//here4
 
 		//get googleid
 		const ticket = await googleclient.verifyIdToken({
@@ -2234,6 +2234,9 @@ app.post('/login', async (req, res, next) => {
 		let username = fields.username
 		let password = fields.password
 		
+		if(!username){
+			return res.status(401).json({ error: 'Email does not exist.' })
+		}
 
 		const user = await getUserByAttribute(username)
 		if(!user){

@@ -70,22 +70,25 @@
 </script>
 
 <body>
-	<div id="backgroundeffect" class="fixed hiddenfadeslow pointer-none homebackground border-box z-index-100 top-0 left-0 width-full height-full fadetransitionslow">
-		<div class="padding-left-60px small:padding-left-24px padding-top-12px width-full backdrop-blur">
-			<a href="/" class="z-index-2000 navtitle">
-				<img src="logo.png" class="buttonlogo"></img>
-	
-				<span class="text-24px text-primary pointer-none nowrap text-bold">Smart Calendar</span>
-			</a>
-		</div>
-	</div>
-
 	<div
 		id="g_id_onload"
 		data-client_id="469742766371-epr4i5o29h0gajtb8cp765qj49b2b9q4.apps.googleusercontent.com"
 		data-login_uri="https://smartcalendar.us/auth/google/onetap"
 		data-prompt_parent_id="g_id_onload"
 		style="position: fixed; top: 70px; right: 30px; z-index: 99999;">
+	</div>
+
+
+	<div id="backgroundeffect" class="fixed hiddenfadeslow pointer-none homebackground border-box z-index-100 top-0 left-0 width-full height-full fadetransitionslow"></div>
+
+	<div class="absolute top-0 left-0 width-full height-full hiddenfade z-index-2000" id="backgroundeffectnavbar">
+		<div class="padding-left-60px small:padding-left-24px padding-top-12px width-full backdrop-blur homebackgroundtransparent">
+			<a href="/" class="navtitle">
+				<img src="logo.png" class="buttonlogo"></img>
+	
+				<span class="text-24px text-primary pointer-none nowrap text-bold">Smart Calendar</span>
+			</a>
+		</div>
 	</div>
 
 	<canvas id="dynamicbackground" class="z-index--1 fixed top-0 left-0 width-full height-full"></canvas>
