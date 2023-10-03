@@ -1023,6 +1023,9 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			}
 		})
 
+
+		let finalredirectsuccess = req.query.state === 'iOSApp' ? `smartcalendar://oauth-callback?token=${tokens.id_token}` : `/app`
+
 		//get googleid
 		const ticket = await googleclient.verifyIdToken({
 			idToken: tokens.id_token,
@@ -1052,7 +1055,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			user.google_email = email
 			await setUser(user)
 
-			return res.redirect(301, '/app')
+			return res.redirect(301, finalredirectsuccess)
 		}
 
 		let loggedInUser = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
@@ -1075,7 +1078,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			loggedInUser.accountdata.lastloggedindate = Date.now()
 			await setUser(loggedInUser)
 
-			return res.redirect(301, '/app')
+			return res.redirect(301, finalredirectsuccess)
 		}
 
 		if(userWithEmail){
@@ -1098,7 +1101,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				userWithEmail.google_email = email
 				await setUser(userWithEmail)
 
-				return res.redirect(301, '/app')
+				return res.redirect(301, finalredirectsuccess)
 			}
 		}
 
@@ -1117,7 +1120,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			req.session.tokens = tokens
 
 			await sendwelcomeemail(newUser)
-			return res.redirect(301, '/app')
+			return res.redirect(301, finalredirectsuccess)
 		}
 
 	}catch(error){
@@ -1329,7 +1332,7 @@ app.get('/auth/discord/callback', async (req, res) => {
 			code: code,
 			redirect_uri: DISCORD_REDIRECT_URI,
 		})
-			
+
 		const response = await fetch('https://discord.com/api/oauth2/token', {
 			method: 'POST',
 			body: tokenData,

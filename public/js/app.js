@@ -8177,7 +8177,7 @@ function updaterecognitionui(){
 		let recognitiontooltip = getElement('recognitiontooltip')
 		let recognitiontooltip2 = getElement('recognitiontooltip2')
 
-		let errorhtml = `<span class="text-red text-14px">Dictation not supported by browser</span>`
+		let errorhtml = `<span class="text-red text-14px">No permission to use dictation,<br>please check your browser/device settings</span>`
 		if(recognitiontype == 'task'){
 			recognitiontooltip.innerHTML = errorhtml
 		}else if(recognitiontype == 'event'){
@@ -8367,7 +8367,6 @@ function submitcreatetodo(event) {
 	calendar.updateHistory()
 
 	resetcreatetodo()
-	closecreatetodo()
 
 	resizeaddtask()
 }
