@@ -236,10 +236,15 @@ function updatescroll(event){
 	let rectfirst = getElement('firstbackgroundeffect').getBoundingClientRect()
 	let rectlast = getElement('firstfeature').getBoundingClientRect()
 
+	console.log(rectfirst.bottom < windowheight && rectlast.top > windowheight)
 	if(rectfirst.bottom < windowheight && rectlast.top > windowheight){
 		getElement('backgroundeffect').classList.remove('hiddenfadeslow')
+		getElement('backgroundeffectnavbar').classList.remove('hiddenfadeslow')
+		getElement('navbar').classList.add('hiddenfadeslow')
 	}else{
 		getElement('backgroundeffect').classList.add('hiddenfadeslow')
+		getElement('backgroundeffectnavbar').classList.add('hiddenfadeslow')
+		getElement('navbar').classList.remove('hiddenfadeslow')
 	}
 
 

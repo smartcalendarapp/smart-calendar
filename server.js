@@ -1029,7 +1029,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			state = 'iOSApp'
 		}
 
-		let finalredirectsuccess = state === 'iOSApp' ? `smartcalendar://callback?tokens=${req.session}` : `/app`//here4
+		let finalredirectsuccess = state === 'iOSApp' ? `smartcalendar://callback` : `/app`//here4
 
 		//get googleid
 		const ticket = await googleclient.verifyIdToken({
