@@ -239,9 +239,11 @@ function updatescroll(event){
 	if(rectfirst.bottom < windowheight && rectlast.top > windowheight){
 		getElement('backgroundeffect').classList.remove('hiddenfadeslow')
 		getElement('backgroundeffectnavbar').classList.remove('hiddenfadeslow')
+		getElement('navbar').classList.remove('hiddenfadeslow')
 	}else{
 		getElement('backgroundeffect').classList.add('hiddenfadeslow')
 		getElement('backgroundeffectnavbar').classList.add('hiddenfadeslow')
+		getElement('navbar').classList.add('hiddenfadeslow')
 	}
 
 
