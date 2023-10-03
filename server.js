@@ -962,6 +962,7 @@ app.post('/auth/google', async (req, res, next) => {
 		const authoptions = {
 			access_type: 'offline',
 			scope: ['profile', 'email'],
+			state: req.query.state,
 			GOOGLE_REDIRECT_URI: GOOGLE_REDIRECT_URI,
 		}
 		if(options.scope?.includes('calendar')){
