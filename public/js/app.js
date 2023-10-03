@@ -12447,8 +12447,11 @@ function clickevent(event, timestamp) {
 
 		//turn off auto schedule
 		if (item.type == 1) {
+			let currentdatemodified = new Date()
+			currentdatemodified.setSeconds(0,0)
+			
 			let newstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-			if (newstartdate.getTime() != selectedeventdatetime.getTime() && selectedeventdatetime.getTime() >= Date.now()) {
+			if (newstartdate.getTime() != selectedeventdatetime.getTime() && selectedeventdatetime.getTime() >= currentdatemodified) {
 				item.type = 0
 				calendar.updateInfo(true)
 			}
