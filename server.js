@@ -938,6 +938,8 @@ async function isRefreshTokenValid(refreshToken) {
 
 //USE ROUTES
 
+app.use('/.well-known', express.static(path.join(__dirname, '.well-known')))
+
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'public', 'css')))
 app.use(express.static(path.join(__dirname, 'public', 'js')))
