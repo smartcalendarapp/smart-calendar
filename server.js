@@ -860,6 +860,7 @@ const port = process.env.PORT || 3000
 const fs = require('fs')
 const path = require('path')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const formidable = require('formidable')
 const compression = require('compression')
 const RRule = require('rrule').RRule
@@ -899,6 +900,8 @@ app.use(compression())
 
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
+
+app.use(cookieParser())
 
 app.use(session({
 	store: dynamostore,
