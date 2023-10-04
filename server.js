@@ -1024,7 +1024,7 @@ app.get('/restoreSession', async (req, res) => {
     const { token } = req.query
 
     if (sessionTokens[token]) {
-        req.session = sessionTokens[token]
+        Object.assign(req.session, sessionTokens[token])
 		req.session.save()
 
         delete sessionTokens[token]
