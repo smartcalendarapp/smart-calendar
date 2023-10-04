@@ -1014,22 +1014,21 @@ app.post('/auth/google', async (req, res, next) => {
 })
 
 
+
+const sessionTokens = {}
 app.get('/restoreSession', (req, res) => {
     const { token } = req.query
-
-	console.warn(token)
 
     if (sessionTokens[token]) {
         req.session = sessionTokens[token]
         delete sessionTokens[token]
+		console.warn(req.session)
 
         res.redirect('/app')
     } else {
         res.redirect('/login')
     }
 })
-
-const sessionTokens = {}
 app.get('/auth/google/callback', async (req, res, next) => {
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
