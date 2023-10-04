@@ -2255,7 +2255,7 @@ app.post('/getclientgoogleclassroom', async (req, res, next) => {
 
 
 app.post('/login', async (req, res, next) => {
-	console.warn(req.headers.cookies)//here4
+	console.warn(req.headers)//here4
 	try {
 		const form = new formidable.IncomingForm()
 
