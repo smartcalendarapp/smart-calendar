@@ -1012,7 +1012,22 @@ app.post('/auth/google', async (req, res, next) => {
 })
 
 
+app.get('/api/restoreSession', (req, res) => {
+    const { token } = req.query
 
+	console.warn(token)
+
+    if (sessionTokens[token]) {
+        req.session = sessionTokens[token]
+        delete sessionTokens[token]
+
+        res.redirect('/app')
+    } else {
+        res.redirect('/login')
+    }
+})
+
+const sessionTokens = {}
 app.get('/auth/google/callback', async (req, res, next) => {
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
@@ -1025,6 +1040,8 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			}
 		})
 
+
+
 		let state;
 		const useragent = req.headers['user-agent']
 		if (useragent.includes('iPhone')) {
@@ -1032,10 +1049,19 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		}
 
 		let finalredirectsuccess = `/app`
-		if(state === 'iOSApp'){
-			finalredirectsuccess = `smartcalendar://callback`
+		function updatefinalredirect(){
+			if(state === 'iOSApp'){
+				const token = crypto.randomBytes(32).toString('hex')
+
+				sessionTokens[token] = req.session
+				setTimeout(() => { delete sessionTokens[token] }, 60000)
+	
+				finalredirectsuccess = `smartcalendar://oauth-callback?token=${token}`
+			}
 		}
 		//here4
+
+
 
 		//get googleid
 		const ticket = await googleclient.verifyIdToken({
@@ -1066,6 +1092,8 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			user.google_email = email
 			await setUser(user)
 
+			updatefinalredirect()
+
 			return res.redirect(301, finalredirectsuccess)
 		}
 
@@ -1088,6 +1116,8 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			loggedInUser.accountdata.google.profilepicture = profilepicture
 			loggedInUser.accountdata.lastloggedindate = Date.now()
 			await setUser(loggedInUser)
+
+			updatefinalredirect()
 
 			return res.redirect(301, finalredirectsuccess)
 		}
@@ -1112,6 +1142,8 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				userWithEmail.google_email = email
 				await setUser(userWithEmail)
 
+				updatefinalredirect()
+
 				return res.redirect(301, finalredirectsuccess)
 			}
 		}
@@ -1131,6 +1163,9 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			req.session.tokens = tokens
 
 			await sendwelcomeemail(newUser)
+
+			updatefinalredirect()
+
 			return res.redirect(301, finalredirectsuccess)
 		}
 
