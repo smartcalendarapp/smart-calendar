@@ -1016,13 +1016,17 @@ app.post('/auth/google', async (req, res, next) => {
 
 
 const sessionTokens = {}
-app.get('/restoreSession', (req, res) => {
+app.get('/restoreSession', async (req, res) => {
     const { token } = req.query
 
     if (sessionTokens[token]) {
         req.session = sessionTokens[token]
+
+		req.session.tempfield = "force session save"
+   		delete req.session.tempfield
+		await req.session.save()
+
         delete sessionTokens[token]
-		console.warn(req.session)
 
         res.redirect('/app')
     } else {
