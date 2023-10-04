@@ -1026,7 +1026,7 @@ app.get('/restoreSession', async (req, res) => {
 
         delete sessionTokens[token]
 
-        res.redirect('/app')
+        res.send()
     } else {
         res.redirect('/login')
     }
