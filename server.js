@@ -1022,9 +1022,9 @@ app.get('/restoreSession', async (req, res) => {
     if (sessionTokens[token]) {
         req.session = sessionTokens[token]
 
-		req.session.tempfield = "force session save"
-   		delete req.session.tempfield
-		await req.session.save()
+		req.session.touch()
+
+		res.setHeader('Set-Cookie', ['connect.sid=' + req.session.id + '; Path=/; HttpOnly'])
 
         delete sessionTokens[token]
 
