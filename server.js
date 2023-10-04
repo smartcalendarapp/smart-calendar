@@ -1049,8 +1049,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		//redirect to app or ios callback
 		let state;
 		const useragent = req.headers['user-agent']
-		const customuseragent = req.headers['x-custom-user-agent']
-		if (useragent.includes('iPhone') && customuseragent === 'iOSApp') {
+		if (useragent.includes('iPhone')) {
 			state = 'iOSApp'
 		}
 
