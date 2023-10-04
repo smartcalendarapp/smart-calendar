@@ -1020,7 +1020,6 @@ app.post('/auth/google', async (req, res, next) => {
 
 const sessionTokens = {}
 app.get('/restoreSession', async (req, res) => {
-	console.warn(req.cookies)
     const { token } = req.query
 
     if (sessionTokens[token]) {
@@ -1029,9 +1028,11 @@ app.get('/restoreSession', async (req, res) => {
 
         delete sessionTokens[token]
 
-        res.send()
+		console.warn(req.session)//here4
+
+        res.redirect('/app')
     } else {
-        res.status(400).end()
+        res.redirect('/login')
     }
 })
 //here4
@@ -2260,7 +2261,7 @@ app.post('/getclientgoogleclassroom', async (req, res, next) => {
 
 app.post('/login', async (req, res, next) => {
 	console.warn(req.headers)//here4
-	console.warn(req.session)
+	console.warn(req.session)//here4
 	try {
 		const form = new formidable.IncomingForm()
 
