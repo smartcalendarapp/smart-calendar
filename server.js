@@ -1012,7 +1012,7 @@ app.post('/auth/google', async (req, res, next) => {
 })
 
 
-app.get('/api/restoreSession', (req, res) => {
+app.get('/restoreSession', (req, res) => {
     const { token } = req.query
 
 	console.warn(token)
@@ -1041,22 +1041,23 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		})
 
 
-
+		//ios callback
 		let state;
 		const useragent = req.headers['user-agent']
 		if (useragent.includes('iPhone')) {
 			state = 'iOSApp'
 		}
 
-		let finalredirectsuccess = `/app`
-		function updatefinalredirect(){
+		function getfinalredirect(){
 			if(state === 'iOSApp'){
 				const token = crypto.randomBytes(32).toString('hex')
 
 				sessionTokens[token] = req.session
 				setTimeout(() => { delete sessionTokens[token] }, 60000)
 	
-				finalredirectsuccess = `smartcalendar://oauth-callback?token=${token}`
+				return `smartcalendar://oauth-callback?token=${token}`
+			}else{
+				return `/app`
 			}
 		}
 		//here4
@@ -1092,9 +1093,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			user.google_email = email
 			await setUser(user)
 
-			updatefinalredirect()
-
-			return res.redirect(301, finalredirectsuccess)
+			return res.redirect(301, getfinalredirect())
 		}
 
 		let loggedInUser = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
@@ -1119,7 +1118,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 
 			updatefinalredirect()
 
-			return res.redirect(301, finalredirectsuccess)
+			return res.redirect(301, getfinalredirect())
 		}
 
 		if(userWithEmail){
@@ -1144,7 +1143,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 
 				updatefinalredirect()
 
-				return res.redirect(301, finalredirectsuccess)
+				return res.redirect(301, getfinalredirect())
 			}
 		}
 
@@ -1166,7 +1165,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 
 			updatefinalredirect()
 
-			return res.redirect(301, finalredirectsuccess)
+			return res.redirect(301, getfinalredirect())
 		}
 
 	}catch(error){
