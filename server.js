@@ -1028,14 +1028,11 @@ app.get('/restoreSession', async (req, res) => {
 
         delete sessionTokens[token]
 
-		console.warn(req.session)//here4
-
         res.redirect('/app')
     } else {
-        res.redirect('/login')
+        res.status(401).redirect('/login')
     }
 })
-//here4
 app.get('/auth/google/callback', async (req, res, next) => {
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
@@ -1052,7 +1049,8 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		//redirect to app or ios callback
 		let state;
 		const useragent = req.headers['user-agent']
-		if (useragent.includes('iPhone')) {
+		const customuseragent = req.headers['x-custom-user-agent']
+		if (useragent.includes('iPhone') && customuseragent === 'iOSApp') {
 			state = 'iOSApp'
 		}
 
@@ -2260,8 +2258,6 @@ app.post('/getclientgoogleclassroom', async (req, res, next) => {
 
 
 app.post('/login', async (req, res, next) => {
-	console.warn(req.headers)//here4
-	console.warn(req.session)//here4
 	try {
 		const form = new formidable.IncomingForm()
 
@@ -2606,6 +2602,7 @@ app.post('/changeusername', async (req, res, next) => {
 
 app.post('/getclientinfo', async (req, res, next) => {
 	try {
+		console.warn(req.session.user)
 		if(!req.session.user){
 			return res.status(401).json({ error: 'User is not signed in.' })
 		}
