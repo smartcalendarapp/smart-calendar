@@ -1117,8 +1117,6 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			loggedInUser.accountdata.lastloggedindate = Date.now()
 			await setUser(loggedInUser)
 
-			updatefinalredirect()
-
 			return res.redirect(301, getfinalredirect())
 		}
 
@@ -1142,8 +1140,6 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				userWithEmail.google_email = email
 				await setUser(userWithEmail)
 
-				updatefinalredirect()
-
 				return res.redirect(301, getfinalredirect())
 			}
 		}
@@ -1163,8 +1159,6 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			req.session.tokens = tokens
 
 			await sendwelcomeemail(newUser)
-
-			updatefinalredirect()
 
 			return res.redirect(301, getfinalredirect())
 		}
