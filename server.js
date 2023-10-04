@@ -864,6 +864,7 @@ const formidable = require('formidable')
 const compression = require('compression')
 const RRule = require('rrule').RRule
 const jwt = require('jsonwebtoken')
+const crypto = require('crypto')
 
 //GOOGLE INITIALIZATION
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
@@ -879,7 +880,6 @@ const session = require('express-session')
 const app = express()
 
 const DynamoDBStore = require('dynamodb-store')
-const { Hash } = require('crypto')
 const dynamostore = new DynamoDBStore({
 	table: {
 		name: "smartcalendarsessions",
@@ -902,12 +902,12 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 
 app.use(session({
 	store: dynamostore,
-  secret: SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-	cookie: {
-    maxAge: 604800000
-  },
+	secret: SESSION_SECRET,
+	resave: false,
+	saveUninitialized: false,
+		cookie: {
+		maxAge: 604800000
+	},
 }))
 
 
@@ -952,17 +952,6 @@ app.use((req, res, next) => {
   }
 })
 
-
-app.use((req, res, next) => {
-	const useragent = req.headers['user-agent']
-	if (useragent.includes('iPhone')) {
-		console.warn("Cookies: ", req.cookies) 
-		console.warn("Session data: ", req.session) 
-	}
-  
-	next()
-})
-  
 
 //GOOGLE ROUTES
 
@@ -1022,6 +1011,20 @@ app.post('/auth/google', async (req, res, next) => {
 	}
 })
 
+
+app.get('/iosexchangetoken', async (req, res) => {
+    try {
+		let sessionid = req.query.token
+        
+        const script = `document.cookie = "connect.sid=${sessionid}; path=/";`
+        
+        res.send(script);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
+})
+
 app.get('/auth/google/callback', async (req, res, next) => {
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
@@ -1040,7 +1043,10 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			state = 'iOSApp'
 		}
 
-		let finalredirectsuccess = state === 'iOSApp' ? `smartcalendar://callback` : `/app`
+		let finalredirectsuccess = `/app`
+		if(state === 'iOSApp'){
+			finalredirectsuccess = `smartcalendar://callback/${req.sessionID}`
+		}
 		//here4
 
 		//get googleid
