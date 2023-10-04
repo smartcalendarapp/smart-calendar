@@ -1020,11 +1020,9 @@ app.get('/restoreSession', async (req, res) => {
     const { token } = req.query
 
     if (sessionTokens[token]) {
+		console.warn(req.session)
         req.session = sessionTokens[token]
-
-		req.session.touch()
-
-		res.setHeader('Set-Cookie', ['connect.sid=' + req.session.id + '; Path=/; HttpOnly'])
+		console.warn(req.session)
 
         delete sessionTokens[token]
 
