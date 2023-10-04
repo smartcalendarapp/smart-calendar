@@ -908,7 +908,7 @@ app.use(session({
 	secret: SESSION_SECRET,
 	resave: false,
 	saveUninitialized: false,
-		cookie: {
+	cookie: {
 		maxAge: 604800000
 	},
 }))
@@ -2259,6 +2259,7 @@ app.post('/getclientgoogleclassroom', async (req, res, next) => {
 
 app.post('/login', async (req, res, next) => {
 	console.warn(req.headers)//here4
+	console.warn(req.session)
 	try {
 		const form = new formidable.IncomingForm()
 
