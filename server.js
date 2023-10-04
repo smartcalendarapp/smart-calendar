@@ -1015,6 +1015,37 @@ app.post('/auth/google', async (req, res, next) => {
 app.get('/iosexchangetoken', async (req, res) => {
     try {
 		let sessionid = req.query.token
+
+		const params = {
+			TableName: 'smartcalendarsessions',
+			IndexName: 'TokenIndex',
+			KeyConditionExpression: 'sessionid = :value',
+			ExpressionAttributeValues: { ':value': sessionid }
+		}
+
+        const result = await dynamoclient.send(new QueryCommand(params))
+        const sessionItem = result.Items[0];
+        if (!sessionItem) {
+            res.status(400).send('Invalid session')
+            return
+        }
+
+        const userid = sessionItem?.user?.userid
+
+		if(!userid){
+			res.status(400).send('Invalid userid')
+            return
+		}
+
+		const user = await getUserById(userid)
+
+		if(!user){
+			res.status(400).send('Invalid user')
+            return
+		}
+
+		req.session.user = {userid: userid}
+		req.session.save()
         
         const script = `document.cookie = "connect.sid=${sessionid}; path=/";`
         
