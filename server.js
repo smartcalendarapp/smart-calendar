@@ -1025,6 +1025,7 @@ app.get('/restoreSession', async (req, res) => {
 
     if (sessionTokens[token]) {
         req.session = sessionTokens[token]
+		req.session.save()
 
         delete sessionTokens[token]
 
