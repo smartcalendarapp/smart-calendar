@@ -1017,6 +1017,7 @@ app.post('/auth/google', async (req, res, next) => {
 
 const sessionTokens = {}
 app.get('/restoreSession', async (req, res) => {
+	console.warn(req.cookies)
     const { token } = req.query
 
     if (sessionTokens[token]) {
@@ -1029,6 +1030,7 @@ app.get('/restoreSession', async (req, res) => {
         res.status(400).end()
     }
 })
+//here4
 app.get('/auth/google/callback', async (req, res, next) => {
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
@@ -1042,7 +1044,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		})
 
 
-		//ios callback
+		//redirect to app or ios callback
 		let state;
 		const useragent = req.headers['user-agent']
 		if (useragent.includes('iPhone')) {
@@ -1061,8 +1063,6 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				return `/app`
 			}
 		}
-		//here4
-
 
 
 		//get googleid
@@ -2261,7 +2261,8 @@ app.post('/getclientgoogleclassroom', async (req, res, next) => {
 
 
 app.post('/login', async (req, res, next) => {
-	console.warn(req.session)
+	console.warn(req.session)//here4
+	console.warn(req.cookies)
 	try {
 		const form = new formidable.IncomingForm()
 
