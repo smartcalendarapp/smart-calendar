@@ -19,15 +19,6 @@ const dynamoclient = new DynamoDBClient({
 })
 
 
-// FOR PUSH NOTIFS
-const webpush = require("web-push")
-webpush.setVapidDetails(
-  "mailto:contact@smartcalendar.us",
-  process.env.VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY
-)
-
-
 //DATABASE FUNCTIONS
 
 async function createUser(user){
@@ -292,11 +283,39 @@ class User{
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0  }
-const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null } }
+const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null }, iosdevicetoken: null }
 const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#2693ff', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0 }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#2693ff', isprimary: false, subscriptionurl: null, lastmodified: 0  }
 const MODELNOTIFICATION = { id: null, read: false, timestamp: null }
+
+
+//WEBPUSH NOTIFICATIONS
+const webpush = require("web-push")
+webpush.setVapidDetails(
+  "mailto:contact@smartcalendar.us",
+  process.env.VAPID_PUBLIC_KEY,
+  process.env.VAPID_PRIVATE_KEY
+)
+
+
+//IOS NOTIFICATIONS
+const apn = require('apn')
+
+const APN_TEAM_ID = process.env.APN_TEAM_ID
+const APN_KEY_ID = process.env.APN_KEY_ID
+const APN_KEY_PATH = process.env.APN_KEY_PATH
+
+let options = {
+	token: {
+		key: APN_KEY_PATH,
+		keyId: APN_KEY_ID,
+		teamId: APN_TEAM_ID
+  	},
+  	production: false
+}
+
+let apnProvider = new apn.Provider(options)
 
 
 //EMAIL SERVICE INITIALIZATION
@@ -439,6 +458,24 @@ async function processReminders(){
 				}
 			}
 		}
+
+
+		//ios notifications
+		if(item.iosdevicetoken){
+			try{
+				let note = new apn.Notification({
+					alert: `Test ios notification`,
+					sound: 'default'
+				})
+				
+				apnProvider.send(note, item.iosdevicetoken).then(result => {
+
+				})
+			}catch(error){
+				console.error(error)
+			}
+		}
+		//here4
 			
 
 		//email
@@ -774,7 +811,8 @@ function cacheReminders(user){
 				pushSubscription: user.calendardata.pushSubscription,
 				emailreminderenabled: user.calendardata.emailreminderenabled,
 				pushSubscriptionEnabled: user.calendardata.pushSubscriptionEnabled,
-				discordreminderenabled: user.calendardata.discordreminderenabled
+				discordreminderenabled: user.calendardata.discordreminderenabled,
+				iosdevicetoken: user.accountdata.iosdevicetoken,
 			})
 		}	
 	}
@@ -804,7 +842,8 @@ function cacheReminders(user){
 				pushSubscription: user.calendardata.pushSubscription,
 				emailreminderenabled: user.calendardata.emailreminderenabled,
 				pushSubscriptionEnabled: user.calendardata.pushSubscriptionEnabled,
-				discordreminderenabled: user.calendardata.discordreminderenabled
+				discordreminderenabled: user.calendardata.discordreminderenabled,
+				iosdevicetoken: user.accountdata.iosdevicetoken,
 			})
 		}
 	}
@@ -1017,7 +1056,45 @@ app.post('/auth/google', async (req, res, next) => {
 })
 
 
+//ios register notification
+app.get('/checkSession', async (req, res) => {
+	if(!req.session.user){
+		return res.json({ sessionActive: false })
+	}
 
+	const userid = req.session.user.userid
+	const user = await getUserById(userid)
+	if(!user){
+		return res.json({ sessionActive: false })
+	}
+
+    return res.json({ sessionActive: true })
+})
+app.post('/registeriOSDevice', async (req, res) => {
+    const deviceToken = req.body.deviceToken
+
+	if(!req.session.user){
+		return res.status(401).json({ error: 'User is not signed in.' })
+	}
+
+	const userid = req.session.user.userid
+	const user = await getUserById(userid)
+	if(!user){
+		return res.status(401).json({ error: 'User does not exist.' })
+	}
+
+	if (!deviceToken) {
+        return res.status(400).json({ error: 'No device token provided' })
+    }
+
+    user.accountdata.iosdevicetoken = deviceToken
+	await setUser(user)
+    
+    res.status(200).json({ message: 'Device registered successfully' })
+})
+//here4
+
+//ios login
 const sessionTokens = {}
 app.get('/restoreSession', async (req, res) => {
     const { token } = req.query
@@ -1033,6 +1110,7 @@ app.get('/restoreSession', async (req, res) => {
         res.status(401).redirect('/login')
     }
 })
+
 app.get('/auth/google/callback', async (req, res, next) => {
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)

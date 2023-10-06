@@ -8114,9 +8114,9 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	let lastInterimLength = 0
 
 	recognition.addEventListener('result', event => {
-		const currentResultIndex = event.resultIndex;
-        const transcript = event.results[currentResultIndex][0].transcript.trim();
-        const isFinal = event.results[currentResultIndex].isFinal;
+		const currentResultIndex = event.resultIndex
+        const transcript = event.results[currentResultIndex][0].transcript.trim()
+        const isFinal = event.results[currentResultIndex].isFinal
 
         if (isFinal) {
             totalTranscript = totalTranscript.slice(0, -lastInterimLength) + transcript + ' '
