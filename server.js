@@ -315,7 +315,7 @@ const apnoptions = {
   	production: true
 }
 
-let apnProvider = new apn.Provider(apnoptions)
+let apnProvider = null//new apn.Provider(apnoptions)
 
 
 //EMAIL SERVICE INITIALIZATION
