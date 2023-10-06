@@ -306,16 +306,16 @@ const APN_TEAM_ID = process.env.APN_TEAM_ID
 const APN_KEY_ID = process.env.APN_KEY_ID
 const APN_KEY_PATH = process.env.APN_KEY_PATH
 
-let options = {
+const apnoptions = {
 	token: {
 		key: APN_KEY_PATH,
 		keyId: APN_KEY_ID,
 		teamId: APN_TEAM_ID
   	},
-  	production: false
+  	production: true
 }
 
-let apnProvider = new apn.Provider(options)
+let apnProvider = new apn.Provider(apnoptions)
 
 
 //EMAIL SERVICE INITIALIZATION
