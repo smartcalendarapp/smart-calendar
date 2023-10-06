@@ -304,11 +304,11 @@ const apn = require('apn')
 
 const APN_TEAM_ID = process.env.APN_TEAM_ID
 const APN_KEY_ID = process.env.APN_KEY_ID
-const APN_KEY_PATH = process.env.APN_KEY_PATH
+const APN_KEY = process.env.APN_KEY
 
 const apnoptions = {
 	token: {
-		key: APN_KEY_PATH,
+		key: APN_KEY,
 		keyId: APN_KEY_ID,
 		teamId: APN_TEAM_ID
   	},
