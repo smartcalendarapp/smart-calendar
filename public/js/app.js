@@ -3613,7 +3613,9 @@ function updatetime() {
 	if (currentdate.getHours() * 60 + currentdate.getMinutes() != lastupdateminute) {
 		calendar.updateEventTime()
 		calendar.updateSummary()
-		calendar.updateTodo()
+		if(!selectededittodoid){
+			calendar.updateTodo()
+		}
 		calendar.updateFocus()
 
 		lastupdateminute = currentdate.getHours() * 60 + currentdate.getMinutes()
@@ -3631,9 +3633,7 @@ function updatetime() {
 		barcolumncontainer.scrollTo(0, target)
 
 
-		calendar.updateCalendar()
-		calendar.updateTodo()
-		calendar.updateSummary()
+		calendar.updateTabs()
 		calendar.updateFocus()
 		resetcreatetodo()
 		updatecreatetodo()
@@ -8100,28 +8100,44 @@ async function uploadtaskpicture(event) {
 //speech recognition to add task
 let isspeaking = false
 let recognition;
-let recognitiontype;
+let recognitionoutputtype;
 let recognitionerror;
 
 if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
-	recognition.continuous = false
+	recognition.continuous = true
+	recognition.interimResults = true
 	recognition.lang = 'en-US'
 
-	recognition.addEventListener('result', event => {
-		const transcript = event.results[0][0].transcript.trim()
 
-		if(transcript){
-			if(recognitiontype == 'task'){
+	let totalTranscript = ''
+	let lastInterimLength = 0
+
+	recognition.addEventListener('result', event => {
+		const currentResultIndex = event.resultIndex;
+        const transcript = event.results[currentResultIndex][0].transcript.trim();
+        const isFinal = event.results[currentResultIndex].isFinal;
+
+        if (isFinal) {
+            totalTranscript = totalTranscript.slice(0, -lastInterimLength) + transcript + ' '
+            lastInterimLength = 0
+        } else {
+            totalTranscript = totalTranscript.slice(0, -lastInterimLength) + transcript
+            lastInterimLength = transcript.length
+        }
+
+
+		if(totalTranscript){
+			if(recognitionoutputtype == 'task'){
 				let todoinputtitle = getElement('todoinputtitle')
-				todoinputtitle.value = transcript
+				todoinputtitle.value = totalTranscript
 
 				typeaddtask()
 				clickaddonetask()
 				resizeaddtask()
-			}else if(recognitiontype == 'event'){
+			}else if(recognitionoutputtype == 'event'){
 				let createeventtitle = getElement('createeventtitle')
-				createeventtitle.value = transcript
+				createeventtitle.value = totalTranscript
 
 				typeaddevent()
 				createeventtitle.focus()
@@ -8162,15 +8178,15 @@ function updaterecognitionui(){
 
 	//display ui
 	if(isspeaking){
-		if(recognitiontype == 'task'){
+		if(recognitionoutputtype == 'task'){
 			recognitionsvg.classList.add('recognitionredanimation')
-		}else if(recognitiontype == 'event'){
+		}else if(recognitionoutputtype == 'event'){
 			recognitionsvg2.classList.add('recognitionredanimation')
 		}
 	}else{
-		if(recognitiontype == 'task'){
+		if(recognitionoutputtype == 'task'){
 			recognitionsvg.classList.remove('recognitionredanimation')
-		}else if(recognitiontype == 'event'){
+		}else if(recognitionoutputtype == 'event'){
 			recognitionsvg2.classList.remove('recognitionredanimation')
 		}
 	}
@@ -8182,9 +8198,9 @@ function updaterecognitionui(){
 		let recognitiontooltip2 = getElement('recognitiontooltip2')
 
 		let errorhtml = `<span class="text-red text-14px">No permission to use dictation,<br>please check your browser/device settings</span>`
-		if(recognitiontype == 'task'){
+		if(recognitionoutputtype == 'task'){
 			recognitiontooltip.innerHTML = errorhtml
-		}else if(recognitiontype == 'event'){
+		}else if(recognitionoutputtype == 'event'){
 			recognitiontooltip2.innerHTML = errorhtml
 		}
 	}
@@ -8193,7 +8209,7 @@ function updaterecognitionui(){
 function startrecognition(type){
 	if(recognition){
 		if(!isspeaking){
-			recognitiontype = type
+			recognitionoutputtype = type
 
 			recognition.start()
 		}else{
