@@ -315,7 +315,7 @@ const apnoptions = {
   	production: true
 }
 
-let apnProvider = null//new apn.Provider(apnoptions)
+let apnProvider = new apn.Provider(apnoptions)
 
 
 //EMAIL SERVICE INITIALIZATION
@@ -1070,6 +1070,7 @@ app.get('/checkSession', async (req, res) => {
 
     return res.json({ sessionActive: true })
 })
+
 app.post('/registeriOSDevice', async (req, res) => {
     const deviceToken = req.body.deviceToken
 
@@ -1093,6 +1094,7 @@ app.post('/registeriOSDevice', async (req, res) => {
     res.status(200).json({ message: 'Device registered successfully' })
 })
 //here4
+
 
 //ios login
 const sessionTokens = {}
@@ -2679,7 +2681,6 @@ app.post('/changeusername', async (req, res, next) => {
 
 app.post('/getclientinfo', async (req, res, next) => {
 	try {
-		console.warn(req.session.user)
 		if(!req.session.user){
 			return res.status(401).json({ error: 'User is not signed in.' })
 		}
