@@ -463,6 +463,7 @@ async function processReminders(){
 
 
 		//ios notifications
+		console.warn(item.iosdevicetoken)
 		if(item.iosdevicetoken){
 			if(item.type == 'event'){
 				try{
@@ -475,6 +476,8 @@ async function processReminders(){
 						badge: 1,
 						expiry: Math.floor(Date.now() / 1000) + (12 * 60 * 60),
 					})
+
+					console.warn(note)
 					
 					let result = await apnProvider.send(note, item.iosdevicetoken)
 					console.warn(result)
@@ -494,7 +497,6 @@ async function processReminders(){
 					})
 					
 					let result = await apnProvider.send(note, item.iosdevicetoken)
-					console.warn(result)
 				}catch(error){
 					console.error(error)
 				}
