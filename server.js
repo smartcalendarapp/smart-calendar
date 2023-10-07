@@ -1141,14 +1141,10 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		})
 
 		//redirect to app or ios callback
-		let state;
-		const useragent = req.headers['user-agent']
-		if (useragent.includes('iPhone')) {
-			state = 'iOSApp'
-		}
+		const iosapprequest = req.session.iosapprequest == true
 
 		function getfinalredirect(){
-			if(state === 'iOSApp'){
+			if(iosapprequest == true){
 				const token = crypto.randomBytes(32).toString('hex')
 
 				sessionTokens[token] = req.session
@@ -1543,7 +1539,9 @@ app.get('/home', (req, res) => {
 })
 
 app.get('/login', async (req, res, next) => {
-	console.warn(req.headers)
+	if(req.headers['x-ios-app-request'] === 'true'){
+		req.session.iosapprequest = true
+	}
 
 	const referrer = req.headers.referer
 	if (referrer && referrer.endsWith('/app')) {
