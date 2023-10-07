@@ -1543,8 +1543,8 @@ app.get('/home', (req, res) => {
 })
 
 app.get('/login', async (req, res, next) => {
-	console.warn(req.headers['x-app-request'])
-	
+	console.warn(req.headers)
+
 	const referrer = req.headers.referer
 	if (referrer && referrer.endsWith('/app')) {
 		next()
