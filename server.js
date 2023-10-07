@@ -1027,7 +1027,6 @@ app.use((req, res, next) => {
 app.post('/auth/google', async (req, res, next) => {
 	try{
 		let options = req.body.options
-		console.warn(req.body.source)
 
 		const authoptions = {
 			access_type: 'offline',
@@ -1140,8 +1139,6 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				personFields: 'emailAddresses,names,photos'
 			}
 		})
-
-		console.warn(req.body.source)
 
 		//redirect to app or ios callback
 		let state;
@@ -1546,6 +1543,8 @@ app.get('/home', (req, res) => {
 })
 
 app.get('/login', async (req, res, next) => {
+	console.warn(req.headers['x-app-request'])
+	
 	const referrer = req.headers.referer
 	if (referrer && referrer.endsWith('/app')) {
 		next()
