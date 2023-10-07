@@ -1037,6 +1037,10 @@ app.post('/auth/google', async (req, res, next) => {
 			scope: ['profile', 'email'],
 			GOOGLE_REDIRECT_URI: GOOGLE_REDIRECT_URI,
 		}
+		if(req.session.iosapprequest == true){
+			authoptions.state = 'iosapp'
+		}
+
 		if(options?.scope?.includes('calendar')){
 			authoptions.scope.push('https://www.googleapis.com/auth/calendar')
 		}
@@ -1143,6 +1147,8 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				personFields: 'emailAddresses,names,photos'
 			}
 		})
+
+		console.warn(req.query.state)
 
 		//redirect to app or ios callback
 		const iosapprequest = req.session.iosapprequest
