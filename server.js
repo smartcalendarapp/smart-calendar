@@ -1033,8 +1033,7 @@ app.post('/auth/google', async (req, res, next) => {
 			scope: ['profile', 'email'],
 			GOOGLE_REDIRECT_URI: GOOGLE_REDIRECT_URI,
 		}
-		console.warn(req.headers)
-		if(req.headers['x-ios-app-request'] === 'true'){
+		if(req.session.iosapprequest === 'true'){
 			authoptions.state = 'iosapp'
 		}
 
@@ -1546,7 +1545,7 @@ app.get('/home', (req, res) => {
 
 app.get('/login', async (req, res, next) => {
 	if(req.headers['x-ios-app-request'] === 'true'){
-		req.session.isiOSApp = true
+		req.session.iosapprequest = 'true'
 	}
 
 	const referrer = req.headers.referer
