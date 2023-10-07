@@ -1033,7 +1033,7 @@ app.post('/auth/google', async (req, res, next) => {
 			scope: ['profile', 'email'],
 			GOOGLE_REDIRECT_URI: GOOGLE_REDIRECT_URI,
 		}
-		console.warn(req.headers['x-ios-app-request'])
+		console.warn(req.headers)
 		if(req.headers['x-ios-app-request'] === 'true'){
 			authoptions.state = 'iosapp'
 		}
