@@ -477,6 +477,7 @@ async function processReminders(){
 					})
 					
 					let result = await apnProvider.send(note, item.iosdevicetoken)
+					console.warn(result)
 				}catch(error){
 					console.error(error)
 				}
@@ -493,6 +494,7 @@ async function processReminders(){
 					})
 					
 					let result = await apnProvider.send(note, item.iosdevicetoken)
+					console.warn(result)
 				}catch(error){
 					console.error(error)
 				}
