@@ -1027,6 +1027,7 @@ app.use((req, res, next) => {
 app.post('/auth/google', async (req, res, next) => {
 	try{
 		let options = req.body.options
+		console.warn(req.body.source)
 
 		const authoptions = {
 			access_type: 'offline',
