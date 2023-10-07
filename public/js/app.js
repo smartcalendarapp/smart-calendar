@@ -943,7 +943,7 @@ class Calendar {
 			this.googleclassroomid = null
 			this.googleclassroomlink = null
 			this.completed = false
-			this.reminder = [{ timebefore: 0 }]
+			this.reminder = [{ timebefore: 0 }, { timebefore: 86400000/4 }]
 			this.lastmodified = 0
 
 			this.timewindow = {
@@ -8114,6 +8114,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	let lastInterimLength = 0
 
 	recognition.addEventListener('result', event => {
+		//here4
 		const currentResultIndex = event.resultIndex
         const transcript = event.results[currentResultIndex][0].transcript.trim()
         const isFinal = event.results[currentResultIndex].isFinal
