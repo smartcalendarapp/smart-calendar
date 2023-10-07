@@ -305,6 +305,7 @@ const apn = require('apn')
 const APN_TEAM_ID = process.env.APN_TEAM_ID
 const APN_KEY_ID = process.env.APN_KEY_ID
 const APN_KEY = process.env.APN_KEY
+const IOS_BUNDLE_ID = process.env.IOS_BUNDLE_ID
 
 const apnoptions = {
 	token: {
@@ -316,6 +317,7 @@ const apnoptions = {
 }
 
 let apnProvider = new apn.Provider(apnoptions)
+//here4
 
 
 //EMAIL SERVICE INITIALIZATION
@@ -461,17 +463,16 @@ async function processReminders(){
 
 
 		//ios notifications
-		console.warn(item.iosdevicetoken)
 		if(item.iosdevicetoken){
 			try{
 				let note = new apn.Notification({
 					alert: `Test ios notification`,
-					sound: 'default'
+					topic: IOS_BUNDLE_ID,
+					sound: 'default',
+					badge: 999,
 				})
 				
-				apnProvider.send(note, item.iosdevicetoken).then(result => {
-
-				})
+				let result = await apnProvider.send(note, item.iosdevicetoken)
 			}catch(error){
 				console.error(error)
 			}
@@ -1059,29 +1060,33 @@ app.post('/auth/google', async (req, res, next) => {
 
 //ios register notification
 app.post('/registeriOSDevice', async (req, res) => {
-    const deviceToken = req.body.deviceToken
-	console.warn(deviceToken)
+	try{
+		const deviceToken = req.body.deviceToken
+		console.warn(deviceToken)
 
-	if(!req.session.user){
-		return res.status(401).json({ error: 'User is not signed in.' })
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+
+		const userid = req.session.user.userid
+		const user = await getUserById(userid)
+		if(!user){
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+		if (!deviceToken) {
+			return res.status(400).json({ error: 'No device token provided.' })
+		}
+
+		user.accountdata.iosdevicetoken = deviceToken
+		await setUser(user)
+		
+		res.status(200).json({ message: 'Device registered successfully' })
+	}catch(error){
+		console.error(error)
+		return res.status(400).json({ error: 'Unexpected error on server.' })
 	}
-
-	const userid = req.session.user.userid
-	const user = await getUserById(userid)
-	if(!user){
-		return res.status(401).json({ error: 'User does not exist.' })
-	}
-
-	if (!deviceToken) {
-        return res.status(400).json({ error: 'No device token provided' })
-    }
-
-    user.accountdata.iosdevicetoken = deviceToken
-	await setUser(user)
-    
-    res.status(200).json({ message: 'Device registered successfully' })
 })
-//here4
 
 
 //ios login
