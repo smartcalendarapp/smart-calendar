@@ -477,6 +477,9 @@ async function processReminders(){
 					})
 					
 					let result = await apnProvider.send(note, item.iosdevicetoken)
+					if (result.failed.length > 0) {
+						console.error("iOS notification failed:", result.failed)
+					}
 				}catch(error){
 					console.error(error)
 				}
@@ -493,6 +496,9 @@ async function processReminders(){
 					})
 					
 					let result = await apnProvider.send(note, item.iosdevicetoken)
+					if (result.failed.length > 0) {
+						console.error("iOS notification failed:", result.failed)
+					}
 				}catch(error){
 					console.error(error)
 				}

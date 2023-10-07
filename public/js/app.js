@@ -943,7 +943,7 @@ class Calendar {
 			this.googleclassroomid = null
 			this.googleclassroomlink = null
 			this.completed = false
-			this.reminder = [{ timebefore: 0 }, { timebefore: 86400000/4 }]
+			this.reminder = [{ timebefore: 0 }]
 			this.lastmodified = 0
 
 			this.timewindow = {
@@ -4055,6 +4055,9 @@ function clickweek(timestamp) {
 	calendarday = tempdate.getDate()
 
 	calendar.updateCalendar()
+
+	let currentdate = new Date()
+	scrollcalendarY(currentdate.getHours() * 60 + currentdate.getMinutes())
 }
 
 function clickmonthdate(event, timestamp) {
@@ -4071,6 +4074,9 @@ function clickmonthdate(event, timestamp) {
 	calendarday = tempdate.getDate()
 
 	calendar.updateCalendar()
+
+	let currentdate = new Date()
+	scrollcalendarY(currentdate.getHours() * 60 + currentdate.getMinutes())
 }
 
 
@@ -7356,6 +7362,8 @@ function resetcreateevent() {
 
 
 function typeaddevent(event, submit) {
+	stoprecognition()
+	
 	let createeventtitle = getElement('createeventtitle')
 	let finalstring = createeventtitle.value
 
@@ -8114,7 +8122,6 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	let lastInterimLength = 0
 
 	recognition.addEventListener('result', event => {
-		//here4
 		const currentResultIndex = event.resultIndex
         const transcript = event.results[currentResultIndex][0].transcript.trim()
         const isFinal = event.results[currentResultIndex].isFinal
@@ -8207,7 +8214,7 @@ function updaterecognitionui(){
 	}
 }
 
-function startrecognition(type){
+function togglerecognition(type){
 	if(recognition){
 		if(!isspeaking){
 			recognitionoutputtype = type
@@ -8218,10 +8225,17 @@ function startrecognition(type){
 		}
 	}
 }
+function stoprecognition(){
+	if(isspeaking){
+		recognition.stop()
+	}
+}
 
 
 
 function typeaddtask(event, submit, index) {
+	stoprecognition()
+
 	let todoinputtitle = getElement('todoinputtitle')
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
 	let todoinputtitleprompttodotoday = getElement('todoinputtitleprompttodotoday')
@@ -8628,7 +8642,7 @@ function gettododata(item) {
 
 
 				${schedulemytasksenabled && Calendar.Todo.isSchedulable(item) && Calendar.Todo.isTodo(item) ?
-					`<div class="absolute display-flex todoitemselectcheck background-secondary border-8px box-shadow pointer pointer-auto" onclick="toggleschedulemytask(event, '${item.id}')">
+					`<div class="absolute box-shadow display-flex todoitemselectcheck background-secondary border-8px box-shadow pointer pointer-auto" onclick="toggleschedulemytask(event, '${item.id}')">
 						${getbigcheckbox(schedulemytaskslist.find(g => g == item.id))}
 					</div>`
 				: ''}
