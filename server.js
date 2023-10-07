@@ -1031,7 +1031,6 @@ app.post('/auth/google', async (req, res, next) => {
 		if(req.headers['x-ios-app-request'] === 'true'){
 			req.session.iosapprequest = true
 		}
-		console.warn(req.session.iosapprequest)
 
 		const authoptions = {
 			access_type: 'offline',
@@ -1146,11 +1145,10 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		})
 
 		//redirect to app or ios callback
-		let state = req.session.iosapprequest
-		console.warn(req.session.iosapprequest)
+		const iosapprequest = req.session.iosapprequest
 
 		function getfinalredirect(){
-			if(state === 'iOSApp'){
+			if(iosapprequest == true){
 				const token = crypto.randomBytes(32).toString('hex')
 
 				sessionTokens[token] = req.session
