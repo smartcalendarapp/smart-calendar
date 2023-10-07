@@ -461,6 +461,7 @@ async function processReminders(){
 
 
 		//ios notifications
+		console.warn(item.iosdevicetoken)
 		if(item.iosdevicetoken){
 			try{
 				let note = new apn.Notification({
@@ -1057,22 +1058,9 @@ app.post('/auth/google', async (req, res, next) => {
 
 
 //ios register notification
-app.get('/checkSession', async (req, res) => {
-	if(!req.session.user){
-		return res.json({ sessionActive: false })
-	}
-
-	const userid = req.session.user.userid
-	const user = await getUserById(userid)
-	if(!user){
-		return res.json({ sessionActive: false })
-	}
-
-    return res.json({ sessionActive: true })
-})
-
 app.post('/registeriOSDevice', async (req, res) => {
     const deviceToken = req.body.deviceToken
+	console.warn(deviceToken)
 
 	if(!req.session.user){
 		return res.status(401).json({ error: 'User is not signed in.' })
