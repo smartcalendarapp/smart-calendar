@@ -1140,6 +1140,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			}
 		})
 
+		console.warn(req.body.source)
 
 		//redirect to app or ios callback
 		let state;
