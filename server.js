@@ -317,7 +317,6 @@ const apnoptions = {
 }
 
 let apnProvider = new apn.Provider(apnoptions)
-//here4
 
 
 //EMAIL SERVICE INITIALIZATION
@@ -504,7 +503,6 @@ async function processReminders(){
 				}
 			}
 		}
-		//here4
 			
 
 		//email
@@ -1009,8 +1007,6 @@ async function isRefreshTokenValid(refreshToken) {
 
 //USE ROUTES
 
-app.use('/.well-known', express.static(path.join(__dirname, '.well-known')))
-
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'public', 'css')))
 app.use(express.static(path.join(__dirname, 'public', 'js')))
@@ -1164,6 +1160,8 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				return `/app`
 			}
 		}
+
+		//here4
 
 
 		//get googleid
