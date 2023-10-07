@@ -1128,10 +1128,6 @@ app.get('/restoreSession', async (req, res) => {
     }
 })
 
-app.get('/oauth-callback', (req, res) => {
-	res.redirect('/app')
-})
-
 app.get('/auth/google/callback', async (req, res, next) => {
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
@@ -1159,13 +1155,11 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				sessionTokens[token] = req.session
 				setTimeout(() => { delete sessionTokens[token] }, 60000)
 	
-				return `https://smartcalendar.us/oauth-callback?token=${token}`
+				return `smartcalendar://oauth-callback?token=${token}`
 			}else{
 				return `/app`
 			}
 		}
-
-		//here4
 
 
 		//get googleid
