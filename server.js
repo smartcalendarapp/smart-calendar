@@ -313,7 +313,7 @@ const apnoptions = {
 		keyId: APN_KEY_ID,
 		teamId: APN_TEAM_ID
   	},
-  	production: true
+  	production: false
 }
 
 let apnProvider = new apn.Provider(apnoptions)
