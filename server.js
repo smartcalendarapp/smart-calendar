@@ -313,7 +313,7 @@ const apnoptions = {
 		keyId: APN_KEY_ID,
 		teamId: APN_TEAM_ID
   	},
-  	production: true
+  	production: false
 }
 
 let apnProvider = new apn.Provider(apnoptions)
@@ -440,7 +440,7 @@ async function processReminders(){
 				if(item.type == 'event'){
 					try{
 						let difference = Math.floor((Date.now() - new Date(item.event.start).getTime())/60000)
-						await webpush.sendNotification(item.pushSubscription, `EVENT: ${item.event.title || "New Event"} (${getFullRelativeDHMText(difference)})`, {
+						await webpush.sendNotification(item.pushSubscription, `Your event "${item.event.title || "New Event"}" starts ${getFullRelativeDHMText(difference)}`, {
 							TTL: 60*60*12,
 							urgency: 'high'
 						  })
@@ -450,7 +450,7 @@ async function processReminders(){
 				}else if (item.type == 'task'){
 					try{
 						let difference = Math.floor((Date.now() - new Date(item.event.duedate).getTime())/60000)
-						await webpush.sendNotification(item.pushSubscription, `TASK DUE: ${item.event.title || "New Task"} (${getFullRelativeDHMText(difference)})`, {
+						await webpush.sendNotification(item.pushSubscription, `Your task "${item.event.title || "New Task"}" is due ${getFullRelativeDHMText(difference)}`, {
 							TTL: 60*60*12,
 							urgency: 'high'
 						  })
@@ -464,17 +464,38 @@ async function processReminders(){
 
 		//ios notifications
 		if(item.iosdevicetoken){
-			try{
-				let note = new apn.Notification({
-					alert: `Test ios notification`,
-					topic: IOS_BUNDLE_ID,
-					sound: 'default',
-					badge: 999,
-				})
-				
-				let result = await apnProvider.send(note, item.iosdevicetoken)
-			}catch(error){
-				console.error(error)
+			if(item.type == 'event'){
+				try{
+					let difference = Math.floor((Date.now() - new Date(item.event.start).getTime())/60000)
+					let note = new apn.Notification({
+						alert: `Starts at ${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} (${getFullRelativeDHMText(difference)}).`,
+						title: `${item.event.title}`,
+						topic: IOS_BUNDLE_ID,
+						sound: 'default',
+						badge: 1,
+						expiry: Math.floor(Date.now() / 1000) + (12 * 60 * 60),
+					})
+					
+					let result = await apnProvider.send(note, item.iosdevicetoken)
+				}catch(error){
+					console.error(error)
+				}
+			}else if(item.type == 'task'){
+				try{
+					let difference = Math.floor((Date.now() - new Date(item.event.duedate).getTime())/60000)
+					let note = new apn.Notification({
+						alert: `Due at ${getHMText(new Date(item.event.utcduedate).getHours() * 60 + new Date(item.event.utcduedate).getMinutes())} (${getFullRelativeDHMText(difference)}).`,
+						title: `${item.event.title}`,
+						topic: IOS_BUNDLE_ID,
+						sound: 'default',
+						badge: 1,
+						expiry: Math.floor(Date.now() / 1000) + (12 * 60 * 60),
+					})
+					
+					let result = await apnProvider.send(note, item.iosdevicetoken)
+				}catch(error){
+					console.error(error)
+				}
 			}
 		}
 		//here4
@@ -634,7 +655,7 @@ async function processReminders(){
 			if(item.type == 'event'){
 				const embed = new EmbedBuilder()
 					.setTitle(`Event "${item.event.title}" starts ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}`)
-					.setDescription(`Hey ${discorduser.username}, just a quick reminder that your event [**${item.event.title || 'New Event'}**](https://smartcalendar.us/app) goes from ${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} to ${getHMText(new Date(item.event.utcend).getHours() * 60 + new Date(item.event.utcend).getMinutes())}.`)
+					.setDescription(`Hey ${discorduser.username}, just a quick reminder for your event [**${item.event.title || 'New Event'}**](https://smartcalendar.us/app). It's from ${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} to ${getHMText(new Date(item.event.utcend).getHours() * 60 + new Date(item.event.utcend).getMinutes())}.`)
 					.setFooter({ text: 'Smart Calendar', iconURL: `https://smartcalendar.us/logo.png` })
 					.setColor(item.event.hexcolor)
 				if(item.event.notes){
@@ -645,7 +666,7 @@ async function processReminders(){
 			}else if(item.type == 'task'){
 				const embed = new EmbedBuilder()
 					.setTitle(`Task "${item.event.title}" due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}`)
-					.setDescription(`Hey ${discorduser.username}, just a quick reminder that your task [**${item.event.title || 'New Task'}**](https://smartcalendar.us/app) is due at ${getHMText(new Date(item.event.utcduedate).getHours() * 60 + new Date(item.event.utcduedate).getMinutes())}.`)
+					.setDescription(`Hey ${discorduser.username}, just a quick reminder for your task [**${item.event.title || 'New Task'}**](https://smartcalendar.us/app). It's due at ${getHMText(new Date(item.event.utcduedate).getHours() * 60 + new Date(item.event.utcduedate).getMinutes())}.`)
 					.setFooter({ text: 'Smart Calendar', iconURL: `https://smartcalendar.us/logo.png` })
 					.setColor(item.event.hexcolor)
 				if(item.event.notes){
@@ -1062,7 +1083,6 @@ app.post('/auth/google', async (req, res, next) => {
 app.post('/registeriOSDevice', async (req, res) => {
 	try{
 		const deviceToken = req.body.deviceToken
-		console.warn(deviceToken)
 
 		if(!req.session.user){
 			return res.status(401).json({ error: 'User is not signed in.' })
