@@ -1028,15 +1028,18 @@ app.post('/auth/google', async (req, res, next) => {
 	try{
 		let options = req.body.options
 
-		if(req.cookies?.iosapp === 'true'){
-			req.session.iosapp = true
-		}
-
 		const authoptions = {
 			access_type: 'offline',
 			scope: ['profile', 'email'],
 			GOOGLE_REDIRECT_URI: GOOGLE_REDIRECT_URI,
 		}
+
+
+		//ios app
+		if(req.cookies?.iosapp === 'true'){
+			authoptions.state = 'iosapp'
+		}
+
 
 		if(options?.scope?.includes('calendar')){
 			authoptions.scope.push('https://www.googleapis.com/auth/calendar')
@@ -1146,10 +1149,10 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			}
 		})
 
-		console.warn(req.session.iosapp)
+		console.warn(req.query.state)
 
 		//redirect to app or ios callback
-		const iosapp = req.session.iosapp == true
+		const iosapp = req.query.state === 'iosapp'
 		function getfinalredirect(){
 			if(iosapp == true){
 				const token = crypto.randomBytes(32).toString('hex')
