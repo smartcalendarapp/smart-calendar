@@ -1115,7 +1115,7 @@ app.post('/registeriOSDevice', async (req, res) => {
 //ios login
 const sessionTokens = {}
 app.get('/restoreSession', async (req, res) => {
-    const { token, device } = req.query
+    const { token } = req.query
 
     if (sessionTokens[token]) {
         Object.assign(req.session, sessionTokens[token])
@@ -1123,11 +1123,7 @@ app.get('/restoreSession', async (req, res) => {
 
         delete sessionTokens[token]
 
-		if(device && device === 'iosapp'){
-        	res.redirect('smartcalendar://oauth-callback')
-		}else{
-			res.redirect('/app')
-		}
+		res.redirect('/app')
     } else {
         res.status(401).redirect('/login')
     }
@@ -1149,7 +1145,6 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		//redirect to app or ios callback
 		const isiosapp = req.headers['user-agent'].includes('iPhone')
 		function getfinalredirect(){
-			return '/app'
 			if(isiosapp == true){
 				const token = crypto.randomBytes(32).toString('hex')
 
@@ -1162,6 +1157,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			}
 		}
 
+		//here4
 
 		//get googleid
 		const ticket = await googleclient.verifyIdToken({

@@ -4,7 +4,7 @@
     "details": [
       {
         "appID": "5XZM6JRNMK.us.smartcalendar.Smart-Calendar",
-        "paths": [ "/oauth-callback", "/app"]
+        "paths": [ "/oauth-callback/*", "/app/*" ]
       }
     ]
   }
