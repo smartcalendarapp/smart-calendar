@@ -1028,9 +1028,11 @@ app.post('/auth/google', async (req, res, next) => {
 	try{
 		let options = req.body.options
 
+		console.warn(req.cookies.iosapp)
 		if(req.cookies?.iosapp === 'true'){
 			req.session.iosapp = true
 		}
+		console.warn(req.session.iosapp)
 
 		const authoptions = {
 			access_type: 'offline',
