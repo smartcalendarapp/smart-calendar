@@ -1025,7 +1025,7 @@ app.use((req, res, next) => {
 //GOOGLE ROUTES
 
 app.post('/auth/google', async (req, res, next) => {
-	console.warn(req.query)
+	console.warn(req.cookies)
 	try{
 		let options = req.body.options
 
