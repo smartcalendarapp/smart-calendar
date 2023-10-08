@@ -1025,7 +1025,7 @@ app.use((req, res, next) => {
 //GOOGLE ROUTES
 
 app.post('/auth/google', async (req, res, next) => {
-	console.warn("OJKOJKOKOKOKOKOKOKOK")
+	console.warn(req.query.state)
 	try{
 		let options = req.body.options
 
@@ -1153,7 +1153,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				sessionTokens[token] = req.session
 				setTimeout(() => { delete sessionTokens[token] }, 60000)
 	
-				return `/app?token=${token}`
+				return `smartcalendar://oauth-callback?token=${token}`
 			}else{
 				return `/app`
 			}
