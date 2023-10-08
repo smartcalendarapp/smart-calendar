@@ -1028,6 +1028,10 @@ app.post('/auth/google', async (req, res, next) => {
 	try{
 		let options = req.body.options
 
+		if(req.cookies?.iosapp === 'true'){
+			req.session.iosapp = true
+		}
+
 		const authoptions = {
 			access_type: 'offline',
 			scope: ['profile', 'email'],
@@ -1131,7 +1135,6 @@ app.get('/restoreSession', async (req, res) => {
 
 
 app.get('/auth/google/callback', async (req, res, next) => {
-	console.warn(req.cookies)
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
 		const { tokens } = await googleclient.getToken(req.query.code)
@@ -1145,9 +1148,9 @@ app.get('/auth/google/callback', async (req, res, next) => {
 
 
 		//redirect to app or ios callback
-		const iosapprequest = req.session.iosapprequest == true
+		const iosapp = req.session.iosapp == true
 		function getfinalredirect(){
-			if(iosapprequest == true){
+			if(iosapp == true){
 				const token = crypto.randomBytes(32).toString('hex')
 
 				sessionTokens[token] = req.session
