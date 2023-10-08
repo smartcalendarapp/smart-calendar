@@ -1028,11 +1028,9 @@ app.post('/auth/google', async (req, res, next) => {
 	try{
 		let options = req.body.options
 
-		console.warn(req.cookies.iosapp)
 		if(req.cookies?.iosapp === 'true'){
 			req.session.iosapp = true
 		}
-		console.warn(req.session.iosapp)
 
 		const authoptions = {
 			access_type: 'offline',
@@ -1148,6 +1146,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			}
 		})
 
+		console.warn(req.session.iosapp)
 
 		//redirect to app or ios callback
 		const iosapp = req.session.iosapp == true
