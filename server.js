@@ -1025,6 +1025,7 @@ app.use((req, res, next) => {
 //GOOGLE ROUTES
 
 app.post('/auth/google', async (req, res, next) => {
+	console.warn("OJKOJKOKOKOKOKOKOKOK")
 	try{
 		let options = req.body.options
 
@@ -1075,46 +1076,6 @@ app.post('/auth/google', async (req, res, next) => {
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
 		const authurl = googleclient.generateAuthUrl(authoptions)
 		return res.json({ url: authurl })
-	} catch (error) {
-		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
-	}
-})
-
-
-app.get('/auth/googleios', async (req, res, next) => {
-	try{
-		const authoptions = {
-			access_type: 'offline',
-			scope: ['profile', 'email'],
-			GOOGLE_REDIRECT_URI: GOOGLE_REDIRECT_URI,
-		}
-
-		authoptions.scope.push('https://www.googleapis.com/auth/calendar')
-
-		if(req.session.user){
-			const userid = req.session.user.userid
-			const user = await getUserById(userid)
-			if(user){
-				if(!user.accountdata.refreshtoken){
-					authoptions.prompt = 'consent'
-				}else{
-					if(!isRefreshTokenValid(user.accountdata.refreshtoken)){
-						authoptions.prompt = 'consent'
-					}
-				}
-			}else{
-				authoptions.prompt = 'consent'
-			}
-		}else{
-			authoptions.prompt = 'consent'
-		}
-
-		req.session.iosapprequest = true
-
-		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
-		const authurl = googleclient.generateAuthUrl(authoptions)
-		return res.redirect(authurl)
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
