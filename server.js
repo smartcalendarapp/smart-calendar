@@ -1082,6 +1082,46 @@ app.post('/auth/google', async (req, res, next) => {
 })
 
 
+app.get('/auth/google', async (req, res, next) => {
+	try{
+		const authoptions = {
+			access_type: 'offline',
+			scope: ['profile', 'email'],
+			GOOGLE_REDIRECT_URI: GOOGLE_REDIRECT_URI,
+		}
+
+		authoptions.scope.push('https://www.googleapis.com/auth/calendar')
+
+		if(req.session.user){
+			const userid = req.session.user.userid
+			const user = await getUserById(userid)
+			if(user){
+				if(!user.accountdata.refreshtoken){
+					authoptions.prompt = 'consent'
+				}else{
+					if(!isRefreshTokenValid(user.accountdata.refreshtoken)){
+						authoptions.prompt = 'consent'
+					}
+				}
+			}else{
+				authoptions.prompt = 'consent'
+			}
+		}else{
+			authoptions.prompt = 'consent'
+		}
+
+		req.session.iosapprequest = true
+
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
+		const authurl = googleclient.generateAuthUrl(authoptions)
+		return res.redirect(authurl)
+	} catch (error) {
+		console.error(error)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
+
 //ios register notification
 app.post('/registeriOSDevice', async (req, res) => {
 	try{
@@ -1117,14 +1157,13 @@ const sessionTokens = {}
 app.get('/restoreSession', async (req, res) => {
     const { token } = req.query
 
-	console.warn(req.headers)
     if (sessionTokens[token]) {
         Object.assign(req.session, sessionTokens[token])
 		req.session.save()
 
         delete sessionTokens[token]
 
-		res.redirect(`smartcalendar://`)
+		res.redirect(`/app`)
     } else {
         res.status(401).redirect('/login')
     }
@@ -1145,9 +1184,9 @@ app.get('/auth/google/callback', async (req, res, next) => {
 
 
 		//redirect to app or ios callback
-		const isiosapp = req.headers['user-agent'].includes('iPhone')
+		const iosapprequest = req.session.iosapprequest == true
 		function getfinalredirect(){
-			if(isiosapp == true){
+			if(iosapprequest == true){
 				const token = crypto.randomBytes(32).toString('hex')
 
 				sessionTokens[token] = req.session
@@ -1544,10 +1583,6 @@ app.get('/home', (req, res) => {
 })
 
 app.get('/login', async (req, res, next) => {
-	if(req.headers['x-ios-app-request'] === 'true'){
-		req.session.iosapprequest = 'true'
-	}
-
 	const referrer = req.headers.referer
 	if (referrer && referrer.endsWith('/app')) {
 		next()
