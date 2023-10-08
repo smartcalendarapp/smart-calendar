@@ -1149,8 +1149,6 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			}
 		})
 
-		console.warn(req.query.state)
-
 		//redirect to app or ios callback
 		const iosapp = req.query.state === 'iosapp'
 		function getfinalredirect(){

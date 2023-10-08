@@ -813,10 +813,9 @@ class Calendar {
 			let tempstart = new Date(this.start.year, this.start.month, this.start.day, 0, this.start.minute).getTime()
 			if(tempstart - Date.now() > 86400000 * 7 && !Calendar.Event.isAllDay(this)){
 				this.reminder.push({ timebefore: 86400000 })
-				this.reminder.push({ timebefore: 0 })
+				this.reminder.push({ timebefore: 900000 })
 			}else if(floor(tempstart, 86400000) != floor(Date.now(), 86400000) && !Calendar.Event.isAllDay(this)){
-				this.reminder.push({ timebefore: 3600000 })
-				this.reminder.push({ timebefore: 0 })
+				this.reminder.push({ timebefore: 900000 })
 			}else{
 				this.reminder.push({ timebefore: 0 })
 			}
