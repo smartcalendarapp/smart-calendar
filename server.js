@@ -1025,7 +1025,6 @@ app.use((req, res, next) => {
 //GOOGLE ROUTES
 
 app.post('/auth/google', async (req, res, next) => {
-	console.warn(req.cookies)
 	try{
 		let options = req.body.options
 
@@ -1132,6 +1131,7 @@ app.get('/restoreSession', async (req, res) => {
 
 
 app.get('/auth/google/callback', async (req, res, next) => {
+	console.warn(req.cookies)
 	try{
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
 		const { tokens } = await googleclient.getToken(req.query.code)
