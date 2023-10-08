@@ -1117,6 +1117,7 @@ const sessionTokens = {}
 app.get('/restoreSession', async (req, res) => {
     const { token } = req.query
 
+	console.warn(req.headers)
     if (sessionTokens[token]) {
         Object.assign(req.session, sessionTokens[token])
 		req.session.save()
@@ -1152,7 +1153,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				sessionTokens[token] = req.session
 				setTimeout(() => { delete sessionTokens[token] }, 60000)
 	
-				return `https://smartcalendar.us/app?token=${token}`
+				return `smartcalendar://oauth-callback?token=${token}`
 			}else{
 				return `/app`
 			}
