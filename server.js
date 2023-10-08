@@ -1153,7 +1153,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				sessionTokens[token] = req.session
 				setTimeout(() => { delete sessionTokens[token] }, 60000)
 	
-				return `/app?token=${token}`//`smartcalendar://oauth-callback?token=${token}`
+				return `smartcalendar://oauth-callback?token=${token}`
 			}else{
 				return `/app`
 			}
