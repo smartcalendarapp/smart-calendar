@@ -7362,8 +7362,6 @@ function resetcreateevent() {
 
 
 function typeaddevent(event, submit) {
-	stoprecognition()
-	
 	let createeventtitle = getElement('createeventtitle')
 	let finalstring = createeventtitle.value
 
@@ -8234,8 +8232,6 @@ function stoprecognition(){
 
 
 function typeaddtask(event, submit, index) {
-	stoprecognition()
-
 	let todoinputtitle = getElement('todoinputtitle')
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
 	let todoinputtitleprompttodotoday = getElement('todoinputtitleprompttodotoday')
