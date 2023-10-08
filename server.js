@@ -1082,7 +1082,7 @@ app.post('/auth/google', async (req, res, next) => {
 })
 
 
-app.get('/auth/google', async (req, res, next) => {
+app.get('/auth/googleios', async (req, res, next) => {
 	try{
 		const authoptions = {
 			access_type: 'offline',
