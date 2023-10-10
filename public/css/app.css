@@ -2924,12 +2924,15 @@ body {
 	justify-content: space-between;
 	pointer-events: none;
 	align-items: center;
-	flex-wrap: wrap;
+	gap:6px
 }
 
 .monthcontainerwraptext {
-	word-wrap: break-word;
 	overflow: hidden;
+	white-space:nowrap;
+}
+.monthcontainerwraptexttime{
+	white-space:nowrap;
 }
 
 .monthcontainerwraptextdisplay {

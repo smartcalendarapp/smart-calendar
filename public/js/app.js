@@ -5396,7 +5396,7 @@ function getmontheventdata(item, currentdate, timestamp) {
 
 				</div>
 			</div>
-			<div class="monthcontainerwraptext">
+			<div class="monthcontainerwraptexttime">
 				<div class="monthcontainerwraptextdisplay text-quaternary ${itemclasses2.join(' ')}">
 					${Calendar.Event.isAllDay(item) ? 'All day' : getHMText(item.start.minute)}
 				</div>
