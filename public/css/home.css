@@ -99,6 +99,7 @@ img{
 }
 .navbar.scrolled{
 	background-color:var(--background-secondary-transparent);
+	border-bottom:1px solid var(--text-tertiary)
 }
 
 

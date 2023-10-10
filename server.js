@@ -282,7 +282,7 @@ class User{
 }
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
-const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0  }
+const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false  }
 const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null }, iosdevicetoken: null }
 const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#2693ff', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0 }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null }
@@ -462,17 +462,16 @@ async function processReminders(){
 
 
 		//ios notifications
-		if(item.iosdevicetoken){
+		if(item.iosnotificationenabled && item.iosdevicetoken){
 			if(item.type == 'event'){
 				try{
 					let difference = Math.floor((Date.now() - new Date(item.event.start).getTime())/60000)
 					let note = new apn.Notification({
 						alert: `Starts at ${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} (${getFullRelativeDHMText(difference)}).`,
-						title: `${item.event.title}`,
+						title: `${item.event.title || 'New Event'}`,
 						topic: IOS_BUNDLE_ID,
 						sound: 'default',
 						badge: 1,
-						expiry: Math.floor(Date.now() / 1000) + (12 * 60 * 60),
 					})
 					
 					let result = await apnProvider.send(note, item.iosdevicetoken)
@@ -487,11 +486,10 @@ async function processReminders(){
 					let difference = Math.floor((Date.now() - new Date(item.event.duedate).getTime())/60000)
 					let note = new apn.Notification({
 						alert: `Due at ${getHMText(new Date(item.event.utcduedate).getHours() * 60 + new Date(item.event.utcduedate).getMinutes())} (${getFullRelativeDHMText(difference)}).`,
-						title: `${item.event.title}`,
+						title: `${item.event.title || 'New Task'}`,
 						topic: IOS_BUNDLE_ID,
 						sound: 'default',
 						badge: 1,
-						expiry: Math.floor(Date.now() / 1000) + (12 * 60 * 60),
 					})
 					
 					let result = await apnProvider.send(note, item.iosdevicetoken)
@@ -661,7 +659,7 @@ async function processReminders(){
 					.setTitle(`Event "${item.event.title}" starts ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}`)
 					.setDescription(`Hey ${discorduser.username}, just a quick reminder for your event [**${item.event.title || 'New Event'}**](https://smartcalendar.us/app). It's from ${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} to ${getHMText(new Date(item.event.utcend).getHours() * 60 + new Date(item.event.utcend).getMinutes())}.`)
 					.setFooter({ text: 'Smart Calendar', iconURL: `https://smartcalendar.us/logo.png` })
-					.setColor(item.event.hexcolor)
+					.setColor(item.event.hexcolor || MODELEVENT.hexcolor)
 				if(item.event.notes){
 					embed.addFields({ name: 'Notes', value: item.event.notes })
 				}
@@ -672,7 +670,7 @@ async function processReminders(){
 					.setTitle(`Task "${item.event.title}" due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))}`)
 					.setDescription(`Hey ${discorduser.username}, just a quick reminder for your task [**${item.event.title || 'New Task'}**](https://smartcalendar.us/app). It's due at ${getHMText(new Date(item.event.utcduedate).getHours() * 60 + new Date(item.event.utcduedate).getMinutes())}.`)
 					.setFooter({ text: 'Smart Calendar', iconURL: `https://smartcalendar.us/logo.png` })
-					.setColor(item.event.hexcolor)
+					.setColor(item.event.hexcolor || MODELEVENT.hexcolor)
 				if(item.event.notes){
 					embed.addFields({ name: 'Notes', value: item.event.notes })
 				}
@@ -840,6 +838,7 @@ function cacheReminders(user){
 				pushSubscriptionEnabled: user.calendardata.pushSubscriptionEnabled,
 				discordreminderenabled: user.calendardata.discordreminderenabled,
 				iosdevicetoken: user.accountdata.iosdevicetoken,
+				iosnotificationenabled: user.calendardata.iosnotificationenabled
 			})
 		}	
 	}
@@ -871,6 +870,7 @@ function cacheReminders(user){
 				pushSubscriptionEnabled: user.calendardata.pushSubscriptionEnabled,
 				discordreminderenabled: user.calendardata.discordreminderenabled,
 				iosdevicetoken: user.accountdata.iosdevicetoken,
+				iosnotificationenabled: user.calendardata.iosnotificationenabled
 			})
 		}
 	}
@@ -1108,8 +1108,11 @@ app.post('/registeriOSDevice', async (req, res) => {
 			return res.status(400).json({ error: 'No device token provided.' })
 		}
 
-		user.accountdata.iosdevicetoken = deviceToken
-		await setUser(user)
+		if(user.accountdata.iosdevicetoken != deviceToken){
+			user.calendardata.iosnotificationenabled = true
+			user.accountdata.iosdevicetoken = deviceToken
+			await setUser(user)
+		}
 		
 		res.status(200).json({ message: 'Device registered successfully' })
 	}catch(error){
@@ -1130,7 +1133,7 @@ app.get('/restoreSession', async (req, res) => {
 
         delete sessionTokens[token]
 
-		res.redirect(`/app`)
+		res.redirect(301, `/app`)
     } else {
         res.status(401).redirect('/login')
     }
@@ -1163,8 +1166,6 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				return `/app`
 			}
 		}
-
-		//here4
 
 
 		//get googleid
@@ -2475,7 +2476,7 @@ async function sendwelcomeemail(user){
 				<p style="font-size: 18px; color: #333;">
 						We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;">contact us</a>. We're here for you!
 				</p>
-				<p style="font-size: 18px; color: #333;">
+				<p style="text-align: center;font-size: 18px; color: #333;">
 					<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
 				</p>
 				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
@@ -2718,7 +2719,7 @@ app.post('/getclientinfo', async (req, res, next) => {
 		
 		await setUser(user)
 		
-		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, createddate: user.accountdata.createddate } })
+		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null } })
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })

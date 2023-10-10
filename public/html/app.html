@@ -976,6 +976,17 @@
 					</div>
 
 					<div class="display-flex align-self-center flex-column gap-24px">
+						<div class="display-flex flex-column gap-24px">
+							<div class="infogroup">
+								<div class="display-flex justify-space-between flex-row gap-12px align-center">
+									<div class="infotext text-16px text-bold">iOS App Notifications</div>
+									<label class="switch">
+										<input type="checkbox" oninput="toggleiosappnotifs(event)" id="iosappnotif2">
+										<span class="slider"></span>
+									</label>
+								</div>
+							</div>
+
 						<div class="infogroup">
 							<div class="display-flex justify-space-between flex-row gap-12px align-center">
 								<div class="infotext text-16px text-bold">Browser Notifications</div>
@@ -1126,7 +1137,7 @@
 
 	<!-- interactive tour -->
 	<div class="absolute width-full height-full top-0 left-0 overflow-hidden pointer-none" id="interactivetourbeaconlist">
-		<div class="absolute display-none popupbutton beaconwrap z-index-100" onclick="openinteractivetourpopup('clickaddtask');if(gtag){gtag('event', 'button_click', { useraction: 'Add task beacon' })}" id="interactivetourbeaconclickaddtask">
+		<div class="absolute display-none popupbutton beaconwrap z-index-300" onclick="openinteractivetourpopup('clickaddtask');if(gtag){gtag('event', 'button_click', { useraction: 'Add task beacon' })}" id="interactivetourbeaconclickaddtask">
 			<div class="beacon pointer-none"></div>
 			
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
@@ -2206,6 +2217,16 @@
 			
 									<!-- notifs -->
 									<div class="display-flex flex-column gap-24px">
+										<div class="infogroup">
+											<div class="display-flex justify-space-between flex-row gap-12px align-center">
+												<div class="infotext text-16px text-bold">iOS App Notifications</div>
+												<label class="switch">
+													<input type="checkbox" oninput="toggleiosappnotifs(event)" id="iosappnotif">
+													<span class="slider"></span>
+												</label>
+											</div>
+										</div>
+
 										<div class="infogroup">
 											<div class="display-flex justify-space-between flex-row gap-12px align-center">
 												<div class="infotext text-16px text-bold">Browser Notifications</div>

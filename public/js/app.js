@@ -3049,6 +3049,20 @@ class Calendar {
 		enablepushnotif.checked = calendar.pushSubscriptionEnabled
 		enablepushnotif2.checked = calendar.pushSubscriptionEnabled
 
+
+		//ios app notif
+		let iosappnotif = getElement('iosappnotif')
+		iosappnotif.checked = calendar.iosnotificationenabled
+		let iosappnotif2 = getElement('iosappnotif2')
+		iosappnotif2.checked = calendar.iosnotificationenabled
+		if(clientinfo.iosdevicetoken){
+			iosappnotif.classList.remove('display-none')
+			iosappnotif2.classList.remove('display-none')
+		}else{
+			iosappnotif.classList.add('display-none')
+			iosappnotif2.classList.add('display-none')
+		}
+
 		//email notif
 		function isEmail(str) {
 			let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -5838,6 +5852,11 @@ function displayalert(title) {
 
 function toggleemailnotifs(event){
 	calendar.emailreminderenabled = event.target.checked
+	calendar.updateSettings()
+}
+
+function toggleiosappnotifs(event){
+	calendar.iosnotificationenabled = event.target.checked
 	calendar.updateSettings()
 }
 
