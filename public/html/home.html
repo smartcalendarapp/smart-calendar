@@ -92,7 +92,7 @@
 	</div>
 	
 
-	<div class="z-index-10000 backdrop-blur fixed top-0 left-0 bottom-0 right-0 display-flex display-none padding-60px border-box" id="videopopup">
+	<div class="z-index-10000 small:padding-24px backdrop-blur fixed top-0 left-0 bottom-0 right-0 display-flex display-none padding-60px border-box" id="videopopup">
 		<div class="relative flex-1">
 			<div class="infotopright pointer absolute top-0 left-full margin-12px" onclick="closedemovideo()">
 				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -105,11 +105,11 @@
 				</svg>
 			</div>
 
-			<iframe id="videoframe" class="border-box width-full height-auto" src="" frameborder="0"></iframe>
+			<iframe id="videoframe" class="border-box width-full demovideoaspectratio" src="" frameborder="0"></iframe>
 		</div>
 	</div>
 
-	<canvas id="dynamicbackground" class="z-index--1 fixed top-0 left-0 width-full height-full"></canvas>
+	<canvas id="dynamicbackground" class="filterblureffect z-index--1 fixed top-0 left-0 width-full height-full"></canvas>
 	
 	<header class="navbar padding-top-12px padding-bottom-12px z-index-2000 fadetransitionslow" id="navbar">
 		<div class="navbarspace"></div>
@@ -234,7 +234,7 @@
 				<div class="display-flex flex-column gap-48px align-center">
 					<div class="display-flex flex-column gap-24px align-center">
 						<h1 class="text-48px small:text-36px text-bold text-primary text-center transition-none"><span class="nowrap">Plan Automatically.</span> <span class="nowrap">Achieve Brilliantly.</span></h1>
-						<p class="text-24px text-primary text-center transition-none">Feel like you never have enough hours in a day?<br>Smart Calendar builds you a personalized, optimal schedule so you can achieve all your goals.</p>
+						<p class="text-24px small:text-18px small:text-left text-primary text-center transition-none">Feel like you never have enough hours in a day?<br>Smart Calendar builds you a personalized, optimal schedule so you can achieve all your goals.</p>
 					</div>
 					<a href="../signup" class="border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
 						<div class="pointer-none text-18px text-white text-bold">Get started now, it's free!</div>
@@ -248,10 +248,25 @@
 					</a>
 				</div>
 
+
+				<!-- watch demo (mobile) -->
+				<div class="demobutton display-none small:display-flex flex-row align-center gap-6px pointer" onclick="clickdemo()">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge buttonblue">
+						<g>
+						<path d="M95.2253 68.1992L95.2253 187.801" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M194.449 128L95.2253 187.801" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M194.449 128L95.2253 68.1992" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M10 128C10 62.8304 62.8304 10 128 10C193.17 10 246 62.8304 246 128C246 193.17 193.17 246 128 246C62.8304 246 10 193.17 10 128Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+						</g>
+					</svg>
+						
+					<div class="text-blue text-16px pointer-none">Watch a demo (1 min)</div>
+				</div>
+
 				<div class="absolute bottom-0 padding-bottom-60px z-index-1 pointer-none left-0 right-0 display-flex flex-row justify-center">
 					<div class="pointer-auto display-flex flex-column gap-12px pointer learnmoregroup" onclick="clicklearnmore()">
 						<div class="text-18px text-center nowrap text-white pointer-none small:text-primary">Learn more about Smart Calendar</div>
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite learnmorebutton">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite small:buttonprimary learnmorebutton">
 						<g>
 						<path d="M226.201 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
 						<path d="M29.7992 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -262,7 +277,8 @@
 
 				<div class="width-full relative small:display-none">
 
-					<div class="absolute display-flex flex-row align-center gap-6px pointer demobutton" onclick="clickdemo()">
+					<!-- watch demo (desktop) -->
+					<div class="absolute display-flex flex-row align-center gap-6px pointer demobutton demobuttonposition" onclick="clickdemo()">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge buttonblue">
 							<g>
 							<path d="M95.2253 68.1992L95.2253 187.801" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -272,7 +288,7 @@
 							</g>
 						</svg>
 							
-						<div class="text-blue text-16px pointer-none">Watch a 1 minute demo</div>
+						<div class="text-blue text-16px pointer-none">Watch a demo (1 min)</div>
 					</div>
 
 					<img src="../finalsplash.png" width="1024" height="380" alt="In-app interface showing calendar and to-do list." id="finalsplash" class="width-full height-full">

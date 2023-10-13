@@ -41,6 +41,9 @@ img{
 	pointer-events:none;
 }
 
+.demovideoaspectratio{
+	aspect-ratio: 16/9;
+}
 
 .gradienttextpink{
 	background-clip: text;
@@ -95,6 +98,7 @@ img{
 	box-sizing:border-box;
 	width:100%;
 	background-color:transparent;
+	border-bottom:1px solid transparent;
 }
 .navbar.scrolled{
 	background-color:var(--background-secondary-transparent);
@@ -113,6 +117,9 @@ img{
 		max-width:24px;
 		width:100%;
 		flex-basis:auto;
+	}
+	.buttonprimary{
+		stroke: var(--text-primary) !important;
 	}
 }
 
@@ -202,11 +209,15 @@ img{
 .demobutton:hover svg{
 	stroke:var(--blue-hover) !important
 }
-.demobutton{
+.demobuttonposition{
 	left:60%;
 	top:0;
 }
 
+
+.filterblureffect{
+	filter:blur(5px)
+}
 
 .infotopright {
 	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
