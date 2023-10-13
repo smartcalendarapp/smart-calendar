@@ -41,10 +41,6 @@ img{
 	pointer-events:none;
 }
 
-.margin60px{
-	margin:60px
-}
-
 
 .gradienttextpink{
 	background-clip: text;
@@ -210,7 +206,6 @@ img{
 	left:60%;
 	top:0;
 }
-
 
 
 .infotopright {
