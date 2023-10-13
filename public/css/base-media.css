@@ -165,6 +165,9 @@
 	.small\:text-right{
 		text-align:right !important
 	}
+	.small\:text-left{
+		text-align:left !important
+	}
 	.small\:text-decoration-none{
 		text-decoration:none !important
 	}
