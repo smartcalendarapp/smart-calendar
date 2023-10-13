@@ -90,6 +90,24 @@
 			</a>
 		</div>
 	</div>
+	
+
+	<div class="fixed top-0 left-0 bottom-0 right-0 display-flex align-center justify-center" id="videopopup" class="hiddenfade">
+		<div class="relative">
+			<div class="infotopright pointer absolute top-0 right-0 margin-12px" onclick="closedemovideo()">
+				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+				<g>
+				<g opacity="1">
+				<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+				<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+				</g>
+				</g>
+				</svg>
+			</div>
+
+			<iframe id="videoframe" width="560" height="315" src="" frameborder="0"></iframe>
+		</div>
+	</div>
 
 	<canvas id="dynamicbackground" class="z-index--1 fixed top-0 left-0 width-full height-full"></canvas>
 	
@@ -242,7 +260,21 @@
 					</div>
 				</div>
 
-				<div class="width-full small:display-none">
+				<div class="width-full relative small:display-none">
+
+					<div class="absolute right-0 top-0 display-flex flex-row align-center gap-6px pointer demobutton" onclick="clickdemo()">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge buttonblue">
+							<g>
+							<path d="M95.2253 68.1992L95.2253 187.801" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M194.449 128L95.2253 187.801" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M194.449 128L95.2253 68.1992" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M10 128C10 62.8304 62.8304 10 128 10C193.17 10 246 62.8304 246 128C246 193.17 193.17 246 128 246C62.8304 246 10 193.17 10 128Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+							</g>
+						</svg>
+							
+						<div class="text-blue text-16px pointer-none">Watch a 1 minute demo</div>
+					</div>
+
 					<img src="../finalsplash.png" width="1024" height="380" alt="In-app interface showing calendar and to-do list." id="finalsplash" class="width-full height-full">
 				</div>
 

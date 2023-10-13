@@ -4298,6 +4298,7 @@ function updateonboardingscreen(){
 		calendar.emailreminderenabled = true
 		calendar.pushSubscriptionEnabled = true
 		calendar.discordreminderenabled = true
+		calendar.iosnotificationenabled = true
 		calendar.updateSettings()
 	}
 

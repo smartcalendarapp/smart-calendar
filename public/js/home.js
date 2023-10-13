@@ -323,6 +323,25 @@ function scrollwindow(destination){
 
 }
 
+
+
+//DEMO
+function clickdemo(){
+	let videoframe = getElement('videoframe')
+	let videopopup = getElement('videopopup')
+
+	videoframe.src = "https://www.youtube.com/embed/d35YefScCwk"
+    videopopup.classList.remove('hiddenfade')
+}
+function closedemovideo(){
+	let videoframe = getElement('videoframe')
+	let videopopup = getElement('videopopup')
+
+	videoframe.src = ""
+    videopopup.classList.add('hiddenfade')
+}
+
+
 //MENU
 function clickmenu(){
 	let menu = getElement('menu')

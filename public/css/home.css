@@ -145,6 +145,8 @@ img{
 	fill: none;
 	display: block;
 }
+
+
 .buttonwhite {
 	height:18px;
 	width:auto;
@@ -190,6 +192,35 @@ img{
 	transition:none;
 }
 
+
+
+.buttonblue{
+	stroke:var(--blue) !important;
+}
+.demobutton:hover div{
+	color:var(--blue-hover) !important
+}
+.demobutton:hover svg{
+	stroke:var(--blue-hover) !important
+}
+
+
+
+.infotopright {
+	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
+	color: var(--text-primary);
+	font-size: 14px;
+	padding: 8px;
+	border-radius: 8px;
+}
+
+.infotopright:hover {
+	background-color: var(--background-tint-1);
+}
+
+.infotopright:active {
+	background-color: var(--background-tint-2);
+}
 
 
 .navbuttonblue{
