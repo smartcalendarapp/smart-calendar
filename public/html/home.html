@@ -92,9 +92,9 @@
 	</div>
 	
 
-	<div class="z-index-10000 small:padding-24px backdrop-blur fixed top-0 left-0 bottom-0 right-0 display-flex display-none padding-60px border-box" id="videopopup">
-		<div class="relative flex-1">
-			<div class="infotopright pointer absolute top-0 left-full margin-12px" onclick="closedemovideo()">
+	<div class="z-index-10000 small:padding-0 backdrop-blur fixed top-0 left-0 bottom-0 right-0 display-flex display-none padding-60px border-box" id="videopopup">
+		<div class="relative gap-12px flex-1 display-flex flex-column justify-center">
+			<div class="small:display-none infotopright pointer absolute top-0 left-full margin-left-12px" onclick="closedemovideo()">
 				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 				<g>
 				<g opacity="1">
@@ -106,6 +106,8 @@
 			</div>
 
 			<iframe id="videoframe" class="border-box width-full demovideoaspectratio" src="" frameborder="0"></iframe>
+
+			<div class="margin-left-12px margin-right-12px pointer text-14px border-box display-none small:display-block border-8px padding-6px-12px background-tint-1 text-center hover:background-tint-2 text-primary" onclick="closedemovideo()">Close</div>
 		</div>
 	</div>
 
@@ -266,7 +268,7 @@
 				<div class="absolute bottom-0 padding-bottom-60px z-index-1 pointer-none left-0 right-0 display-flex flex-row justify-center">
 					<div class="pointer-auto display-flex flex-column gap-12px pointer learnmoregroup" onclick="clicklearnmore()">
 						<div class="text-18px text-center nowrap text-white pointer-none small:text-primary">Learn more about Smart Calendar</div>
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite small:buttonprimary learnmorebutton">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite learnmorebutton">
 						<g>
 						<path d="M226.201 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
 						<path d="M29.7992 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>

@@ -118,7 +118,7 @@ img{
 		width:100%;
 		flex-basis:auto;
 	}
-	.buttonprimary{
+	.learnmorebutton{
 		stroke: var(--text-primary) !important;
 	}
 }
@@ -210,7 +210,8 @@ img{
 	stroke:var(--blue-hover) !important
 }
 .demobuttonposition{
-	left:60%;
+	left:50%;
+	transform:translateX(-50%);
 	top:0;
 }
 
