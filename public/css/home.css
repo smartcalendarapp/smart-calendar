@@ -203,6 +203,10 @@ img{
 .demobutton:hover svg{
 	stroke:var(--blue-hover) !important
 }
+.demobutton{
+	left:60%;
+	top:0;
+}
 
 
 

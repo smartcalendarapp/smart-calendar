@@ -331,14 +331,14 @@ function clickdemo(){
 	let videopopup = getElement('videopopup')
 
 	videoframe.src = "https://www.youtube.com/embed/d35YefScCwk"
-    videopopup.classList.remove('hiddenfade')
+    videopopup.classList.remove('display-none')
 }
 function closedemovideo(){
 	let videoframe = getElement('videoframe')
 	let videopopup = getElement('videopopup')
 
 	videoframe.src = ""
-    videopopup.classList.add('hiddenfade')
+    videopopup.classList.add('display-none')
 }
 
 

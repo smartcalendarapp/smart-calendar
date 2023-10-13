@@ -92,9 +92,9 @@
 	</div>
 	
 
-	<div class="fixed top-0 left-0 bottom-0 right-0 display-flex align-center justify-center" id="videopopup" class="hiddenfade">
+	<div class="z-index-10000 backdrop-blur fixed top-0 left-0 bottom-0 right-0 display-flex align-center justify-center" id="videopopup" class="display-none">
 		<div class="relative">
-			<div class="infotopright pointer absolute top-0 right-0 margin-12px" onclick="closedemovideo()">
+			<div class="infotopright pointer absolute top-0 left-full margin-12px" onclick="closedemovideo()">
 				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 				<g>
 				<g opacity="1">
@@ -105,7 +105,7 @@
 				</svg>
 			</div>
 
-			<iframe id="videoframe" width="560" height="315" src="" frameborder="0"></iframe>
+			<iframe id="videoframe" width="1120" height="730" src="" frameborder="0"></iframe>
 		</div>
 	</div>
 
@@ -262,7 +262,7 @@
 
 				<div class="width-full relative small:display-none">
 
-					<div class="absolute right-0 top-0 display-flex flex-row align-center gap-6px pointer demobutton" onclick="clickdemo()">
+					<div class="absolute display-flex flex-row align-center gap-6px pointer demobutton" onclick="clickdemo()">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge buttonblue">
 							<g>
 							<path d="M95.2253 68.1992L95.2253 187.801" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
