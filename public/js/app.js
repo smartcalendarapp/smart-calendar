@@ -517,7 +517,7 @@ function getDuration(string) {
 	return { value: myduration, match: match }
 }
 
-function getMinute(string, lax) { //lax is for when getting time from input that is solely for time, e.g. event start
+function getMinute(string, lax) { //lax is for when getting time from input that is solely for time, e.g. event start, where AM/PM or :MM is not mandatory
 	string = string.toLowerCase()
 	let myminute;
 	let match;
@@ -543,7 +543,7 @@ function getMinute(string, lax) { //lax is for when getting time from input that
 	if(!temptime){
 		let datematch = getDate(string).match
 
-		let regex = new RegExp(`\\b((((at|on|by|from|to|until|through|start|starts|starting|end|ends|ending|due)${datematch ? `|${datematch}` : ''})\\s+(0?[0-9]|1[0-9]|2[0-4]))|((0?[0-9]|1[0-9]|2[0-4])${datematch ? `\\s+${datematch}` : ''}))\\b`)
+		let regex = new RegExp(`\\b((((at|on|by|from|to|until|through|start|starts|starting|end|ends|ending|due)${datematch ? `|${datematch}` : ''})\\s+(1[0-9]|2[0-4]|0?[0-9]))|((1[0-9]|2[0-4]|0?[0-9])${datematch ? `\\s+${datematch}` : ''}))\\b`)
 
 		temptime = string.match(regex)
 		if(temptime){
@@ -566,7 +566,7 @@ function getMinute(string, lax) { //lax is for when getting time from input that
 	}
 
 	if(!temptime && lax){
-		temptime = string.match(/\b(0?[0-9]|1[0-9]|2[0-4])\b/)
+		temptime = string.match(/\b(1[0-9]|2[0-4]|0?[0-9])\b/)
 		if (temptime) {
 			match = temptime[0]
 
