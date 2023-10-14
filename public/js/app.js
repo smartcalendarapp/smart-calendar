@@ -547,7 +547,7 @@ function getMinute(string, lax) { //lax is for when getting time from input that
 
 		temptime = string.match(regex)
 		if(temptime){
-			let temptime2 = temptime[0].match(/\d/)
+			let temptime2 = temptime[0].match(/\d+/)
 
 			match = temptime2[0]
 
@@ -570,7 +570,7 @@ function getMinute(string, lax) { //lax is for when getting time from input that
 		if (temptime) {
 			match = temptime[0]
 
-			let temptime2 = temptime[0].match(/\d/)
+			let temptime2 = temptime[0].match(/\d+/)
 
 			let temptime4;
 			let temp = (+temptime2[0] || 0) * 60
