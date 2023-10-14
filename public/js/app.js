@@ -6898,7 +6898,7 @@ function openbottomhelpmenu(event){
 	bottomhelpmenu.classList.toggle('hiddenpopup')
 
 	bottomhelpmenu.style.top = (helpbutton.getBoundingClientRect().top - bottomhelpmenu.offsetHeight) + 'px'
-	bottomhelpmenu.style.left = fixleft(helpbutton.getBoundingClientRect().left + helpbutton.offsetWidth/2 - bottomhelpmenu.offsetWidth/2, bottomhelpmenu) + 'px'
+	bottomhelpmenu.style.left = fixleft(helpbutton.getBoundingClientRect().left - bottomhelpmenu.offsetWidth  + helpbutton.offsetWidth, bottomhelpmenu) + 'px'
 }
 
 function closehelp() {
