@@ -517,14 +517,14 @@ function getDuration(string) {
 	return { value: myduration, match: match }
 }
 
-function getMinute(string) {
+function getMinute(string, lax) {
 	string = string.toLowerCase()
 	let myminute;
 	let match;
 
 	let currentdate = new Date()
 
-	let temptime = string.match(/\b(((0?[0-9]|1[0-2])(:[0-5][0-9])?\s*(am|pm))|((0?[0-9]|1[0-9]|2[0-4])(:[0-5][0-9])))\b/)
+	let temptime = string.match(/\b(((0?[0-9]|1[0-2])(:[0-5][0-9])?\s*(am|pm))|((0?[0-9]|1[0-9]|2[0-4])(:[0-5][0-9]))|(at|on|by|from|to|until|through)\s+(0?[0-9]|1[0-9]|2[0-4]))\b/)
 	if (temptime) {
 		match = temptime[0]
 
@@ -533,11 +533,38 @@ function getMinute(string) {
 		let temptime4;
 		if (temptime[0].match(/am|pm/)) {
 			temptime4 = ((+temptime3[0] || 0) % 12 + !!temptime[0].match(/pm/) * 12) * 60 + (+temptime3[1] || 0)
-		} else {
+		} else if(temptime[0].match(/at|on|by|from|to|until|through/)){
+			let temp = (+temptime3[0] || 0) * 60
+			if(temp < calendar.settings.sleep.endminute){//FIX THIS HERE4
+				temptime4 = temp + 12
+			}else if(temp > calendar.settings.sleep.startminute){
+				temptime4 = temp - 12
+			}else{
+				temptime4 = temp
+			}
+		} else{
 			temptime4 = (+temptime3[0] || 0) * 60 + (+temptime3[1] || 0)
 		}
 
 		myminute = temptime4
+	}
+
+	if(lax){
+		let temptime = string.match(/\b(((0?[0-9]|1[0-2])(:[0-5][0-9])?\s*(am|pm))|((0?[0-9]|1[0-9]|2[0-4])((:[0-5][0-9])?)))\b/)
+		if (temptime) {
+			match = temptime[0]
+
+			let temptime2 = temptime[0].match(/\d+(:\d+)?/)
+			let temptime3 = temptime2[0].split(':')
+			let temptime4;
+			if (temptime[0].match(/am|pm/)) {
+				temptime4 = ((+temptime3[0] || 0) % 12 + !!temptime[0].match(/pm/) * 12) * 60 + (+temptime3[1] || 0)
+			} else {
+				temptime4 = (+temptime3[0] || 0) * 60 + (+temptime3[1] || 0)
+			}
+
+			myminute = temptime4
+		}
 	}
 
 	let tempmatch = string.match(/\bnow\b/)
@@ -647,7 +674,7 @@ function getDate(string) {
 
 		mymonth = temp
 		myday = +tempdatedate[0]
-		myyear = +tempdatelist[2] || currentdate.getFullYear()
+		myyear = +tempdatelist[2] || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate() - 7) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
 	}
 
 	let tempdatestring2 = string.match(new RegExp(`\\b((0?[1-9]|1[0-9]|2[0-9]|3[0-1])(st|nd|rd|th)?\\s+(${SHORTMONTHLIST.map(d => d.toLowerCase()).join('|')}|${MONTHLIST.map(d => d.toLowerCase()).join('|')})(\\s+\\d{4})?)\\b`))
@@ -667,7 +694,7 @@ function getDate(string) {
 
 		mymonth = temp
 		myday = +tempdatedate[0]
-		myyear = +tempdatelist[2] || currentdate.getFullYear()
+		myyear = +tempdatelist[2] || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate() - 7) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
 	}
 
 	let tempdate2 = string.match(/\b((0?[1-9]|1[0-2])(\/|-)([1-9]|1[0-9]|2[0-9]|3[0-1])((\/|-)(\d{2}(\d{2})?))?)\b/)
@@ -677,7 +704,7 @@ function getDate(string) {
 		let tempdate3 = tempdate2[0].split(/\/|-/)
 		mymonth = +tempdate3[0] - 1
 		myday = +tempdate3[1]
-		myyear = (+tempdate3[2] && (!tempdate3[2].match(/\d{4}/) ? (floor(currentdate.getFullYear(), 100) + +tempdate3[2]) : (+tempdate3[2]))) || currentdate.getFullYear()
+		myyear = (+tempdate3[2] && (!tempdate3[2].match(/\d{4}/) ? (floor(currentdate.getFullYear(), 100) + +tempdate3[2]) : (+tempdate3[2]))) || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate() - 7) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
 	}
 
 	let tempdate12 = string.match(/\b((\d{4})(\/|-)(0?[1-9]|1[0-2])(\/|-)([1-9]|1[0-9]|2[0-9]|3[0-1]))\b/)
@@ -687,7 +714,7 @@ function getDate(string) {
 		let tempdate13 = tempdate12[0].split(/\/|-/)
 		mymonth = +tempdate13[1] - 1
 		myday = +tempdate13[2]
-		myyear = +tempdate13[0] || currentdate.getFullYear()
+		myyear = +tempdate13[0] || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate() - 7) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
 	}
 
 	let tempdate8 = string.match(/\btoday\b/)
@@ -813,7 +840,7 @@ class Calendar {
 			let tempstart = new Date(this.start.year, this.start.month, this.start.day, 0, this.start.minute).getTime()
 			if(tempstart - Date.now() > 86400000 * 7 && !Calendar.Event.isAllDay(this)){
 				this.reminder.push({ timebefore: 86400000 })
-				this.reminder.push({ timebefore: 900000 })
+				this.reminder.push({ timebefore: 3600000 })
 			}else if(floor(tempstart, 86400000) != floor(Date.now(), 86400000) && !Calendar.Event.isAllDay(this)){
 				this.reminder.push({ timebefore: 900000 })
 			}else{
@@ -5078,7 +5105,7 @@ function inputeventstartdate(event, id) {
 function inputeventstartminute(event, id) {
 	let string = event.target.value.toLowerCase()
 
-	let mystartminute = getMinute(string).value
+	let mystartminute = getMinute(string, true).value
 
 	let item = calendar.events.find(c => c.id == id)
 	if (!item) return
@@ -5131,7 +5158,7 @@ function inputeventendminute(event, id) {
 
 	let string = event.target.value.toLowerCase()
 
-	myendminute = getMinute(string).value
+	myendminute = getMinute(string, true).value
 
 	let item = calendar.events.find(c => c.id == id)
 	if (!item) return
@@ -5174,7 +5201,7 @@ function inputeventduedate(event, id) {
 function inputeventduetime(event, id) {
 	let string = event.target.value.toLowerCase()
 
-	let myendbeforeminute = getMinute(string).value
+	let myendbeforeminute = getMinute(string, true).value
 
 	let item = calendar.events.find(c => c.id == id)
 	if (!item) return
@@ -6805,7 +6832,7 @@ function opencreatecalendarbutton() {
 
 function inputsettingssleepstart(event) {
 	let string = event.target.value.toLowerCase()
-	let mystartminute = getMinute(string).value
+	let mystartminute = getMinute(string, true).value
 
 	if (mystartminute != null) {
 		calendar.settings.sleep.startminute = mystartminute
@@ -6816,7 +6843,7 @@ function inputsettingssleepstart(event) {
 
 function inputsettingssleepend(event) {
 	let string = event.target.value.toLowerCase()
-	let myendminute = getMinute(string).value
+	let myendminute = getMinute(string, true).value
 
 	if (myendminute != null) {
 		calendar.settings.sleep.endminute = myendminute
@@ -7997,7 +8024,7 @@ function inputcreatetodoitemduetime(event, duetime) {
 	} else {
 		let createtodoitemduetimeinput = getElement('createtodoitemduetimeinput')
 		let string = createtodoitemduetimeinput.value
-		myminute = getMinute(string).value
+		myminute = getMinute(string, true).value
 	}
 
 	if (myminute != null) {
@@ -8961,7 +8988,7 @@ function inputtodoitemduetime(event, duetime) {
 	} else {
 		let todoitemduetimeinput = getElement('todoitemduetimeinput')
 		let string = todoitemduetimeinput.value
-		myminute = getMinute(string).value
+		myminute = getMinute(string, true).value
 	}
 
 	if (myminute != null) {
@@ -9240,6 +9267,36 @@ async function todocompleted(event, id) {
 	if (!item) return
 	item.completed = !item.completed
 
+	if(item.completed){
+		if(Calendar.Event.isEvent(item)){
+			let currentdate = new Date()
+
+			if(new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() > currentdate.getTime()){
+				let oldstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+				let oldenddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
+				let duration = oldenddate.getTime() - oldstartdate.getTime()
+
+
+				//set event to end at now
+				let enddate = new Date(currentdate)
+				enddate.setMinutes(floor(enddate.getMinutes(), 5))
+
+				let startdate = new Date(enddate)
+				startdate.setTime(startdate.getTime() - duration)
+			
+				item.start.year = startdate.getFullYear()
+				item.start.month = startdate.getMonth()
+				item.start.day = startdate.getDate()
+				item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+			
+				item.end.year = enddate.getFullYear()
+				item.end.month = enddate.getMonth()
+				item.end.day = enddate.getDate()
+				item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+			}
+		}
+	}
+
 	calendar.updateTodo()
 	if(Calendar.Event.isEvent(item)){
 		calendar.updateEvents()
@@ -9496,7 +9553,7 @@ function inputtododuetime(event){
 
 	let string = event.target.value
 
-	let myendbeforeminute = getMinute(string).value
+	let myendbeforeminute = getMinute(string, true).value
 
 	if (myendbeforeminute != null) {
 		item.endbefore.minute = myendbeforeminute
@@ -12336,6 +12393,37 @@ async function eventcompleted(event, id) {
 	let item = calendar.events.find(f => f.id == id)
 	if (!item) return
 	item.completed = !item.completed
+
+	if(item.completed){
+		if(Calendar.Event.isEvent(item)){
+			let currentdate = new Date()
+
+			if(new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() > currentdate.getTime()){
+				let oldstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+				let oldenddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
+				let duration = oldenddate.getTime() - oldstartdate.getTime()
+
+
+				//set event to end at now
+				let enddate = new Date(currentdate)
+				enddate.setMinutes(floor(enddate.getMinutes(), 5))
+
+				let startdate = new Date(enddate)
+				startdate.setTime(startdate.getTime() - duration)
+			
+				item.start.year = startdate.getFullYear()
+				item.start.month = startdate.getMonth()
+				item.start.day = startdate.getDate()
+				item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+			
+				item.end.year = enddate.getFullYear()
+				item.end.month = enddate.getMonth()
+				item.end.day = enddate.getDate()
+				item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+			}
+		}
+	}
+
 
 	if(item.type == 1){
 		calendar.updateTodo()
