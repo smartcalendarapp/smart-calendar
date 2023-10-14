@@ -536,9 +536,9 @@ function getMinute(string, lax) {
 		} else if(temptime[0].match(/at|on|by|from|to|until|through/)){
 			let temp = (+temptime3[0] || 0) * 60
 			if(temp < calendar.settings.sleep.endminute){//FIX THIS HERE4
-				temptime4 = temp + 12
+				temptime4 = temp + 12 * 60
 			}else if(temp > calendar.settings.sleep.startminute){
-				temptime4 = temp - 12
+				temptime4 = temp - 12 * 60
 			}else{
 				temptime4 = temp
 			}
@@ -674,7 +674,7 @@ function getDate(string) {
 
 		mymonth = temp
 		myday = +tempdatedate[0]
-		myyear = +tempdatelist[2] || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate() - 7) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
+		myyear = +tempdatelist[2] || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate()) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
 	}
 
 	let tempdatestring2 = string.match(new RegExp(`\\b((0?[1-9]|1[0-9]|2[0-9]|3[0-1])(st|nd|rd|th)?\\s+(${SHORTMONTHLIST.map(d => d.toLowerCase()).join('|')}|${MONTHLIST.map(d => d.toLowerCase()).join('|')})(\\s+\\d{4})?)\\b`))
@@ -694,7 +694,7 @@ function getDate(string) {
 
 		mymonth = temp
 		myday = +tempdatedate[0]
-		myyear = +tempdatelist[2] || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate() - 7) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
+		myyear = +tempdatelist[2] || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate()) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
 	}
 
 	let tempdate2 = string.match(/\b((0?[1-9]|1[0-2])(\/|-)([1-9]|1[0-9]|2[0-9]|3[0-1])((\/|-)(\d{2}(\d{2})?))?)\b/)
@@ -704,7 +704,7 @@ function getDate(string) {
 		let tempdate3 = tempdate2[0].split(/\/|-/)
 		mymonth = +tempdate3[0] - 1
 		myday = +tempdate3[1]
-		myyear = (+tempdate3[2] && (!tempdate3[2].match(/\d{4}/) ? (floor(currentdate.getFullYear(), 100) + +tempdate3[2]) : (+tempdate3[2]))) || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate() - 7) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
+		myyear = (+tempdate3[2] && (!tempdate3[2].match(/\d{4}/) ? (floor(currentdate.getFullYear(), 100) + +tempdate3[2]) : (+tempdate3[2]))) || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate()) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
 	}
 
 	let tempdate12 = string.match(/\b((\d{4})(\/|-)(0?[1-9]|1[0-2])(\/|-)([1-9]|1[0-9]|2[0-9]|3[0-1]))\b/)
@@ -714,7 +714,7 @@ function getDate(string) {
 		let tempdate13 = tempdate12[0].split(/\/|-/)
 		mymonth = +tempdate13[1] - 1
 		myday = +tempdate13[2]
-		myyear = +tempdate13[0] || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate() - 7) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
+		myyear = +tempdate13[0] || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate()) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
 	}
 
 	let tempdate8 = string.match(/\btoday\b/)
