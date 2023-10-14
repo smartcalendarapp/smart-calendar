@@ -53,3 +53,11 @@ async function logingoogle(options){
 		window.location.replace(data.url)
 	}
 }
+
+
+//login with apple
+AppleID.auth.init({
+    clientId: 'us.smartcalendar.Smart-Calendar',
+    scope: 'email name',
+    redirectURI: 'https://smartcalendar.us/auth/apple/callback',
+})
