@@ -6892,9 +6892,35 @@ function clicksettingstimeformat(militarytime) {
 
 //HELP
 
+function openbottomhelpmenu(event){
+	let helpbutton = event.target
+	let bottomhelpmenu = getElement('bottomhelpmenu')
+	bottomhelpmenu.classList.toggle('hiddenpopup')
+
+	bottomhelpmenu.style.top = (helpbutton.offsetTop - bottomhelpmenu.offsetHeight) + 'px'
+	bottomhelpmenu.style.left = fixleft(helpbutton.offsetLeft + helpbutton.offsetWidth/2 - bottomhelpmenu.offsetWidth/2, bottomhelpmenu) + 'px'
+}
+
 function closehelp() {
 	let leftmenuwrap = getElement('leftmenuwrap')
 	leftmenuwrap.classList.add('hiddenpopup')
+}
+
+
+//demo
+function clickdemo(){
+	let videoframe = getElement('videoframe')
+	let videopopup = getElement('videopopup')
+
+	videoframe.src = "https://www.youtube.com/embed/d35YefScCwk"
+    videopopup.classList.remove('display-none')
+}
+function closedemovideo(){
+	let videoframe = getElement('videoframe')
+	let videopopup = getElement('videopopup')
+
+	videoframe.src = ""
+    videopopup.classList.add('display-none')
 }
 
 

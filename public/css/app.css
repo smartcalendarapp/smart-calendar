@@ -1079,6 +1079,11 @@ body {
 
 
 
+
+.demovideoaspectratio{
+	aspect-ratio: 16/9;
+}
+
 .verticalalignmiddle {
 	vertical-align: middle;
 }
