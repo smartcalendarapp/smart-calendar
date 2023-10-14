@@ -517,14 +517,14 @@ function getDuration(string) {
 	return { value: myduration, match: match }
 }
 
-function getMinute(string, lax) {
+function getMinute(string, lax) { //lax is for when getting time from input that is solely for time, e.g. event start
 	string = string.toLowerCase()
 	let myminute;
 	let match;
 
 	let currentdate = new Date()
 
-	let temptime = string.match(/\b(((0?[0-9]|1[0-2])(:[0-5][0-9])?\s*(am|pm))|((0?[0-9]|1[0-9]|2[0-4])(:[0-5][0-9]))|(at|on|by|from|to|until|through)\s+(0?[0-9]|1[0-9]|2[0-4]))\b/)
+	let temptime = string.match(/\b(((0?[0-9]|1[0-2])(:[0-5][0-9])?\s*(am|pm))|((0?[0-9]|1[0-9]|2[0-4])(:[0-5][0-9])))\b/)
 	if (temptime) {
 		match = temptime[0]
 
@@ -533,8 +533,26 @@ function getMinute(string, lax) {
 		let temptime4;
 		if (temptime[0].match(/am|pm/)) {
 			temptime4 = ((+temptime3[0] || 0) % 12 + !!temptime[0].match(/pm/) * 12) * 60 + (+temptime3[1] || 0)
-		} else if(temptime[0].match(/at|on|by|from|to|until|through/)){
-			let temp = (+temptime3[0] || 0) * 60
+		}else{
+			temptime4 = (+temptime3[0] || 0) * 60 + (+temptime3[1] || 0)
+		}
+
+		myminute = temptime4
+	}
+
+	if(!temptime){
+		let datematch = getDate(string).match
+
+		let regex = new RegExp(`\\b((((at|on|by|from|to|until|through|start|starts|starting|end|ends|ending|due)${datematch ? `|${datematch}` : ''})\\s+(0?[0-9]|1[0-9]|2[0-4]))|((0?[0-9]|1[0-9]|2[0-4])${datematch ? `\\s+${datematch}` : ''}))\\b`)
+
+		temptime = string.match(regex)
+		if(temptime){
+			let temptime2 = temptime[0].match(/\d/)
+
+			match = temptime2[0]
+
+			let temptime4;
+			let temp = (+temptime2[0] || 0) * 60
 			if(temp < calendar.settings.sleep.endminute){//FIX THIS HERE4
 				temptime4 = temp + 12 * 60
 			}else if(temp > calendar.settings.sleep.startminute){
@@ -542,25 +560,26 @@ function getMinute(string, lax) {
 			}else{
 				temptime4 = temp
 			}
-		} else{
-			temptime4 = (+temptime3[0] || 0) * 60 + (+temptime3[1] || 0)
-		}
 
-		myminute = temptime4
+			myminute = temptime4
+		}
 	}
 
-	if(lax){
-		let temptime = string.match(/\b(((0?[0-9]|1[0-2])(:[0-5][0-9])?\s*(am|pm))|((0?[0-9]|1[0-9]|2[0-4])((:[0-5][0-9])?)))\b/)
+	if(!temptime && lax){
+		temptime = string.match(/\b(0?[0-9]|1[0-9]|2[0-4])\b/)
 		if (temptime) {
 			match = temptime[0]
 
-			let temptime2 = temptime[0].match(/\d+(:\d+)?/)
-			let temptime3 = temptime2[0].split(':')
+			let temptime2 = temptime[0].match(/\d/)
+
 			let temptime4;
-			if (temptime[0].match(/am|pm/)) {
-				temptime4 = ((+temptime3[0] || 0) % 12 + !!temptime[0].match(/pm/) * 12) * 60 + (+temptime3[1] || 0)
-			} else {
-				temptime4 = (+temptime3[0] || 0) * 60 + (+temptime3[1] || 0)
+			let temp = (+temptime2[0] || 0) * 60
+			if(temp < calendar.settings.sleep.endminute){//FIX THIS HERE4
+				temptime4 = temp + 12 * 60
+			}else if(temp > calendar.settings.sleep.startminute){
+				temptime4 = temp - 12 * 60
+			}else{
+				temptime4 = temp
 			}
 
 			myminute = temptime4
