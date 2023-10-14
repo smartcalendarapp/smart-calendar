@@ -6908,7 +6908,7 @@ function closehelp() {
 
 
 //demo
-function clickdemo(){
+function opendemo(){
 	let videoframe = getElement('videoframe')
 	let videopopup = getElement('videopopup')
 
