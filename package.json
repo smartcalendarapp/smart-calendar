@@ -36,6 +36,7 @@
     "ical": "^0.8.0",
     "ical.js": "^1.5.0",
     "jsonwebtoken": "^9.0.1",
+    "jwk-to-pem": "^2.0.5",
     "memorystore": "^1.6.7",
     "mime": "^3.0.0",
     "mongoose": "^6.11.5",

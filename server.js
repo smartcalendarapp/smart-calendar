@@ -932,6 +932,7 @@ const compression = require('compression')
 const RRule = require('rrule').RRule
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
+const jwkToPem = require('jwk-to-pem')
 
 
 //GOOGLE INITIALIZATION
@@ -1417,7 +1418,8 @@ app.post('/auth/apple/callback', async (req, res) => {
 
 		const applePublicKeyResponse = await fetch('https://appleid.apple.com/auth/keys')
 		const appleKeys = await applePublicKeyResponse.json()
-		const publicKey = `-----BEGIN PUBLIC KEY-----\n${appleKeys.keys[0].n}\n-----END PUBLIC KEY-----`
+
+		const publicKey = jwkToPem(appleKeys.keys[0])
 
   
 		const clientsecret = jwt.sign({
