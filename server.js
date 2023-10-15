@@ -1482,8 +1482,7 @@ app.post('/auth/apple/callback', async (req, res) => {
 			req.session.user = { userid: newuser.userid }
 		}
 		
-		//res.redirect('/app')
-		res.end()
+		res.redirect('/app')
 	} catch (error) {
 		console.error(error)
 		res.redirect(301, '/login')
