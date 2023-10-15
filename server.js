@@ -1446,13 +1446,9 @@ app.post('/auth/apple/callback', async (req, res) => {
 		})
 	
 		const tokenData = await tokenResponse.json()
+	
+		console.warn(tokenData)
 		
-		if (tokenData.user) {
-			const userInfo = JSON.parse(tokenData.user)
-			const { name, email } = userInfo
-			console.warn(name, email)
-		}
-
 		const decodedToken = jwt.verify(tokenData.id_token, publicKey, {
 			algorithms: ['RS256'],
 			audience: APPLE_CLIENT_ID
