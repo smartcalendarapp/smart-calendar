@@ -55,6 +55,7 @@ async function logingoogle(options){
 
 //login with apple
 if(window.AppleID){
+	getElement('appleid-signin').classList.remove('display-none')
 	AppleID.auth.init({
 		clientId: 'us.smartcalendar.web',
 		scope: 'email name',

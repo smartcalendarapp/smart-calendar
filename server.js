@@ -1466,6 +1466,7 @@ app.post('/auth/apple/callback', async (req, res) => {
 			throw new Error('Invalid user ID')
 		}
 
+		return res.end()
 
 		//database
 		let existinguser = await getUserByAppleId(appleuserID)

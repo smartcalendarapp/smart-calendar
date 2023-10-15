@@ -3114,12 +3114,15 @@ class Calendar {
 		iosappnotif.checked = calendar.iosnotificationenabled
 		let iosappnotif2 = getElement('iosappnotif2')
 		iosappnotif2.checked = calendar.iosnotificationenabled
+
+		let iosnotificaitonswrap2 = getElement('iosnotificaitonswrap2')
+		let iosnotificaitonswrap = getElement('iosnotificaitonswrap')
 		if(clientinfo.iosdevicetoken){
-			iosappnotif.classList.remove('display-none')
-			iosappnotif2.classList.remove('display-none')
+			iosnotificaitonswrap2.classList.remove('display-none')
+			iosnotificaitonswrap.classList.remove('display-none')
 		}else{
-			iosappnotif.classList.add('display-none')
-			iosappnotif2.classList.add('display-none')
+			iosnotificaitonswrap2.classList.add('display-none')
+			iosnotificaitonswrap.classList.add('display-none')
 		}
 
 		//email notif
