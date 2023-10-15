@@ -297,7 +297,9 @@ class User{
 
 		this.calendardata = {}
 		this.accountdata = {}
+
 		this.accountdata.createddate = Date.now()
+		this.accountdata.lastloggedindate = Date.now()
 	}
 }
 
@@ -1285,7 +1287,6 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			if(tokens.refresh_token) newUser.accountdata.refreshtoken = tokens.refresh_token
 			newUser.accountdata.google.name = name
 			newUser.accountdata.google.profilepicture = profilepicture
-			newUser.accountdata.lastloggedindate = Date.now()
 			await createUser(newUser)
 
 			req.session.user = { userid: newUser.userid }
@@ -1390,7 +1391,6 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 			newUser.calendardata.settings.issyncingtogooglecalendar = true
 			newUser.accountdata.google.name = name
 			newUser.accountdata.google.profilepicture = profilepicture
-			newUser.accountdata.lastloggedindate = Date.now()
 			await createUser(newUser)
 
 			req.session.user = { userid: newUser.userid }
@@ -1476,17 +1476,14 @@ app.post('/auth/apple/callback', async (req, res) => {
 			req.session.user = { userid: existinguser.userid }
 		}else{
 			const newuser = addmissingpropertiestouser(new User({ appleid: appleuserID }))
-			newuser.accountdata.lastloggedindate = Date.now()
 			
 			await createUser(newuser)
 
 			req.session.user = { userid: newuser.userid }
-
-			//await sendwelcomeemail(newUser)
 		}
 		
-		res.redirect('/app')
-	
+		//res.redirect('/app')
+		res.end()
 	} catch (error) {
 		console.error(error)
 		res.redirect(301, '/login')

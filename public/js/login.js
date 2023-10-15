@@ -61,5 +61,11 @@ if(window.AppleID){
 		clientId: 'us.smartcalendar.web',
 		scope: 'email name',
 		redirectURI: 'https://smartcalendar.us/auth/apple/callback',
+		onSuccess: function(data) {
+			console.log(data)
+			const name = data.user ? data.user.name : null
+			const email = data.user ? data.user.email : null
+			console.log(name, email)
+		}
 	})
 }
