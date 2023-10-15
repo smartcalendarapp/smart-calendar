@@ -4358,58 +4358,6 @@ function updateonboardingscreen(){
 		}
 	}
 
-	let index = 0
-	for (let [key, value] of Object.entries(calendar.onboarding)) {
-		let currentdiv = getElement(`onboarding${key}`)
-		let lastdiv = lastonboarding ? getElement(`onboarding${lastonboarding}`) : null
-
-		if(!lastdiv){
-			if(key == currentonboarding){
-				currentdiv.classList.add('slidetransform')
-				currentdiv.classList.remove('hiddenslideleftfull')
-				currentdiv.classList.remove('hiddensliderightfull')
-			}else{
-				if(index < currentindex){
-					currentdiv.classList.remove('slidetransform')
-					currentdiv.classList.add('hiddenslideleftfull')
-					currentdiv.classList.add('slidetransform')
-				}else if(index > currentindex){
-					currentdiv.classList.remove('slidetransform')
-					currentdiv.classList.add('hiddensliderightfull')
-					currentdiv.classList.add('slidetransform')
-				}
-			}
-		}else{
-			if(key == currentonboarding){
-				currentdiv.classList.add('slidetransform')
-				currentdiv.classList.remove('hiddenslideleftfull')
-				currentdiv.classList.remove('hiddensliderightfull')
-			}else{
-				if(index == lastindex){
-					if(lastindex < currentindex){
-						currentdiv.classList.add('slidetransform')
-						currentdiv.classList.add('hiddenslideleftfull')
-					}else if(lastindex > currentindex){
-						currentdiv.classList.add('slidetransform')
-						currentdiv.classList.add('hiddensliderightfull')
-					}
-				}else{
-					if(index < currentindex){
-						currentdiv.classList.remove('slidetransform')
-						currentdiv.classList.add('hiddenslideleftfull')
-						currentdiv.classList.add('slidetransform')
-					}else if(index > currentindex){
-						currentdiv.classList.remove('slidetransform')
-						currentdiv.classList.add('hiddensliderightfull')
-						currentdiv.classList.add('slidetransform')
-					}
-				}
-			}
-		}
-
-		index++
-	}
-
 
 
 	//individual pages
