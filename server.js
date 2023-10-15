@@ -955,12 +955,12 @@ const APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID
 const apn = require('apn')
 
 const APN_KEY_ID = process.env.APN_KEY_ID
-const APN_KEY = process.env.APN_KEY
+const APN_KEY_PATH = process.env.APN_KEY_PATH
 const APPLE_BUNDLE_ID = process.env.APPLE_BUNDLE_ID
-console.warn(APPLE_TEAM_ID)
+
 const apnoptions = {
 	token: {
-		key: APN_KEY,
+		key: APN_KEY_PATH,
 		keyId: APN_KEY_ID,
 		teamId: APPLE_TEAM_ID
   	},
