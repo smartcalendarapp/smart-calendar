@@ -444,6 +444,18 @@ div:focus {
 	z-index:9999;
 }
 
+
+.slidetransform{
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.5s, transform 0.5s !important
+}
+
+.hiddenslideleftfull{
+	transform:translateX(-100%)
+}
+.hiddensliderightfull{
+	transform:translateX(100%)
+}
+
 .buttongoogle {
 	height: 22px;
 	width: 22px;

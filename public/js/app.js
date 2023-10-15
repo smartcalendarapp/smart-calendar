@@ -4269,17 +4269,10 @@ function updateprompttodotoday(){
 
 let onboardingaddtasktodolist = []
 let isonboardingaddtask = false
+let lastonboarding;
+
 function updateonboardingscreen(){
 	let onboardingscreen = getElement('onboardingscreen')
-
-	function updatescreen(key, boolean){
-		let tempdiv = getElement(`onboarding${key}`)
-		if(boolean){
-			tempdiv.classList.remove('display-none')
-		}else{
-			tempdiv.classList.add('display-none')
-		}
-	}
 
 	let currentonboarding;
 	if(!calendar.onboarding.start){
@@ -4296,6 +4289,8 @@ function updateonboardingscreen(){
 		currentonboarding = 'addtask'
 	}
 
+	lastonboarding = currentonboarding
+
 	if(currentonboarding){
 		if(onboardingscreen.classList.contains('hiddenfade')){
 			onboardingscreen.classList.remove('hiddenfade')
@@ -4307,8 +4302,36 @@ function updateonboardingscreen(){
 	}
 
 	for(let [key, value] of Object.entries(calendar.onboarding)){
-		updatescreen(key, key == currentonboarding)
+		
 	}
+
+	let onboardingPages = getElement('onboardingpages');
+	let childrenArray = Array.from(onboardingPages.children)
+
+	let getCurrentIndex = (key) => childrenArray.findIndex(d => d.id === `onboarding${key}`)
+	let getOldIndex = (lastKey) => lastKey ? childrenArray.findIndex(d => d.id === `onboarding${lastKey}`) : -1
+
+	for (let [key, value] of Object.entries(calendar.onboarding)) {
+		let currentindex = getCurrentIndex(key)
+		let oldindex = getOldIndex(lastonboarding)
+
+		let currentDiv = getElement(`onboarding${key}`)
+		let lastDiv = lastonboarding ? getElement(`onboarding${lastonboarding}`) : null
+
+		if (oldindex === -1) {
+			currentDiv.classList.remove('hiddensliderightfull', 'hiddenslideleftfull')
+			continue;
+		}
+
+		if (oldindex < currentindex) {
+			lastDiv.classList.add('hiddenslideleftfull')
+			currentDiv.classList.remove('hiddensliderightfull')
+		} else if (oldindex > currentindex) {
+			lastDiv.classList.remove('hiddenslideleftfull')
+			currentDiv.classList.add('hiddensliderightfull')
+		}
+	}
+
 
 
 	//individual pages
@@ -4332,7 +4355,7 @@ function updateonboardingscreen(){
 		isonboardingaddtask = false
 	}
 
-	
+
 	if(currentonboarding == 'start'){
 		let welcometosmartcalendartext = getElement('welcometosmartcalendartext')
 		welcometosmartcalendartext.innerHTML = `Welcome to Smart Calendar${getUserName(clientinfo) ? `, ${getUserName(clientinfo)}` : ''}`
