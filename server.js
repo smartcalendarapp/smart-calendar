@@ -1462,6 +1462,7 @@ app.post('/auth/apple/callback', async (req, res) => {
 		const appleuserID = decodedToken.sub
 		const appleuseremail = decodedToken.email
 		
+		console.warn(decodedToken)
 		if(!appleuserID){
 			throw new Error('Invalid user ID')
 		}

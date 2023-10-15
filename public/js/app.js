@@ -3085,8 +3085,9 @@ class Calendar {
 		accountpassword.innerHTML = clientinfo.password ? '•'.repeat(10) : 'No password'
 
 		//username
+		let loginemail = (clientinfo.google_email && `${clientinfo.google_email} (from Google)`) || clientinfo.username
 		let accountusername = getElement('accountusername')
-		accountusername.innerHTML = clientinfo.username ? cleanInput(clientinfo.username) : 'No email'
+		accountusername.innerHTML = loginemail ? cleanInput(loginemail) : 'No email'
 
 		let changeusername = getElement('changeusername')
 		let setusername = getElement('setusername')
@@ -3229,6 +3230,9 @@ class Calendar {
 		}else{
 			appleloginmethod.classList.add('display-none')
 		}
+
+		let appleemail = getElement('appleemail')
+		appleemail.innerHTML = clientinfo.apple.email || 'Could not load email'
 	}
 
 
@@ -4480,7 +4484,7 @@ async function connectapple(){
 			scope: 'email name',
 			redirectURI: 'https://smartcalendar.us/auth/apple/callback'
 		})
-		
+
 		AppleID.auth.signIn()
 	}
 }
