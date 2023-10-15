@@ -1205,13 +1205,15 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			idToken: tokens.id_token,
 			audience: GOOGLE_CLIENT_ID,
 		})
+		console.warn(ticket.getPayload())
 		const payload = ticket.getPayload()
 		const googleid = payload.sub
 
 		//get details
 		const email = data.emailAddresses[0].value
-		const name = data.names[0].displayName
-		const profilepicture = data.photos[0].url
+		const name = data.names[0]?.displayName
+		const firstname = data.names[0]?.givenName
+		const profilepicture = data.photos[0]?.url
 	
 
 		let user = await getUserByGoogleId(googleid)
@@ -1223,6 +1225,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 
 			if(tokens.refresh_token) user.accountdata.refreshtoken = tokens.refresh_token
 			user.accountdata.google.name = name
+			user.accountdata.google.firstname = firstname
 			user.accountdata.google.profilepicture = profilepicture
 			user.accountdata.lastloggedindate = Date.now()
 			user.googleid = googleid
@@ -1248,6 +1251,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			loggedInUser.googleid = googleid
 			if(tokens.refresh_token) loggedInUser.accountdata.refreshtoken = tokens.refresh_token
 			loggedInUser.accountdata.google.name = name
+			loggedInUser.accountdata.google.firstname = firstname
 			loggedInUser.accountdata.google.profilepicture = profilepicture
 			loggedInUser.accountdata.lastloggedindate = Date.now()
 			await setUser(loggedInUser)
@@ -1269,6 +1273,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 
 				if(tokens.refresh_token) user.accountdata.refreshtoken = tokens.refresh_token
 				userWithEmail.accountdata.google.name = name
+				userWithEmail.accountdata.google.firstname = firstname
 				userWithEmail.accountdata.google.profilepicture = profilepicture
 				userWithEmail.accountdata.lastloggedindate = Date.now()
 				userWithEmail.googleid = googleid
@@ -1286,6 +1291,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			newUser.calendardata.settings.issyncingtogooglecalendar = true
 			if(tokens.refresh_token) newUser.accountdata.refreshtoken = tokens.refresh_token
 			newUser.accountdata.google.name = name
+			newUser.accountdata.google.firstname = firstname
 			newUser.accountdata.google.profilepicture = profilepicture
 			await createUser(newUser)
 
@@ -1318,6 +1324,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 		//get other data
 		const email = payload.email
 		const name = payload.name
+		const firstname = payload.given_name
 		const profilepicture = payload.picture
 
 
@@ -1332,6 +1339,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 			req.session.user = { userid: user.userid }
 
 			user.accountdata.google.name = name
+			user.accountdata.google.firstname = firstname
 			user.accountdata.google.profilepicture = profilepicture
 			user.accountdata.lastloggedindate = Date.now()
 			user.googleid = googleid
@@ -1355,6 +1363,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 			loggedInUser.google_email = email
 			loggedInUser.googleid = googleid
 			loggedInUser.accountdata.google.name = name
+			loggedInUser.accountdata.google.firstname = firstname
 			loggedInUser.accountdata.google.profilepicture = profilepicture
 			loggedInUser.accountdata.lastloggedindate = Date.now()
 			await setUser(loggedInUser)
@@ -1374,6 +1383,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 				req.session.user = { userid: userWithEmail.userid }
 
 				userWithEmail.accountdata.google.name = name
+				userWithEmail.accountdata.google.firstname = firstname
 				userWithEmail.accountdata.google.profilepicture = profilepicture
 				userWithEmail.accountdata.lastloggedindate = Date.now()
 				userWithEmail.googleid = googleid
@@ -1390,6 +1400,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 			const newUser = addmissingpropertiestouser(new User({ google_email: email, googleid: googleid }))
 			newUser.calendardata.settings.issyncingtogooglecalendar = true
 			newUser.accountdata.google.name = name
+			newUser.accountdata.google.firstname = firstname
 			newUser.accountdata.google.profilepicture = profilepicture
 			await createUser(newUser)
 
@@ -1462,7 +1473,6 @@ app.post('/auth/apple/callback', async (req, res) => {
 		const appleuserID = decodedToken.sub
 		const appleuseremail = decodedToken.email
 		
-		console.warn(decodedToken)
 		if(!appleuserID){
 			throw new Error('Invalid user ID')
 		}

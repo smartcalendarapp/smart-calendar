@@ -3053,7 +3053,6 @@ class Calendar {
 		}
 
 
-		//account
 
 		//google login
 		let googleemail = getElement('googleemail')
@@ -3070,6 +3069,7 @@ class Calendar {
 			connectgoogle.classList.remove('display-none')
 		}
 
+		
 		//password
 		let changepassword = getElement('changepassword')
 		let setpassword = getElement('setpassword')
@@ -3094,7 +3094,7 @@ class Calendar {
 
 		changeusername.classList.add('display-none')
 		setusername.classList.add('display-none')
-		if (clientinfo.username) {
+		if (loginemail) {
 			changeusername.classList.remove('display-none')
 		} else {
 			setusername.classList.remove('display-none')
@@ -3124,6 +3124,7 @@ class Calendar {
 			iosnotificaitonswrap2.classList.add('display-none')
 			iosnotificaitonswrap.classList.add('display-none')
 		}
+
 
 		//email notif
 		function isEmail(str) {
@@ -3173,7 +3174,6 @@ class Calendar {
 		enablediscordnotif2.checked = calendar.discordreminderenabled
 
 
-		//discord notif
 		let connectdiscordstatus2 = getElement('connectdiscordstatus2')
 		let connectdiscordstatus = getElement('connectdiscordstatus')
 
@@ -3232,6 +3232,10 @@ class Calendar {
 		}
 
 		let appleemail = getElement('appleemail')
+		appleemail.classList.add('display-none')
+		if(clientinfo.appleid){
+			appleemail.classList.remove('display-none')
+		}
 		appleemail.innerHTML = clientinfo.apple.email || 'Could not load email'
 	}
 
