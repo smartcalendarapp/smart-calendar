@@ -35,6 +35,7 @@ async function createUser(user){
 }
 
 async function setUser(user){
+	console.warn(user.accountdata.apple, user.appleid)
 	const params = {
 	  TableName: 'smartcalendarusers',
 	  Item: marshall(user, { convertClassInstanceToMap: true, removeUndefinedValues: true })
@@ -2454,11 +2455,11 @@ app.post('/disconnectapple', async (req, res, next) => {
 		//if google email, ok
 
 		if((!user.username || !user.password) && !user.google_email){
-			return res.status(401).json({ error: 'You need to add another login method (username + password or Google) before disconnecting, so you can log in later.' })
+			return res.status(401).json({ error: 'You need to add another login method (email + password or Google) before disconnecting, so you can log in later.' })
 		}
 				
 		delete user.appleid
-		delete user.accountdata.apple.email
+		user.accountdata.apple.email = null
 		await setUser(user)
 	
 		return res.end()
