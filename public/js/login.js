@@ -56,8 +56,10 @@ async function logingoogle(options){
 
 
 //login with apple
-AppleID.auth.init({
-    clientId: 'us.smartcalendar.Smart-Calendar',
-    scope: 'email name',
-    redirectURI: 'https://smartcalendar.us/auth/apple/callback',
-})
+if(window.AppleID){
+	AppleID.auth.init({
+		clientId: 'us.smartcalendar.Smart-Calendar',
+		scope: 'email name',
+		redirectURI: 'https://smartcalendar.us/auth/apple/callback',
+	})
+}

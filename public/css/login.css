@@ -265,3 +265,13 @@ html, body{
 .checkboxunfilled{
 	stroke:var(--text-secondary) !important;
 }
+
+
+#appleid-signin{
+	height:40px;
+}
+
+#appleid-signin div{
+	max-width:100% !important;
+	cursor:pointer;
+}

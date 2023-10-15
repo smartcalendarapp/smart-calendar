@@ -69,11 +69,28 @@ async function getUserByGoogleId(input){
 		}
 	  }
 	
-	  const data = await dynamoclient.send(new QueryCommand(params))
+	const data = await dynamoclient.send(new QueryCommand(params))
 	
-		if(data.Items[0]){
-			return addmissingpropertiestouser(unmarshall(data.Items[0]))
+	if(data.Items[0]){
+		return addmissingpropertiestouser(unmarshall(data.Items[0]))
+	}
+}
+
+async function getUserByAppleId(input){
+	const params = {
+		TableName: 'smartcalendarusers',
+		IndexName: 'appleid-index',
+		KeyConditionExpression: 'appleid = :input',
+		ExpressionAttributeValues: {
+		  ':input': { S: input }
 		}
+	  }
+	
+	const data = await dynamoclient.send(new QueryCommand(params))
+	
+	if(data.Items[0]){
+		return addmissingpropertiestouser(unmarshall(data.Items[0]))
+	}
 }
 
 async function getUserByAttribute(input){
@@ -267,13 +284,16 @@ class Message{
 
 
 class User{
-	constructor({ username, password, google_email, googleid }){
+	constructor({ username, password, google_email, googleid, appleid }){
 		this.userid = generateID()
 
 		this.username = username
 		this.password = password
+
 		this.google_email = google_email
 		this.googleid = googleid
+
+		this.appleid = appleid
 
 		this.calendardata = {}
 		this.accountdata = {}
@@ -297,26 +317,6 @@ webpush.setVapidDetails(
   process.env.VAPID_PUBLIC_KEY,
   process.env.VAPID_PRIVATE_KEY
 )
-
-
-//IOS NOTIFICATIONS
-const apn = require('apn')
-
-const APN_TEAM_ID = process.env.APN_TEAM_ID
-const APN_KEY_ID = process.env.APN_KEY_ID
-const APN_KEY = process.env.APN_KEY
-const IOS_BUNDLE_ID = process.env.IOS_BUNDLE_ID
-
-const apnoptions = {
-	token: {
-		key: APN_KEY,
-		keyId: APN_KEY_ID,
-		teamId: APN_TEAM_ID
-  	},
-  	production: true
-}
-
-let apnProvider = new apn.Provider(apnoptions)
 
 
 //EMAIL SERVICE INITIALIZATION
@@ -469,7 +469,7 @@ async function processReminders(){
 					let note = new apn.Notification({
 						alert: `Starts at ${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} (${getFullRelativeDHMText(difference)}).`,
 						title: `${item.event.title || 'New Event'}`,
-						topic: IOS_BUNDLE_ID,
+						topic: APPLE_BUNDLE_ID,
 						sound: 'default',
 						badge: 1,
 					})
@@ -487,7 +487,7 @@ async function processReminders(){
 					let note = new apn.Notification({
 						alert: `Due at ${getHMText(new Date(item.event.utcduedate).getHours() * 60 + new Date(item.event.utcduedate).getMinutes())} (${getFullRelativeDHMText(difference)}).`,
 						title: `${item.event.title || 'New Task'}`,
-						topic: IOS_BUNDLE_ID,
+						topic: APPLE_BUNDLE_ID,
 						sound: 'default',
 						badge: 1,
 					})
@@ -933,6 +933,7 @@ const RRule = require('rrule').RRule
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 
+
 //GOOGLE INITIALIZATION
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
@@ -940,6 +941,34 @@ const GOOGLE_REDIRECT_URI = `${DOMAIN}/auth/google/callback`
 
 const { google } = require('googleapis')
 const { OAuth2Client } = require('google-auth-library')
+
+
+//APPLE INITIALIZATION
+const APPLE_REDIRECT_URI = `${DOMAIN}/auth/apple/callback`
+const APPLE_PRIVATE_KEY_PATH = process.env.APPLE_PRIVATE_KEY_PATH
+const APPLE_KEY_ID = process.env.APPLE_KEY_ID
+const APPLE_TEAM_ID = process.env.APPLE_TEAM_ID
+const APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID
+//here4
+
+//IOS NOTIFICATIONS INITIALIZATION
+const apn = require('apn')
+
+const APN_KEY_ID = process.env.APN_KEY_ID
+const APN_KEY = process.env.APN_KEY
+const APPLE_BUNDLE_ID = process.env.APPLE_BUNDLE_ID
+
+const apnoptions = {
+	token: {
+		key: APN_KEY,
+		keyId: APN_KEY_ID,
+		teamId: APPLE_TEAM_ID
+  	},
+  	production: true
+}
+
+let apnProvider = new apn.Provider(apnoptions)
+
 
 //EXPRESS INITIALIZATION
 const express = require('express')
@@ -1374,6 +1403,67 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 	}
 })
 
+
+
+//here4
+app.get('/auth/apple/callback', async (req, res) => {
+	try {
+		const { code } = req.query
+		if (!code) {
+			throw new Error('Missing code parameter')
+		}
+
+		const privateKey = fs.readFileSync(APPLE_PRIVATE_KEY_PATH)
+  
+		const clientsecret = jwt.sign({
+			iss: APPLE_TEAM_ID,
+			iat: Math.floor(Date.now() / 1000),
+			exp: Math.floor(Date.now() / 1000) + (60 * 60),
+			aud: 'https://appleid.apple.com',
+			sub: APPLE_CLIENT_ID,
+		}, privateKey, { algorithm: 'ES256', keyid: APPLE_KEY_ID })
+
+		
+		// Exchange code for access token
+		const tokenResponse = await fetch('https://appleid.apple.com/auth/token', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			},
+			body: new URLSearchParams({
+				client_id: APPLE_CLIENT_ID,
+				client_secret: clientsecret,
+				code,
+				grant_type: 'authorization_code',
+				redirect_uri: APPLE_REDIRECT_URI
+			})
+		})
+	
+		const tokenData = await tokenResponse.json()
+	
+		// Validate access token
+		const applePublicKey = await fetch('https://appleid.apple.com/auth/keys')
+		const appleKeys = await applePublicKey.json()
+	
+		const decodedToken = jwt.verify(tokenData.id_token, appleKeys.keys[0].n, {
+			algorithms: ['RS256'],
+			audience: APPLE_CLIENT_ID
+		})
+	
+		if (!decodedToken) {
+			throw new Error('Invalid token')
+		}
+
+		const uniqueUserID = decodedToken.sub
+		console.warn(uniqueUserID)
+		
+		res.end()
+	
+	} catch (error) {
+		console.error(error)
+		res.redirect(301, '/login')
+	}
+})
 
 
 
@@ -2705,18 +2795,15 @@ app.post('/getclientinfo', async (req, res, next) => {
 		if(!req.session.user){
 			return res.status(401).json({ error: 'User is not signed in.' })
 		}
-		
+
 		let userid = req.session.user.userid
-		
 		let user = await getUserById(userid)
 		if (!user) {
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
 
 		user.accountdata.timezoneoffset = req.body.timezoneoffset
-
 		cacheReminders(user)
-		
 		await setUser(user)
 		
 		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null } })
@@ -2725,6 +2812,7 @@ app.post('/getclientinfo', async (req, res, next) => {
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
 	}
 })
+
 
 app.post('/getclientdata', async (req, res, next) => {
 	try {
