@@ -4301,35 +4301,64 @@ function updateonboardingscreen(){
 		}
 	}
 
-	for(let [key, value] of Object.entries(calendar.onboarding)){
-		
-	}
 
-	let onboardingPages = getElement('onboardingpages');
+
+	let onboardingPages = getElement('onboardingpages')
 	let childrenArray = Array.from(onboardingPages.children)
 
-	let getCurrentIndex = (key) => childrenArray.findIndex(d => d.id === `onboarding${key}`)
-	let getOldIndex = (lastKey) => lastKey ? childrenArray.findIndex(d => d.id === `onboarding${lastKey}`) : -1
+	let currentindex = childrenArray.findIndex(d => d.id === `onboarding${currentonboarding}`)
+	let lastindex = lastonboarding ? childrenArray.findIndex(d => d.id === `onboarding${lastonboarding}`) : -1
 
+	let index = 0
 	for (let [key, value] of Object.entries(calendar.onboarding)) {
-		let currentindex = getCurrentIndex(key)
-		let oldindex = getOldIndex(lastonboarding)
+		let currentdiv = getElement(`onboarding${key}`)
+		let lastdiv = lastonboarding ? getElement(`onboarding${lastonboarding}`) : null
 
-		let currentDiv = getElement(`onboarding${key}`)
-		let lastDiv = lastonboarding ? getElement(`onboarding${lastonboarding}`) : null
-
-		if (oldindex === -1) {
-			currentDiv.classList.remove('hiddensliderightfull', 'hiddenslideleftfull')
-			continue;
+		if(!lastdiv){
+			if(key == currentonboarding){
+				currentdiv.classList.add('slidetransform')
+				currentdiv.classList.remove('hiddenslideleftfull')
+				currentdiv.classList.remove('hiddensliderightfull')
+			}else{
+				if(index < currentindex){
+					currentdiv.classList.remove('slidetransform')
+					currentdiv.classList.add('hiddenslideleftfull')
+					currentdiv.classList.add('slidetransform')
+				}else if(index > currentindex){
+					currentdiv.classList.remove('slidetransform')
+					currentdiv.classList.add('hiddensliderightfull')
+					currentdiv.classList.add('slidetransform')
+				}
+			}
+		}else{
+			if(key == currentonboarding){
+				currentdiv.classList.add('slidetransform')
+				currentdiv.classList.remove('hiddenslideleftfull')
+				currentdiv.classList.remove('hiddensliderightfull')
+			}else{
+				if(index == lastindex){
+					if(lastindex < currentindex){
+						currentdiv.classList.add('slidetransform')
+						currentdiv.classList.add('hiddenslideleftfull')
+					}else if(lastindex > currentindex){
+						currentdiv.classList.add('slidetransform')
+						currentdiv.classList.add('hiddensliderightfull')
+					}
+				}else{
+					if(index < currentindex){
+						currentdiv.classList.remove('slidetransform')
+						currentdiv.classList.add('hiddenslideleftfull')
+						currentdiv.classList.add('slidetransform')
+					}else if(index > currentindex){
+						currentdiv.classList.remove('slidetransform')
+						currentdiv.classList.add('hiddensliderightfull')
+						currentdiv.classList.add('slidetransform')
+					}
+				}
+			}
 		}
 
-		if (oldindex < currentindex) {
-			lastDiv.classList.add('hiddenslideleftfull')
-			currentDiv.classList.remove('hiddensliderightfull')
-		} else if (oldindex > currentindex) {
-			lastDiv.classList.remove('hiddenslideleftfull')
-			currentDiv.classList.add('hiddensliderightfull')
-		}
+		index++
 	}
 
 
