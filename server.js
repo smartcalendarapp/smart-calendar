@@ -1418,7 +1418,8 @@ app.post('/auth/apple/callback', async (req, res) => {
 		const applePublicKeyResponse = await fetch('https://appleid.apple.com/auth/keys')
 		const appleKeys = await applePublicKeyResponse.json()
 
-		const publicKey = jwkToPem(appleKeys.keys[0])
+		const kid = jwt.decode(tokenData.id_token, {complete: true}).header.kid
+		const publicKey = jwkToPem(appleKeys.keys.find(key => key.kid === kid))
 
   
 		const clientsecret = jwt.sign({
@@ -1447,8 +1448,6 @@ app.post('/auth/apple/callback', async (req, res) => {
 	
 		const tokenData = await tokenResponse.json()
 	
-		console.warn(tokenData)
-		
 		const decodedToken = jwt.verify(tokenData.id_token, publicKey, {
 			algorithms: ['RS256'],
 			audience: APPLE_CLIENT_ID
