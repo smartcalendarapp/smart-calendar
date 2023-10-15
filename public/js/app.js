@@ -3069,7 +3069,7 @@ class Calendar {
 			connectgoogle.classList.remove('display-none')
 		}
 
-		
+
 		//password
 		let changepassword = getElement('changepassword')
 		let setpassword = getElement('setpassword')
@@ -3126,18 +3126,13 @@ class Calendar {
 		}
 
 
-		//email notif
-		function isEmail(str) {
-			let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-			return pattern.test(str)
-		}
-		
+		//email notif		
 		let enableemailnotif = getElement('enableemailnotif')
 		let enableemailnotif2 = getElement('enableemailnotif2')
 		enableemailnotif.checked = calendar.emailreminderenabled
 		enableemailnotif2.checked = calendar.emailreminderenabled
 
-		let sendtoemail = clientinfo.google_email || clientinfo.apple.email || clientinfo.username
+		let sendtoemail = getUserEmail(clientinfo)
 		if(!isEmail(sendtoemail)){
 			sendtoemail = null
 		}
@@ -3566,6 +3561,19 @@ function scrolltodoY(targetminute) {
 //load data
 let clientinfo = {}
 
+function isEmail(str) {
+	let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+	return pattern.test(str)
+}
+
+function getUserEmail(clientinfo){
+	return clientinfo?.google_email || clientinfo?.apple?.email || clientinfo?.username
+}
+
+function getUserName(clientinfo){
+	return (clientinfo?.google?.firstname || clientinfo?.google?.name || clientinfo?.google_email) || clientinfo?.apple?.email || clientinfo?.username
+}
+
 let isgettingclientdata = false;
 
 async function getclientdata() {
@@ -3791,7 +3799,6 @@ function run() {
 	let currentdate = new Date()
 	scrollcalendarY(currentdate.getHours() * 60 + currentdate.getMinutes())
 	
-
 
 	//welcome popup
 	if (calendar.welcomepopup.calendar == false && calendar.onboarding.addtask == true ) {
@@ -4325,8 +4332,11 @@ function updateonboardingscreen(){
 		isonboardingaddtask = false
 	}
 
-
-	if(currentonboarding == 'connectcalendars'){
+	
+	if(currentonboarding == 'start'){
+		let welcometosmartcalendartext = getElement('welcometosmartcalendartext')
+		welcometosmartcalendartext.innerHTML = `Welcome to Smart Calendar${getUserName(clientinfo) ? `, ${getUserName(clientinfo)}` : ''}`
+	}else if(currentonboarding == 'connectcalendars'){
 		let onboardingconnectcalendarsgooglecalendar = getElement('onboardingconnectcalendarsgooglecalendar')
 
 		let currentdate = new Date()
@@ -4738,8 +4748,6 @@ function openleftmenu(event) {
 }
 
 function updateAvatar(){
-	let displayname = clientinfo.google_email ? cleanInput(clientinfo.google.name || clientinfo.google_email) : clientinfo.username
-
 	const avataricon = `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="avatarsvg">
 		<g>
 		<path d="M64.352 74.7305C64.352 39.5787 92.8482 11.0825 128 11.0825C163.152 11.0825 191.648 39.5787 191.648 74.7305C191.648 109.882 163.152 138.378 128 138.378C92.8482 138.378 64.352 109.882 64.352 74.7305Z" opacity="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-width="20"></path>

@@ -305,7 +305,7 @@ class User{
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false  }
-const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null } }
+const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null } }
 const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#2693ff', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0 }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#2693ff', isprimary: false, subscriptionurl: null, lastmodified: 0  }
@@ -798,13 +798,13 @@ function cacheReminders(user){
 
 
 
-	let email = user.google_email || user.accountdata.apple.email || user.username
+	let email = getUserEmail(user)
 	if(!isEmail(email)) return
 
 	let timezoneoffset = user.accountdata.timezoneoffset
 	if(timezoneoffset == null) return
 
-	let name = (user.accountdata.google.name || user.google_email) || user.accountdata.apple.email || user.username
+	let name = getUserName(user)
 
 	let discordid = user.accountdata.discord.id
 
@@ -1177,12 +1177,6 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
 		const { tokens } = await googleclient.getToken(req.query.code)
 		googleclient.setCredentials(tokens)
-		const { data } = await googleclient.request({
-			url: 'https://people.googleapis.com/v1/people/me',
-			params: {
-				personFields: 'emailAddresses,names,photos'
-			}
-		})
 
 		//redirect to app or ios callback
 		const iosapp = req.query.state === 'iosapp'
@@ -1200,20 +1194,19 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		}
 
 
-		//get googleid
+		//get user info
 		const ticket = await googleclient.verifyIdToken({
 			idToken: tokens.id_token,
 			audience: GOOGLE_CLIENT_ID,
 		})
-		console.warn(ticket.getPayload())
 		const payload = ticket.getPayload()
-		const googleid = payload.sub
 
 		//get details
-		const email = data.emailAddresses[0].value
-		const name = data.names[0]?.displayName
-		const firstname = data.names[0]?.givenName
-		const profilepicture = data.photos[0]?.url
+		const googleid = payload.sub
+		const email = payload.email
+		const name = payload.name
+		const firstname = payload.given_name
+		const profilepicture = payload.picture
 	
 
 		let user = await getUserByGoogleId(googleid)
@@ -1285,7 +1278,6 @@ app.get('/auth/google/callback', async (req, res, next) => {
 		}
 
 		
-		
 		if(true){
 			const newUser = addmissingpropertiestouser(new User({ google_email: email, googleid: googleid }))
 			newUser.calendardata.settings.issyncingtogooglecalendar = true
@@ -1314,14 +1306,15 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 		//get googleid
 		const jsontoken = req.body.credential
 		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
+
+		//get user info
 		const ticket = await googleclient.verifyIdToken({
 			idToken: jsontoken,
 			audience: GOOGLE_CLIENT_ID,
 		})
 		const payload = ticket.getPayload()
-		const googleid = payload.sub
 
-		//get other data
+		const googleid = payload.sub
 		const email = payload.email
 		const name = payload.name
 		const firstname = payload.given_name
@@ -2633,9 +2626,17 @@ app.post('/signup', async (req, res, next) => {
 	}
 })
 
+function getUserEmail(user){
+	return user.google_email || user.accountdata.apple?.email || user.username
+}
+
+function getUserName(user){
+	return (user.accountdata.google?.firstname || user.accountdata.google?.name || user.google_email) || user.accountdata.apple?.email || user.username
+}
+
 async function sendwelcomeemail(user){
-	let email = user.google_email || user.accountdata.apple.email || user.username
-	let name = (user.accountdata.google.name || user.google_email) || user.accountdata.apple.email || user.username
+	let email = getUserEmail(user)
+	let name = getUserName(user)
 
 	if(isEmail(email)){
 		await sendEmail({
