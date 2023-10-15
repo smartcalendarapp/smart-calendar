@@ -39,7 +39,6 @@ async function setUser(user){
 	  TableName: 'smartcalendarusers',
 	  Item: marshall(user, { convertClassInstanceToMap: true, removeUndefinedValues: true })
 	}
-	console.warn(marshall(user, { convertClassInstanceToMap: true, removeUndefinedValues: true }))
 	
 	await dynamoclient.send(new PutItemCommand(params))
 	return user
@@ -1489,6 +1488,8 @@ app.post('/auth/apple/callback', async (req, res) => {
 			loggedInUser.accountdata.apple.email = appleuseremail
 			loggedInUser.accountdata.lastloggedindate = Date.now()
 
+			console.warn(loggedInUser.appleid)
+
 			await setUser(existinguser)
 
 			return res.redirect(301, '/app')
@@ -2459,7 +2460,6 @@ app.post('/disconnectapple', async (req, res, next) => {
 		}
 				
 		delete user.appleid
-		user.accountdata.apple.email = null
 		await setUser(user)
 	
 		return res.end()
