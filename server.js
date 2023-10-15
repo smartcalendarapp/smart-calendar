@@ -1408,6 +1408,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 //here4
 app.post('/auth/apple/callback', async (req, res) => {
 	try {
+		console.warn(req.query, req.body)
 		const { code } = req.query
 		if (!code) {
 			throw new Error('Missing code parameter')

@@ -5114,6 +5114,8 @@ function inputeventstartdate(event, id) {
 
 	let tempdate = new Date(mystartyear, mystartmonth, mystartday)
 
+	let oldstartdate = new Date(item.start.year, item.start.month, item.start.day)
+
 	if (!isNaN(tempdate.getTime())) {
 		let duration = (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
 
@@ -5124,8 +5126,16 @@ function inputeventstartdate(event, id) {
 		fixeventend(item, duration)
 	}
 
-	calendar.updateEvents()
-	calendar.updateInfo()
+	if(oldstartdate.getTime() != new Date(item.start.year, item.start.month, item.start.day)){
+		calendarday = item.start.day
+		calendarmonth = item.start.month
+		calendaryear = item.start.year
+		calendar.updateCalendar()
+	}else{
+		calendar.updateEvents()
+		calendar.updateInfo()
+	}
+
 	calendar.updateHistory()
 }
 
@@ -5137,7 +5147,9 @@ function inputeventstartminute(event, id) {
 
 	let item = calendar.events.find(c => c.id == id)
 	if (!item) return
-
+	
+	let oldminute = item.start.minute
+	
 	if (mystartminute != null) {
 		let duration = (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
 
@@ -5146,9 +5158,11 @@ function inputeventstartminute(event, id) {
 		fixeventend(item, duration)
 	}
 
-	calendar.updateEvents()
-	calendar.updateInfo()
 	calendar.updateHistory()
+
+	if(oldminute != item.start.minute){
+		scrollcalendarY(item.start.minute)
+	}
 }
 
 
@@ -5165,6 +5179,8 @@ function inputeventenddate(event, id) {
 		tempdate.setDate(tempdate.getDate() + 1)
 	}
 
+	let oldenddate = new Date(item.end.year, item.end.month, item.end.day)
+
 	if (!isNaN(tempdate.getTime())) {
 		let duration = (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
 
@@ -5174,9 +5190,17 @@ function inputeventenddate(event, id) {
 
 		fixeventstart(item, duration)
 	}
+	
+	if(oldenddate.getTime() != new Date(item.end.year, item.end.month, item.end.day)){
+		calendarday = item.end.day
+		calendarmonth = item.end.month
+		calendaryear = item.end.year
+		calendar.updateCalendar()
+	}else{
+		calendar.updateEvents()
+		calendar.updateInfo()
+	}
 
-	calendar.updateEvents()
-	calendar.updateInfo()
 	calendar.updateHistory()
 }
 
@@ -5191,6 +5215,8 @@ function inputeventendminute(event, id) {
 	let item = calendar.events.find(c => c.id == id)
 	if (!item) return
 
+	let oldminute = item.start.minute
+
 	if (myendminute != null) {
 		let duration = (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
 
@@ -5202,6 +5228,10 @@ function inputeventendminute(event, id) {
 	calendar.updateEvents()
 	calendar.updateInfo()
 	calendar.updateHistory()
+
+	if(oldminute != item.end.minute){
+		scrollcalendarY(item.end.minute)
+	}
 }
 
 //input end before date
@@ -12423,6 +12453,8 @@ function eventallday() {
 		item.end.month = tempdate.getMonth()
 		item.end.day = tempdate.getDate()
 		item.end.minute = tempdate.getHours() * 60 + tempdate.getMinutes()
+
+		scrollcalendarY(item.start.minute)
 	} else {
 		item.start.minute = 0
 
