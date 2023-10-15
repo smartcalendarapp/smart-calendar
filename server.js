@@ -1438,7 +1438,9 @@ app.post('/auth/apple/callback', async (req, res) => {
 		})
 	
 		const tokenData = await tokenResponse.json()
-		
+	
+		const publicKey = fs.readFileSync(APPLE_PRIVATE_KEY_PATH, 'utf8')
+	
 		const decodedToken = jwt.verify(tokenData.id_token, publicKey, {
 			algorithms: ['RS256'],
 			audience: APPLE_CLIENT_ID
