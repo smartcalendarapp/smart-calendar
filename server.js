@@ -1412,6 +1412,13 @@ app.post('/auth/apple/callback', async (req, res) => {
 		if (!code) {
 			throw new Error('Missing code parameter')
 		}
+
+		const privateKey = fs.readFileSync(APPLE_PRIVATE_KEY_PATH, 'utf8')
+
+		const applePublicKeyResponse = await fetch('https://appleid.apple.com/auth/keys')
+		const appleKeys = await applePublicKeyResponse.json()
+		const publicKey = `-----BEGIN PUBLIC KEY-----\n${appleKeys.keys[0].n}\n-----END PUBLIC KEY-----`
+
   
 		const clientsecret = jwt.sign({
 			iss: APPLE_TEAM_ID,
@@ -1438,8 +1445,6 @@ app.post('/auth/apple/callback', async (req, res) => {
 		})
 	
 		const tokenData = await tokenResponse.json()
-	
-		const publicKey = fs.readFileSync(APPLE_PRIVATE_KEY_PATH, 'utf8')
 	
 		const decodedToken = jwt.verify(tokenData.id_token, publicKey, {
 			algorithms: ['RS256'],
