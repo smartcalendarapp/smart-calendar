@@ -2034,7 +2034,9 @@ class Calendar {
 							</div>
 						</div>`)
 
-						info.innerHTML = infodata.join('')
+						if(infodata.join('') != info.innerHTML){
+							info.innerHTML = infodata.join('')
+						}
 					}
 
 
@@ -2298,7 +2300,9 @@ class Calendar {
 						</div>
 						`)
 
-					info.innerHTML = output.join('')
+						if(output.join('') != info.innerHTML){
+							info.innerHTML = output.join('')
+						}
 				}
 
 
