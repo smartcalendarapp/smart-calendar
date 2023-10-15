@@ -1415,22 +1415,7 @@ app.post('/auth/apple/callback', async (req, res) => {
 
 		const privateKey = fs.readFileSync(APPLE_PRIVATE_KEY_PATH, 'utf8')
 
-		const applePublicKeyResponse = await fetch('https://appleid.apple.com/auth/keys')
-		const appleKeys = await applePublicKeyResponse.json()
 
-		const kid = jwt.decode(tokenData.id_token, {complete: true}).header.kid
-		const publicKey = jwkToPem(appleKeys.keys.find(key => key.kid === kid))
-
-  
-		const clientsecret = jwt.sign({
-			iss: APPLE_TEAM_ID,
-			iat: Math.floor(Date.now() / 1000),
-			exp: Math.floor(Date.now() / 1000) + (60 * 60),
-			aud: 'https://appleid.apple.com',
-			sub: APPLE_CLIENT_ID,
-		}, privateKey, { algorithm: 'ES256', keyid: APPLE_KEY_ID })
-
-		
 		// Exchange code for access token
 		const tokenResponse = await fetch('https://appleid.apple.com/auth/token', {
 			method: 'POST',
@@ -1447,7 +1432,15 @@ app.post('/auth/apple/callback', async (req, res) => {
 		})
 	
 		const tokenData = await tokenResponse.json()
-	
+
+
+		const applePublicKeyResponse = await fetch('https://appleid.apple.com/auth/keys')
+		const appleKeys = await applePublicKeyResponse.json()
+
+		const kid = jwt.decode(tokenData.id_token, {complete: true}).header.kid
+		const publicKey = jwkToPem(appleKeys.keys.find(key => key.kid === kid))
+
+		
 		const decodedToken = jwt.verify(tokenData.id_token, publicKey, {
 			algorithms: ['RS256'],
 			audience: APPLE_CLIENT_ID
@@ -1456,6 +1449,16 @@ app.post('/auth/apple/callback', async (req, res) => {
 		if (!decodedToken) {
 			throw new Error('Invalid token')
 		}
+		
+  
+		const clientsecret = jwt.sign({
+			iss: APPLE_TEAM_ID,
+			iat: Math.floor(Date.now() / 1000),
+			exp: Math.floor(Date.now() / 1000) + (60 * 60),
+			aud: 'https://appleid.apple.com',
+			sub: APPLE_CLIENT_ID,
+		}, privateKey, { algorithm: 'ES256', keyid: APPLE_KEY_ID })
+
 
 		const appleuserID = decodedToken.sub
 		
