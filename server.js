@@ -1502,6 +1502,8 @@ app.post('/auth/apple/callback', async (req, res) => {
 
 			req.session.user = { userid: newuser.userid }
 
+			await sendwelcomeemail(newuser)
+
 			return res.redirect(301, '/app')
 		}
 	} catch (error) {
@@ -2412,7 +2414,7 @@ app.post('/disconnectgoogle', async (req, res, next) => {
 			if(user.google_email){
 				let existinguser = await getUserByUsername(user.google_email)
 				if(existinguser && existinguser.userid != user.userid){
-					return res.status(401).json({ error: 'You cannot disconnect your Google account because the email is taken.' })
+					return res.status(401).json({ error: 'You cannot disconnect your Google account because the email is taken as a username.' })
 				}
 	
 				user.username = user.google_email
@@ -2447,6 +2449,9 @@ app.post('/disconnectapple', async (req, res, next) => {
 		if(!user){
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
+
+		//if username and pass, ok
+		//if google email, ok
 
 		if((!user.username || !user.password) && !user.google_email){
 			return res.status(401).json({ error: 'You need to add another login method (username + password or Google) before disconnecting, so you can log in later.' })

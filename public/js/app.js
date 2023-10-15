@@ -4472,16 +4472,17 @@ async function disconnectapple(){
 }
 
 
-if(window.AppleID){
-	AppleID.auth.init({
-		clientId: 'us.smartcalendar.web',
-		scope: 'email name',
-		redirectURI: 'https://smartcalendar.us/auth/apple/callback'
-	})
-}
 
 async function connectapple(){
-	AppleID.auth.signIn()
+	if(window.AppleID){
+		AppleID.auth.init({
+			clientId: 'us.smartcalendar.web',
+			scope: 'email name',
+			redirectURI: 'https://smartcalendar.us/auth/apple/callback'
+		})
+		
+		AppleID.auth.signIn()
+	}
 }
 
 //INTERACTIVE TOUR

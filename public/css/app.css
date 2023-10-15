@@ -451,6 +451,13 @@ div:focus {
 }
 
 
+.buttonapple {
+	height: 22px;
+	width: 22px;
+	pointer-events: none;
+	fill:var(--text-primary)
+}
+
 .minwidthheight {
 	min-width: 1px;
 	min-height: 1px;
