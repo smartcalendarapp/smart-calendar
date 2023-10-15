@@ -303,7 +303,7 @@ class User{
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false }, welcomepopup: { calendar: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false  }
-const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null }, iosdevicetoken: null }
+const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { name: null, email: null } }
 const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#2693ff', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0 }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#2693ff', isprimary: false, subscriptionurl: null, lastmodified: 0  }
@@ -1406,7 +1406,6 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 
 
 
-//here4
 app.post('/auth/apple/callback', async (req, res) => {
 	try {
 		const { code } = req.body
@@ -1447,7 +1446,13 @@ app.post('/auth/apple/callback', async (req, res) => {
 		})
 	
 		const tokenData = await tokenResponse.json()
-	
+		
+		if (tokenData.user) {
+			const userInfo = JSON.parse(tokenData.user)
+			const { name, email } = userInfo
+			console.warn(name, email)
+		}
+
 		const decodedToken = jwt.verify(tokenData.id_token, publicKey, {
 			algorithms: ['RS256'],
 			audience: APPLE_CLIENT_ID
@@ -1457,10 +1462,33 @@ app.post('/auth/apple/callback', async (req, res) => {
 			throw new Error('Invalid token')
 		}
 
-		const uniqueUserID = decodedToken.sub
-		console.warn(uniqueUserID)
+		const appleuserID = decodedToken.sub
 		
-		res.end()
+		if(!appleuserID){
+			throw new Error('Invalid user ID')
+		}
+
+
+		//database
+		let existinguser = await getUserByAppleId(appleuserID)
+		if(existinguser){
+			existinguser.accountdata.lastloggedindate = Date.now()
+
+			await setUser(existinguser)
+
+			req.session.user = { userid: existinguser.userid }
+		}else{
+			const newuser = addmissingpropertiestouser(new User({ appleid: appleuserID }))
+			newuser.accountdata.lastloggedindate = Date.now()
+			
+			await createUser(newuser)
+
+			req.session.user = { userid: newuser.userid }
+
+			//await sendwelcomeemail(newUser)
+		}
+		
+		res.redirect('/app')
 	
 	} catch (error) {
 		console.error(error)
