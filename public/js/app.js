@@ -3054,52 +3054,51 @@ class Calendar {
 
 
 		//account
-		if (clientinfo) {
-			//google login
-			let googleemail = getElement('googleemail')
-			let connectgoogle = getElement('connectgoogle')
-			let disconnectgoogle = getElement('disconnectgoogle')
-			disconnectgoogle.classList.add('display-none')
-			connectgoogle.classList.add('display-none')
-			googleemail.classList.add('display-none')
-			if (clientinfo.google_email) {
-				disconnectgoogle.classList.remove('display-none')
-				googleemail.classList.remove('display-none')
-				googleemail.innerHTML = cleanInput(clientinfo.google_email)
-			} else {
-				connectgoogle.classList.remove('display-none')
-			}
 
-			//password
-			let changepassword = getElement('changepassword')
-			let setpassword = getElement('setpassword')
-
-			setpassword.classList.add('display-none')
-			changepassword.classList.add('display-none')
-			if (clientinfo.password) {
-				changepassword.classList.remove('display-none')
-			} else {
-				setpassword.classList.remove('display-none')
-			}
-
-			accountpassword.innerHTML = clientinfo.password ? '•'.repeat(10) : 'No password'
-
-			//username
-			let accountusername = getElement('accountusername')
-			accountusername.innerHTML = clientinfo.username ? cleanInput(clientinfo.username) : 'No email'
-
-			let changeusername = getElement('changeusername')
-			let setusername = getElement('setusername')
-
-			changeusername.classList.add('display-none')
-			setusername.classList.add('display-none')
-			if (clientinfo.username) {
-				changeusername.classList.remove('display-none')
-			} else {
-				setusername.classList.remove('display-none')
-			}
-
+		//google login
+		let googleemail = getElement('googleemail')
+		let connectgoogle = getElement('connectgoogle')
+		let disconnectgoogle = getElement('disconnectgoogle')
+		disconnectgoogle.classList.add('display-none')
+		connectgoogle.classList.add('display-none')
+		googleemail.classList.add('display-none')
+		if (clientinfo.google_email) {
+			disconnectgoogle.classList.remove('display-none')
+			googleemail.classList.remove('display-none')
+			googleemail.innerHTML = cleanInput(clientinfo.google_email)
+		} else {
+			connectgoogle.classList.remove('display-none')
 		}
+
+		//password
+		let changepassword = getElement('changepassword')
+		let setpassword = getElement('setpassword')
+
+		setpassword.classList.add('display-none')
+		changepassword.classList.add('display-none')
+		if (clientinfo.password) {
+			changepassword.classList.remove('display-none')
+		} else {
+			setpassword.classList.remove('display-none')
+		}
+
+		accountpassword.innerHTML = clientinfo.password ? '•'.repeat(10) : 'No password'
+
+		//username
+		let accountusername = getElement('accountusername')
+		accountusername.innerHTML = clientinfo.username ? cleanInput(clientinfo.username) : 'No email'
+
+		let changeusername = getElement('changeusername')
+		let setusername = getElement('setusername')
+
+		changeusername.classList.add('display-none')
+		setusername.classList.add('display-none')
+		if (clientinfo.username) {
+			changeusername.classList.remove('display-none')
+		} else {
+			setusername.classList.remove('display-none')
+		}
+
 
 
 		//browser notif
@@ -3136,7 +3135,7 @@ class Calendar {
 		enableemailnotif.checked = calendar.emailreminderenabled
 		enableemailnotif2.checked = calendar.emailreminderenabled
 
-		let sendtoemail = clientinfo.google_email || clientinfo.username
+		let sendtoemail = clientinfo.google_email || clientinfo.apple.email || clientinfo.username
 		if(!isEmail(sendtoemail)){
 			sendtoemail = null
 		}
@@ -3211,6 +3210,25 @@ class Calendar {
 
 		connectdiscordstatus.innerHTML = discordtext
 		connectdiscordstatus2.innerHTML = discordtext
+
+
+		//apple 
+		let connectapple = getElement('connectapple')
+		let disconnectapple = getElement('disconnectapple')
+		disconnectapple.classList.add('display-none')
+		connectapple.classList.add('display-none')
+		if(clientinfo.appleid){
+			disconnectapple.classList.remove('display-none')
+		}else{
+			connectapple.classList.remove('display-none')
+		}
+
+		let appleloginmethod = getElement('appleloginmethod')
+		if(window.AppleID){
+			appleloginmethod.classList.remove('display-none')
+		}else{
+			appleloginmethod.classList.add('display-none')
+		}
 	}
 
 
@@ -4382,6 +4400,7 @@ function backonboarding(key){
 }
 
 
+//ACCOUNT CONNECTIONS
 
 async function logingoogle(options){
 	const response = await fetch('/auth/google', { 
@@ -4432,6 +4451,38 @@ async function logindiscord(options){
 	}
 }
 
+
+async function disconnectapple(){
+	let appleerrorwrap = getElement('appleerrorwrap')
+	appleerrorwrap.classList.add('display-none')
+
+	const response = await fetch('/disconnectapple', {
+		method: 'POST'
+	})
+
+	if (response.status == 200) {
+		await getclientinfo()
+
+		calendar.updateSettings()
+	} else if (response.status == 401) {
+		const data = await response.json()
+		appleerrorwrap.innerHTML = data.error
+		appleerrorwrap.classList.remove('display-none')
+	}
+}
+
+
+if(window.AppleID){
+	AppleID.auth.init({
+		clientId: 'us.smartcalendar.web',
+		scope: 'email name',
+		redirectURI: 'https://smartcalendar.us/auth/apple/callback'
+	})
+}
+
+async function connectapple(){
+	AppleID.auth.signIn()
+}
 
 //INTERACTIVE TOUR
 function updateinteractivetour() {

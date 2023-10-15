@@ -798,13 +798,13 @@ function cacheReminders(user){
 
 
 
-	let email = user.google_email || user.username
+	let email = user.google_email || user.accountdata.apple.email || user.username
 	if(!isEmail(email)) return
 
 	let timezoneoffset = user.accountdata.timezoneoffset
 	if(timezoneoffset == null) return
 
-	let name = user.google_email ? user.accountdata.google.name || user.google_email : user.username
+	let name = (user.accountdata.google.name || user.google_email) || user.accountdata.apple.email || user.username
 
 	let discordid = user.accountdata.discord.id
 
@@ -952,7 +952,7 @@ const APPLE_PRIVATE_KEY_PATH = process.env.APPLE_PRIVATE_KEY_PATH
 const APPLE_KEY_ID = process.env.APPLE_KEY_ID
 const APPLE_TEAM_ID = process.env.APPLE_TEAM_ID
 const APPLE_CLIENT_ID = process.env.APPLE_CLIENT_ID
-//here4
+
 
 //IOS NOTIFICATIONS INITIALIZATION
 const apn = require('apn')
@@ -1460,31 +1460,50 @@ app.post('/auth/apple/callback', async (req, res) => {
 		
 
 		const appleuserID = decodedToken.sub
-		const appuseremail = decodedToken.email
+		const appleuseremail = decodedToken.email
 		
 		if(!appleuserID){
 			throw new Error('Invalid user ID')
 		}
 
 		//database
+
+		//log in
 		let existinguser = await getUserByAppleId(appleuserID)
 		if(existinguser){
 			existinguser.accountdata.lastloggedindate = Date.now()
-			existinguser.accountdata.apple.email = appuseremail
+			existinguser.accountdata.apple.email = appleuseremail
 
 			await setUser(existinguser)
 
 			req.session.user = { userid: existinguser.userid }
-		}else{
+
+			return res.redirect(301, '/app')
+		}
+
+		let loggedInUser = req.session.user && req.session.user.userid ? await getUserById(req.session.user.userid) : null
+		if(loggedInUser && !loggedInUser.appleid){
+			//add apple id to existing user
+			loggedInUser.appleid = appleuserID
+			loggedInUser.accountdata.apple.email = appleuseremail
+			loggedInUser.accountdata.lastloggedindate = Date.now()
+
+			await setUser(existinguser)
+
+			return res.redirect(301, '/app')
+		}
+
+		//create new account
+		if(true){
 			const newuser = addmissingpropertiestouser(new User({ appleid: appleuserID }))
-			newuser.accountdata.apple.email = appuseremail
+			newuser.accountdata.apple.email = appleuseremail
 			
 			await createUser(newuser)
 
 			req.session.user = { userid: newuser.userid }
+
+			return res.redirect(301, '/app')
 		}
-		
-		res.redirect('/app')
 	} catch (error) {
 		console.error(error)
 		res.redirect(301, '/login')
@@ -2378,16 +2397,26 @@ app.post('/disconnectgoogle', async (req, res, next) => {
 		if(!user){
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
-		if(!user.password){
-			return res.status(401).json({ error: 'You need to set a password before disconnecting.' })
-		}
-		if(user.google_email){
-			let existinguser = await getUserByUsername(user.google_email)
-			if(existinguser && existinguser.userid != user.userid){
-				return res.status(401).json({ error: 'You cannot disconnect your Google account because the email is taken.' })
+
+		//if apple, ok
+		//if username and pass, ok
+		//if existing user with username being google email, not ok
+
+		if(user.appleid){
+
+		}else{
+			if(!user.password){
+				return res.status(401).json({ error: 'You need to set a password before disconnecting.' })
 			}
 
-			user.username = user.google_email
+			if(user.google_email){
+				let existinguser = await getUserByUsername(user.google_email)
+				if(existinguser && existinguser.userid != user.userid){
+					return res.status(401).json({ error: 'You cannot disconnect your Google account because the email is taken.' })
+				}
+	
+				user.username = user.google_email
+			}
 		}
 		
 		delete req.session.tokens
@@ -2396,6 +2425,35 @@ app.post('/disconnectgoogle', async (req, res, next) => {
 		delete user.googleid
 		user.calendardata.settings.issyncingtogooglecalendar = false
 		user.calendardata.settings.issyncingtogoogleclassroom = false
+		await setUser(user)
+	
+		return res.end()
+	} catch (error) {
+		console.error(error)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
+
+app.post('/disconnectapple', async (req, res, next) => {
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+
+		let userid = req.session.user.userid
+		
+		const user = await getUserById(userid)
+		if(!user){
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+		if((!user.username || !user.password) && !user.google_email){
+			return res.status(401).json({ error: 'You need to add another login method (username + password or Google) before disconnecting, so you can log in later.' })
+		}
+				
+		delete user.appleid
+		delete user.accountdata.apple.email
 		await setUser(user)
 	
 		return res.end()
@@ -2561,8 +2619,8 @@ app.post('/signup', async (req, res, next) => {
 })
 
 async function sendwelcomeemail(user){
-	let email = user.google_email || user.username
-	let name = user.google_email ? user.accountdata.google.name || user.google_email : user.username
+	let email = user.google_email || user.accountdata.apple.email || user.username
+	let name = (user.accountdata.google.name || user.google_email) || user.accountdata.apple.email || user.username
 
 	if(isEmail(email)){
 		await sendEmail({
@@ -2832,7 +2890,7 @@ app.post('/getclientinfo', async (req, res, next) => {
 		cacheReminders(user)
 		await setUser(user)
 		
-		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, apple: user.accountdata.apple, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null } })
+		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, apple: user.accountdata.apple, appleid: user.appleid != null, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null } })
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
