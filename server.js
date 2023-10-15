@@ -1459,6 +1459,7 @@ app.post('/auth/apple/callback', async (req, res) => {
 		}
 		
 
+		console.warn(decodedToken, tokenData)
 		const appleuserID = decodedToken.sub
 		
 		if(!appleuserID){
