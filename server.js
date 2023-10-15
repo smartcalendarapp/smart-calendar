@@ -1488,9 +1488,7 @@ app.post('/auth/apple/callback', async (req, res) => {
 			loggedInUser.accountdata.apple.email = appleuseremail
 			loggedInUser.accountdata.lastloggedindate = Date.now()
 
-			console.warn(loggedInUser.appleid)
-
-			await setUser(existinguser)
+			await setUser(loggedInUser)
 
 			return res.redirect(301, '/app')
 		}
