@@ -574,7 +574,7 @@ function getMinute(string, lax) { //lax is for when getting time from input that
 		}
 	}
 
-	if(!temptime && lax){
+	if(myminute == null && lax){
 		temptime = string.match(/\b(1[0-9]|2[0-4]|0?[0-9])\b/)
 		if (temptime) {
 			match = temptime[0]
