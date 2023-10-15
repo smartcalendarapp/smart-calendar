@@ -4303,64 +4303,45 @@ function updateonboardingscreen(){
 
 
 
-	let onboardingPages = getElement('onboardingpages')
-	let childrenArray = Array.from(onboardingPages.children)
-
-	let currentindex = childrenArray.findIndex(d => d.id === `onboarding${currentonboarding}`)
-	let lastindex = lastonboarding ? childrenArray.findIndex(d => d.id === `onboarding${lastonboarding}`) : -1
-
-	let index = 0
-	for (let [key, value] of Object.entries(calendar.onboarding)) {
-		let currentdiv = getElement(`onboarding${key}`)
-		let lastdiv = lastonboarding ? getElement(`onboarding${lastonboarding}`) : null
-
-		if(!lastdiv){
-			if(key == currentonboarding){
-				currentdiv.classList.add('slidetransform')
-				currentdiv.classList.remove('hiddenslideleftfull')
-				currentdiv.classList.remove('hiddensliderightfull')
-			}else{
-				if(index < currentindex){
-					currentdiv.classList.remove('slidetransform')
-					currentdiv.classList.add('hiddenslideleftfull')
-					currentdiv.classList.add('slidetransform')
-				}else if(index > currentindex){
-					currentdiv.classList.remove('slidetransform')
-					currentdiv.classList.add('hiddensliderightfull')
-					currentdiv.classList.add('slidetransform')
+	const toggleClasses = (element, addClasses = [], removeClasses = []) => {
+		addClasses.forEach(cls => element.classList.add(cls));
+		removeClasses.forEach(cls => element.classList.remove(cls));
+	};
+	
+	let onboardingPages = getElement('onboardingpages');
+	let childrenArray = Array.from(onboardingPages.children);
+	
+	const updateState = (currentonboarding, lastonboarding) => {
+		let currentIndex = childrenArray.findIndex(d => d.id === `onboarding${currentonboarding}`);
+		let lastIndex = lastonboarding ? childrenArray.findIndex(d => d.id === `onboarding${lastonboarding}`) : -1;
+		
+		Object.entries(calendar.onboarding).forEach(([key, value], index) => {
+			let currentDiv = getElement(`onboarding${key}`);
+			let lastDiv = lastonboarding ? getElement(`onboarding${lastonboarding}`) : null;
+		
+			if (key === currentonboarding) {
+				toggleClasses(currentDiv, ['slidetransform'], ['hiddenslideleftfull', 'hiddensliderightfull']);
+			} else {
+				let classesToAdd = [];
+				let classesToRemove = ['slidetransform'];
+		
+				if (index < currentIndex) {
+					classesToAdd.push('hiddenslideleftfull');
+				} else if (index > currentIndex) {
+					classesToAdd.push('hiddensliderightfull');
 				}
-			}
-		}else{
-			if(key == currentonboarding){
-				currentdiv.classList.add('slidetransform')
-				currentdiv.classList.remove('hiddenslideleftfull')
-				currentdiv.classList.remove('hiddensliderightfull')
-			}else{
-				if(index == lastindex){
-					if(lastindex < currentindex){
-						currentdiv.classList.add('slidetransform')
-						currentdiv.classList.add('hiddenslideleftfull')
-					}else if(lastindex > currentindex){
-						currentdiv.classList.add('slidetransform')
-						currentdiv.classList.add('hiddensliderightfull')
-					}
-				}else{
-					if(index < currentindex){
-						currentdiv.classList.remove('slidetransform')
-						currentdiv.classList.add('hiddenslideleftfull')
-						currentdiv.classList.add('slidetransform')
-					}else if(index > currentindex){
-						currentdiv.classList.remove('slidetransform')
-						currentdiv.classList.add('hiddensliderightfull')
-						currentdiv.classList.add('slidetransform')
-					}
+		
+				if (index === lastIndex) {
+					classesToAdd.push('slidetransform');
 				}
+		
+				toggleClasses(currentDiv, classesToAdd, classesToRemove)
 			}
-		}
-
-		index++
+		})
 	}
-
+  
+	updateState(currentonboarding, lastonboarding)
+  
 
 
 	//individual pages
