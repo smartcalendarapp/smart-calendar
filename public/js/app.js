@@ -4323,7 +4323,7 @@ function updateonboardingscreen(){
 		}else{
 			tempdiv.classList.add('hiddenfade')
 
-			if(Math.abs(tempindex - currentindex) <= 1){
+			if(Math.abs(tempindex - currentindex) == 1){
 				tempdiv.classList.add('slidetransform')
 			}else{
 				tempdiv.classList.remove('slidetransform')
