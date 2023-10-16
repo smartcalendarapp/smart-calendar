@@ -4269,7 +4269,6 @@ function updateprompttodotoday(){
 
 let onboardingaddtasktodolist = []
 let isonboardingaddtask = false
-let lastonboarding;
 
 function updateonboardingscreen(){
 	let onboardingscreen = getElement('onboardingscreen')
@@ -4288,8 +4287,6 @@ function updateonboardingscreen(){
 	}else if(!calendar.onboarding.addtask){
 		currentonboarding = 'addtask'
 	}
-
-	lastonboarding = currentonboarding
 
 	if(currentonboarding){
 		if(onboardingscreen.classList.contains('hiddenfade')){
@@ -5229,7 +5226,7 @@ function inputeventstartdate(event, id) {
 		fixeventend(item, duration)
 	}
 
-	if(oldstartdate.getTime() != new Date(item.start.year, item.start.month, item.start.day)){
+	if(oldstartdate.getTime() != new Date(item.start.year, item.start.month, item.start.day) && (item.repeat.frequency == null && item.repeat.interval == null)){
 		calendarday = item.start.day
 		calendarmonth = item.start.month
 		calendaryear = item.start.year
@@ -5294,7 +5291,7 @@ function inputeventenddate(event, id) {
 		fixeventstart(item, duration)
 	}
 	
-	if(oldenddate.getTime() != new Date(item.end.year, item.end.month, item.end.day)){
+	if(oldenddate.getTime() != new Date(item.end.year, item.end.month, item.end.day) && (item.repeat.frequency == null && item.repeat.interval == null)){
 		calendarday = item.end.day
 		calendarmonth = item.end.month
 		calendaryear = item.end.year
