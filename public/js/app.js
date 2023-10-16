@@ -515,7 +515,7 @@ function getDuration(string) {
 
 function getMinute(string, lax, fullstring) { //lax is for when getting time from input that is solely for time, e.g. event start, where AM/PM or :MM is not mandatory
 	string = string.toLowerCase()
-	fullstring = fullstring.toLowerCase()
+	fullstring = fullstring && fullstring.toLowerCase()
 	let myminute;
 	let match;
 
