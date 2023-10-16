@@ -4310,27 +4310,9 @@ function updateonboardingscreen(){
 	let currentindex = childrenArray.findIndex(d => d.id === `onboarding${currentonboarding}`)
 	let lastindex = lastonboarding ? childrenArray.findIndex(d => d.id === `onboarding${lastonboarding}`) : -1
 
-	let currentdiv = getElement(`onboarding${key}`)
+	let currentdiv = getElement(`onboarding${currentonboarding}`)
 
-	if(lastindex == -1){
-		currentdiv.classList.remove('slidetransform')
-		currentdiv.classList.remove('hiddenslideleftfull')
-		currentdiv.classList.remove('hiddensliderightfull')
-
-		let index = 0
-		for (let [key, value] of Object.entries(calendar.onboarding)) {
-			let tempdiv = getElement(`onboarding${key}`)
-			if(index > currentindex){
-				tempdiv.classList.remove('slidetransform')
-				tempdiv.classList.add('hiddensliderightfull')
-			}else if(index < currentindex){
-				tempdiv.classList.remove('slidetransform')
-				tempdiv.classList.add('hiddenslideleftfull')
-			}
-
-			index++
-		}
-	}else if(currentindex != lastindex){
+	if(lastindex != -1 && currentindex != lastindex){
 		currentdiv.classList.add('slidetransform')
 		currentdiv.classList.remove('hiddenslideleftfull')
 		currentdiv.classList.remove('hiddensliderightfull')
@@ -4356,7 +4338,29 @@ function updateonboardingscreen(){
 
 			index++
 		}
-	}
+	}else{
+		if(lastindex = -1){
+			currentdiv.classList.remove('slidetransform')
+		}else{
+			currentdiv.classList.add('slidetransform')
+		}
+		currentdiv.classList.remove('hiddenslideleftfull')
+		currentdiv.classList.remove('hiddensliderightfull')
+
+		let index = 0
+		for (let [key, value] of Object.entries(calendar.onboarding)) {
+			let tempdiv = getElement(`onboarding${key}`)
+			if(index > currentindex){
+				tempdiv.classList.remove('slidetransform')
+				tempdiv.classList.add('hiddensliderightfull')
+			}else if(index < currentindex){
+				tempdiv.classList.remove('slidetransform')
+				tempdiv.classList.add('hiddenslideleftfull')
+			}
+
+			index++
+		}
+	}else 
 
 
 
