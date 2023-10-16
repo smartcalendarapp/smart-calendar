@@ -4360,8 +4360,7 @@ function updateonboardingscreen(){
 
 			index++
 		}
-	}else 
-
+	}
 
 
 	//individual pages
