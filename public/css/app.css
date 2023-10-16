@@ -446,15 +446,23 @@ div:focus {
 
 
 .slidetransform{
-	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.5s, transform 0.5s, visibility 0.5s, left 0 0.5s, right 0 0.5s !important;
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.5s, visibility 0.5s, left 0s 0.2s, top 0s 0.2s, transform 0.5s !important;
 	transition-timing-function:cubic-bezier(.7,0,.46,.98) !important;
 }
+
 
 .hiddenslideleftfull{
 	transform:translateX(-100%)
 }
 .hiddensliderightfull{
 	transform:translateX(100%)
+}
+
+.hiddenfadeslide{
+	opacity: 0;
+	visibility: hidden;
+	left: -99999px !important;
+	top: -99999px !important;
 }
 
 .buttongoogle {
