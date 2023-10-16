@@ -4209,12 +4209,12 @@ function prompttodotoday(){
 	updateprompttodotoday()
 
 	let prompttodotodaywrap = getElement('prompttodotodaywrap')
-	prompttodotodaywrap.classList.remove('hiddenfade')
+	prompttodotodaywrap.classList.remove('hiddenfadeslow')
 }
 
 function hidepropmpttodotoday(){
 	let prompttodotodaywrap = getElement('prompttodotodaywrap')
-	prompttodotodaywrap.classList.add('hiddenfade')
+	prompttodotodaywrap.classList.add('hiddenfadeslow')
 
 	let prompttodotodayaddtasktodolist = getElement('prompttodotodayaddtasktodolist')
 	prompttodotodayaddtasktodolist.innerHTML = ''
@@ -4289,12 +4289,12 @@ function updateonboardingscreen(){
 	}
 
 	if(currentonboarding){
-		if(onboardingscreen.classList.contains('hiddenfade')){
-			onboardingscreen.classList.remove('hiddenfade')
+		if(onboardingscreen.classList.contains('hiddenfadeslow')){
+			onboardingscreen.classList.remove('hiddenfadeslow')
 		}
 	}else{
-		if(!onboardingscreen.classList.contains('hiddenfade')){
-			onboardingscreen.classList.add('hiddenfade')
+		if(!onboardingscreen.classList.contains('hiddenfadeslow')){
+			onboardingscreen.classList.add('hiddenfadeslow')
 		}
 	}
 
@@ -4304,7 +4304,7 @@ function updateonboardingscreen(){
 	let onboardingPages = getElement('onboardingpages')
 	let childrenArray = Array.from(onboardingPages.children)
 
-	let currentindex = childrenArray.findIndex(d => d.id === `onboarding${currentonboarding}`)
+	let currentindex = (currentonboarding && childrenArray.findIndex(d => d.id === `onboarding${currentonboarding}`)) || 0
 
 	for (let [key, value] of Object.entries(calendar.onboarding)) {
 		let tempindex = childrenArray.findIndex(d => d.id === `onboarding${key}`)
@@ -7600,7 +7600,9 @@ function typeaddevent(event, submit) {
 	let finalstartyear, finalstartmonth, finalstartday, finalstartminute, finalendyear, finalendmonth, finalendday, finalendminute, finalduration;
 
 	let tempmatch1 = getDate(finalstring)
-	let tempmatch5 = getMinute(finalstring)
+
+	let temptext = tempmatch1.match ? finalstring.replace(tempmatch1.match, '') : finalstring
+	let tempmatch5 = getMinute(temptext)
 	if (tempmatch1.match || tempmatch5.match) {
 		let regex = new RegExp(`\\b((from|(start|starts|starting)(\\s+(on|at|from))?)\\s+)?((${tempmatch1.match}\\s+((at|on|by)\\s+)?${tempmatch5.match})|(${tempmatch5.match}\\s+((at|on|by)\\s+)?${tempmatch1.match})|(${tempmatch1.match})|(${tempmatch5.match}))\\b`, 'i')
 
@@ -7611,7 +7613,8 @@ function typeaddevent(event, submit) {
 				[finalstartyear, finalstartmonth, finalstartday] = tempmatch6.value
 			}
 
-			let tempmatch7 = getMinute(tempmatch2[0], true)
+			let temptext4 = tempmatch2[0].replace(tempmatch6.match, '')
+			let tempmatch7 = getMinute(temptext4, true)
 			if (tempmatch7) {
 				finalstartminute = tempmatch7.value
 			}
@@ -7622,7 +7625,9 @@ function typeaddevent(event, submit) {
 
 
 	let tempmatch9 = getDate(finalstring)
-	let tempmatch3 = getMinute(finalstring)
+
+	let temptext2 = tempmatch9.match ? finalstring.replace(tempmatch9.match, '') : finalstring
+	let tempmatch3 = getMinute(temptext2)
 	if (tempmatch9.match || tempmatch3.match) {
 		let regex = new RegExp(`((\\b(until|to|through|(end|ends|ending)(\\s+(on|at))?)\\s+)|-)?((${tempmatch9.match}\\s+${tempmatch3.match})|(${tempmatch3.match}\\s+${tempmatch9.match})|(${tempmatch3.match})|(${tempmatch3.match}))\\b`, 'i')
 
@@ -7633,7 +7638,8 @@ function typeaddevent(event, submit) {
 				[finalendyear, finalendmonth, finalendday] = tempmatch7.value
 			}
 
-			let tempmatch8 = getMinute(tempmatch4[0], true)
+			let temptext3 = tempmatch4[0].replace(tempmatch7.match, '')
+			let tempmatch8 = getMinute(temptext3, true)
 			if (tempmatch8) {
 				finalendminute = tempmatch8.value
 			}
@@ -8476,7 +8482,9 @@ function typeaddtask(event, submit, index) {
 
 	//due date
 	let tempmatch1 = getDate(finalstring)
-	let tempmatch5 = getMinute(finalstring)
+
+	let temptext = tempmatch1.match ? finalstring.replace(tempmatch1.match, '') : finalstring
+	let tempmatch5 = getMinute(temptext)
 	if (tempmatch1.match || tempmatch5.match) {
 		let regex = new RegExp(`\\b((due|by|due\\s+at|due\\s+on|deadline|deadline\\s+at|deadline\\s+on|due\\s+by|finish\\s+by|done\\s+by|complete\\s+by)\\s+((${tempmatch1.match}\\s+((at|on|by)\\s+)?${tempmatch5.match})|(${tempmatch5.match}\\s+((at|on|by)\\s+)?${tempmatch1.match})|(${tempmatch1.match})|(${tempmatch5.match})))\\b`, 'i')
 		let tempmatch2 = finalstring.match(regex)
@@ -8486,7 +8494,8 @@ function typeaddtask(event, submit, index) {
 				[finalyear, finalmonth, finalday] = tempmatch6.value
 			}
 
-			let tempmatch7 = getMinute(tempmatch2[0], true)
+			let temptext2 = tempmatch2[0].replace(tempmatch6.match, '')
+			let tempmatch7 = getMinute(temptext2, true)
 			if (tempmatch7) {
 				finalminute = tempmatch7.value
 			}
@@ -9638,35 +9647,8 @@ function clicktodotimewindowpreset(index){
 	}
 	
 	calendar.updateEvents()
-	calendar.updateTodo()
+	calendar.updateEditTodo()
 	calendar.updateInfo()
-	calendar.updateHistory()
-}
-
-function clickedittodotimewindowtime(index) {
-	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
-	if (!item) return
-
-	let option2 = timetimewindowoptiondata[index]
-	if (option2) {
-		item.timewindow.time.startminute = option2.startminute
-		item.timewindow.time.endminute = option2.endminute
-	}
-	
-	calendar.updateEditTodo()
-	calendar.updateHistory()
-}
-
-function clickedittodotimewindowday(index) {
-	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
-	if (!item) return
-	
-	let option = daytimewindowoptiondata[index]
-	if (option) {
-		item.timewindow.day.byday = option.byday
-	}
-
-	calendar.updateEditTodo()
 	calendar.updateHistory()
 }
 

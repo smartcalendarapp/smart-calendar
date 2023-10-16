@@ -514,6 +514,9 @@ div:focus {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s;
 }
 
+.fadetransitionslow {
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.5s, visibility 0.5s;
+}
 
 .popuptransition {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s, opacity 0.2s;
@@ -3801,6 +3804,15 @@ div:focus {
 
 .hiddenfade {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s, left 0s 0.2s, top 0s 0.2s;
+	opacity: 0;
+	visibility: hidden;
+	left: -99999px !important;
+	top: -99999px !important;
+}
+
+
+.hiddenfadeslow {
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.5s, visibility 0.5s, left 0s 0.5s, top 0s 0.5s;
 	opacity: 0;
 	visibility: hidden;
 	left: -99999px !important;
