@@ -4308,59 +4308,35 @@ function updateonboardingscreen(){
 	let childrenArray = Array.from(onboardingPages.children)
 
 	let currentindex = childrenArray.findIndex(d => d.id === `onboarding${currentonboarding}`)
-	let lastindex = lastonboarding ? childrenArray.findIndex(d => d.id === `onboarding${lastonboarding}`) : -1
 
-	let currentdiv = getElement(`onboarding${currentonboarding}`)
+	for (let [key, value] of Object.entries(calendar.onboarding)) {
+		let tempindex = childrenArray.findIndex(d => d.id === `onboarding${key}`)
+		let tempdiv = getElement(`onboarding${key}`)
 
-	if(lastindex != -1 && currentindex != lastindex){
-		currentdiv.classList.add('slidetransform')
-		currentdiv.classList.remove('hiddenslideleftfull')
-		currentdiv.classList.remove('hiddensliderightfull')
+		if(key == currentonboarding){
+			tempdiv.classList.add('slidetransform')
 
-		let index = 0
-		for (let [key, value] of Object.entries(calendar.onboarding)) {
-			let tempdiv = getElement(`onboarding${key}`)
-			if(index == lastindex){
-				if(currentindex > lastindex){
-					tempdiv.classList.add('slidetransform')
-					tempdiv.classList.add('hiddenslideleftfull')
-				}else if(currentindex < lastindex){
-					tempdiv.classList.add('slidetransform')
-					tempdiv.classList.add('hiddensliderightfull')
-				}
-			}else if(index > currentindex){
-				tempdiv.classList.remove('slidetransform')
-				tempdiv.classList.add('hiddensliderightfull')
-			}else if(index < currentindex){
-				tempdiv.classList.remove('slidetransform')
-				tempdiv.classList.add('hiddenslideleftfull')
-			}
+			tempdiv.classList.remove('hiddenslideleftfull')
+			tempdiv.classList.remove('hiddensliderightfull')
 
-			index++
-		}
-	}else{
-		if(lastindex = -1){
-			currentdiv.classList.remove('slidetransform')
+			tempdiv.classList.remove('hiddenopacity')
 		}else{
-			currentdiv.classList.add('slidetransform')
-		}
-		currentdiv.classList.remove('hiddenslideleftfull')
-		currentdiv.classList.remove('hiddensliderightfull')
+			tempdiv.classList.add('hiddenopacity')
 
-		let index = 0
-		for (let [key, value] of Object.entries(calendar.onboarding)) {
-			let tempdiv = getElement(`onboarding${key}`)
-			if(index > currentindex){
+			if(Math.abs(tempindex - currentindex) <= 1){
+				tempdiv.classList.add('slidetransform')
+			}else{
 				tempdiv.classList.remove('slidetransform')
+			}
+			if(tempindex > currentindex){
 				tempdiv.classList.add('hiddensliderightfull')
-			}else if(index < currentindex){
-				tempdiv.classList.remove('slidetransform')
+			}else if(tempindex < currentindex){
 				tempdiv.classList.add('hiddenslideleftfull')
 			}
-
-			index++
 		}
+
 	}
+
 
 
 	//individual pages
