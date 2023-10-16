@@ -4319,9 +4319,9 @@ function updateonboardingscreen(){
 			tempdiv.classList.remove('hiddenslideleftfull')
 			tempdiv.classList.remove('hiddensliderightfull')
 
-			tempdiv.classList.remove('hiddenopacity')
+			tempdiv.classList.remove('hiddenfade')
 		}else{
-			tempdiv.classList.add('hiddenopacity')
+			tempdiv.classList.add('hiddenfade')
 
 			if(Math.abs(tempindex - currentindex) <= 1){
 				tempdiv.classList.add('slidetransform')
