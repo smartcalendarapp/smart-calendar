@@ -12657,7 +12657,7 @@ function dblclickboxcolumn(event, timestamp) {
 
 //click column
 function clickboxcolumn(event, timestamp) {
-	let oldselectedeventid = selectedeventid
+	if(event.button !== 0) return
 
 	selectedeventinitialy = event.clientY
 	selectedeventid = null
@@ -12726,6 +12726,7 @@ function moveboxcolumn(event) {
 //click event
 function clickevent(event, timestamp) {
 	event.stopPropagation()
+	if(event.button !== 0) return
 	let barcolumncontainer = getElement('barcolumncontainer')
 
 	selectedeventid = event.target.id
@@ -12779,6 +12780,7 @@ function clickevent(event, timestamp) {
 //click border
 function clickborder(event, id, timestamp) {
 	event.stopPropagation()
+	if(event.button !== 0) return
 
 	let barcolumncontainer = getElement('barcolumncontainer')
 
@@ -12940,6 +12942,7 @@ function moveborder(event) {
 //click event bottom
 function clickeventbottom(event, timestamp) {
 	event.stopPropagation()
+	if(event.button !== 0) return
 	selectedeventid = event.target.parentNode.id
 
 	let item = calendar.events.find(d => d.id == selectedeventid)
@@ -12980,6 +12983,7 @@ function clickeventbottom(event, timestamp) {
 //click event top
 function clickeventtop(event, timestamp) {
 	event.stopPropagation()
+	if(event.button !== 0) return
 	selectedeventid = event.target.parentNode.id
 
 	let item = calendar.events.find(d => d.id == selectedeventid)
