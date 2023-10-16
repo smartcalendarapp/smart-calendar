@@ -4314,24 +4314,24 @@ function updateonboardingscreen(){
 		let tempdiv = getElement(`onboarding${key}`)
 
 		if(key == currentonboarding){
-			if(!tempdiv.classList.contains('slidetransform')) tempdiv.classList.add('slidetransform')
+			tempdiv.classList.add('slidetransform')
 
 			tempdiv.classList.remove('hiddenslideleftfull')
 			tempdiv.classList.remove('hiddensliderightfull')
 
 			tempdiv.classList.remove('hiddenfadeslide')
 		}else{
-			if(!tempdiv.classList.contains('hiddenfadeslide')) tempdiv.classList.add('hiddenfadeslide')
+			tempdiv.classList.add('hiddenfadeslide')
 
 			if(Math.abs(tempindex - currentindex) == 1){
-				if(!tempdiv.classList.contains('slidetransform')) tempdiv.classList.add('slidetransform')
+				tempdiv.classList.add('slidetransform')
 			}else{
 				tempdiv.classList.remove('slidetransform')
 			}
 			if(tempindex > currentindex){
-				if(!tempdiv.classList.contains('hiddensliderightfull')) tempdiv.classList.add('hiddensliderightfull')
+				tempdiv.classList.add('hiddensliderightfull')
 			}else if(tempindex < currentindex){
-				if(!tempdiv.classList.contains('hiddenslideleftfull')) tempdiv.classList.add('hiddenslideleftfull')
+				tempdiv.classList.add('hiddenslideleftfull')
 			}
 		}
 

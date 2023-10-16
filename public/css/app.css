@@ -446,8 +446,7 @@ div:focus {
 
 
 .slidetransform{
-	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.5s, visibility 0.5s, left 0s 0.2s, top 0s 0.2s, transform 0.5s !important;
-	transition-timing-function:cubic-bezier(.7,0,.46,.98) !important;
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.5s, visibility 0.5s, left 0s 0.2s, top 0s 0.2s, transform 0.5s cubic-bezier(.7,0,.46,.98) !important;
 }
 
 
