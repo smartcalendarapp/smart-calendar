@@ -45,6 +45,16 @@ img{
 	aspect-ratio: 16/9;
 }
 
+
+.iosappbutton{
+	height:50px;
+	width:auto;
+}
+.iphoneimage{
+	max-width:350px;
+}
+
+
 .gradienttextpink{
 	background-clip: text;
 	-webkit-background-clip: text;
