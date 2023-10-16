@@ -11,3 +11,15 @@ if (themedata.matches) {
 } else {
 	rootdataset.theme = ''
 }
+
+function updatescroll(event){
+	let navbar = getElement('navbar')
+	if(window.scrollY > 0){
+		navbar.classList.add('scrolled')
+	}else{
+		navbar.classList.remove('scrolled')
+	}
+}
+updatescroll()
+
+window.addEventListener('scroll', updatescroll)

@@ -7,10 +7,6 @@ const SHORTESTDAYLIST = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 
 const DEFAULTCOLORS = ['#f54842', '#faa614', '#2bc451', '#2693ff', '#916bfa']
 
-const welcomepopupdata = {
-	calendar: 'welcomecalendar',
-}
-
 const reminderlist = [0, 300000, 900000, 3600000, 86400000]
 
 const repeatoptiondata = [
@@ -3799,14 +3795,6 @@ function run() {
 	//scroll Y
 	let currentdate = new Date()
 	scrollcalendarY(currentdate.getHours() * 60 + currentdate.getMinutes())
-	
-
-	//welcome popup
-	if (calendar.welcomepopup.calendar == false && calendar.onboarding.addtask == true ) {
-		setTimeout(function () {
-			getElement(welcomepopupdata.calendar).classList.remove('hiddenfade')
-		}, 10000)
-	}
 
 
 	//LOOP
@@ -7213,16 +7201,6 @@ function deletenotifications() {
 
 	updatenotificationslist()
 	updatenotificationsnumber()
-}
-
-
-//WELCOME POPUP
-function closewelcomepopup(name) {
-	let entry = calendar.welcomepopup[name]
-	if (entry != null) {
-		calendar.welcomepopup[name] = true
-	}
-	getElement(welcomepopupdata[name]).classList.add('hiddenfade')
 }
 
 

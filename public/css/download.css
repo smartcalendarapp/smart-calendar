@@ -37,7 +37,16 @@ html, body{
 	padding-top:12px;
 	padding-bottom:12px;
 	z-index:99;
+	border-bottom:1px solid var(--text-tertiary);
+	backdrop-filter: blur(20px);
+	-webkit-backdrop-filter: blur(20px);
+	background-color:transparent;
 }
+.navbar.scrolled{
+	background-color:var(--background-secondary-transparent);
+	border-bottom:1px solid var(--text-tertiary)
+}
+
 
 .buttonlogo{
 	height:32px;
