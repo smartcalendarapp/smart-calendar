@@ -104,6 +104,14 @@ html, body{
 	display:flex;
 }
 
+.iosappbutton{
+	height:50px;
+	width:auto;
+}
+.iphoneimage{
+	max-width:350px;
+}
+
 
 
 .infonotes{
