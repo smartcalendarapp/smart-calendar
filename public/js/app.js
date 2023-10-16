@@ -517,8 +517,9 @@ function getDuration(string) {
 	return { value: myduration, match: match }
 }
 
-function getMinute(string, lax) { //lax is for when getting time from input that is solely for time, e.g. event start, where AM/PM or :MM is not mandatory
+function getMinute(string, lax, fullstring) { //lax is for when getting time from input that is solely for time, e.g. event start, where AM/PM or :MM is not mandatory
 	string = string.toLowerCase()
+	fullstring = fullstring.toLowerCase()
 	let myminute;
 	let match;
 
@@ -548,13 +549,13 @@ function getMinute(string, lax) { //lax is for when getting time from input that
 	}
 
 	if(true){
-		let datematch = getDate(string).match
+		let datematch = getDate(fullstring || string).match
 
 		let regex = new RegExp(`(((1[0-9]|2[0-4]|0?[0-9])(\\s+(at|on|by|from|to|until|through|start|starts|starting|end|ends|ending|due${datematch ? `|${datematch}` : ''})\\b|-))|((\\b(at|on|by|from|to|until|through|start|starts|starting|end|ends|ending|due${datematch ? `|${datematch}` : ''})\\s+|-)(1[0-9]|2[0-4]|0?[0-9])))`)
 
-		temptime = string.match(regex)
+		temptime = (fullstring || string).match(regex)
 		if(temptime){
-			let temptime2 = temptime[0].match(/\d+/)
+			let temptime2 = temptime[0].replace(datematch, '').match(/\d+/)
 
 			if(firstmatchindex == null || temptime.index + temptime2.index < firstmatchindex){
 				match = temptime2[0]
@@ -7602,7 +7603,7 @@ function typeaddevent(event, submit) {
 	let tempmatch1 = getDate(finalstring)
 
 	let temptext = tempmatch1.match ? finalstring.replace(tempmatch1.match, '') : finalstring
-	let tempmatch5 = getMinute(temptext)
+	let tempmatch5 = getMinute(temptext, false, finalstring)
 	if (tempmatch1.match || tempmatch5.match) {
 		let regex = new RegExp(`\\b((from|(start|starts|starting)(\\s+(on|at|from))?)\\s+)?((${tempmatch1.match}\\s+((at|on|by)\\s+)?${tempmatch5.match})|(${tempmatch5.match}\\s+((at|on|by)\\s+)?${tempmatch1.match})|(${tempmatch1.match})|(${tempmatch5.match}))\\b`, 'i')
 
@@ -7614,7 +7615,7 @@ function typeaddevent(event, submit) {
 			}
 
 			let temptext4 = tempmatch2[0].replace(tempmatch6.match, '')
-			let tempmatch7 = getMinute(temptext4, true)
+			let tempmatch7 = getMinute(temptext4, true, finalstring)
 			if (tempmatch7) {
 				finalstartminute = tempmatch7.value
 			}
@@ -7627,7 +7628,7 @@ function typeaddevent(event, submit) {
 	let tempmatch9 = getDate(finalstring)
 
 	let temptext2 = tempmatch9.match ? finalstring.replace(tempmatch9.match, '') : finalstring
-	let tempmatch3 = getMinute(temptext2)
+	let tempmatch3 = getMinute(temptext2, false, finalstring)
 	if (tempmatch9.match || tempmatch3.match) {
 		let regex = new RegExp(`((\\b(until|to|through|(end|ends|ending)(\\s+(on|at))?)\\s+)|-)?((${tempmatch9.match}\\s+${tempmatch3.match})|(${tempmatch3.match}\\s+${tempmatch9.match})|(${tempmatch3.match})|(${tempmatch3.match}))\\b`, 'i')
 
@@ -7639,7 +7640,7 @@ function typeaddevent(event, submit) {
 			}
 
 			let temptext3 = tempmatch4[0].replace(tempmatch7.match, '')
-			let tempmatch8 = getMinute(temptext3, true)
+			let tempmatch8 = getMinute(temptext3, true, finalstring)
 			if (tempmatch8) {
 				finalendminute = tempmatch8.value
 			}
@@ -8484,7 +8485,7 @@ function typeaddtask(event, submit, index) {
 	let tempmatch1 = getDate(finalstring)
 
 	let temptext = tempmatch1.match ? finalstring.replace(tempmatch1.match, '') : finalstring
-	let tempmatch5 = getMinute(temptext)
+	let tempmatch5 = getMinute(temptext, false, finalstring)
 	if (tempmatch1.match || tempmatch5.match) {
 		let regex = new RegExp(`\\b((due|by|due\\s+at|due\\s+on|deadline|deadline\\s+at|deadline\\s+on|due\\s+by|finish\\s+by|done\\s+by|complete\\s+by)\\s+((${tempmatch1.match}\\s+((at|on|by)\\s+)?${tempmatch5.match})|(${tempmatch5.match}\\s+((at|on|by)\\s+)?${tempmatch1.match})|(${tempmatch1.match})|(${tempmatch5.match})))\\b`, 'i')
 		let tempmatch2 = finalstring.match(regex)
@@ -8495,7 +8496,7 @@ function typeaddtask(event, submit, index) {
 			}
 
 			let temptext2 = tempmatch2[0].replace(tempmatch6.match, '')
-			let tempmatch7 = getMinute(temptext2, true)
+			let tempmatch7 = getMinute(temptext2, true, finalstring)
 			if (tempmatch7) {
 				finalminute = tempmatch7.value
 			}
