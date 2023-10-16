@@ -934,6 +934,30 @@
 				</div>
 			</div>
 
+			<div class="absolute top-0 left-0 width-full height-full display-flex flex-column align-center " id="onboardingquickguide">
+				
+				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
+					<div class="display-flex flex-column gap-12px">
+						<div class="text-24px text-primary text-bold">A quick guide</div>
+						<div class="text-18px text-quaternary">Prepare to experience the future of productivity! Smart Calendar is unlike any app out there—it helps build your schedule for optimal productivity.</div>
+					</div>
+
+					<div class="display-flex align-self-center flex-column gap-24px">
+						<div class="display-flex flex-column gap-12px">
+							<div class="text-white text-center text-18px text-bold">Important things to know</div>
+							<div class="text-white text-18px"><span class="text-bold">Task</span>: An item on your to do list. Smart Calendar will automatically schedule it using an intelligent science-backed algorithm.<br>Examples: work on project, walk dog.</div>
+							<div class="text-white text-18px"><span class="text-bold">Event</span>: A fixed-time commitment. Our app will not modify it.<br>Examples: school, meeting.</div>
+						</div>
+					</div>
+
+					<div class="display-flex flex-row gap-24px justify-center align-center">
+						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="backonboarding('start')">Back</div>
+						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('quickguide')">Continue</div>
+					</div>
+
+				</div>
+			</div>
+
 			<div class="absolute top-0 left-0 width-full height-full display-flex flex-column align-center " id="onboardingconnectcalendars">
 				
 				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
@@ -967,7 +991,7 @@
 					</div>
 
 					<div class="display-flex flex-row gap-24px justify-center align-center">
-						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="backonboarding('start')">Back</div>
+						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="backonboarding('quickguide')">Back</div>
 						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('connectcalendars')">Continue</div>
 					</div>
 

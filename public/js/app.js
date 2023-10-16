@@ -4277,6 +4277,8 @@ function updateonboardingscreen(){
 	let currentonboarding;
 	if(!calendar.onboarding.start){
 		currentonboarding = 'start'
+	}else if(!calendar.onboarding.quickguide){
+		currentonboarding = 'quickguide'
 	}else if(!calendar.onboarding.connectcalendars){
 		currentonboarding = 'connectcalendars'
 	}else if(!calendar.onboarding.connecttodolists){
