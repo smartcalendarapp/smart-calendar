@@ -955,6 +955,9 @@
 .transition-duration-500{
 	transition-duration:0.5s
 }
+.transition-duration-1000{
+	transition-duration:1s
+}
 .transition-none{
 	transition:none
 }
