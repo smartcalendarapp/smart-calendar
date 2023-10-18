@@ -7836,7 +7836,7 @@ function updatecreatetodo() {
 		   </svg>
 			<span class="tooltiptextcenter">Remove due date</span>
 		</div>
-   </div>` : '<div class="pointer-none text-quaternary padding-top-8px padding-bottom-8px">No due date</div>'
+   </div>` : '<div class="pointer-none text-quaternary padding-top-6px padding-bottom-6px">No due date</div>'
 	createtododuedate.innerHTML = tempduedatevalue
 	createtododuedateonboarding.innerHTML = tempduedatevalue
 	createtododuedateprompttodotoday.innerHTML = tempduedatevalue
