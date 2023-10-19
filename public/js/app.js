@@ -679,11 +679,11 @@ function getDate(string) {
 		myyear = tempdate.getFullYear()
 	}
 
-	let tempdatestring = string.match(new RegExp(`\\b((${SHORTMONTHLIST.map(d => d.toLowerCase()).join('|')}|${MONTHLIST.map(d => d.toLowerCase()).join('|')}|sept)\\s+(0?[1-9]|1[0-9]|2[0-9]|3[0-1])(st|nd|rd|th)?(,?\\s+\\d{4})?)\\b`))
+	let tempdatestring = string.match(new RegExp(`(?<=^|\\s)((${SHORTMONTHLIST.map(d => d.toLowerCase()).join('|')}|${MONTHLIST.map(d => d.toLowerCase()).join('|')}|sept)\\s+(0?[1-9]|1[0-9]|2[0-9]|3[0-1])(st|nd|rd|th)?(,?\\s+\\d{4})?)(?:$|\\s)`))
 	if (tempdatestring) {
-		match = tempdatestring[0]
+		match = tempdatestring[0].trim()
 
-		let tempdatelist = tempdatestring[0].split(/\s+/)
+		let tempdatelist = tempdatestring[0].trim().split(/\s+/)
 		if (tempdatelist[0].toLowerCase() == 'sept') {
 			tempdatelist[0] = 'sep'
 		}
@@ -702,11 +702,14 @@ function getDate(string) {
 		myyear = +tempdatelist[2] || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate()) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
 	}
 
-	let tempdatestring2 = string.match(new RegExp(`\\b((0?[1-9]|1[0-9]|2[0-9]|3[0-1])(st|nd|rd|th)?\\s+(${SHORTMONTHLIST.map(d => d.toLowerCase()).join('|')}|${MONTHLIST.map(d => d.toLowerCase()).join('|')})(\\s+\\d{4})?)\\b`))
+	let tempdatestring2 = string.match(new RegExp(`(?<=^|\\s)((0?[1-9]|1[0-9]|2[0-9]|3[0-1])(st|nd|rd|th)?\\s+(${SHORTMONTHLIST.map(d => d.toLowerCase()).join('|')}|${MONTHLIST.map(d => d.toLowerCase()).join('|')})(\\s+\\d{4})?)(?:$|\\s)`))
 	if (tempdatestring2) {
-		match = tempdatestring2[0]
+		match = tempdatestring2[0].trim()
 
-		let tempdatelist = tempdatestring2[0].split(/\s+/)
+		let tempdatelist = tempdatestring2[0].trim().split(/\s+/)
+		if (tempdatelist[1].toLowerCase() == 'sept') {
+			tempdatelist[1] = 'sep'
+		}
 
 		let temp;
 		if (SHORTMONTHLIST.map(d => d.toLowerCase()).includes(tempdatelist[1])) {
