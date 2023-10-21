@@ -863,6 +863,7 @@ class Calendar {
 				}
 			}
 			this.lastmodified = 0
+			this.parentid = null
 
 			this.reminder = []
 			let tempstart = new Date(this.start.year, this.start.month, this.start.day, 0, this.start.minute).getTime()
@@ -874,6 +875,25 @@ class Calendar {
 			}else{
 				this.reminder.push({ timebefore: 0 })
 			}
+		}
+
+		static getParent(item){
+			let parent = calendar.todos.find(d => d.id == item.parentid)
+			return parent
+		}
+
+		static getChildren(item){
+			return calendar.todos.filter(d => d.parentid == item.id)
+		}
+
+		static getChildIndex(item){
+			let parent = this.getParent(item)
+			if(!parent) return null
+
+			let index = this.getChildren(parent).findIndex(f => f.id == item.id)
+			if(index == -1) return null
+			
+			return index
 		}
 
 		static isEvent(item){
@@ -1019,6 +1039,16 @@ class Calendar {
 
 		static getChildren(item){
 			return calendar.todos.filter(d => d.parentid == item.id)
+		}
+
+		static getChildIndex(item){
+			let parent = this.getParent(item)
+			if(!parent) return null
+
+			let index = this.getChildren(parent).findIndex(f => f.id == item.id)
+			if(index == -1) return null
+			
+			return index
 		}
 
 		static isSchedulable(item) {
@@ -7359,11 +7389,15 @@ function toggleschedulemytask(event, id) {
 		return
 	}
 
-	if (schedulemytaskslist.find(g => g == id)) {
-		schedulemytaskslist = schedulemytaskslist.filter(d => d != id)
-	} else {
-		schedulemytaskslist.push(id)
+	let togglelist = [item, ...Calendar.Todo.getChildren(item)]
+	for(let tempitem of togglelist){
+		if (schedulemytaskslist.find(g => g == tempitem.id)) {
+			schedulemytaskslist = schedulemytaskslist.filter(d => d != tempitem.id)
+		} else {
+			schedulemytaskslist.push(tempitem.id)
+		}
 	}
+
 	calendar.updateTodo()
 }
 
@@ -7377,6 +7411,7 @@ function submitschedulemytasks() {
 		startAutoSchedule({scheduletodos: mytodos})
 	}
 }
+//here3
 
 
 
@@ -8921,18 +8956,16 @@ function gettododata(item) {
 							</div>
 		
 						</div>
-
-			
 			 
 					</div>
+
+					${!item.parentid && schedulemytasksenabled && Calendar.Todo.isSchedulable(item) && Calendar.Todo.isTodo(item) ?
+						`<div class="absolute box-shadow display-flex todoitemselectcheck background-secondary border-8px box-shadow pointer pointer-auto" onclick="toggleschedulemytask(event, '${item.id}')">
+							${getbigcheckbox(schedulemytaskslist.find(g => g == item.id))}
+						</div>`
+					: ''}
+
 				</div>
-
-
-				${schedulemytasksenabled && Calendar.Todo.isSchedulable(item) && Calendar.Todo.isTodo(item) ?
-					`<div class="absolute box-shadow display-flex todoitemselectcheck background-secondary border-8px box-shadow pointer pointer-auto" onclick="toggleschedulemytask(event, '${item.id}')">
-						${getbigcheckbox(schedulemytaskslist.find(g => g == item.id))}
-					</div>`
-				: ''}
 
 
 				${!schedulemytasksenabled && Calendar.Todo.isTodo(item) && !item.parentid ? 
@@ -9455,6 +9488,12 @@ function dragtodo(event, id) {
 	let item = calendar.todos.find(x => x.id == id)
 	if (!item) return
 
+	if(item.parentid){
+		item = Calendar.Todo.getParent(item)
+	}
+
+	if (!item) return
+
 	let todoelement = getElement(`todo-${id}`)
 
 	let dragtododiv = getElement('dragtododiv')
@@ -9503,8 +9542,10 @@ function dragtodo(event, id) {
 				item.endbefore.minute = tempdate.getHours() * 60 + tempdate.getMinutes()
 			}
 
+			fixsubandparenttask(item)
 
-			startAutoSchedule({scheduletodos: [item]})
+
+			startAutoSchedule({scheduletodos: [item, ...Calendar.Todo.getChildren(item)]})
 
 			if(gtag){gtag('event', 'button_click', { useraction: 'Drop task - calendar' })}
 		}
@@ -9526,6 +9567,7 @@ function movedragtodo(event) {
 //delete all completed
 function deletecompletedtodos(){
 	calendar.todos = calendar.todos.filter(d => !d.completed)
+	calendar.events = calendar.events.filter(d => d.type != 1 || !d.completed)
 
 	calendar.updateTodo()
 	calendar.updateInfo()
@@ -9988,6 +10030,7 @@ function geteventfromtodo(item) {
 	newitem.id = item.id
 	newitem.googleclassroomid = item.googleclassroomid
 	newitem.googleclassroomlink = item.googleclassroomlink
+	newitem.parentid = item.parentid
 
 	newitem.timewindow = deepCopy(item.timewindow)
 
@@ -10007,6 +10050,7 @@ function gettodofromevent(item) {
 	newitem.id = item.id
 	newitem.googleclassroomid = item.googleclassroomid
 	newitem.googleclassroomlink = item.googleclassroomlink
+	newitem.parentid = item.parentid
 
 	newitem.timewindow = deepCopy(item.timewindow)
 
@@ -11299,9 +11343,15 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 			let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 
 
+			let percentrange = 0.4 //default schedule at 40% of range
+			if(item.parentid){
+				let childindex = Calendar.Event.getChildIndex(item)
+				percentrange = childindex/Calendar.Event.getChildren(Calendar.Event.getParent(item)).length * 0.8 //a little earlier
+			}
+
 			let daystartafterdate = new Date(startafterdate)
 			daystartafterdate.setHours(0,0,0,0)
-			let dayindex = Math.floor((endbeforedate.getTime() - daystartafterdate.getTime()) * 0.4 / 86400000)
+			let dayindex = Math.floor((endbeforedate.getTime() - daystartafterdate.getTime()) * percentrange / 86400000)
 
 			let startdate = new Date(daystartafterdate.getTime())
 			startdate.setDate(startdate.getDate() + dayindex)
