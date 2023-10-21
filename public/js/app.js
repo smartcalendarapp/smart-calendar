@@ -2444,7 +2444,7 @@ class Calendar {
 		let output = []
 
 		if(true){
-			let mytodos = calendar.events.filter(d => d.type == 1 && !d.completed && !d.parentid)
+			let mytodos = calendar.events.filter(d => d.type == 1 && !d.completed)
 			let sortedtodos = sortstartdate(mytodos)
 
 
@@ -2486,7 +2486,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = calendar.todos.filter(d => !d.completed)
+			let mytodos = calendar.todos.filter(d => !d.completed && !d.parentid)
 
 			let duetodos = sortduedate(mytodos.filter(d => d.endbefore.year != null && d.endbefore.month != null && d.endbefore.day != null && d.endbefore.minute != null))
 			let notduetodos = mytodos.filter(d => d.endbefore.year == null || d.endbefore.month == null || d.endbefore.day == null || d.endbefore.minute == null)
@@ -8790,10 +8790,10 @@ function gettododata(item) {
 
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
-						<div class="display-flex flex-row gap-12px justify-space-between">
+						<div class="display-flex flex-row gap-12px">
 						
 						${!schedulemytasksenabled ? `
-						<div class="display-flex flex-column gap-6px">
+						<div class="display-flex flex-column gap-6px justify-space-between">
 							<div class="todoitemcheckbox tooltip display-flex" onclick="todocompleted(event, '${item.id}');if(gtag){gtag('event', 'button_click', { useraction: '${item.completed ? 'Mark uncomplete - task' : 'Mark complete - task'}' })}">
 								${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
 							</div>
@@ -8916,7 +8916,7 @@ function gettododata(item) {
 	let children = calendar.todos.filter(d => d.parentid == item.id)
 	if(children.length > 0){
 		output += `
-		<div class="display-flex flex-column width-full border-box padding-left-24px">
+		<div class="border-8px bordertertiary display-flex flex-column border-box margin-left-24px">
 			${children.map(d => gettododata(d)).join('')}
 		</div>`
 	}
@@ -9501,6 +9501,7 @@ function addsubtask(event, id){
 	let newtitle = `${item.title || 'New Event'} (Part ${calendar.todos.filter(d => d.parentid == item.id).length + 1})`
 	
 	let newtask = new Calendar.Todo(newendbeforedate.getFullYear(), newendbeforedate.getMonth(), newendbeforedate.getDate(), newendbeforedate.getHours() * 60 + newendbeforedate.getMinutes(), newduration, newtitle)
+	newtask.parentid = item.id
 	calendar.todos.push(newtask)
 
 	calendar.updateTodo()
@@ -9653,6 +9654,19 @@ function deletetodo(id) {
 	
 	calendar.todos = calendar.todos.filter(d => d.id != id)
 	calendar.events = calendar.events.filter(d => d.id != id)
+
+	function deletechildren(tempitem){
+		let children = calendar.todos.filter(d => d.parentid == tempitem.id)
+		if(children.length > 0){
+			calendar.todos = calendar.todos.filter(d => !children.find(f => f.id == d.id))
+			for(let tempchildrenitem of children){
+				deletechildren(tempchildrenitem)
+			}
+		}
+	}
+
+	deletechildren(item)
+
 
 	calendar.updateTodo()
 	if(Calendar.Event.isEvent(item)){
