@@ -9584,19 +9584,17 @@ async function todocompleted(event, id) {
 
 
 	//sub task stuff
-	let children = Calendar.Todo.getChildren(item)
-	for(let childitem of children){
+	let mychildren = Calendar.Todo.getChildren(item)
+	for(let childitem of mychildren){
 		childitem.completed = item.completed
 	}
 
 	let parent = Calendar.Todo.getParent(item)
 	if(parent){
-		if(children.every(d => d.completed)){
-			parent.completed = true
-		}else{
-			parent.completed = false
-		}
+		let allchildren = Calendar.Todo.getChildren(parent)
+		parent.completed = allchildren.every(d => d.completed)
 	}
+	
 
 	calendar.updateTodo()
 	if(Calendar.Event.isEvent(item)){
@@ -9871,6 +9869,13 @@ function inputtododuration(event){
 
 		if(myduration != null){
 			item.duration = myduration
+		}
+		
+		//sub task stuff
+		let parent = Calendar.Todo.getParent(item)
+		if(parent){
+			let allchildren = Calendar.Todo.getChildren(parent)
+			parent.duration = allchildren.reduce((a, b) => a.duration + b.duration)
 		}
 	}else{
 		let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
