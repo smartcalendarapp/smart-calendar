@@ -2594,7 +2594,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = [...calendar.todos.filter(d => d.completed && !item.parentid), ...calendar.events.filter(d => d.type == 1 && d.completed)]
+			let mytodos = [...calendar.todos.filter(d => d.completed && !d.parentid), ...calendar.events.filter(d => d.type == 1 && d.completed)]
 
 
 			let tempoutput = []
