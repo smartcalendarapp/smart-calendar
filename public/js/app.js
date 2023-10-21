@@ -878,12 +878,12 @@ class Calendar {
 		}
 
 		static getParent(item){
-			let parent = calendar.events.find(d => d.id == item.parentid)
+			let parent = [...calendar.events, ...calendar.todos].find(d => d.id == item.parentid)
 			return parent
 		}
 
 		static getChildren(item){
-			return calendar.events.filter(d => d.parentid == item.id)
+			return [...calendar.events, ...calendar.todos].filter(d => d.parentid == item.id)
 		}
 
 		static getChildIndex(item){
@@ -944,7 +944,7 @@ class Calendar {
 		}
 
 		static isSchedulable(item) {
-			return item.type == 1 && !item.completed
+			return item.type == 1 && !item.completed && Calendar.Event.getChildren(item).length == 0
 		}
 
 		static getDueText(item) {
@@ -1033,12 +1033,12 @@ class Calendar {
 		}
 
 		static getParent(item){
-			let parent = calendar.todos.find(d => d.id == item.parentid)
+			let parent = [...calendar.events, ...calendar.todos].find(d => d.id == item.parentid)
 			return parent
 		}
 
 		static getChildren(item){
-			return calendar.todos.filter(d => d.parentid == item.id)
+			return [...calendar.events, ...calendar.todos].filter(d => d.parentid == item.id)
 		}
 
 		static getChildIndex(item){
@@ -1052,7 +1052,7 @@ class Calendar {
 		}
 
 		static isSchedulable(item) {
-			return !item.completed
+			return !item.completed && Calendar.Todo.getChildren(item).length == 0
 		}
 
 		static isTodo(item){
@@ -2483,7 +2483,7 @@ class Calendar {
 		let output = []
 
 		if(true){
-			let mytodos = calendar.events.filter(d => d.type == 1 && !d.completed)
+			let mytodos = calendar.events.filter(d => d.type == 1 && !d.completed && Calendar.Event.getChildren(d).length == 0)
 			let sortedtodos = sortstartdate(mytodos)
 
 
@@ -8744,12 +8744,7 @@ function gettododata(item) {
 
 
 	let childrenoutput = ''
-	let children;
-	if(Calendar.Todo.isTodo(item)){
-		children = Calendar.Todo.getChildren(item)
-	}else{
-		children = Calendar.Event.getChildren(item)
-	}
+	let children = Calendar.Todo.getChildren(item)
 	if(children.length > 0){
 		childrenoutput = `
 		<div class="border-8px subtaskgroup bordertertiary display-flex flex-column border-box">
@@ -9917,12 +9912,7 @@ function fixsubandparenttask(item){
 	}
 	if(!parent) return
 
-	let children;
-	if(Calendar.Todo.isTodo(item)){
-		children = Calendar.Todo.getChildren(parent)
-	}else{
-		children = Calendar.Event.getChildren(parent)
-	}
+	let children = Calendar.Todo.getChildren(parent)
 
 	//update parent based on children
 	if(Calendar.Todo.isTodo(parent)){
