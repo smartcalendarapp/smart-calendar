@@ -1497,6 +1497,9 @@ div:focus {
 .todoitemcontainer:hover .addsubtask{
 	visibility: visible;
 }
+.margin-left-42px{
+	margin-left:42px
+}
 
 .todoitemcontainer:hover .hoverpriority {
 	visibility: visible;

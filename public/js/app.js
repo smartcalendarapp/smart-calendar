@@ -7786,6 +7786,7 @@ function resetcreatetodo() {
 		minute: nextdate.getHours() * 60 + nextdate.getMinutes()
 	}
 	createtodopriorityvalue = 0
+	createtodosplitduration = null
 	
 	typeaddtask()
 }
@@ -7799,7 +7800,7 @@ let createtododuedatevalue = {
 	minute: null
 }
 let createtodopriorityvalue;
-let createtodosplit;
+let createtodosplitduration;
 function updatecreatetodo() {
 
 	let createtododuration = getElement('createtododuration')
@@ -7872,22 +7873,24 @@ function updatecreatetodo() {
 	let todoinputprojectwrap = getElement('todoinputprojectwrap')
 	let todoinputprojectwrapoptions = getElement('todoinputprojectwrapoptions')
 	if(createtododurationvalue >= 90){
-		todoinputprojectwrap.classList.remove('hiddenheight')
+		todoinputprojectwrap.classList.remove('display-none')
 
 		let splitoptions = [null, 15, 30, 60]
 		for(let [index, div] of Object.entries(todoinputprojectwrapoptions.children)){
-			if(splitoptions[+index] == createtodosplit){
+			if(splitoptions[+index] == createtodosplitduration){
 				div.classList.add('selectedbutton')
 			}else{
 				div.classList.remove('selectedbutton')
 			}
 		}
+	}else{
+		todoinputprojectwrap.classList.add('display-none')
 	}
 
 }
 
-function clickcreatetodosplit(value){
-	createtodosplit = value
+function clickcreatetodosplitduration(value){
+	createtodosplitduration = value
 	updatecreatetodo()
 }
 
@@ -8628,9 +8631,16 @@ function submitcreatetodo(event) {
 
 		calendar.todos.push(item)
 
-		if(createtodosplit != null){
+		if(createtodosplitduration != null){
+			for(let x = 0; x < Math.floor(myduration/createtodosplitduration); x++){
+				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), createtodosplitduration, `${title} (part ${x})`)
+				childitem.parentid = item.id
 
+				calendar.todos.push(childitem)
+			}
 		}
+
+		item.duration = calendar.todos.filter(d => d.parentid == item.id).reduce((a, b) => a.duration + b.duration) //set duration to sum of children
 
 		//here4
 
@@ -8916,7 +8926,7 @@ function gettododata(item) {
 	let children = calendar.todos.filter(d => d.parentid == item.id)
 	if(children.length > 0){
 		output += `
-		<div class="border-8px bordertertiary display-flex flex-column border-box margin-left-24px">
+		<div class="border-8px bordertertiary display-flex flex-column border-box margin-left-42px">
 			${children.map(d => gettododata(d)).join('')}
 		</div>`
 	}
@@ -9498,10 +9508,11 @@ function addsubtask(event, id){
 
 	let newendbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 	let newduration = Math.min(item.duration, 30)
-	let newtitle = `${item.title || 'New Event'} (Part ${calendar.todos.filter(d => d.parentid == item.id).length + 1})`
+	let newtitle = `${item.title || 'New Event'} (part ${calendar.todos.filter(d => d.parentid == item.id).length + 1})`
 	
 	let newtask = new Calendar.Todo(newendbeforedate.getFullYear(), newendbeforedate.getMonth(), newendbeforedate.getDate(), newendbeforedate.getHours() * 60 + newendbeforedate.getMinutes(), newduration, newtitle)
 	newtask.parentid = item.id
+
 	calendar.todos.push(newtask)
 
 	calendar.updateTodo()
