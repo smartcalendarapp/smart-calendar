@@ -2289,7 +2289,7 @@ div:focus {
 	height: auto;
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s, opacity 0.2s;
 	position: absolute;
-	z-index: 100;
+	z-index: 101;
 	border-radius: 8px;
 	background-color: var(--background-primary-transparent);
 	backdrop-filter: blur(30px);
@@ -3563,7 +3563,7 @@ div:focus {
 
 .tooltiptextcenter {
 	text-align: center;
-	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, transform 0.2s, visibility 0.2s !important;
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.5s 0.2s, transform 0.5s 0.2s, visibility 0.5s 0.2s !important;
 	pointer-events: none;
 	visibility: hidden;
 	display: block;
@@ -3590,6 +3590,7 @@ div:focus {
 	opacity: 1;
 	visibility: visible;
 	transform: translateX(-50%) scale(1);
+	transition-delay:0s !important;
 }
 
 .tooltiptextcenter::before {

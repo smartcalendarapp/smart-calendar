@@ -5230,7 +5230,7 @@ function inputeventstartdate(event, id) {
 		fixeventend(item, duration)
 	}
 
-	if(oldstartdate.getTime() != new Date(item.start.year, item.start.month, item.start.day) && (item.repeat.frequency == null && item.repeat.interval == null)){
+	if(oldstartdate.getTime() != new Date(item.start.year, item.start.month, item.start.day).getTime() && (item.repeat.frequency == null && item.repeat.interval == null)){
 		calendarday = item.start.day
 		calendarmonth = item.start.month
 		calendaryear = item.start.year
@@ -5295,7 +5295,7 @@ function inputeventenddate(event, id) {
 		fixeventstart(item, duration)
 	}
 	
-	if(oldenddate.getTime() != new Date(item.end.year, item.end.month, item.end.day) && (item.repeat.frequency == null && item.repeat.interval == null)){
+	if(oldenddate.getTime() != new Date(item.end.year, item.end.month, item.end.day).getTime() && (item.repeat.frequency == null && item.repeat.interval == null)){
 		calendarday = item.end.day
 		calendarmonth = item.end.month
 		calendaryear = item.end.year
@@ -9221,7 +9221,7 @@ function inputtodoitemduedate(event, dueyear, duemonth, duedate) {
 		item.endbefore.day = mydate.getDate()
 
 		//sub task stuff
-		fixsubtaskparenttask(item)
+		fixsubandparenttask(item)
 
 
 		calendar.updateTodo()
@@ -9257,7 +9257,7 @@ function inputtodoitemduetime(event, duetime) {
 		item.endbefore.minute = myminute
 
 		//sub task stuff
-		fixsubtaskparenttask(item)
+		fixsubandparenttask(item)
 
 
 		calendar.updateTodo()
@@ -9420,7 +9420,7 @@ function inputtodoitemduration(event, duration) {
 		}
 
 		//sub task stuff
-		fixsubtaskparenttask(item)
+		fixsubandparenttask(item)
 
 
 		calendar.updateTodo()
@@ -9587,7 +9587,7 @@ async function todocompleted(event, id) {
 
 
 	//sub task stuff
-	fixsubtaskparenttask(item)
+	fixsubandparenttask(item)
 	
 
 	calendar.updateTodo()
@@ -9815,7 +9815,7 @@ function inputtododuedate(event){
 		item.endbefore.day = tempdate.getDate()
 
 		//sub task stuff
-		fixsubtaskparenttask(item)
+		fixsubandparenttask(item)
 	}
 
 
@@ -9841,7 +9841,7 @@ function inputtododuetime(event){
 		item.endbefore.minute = myendbeforeminute
 
 		//sub task stuff
-		fixsubtaskparenttask(item.id)
+		fixsubandparenttask(item.id)
 	}
 
 	let endbeforedate;
@@ -9855,7 +9855,7 @@ function inputtododuetime(event){
 }
 
 
-function fixsubtaskparenttask(item){
+function fixsubandparenttask(item){
 	let parent;
 	if(item.parentid){
 		parent = item
@@ -9917,7 +9917,7 @@ function inputtododuration(event){
 
 
 	//sub task stuff
-	fixsubtaskparenttask()
+	fixsubandparenttask()
 
 
 	let myduration;
