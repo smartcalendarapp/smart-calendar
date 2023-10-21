@@ -8790,7 +8790,7 @@ function gettododata(item) {
 
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
-						<div class="display-flex flex-row gap-12px">
+						<div class="display-flex flex-row gap-12px justify-space-between">
 						
 						${!schedulemytasksenabled ? `
 						<div class="display-flex flex-column gap-6px">
@@ -8799,12 +8799,14 @@ function gettododata(item) {
 							</div>
 
 							${Calendar.Todo.isTodo(item) ? 
-							`<div class="todoitemcheckbox tooltip display-flex" onclick="addsubtask(event, '${item.id}')">
-								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite">
+							`<div class="todoitemcheckbox visibility-hidden addsubtask tooltip display-flex" onclick="addsubtask(event, '${item.id}')">
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsecondary">
 								<g>
 								<path d="M128 6.1875C121.925 6.1875 117 11.1124 117 17.1875L117 117L17.1875 117C11.1124 117 6.1875 121.925 6.1875 128C6.1875 134.075 11.1124 139 17.1875 139L117 139L117 238.812C117 244.888 121.925 249.813 128 249.812C134.075 249.812 139 244.888 139 238.812L139 139L238.812 139C244.888 139 249.813 134.075 249.812 128C249.812 121.925 244.888 117 238.812 117L139 117L139 17.1875C139 11.1124 134.075 6.1875 128 6.1875Z" fill-rule="nonzero" opacity="1" ></path>
 								</g>
 								</svg>
+
+								<span class="tooltiptextright">Add subtask</span>
 							</div>` : ''}
 						</div>` : ''}
 		
@@ -9498,7 +9500,7 @@ function addsubtask(event, id){
 	let newduration = Math.min(item.duration, 30)
 	let newtitle = `${item.title || 'New Event'} (Part ${calendar.todos.filter(d => d.parentid == item.id).length + 1})`
 	
-	let newtask = new Calendar.Todo(newendbeforedate.getFullYear(), newendbeforedate.getMonth(), newendbeforedate.getDate(), 0, newendbeforedate.getHours() * 60 + newendbeforedate.getMinutes(), newduration, newtitle)
+	let newtask = new Calendar.Todo(newendbeforedate.getFullYear(), newendbeforedate.getMonth(), newendbeforedate.getDate(), newendbeforedate.getHours() * 60 + newendbeforedate.getMinutes(), newduration, newtitle)
 	calendar.todos.push(newtask)
 
 	calendar.updateTodo()

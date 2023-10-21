@@ -967,6 +967,15 @@ div:focus {
 	pointer-events: none;
 }
 
+.buttonsecondary{
+	height: 18px;
+	width: 18px;
+	fill: var(--text-secondary);
+	stroke: none;
+	display: block;
+	pointer-events: none;
+}
+
 .buttoninline {
 	height: 18px;
 	width: 18px;
@@ -1482,6 +1491,10 @@ div:focus {
 }
 
 .todoitemcontainer:hover .todoitembuttongroup {
+	visibility: visible;
+}
+
+.todoitemcontainer:hover .addsubtask{
 	visibility: visible;
 }
 
