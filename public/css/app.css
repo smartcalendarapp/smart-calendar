@@ -1523,9 +1523,6 @@ div:focus {
 .subtaskgroup{
 	margin:0px 12px 12px 42px;
 }
-.subtaskgroup:first-child{
-	border-top:none !important;
-}
 
 .scalebutton svg{
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s !important
@@ -1621,7 +1618,7 @@ div:focus {
 	flex-direction: column;
 }
 
-.todoitemwrap+.todoitemwrap .todoitemcontainer {
+.todoitemwrap+.todoitemwrap > .todoitemcontainer {
 	border-top: 1px solid var(--text-tertiary)
 }
 
