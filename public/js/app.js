@@ -878,12 +878,12 @@ class Calendar {
 		}
 
 		static getParent(item){
-			let parent = calendar.todos.find(d => d.id == item.parentid)
+			let parent = calendar.events.find(d => d.id == item.parentid)
 			return parent
 		}
 
 		static getChildren(item){
-			return calendar.todos.filter(d => d.parentid == item.id)
+			return calendar.events.filter(d => d.parentid == item.id)
 		}
 
 		static getChildIndex(item){
@@ -8744,7 +8744,12 @@ function gettododata(item) {
 
 
 	let childrenoutput = ''
-	let children = Calendar.Todo.getChildren(item)
+	let children;
+	if(Calendar.Todo.isTodo(item)){
+		children = Calendar.Todo.getChildren(item)
+	}else{
+		children = Calendar.Event.getChildren(item)
+	}
 	if(children.length > 0){
 		childrenoutput = `
 		<div class="border-8px subtaskgroup bordertertiary display-flex flex-column border-box">
@@ -9664,7 +9669,9 @@ async function todocompleted(event, id) {
 			}
 		})
 
-		myconfetti.reset()
+		try{
+			myconfetti.reset()
+		}catch(e){}
 
 	}
 }
@@ -9910,7 +9917,12 @@ function fixsubandparenttask(item){
 	}
 	if(!parent) return
 
-	let children = Calendar.Todo.getChildren(parent)
+	let children;
+	if(Calendar.Todo.isTodo(item)){
+		children = Calendar.Todo.getChildren(parent)
+	}else{
+		children = Calendar.Event.getChildren(parent)
+	}
 
 	//update parent based on children
 	if(Calendar.Todo.isTodo(parent)){
@@ -11206,7 +11218,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 		let duration = oldenddate.getTime() - oldstartdate.getTime()
 
 		let nextdate = new Date(oldstartdate)
-		nextdate.setDate(nextdate.getDate() + 30) //check for 1 month in future
+		nextdate.setDate(nextdate.getDate() + 30) //check for openings 1 month in future
 
 		function moveitemto(starttimestamp) {
 			let temprangestart = new Date(starttimestamp)
@@ -11347,6 +11359,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 			if(item.parentid){
 				let childindex = Calendar.Event.getChildIndex(item)
 				percentrange = childindex/Calendar.Event.getChildren(Calendar.Event.getParent(item)).length * 0.8 //a little earlier
+				//here4
 			}
 
 			let daystartafterdate = new Date(startafterdate)
@@ -12827,7 +12840,9 @@ async function eventcompleted(event, id) {
 			}
 		})
 
-		myconfetti.reset()
+		try{
+			myconfetti.reset()
+		}catch(e){}
 
 	}
 }
