@@ -1495,7 +1495,7 @@ div:focus {
 	visibility: visible;
 }
 
-.todoitemcontainer:hover .addsubtask{
+.todoitemwrap:hover .addsubtask{
 	visibility: visible;
 }
 .subtaskmargin{

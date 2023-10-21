@@ -8720,6 +8720,15 @@ function gettododata(item) {
 	let isoverdue = endbeforedate && currentdate.getTime() > endbeforedate.getTime() && !item.completed
 
 
+	let childrenoutput = ''
+	let children = calendar.todos.filter(d => d.parentid == item.id)
+	if(children.length > 0){
+		childrenoutput = `
+		<div class="border-8px bordertertiary display-flex flex-column border-box subtaskmargin">
+			${children.map(d => gettododata(d)).join('')}
+		</div>`
+	}
+
 	let output = ''
 	if (selectededittodoid == item.id) {
 
@@ -8818,33 +8827,33 @@ function gettododata(item) {
 				</div>
 			</div>
 		</div>
+
+		${childrenoutput}
 		</div>`
 	} else {
 		//view
 
 		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''} id="todo-${item.id}">
 
+				${!schedulemytasksenabled && Calendar.Todo.isTodo(item) && !item.parentid ? 
+				`<div class="absolute bottom-0 left-0 margin-12px todoitemcheckbox visibility-hidden addsubtask tooltip display-flex" onclick="addsubtask(event, '${item.id}')">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsecondary">
+					<g>
+					<path d="M128 6.1875C121.925 6.1875 117 11.1124 117 17.1875L117 117L17.1875 117C11.1124 117 6.1875 121.925 6.1875 128C6.1875 134.075 11.1124 139 17.1875 139L117 139L117 238.812C117 244.888 121.925 249.813 128 249.812C134.075 249.812 139 244.888 139 238.812L139 139L238.812 139C244.888 139 249.813 134.075 249.812 128C249.812 121.925 244.888 117 238.812 117L139 117L139 17.1875C139 11.1124 134.075 6.1875 128 6.1875Z" fill-rule="nonzero" opacity="1" ></path>
+					</g>
+					</svg>
+
+					<span class="tooltiptextright">Add subtask</span>
+				</div>` : ''}
+
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
 						<div class="display-flex flex-row gap-12px">
 						
 						${!schedulemytasksenabled ? `
-						<div class="display-flex flex-column gap-6px justify-space-between">
 							<div class="todoitemcheckbox tooltip display-flex" onclick="todocompleted(event, '${item.id}');if(gtag){gtag('event', 'button_click', { useraction: '${item.completed ? 'Mark uncomplete - task' : 'Mark complete - task'}' })}">
 								${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
-							</div>
-
-							${Calendar.Todo.isTodo(item) && !item.parentid ? 
-							`<div class="todoitemcheckbox visibility-hidden addsubtask tooltip display-flex" onclick="addsubtask(event, '${item.id}')">
-								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsecondary">
-								<g>
-								<path d="M128 6.1875C121.925 6.1875 117 11.1124 117 17.1875L117 117L17.1875 117C11.1124 117 6.1875 121.925 6.1875 128C6.1875 134.075 11.1124 139 17.1875 139L117 139L117 238.812C117 244.888 121.925 249.813 128 249.812C134.075 249.812 139 244.888 139 238.812L139 139L238.812 139C244.888 139 249.813 134.075 249.812 128C249.812 121.925 244.888 117 238.812 117L139 117L139 17.1875C139 11.1124 134.075 6.1875 128 6.1875Z" fill-rule="nonzero" opacity="1" ></path>
-								</g>
-								</svg>
-
-								<span class="tooltiptextright">Add subtask</span>
 							</div>` : ''}
-						</div>` : ''}
 		
 						<div class="justify-flex-end flex-1 display-flex flex-row small:flex-column gap-12px">
 
@@ -8947,15 +8956,10 @@ function gettododata(item) {
 						${getbigcheckbox(schedulemytaskslist.find(g => g == item.id))}
 					</div>`
 				: ''}
-		 	</div>`
-	}
 
-	let children = calendar.todos.filter(d => d.parentid == item.id)
-	if(children.length > 0){
-		output += `
-		<div class="border-8px bordertertiary display-flex flex-column border-box subtaskmargin">
-			${children.map(d => gettododata(d)).join('')}
-		</div>`
+				${childrenoutput}
+
+		 	</div>`
 	}
 
 	return output
