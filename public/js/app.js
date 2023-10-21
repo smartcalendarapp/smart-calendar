@@ -8632,15 +8632,16 @@ function submitcreatetodo(event) {
 		calendar.todos.push(item)
 
 		if(createtodosplitduration != null){
-			for(let x = 0; x < Math.floor(myduration/createtodosplitduration); x++){
-				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), createtodosplitduration, `${title} (part ${x})`)
+			let timeleft = myduration
+			for(let x = 0; x < myduration; x++){
+				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), Math.min(createtodosplitduration, timeleft), `${title} (part ${x})`)
 				childitem.parentid = item.id
 
 				calendar.todos.push(childitem)
+
+				timeleft -= createtodosplitduration
 			}
 		}
-
-		item.duration = calendar.todos.filter(d => d.parentid == item.id).reduce((a, b) => a.duration + b.duration) //set duration to sum of children
 
 		//here4
 
@@ -8720,17 +8721,20 @@ function gettododata(item) {
 						</span>
 					</div>
 		 		</div>
+
+				${!item.parentid ? `
 				<div class="inputgroup">
 					<div class="text-14px text-primary width90px">Due date</div>
-			 		<div class="inputgroupitem">
+					<div class="inputgroupitem">
 						<input class="infoinput inputdatepicker width-192px" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtododuedate(event)" placeholder="Add date" onclick="this.select()" id="edittodoinputduedate" value="${endbeforedate ? getDMDYText(endbeforedate) : 'None'}"></input>
 						<span class="inputline"></span>
 					</div>
-		 			<div class="inputgroupitem">
+					<div class="inputgroupitem">
 						<input class="infoinput inputtimepicker width-192px" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtododuetime(event)" placeholder="Add time"  onclick="this.select()" id="edittodoinputduetime" value="${endbeforedate ? getHMText(endbeforedate.getHours() * 60 + endbeforedate.getMinutes()) : 'None'}"></input>
 						<span class="inputline"></span>
 					</div>
-				</div>
+				</div>` : ''}
+
 				<div class="inputgroup">
 					<div class="text-14px text-primary width90px">Time needed</div>
 			 		<div class="inputgroupitem">
@@ -8739,6 +8743,7 @@ function gettododata(item) {
 					</div>
 				</div>
 
+				${!item.parentid ? `
 				<div class="infogroup">
 					<div class="inputgroup">
 						<div class="text-14px text-primary width90px">Priority</div>
@@ -8749,6 +8754,7 @@ function gettododata(item) {
 						</div>
 					</div>
 				</div>
+				` : ''}
 
 				<div class="infogroup">
 					<div class="inputgroup">
@@ -8808,7 +8814,7 @@ function gettododata(item) {
 								${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
 							</div>
 
-							${Calendar.Todo.isTodo(item) ? 
+							${Calendar.Todo.isTodo(item) && !item.parentid ? 
 							`<div class="todoitemcheckbox visibility-hidden addsubtask tooltip display-flex" onclick="addsubtask(event, '${item.id}')">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsecondary">
 								<g>
@@ -8838,7 +8844,7 @@ function gettododata(item) {
 				
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 				
-									${!Calendar.Event.isEvent(item) ? 
+									${!Calendar.Event.isEvent(item) && !item.parentid ? 
 										`<div class="gap-6px pointer-auto pointer display-flex transition-duration-100 flex-row align-center width-fit todoitemtext badgepadding ${!endbeforedate ? ` background-tint-1 text-primary hover:background-tint-2` : (isoverdue ? ` background-red text-white hover:background-red-hover` : ` background-blue text-white hover:background-blue-hover`)} border-round nowrap popupbutton ${itemclasses.join(' ')} " onclick="clicktodoitemduedate(event, '${item.id}')">
 											${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}
 										</div>`
@@ -8861,9 +8867,10 @@ function gettododata(item) {
 										</div>`
 									}
 	
-									<div class="text-14px badgepadding border-round nowrap pointer-auto transition-duration-100 pointer popupbutton transition-duration-100 ${['background-tint-1 text-primary hover:background-tint-2 visibility-hidden hoverpriority small:visibility-visible', 'background-orange hover:background-orange-hover text-white', 'background-red hover:background-red-hover text-white'][item.priority]} ${itemclasses.join(' ')}" onclick="clicktodoitempriority(event, '${item.id}')">
-										${['Low', 'Medium', 'High'][item.priority]} priority
-									</div>
+									${!item.parentid ? `
+										<div class="text-14px badgepadding border-round nowrap pointer-auto transition-duration-100 pointer popupbutton transition-duration-100 ${['background-tint-1 text-primary hover:background-tint-2 visibility-hidden hoverpriority small:visibility-visible', 'background-orange hover:background-orange-hover text-white', 'background-red hover:background-red-hover text-white'][item.priority]} ${itemclasses.join(' ')}" onclick="clicktodoitempriority(event, '${item.id}')">
+											${['Low', 'Medium', 'High'][item.priority]} priority
+										</div>` : ''}
 	
 								</div>
 
@@ -8926,7 +8933,7 @@ function gettododata(item) {
 	let children = calendar.todos.filter(d => d.parentid == item.id)
 	if(children.length > 0){
 		output += `
-		<div class="border-8px bordertertiary display-flex flex-column border-box margin-left-42px">
+		<div class="border-8px bordertertiary display-flex flex-column border-box subtaskmargin">
 			${children.map(d => gettododata(d)).join('')}
 		</div>`
 	}

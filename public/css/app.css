@@ -1423,6 +1423,7 @@ div:focus {
 	overflow-y: auto;
 	gap: 24px;
 	box-sizing: border-box;
+	overflow-x:hidden;
 }
 
 .todolist {
@@ -1497,8 +1498,8 @@ div:focus {
 .todoitemcontainer:hover .addsubtask{
 	visibility: visible;
 }
-.margin-left-42px{
-	margin-left:42px
+.subtaskmargin{
+	margin:0px 12px 12px 42px;
 }
 
 .todoitemcontainer:hover .hoverpriority {
@@ -2249,6 +2250,7 @@ div:focus {
 	display: flex;
 	flex-direction: column;
 	overflow-y: auto;
+	overflow-x:hidden;
 	background-color: var(--background-primary)
 }
 
