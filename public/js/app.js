@@ -8911,7 +8911,7 @@ function gettododata(item) {
 		 	</div>`
 	}
 
-	let children = calendar.todos.find(d => d.parentid == item.id)
+	let children = calendar.todos.filter(d => d.parentid == item.id)
 	if(children.length > 0){
 		output += `
 		<div class="display-flex flex-column width-full border-box padding-left-24px">
