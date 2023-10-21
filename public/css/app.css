@@ -1495,12 +1495,7 @@ div:focus {
 	visibility: visible;
 }
 
-.todoitemwrap:hover .addsubtask{
-	visibility: visible;
-}
-.subtaskmargin{
-	margin:0px 12px 12px 42px;
-}
+
 
 .todoitemcontainer:hover .hoverpriority {
 	visibility: visible;
@@ -1520,6 +1515,22 @@ div:focus {
 	pointer-events: none;
 	flex-wrap: wrap;
 }
+
+
+.todoitemwrap:hover .addsubtask{
+	visibility: visible;
+}
+.subtaskmargin{
+	margin:0px 12px 12px 42px;
+}
+
+.scalebutton svg{
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s !important
+}
+.scalebutton:hover svg{
+	transform:scale(1.2)
+}
+
 
 .todoitembutton {
 	height: fit-content;

@@ -1014,25 +1014,11 @@ class Calendar {
 
 		static getParent(item){
 			let parent = calendar.todos.find(d => d.id == item.parentid)
-			if(!parent) return null
-			if(parent.parentid){
-				return this.getParent(parent)
-			}else{
-				return parent
-			}
+			return parent
 		}
 
 		static getChildren(item){
-			let descendants = []
-
-			function gatherChildren(task) {
-				let children = calendar.todos.filter(d => d.parentid == task.id)
-				descendants.push(...children)
-				children.forEach(child => gatherChildren(child))
-			}
-
-			gatherChildren(item)
-			return descendants
+			return calendar.todos.filter(d => d.parentid == item.id)
 		}
 
 		static isSchedulable(item) {
@@ -8721,7 +8707,7 @@ function gettododata(item) {
 
 
 	let childrenoutput = ''
-	let children = calendar.todos.filter(d => d.parentid == item.id)
+	let children = Calendar.Todo.getChildren(item)
 	if(children.length > 0){
 		childrenoutput = `
 		<div class="border-8px bordertertiary display-flex flex-column border-box subtaskmargin">
@@ -8827,31 +8813,20 @@ function gettododata(item) {
 				</div>
 			</div>
 		</div>
-
-		${childrenoutput}
-		</div>`
+		</div>
+		
+		${childrenoutput}`
 	} else {
 		//view
 
 		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''} id="todo-${item.id}">
-
-				${!schedulemytasksenabled && Calendar.Todo.isTodo(item) && !item.parentid ? 
-				`<div class="absolute bottom-0 left-0 margin-12px todoitemcheckbox visibility-hidden addsubtask tooltip display-flex" onclick="addsubtask(event, '${item.id}')">
-					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsecondary">
-					<g>
-					<path d="M128 6.1875C121.925 6.1875 117 11.1124 117 17.1875L117 117L17.1875 117C11.1124 117 6.1875 121.925 6.1875 128C6.1875 134.075 11.1124 139 17.1875 139L117 139L117 238.812C117 244.888 121.925 249.813 128 249.812C134.075 249.812 139 244.888 139 238.812L139 139L238.812 139C244.888 139 249.813 134.075 249.812 128C249.812 121.925 244.888 117 238.812 117L139 117L139 17.1875C139 11.1124 134.075 6.1875 128 6.1875Z" fill-rule="nonzero" opacity="1" ></path>
-					</g>
-					</svg>
-
-					<span class="tooltiptextright">Add subtask</span>
-				</div>` : ''}
 
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
 						<div class="display-flex flex-row gap-12px">
 						
 						${!schedulemytasksenabled ? `
-							<div class="todoitemcheckbox tooltip display-flex" onclick="todocompleted(event, '${item.id}');if(gtag){gtag('event', 'button_click', { useraction: '${item.completed ? 'Mark uncomplete - task' : 'Mark complete - task'}' })}">
+							<div class="scalebutton todoitemcheckbox tooltip display-flex" onclick="todocompleted(event, '${item.id}');if(gtag){gtag('event', 'button_click', { useraction: '${item.completed ? 'Mark uncomplete - task' : 'Mark complete - task'}' })}">
 								${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
 							</div>` : ''}
 		
@@ -8956,6 +8931,18 @@ function gettododata(item) {
 						${getbigcheckbox(schedulemytaskslist.find(g => g == item.id))}
 					</div>`
 				: ''}
+
+
+				${!schedulemytasksenabled && Calendar.Todo.isTodo(item) && !item.parentid ? 
+					`<div class="scalebutton absolute bottom-0 left-0 margin-12px todoitemcheckbox visibility-hidden addsubtask tooltip display-flex" onclick="addsubtask(event, '${item.id}')">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsecondary">
+						<g>
+						<path d="M128 6.1875C121.925 6.1875 117 11.1124 117 17.1875L117 117L17.1875 117C11.1124 117 6.1875 121.925 6.1875 128C6.1875 134.075 11.1124 139 17.1875 139L117 139L117 238.812C117 244.888 121.925 249.813 128 249.812C134.075 249.812 139 244.888 139 238.812L139 139L238.812 139C244.888 139 249.813 134.075 249.812 128C249.812 121.925 244.888 117 238.812 117L139 117L139 17.1875C139 11.1124 134.075 6.1875 128 6.1875Z" fill-rule="nonzero" opacity="1" ></path>
+						</g>
+						</svg>
+	
+						<span class="tooltiptextright">Add subtask</span>
+					</div>` : ''}
 
 				${childrenoutput}
 
@@ -9233,6 +9220,10 @@ function inputtodoitemduedate(event, dueyear, duemonth, duedate) {
 		item.endbefore.month = mydate.getMonth()
 		item.endbefore.day = mydate.getDate()
 
+		//sub task stuff
+		fixsubtaskparenttask(item)
+
+
 		calendar.updateTodo()
 		if(Calendar.Event.isEvent(item)){
 			calendar.updateEvents()
@@ -9264,6 +9255,10 @@ function inputtodoitemduetime(event, duetime) {
 
 	if (myminute != null) {
 		item.endbefore.minute = myminute
+
+		//sub task stuff
+		fixsubtaskparenttask(item)
+
 
 		calendar.updateTodo()
 		if(Calendar.Event.isEvent(item)){
@@ -9423,6 +9418,10 @@ function inputtodoitemduration(event, duration) {
 			item.end.day = tempenddate.getDate()
 			item.end.minute = tempenddate.getHours() * 60 + tempenddate.getMinutes()
 		}
+
+		//sub task stuff
+		fixsubtaskparenttask(item)
+
 
 		calendar.updateTodo()
 		if(Calendar.Event.isEvent(item)){
@@ -9588,16 +9587,7 @@ async function todocompleted(event, id) {
 
 
 	//sub task stuff
-	let mychildren = Calendar.Todo.getChildren(item)
-	for(let childitem of mychildren){
-		childitem.completed = item.completed
-	}
-
-	let parent = Calendar.Todo.getParent(item)
-	if(parent){
-		let allchildren = Calendar.Todo.getChildren(parent)
-		parent.completed = allchildren.every(d => d.completed)
-	}
+	fixsubtaskparenttask(item)
 	
 
 	calendar.updateTodo()
@@ -9823,6 +9813,9 @@ function inputtododuedate(event){
 		item.endbefore.year = tempdate.getFullYear()
 		item.endbefore.month = tempdate.getMonth()
 		item.endbefore.day = tempdate.getDate()
+
+		//sub task stuff
+		fixsubtaskparenttask(item)
 	}
 
 
@@ -9846,6 +9839,9 @@ function inputtododuetime(event){
 
 	if (myendbeforeminute != null) {
 		item.endbefore.minute = myendbeforeminute
+
+		//sub task stuff
+		fixsubtaskparenttask(item.id)
 	}
 
 	let endbeforedate;
@@ -9857,6 +9853,33 @@ function inputtododuetime(event){
 
 	calendar.updateHistory()
 }
+
+
+function fixsubtaskparenttask(item){
+	let parent;
+	if(item.parentid){
+		parent = item
+	}else{
+		parent = Calendar.Todo.getParent(item)
+	}
+	if(!parent) return
+
+	let children = Calendar.Todo.getChildren(parent)
+
+	//update parent based on children
+	if(Calendar.Event.isTodo(parent)){
+		parent.duration = children.reduce((sum, a) => sum + a.duration, 0)
+	}
+	parent.completed = children.every(d => d.completed)
+
+	for(let childitem of children){
+		//sync child to parent
+		childitem.completed = parent.completed
+		childitem.endbefore = deepCopy(parent.endbefore)
+		childitem.priority = parent.priority
+	}
+}
+//here3
 
 function inputtododuration(event){
 	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
@@ -9873,13 +9896,6 @@ function inputtododuration(event){
 
 		if(myduration != null){
 			item.duration = myduration
-		}
-		
-		//sub task stuff
-		let parent = Calendar.Todo.getParent(item)
-		if(parent){
-			let allchildren = Calendar.Todo.getChildren(parent)
-			parent.duration = allchildren.reduce((a, b) => a.duration + b.duration)
 		}
 	}else{
 		let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
@@ -9898,6 +9914,10 @@ function inputtododuration(event){
 			item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
 		}
 	}
+
+
+	//sub task stuff
+	fixsubtaskparenttask()
 
 
 	let myduration;
@@ -10500,7 +10520,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
 					
 					${item.type == 1 ? 
-						`<span class="todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="eventcompleted(event, '${item.id}')">
+						`<span class="scalebutton todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="eventcompleted(event, '${item.id}')">
 							${myheight <= 15 ? `${getwhitecheckcirclesmall(item.completed)}` : `${getwhitecheckcircle(item.completed)}`}
 						</span>` 
 						: ''
