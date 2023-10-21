@@ -944,7 +944,7 @@ class Calendar {
 		}
 
 		static isSchedulable(item) {
-			return item.type == 1 && !item.completed && Calendar.Event.getChildren(item).length == 0
+			return item.type == 1 && !item.completed
 		}
 
 		static getDueText(item) {
@@ -1052,7 +1052,7 @@ class Calendar {
 		}
 
 		static isSchedulable(item) {
-			return !item.completed && Calendar.Todo.getChildren(item).length == 0
+			return !item.completed
 		}
 
 		static isTodo(item){
@@ -7422,7 +7422,7 @@ function startAutoSchedule({scheduletodos}) {
 
 
 	let finalscheduleevents = calendar.events.filter(d => Calendar.Event.isSchedulable(d))
-	let finalscheduletodos = calendar.todos.filter(d => Calendar.Todo.isSchedulable(d) && scheduletodos.find(g => g.id == d.id))
+	let finalscheduletodos = calendar.todos.filter(d => Calendar.Todo.isSchedulable(d) && scheduletodos.find(g => g.id == d.id) && Calendar.Todo.getChildren(item).length == 0)
 
 	let addedtodos = []
 	for (let item of finalscheduletodos) {
@@ -7435,7 +7435,7 @@ function startAutoSchedule({scheduletodos}) {
 	}
 
 
-	if(scheduletodos.length > 0){
+	if(addedtodos.length > 0){
 		if(mobilescreen){
 			calendartabs = [0]
 		}
