@@ -997,8 +997,9 @@ class Calendar {
 			this.googleclassroomid = null
 			this.googleclassroomlink = null
 			this.completed = false
-			this.reminder = [{ timebefore: 0 }]
+			this.reminder = [{ timebefore: 6*3600*1000 }]
 			this.lastmodified = 0
+			this.parentid = null
 
 			this.timewindow = {
 				day: {
@@ -2443,7 +2444,7 @@ class Calendar {
 		let output = []
 
 		if(true){
-			let mytodos = calendar.events.filter(d => d.type == 1 && !d.completed)
+			let mytodos = calendar.events.filter(d => d.type == 1 && !d.completed && !d.parentid)
 			let sortedtodos = sortstartdate(mytodos)
 
 
@@ -7798,6 +7799,7 @@ let createtododuedatevalue = {
 	minute: null
 }
 let createtodopriorityvalue;
+let createtodosplit;
 function updatecreatetodo() {
 
 	let createtododuration = getElement('createtododuration')
@@ -7864,6 +7866,29 @@ function updatecreatetodo() {
 
 	let submitcreatetodoaddnumberprompttodotoday = getElement('submitcreatetodoaddnumberprompttodotoday')
 	submitcreatetodoaddnumberprompttodotoday.innerHTML = string
+
+
+	//plan project
+	let todoinputprojectwrap = getElement('todoinputprojectwrap')
+	let todoinputprojectwrapoptions = getElement('todoinputprojectwrapoptions')
+	if(createtododurationvalue >= 90){
+		todoinputprojectwrap.classList.remove('hiddenheight')
+
+		let splitoptions = [null, 15, 30, 60]
+		for(let [index, div] of Object.entries(todoinputprojectwrapoptions.children)){
+			if(splitoptions[+index] == createtodosplit){
+				div.classList.add('selectedbutton')
+			}else{
+				div.classList.remove('selectedbutton')
+			}
+		}
+	}
+
+}
+
+function clickcreatetodosplit(value){
+	createtodosplit = value
+	updatecreatetodo()
 }
 
 function closetodoitemduration() {
@@ -8603,6 +8628,12 @@ function submitcreatetodo(event) {
 
 		calendar.todos.push(item)
 
+		if(createtodosplit != null){
+
+		}
+
+		//here4
+
 
 		if(isprompttodotoday){
 			prompttodotodayadded.push(item.id)
@@ -8760,11 +8791,22 @@ function gettododata(item) {
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
 						<div class="display-flex flex-row gap-12px">
+						
 						${!schedulemytasksenabled ? `
+						<div class="display-flex flex-column gap-6px">
 							<div class="todoitemcheckbox tooltip display-flex" onclick="todocompleted(event, '${item.id}');if(gtag){gtag('event', 'button_click', { useraction: '${item.completed ? 'Mark uncomplete - task' : 'Mark complete - task'}' })}">
-							${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
-						</div>
-						` : ''}
+								${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
+							</div>
+
+							${Calendar.Todo.isTodo(item) ? 
+							`<div class="todoitemcheckbox tooltip display-flex" onclick="addsubtask(event, '${item.id}')">
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite">
+								<g>
+								<path d="M128 6.1875C121.925 6.1875 117 11.1124 117 17.1875L117 117L17.1875 117C11.1124 117 6.1875 121.925 6.1875 128C6.1875 134.075 11.1124 139 17.1875 139L117 139L117 238.812C117 244.888 121.925 249.813 128 249.812C134.075 249.812 139 244.888 139 238.812L139 139L238.812 139C244.888 139 249.813 134.075 249.812 128C249.812 121.925 244.888 117 238.812 117L139 117L139 17.1875C139 11.1124 134.075 6.1875 128 6.1875Z" fill-rule="nonzero" opacity="1" ></path>
+								</g>
+								</svg>
+							</div>` : ''}
+						</div>` : ''}
 		
 						<div class="justify-flex-end flex-1 display-flex flex-row small:flex-column gap-12px">
 
@@ -8867,6 +8909,14 @@ function gettododata(item) {
 					</div>`
 				: ''}
 		 	</div>`
+	}
+
+	let children = calendar.todos.find(d => d.parentid == item.id)
+	if(children.length > 0){
+		output += `
+		<div class="display-flex flex-column width-full border-box padding-left-24px">
+			${children.map(d => gettododata(d)).join('')}
+		</div>`
 	}
 
 	return output
@@ -9435,6 +9485,23 @@ function deletecompletedtodos(){
 
 	calendar.updateTodo()
 	calendar.updateInfo()
+	calendar.updateHistory()
+}
+
+//add subtask
+//here4
+function addsubtask(event, id){
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
+	if (!item) return
+
+	let newendbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
+	let newduration = Math.min(item.duration, 30)
+	let newtitle = `${item.title || 'New Event'} (Part ${calendar.todos.filter(d => d.parentid == item.id).length + 1})`
+	
+	let newtask = new Calendar.Todo(newendbeforedate.getFullYear(), newendbeforedate.getMonth(), newendbeforedate.getDate(), 0, newendbeforedate.getHours() * 60 + newendbeforedate.getMinutes(), newduration, newtitle)
+	calendar.todos.push(newtask)
+
+	calendar.updateTodo()
 	calendar.updateHistory()
 }
 
