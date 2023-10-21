@@ -1012,6 +1012,29 @@ class Calendar {
 			}
 		}
 
+		static getParent(item){
+			let parent = calendar.todos.find(d => d.id == item.parentid)
+			if(!parent) return null
+			if(parent.parentid){
+				return this.getParent(parent)
+			}else{
+				return parent
+			}
+		}
+
+		static getChildren(item){
+			let descendants = []
+
+			function gatherChildren(task) {
+				let children = calendar.todos.filter(d => d.parentid == task.id)
+				descendants.push(...children)
+				children.forEach(child => gatherChildren(child))
+			}
+
+			gatherChildren(item)
+			return descendants
+		}
+
 		static isSchedulable(item) {
 			return !item.completed
 		}
@@ -2571,7 +2594,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = [...calendar.todos.filter(d => d.completed), ...calendar.events.filter(d => d.type == 1 && d.completed)]
+			let mytodos = [...calendar.todos.filter(d => d.completed && !item.parentid), ...calendar.events.filter(d => d.type == 1 && d.completed)]
 
 
 			let tempoutput = []
@@ -8722,8 +8745,7 @@ function gettododata(item) {
 					</div>
 		 		</div>
 
-				${!item.parentid ? `
-				<div class="inputgroup">
+				<div class="inputgroup ${item.parentid ? 'display-none' : ''}">
 					<div class="text-14px text-primary width90px">Due date</div>
 					<div class="inputgroupitem">
 						<input class="infoinput inputdatepicker width-192px" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtododuedate(event)" placeholder="Add date" onclick="this.select()" id="edittodoinputduedate" value="${endbeforedate ? getDMDYText(endbeforedate) : 'None'}"></input>
@@ -8733,7 +8755,7 @@ function gettododata(item) {
 						<input class="infoinput inputtimepicker width-192px" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtododuetime(event)" placeholder="Add time"  onclick="this.select()" id="edittodoinputduetime" value="${endbeforedate ? getHMText(endbeforedate.getHours() * 60 + endbeforedate.getMinutes()) : 'None'}"></input>
 						<span class="inputline"></span>
 					</div>
-				</div>` : ''}
+				</div>
 
 				<div class="inputgroup">
 					<div class="text-14px text-primary width90px">Time needed</div>
@@ -8743,8 +8765,7 @@ function gettododata(item) {
 					</div>
 				</div>
 
-				${!item.parentid ? `
-				<div class="infogroup">
+				<div class="infogroup ${item.parentid ? 'display-none' : ''}">
 					<div class="inputgroup">
 						<div class="text-14px text-primary width90px">Priority</div>
 						<div class="inputeventtype width-fit flex-grow-0 flex-basis-auto" id="todoeditpriority">
@@ -8754,7 +8775,6 @@ function gettododata(item) {
 						</div>
 					</div>
 				</div>
-				` : ''}
 
 				<div class="infogroup">
 					<div class="inputgroup">
@@ -9508,7 +9528,6 @@ function deletecompletedtodos(){
 }
 
 //add subtask
-//here4
 function addsubtask(event, id){
 	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
@@ -9560,6 +9579,22 @@ async function todocompleted(event, id) {
 				item.end.day = enddate.getDate()
 				item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
 			}
+		}
+	}
+
+
+	//sub task stuff
+	let children = Calendar.Todo.getChildren(item)
+	for(let childitem of children){
+		childitem.completed = item.completed
+	}
+
+	let parent = Calendar.Todo.getParent(item)
+	if(parent){
+		if(children.every(d => d.completed)){
+			parent.completed = true
+		}else{
+			parent.completed = false
 		}
 	}
 
