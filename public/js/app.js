@@ -886,16 +886,6 @@ class Calendar {
 			return [...calendar.events, ...calendar.todos].filter(d => d.parentid == item.id)
 		}
 
-		static getChildIndex(item){
-			let parent = this.getParent(item)
-			if(!parent) return null
-
-			let index = this.getChildren(parent).findIndex(f => f.id == item.id)
-			if(index == -1) return null
-			
-			return index
-		}
-
 		static isParent(item){
 			return this.getChildren(item).length > 0
 		}
@@ -1047,16 +1037,6 @@ class Calendar {
 
 		static getChildren(item){
 			return [...calendar.events, ...calendar.todos].filter(d => d.parentid == item.id)
-		}
-
-		static getChildIndex(item){
-			let parent = this.getParent(item)
-			if(!parent) return null
-
-			let index = this.getChildren(parent).findIndex(f => f.id == item.id)
-			if(index == -1) return null
-			
-			return index
 		}
 
 		static isParent(item){
@@ -5540,6 +5520,7 @@ function inputeventduedate(event, id) {
 		fixsubandparenttask(item)
 	}
 
+	calendar.updateTodo()
 	calendar.updateEvents()
 	calendar.updateInfo()
 	calendar.updateHistory()
@@ -5560,6 +5541,7 @@ function inputeventduetime(event, id) {
 		fixsubandparenttask(item)
 	}
 
+	calendar.updateTodo()
 	calendar.updateEvents()
 	calendar.updateInfo()
 	calendar.updateHistory()
@@ -5571,6 +5553,7 @@ function inputeventnotes(event, id) {
 	if (!item) return
 	item.notes = event.target.value
 
+	calendar.updateTodo()
 	calendar.updateEvents()
 	calendar.updateInfo()
 	calendar.updateHistory()
@@ -7554,7 +7537,9 @@ function toggleschedulesubtasks(event, id){
 		}
 	}else{
 		for(let tempitem of children){
-			schedulemytaskslist.push(tempitem.id)
+			if(!schedulemytaskslist.includes(tempitem.id)){
+				schedulemytaskslist.push(tempitem.id)
+			}
 		}
 	}
 
@@ -9048,7 +9033,7 @@ function gettododata(item) {
 				 
 									<div class="todoitemtext text-16px ${itemclasses.join(' ')}">
 										${Calendar.Event.isEvent(item) ? 
-											`<span class="margin-right-6px text-12px hover:text-green-hover pointer-auto tooltip gap-6px text-red todoscheduleddate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">
+											`<span class="margin-right-6px text-12px hover:text-red-hover pointer-auto tooltip gap-6px text-red todoscheduleddate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">
 												${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}
 												<span class="tooltiptextcenter">Show calendar event</span>
 											</span>`
@@ -9544,6 +9529,8 @@ function inputtodoitempriority(event, index) {
 	if (index != null) {
 		item.priority = index
 
+		fixsubandparenttask(item)
+
 		inputtodoid = null
 		calendar.updateTodo()
 		if(Calendar.Event.isEvent(item)){
@@ -9799,7 +9786,12 @@ function gototaskincalendar(id){
 
 	selectedeventid = item.id
 
-	calendar.updateCalendar()
+	if(mobilescreen){
+		calendartabs = [0]
+		calendar.updateTabs()
+	}else{
+		calendar.updateCalendar()
+	}
 
 	scrollcalendarY(item.start.minute)
 }
@@ -10113,9 +10105,10 @@ function fixsubandparenttask(item){
 	let parent;
 	if(Calendar.Todo.isChild(item)){
 		parent = Calendar.Todo.getParent(item)
-	}else{
+	}else if(Calendar.Todo.isParent(item)){
 		parent = item
 	}
+	console.log(parent)
 	if(!parent) return
 
 	let children = Calendar.Todo.getChildren(parent)
@@ -10126,18 +10119,21 @@ function fixsubandparenttask(item){
 		parent.completed = children.every(d => d.completed)
 
 		parent.endbefore = deepCopy(item.endbefore)
+		parent.priority = item.priority
+
 		for(let childitem of children){
 			childitem.endbefore = deepCopy(item.endbefore)
+			childitem.priority = item.priority
 		}
 	}
 
-	for(let childitem of children){
-		//sync child to parent
-		if(Calendar.Todo.isParent(item)){
-			childitem.completed = parent.completed
+	//sync child to parent
+	if(Calendar.Todo.isParent(item)){
+		for(let childitem of children){
+			childitem.completed = item.completed
+			childitem.endbefore = deepCopy(item.endbefore)
+			childitem.priority = item.priority
 		}
-		childitem.endbefore = deepCopy(parent.endbefore)
-		childitem.priority = parent.priority
 	}
 }
 
@@ -11555,10 +11551,12 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 
 
 			let percentrange = 0.4 //default schedule at 40% of range
-			if(Calendar.Event.getParent(item)){
-				let childindex = Calendar.Event.getChildIndex(item)
-				if(childindex){
-					percentrange = (1 + childindex)/Calendar.Event.getChildren(Calendar.Event.getParent(item)).length * 0.8 //evenly space out sub tasks
+			let parent = Calendar.Event.getParent(item)
+			if(parent){
+				let scheduledchildren = Calendar.Event.getChildren(item).filter(d => Calendar.Event.isEvent(item))
+				let childindex = scheduledchildren.findIndex(d => d.id == item.id)
+				if(childindex != -1){
+					percentrange = (1 + childindex)/Calendar.Event.getChildren(Calendar.Event.getParent(item)).length * 0.9 //evenly space out sub tasks, finish by 90% of range
 				}
 			}
 			console.log(percentrange)
