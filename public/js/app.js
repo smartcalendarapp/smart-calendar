@@ -7422,7 +7422,7 @@ function startAutoSchedule({scheduletodos}) {
 
 
 	let finalscheduleevents = calendar.events.filter(d => Calendar.Event.isSchedulable(d))
-	let finalscheduletodos = calendar.todos.filter(d => Calendar.Todo.isSchedulable(d) && scheduletodos.find(g => g.id == d.id) && Calendar.Todo.getChildren(item).length == 0)
+	let finalscheduletodos = calendar.todos.filter(d => Calendar.Todo.isSchedulable(d) && scheduletodos.find(g => g.id == d.id) && Calendar.Todo.getChildren(d).length == 0)
 
 	let addedtodos = []
 	for (let item of finalscheduletodos) {
@@ -8679,15 +8679,13 @@ function submitcreatetodo(event) {
 		//create sub tasks
 		if(createtodosplitduration != null){
 			let timeleft = myduration
-			let index = 0
 			while(timeleft > 0){
-				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), Math.min(createtodosplitduration, timeleft), `${title || 'New Task'} (part ${index + 1})`)
+				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), Math.min(createtodosplitduration, timeleft), `${title || 'New Task'} (part ${Calendar.Todo.getChildren(item).length + 1})`)
 				childitem.parentid = item.id
 
 				calendar.todos.push(childitem)
 
 				timeleft -= createtodosplitduration
-				index++
 			}
 		}
 
@@ -8744,7 +8742,7 @@ function gettododata(item) {
 
 
 	let childrenoutput = ''
-	let children = Calendar.Todo.getChildren(item)
+	let children = Calendar.Todo.getChildren(item).filter(d => Calendar.Todo.isTodo(d))
 	if(children.length > 0){
 		childrenoutput = `
 		<div class="border-8px subtaskgroup bordertertiary display-flex flex-column border-box">
@@ -9581,7 +9579,7 @@ function addsubtask(event, id){
 
 	let newendbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 	let newduration = Math.min(item.duration, 30)
-	let newtitle = `${item.title || 'New Task'} (part ${calendar.todos.filter(d => d.parentid == item.id).length + 1})`
+	let newtitle = `${item.title || 'New Task'} (part ${Calendar.Todo.getChildren(item).length + 1})`
 	
 	let newtask = new Calendar.Todo(newendbeforedate.getFullYear(), newendbeforedate.getMonth(), newendbeforedate.getDate(), newendbeforedate.getHours() * 60 + newendbeforedate.getMinutes(), newduration, newtitle)
 	newtask.parentid = item.id
@@ -9750,14 +9748,11 @@ function deletetodo(id) {
 	calendar.todos = calendar.todos.filter(d => d.id != id)
 	calendar.events = calendar.events.filter(d => d.id != id)
 
-	function deletechildren(tempitem){
-		let children = calendar.todos.filter(d => d.parentid == tempitem.id)
-		if(children.length > 0){
-			calendar.todos = calendar.todos.filter(d => !children.find(f => f.id == d.id))
-		}
-	}
 
-	deletechildren(item)
+	//delete children
+	let children = calendar.todos.filter(d => d.parentid == item.id)
+	calendar.todos = calendar.todos.filter(d => !children.find(f => f.id == d.id))
+
 	fixsubandparenttask(item)
 
 
@@ -9916,7 +9911,15 @@ function fixsubandparenttask(item){
 
 	//update parent based on children
 	if(Calendar.Todo.isTodo(parent)){
-		parent.duration = children.reduce((sum, a) => sum + a.duration, 0)
+		parent.duration = children.reduce((sum, item) => {
+			let myduration;
+			if(Calendar.Todo.isTodo(item)){
+				myduration = item.duration
+			}else{
+				myduration = Math.floor((new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()) / 60000)
+			}
+			return sum + myduration
+		}, 0)
 	}
 	if(item.parentid){
 		parent.completed = children.every(d => d.completed)
