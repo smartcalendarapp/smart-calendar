@@ -1637,13 +1637,13 @@ div:focus {
 	font-size: 14px;
 }
 
-.bordergreen{
-	border:1px solid var(--green)
+.todoscheduleddate{
+	border:1px solid var(--red)
 }
-.bordergreenhover:hover{
-	border:1px solid var(--green-hover)
+.todoscheduleddate:hover{
+	border:1px solid var(--red-hover)
 }
-.bordergreen.completedtext{
+.todoscheduleddate.completedtext{
 	border:1px solid var(--text-secondary) !important
 }
 

@@ -7547,14 +7547,18 @@ function toggleschedulesubtasks(event, id){
 	let item = calendar.todos.find(g => g.id == id)
 	if (!item) return
 
-	let togglelist = Calendar.Todo.getChildren(item)
-	for(let tempitem of togglelist){
-		if (schedulemytaskslist.find(g => g == tempitem.id)) {
+	let children = Calendar.Todo.getChildren(item)
+	if(children.every(d => schedulemytaskslist.find(g => g == d.id))){
+		for(let tempitem of children){
 			schedulemytaskslist = schedulemytaskslist.filter(d => d != tempitem.id)
-		} else {
+		}
+	}else{
+		for(let tempitem of children){
 			schedulemytaskslist.push(tempitem.id)
 		}
 	}
+
+	calendar.updateTodo()
 }
 
 //select task
@@ -9044,9 +9048,9 @@ function gettododata(item) {
 				 
 									<div class="todoitemtext text-16px ${itemclasses.join(' ')}">
 										${Calendar.Event.isEvent(item) ? 
-											`<span class="margin-right-6px text-12px hover:text-green-hover pointer-auto tooltip gap-6px text-green bordergreen bordergreenhover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">
+											`<span class="margin-right-6px text-12px hover:text-green-hover pointer-auto tooltip gap-6px text-red todoscheduleddate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">
 												${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}
-												<span class="tooltiptextcenter">Go to calendar event</span>
+												<span class="tooltiptextcenter">Show calendar event</span>
 											</span>`
 											:
 											``
@@ -9132,7 +9136,9 @@ function gettododata(item) {
 
 					${schedulemytasksenabled ? 
 						Calendar.Todo.isParent(item) ? 
-						`<div class="width-fit align-self-center bordertertiary hover:background-tint-1 backdrop-blur transition-duration-100 pointer text-primary pointer-auto nowrap border-8px padding-8px-12px text-14px" id="plantasksselectall" onclick="toggleschedulesubtasks(event, '${item.id}')">${Calendar.Todo.getChildren(item).filter(g => Calendar.Todo.isTodo(g) && Calendar.Todo.isSchedulable(g)).every(g => schedulemytaskslist.find(h => h == g.id)) ? `Deselect` : `Select`} subtasks</div>`
+						`<div class="absolute box-shadow display-flex todoitemselectcheck background-secondary border-8px box-shadow pointer pointer-auto" onclick="toggleschedulesubtasks(event, '${item.id}')">
+							${getbigcheckbox(Calendar.Todo.getChildren(item).every(g => schedulemytaskslist.find(f => f == g.id)))}
+						</div>`
 						: 
 						Calendar.Todo.isSchedulable(item) && Calendar.Todo.isTodo(item) ? 
 						`<div class="absolute box-shadow display-flex todoitemselectcheck background-secondary border-8px box-shadow pointer pointer-auto" onclick="toggleschedulemytask(event, '${item.id}')">
@@ -9784,12 +9790,14 @@ function addsubtask(event, id){
 
 //go to scheduled task in calendar
 function gototaskincalendar(id){
-	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
+	let item = calendar.events.find(x => x.id == id)
 	if (!item) return
 
 	calendaryear = item.start.year
 	calendarmonth = item.start.month
 	calendarday = item.start.day
+
+	selectedeventid = item.id
 
 	calendar.updateCalendar()
 
