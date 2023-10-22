@@ -2482,6 +2482,8 @@ class Calendar {
 	updateTodoList() {
 		let output = []
 
+		//old code with schedule vs unscheduled categories
+		/*
 		if(true){
 			let mytodos = calendar.events.filter(d => d.type == 1 && !d.completed && Calendar.Event.getChildren(d).length == 0)
 			let sortedtodos = sortstartdate(mytodos)
@@ -2659,6 +2661,147 @@ class Calendar {
 			}
 			
 		}
+		*/
+
+
+
+		if(true){
+			let mytodos = [...calendar.todos.filter(d => !d.completed && !d.parentid), ...calendar.events.filter(d => d.type == 1 && !d.completed && !d.parentid)]
+
+			let duetodos = sortduedate(mytodos.filter(d => d.endbefore.year != null && d.endbefore.month != null && d.endbefore.day != null && d.endbefore.minute != null))
+			let notduetodos = mytodos.filter(d => d.endbefore.year == null || d.endbefore.month == null || d.endbefore.day == null || d.endbefore.minute == null)
+
+			let lastduedate;
+			let tempoutput = []
+			let tempoutput2 = []
+			for (let i = 0; i < duetodos.length; i++) {
+				if(i == 0){
+					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
+						<div class="horizontalbar flex-1"></div>
+						<div class="text-quaternary all-small-caps text-18px text-bold">Unscheduled</div>
+						<div class="horizontalbar flex-1"></div>
+					</div>`)
+				}
+
+				let item = duetodos[i]
+				let tempduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
+				if (!lastduedate || tempduedate.getDate() != lastduedate.getDate() || lastduedate.getMonth() != tempduedate.getMonth() || lastduedate.getFullYear() != tempduedate.getFullYear()) {
+					let today = new Date()
+					today.setHours(0,0,0,0)
+					let tomorrow = new Date(today)
+					tomorrow.setDate(tomorrow.getDate() + 1)
+					let yesterday = new Date(today)
+					yesterday.setDate(yesterday.getDate() - 1)
+
+					let tempduedate2 = new Date(tempduedate)
+					tempduedate2.setHours(0,0,0,0)
+					let difference = Math.floor((today.getTime() - tempduedate2)/60000)
+
+					let showrelative = true
+					if ((tempduedate2.getMonth() == today.getMonth() && tempduedate2.getDate() == today.getDate() && tempduedate2.getFullYear() == today.getFullYear()) || (tempduedate2.getMonth() == tomorrow.getMonth() && tempduedate2.getDate() == tomorrow.getDate() && tempduedate2.getFullYear() == tomorrow.getFullYear()) || (tempduedate2.getMonth() == yesterday.getMonth() && tempduedate2.getDate() == yesterday.getDate() && tempduedate2.getFullYear() == yesterday.getFullYear())){
+						showrelative = false
+					}
+					
+					tempoutput.push(`<div class="text-16px text-bold text-primary">Due ${getDMDYText(tempduedate)} ${showrelative ? `<span class="text-secondary">${getRelativeYMWDText(difference)}</span>` : ''}</div>`)
+				}
+
+				tempoutput2.push(gettododata(item))
+
+				let nextitem = duetodos[i + 1]
+				let nextduedate = nextitem ? new Date(nextitem.endbefore.year, nextitem.endbefore.month, nextitem.endbefore.day, 0, nextitem.endbefore.minute) : null
+				if (!nextduedate || nextduedate.getDate() != tempduedate.getDate() || nextduedate.getMonth() != tempduedate.getMonth() || nextduedate.getFullYear() != tempduedate.getFullYear()) {
+					output.push(`<div class="display-flex flex-column gap-12px">
+						${tempoutput.join('')}
+				
+						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
+					</div>`)
+					tempoutput = []
+					tempoutput2 = []
+				}
+
+				lastduedate = tempduedate
+			}
+
+			for (let i = 0; i < notduetodos.length; i++) {
+				if(i == 0 && duetodos.length == 0){
+					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
+						<div class="horizontalbar flex-1"></div>
+						<div class="text-quaternary all-small-caps text-18px text-bold">Unscheduled</div>
+						<div class="horizontalbar flex-1"></div>
+					</div>`)
+				}
+
+				let item = notduetodos[i]
+				if (i == 0) {
+					tempoutput.push(`<div class="text-16px text-primary text-bold">No due date</div>`)
+				}
+				tempoutput2.push(gettododata(item))
+				if (i == notduetodos.length - 1) {
+					output.push(`
+					<div class="display-flex flex-column gap-12px">
+						${tempoutput.join('')}
+						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
+					</div>`)
+					tempoutput = []
+					tempoutput2 = []
+				}
+			}
+			
+		}
+
+
+		if(true){
+			let mytodos = [...calendar.todos.filter(d => d.completed && !d.parentid), ...calendar.events.filter(d => d.type == 1 && d.completed)]
+
+
+			let tempoutput = []
+			let tempoutput2 = []
+
+			for (let i = 0; i < mytodos.length; i++) {
+				let item = mytodos[i]
+				if (i == 0) {
+					tempoutput.push(`<div class="display-flex flex-row justify-space-between align-center">
+						<div class="text-16px text-bold text-primary">Completed</div>
+
+						<div class="popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="deletecompletedtodos()">
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+								<g>
+								<path d="M207.414 223.445L207.414 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M71.3433 246L184.657 246" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M207.414 223.445C207.414 235.902 197.226 246 184.657 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M238 57.6433L18 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M48.5864 223.445L48.5864 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M48.5864 223.445C48.5864 235.902 58.775 246 71.3433 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M96.1228 10L159.881 10" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M173.737 23.7283C173.737 16.1464 167.534 10 159.881 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M82.2668 23.7283C82.2668 16.1464 88.4703 10 96.1228 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M82.2668 23.7283L82.2668 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M173.737 23.7283L173.737 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+								<path d="M165.379 101.49L165.379 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+								<path d="M90.6212 101.49L90.6212 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+								<path d="M128 101.49L128 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+								</g>
+								</svg>
+		
+								<span class="tooltiptextleft">Delete completed tasks</span>
+							</div>
+					</div>`)
+				}
+				tempoutput2.push(gettododata(item))
+				if (i == mytodos.length - 1) {
+					output.push(`
+					<div class="display-flex flex-column gap-12px">
+						${tempoutput.join('')}
+						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
+					</div>`)
+					tempoutput = []
+					tempoutput2 = []
+				}
+			}
+			
+		}
+
+		
 
 		if(output.length == 0){
 			output.push(`<div class="absolute top-0 left-0 right-0 bottom-0 flex-1 display-flex flex-column align-center justify-center">
@@ -8872,6 +9015,14 @@ function gettododata(item) {
 				 
 									<div class="todoitemtext text-16px overflow-hidden ${itemclasses.join(' ')}">
 										${item.title ? cleanInput(item.title) : `New Task`}
+
+										${Calendar.Event.isEvent(item) ? 
+											`<span class="gap-6px text-white background-green hover:background-green-hover transition-duration-100 badgepadding border-round display-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}">
+												At ${getHMText(item.start.minute)}
+											</span>`
+											:
+											``
+										}
 									</div>
 
 									${item.googleclassroomid ? `<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none text-14px hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open Google Classroom assignment</a>` : ``}
@@ -8891,14 +9042,6 @@ function gettododata(item) {
 										''
 									}
 									
-									
-									${Calendar.Event.isEvent(item) ? 
-										`<div class="gap-6px text-white background-green hover:background-green-hover transition-duration-100 badgepadding border-round display-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}">
-											At ${getHMText(item.start.minute)}
-										</div>`
-										:
-										``
-									}
 		
 									${Calendar.Event.isEvent(item) ? `` : 
 										`<div class="width-fit background-green transition-duration-100 hover:background-green-hover badgepadding border-round todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-white transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
