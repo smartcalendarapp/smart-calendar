@@ -896,6 +896,14 @@ class Calendar {
 			return index
 		}
 
+		static isParent(item){
+			return this.getChildren(item).length > 0
+		}
+
+		static isChild(item){
+			return !!this.getParent(item)
+		}
+
 		static isEvent(item){
 			return calendar.events.find(d => d.id == item.id)
 		}
@@ -1049,6 +1057,14 @@ class Calendar {
 			if(index == -1) return null
 			
 			return index
+		}
+
+		static isParent(item){
+			return this.getChildren(item).length > 0
+		}
+
+		static isChild(item){
+			return !!this.getParent(item)
 		}
 
 		static isSchedulable(item) {
@@ -2735,7 +2751,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = [ ...calendar.events.filter(d => d.type == 1 && d.completed), ...calendar.todos.filter(d => d.completed && !d.parentid)]
+			let mytodos = [ ...calendar.events.filter(d => d.type == 1 && d.completed && !d.parentid), ...calendar.todos.filter(d => d.completed && !d.parentid)]
 
 
 			let tempoutput = []
@@ -7525,12 +7541,33 @@ function toggleschedulemytask(event, id) {
 		return
 	}
 
-	let togglelist = [item, ...Calendar.Todo.getChildren(item)]
-	for(let tempitem of togglelist){
-		if (schedulemytaskslist.find(g => g == tempitem.id)) {
-			schedulemytaskslist = schedulemytaskslist.filter(d => d != tempitem.id)
+	if(Calendar.Todo.isParent(item)){
+		let togglelist = [item, ...Calendar.Todo.getChildren(item)]
+		for(let tempitem of togglelist){
+			if (schedulemytaskslist.find(g => g == tempitem.id)) {
+				schedulemytaskslist = schedulemytaskslist.filter(d => d != tempitem.id)
+			} else {
+				schedulemytaskslist.push(tempitem.id)
+			}
+		}
+	}
+
+	if(Calendar.Todo.isChild(item)){
+		if (schedulemytaskslist.find(g => g == item.id)) {
+			schedulemytaskslist = schedulemytaskslist.filter(d => d != item.id)
 		} else {
-			schedulemytaskslist.push(tempitem.id)
+			schedulemytaskslist.push(item.id)
+		}
+
+		let parent = Calendar.Todo.getParent(item)
+		if(Calendar.Todo.getChildren(parent).every(d => schedulemytaskslist.find(g => g == d.id))){
+			if(!schedulemytaskslist.find(g => g == parent.id)){
+				schedulemytaskslist.push(parent.id)
+			}
+		}else{
+			if(schedulemytaskslist.find(g => g == parent.id)){
+				schedulemytaskslist = schedulemytaskslist.filter(d => d != parent.id)
+			}
 		}
 	}
 
@@ -8910,7 +8947,7 @@ function gettododata(item) {
 					</div>
 		 		</div>
 
-				<div class="inputgroup ${item.parentid ? 'display-none' : ''}">
+				<div class="inputgroup ${Calendar.Todo.isChild(item) ? 'display-none' : ''}">
 					<div class="text-14px text-primary width90px">Due date</div>
 					<div class="inputgroupitem">
 						<input class="infoinput inputdatepicker width-192px" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtododuedate(event)" placeholder="Add date" onclick="this.select()" id="edittodoinputduedate" value="${endbeforedate ? getDMDYText(endbeforedate) : 'None'}"></input>
@@ -8930,7 +8967,7 @@ function gettododata(item) {
 					</div>
 				</div>
 
-				<div class="infogroup ${item.parentid ? 'display-none' : ''}">
+				<div class="infogroup ${Calendar.Todo.isChild(item) ? 'display-none' : ''}">
 					<div class="inputgroup">
 						<div class="text-14px text-primary width90px">Priority</div>
 						<div class="inputeventtype width-fit flex-grow-0 flex-basis-auto" id="todoeditpriority">
@@ -9009,7 +9046,7 @@ function gettododata(item) {
 										${Calendar.Event.isEvent(item) ? 
 											`<span class="margin-right-6px text-12px hover:text-green-hover pointer-auto tooltip gap-6px text-green bordergreen bordergreenhover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">
 												${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}
-												<span class="tooltiptextcenter">Show calendar event</span>
+												<span class="tooltiptextcenter">Go to calendar event</span>
 											</span>`
 											:
 											``
@@ -9027,7 +9064,7 @@ function gettododata(item) {
 				
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 				
-									${!item.parentid ? 
+									${Calendar.Todo.isParent(item) ? 
 										`<div class="gap-6px pointer-auto pointer display-flex transition-duration-100 flex-row align-center width-fit todoitemtext badgepadding ${!endbeforedate ? ` background-tint-1 text-primary hover:background-tint-2` : (isoverdue ? ` background-red text-white hover:background-red-hover` : ` background-blue text-white hover:background-blue-hover`)} border-round nowrap popupbutton ${itemclasses.join(' ')} " onclick="clicktodoitemduedate(event, '${item.id}')">
 											${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}
 										</div>`
@@ -9102,7 +9139,7 @@ function gettododata(item) {
 				</div>
 
 
-				${!schedulemytasksenabled && Calendar.Todo.isTodo(item) && !item.parentid ? 
+				${!schedulemytasksenabled && Calendar.Todo.isTodo(item) ? 
 					`<div class="scalebutton absolute bottom-0 left-0 margin-12px todoitemcheckbox visibility-hidden addsubtask tooltip display-flex" onclick="addsubtask(event, '${item.id}')">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsecondary">
 						<g>
@@ -9389,7 +9426,7 @@ function inputtodoitemduedate(event, dueyear, duemonth, duedate) {
 		item.endbefore.month = mydate.getMonth()
 		item.endbefore.day = mydate.getDate()
 
-		//fix sub task
+		
 		fixsubandparenttask(item)
 
 
@@ -9429,7 +9466,7 @@ function inputtodoitemduetime(event, duetime) {
 	if (myminute != null) {
 		item.endbefore.minute = myminute
 
-		//fix sub task
+		
 		fixsubandparenttask(item)
 
 
@@ -9592,7 +9629,7 @@ function inputtodoitemduration(event, duration) {
 			item.end.minute = tempenddate.getHours() * 60 + tempenddate.getMinutes()
 		}
 
-		//fix sub task
+		
 		fixsubandparenttask(item)
 
 
@@ -9618,19 +9655,21 @@ function inputtodoitemduration(event, duration) {
 let initialdragtodox, initialdragtodoy;
 function dragtodo(event, id) {
 	event.preventDefault()
+	event.stopPropagation()
 
 	if(mobilescreen){
 		return
 	}
 
-	let item = calendar.todos.find(x => x.id == id)
+	let item = [...calendar.todos].find(x => x.id == id)
 	if (!item) return
 
-	if(item.parentid){
-		item = Calendar.Todo.getParent(item)
+	let children = Calendar.Todo.getChildren(item)
+	if(children.length > 0){
+		if(children.every(d => Calendar.Event.isEvent(d))){
+			return
+		}
 	}
-
-	if (!item) return
 
 	let todoelement = getElement(`todo-${id}`)
 
@@ -9643,7 +9682,6 @@ function dragtodo(event, id) {
 	dragtododiv.style.width = rect.width + 'px'
 	dragtododiv.style.height = rect.height + 'px'
 
-
 	initialdragtodox = event.clientX - rect.left
 	initialdragtodoy = event.clientY - rect.top
 
@@ -9654,11 +9692,13 @@ function dragtodo(event, id) {
 
 	document.addEventListener('mousemove', movedragtodo, false)
 	document.addEventListener('mouseup', finishfunction, false)
+
 	function finishfunction(event) {
 		document.removeEventListener('mousemove', movedragtodo, false)
 		document.removeEventListener('mouseup', finishfunction, false)
 
 		dragtododiv.classList.add('display-none')
+		dragtododiv.innerHTML = ''
 
 		dragtodohighlight.classList.add('hiddenfade')
 
@@ -9727,7 +9767,7 @@ function addsubtask(event, id){
 	calendar.todos.push(newtask)
 
 
-	//fix sub task
+	
 	fixsubandparenttask(item)
 
 	calendar.updateTodo()
@@ -9786,7 +9826,7 @@ async function todocompleted(event, id) {
 	}
 
 
-	//fix sub task
+	
 	fixsubandparenttask(item)
 	
 
@@ -10013,7 +10053,7 @@ function inputtododuedate(event){
 		item.endbefore.month = tempdate.getMonth()
 		item.endbefore.day = tempdate.getDate()
 
-		//fix sub task
+		
 		fixsubandparenttask(item)
 	}
 
@@ -10039,7 +10079,7 @@ function inputtododuetime(event){
 	if (myendbeforeminute != null) {
 		item.endbefore.minute = myendbeforeminute
 
-		//fix sub task
+		
 		fixsubandparenttask(item.id)
 	}
 
@@ -10056,7 +10096,7 @@ function inputtododuetime(event){
 
 function fixsubandparenttask(item){
 	let parent;
-	if(item.parentid){
+	if(Calendar.Todo.isChild(item)){
 		parent = Calendar.Todo.getParent(item)
 	}else{
 		parent = item
@@ -10067,24 +10107,18 @@ function fixsubandparenttask(item){
 	if(children.length == 0) return
 
 	//update parent based on children
-	if(Calendar.Todo.isTodo(parent)){
-		parent.duration = children.reduce((sum, item) => {
-			let myduration;
-			if(Calendar.Todo.isTodo(item)){
-				myduration = item.duration
-			}else{
-				myduration = Math.floor((new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()) / 60000)
-			}
-			return sum + myduration
-		}, 0)
-	}
-	if(item.parentid){
+	if(Calendar.Todo.isChild(item)){
 		parent.completed = children.every(d => d.completed)
+
+		parent.endbefore = deepCopy(item.endbefore)
+		for(let childitem of children){
+			childitem.endbefore = deepCopy(item.endbefore)
+		}
 	}
 
 	for(let childitem of children){
 		//sync child to parent
-		if(!item.parentid){
+		if(Calendar.Todo.isParent(item)){
 			childitem.completed = parent.completed
 		}
 		childitem.endbefore = deepCopy(parent.endbefore)
@@ -10128,7 +10162,7 @@ function inputtododuration(event){
 	}
 
 
-	//fix sub task
+	
 	fixsubandparenttask(item)
 
 
@@ -11512,6 +11546,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 					percentrange = (1 + childindex)/Calendar.Event.getChildren(Calendar.Event.getParent(item)).length * 0.8 //evenly space out sub tasks
 				}
 			}
+			console.log(percentrange)
 
 			let daystartafterdate = new Date(startafterdate)
 			daystartafterdate.setHours(0,0,0,0)
@@ -12965,6 +13000,8 @@ async function eventcompleted(event, id) {
 	}
 
 
+	fixsubandparenttask(item)
+
 	if(item.type == 1){
 		calendar.updateTodo()
 	}
@@ -13305,6 +13342,9 @@ function moveborder(event) {
 	item.endbefore.day = tempdate1.getDate()
 	item.endbefore.month = tempdate1.getMonth()
 	item.endbefore.year = tempdate1.getFullYear()
+
+	
+	fixsubandparenttask(item)
 
 	calendar.updateEvents()
 	calendar.updateInfo()
