@@ -973,6 +973,13 @@ const apnoptions = {
 let apnProvider = new apn.Provider(apnoptions)
 
 
+//OPENAI INITIALIZATION
+const OpenAI = require('openai').default
+const openai = new OpenAI({
+	apiKey: process.env.OPENAI_API_KEY
+})
+
+
 //EXPRESS INITIALIZATION
 const express = require('express')
 const session = require('express-session')
@@ -3053,6 +3060,35 @@ app.post('/subscribecalendar', async (req, res) => {
 	}
 })
 
+
+async function getgpttasktips(item) {
+	const prompt = `Task: ${item.title}, Duration: ${item.duration}. Provide: Specific strategies, resources with links, productivity tips. 1 list.`
+
+	try {
+		const res = await openai.chat.completions.create({
+			model: 'gpt-3.5-turbo',
+			messages: [{
+				role: 'user',
+				content: prompt
+			}],
+			max_tokens: 150
+		})
+
+		console.warn(res)
+		console.warn(res.choices[0].message)
+	} catch (error) {
+		console.error(error)
+	}
+}
+
+app.post('/getgpttasktips', async (req, res) => {
+	//auth user
+	//check ratelimit of user to prevent abooz
+	//get req body
+	//check for tasks that can get tips
+	//getgpttasktips
+	//return
+})
 
 /*
   _____  _    _  _____ _    _   _   _  ____ _______ _____ ______ _____ _____       _______ _____ ____  _   _  _____ 

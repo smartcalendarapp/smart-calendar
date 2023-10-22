@@ -9271,6 +9271,10 @@ function inputtodoitemduedate(event, dueyear, duemonth, duedate) {
 
 	updatetododatepicker()
 	updatetododateinput(inputtodoid)
+
+	setTimeout(function(){
+		scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
+	}, 300)
 }
 //input due time
 function inputtodoitemduetime(event, duetime) {
@@ -9753,9 +9757,6 @@ function deletetodo(id) {
 	let children = calendar.todos.filter(d => d.parentid == item.id)
 	calendar.todos = calendar.todos.filter(d => !children.find(f => f.id == d.id))
 
-	fixsubandparenttask(item)
-
-
 	calendar.updateTodo()
 	if(Calendar.Event.isEvent(item)){
 		calendar.updateEvents()
@@ -9908,6 +9909,7 @@ function fixsubandparenttask(item){
 	if(!parent) return
 
 	let children = Calendar.Todo.getChildren(parent)
+	if(children.length == 0) return
 
 	//update parent based on children
 	if(Calendar.Todo.isTodo(parent)){
@@ -11351,8 +11353,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 			let percentrange = 0.4 //default schedule at 40% of range
 			if(item.parentid){
 				let childindex = Calendar.Event.getChildIndex(item)
-				percentrange = childindex/Calendar.Event.getChildren(Calendar.Event.getParent(item)).length * 0.8 //a little earlier
-				//here4
+				percentrange = (1 + childindex)/Calendar.Event.getChildren(Calendar.Event.getParent(item)).length * 0.8 //a little earlier
 			}
 
 			let daystartafterdate = new Date(startafterdate)
