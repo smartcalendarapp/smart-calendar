@@ -9895,7 +9895,7 @@ function deletetodo(id) {
 
 
 	//delete children
-	let children = calendar.todos.filter(d => d.parentid == item.id)
+	let children = [...calendar.todos, ...calendar.events].filter(d => d.parentid == item.id)
 	calendar.todos = calendar.todos.filter(d => !children.find(f => f.id == d.id))
 
 	calendar.updateTodo()
@@ -11492,9 +11492,11 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 
 
 			let percentrange = 0.4 //default schedule at 40% of range
-			if(item.parentid){
+			if(Calendar.Event.getParent(item)){
 				let childindex = Calendar.Event.getChildIndex(item)
-				percentrange = (1 + childindex)/Calendar.Event.getChildren(Calendar.Event.getParent(item)).length * 0.8 //a little earlier
+				if(childindex){
+					percentrange = (1 + childindex)/Calendar.Event.getChildren(Calendar.Event.getParent(item)).length * 0.8 //evenly space out sub tasks
+				}
 			}
 
 			let daystartafterdate = new Date(startafterdate)
