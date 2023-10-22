@@ -1637,6 +1637,10 @@ div:focus {
 	font-size: 14px;
 }
 
+.bordergreen{
+	border:1px solid var(--green)
+}
+
 .focuswrap {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s;
 	background-color: var(--background-primary-home)

@@ -2675,14 +2675,6 @@ class Calendar {
 			let tempoutput = []
 			let tempoutput2 = []
 			for (let i = 0; i < duetodos.length; i++) {
-				if(i == 0){
-					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
-						<div class="horizontalbar flex-1"></div>
-						<div class="text-quaternary all-small-caps text-18px text-bold">Unscheduled</div>
-						<div class="horizontalbar flex-1"></div>
-					</div>`)
-				}
-
 				let item = duetodos[i]
 				let tempduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 				if (!lastduedate || tempduedate.getDate() != lastduedate.getDate() || lastduedate.getMonth() != tempduedate.getMonth() || lastduedate.getFullYear() != tempduedate.getFullYear()) {
@@ -2723,14 +2715,6 @@ class Calendar {
 			}
 
 			for (let i = 0; i < notduetodos.length; i++) {
-				if(i == 0 && duetodos.length == 0){
-					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
-						<div class="horizontalbar flex-1"></div>
-						<div class="text-quaternary all-small-caps text-18px text-bold">Unscheduled</div>
-						<div class="horizontalbar flex-1"></div>
-					</div>`)
-				}
-
 				let item = notduetodos[i]
 				if (i == 0) {
 					tempoutput.push(`<div class="text-16px text-primary text-bold">No due date</div>`)
@@ -2751,7 +2735,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = [...calendar.todos.filter(d => d.completed && !d.parentid), ...calendar.events.filter(d => d.type == 1 && d.completed)]
+			let mytodos = [ ...calendar.events.filter(d => d.type == 1 && d.completed), ...calendar.todos.filter(d => d.completed && !d.parentid)]
 
 
 			let tempoutput = []
@@ -9014,15 +8998,15 @@ function gettododata(item) {
 								<div class="width-full display-flex flex-column">
 				 
 									<div class="todoitemtext text-16px overflow-hidden ${itemclasses.join(' ')}">
-										${item.title ? cleanInput(item.title) : `New Task`}
-
 										${Calendar.Event.isEvent(item) ? 
-											`<span class="gap-6px text-white background-green hover:background-green-hover transition-duration-100 badgepadding border-round display-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}">
+											`<span class="gap-6px text-green text-bold bordergreen transition-duration-100 badgepadding border-round display-inline-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}">
 												At ${getHMText(item.start.minute)}
 											</span>`
 											:
 											``
 										}
+
+										${item.title ? cleanInput(item.title) : `New Task`}
 									</div>
 
 									${item.googleclassroomid ? `<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none text-14px hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open Google Classroom assignment</a>` : ``}
@@ -9034,7 +9018,7 @@ function gettododata(item) {
 				
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 				
-									${!Calendar.Event.isEvent(item) && !item.parentid ? 
+									${!item.parentid ? 
 										`<div class="gap-6px pointer-auto pointer display-flex transition-duration-100 flex-row align-center width-fit todoitemtext badgepadding ${!endbeforedate ? ` background-tint-1 text-primary hover:background-tint-2` : (isoverdue ? ` background-red text-white hover:background-red-hover` : ` background-blue text-white hover:background-blue-hover`)} border-round nowrap popupbutton ${itemclasses.join(' ')} " onclick="clicktodoitemduedate(event, '${item.id}')">
 											${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}
 										</div>`
