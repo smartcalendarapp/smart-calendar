@@ -5104,9 +5104,12 @@ function keydowndocument(event) {
 
 			if (Calendar.Event.isReadOnly(item)) return
 
-			calendar.events = calendar.events.filter(d => d.id != selectedeventid)
+			calendar.events = calendar.events.filter(d => d.id != item.id)
 
 			selectedeventid = null
+			if(item.type == 1){
+				calendar.updateTodo()
+			}
 			calendar.updateInfo()
 			calendar.updateTodo()
 			calendar.updateEvents()
@@ -5270,9 +5273,15 @@ function closeeventinfo(event) {
 
 //delete event
 function clickeventinfodelete(event) {
-	calendar.events = calendar.events.filter(x => x.id != selectedeventid)
+	let item = calendar.events.find(x => x.id == selectedeventid)
+	if (!item) return
+
+	calendar.events = calendar.events.filter(x => x.id != item.id)
 	selectedeventid = null
 
+	if(item.type == 1){
+		calendar.updateTodo()
+	}
 	calendar.updateInfo(true)
 	calendar.updateEvents()
 	calendar.updateHistory()
@@ -8998,9 +9007,9 @@ function gettododata(item) {
 				 
 									<div class="todoitemtext text-16px ${itemclasses.join(' ')}">
 										${Calendar.Event.isEvent(item) ? 
-											`<span class="hover:text-green-hover pointer-auto tooltip gap-6px text-green bordergreen bordergreenhover pointer transition-duration-100 badgepadding border-round display-inline-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">
+											`<span class="margin-right-6px text-12px hover:text-green-hover pointer-auto tooltip gap-6px text-green bordergreen bordergreenhover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">
 												${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}
-												<span class="tooltiptextcenter">Jump to scheduled date</span>
+												<span class="tooltiptextcenter">Show calendar event</span>
 											</span>`
 											:
 											``
@@ -9889,17 +9898,22 @@ function startnow(id){
 function deletetodo(id) {
 	let item = [...calendar.events, ...calendar.todos].find(d => d.id == id)
 	if(!item) return
-	
-	calendar.todos = calendar.todos.filter(d => d.id != id)
-	calendar.events = calendar.events.filter(d => d.id != id)
 
-
-	//delete children
+	//get children
 	let children = [...calendar.todos, ...calendar.events].filter(d => d.parentid == item.id)
-	calendar.todos = calendar.todos.filter(d => !children.find(f => f.id == d.id))
 
+	let totaldelete = [item, ...children]
+
+	let includesevent = totaldelete.find(d => Calendar.Event.isEvent(d))
+
+	calendar.todos = calendar.todos.filter(d => !totaldelete.find(f => f.id == d.id))
+	calendar.events = calendar.events.filter(d => !totaldelete.find(f => f.id == d.id))
+
+
+	fixsubandparenttask(item)
+	
 	calendar.updateTodo()
-	if(Calendar.Event.isEvent(item)){
+	if(includesevent){
 		calendar.updateEvents()
 	}
 	calendar.updateHistory()
