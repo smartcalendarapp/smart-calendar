@@ -7538,7 +7538,6 @@ function submitschedulemytasks() {
 		startAutoSchedule({scheduletodos: mytodos})
 	}
 }
-//here3
 
 
 
@@ -8869,7 +8868,7 @@ function gettododata(item) {
 
 
 	let childrenoutput = ''
-	let children = Calendar.Todo.getChildren(item).filter(d => Calendar.Todo.isTodo(d))
+	let children = Calendar.Todo.getChildren(item)
 	if(children.length > 0){
 		childrenoutput = `
 		<div class="border-8px subtaskgroup bordertertiary display-flex flex-column border-box">
@@ -8999,8 +8998,9 @@ function gettododata(item) {
 				 
 									<div class="todoitemtext text-16px overflow-hidden ${itemclasses.join(' ')}">
 										${Calendar.Event.isEvent(item) ? 
-											`<span class="gap-6px text-green text-bold bordergreen transition-duration-100 badgepadding border-round display-inline-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}">
-												At ${getHMText(item.start.minute)}
+											`<span class="hover:text-green-hover tooltip gap-6px text-green text-bold bordergreen bordergreenhover pointer transition-duration-100 badgepadding border-round display-inline-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">
+												${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}
+												<span class="tooltiptextcenter">Time to do task (see calendar)</span>
 											</span>`
 											:
 											``
@@ -9725,6 +9725,20 @@ function addsubtask(event, id){
 	calendar.updateHistory()
 }
 
+
+//go to scheduled task in calendar
+function gototaskincalendar(id){
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
+	if (!item) return
+
+	calendaryear = item.start.year
+	calendarmonth = item.start.month
+	calendarday = item.start.day
+
+	calendar.updateCalendar()
+
+	scrollcalendarY(item.start.minute)
+}
 
 //check completed
 async function todocompleted(event, id) {
