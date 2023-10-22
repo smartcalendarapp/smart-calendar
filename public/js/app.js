@@ -8996,11 +8996,11 @@ function gettododata(item) {
 							<div class="flex-1 display-flex flex-column gap-6px">
 								<div class="width-full display-flex flex-column">
 				 
-									<div class="todoitemtext text-16px overflow-hidden ${itemclasses.join(' ')}">
+									<div class="todoitemtext text-16px ${itemclasses.join(' ')}">
 										${Calendar.Event.isEvent(item) ? 
-											`<span class="hover:text-green-hover tooltip gap-6px text-green text-bold bordergreen bordergreenhover pointer transition-duration-100 badgepadding border-round display-inline-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">
+											`<span class="hover:text-green-hover pointer-auto tooltip gap-6px text-green bordergreen bordergreenhover pointer transition-duration-100 badgepadding border-round display-inline-flex flex-row align-center width-fit todoitemtext nowrap popupbutton ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">
 												${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}
-												<span class="tooltiptextcenter">Time to do task (see calendar)</span>
+												<span class="tooltiptextcenter">Jump to scheduled date</span>
 											</span>`
 											:
 											``
