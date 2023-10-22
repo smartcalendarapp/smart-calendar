@@ -9053,7 +9053,7 @@ function gettododata(item) {
 				
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 				
-									${Calendar.Todo.isParent(item) ? 
+									${!Calendar.Todo.isChild(item) ? 
 										`<div class="gap-6px pointer-auto pointer display-flex transition-duration-100 flex-row align-center width-fit todoitemtext badgepadding ${!endbeforedate ? ` background-tint-1 text-primary hover:background-tint-2` : (isoverdue ? ` background-red text-white hover:background-red-hover` : ` background-blue text-white hover:background-blue-hover`)} border-round nowrap popupbutton ${itemclasses.join(' ')} " onclick="clicktodoitemduedate(event, '${item.id}')">
 											${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}
 										</div>`
@@ -10108,7 +10108,6 @@ function fixsubandparenttask(item){
 	}else if(Calendar.Todo.isParent(item)){
 		parent = item
 	}
-	console.log(parent)
 	if(!parent) return
 
 	let children = Calendar.Todo.getChildren(parent)
