@@ -2481,7 +2481,9 @@ class Calendar {
 		}
 
 		let plantaskssubmit = getElement('plantaskssubmit')
+
 		schedulemytaskslist = schedulemytaskslist.filter(d => calendar.todos.find(g => g.id == d))
+
 		plantaskssubmit.innerHTML = `<div class="display-flex flex-row gap-6px align-center background-blue hover:background-blue-hover padding-8px-12px border-round transition-duration-100 pointer ${schedulemytaskslist.length > 0 ? '' : 'greyedoutevent'}" ${schedulemytaskslist.length > 0 ? `onclick="submitschedulemytasks()"` : ''}>
 			<div class="pointer-none text-16px text-white nowrap">Continue (${schedulemytaskslist.length})</div>
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
@@ -5534,6 +5536,8 @@ function inputeventduedate(event, id) {
 		item.endbefore.year = tempdate.getFullYear()
 		item.endbefore.month = tempdate.getMonth()
 		item.endbefore.day = tempdate.getDate()
+
+		fixsubandparenttask(item)
 	}
 
 	calendar.updateEvents()
@@ -5552,6 +5556,8 @@ function inputeventduetime(event, id) {
 
 	if (myendbeforeminute != null) {
 		item.endbefore.minute = myendbeforeminute
+
+		fixsubandparenttask(item)
 	}
 
 	calendar.updateEvents()
@@ -7426,6 +7432,8 @@ function clickeventpriority(index) {
 
 	item.priority = index
 
+	fixsubandparenttask(item)
+
 	calendar.updateEvents()
 	calendar.updateInfo()
 	calendar.updateHistory()
@@ -7513,7 +7521,7 @@ function clickschedulemode(mode) {
 let schedulemytaskslist = []
 let schedulemytasksenabled = false
 function clickschedulemytasks(event) {
-	schedulemytaskslist = [...calendar.todos.filter(item => Calendar.Todo.isSchedulable(item) && (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null)).map(d => d.id)]
+	schedulemytaskslist = [...calendar.todos.filter(item => Calendar.Todo.isSchedulable(item) && (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null) && !Calendar.Todo.isParent(item)).map(d => d.id)]
 	selectededittodoid = null
 	schedulemytasksenabled = true
 	calendar.updateTodo()
@@ -7533,6 +7541,22 @@ function selectallschedulemytasks(){
 	calendar.updateTodo()
 }
 
+
+//select all subtasks
+function toggleschedulesubtasks(event, id){
+	let item = calendar.todos.find(g => g.id == id)
+	if (!item) return
+
+	let togglelist = Calendar.Todo.getChildren(item)
+	for(let tempitem of togglelist){
+		if (schedulemytaskslist.find(g => g == tempitem.id)) {
+			schedulemytaskslist = schedulemytaskslist.filter(d => d != tempitem.id)
+		} else {
+			schedulemytaskslist.push(tempitem.id)
+		}
+	}
+}
+
 //select task
 function toggleschedulemytask(event, id) {
 	let item = calendar.todos.find(g => g.id == id)
@@ -7541,34 +7565,10 @@ function toggleschedulemytask(event, id) {
 		return
 	}
 
-	if(Calendar.Todo.isParent(item)){
-		let togglelist = [item, ...Calendar.Todo.getChildren(item)]
-		for(let tempitem of togglelist){
-			if (schedulemytaskslist.find(g => g == tempitem.id)) {
-				schedulemytaskslist = schedulemytaskslist.filter(d => d != tempitem.id)
-			} else {
-				schedulemytaskslist.push(tempitem.id)
-			}
-		}
-	}
-
-	if(Calendar.Todo.isChild(item)){
-		if (schedulemytaskslist.find(g => g == item.id)) {
-			schedulemytaskslist = schedulemytaskslist.filter(d => d != item.id)
-		} else {
-			schedulemytaskslist.push(item.id)
-		}
-
-		let parent = Calendar.Todo.getParent(item)
-		if(Calendar.Todo.getChildren(parent).every(d => schedulemytaskslist.find(g => g == d.id))){
-			if(!schedulemytaskslist.find(g => g == parent.id)){
-				schedulemytaskslist.push(parent.id)
-			}
-		}else{
-			if(schedulemytaskslist.find(g => g == parent.id)){
-				schedulemytaskslist = schedulemytaskslist.filter(d => d != parent.id)
-			}
-		}
+	if (schedulemytaskslist.find(g => g == item.id)) {
+		schedulemytaskslist = schedulemytaskslist.filter(d => d != item.id)
+	} else {
+		schedulemytaskslist.push(item.id)
 	}
 
 	calendar.updateTodo()
@@ -9130,16 +9130,23 @@ function gettododata(item) {
 			 
 					</div>
 
-					${!item.parentid && schedulemytasksenabled && Calendar.Todo.isSchedulable(item) && Calendar.Todo.isTodo(item) ?
+					${schedulemytasksenabled ? 
+						Calendar.Todo.isParent(item) ? 
+						`<div class="width-fit align-self-center bordertertiary hover:background-tint-1 backdrop-blur transition-duration-100 pointer text-primary pointer-auto nowrap border-8px padding-8px-12px text-14px" id="plantasksselectall" onclick="toggleschedulesubtasks(event, '${item.id}')">${Calendar.Todo.getChildren(item).filter(g => Calendar.Todo.isTodo(g) && Calendar.Todo.isSchedulable(g)).every(g => schedulemytaskslist.find(h => h == g.id)) ? `Deselect` : `Select`} subtasks</div>`
+						: 
+						Calendar.Todo.isSchedulable(item) && Calendar.Todo.isTodo(item) ? 
 						`<div class="absolute box-shadow display-flex todoitemselectcheck background-secondary border-8px box-shadow pointer pointer-auto" onclick="toggleschedulemytask(event, '${item.id}')">
 							${getbigcheckbox(schedulemytaskslist.find(g => g == item.id))}
 						</div>`
-					: ''}
+						:
+						''
+					:
+					''}
 
 				</div>
 
 
-				${!schedulemytasksenabled && Calendar.Todo.isTodo(item) ? 
+				${!schedulemytasksenabled && !Calendar.Todo.isChild(item) ? 
 					`<div class="scalebutton absolute bottom-0 left-0 margin-12px todoitemcheckbox visibility-hidden addsubtask tooltip display-flex" onclick="addsubtask(event, '${item.id}')">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsecondary">
 						<g>
