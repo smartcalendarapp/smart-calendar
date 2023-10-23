@@ -1822,20 +1822,20 @@
 
 								<div class="horizontalbar"></div>
 
-								<div class="display-none" id="todoinputprojectwrap">
-									<div class="padding-12px display-flex gap-12px flex-column">
-										<div class="text-14px text-blue text-center text-bold">Split up long task?</div>
-									
-										<div class="flex-1 display-flex flex-row background-tint-1 border-8px overflow-x-auto" id="todoinputprojectwrapoptions">
-											<div class="inputeventtypechild" onclick="clickcreatetodosplitduration(null)">Don't split</div>
-											<div class="inputeventtypechild" onclick="clickcreatetodosplitduration(15)">15m sessions</div>
-											<div class="inputeventtypechild" onclick="clickcreatetodosplitduration(30)">30m sessions</div>
-											<div class="inputeventtypechild" onclick="clickcreatetodosplitduration(60)">1h sessions</div>
-										</div>
-									</div>
+								<div class="padding-8px-12px margin-12px display-flex text-white text-16px z-index-100 pointer popupbutton transition-duration-100 width-fit box-shadow smartbuttonbackground gap-6px flex-row align-center border-8px" onclick="clickplanproject()">
+									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonwhitefill">
+										<g>
+											<path d="M95.2134 47.3887L223.091 47.3887C230.512 47.3887 236.527 53.404 236.527 60.8241L236.527 60.8241C236.527 68.2443 230.512 74.2595 223.091 74.2595L95.2134 74.2595C87.7932 74.2595 81.778 68.2443 81.778 60.8241L81.778 60.8241C81.778 53.404 87.7932 47.3887 95.2134 47.3887Z" fill-rule="nonzero" opacity="1" ></path>
+											<path d="M36.2675 45.1484C27.6106 45.1484 20.5929 52.1662 20.5929 60.823C20.5929 69.4799 27.6106 76.4977 36.2675 76.4976C44.9244 76.4976 51.9421 69.4799 51.9421 60.823C51.9421 52.1662 44.9244 45.1484 36.2675 45.1484Z" fill-rule="nonzero" opacity="1" ></path>
+											<path d="M94.0938 114.563L221.972 114.563C229.392 114.563 235.407 120.579 235.407 127.999L235.407 127.999C235.407 135.419 229.392 141.434 221.972 141.434L94.0938 141.434C86.6736 141.434 80.6584 135.419 80.6584 127.999L80.6584 127.999C80.6584 120.579 86.6736 114.563 94.0938 114.563Z" fill-rule="nonzero" opacity="1" ></path>
+											<path d="M35.1479 112.325C26.491 112.325 19.4733 119.343 19.4733 128C19.4733 136.657 26.491 143.675 35.1479 143.675C43.8047 143.675 50.8225 136.657 50.8225 128C50.8225 119.343 43.8047 112.325 35.1479 112.325Z" fill-rule="nonzero" opacity="1" ></path>
+											<path d="M94.0938 181.74L221.972 181.74C229.392 181.74 235.407 187.756 235.407 195.176L235.407 195.176C235.407 202.596 229.392 208.611 221.972 208.611L94.0938 208.611C86.6736 208.611 80.6584 202.596 80.6584 195.176L80.6584 195.176C80.6584 187.756 86.6736 181.74 94.0938 181.74Z" fill-rule="nonzero" opacity="1" ></path>
+											<path d="M35.1479 179.502C26.491 179.502 19.4733 186.52 19.4733 195.177C19.4733 203.834 26.491 210.852 35.1479 210.852C43.8047 210.852 50.8225 203.834 50.8225 195.177C50.8225 186.52 43.8047 179.502 35.1479 179.502Z" fill-rule="nonzero" opacity="1" ></path>
+											</g>
+									</svg>
+									Plan a Project</div>
 
-									<div class="horizontalbar"></div>
-								</div>
+								<div class="horizontalbar"></div>
 
 								<div class="inputgroup border-8px">
 									<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotes" maxlength="2000"></textarea>

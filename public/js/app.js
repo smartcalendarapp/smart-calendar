@@ -3551,6 +3551,20 @@ function changedevicescreen(event){
 	calendar.updateTabs()
 }
 
+//remove hover for mobile
+if (mobilescreen) {
+	Array.from(document.styleSheets).forEach(sheet => {
+	  Array.from(sheet.cssRules || []).forEach(rule => {
+		if (rule.selectorText && rule.selectorText.includes(':hover')) {
+		  const newSelector = rule.selectorText.replace(/:hover/g, ':active');
+		  const newRule = `${newSelector} { ${rule.style.cssText} }`;
+		  sheet.insertRule(newRule, sheet.cssRules.length);
+		  sheet.deleteRule(Array.from(sheet.cssRules).indexOf(rule));
+		}
+	  })
+	})
+  }
+  
 
 //initialize
 let historydata = []
@@ -7987,7 +8001,6 @@ function resetcreatetodo() {
 		minute: nextdate.getHours() * 60 + nextdate.getMinutes()
 	}
 	createtodopriorityvalue = 0
-	createtodosplitduration = null
 	
 	typeaddtask()
 }
@@ -8001,7 +8014,6 @@ let createtododuedatevalue = {
 	minute: null
 }
 let createtodopriorityvalue;
-let createtodosplitduration;
 function updatecreatetodo() {
 
 	let createtododuration = getElement('createtododuration')
@@ -8068,31 +8080,10 @@ function updatecreatetodo() {
 
 	let submitcreatetodoaddnumberprompttodotoday = getElement('submitcreatetodoaddnumberprompttodotoday')
 	submitcreatetodoaddnumberprompttodotoday.innerHTML = string
-
-
-	//plan project
-	let todoinputprojectwrap = getElement('todoinputprojectwrap')
-	let todoinputprojectwrapoptions = getElement('todoinputprojectwrapoptions')
-	if(createtododurationvalue >= 90){
-		todoinputprojectwrap.classList.remove('display-none')
-
-		let splitoptions = [null, 15, 30, 60]
-		for(let [index, div] of Object.entries(todoinputprojectwrapoptions.children)){
-			if(splitoptions[+index] == createtodosplitduration){
-				div.classList.add('selectedbutton')
-			}else{
-				div.classList.remove('selectedbutton')
-			}
-		}
-	}else{
-		todoinputprojectwrap.classList.add('display-none')
-	}
-
 }
 
-function clickcreatetodosplitduration(value){
-	createtodosplitduration = value
-	updatecreatetodo()
+function clickplanproject(){
+	//here4
 }
 
 function closetodoitemduration() {
@@ -8833,19 +8824,6 @@ function submitcreatetodo(event) {
 		calendar.todos.push(item)
 
 
-		//create sub tasks
-		if(createtodosplitduration != null){
-			let timeleft = myduration
-			while(timeleft > 0){
-				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), Math.min(createtodosplitduration, timeleft), `${title || 'New Task'} (part ${Calendar.Todo.getChildren(item).length + 1})`)
-				childitem.parentid = item.id
-
-				calendar.todos.push(childitem)
-
-				timeleft -= createtodosplitduration
-			}
-		}
-
 
 		if(isprompttodotoday){
 			prompttodotodayadded.push(item.id)
@@ -9050,7 +9028,7 @@ function gettododata(item) {
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 				
 									${!Calendar.Todo.isChild(item) ? 
-										`<div class="gap-6px pointer-auto pointer display-flex transition-duration-100 flex-row text-12px align-center width-fit todoitemtext badgepadding ${!endbeforedate ? ` background-tint-1 text-primary hover:background-tint-2` : (isoverdue ? ` background-red text-white hover:background-red-hover` : ` background-blue text-white hover:background-blue-hover`)} border-round nowrap popupbutton ${itemclasses.join(' ')}" ontouchstart="clicktodoitemduedate(event, '${item.id}')" onclick="clicktodoitemduedate(event, '${item.id}')">
+										`<div class="gap-6px pointer-auto pointer display-flex transition-duration-100 flex-row text-14px align-center width-fit todoitemtext badgepadding ${!endbeforedate ? ` background-tint-1 text-primary hover:background-tint-2` : (isoverdue ? ` background-red text-white hover:background-red-hover` : ` background-blue text-white hover:background-blue-hover`)} border-round nowrap popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduedate(event, '${item.id}')">
 											${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}
 										</div>`
 										:
@@ -9059,13 +9037,13 @@ function gettododata(item) {
 									
 		
 									${Calendar.Event.isEvent(item) ? `` : 
-										`<div class="width-fit background-green transition-duration-100 hover:background-green-hover badgepadding border-round todoitemtext nowrap text-12px pointer-auto pointer transition-duration-100 text-white transition-duration-100 popupbutton ${itemclasses.join(' ')}" ontouchstart="clicktodoitemduration(event, '${item.id}')" onclick="clicktodoitemduration(event, '${item.id}')">
+										`<div class="width-fit background-green transition-duration-100 hover:background-green-hover badgepadding border-round todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-white transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
 											Takes ${getDHMText(myduration)}
 										</div>`
 									}
 	
 									${!Calendar.Todo.isChild(item) ? `
-										<div class="text-12px badgepadding border-round nowrap pointer-auto transition-duration-100 pointer popupbutton transition-duration-100 ${['background-tint-1 text-primary hover:background-tint-2 visibility-hidden hoverpriority small:visibility-visible', 'background-orange hover:background-orange-hover text-white', 'background-red hover:background-red-hover text-white'][item.priority]} ${itemclasses.join(' ')}" ontouchstart="clicktodoitempriority(event, '${item.id}')" onclick="clicktodoitempriority(event, '${item.id}')">
+										<div class="text-14px badgepadding border-round nowrap pointer-auto transition-duration-100 pointer popupbutton transition-duration-100 ${['background-tint-1 text-primary hover:background-tint-2 visibility-hidden hoverpriority small:visibility-visible', 'background-orange hover:background-orange-hover text-white', 'background-red hover:background-red-hover text-white'][item.priority]} ${itemclasses.join(' ')}" onclick="clicktodoitempriority(event, '${item.id}')">
 											${['Low', 'Medium', 'High'][item.priority]} priority
 										</div>` : ''}
 	
@@ -9134,7 +9112,7 @@ function gettododata(item) {
 
 
 				${!schedulemytasksenabled && !Calendar.Todo.isChild(item) ? 
-					`<div class="scalebutton absolute bottom-0 left-0 margin-12px todoitemcheckbox visibility-hidden addsubtask tooltip display-flex" onclick="addsubtask(event, '${item.id}')">
+					`<div class="small:visibility-visible scalebutton absolute bottom-0 left-0 margin-12px todoitemcheckbox visibility-hidden addsubtask tooltip display-flex" onclick="addsubtask(event, '${item.id}')">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsecondary">
 						<g>
 						<path d="M128 6.1875C121.925 6.1875 117 11.1124 117 17.1875L117 117L17.1875 117C11.1124 117 6.1875 121.925 6.1875 128C6.1875 134.075 11.1124 139 17.1875 139L117 139L117 238.812C117 244.888 121.925 249.813 128 249.812C134.075 249.812 139 244.888 139 238.812L139 139L238.812 139C244.888 139 249.813 134.075 249.812 128C249.812 121.925 244.888 117 238.812 117L139 117L139 17.1875C139 11.1124 134.075 6.1875 128 6.1875Z" fill-rule="nonzero" opacity="1" ></path>
@@ -9780,12 +9758,11 @@ function gototaskincalendar(id){
 	calendarmonth = item.start.month
 	calendarday = item.start.day
 
-	selectedeventid = item.id
-
 	if(mobilescreen){
 		calendartabs = [0]
 		calendar.updateTabs()
 	}else{
+		selectedeventid = item.id
 		calendar.updateCalendar()
 	}
 
@@ -13180,7 +13157,9 @@ function clickevent(event, timestamp) {
 			if (newstartdate.getTime() != selectedeventdatetime.getTime() && selectedeventdatetime.getTime() >= currentdatemodified) {
 				item.type = 0
 				calendar.updateInfo(true)
+				calendar.updateTodo()
 			}
+			
 		}
 
 		movingevent = false
@@ -13188,9 +13167,6 @@ function clickevent(event, timestamp) {
 
 		editeventid = null
 		calendar.updateEvents()
-		if(item.type == 1){
-			calendar.updateTodo()
-		}
 	}
 }
 
@@ -13393,9 +13369,6 @@ function clickeventbottom(event, timestamp) {
 
 		editeventid = null
 		calendar.updateEvents()
-		if(item.type == 1){
-			calendar.updateTodo()
-		}
 	}
 }
 
@@ -13431,9 +13404,6 @@ function clickeventtop(event, timestamp) {
 
 		editeventid = null
 		calendar.updateEvents()
-		if(item.type == 1){
-			calendar.updateTodo()
-		}
 	}
 }
 
