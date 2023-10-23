@@ -8100,8 +8100,8 @@ function updatecreatetodo() {
 
 
 	//create todo tab
-	let clickcreatetodotabtask = getElement('clickcreatetodotabtask')
-	let clickcreatetodotabproject = getElement('clickcreatetodotabproject')
+	let clickcreatetodotabtask = getElement('createtodotabtask')
+	let clickcreatetodotabproject = getElement('createtodotabproject')
 	let createtodoprojectwrap = getElement('createtodoprojectwrap')
 	clickcreatetodotabtask.classList.remove('selectedbuttonunderline')
 	clickcreatetodotabproject.classList.remove('selectedbuttonunderline')
