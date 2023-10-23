@@ -34,13 +34,6 @@ body {
 
 
 
-div:active, 
-div:focus {
-    outline: none;
-    -webkit-tap-highlight-color: transparent;
-}
-
-
 
 .todowidth {
 	width: 100%;

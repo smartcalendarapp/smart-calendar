@@ -3715,7 +3715,7 @@ function scrolltodoY(targetminute) {
 		todocontainer = getElement('todocontainer')
 	}
 
-	let target = targetminute - todocontainer.offsetHeight / 2
+	let target = targetminute - 60*2
 
 	let duration = 500
 	let start = todocontainer.scrollTop
@@ -8007,12 +8007,16 @@ function resetcreatetodo() {
 		minute: nextdate.getHours() * 60 + nextdate.getMinutes()
 	}
 	createtodopriorityvalue = 0
+	createtodotimepersessionvalue = 60
+
+	createtodotab = 0
 	
 	typeaddtask()
 }
 
 
 let createtododurationvalue;
+let createtodotimepersessionvalue;
 let createtododuedatevalue = {
 	year: null,
 	month: null,
@@ -8025,6 +8029,7 @@ function updatecreatetodo() {
 	let createtododuration = getElement('createtododuration')
 	let createtododuedate = getElement('createtododuedate')
 	let createtodopriority = getElement('createtodopriority')
+	let createtodotimepersession = getElement('createtodotimepersession')
 
 	let createtododurationonboarding = getElement('createtododurationonboarding')
 	let createtododuedateonboarding = getElement('createtododuedateonboarding')
@@ -8041,11 +8046,16 @@ function updatecreatetodo() {
 		duedate = new Date(createtododuedatevalue.year, createtododuedatevalue.month, createtododuedatevalue.day, 0, createtododuedatevalue.minute)
 	}
 
+	//duration
 	let tempdurationvalue = `Takes ${getDHMText(createtododurationvalue)}`
 	createtododuration.innerHTML = tempdurationvalue
 	createtododurationonboarding.innerHTML = tempdurationvalue
 	createtododurationprompttodotoday.innerHTML = tempdurationvalue
 
+	//time per session
+	createtodotimepersession.innerHTML = `Time per session: ${getDHMText(createtododurationvalue)}`
+
+	//due date
 	let tempduedatevalue = duedate ? `
 	<div class="display-flex pointer-none flex-row align-center gap-6px">
 		<div class="${duedate.getTime() < currentdate.getTime() ? 'text-red ' : 'text-blue'} text-14px padding-top-6px padding-bottom-6px">Due ${getDMDYText(duedate)} ${getHMText(duedate.getHours() * 60 + duedate.getMinutes())}</div>
@@ -8066,6 +8076,7 @@ function updatecreatetodo() {
 	createtododuedateonboarding.innerHTML = tempduedatevalue
 	createtododuedateprompttodotoday.innerHTML = tempduedatevalue
 
+	//priority
 	let temppriorityvalue = `<span class="pointer-none ${['text-quaternary', 'text-orange', 'text-red'][createtodopriorityvalue]}">${['Low', 'Medium', ' High'][createtodopriorityvalue]} priority</span>`
 	createtodopriority.innerHTML = temppriorityvalue
 	createtodopriorityonboarding.innerHTML = temppriorityvalue
@@ -8086,10 +8097,28 @@ function updatecreatetodo() {
 
 	let submitcreatetodoaddnumberprompttodotoday = getElement('submitcreatetodoaddnumberprompttodotoday')
 	submitcreatetodoaddnumberprompttodotoday.innerHTML = string
+
+
+	//create todo tab
+	let clickcreatetodotabtask = getElement('clickcreatetodotabtask')
+	let clickcreatetodotabproject = getElement('clickcreatetodotabproject')
+	let createtodoprojectwrap = getElement('createtodoprojectwrap')
+	clickcreatetodotabtask.classList.remove('selectedbuttonunderline')
+	clickcreatetodotabproject.classList.remove('selectedbuttonunderline')
+	createtodoprojectwrap.classList.add('display-none')
+	if(createtodotab == 0){
+		clickcreatetodotabtask.classList.add('selectedbuttonunderline')
+	}else if(createtodotab == 1){
+		clickcreatetodotabproject.classList.add('selectedbuttonunderline')
+		createtodoprojectwrap.classList.remove('display-none')
+	}
 }
 
-function clickplanproject(){
-	//here4
+
+//create todo tab
+let createtodotab = 0;
+function clickcreatetodotab(index){
+	createtodotab = index
 }
 
 function closetodoitemduration() {
@@ -8124,6 +8153,74 @@ function closetodoitemduedate() {
 
 
 
+//click on time per session
+function clickcreatetodotimepersession(event, id) {
+	//ui
+	let button = event.target
+	let todoitemtimepersession = getElement('todoitemtimepersession')
+	todoitemtimepersession.classList.toggle('hiddenpopup')
+
+	todoitemtimepersession.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, todoitemtimepersession) + 'px'
+	todoitemtimepersession.style.left = fixleft(button.getBoundingClientRect().left - todoitemtimepersession.offsetWidth * 0.5 + button.offsetWidth * 0.5, todoitemtimepersession) + 'px'
+
+	//input	
+	let todoitemtimepersessioninput = getElement('todoitemtimepersessioninput')
+	todoitemtimepersessioninput.value = getDHMText(createtodotimepersessionvalue)
+
+	closecreatetodoitemduedate()
+	closecreatetodoitempriority()
+	closecreatetodoitemduration()
+}
+
+
+function updatecreatetodoitemtimepersessionlist() {
+	let todoitemtimepersessionlist = getElement('todoitemtimepersessionlist')
+
+	let durations = [5, 10, 15, 30, 60, 120]
+	let output = []
+	for (let item of durations) {
+		output.push(`<div class="helpitem" onclick="inputcreatetodoitemtimepersession(event, ${item})">${getDHMText(item)}</div>`)
+	}
+
+	todoitemtimepersessionlist.innerHTML = output.join('')
+}
+updatecreatetodoitemtimepersessionlist()
+//here4
+
+
+//input time per session
+function inputcreatetodoitemtimepersession(event, duration) {
+
+	let myduration;
+	if (duration != null) {
+		myduration = duration
+	} else {
+		let todoitemtimepersessioninput = getElement('todoitemtimepersessioninput')
+		let string = todoitemtimepersessioninput.value
+		myduration = getDuration(string).value
+	}
+
+	if (myduration == null) {
+		myduration = createtodotimepersessionvalue
+	}
+
+	if(myduration > MAX_TODO_DURATION){
+		myduration = MAX_TODO_DURATION
+	}
+
+	if (myduration != null) {
+		createtodotimepersessionvalue = myduration
+
+		//close
+		let todoitemtimepersession = getElement('todoitemtimepersession')
+		todoitemtimepersession.classList.add('hiddenpopup')
+	}
+
+	updatecreatetodo()
+}
+
+
+
 //click on duration
 function clickcreatetododuration(event, id) {
 	//ui
@@ -8140,6 +8237,7 @@ function clickcreatetododuration(event, id) {
 
 	closecreatetodoitemduedate()
 	closecreatetodoitempriority()
+	updatecreatetodoitemdurationlist()
 }
 
 
@@ -8151,6 +8249,9 @@ function updatecreatetodoitemdurationlist() {
 	let createtodoitemdurationlist = getElement('createtodoitemdurationlist')
 
 	let durations = [5, 10, 15, 30, 60, 120, 240]
+	if(createtodotab == 1){
+		durations = [60, 120, 240, 600, 1200]
+	}
 	let output = []
 	for (let item of durations) {
 		output.push(`<div class="helpitem" onclick="inputcreatetodoitemduration(event, ${item})">${getDHMText(item)}</div>`)
@@ -8253,8 +8354,13 @@ function closecreatetodoitemduedate() {
 //create input ui
 function updatecreatetodotimepickeronce() {
 	let output = []
-	for (let min = 0; min < 1440; min += 15) {
-		output.push(`<div class="helpitem" onclick="inputcreatetodoitemduetime(event, ${min})">${getHMText(min)}</div>`)
+	let times = []
+	for (let min = 0; min < 1440; min += 60) {
+		times.push(min)
+	}
+	times.push(1440-1)
+	for(let min of times){
+		output.push(`<div class="helpitem" onclick="inputtodoitemduetime(event, ${min})">${getHMText(min)}</div>`)
 	}
 	let createtodoitemduetimelist = getElement('createtodoitemduetimelist')
 	createtodoitemduetimelist.innerHTML = output.join('')
@@ -9230,7 +9336,12 @@ function updatetodotimeinput(id) {
 //create input ui
 function updatetodotimepickeronce() {
 	let output = []
-	for (let min = 0; min < 1440; min += 15) {
+	let times = []
+	for (let min = 0; min < 1440; min += 60) {
+		times.push(min)
+	}
+	times.push(1440-1)
+	for(let min of times){
 		output.push(`<div class="helpitem" onclick="inputtodoitemduetime(event, ${min})">${getHMText(min)}</div>`)
 	}
 	let todoitemduetimelist = getElement('todoitemduetimelist')
