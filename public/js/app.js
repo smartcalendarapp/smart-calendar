@@ -3554,22 +3554,21 @@ function changedevicescreen(event){
 //remove hover for mobile
 if (mobilescreen) {
 	try{
-	Array.from(document.styleSheets).forEach(sheet => {
-		if (sheet.href && new URL(sheet.href).origin !== window.location.origin) {
-			return
-		  }
-	  Array.from(sheet.cssRules || []).forEach(rule => {
-			if (rule.selectorText && rule.selectorText.includes(':hover')) {
-				const newSelector = rule.selectorText.replace(/:hover/g, ':active');
-				const newRule = `${newSelector} { ${rule.style.cssText} }`;
-				sheet.insertRule(newRule, sheet.cssRules.length);
-				sheet.deleteRule(Array.from(sheet.cssRules).indexOf(rule));
+		Array.from(document.styleSheets).forEach(sheet => {
+			if (sheet.href && new URL(sheet.href).origin !== window.location.origin) {
+				return
 			}
+		Array.from(sheet.cssRules || []).forEach(rule => {
+				if (rule.selectorText && rule.selectorText.includes(':hover')) {
+					const newSelector = rule.selectorText.replace(/:hover/g, ':active');
+					const newRule = `${newSelector} { ${rule.style.cssText} }`;
+					sheet.insertRule(newRule, sheet.cssRules.length);
+					sheet.deleteRule(Array.from(sheet.cssRules).indexOf(rule));
+				}
+			})
 		})
-	})
-}catch(e){
-	alert(e)
-}
+	}catch(err){
+	}
 }
   
 
