@@ -2525,7 +2525,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = calendar.todos.filter(d => !d.completed && !d.parentid)
+			let mytodos = calendar.todos.filter(d => !d.completed && !Calendar.Todo.isChild(d))
 
 			let duetodos = sortduedate(mytodos.filter(d => d.endbefore.year != null && d.endbefore.month != null && d.endbefore.day != null && d.endbefore.minute != null))
 			let notduetodos = mytodos.filter(d => d.endbefore.year == null || d.endbefore.month == null || d.endbefore.day == null || d.endbefore.minute == null)
@@ -2610,7 +2610,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = [...calendar.todos.filter(d => d.completed && !d.parentid), ...calendar.events.filter(d => d.type == 1 && d.completed)]
+			let mytodos = [...calendar.todos.filter(d => d.completed && !Calendar.Todo.isChild(d)), ...calendar.events.filter(d => d.type == 1 && d.completed)]
 
 
 			let tempoutput = []
@@ -2664,7 +2664,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = [...calendar.todos.filter(d => !d.completed && !d.parentid), ...calendar.events.filter(d => d.type == 1 && !d.completed && !d.parentid)]
+			let mytodos = [...calendar.todos.filter(d => !d.completed && !Calendar.Todo.isChild(d)), ...calendar.events.filter(d => d.type == 1 && !d.completed && !Calendar.Todo.isChild(d))]
 
 			let duetodos = sortduedate(mytodos.filter(d => d.endbefore.year != null && d.endbefore.month != null && d.endbefore.day != null && d.endbefore.minute != null))
 			let notduetodos = mytodos.filter(d => d.endbefore.year == null || d.endbefore.month == null || d.endbefore.day == null || d.endbefore.minute == null)
@@ -2733,7 +2733,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = [ ...calendar.events.filter(d => d.type == 1 && d.completed && !d.parentid), ...calendar.todos.filter(d => d.completed && !d.parentid)]
+			let mytodos = [ ...calendar.events.filter(d => d.type == 1 && d.completed && !Calendar.Todo.isChild(d)), ...calendar.todos.filter(d => d.completed && !Calendar.Todo.isChild(d))]
 
 
 			let tempoutput = []
@@ -4405,7 +4405,7 @@ function updateprompttodotoday(){
 	}
 	
 	let output = []
-	let tempdata = [...sortstartdate(calendar.events.filter(d => prompttodotodayadded.find(g => g == d.id))), ...sortduedate(calendar.todos.filter(d => prompttodotodayadded.find(g => g == d.id)))]
+	let tempdata = [...sortstartdate(calendar.events.filter(d => prompttodotodayadded.find(g => g == d.id))), ...sortduedate(calendar.todos.filter(d => prompttodotodayadded.find(g => g == d.id)))].filter(d => !Calendar.Todo.isChild(d))
 	for(let item of tempdata){
 		output.push(gettododata(item))
 	}
@@ -4561,7 +4561,7 @@ function updateonboardingscreen(){
 		calendar.updateSettings()
 	}else if(currentonboarding == 'addtask'){
 		let output = []
-		let tempdata = sortduedate(calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id)))
+		let tempdata = sortduedate(calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id) && !Calendar.Todo.isChild(d)))
 		for(let item of tempdata){
 			output.push(gettododata(item))
 		}
@@ -4584,10 +4584,6 @@ function updateonboardingscreen(){
 		calendar.updateSettings()
 	}
 
-	if(currentonboarding != 'addtask'){
-		let onboardingaddtasktodolist = getElement('onboardingaddtasktodolist')
-		onboardingaddtasktodolist.innerHTML = ''
-	}
 
 }
 
@@ -8921,14 +8917,14 @@ function gettododata(item) {
 			<div class="display-flex flex-column gap-12px">
 				<div class="inputgroup">
 					<div class="text-14px text-primary width90px">Title</div>
-					<div class="inputgroupitem">
-						<input class="infoinput width-192px" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtodotitle(event)" placeholder="Add title" id="edittodoinputtitle" value="${cleanInput(item.title)}" maxlength="2000"></input>
+					<div class="inputgroupitem flex-1 width-full">
+						<input class="infoinput" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtodotitle(event)" placeholder="Add title" id="edittodoinputtitle" value="${cleanInput(item.title)}" maxlength="2000"></input>
 						<span class="inputline"></span>
 					</div>
 		 		</div>
 		 		<div class="inputgroup">
 		 			<div class="text-14px text-primary width90px">Notes</div>
-					<div class="width-full inputgroupitem">
+					<div class="width-full flex-1 inputgroupitem">
 						<textarea class="infonotes infoinput" placeholder="Add notes" id="edittodoinputnotes" onblur="inputtodonotes(event)" placeholder="Add date"  maxlength="2000">${cleanInput(item.notes)}</textarea>
 						<span class="inputlinewrap">
 							<span class="inputline"></span>
@@ -8970,7 +8966,7 @@ function gettododata(item) {
 				<div class="infogroup">
 					<div class="inputgroup">
 						<div class="text-14px text-primary width90px">Time slot</div>
-						<div class="inputeventtype" id="inputtodotimewindowpresets">
+						<div class="inputeventtype width-fit flex-grow-0 flex-basis-auto" id="inputtodotimewindowpresets">
 							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(0)">Any time</div>
 							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(1)">Work hours</div>
 							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(2)">School hours</div>
@@ -9068,7 +9064,7 @@ function gettododata(item) {
 										</div>`
 									}
 	
-									${!item.parentid ? `
+									${!Calendar.Todo.isChild(item) ? `
 										<div class="text-14px badgepadding border-round nowrap pointer-auto transition-duration-100 pointer popupbutton transition-duration-100 ${['background-tint-1 text-primary hover:background-tint-2 visibility-hidden hoverpriority small:visibility-visible', 'background-orange hover:background-orange-hover text-white', 'background-red hover:background-red-hover text-white'][item.priority]} ${itemclasses.join(' ')}" onclick="clicktodoitempriority(event, '${item.id}')">
 											${['Low', 'Medium', 'High'][item.priority]} priority
 										</div>` : ''}
@@ -11552,7 +11548,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 			let percentrange = 0.4 //default schedule at 40% of range
 			let parent = Calendar.Event.getParent(item)
 			if(parent){
-				let scheduledchildren = Calendar.Event.getChildren(item).filter(d => Calendar.Event.isEvent(item))
+				let scheduledchildren = Calendar.Event.getChildren(parent).filter(d => Calendar.Event.isEvent(item))
 				let childindex = scheduledchildren.findIndex(d => d.id == item.id)
 				if(childindex != -1){
 					percentrange = (1 + childindex)/Calendar.Event.getChildren(Calendar.Event.getParent(item)).length * 0.9 //evenly space out sub tasks, finish by 90% of range

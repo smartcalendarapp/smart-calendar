@@ -305,7 +305,7 @@ class User{
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15 }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, quickguide: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false  }
-const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null } }
+const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptusagetimestamps: [] }
 const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#2693ff', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0 }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#2693ff', isprimary: false, subscriptionurl: null, lastmodified: 0  }
@@ -3009,28 +3009,32 @@ app.post('/logout', async (req, res, next) => {
 
 
 app.post('/dev', async (req, res) => {
-	if(!req.session.user){
-		return res.status(401).json({ error: 'User is not signed in.' })
-	}
-	
-	let userid = req.session.user.userid
-	
-	let user = await getUserById(userid)
-	if (!user) {
-		return res.status(401).json({ error: 'User does not exist.' })
-	}
-	if(user.google_email != 'james.tsaggaris@gmail.com'){
-		return res.status(401).json({ error: 'Unathorized.' })
-	}
-
-	let errordata, output;
 	try{
-		output = await eval(`(async () => {${req.body.input}})()`)
-	}catch(err){
-		errordata = err.stack
-	}
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		let user = await getUserById(userid)
+		if (!user) {
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+		if(user.google_email != 'james.tsaggaris@gmail.com'){
+			return res.status(401).json({ error: 'Unathorized.' })
+		}
 
-	return res.json({ error: errordata, output: output })
+		let errordata, output;
+		try{
+			output = await eval(`(async () => {${req.body.input}})()`)
+		}catch(err){
+			errordata = err.stack
+		}
+
+		return res.json({ error: errordata, output: output })
+	}catch(err){
+		console.error(err)
+	}
 })
 
 
@@ -3061,7 +3065,7 @@ app.post('/subscribecalendar', async (req, res) => {
 })
 
 
-async function getgpttasktips(item) {
+async function getgptresponse(item) {
 	const prompt = `Task: ${item.title}, Duration: ${item.duration}. Provide: Specific strategies, resources with links, productivity tips. 1 list.`
 
 	try {
@@ -3075,19 +3079,51 @@ async function getgpttasktips(item) {
 		})
 
 		console.warn(res)
-		console.warn(res.choices[0].message)
+		return res.choices[0].message
 	} catch (error) {
 		console.error(error)
+		return null
 	}
 }
 
+const MAX_GPT_PER_DAY = 6
 app.post('/getgpttasktips', async (req, res) => {
-	//auth user
-	//check ratelimit of user to prevent abooz
-	//get req body
-	//check for tasks that can get tips
-	//getgpttasktips
-	//return
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		let user = await getUserById(userid)
+		if (!user) {
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+
+		let currenttime = Date.now()
+
+		//check ratelimit
+		if(user.accountdata.gptusagetimestamps.filter(d => currenttime - d < 86400000).length >= MAX_GPT_PER_DAY){
+			return res.status(401).json({ error: 'Daily Chat GPT limit reached.' })
+		}
+
+		//set ratelimit
+		user.accountdata.gptusagetimestamps.push(currenttime)
+		await setUser(user)
+		
+		let calendarevent = req.body.calendarevent
+
+		let gptresponse = await getgptresponse(calendarevent)
+		if(!gptresponse){
+			return res.status(401).json({ error: 'Could not get response from Chat GPT.' })
+		}
+
+		return res.json({ data: gptresponse })
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
 })
 
 /*
