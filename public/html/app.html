@@ -154,7 +154,7 @@
 	</div>
 
 
-	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="createtodoitemavailability">
+	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px max-width-300px" id="createtodoitemavailability">
 		<div class="display-flex flex-row gap-12px justify-space-between align-center">
 			<div>
 				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -164,8 +164,6 @@
 			</div>
 			
 			<div class="infotitle">Time slot</div>
-
-			<div class="text-quaternary text-14px">Choose the days and times for the app to schedule your work.</div>
 
 			<div class="infotoprightgroup">
 				<div class="infotopright pointer" onclick="closecreatetodoitemavailability(event)">
@@ -180,6 +178,9 @@
 				</div>
 			</div>
 		</div>
+
+		<div class="text-quaternary text-14px">Choose the days and times for the app to schedule your task.</div>
+
 		<div class="display-flex flex-column overflow-auto border-8px listborder max-height-240px" id="createtodoitemavailabilitylist"></div>
 	</div>
 
@@ -273,8 +274,6 @@
 			
 			<div class="infotitle">Time per session</div>
 
-			<div class="text-quaternary text-14px">Choose how long you'll work on your project each time you sit down to do it.</div>
-
 			<div class="infotoprightgroup">
 				<div class="infotopright pointer" onclick="closecreatetodoitemtimepersession(event)">
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -288,6 +287,8 @@
 				</div>
 			</div>
 		</div>
+
+		<div class="text-quaternary text-14px">Choose how long you'll work on your project each time you sit down to do it.</div>
 		
 		<div class="infogroup">
 			<div class="inputgroup">
@@ -303,7 +304,7 @@
 
 
 
-	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="todoitemduedate">
+	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px max-width-400px" id="todoitemduedate">
 		<div class="display-flex flex-row justify-space-between align-center">
 
 			<div>
@@ -373,7 +374,7 @@
 
 
 
-	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="createtodoitemduedate">
+	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px max-width-400px" id="createtodoitemduedate">
 		<div class="display-flex flex-row justify-space-between align-center">
 
 			<div>
@@ -1892,6 +1893,8 @@
 										<span class="buttonunderline"></span>
 									</div>
 								</div>
+
+								<div class="horizontalbar"></div>
 										
 								<div class="padding-12px border-box flex-1 align-center display-flex flex-row gap-12px padding-12px width-full flex-wrap-wrap">
 									<div class="popupbutton border-8px padding-left-12px padding-right-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap popupbutton text-14px pointer-auto pointer transition-duration-100" onclick="readinteractivetourpopup('clickduedate');clickcreatetododuedate(event)" id="createtododuedate">
@@ -1916,18 +1919,18 @@
 									<div class="horizontalbar"></div>
 
 									<div class="padding-12px display-flex gap-12px flex-column">
-										<div class="text-primary text-16px">Add subtasks <span class="text-14px">(optional)</span></div>
+										<div class="text-primary text-16px">Add subtasks</div>
 										
-										<div class="border-8px bordertertiary display-flex flex-column gap-12px" id="createtodosubtasklist"></div>
+										<div class="overflow-y-auto border-8px overflow-y-auto bordertertiary display-flex flex-column" id="createtodosubtasklist"></div>
 
 										<div class="display-flex flex-row gap-12px">
 											<div class="inputgroupitem flex-1">
-												<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="submitcreatetodosubtask(event)" id="createtodosubtaskinput" class="infoinput inputdatepicker" type="text" placeholder="Brainstorm for project"></input>
+												<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ submitcreatetodosubtask() }" id="createtodosubtaskinput" class="infoinput" type="text" placeholder="Brainstorm for project"></input>
 												<span class="inputline"></span>
 											</div>
 
 											<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodosubtask()">					
-												<div class="text-16px text-white display-flex flex-row gap-6px pointer-none nowrap transition-none">Add</div>
+												<div class="text-14px text-white display-flex flex-row gap-6px pointer-none nowrap transition-none">Add</div>
 											</div>
 				
 										</div>

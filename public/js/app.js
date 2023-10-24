@@ -41,7 +41,7 @@ const timetimewindowoptiondata = [
 ]
 
 const timewindowpresets = [
-	{ day: { byday: [] }, time: { startminute: null, endminute: null }, text: 'None' },
+	{ day: { byday: [] }, time: { startminute: null, endminute: null }, text: 'Any time' },
 	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 9*60, endminute: 17*60 }, text: 'Work hours', fulltext: 'Work hours (M-F 9am-5pm)' },
 	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 8*60, endminute: 15*60 }, text: 'School hours', fulltext: 'School hours (M-F 8am-3pm)' },
 	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 15*60, endminute: 22*60 }, text: 'After school', fulltext: 'After school (M-F 3pm-10pm)' },
@@ -8055,7 +8055,7 @@ function updatecreatetodo() {
 	}
 
 	//duration
-	let tempdurationvalue = `Time to complete: ${getDHMText(createtododurationvalue)}`
+	let tempdurationvalue = `Takes ${getDHMText(createtododurationvalue)}`
 	createtododuration.innerHTML = tempdurationvalue
 	createtododurationonboarding.innerHTML = tempdurationvalue
 	createtododurationprompttodotoday.innerHTML = tempdurationvalue
@@ -8066,7 +8066,7 @@ function updatecreatetodo() {
 	//here4
 
 	//time slot
-	createtodoavailability.innerHTML = `Time slot: ${timewindowpresets[createtodoavailabilityvalue].fulltext || timewindowpresets[createtodoavailabilityvalue].text}`
+	createtodoavailability.innerHTML = `Time slot: ${timewindowpresets[createtodoavailabilityvalue].text}`
 
 	//due date
 	let tempduedatevalue = duedate ? `
@@ -8134,19 +8134,52 @@ function updatecreatetodo() {
 	for(let item of createtodosubtasks){
 		output.push(`
 		<div class="todoitemwrap">
-			<div class="todoitemcontainer">
-				<div class="display-flex flex-row gap-12px">
-					<div class="scalebutton todoitemcheckbox tooltip display-flex">
-						${getcheckcircle(false)}
+			<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px">
+				<div class="display-flex flex-row align-center justify-space-between">
+					<div class="display-flex flex-row gap-12px">
+						<div class="scalebutton todoitemcheckbox tooltip display-flex">
+							${getcheckcircle(false)}
+						</div>
+
+						<div class="text-16px text-primary">${item.title ? cleanInput(item.title) : 'New Task'}</div>
+					</div>
+					
+					<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="deletecreatetodosubtask('${item.id}')">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+						<g>
+						<path d="M207.414 223.445L207.414 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M71.3433 246L184.657 246" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M207.414 223.445C207.414 235.902 197.226 246 184.657 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M238 57.6433L18 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M48.5864 223.445L48.5864 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M48.5864 223.445C48.5864 235.902 58.775 246 71.3433 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M96.1228 10L159.881 10" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M173.737 23.7283C173.737 16.1464 167.534 10 159.881 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M82.2668 23.7283C82.2668 16.1464 88.4703 10 96.1228 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M82.2668 23.7283L82.2668 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M173.737 23.7283L173.737 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M165.379 101.49L165.379 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+						<path d="M90.6212 101.49L90.6212 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+						<path d="M128 101.49L128 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+						</g>
+						</svg>
+
+						<span class="tooltiptextcenter">Delete</span>
 					</div>
 
-					<div class="text-16px text-primary">${item.title}</div>
 				</div>
 			</div>
 		</div>
 		`)
 	}
+	
 	createtodosubtasklist.innerHTML = output.join('')
+
+	if(output.length == 0){
+		createtodosubtasklist.classList.add('display-none')
+	}else{
+		createtodosubtasklist.classList.remove('display-none')
+	}
 }
 
 //here4
@@ -8155,12 +8188,18 @@ function submitcreatetodosubtask(event){
 	let createtodosubtaskinput = getElement('createtodosubtaskinput')
 	let string = createtodosubtaskinput.value
 
-	createtodosubtasks.push({ title: string })
+	createtodosubtasks.push({ title: string, id: generateID() })
 
 	updatecreatetodo()
 
 	createtodosubtaskinput.value = ''
 }
+function deletecreatetodosubtask(id){
+	createtodosubtasks = createtodosubtasks.filter(d => !d.id == id)
+
+	updatecreatetodo()
+}
+
 
 //create todo tab
 let createtodotab = 0;
@@ -8670,7 +8709,7 @@ function updatecreatetodoitemavailabilitylist() {
 	let createtodoitemavailabilitylist = getElement('createtodoitemavailabilitylist')
 
 	let output = []
-	let list = timewindowpresets.map(d => d.text)
+	let list = timewindowpresets.map(d => d.fulltext || d.text)
 	for (let i = 0; i < list.length; i++) {
 		output.push(`<div class="helpitem" onclick="inputcreatetodoitemavailability(event, ${i})">${list[i]}</div>`)
 	}

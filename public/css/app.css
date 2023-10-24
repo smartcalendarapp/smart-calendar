@@ -437,6 +437,10 @@ body {
 	z-index:9999;
 }
 
+#createtodosubtasklist{
+	max-height:300px;
+}
+
 
 .slidetransform{
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.5s, visibility 0.5s, left 0s 0.2s, top 0s 0.2s, transform 0.5s cubic-bezier(.7,0,.46,.98) !important;
@@ -3183,6 +3187,9 @@ body {
 
 .max-width-400px {
 	max-width: 400px
+}
+.max-width-300px{
+	max-width:300px;
 }
 
 .borderbottom {
