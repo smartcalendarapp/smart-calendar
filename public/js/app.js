@@ -8232,6 +8232,8 @@ function autocreatesubtask(eachduration){
 		createtodosubtasks.push({ title: string ? `${string} (part ${createtodosubtasks.length + 1})` : null, duration: Math.min(eachduration, timeleft), id: generateID() })
 		timeleft -= eachduration
 	}
+
+	updatecreatetodo()
 }
 function closeautofillsubtasks(){
 	let createtodosubtasksuggestions = getElement('createtodosubtasksuggestions')
