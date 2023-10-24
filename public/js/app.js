@@ -8144,7 +8144,7 @@ function updatecreatetodo() {
 						<div class="text-16px text-primary">${item.title ? cleanInput(item.title) : 'New Task'}</div>
 					</div>
 					
-					<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="deletecreatetodosubtask('${item.id}')">
+					<div class="todoitembuttongroup small:visibility-visible popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="deletecreatetodosubtask('${item.id}')">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 						<g>
 						<path d="M207.414 223.445L207.414 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -8164,7 +8164,7 @@ function updatecreatetodo() {
 						</g>
 						</svg>
 
-						<span class="tooltiptextcenter">Delete</span>
+						<span class="tooltiptextcenter z-index-1">Delete</span>
 					</div>
 
 				</div>
@@ -8195,7 +8195,7 @@ function submitcreatetodosubtask(event){
 	createtodosubtaskinput.value = ''
 }
 function deletecreatetodosubtask(id){
-	createtodosubtasks = createtodosubtasks.filter(d => !d.id == id)
+	createtodosubtasks = createtodosubtasks.filter(d => d.id != id)
 
 	updatecreatetodo()
 }
@@ -9104,6 +9104,16 @@ function submitcreatetodo(event) {
 				calendar.todos.push(childitem)
 
 				timeleft -= createtodotimepersessionvalue
+			}
+		}
+		
+		//add sub tasks
+		if(createtodosubtasks.length > 0){
+			for(let subtaskitem of createtodosubtasks){
+				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), Math.min(createtodotimepersessionvalue, timeleft), `${subtaskitem.title || 'New Task'} (part ${Calendar.Todo.getChildren(item).length + 1})`)
+				childitem.parentid = item.id
+
+				calendar.todos.push(childitem)
 			}
 		}
 
