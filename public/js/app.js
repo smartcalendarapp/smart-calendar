@@ -8214,6 +8214,9 @@ function togglecreatetodosubtaskpopup(){
 	createtodosubtasksuggestions.classList.toggle('hiddenpopup')
 }
 function autocreatesubtask(){
+	let createtodosubtasksuggestions = getElement('createtodosubtasksuggestions')
+	createtodosubtasksuggestions.classList.add('hiddenpopup')
+
 	let createtodosubtaskduration = getElement('createtodosubtaskduration')
 	let string2 = createtodosubtaskduration.value
 	
@@ -8234,6 +8237,7 @@ function autocreatesubtask(){
 		createtodosubtasks.push({ title: string, duration: Math.min(myduration, timeleft), id: generateID() })
 	}
 }
+
 
 //custom subtask
 function submitcreatetodosubtask(event){
