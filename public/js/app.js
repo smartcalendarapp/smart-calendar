@@ -7532,7 +7532,7 @@ function selectallschedulemytasks(){
 	if(schedulemytaskslist.length > 0){
 		schedulemytaskslist = []
 	}else{
-		schedulemytaskslist = [...calendar.todos.filter(item => Calendar.Todo.isSchedulable(item) && (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null)).map(d => d.id)]
+		schedulemytaskslist = [...calendar.todos.filter(item => Calendar.Todo.isSchedulable(item) && (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null && !Calendar.Todo.isParent(item))).map(d => d.id)]
 	}
 	calendar.updateTodo()
 }
@@ -7544,7 +7544,7 @@ function toggleschedulesubtasks(event, id){
 	if (!item) return
 
 	let children = Calendar.Todo.getChildren(item)
-	if(children.every(d => schedulemytaskslist.find(g => g == d.id))){
+	if(children.filter(d => Calendar.Todo.isTodo(d)).every(d => schedulemytaskslist.find(g => g == d.id))){
 		for(let tempitem of children){
 			schedulemytaskslist = schedulemytaskslist.filter(d => d != tempitem.id)
 		}
@@ -8012,6 +8012,7 @@ function resetcreatetodo() {
 
 	createtodotab = 0
 
+	resetcreatetodocreatesubtask()
 	
 	typeaddtask()
 }
@@ -8229,6 +8230,7 @@ function autocreatesubtask(eachduration){
 	let timeleft = createtododurationvalue - createtodosubtasks.reduce((sum, obj) => sum + obj.duration, 0)
 	while(timeleft > 0){
 		createtodosubtasks.push({ title: string ? `${string} (part ${createtodosubtasks.length + 1})` : null, duration: Math.min(eachduration, timeleft), id: generateID() })
+		timeleft -= eachduration
 	}
 }
 function closeautofillsubtasks(){
@@ -9392,7 +9394,7 @@ function gettododata(item) {
 					${schedulemytasksenabled ? 
 						Calendar.Todo.isParent(item) ? 
 						`<div class="absolute box-shadow display-flex todoitemselectcheck background-secondary border-8px box-shadow pointer pointer-auto" onclick="toggleschedulesubtasks(event, '${item.id}')">
-							${getbigcheckbox(Calendar.Todo.getChildren(item).every(g => schedulemytaskslist.find(f => f == g.id)))}
+							${getbigcheckbox(Calendar.Todo.getChildren(item).filter(r => Calendar.Todo.isTodo(r)).every(g => schedulemytaskslist.find(f => f == g.id)))}
 						</div>`
 						: 
 						Calendar.Todo.isSchedulable(item) && Calendar.Todo.isTodo(item) ? 
