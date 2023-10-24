@@ -41,11 +41,13 @@ const timetimewindowoptiondata = [
 ]
 
 const timewindowpresets = [
-	{ day: { byday: [] }, time: { startminute: null, endminute: null }, text: 'Any time' },
-	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 9*60, endminute: 17*60 }, text: 'Work hours' },
-	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 8*60, endminute: 15*60 }, text: 'School hours' },
-	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 15*60, endminute: 20*60 }, text: 'After school' },
-	{ day: { byday: [] }, time: { startminute: 5*60, endminute: 9*60 }, text: 'Early morning' }
+	{ day: { byday: [] }, time: { startminute: null, endminute: null }, text: 'None' },
+	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 9*60, endminute: 17*60 }, text: 'Work hours', fulltext: 'Work hours (M-F 9am-5pm)' },
+	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 8*60, endminute: 15*60 }, text: 'School hours', fulltext: 'School hours (M-F 8am-3pm)' },
+	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 15*60, endminute: 22*60 }, text: 'After school', fulltext: 'After school (M-F 3pm-10pm)' },
+	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: null, endminute: null }, text: 'Weekdays' },
+	{ day: { byday: [0, 6] }, time: { startminute: null, endminute: null }, text: 'Weekends' },
+	{ day: { byday: [] }, time: { startminute: 5*60, endminute: 9*60 }, text: 'Early morning', fulltext: 'Early morning (5am-9am)' },
 ]
 
 const MAX_TODO_DURATION = 1440
@@ -5536,7 +5538,6 @@ function inputeventduedate(event, id) {
 		fixsubandparenttask(item)
 	}
 
-	calendar.updateTodo()
 	calendar.updateEvents()
 	calendar.updateInfo()
 	calendar.updateHistory()
@@ -5557,7 +5558,6 @@ function inputeventduetime(event, id) {
 		fixsubandparenttask(item)
 	}
 
-	calendar.updateTodo()
 	calendar.updateEvents()
 	calendar.updateInfo()
 	calendar.updateHistory()
@@ -5569,7 +5569,6 @@ function inputeventnotes(event, id) {
 	if (!item) return
 	item.notes = event.target.value
 
-	calendar.updateTodo()
 	calendar.updateEvents()
 	calendar.updateInfo()
 	calendar.updateHistory()
@@ -8007,8 +8006,12 @@ function resetcreatetodo() {
 		minute: nextdate.getHours() * 60 + nextdate.getMinutes()
 	}
 	createtodopriorityvalue = 0
+
 	createtodotimepersessionvalue = null
 	createtodoavailabilityvalue = 0
+
+	createtodosubtasks = []
+
 
 	createtodotab = 0
 
@@ -8017,6 +8020,7 @@ function resetcreatetodo() {
 }
 
 
+let createtodosubtasks = []
 let createtododurationvalue;
 let createtodoavailabilityvalue = 0
 let createtodotimepersessionvalue;
@@ -8051,17 +8055,18 @@ function updatecreatetodo() {
 	}
 
 	//duration
-	let tempdurationvalue = `Takes ${getDHMText(createtododurationvalue)}`
+	let tempdurationvalue = `Time to complete: ${getDHMText(createtododurationvalue)}`
 	createtododuration.innerHTML = tempdurationvalue
 	createtododurationonboarding.innerHTML = tempdurationvalue
 	createtododurationprompttodotoday.innerHTML = tempdurationvalue
 
 
 	//time per session
-	createtodotimepersession.innerHTML = `Time per session: ${getDHMText(createtodotimepersessionvalue)}`
+	createtodotimepersession.innerHTML = `Time per session: ${!createtodotimepersessionvalue ? 'Time per session (optional)' : getDHMText(createtodotimepersessionvalue)}`
+	//here4
 
 	//time slot
-	createtodoavailability.innerHTML = `Time slot: ${timewindowpresets[createtodoavailabilityvalue].text}`
+	createtodoavailability.innerHTML = `Time slot: ${timewindowpresets[createtodoavailabilityvalue].fulltext || timewindowpresets[createtodoavailabilityvalue].text}`
 
 	//due date
 	let tempduedatevalue = duedate ? `
@@ -8111,17 +8116,51 @@ function updatecreatetodo() {
 	let clickcreatetodotabtask = getElement('createtodotabtask')
 	let clickcreatetodotabproject = getElement('createtodotabproject')
 	let createtodoprojectwrap = getElement('createtodoprojectwrap')
+
 	clickcreatetodotabtask.classList.remove('selectedbuttonunderline')
 	clickcreatetodotabproject.classList.remove('selectedbuttonunderline')
 	createtodoprojectwrap.classList.add('display-none')
+
 	if(createtodotab == 0){
 		clickcreatetodotabtask.classList.add('selectedbuttonunderline')
 	}else if(createtodotab == 1){
 		clickcreatetodotabproject.classList.add('selectedbuttonunderline')
 		createtodoprojectwrap.classList.remove('display-none')
 	}
+
+	//subtasks
+	let createtodosubtasklist = getElement('createtodosubtasklist')
+	let output = []
+	for(let item of createtodosubtasks){
+		output.push(`
+		<div class="todoitemwrap">
+			<div class="todoitemcontainer">
+				<div class="display-flex flex-row gap-12px">
+					<div class="scalebutton todoitemcheckbox tooltip display-flex">
+						${getcheckcircle(false)}
+					</div>
+
+					<div class="text-16px text-primary">${item.title}</div>
+				</div>
+			</div>
+		</div>
+		`)
+	}
+	createtodosubtasklist.innerHTML = output.join('')
 }
 
+//here4
+
+function submitcreatetodosubtask(event){
+	let createtodosubtaskinput = getElement('createtodosubtaskinput')
+	let string = createtodosubtaskinput.value
+
+	createtodosubtasks.push({ title: string })
+
+	updatecreatetodo()
+
+	createtodosubtaskinput.value = ''
+}
 
 //create todo tab
 let createtodotab = 0;
@@ -8172,7 +8211,7 @@ function clickcreatetodotimepersession(event, id) {
 	createtodoitemtimepersession.classList.toggle('hiddenpopup')
 
 	createtodoitemtimepersession.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, createtodoitemtimepersession) + 'px'
-	createtodoitemtimepersession.style.left = fixleft(button.getBoundingClientRect().left - todoitemtimepersession.offsetWidth * 0.5 + button.offsetWidth * 0.5, createtodoitemtimepersession) + 'px'
+	createtodoitemtimepersession.style.left = fixleft(button.getBoundingClientRect().left - createtodoitemtimepersession.offsetWidth * 0.5 + button.offsetWidth * 0.5, createtodoitemtimepersession) + 'px'
 
 	//input	
 	let createtodotimepersessioninput = getElement('createtodotimepersessioninput')
@@ -8225,7 +8264,7 @@ function inputcreatetodotimepersession(event, duration) {
 		myduration = MAX_TODO_DURATION
 	}
 
-	if (myduration != null) {
+	if (myduration != null && myduration != 0) {
 		createtodotimepersessionvalue = myduration
 
 		//close
@@ -8300,7 +8339,7 @@ function inputcreatetodoitemduration(event, duration) {
 		myduration = MAX_TODO_DURATION
 	}
 
-	if (myduration != null) {
+	if (myduration != null && myduration != 0) {
 		createtododurationvalue = myduration
 
 		//close
@@ -8947,7 +8986,7 @@ function typeaddtask(event, submit, index) {
 		createtododuedatevalue.minute = finalminute
 	}
 
-	if (finalduration != null) {
+	if (finalduration != null && finalduration != 0) {
 		if(finalduration > MAX_TODO_DURATION){
 			finalduration = MAX_TODO_DURATION
 		}
@@ -9805,7 +9844,7 @@ function inputtodoitemduration(event, duration) {
 		myduration = MAX_TODO_DURATION
 	}
 
-	if (myduration != null) {
+	if (myduration != null && myduration != 0) {
 		if(Calendar.Todo.isTodo(item)){
 			item.duration = myduration
 		}else{
@@ -10338,7 +10377,7 @@ function inputtododuration(event){
 			myduration = MAX_TODO_DURATION
 		}
 
-		if(myduration != null){
+		if(myduration != null && myduration != 0){
 			item.duration = myduration
 		}
 	}else{
