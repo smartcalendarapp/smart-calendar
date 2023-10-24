@@ -8143,7 +8143,7 @@ function updatecreatetodo() {
 				   <div class="flex-1 display-flex flex-column gap-6px">
 					   <div class="align-flex-start width-full display-flex flex-column">
 		
-						   <div class="todoitemtext text-16px">
+						   <div class="todoitemtext text-14px">
 							   ${item.title ? cleanInput(item.title) : `New Task`}
 						   </div>
 
@@ -8151,7 +8151,7 @@ function updatecreatetodo() {
 	   
 					   <div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 
-							<div class="width-fit background-green transition-duration-100 hover:background-green-hover badgepadding border-round todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-white transition-duration-100 popupbutton">
+							<div class="width-fit background-green transition-duration-100 hover:background-green-hover badgepadding border-round todoitemtext nowrap text-12px pointer-auto pointer transition-duration-100 text-white transition-duration-100 popupbutton">
 								Takes ${getDHMText(item.duration)}
 							</div>
 
@@ -8185,7 +8185,7 @@ function updatecreatetodo() {
 					   </g>
 					   </svg>
 
-					   <span class="tooltiptextcenter">Delete</span>
+					   <span class="tooltiptextleft">Delete</span>
 				   </div>
 
 			   </div>
@@ -9059,6 +9059,9 @@ function typeaddtask(event, submit, index) {
 
 
 function submitcreatetodo(event) {
+	let addtodooptionspopup = getElement('addtodooptionspopup')
+	addtodooptionspopup.classList.add('hiddenpopup')
+
 	let todoinputtitle = getElement('todoinputtitle')
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
 	let todoinputtitleprompttodotoday = getElement('todoinputtitleprompttodotoday')
