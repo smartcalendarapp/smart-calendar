@@ -8058,8 +8058,6 @@ function updatecreatetodo() {
 	createtododurationprompttodotoday.innerHTML = tempdurationvalue
 
 
-	//here4
-
 	//time slot
 	createtodoavailability.innerHTML = `Time slot: ${timewindowpresets[createtodoavailabilityvalue].text}`
 
@@ -8141,7 +8139,7 @@ function updatecreatetodo() {
 			   <div class="justify-flex-end flex-1 display-flex flex-row small:flex-column gap-12px">
 
 				   <div class="flex-1 display-flex flex-column gap-6px">
-					   <div class="width-full display-flex flex-column">
+					   <div class="align-flex-start width-full display-flex flex-column">
 		
 						   <div class="todoitemtext text-16px">
 							   ${item.title ? cleanInput(item.title) : `New Task`}
@@ -8208,20 +8206,6 @@ function updatecreatetodo() {
 }
 
 
-//blank subtasks
-function addblanksubtasks(){
-	let blanksubtasks = getElement('blanksubtasks')
-
-	let amount = Math.max(Math.floor(+blanksubtasks.value || 1), 1)
-
-	let duration = floor(createtododurationvalue/amount, 5)
-
-	for(let i = 0; i < amount; i++){
-		createtodosubtasks.push({ title: null, duration: duration, id: generateID() })
-	}
-
-	updatecreatetodo()
-}
 //here4
 
 //custom subtask
@@ -8234,21 +8218,26 @@ function submitcreatetodosubtask(event){
 	
 	let myduration;
 
-	let duration = getDuration(string2)
+	let duration = getDuration(string2).value
 	if(duration != null && duration != 0){
 		myduration = duration
 	}
 
 	if(myduration == null){
-		myduration = 30
+		myduration = 60
 	}
 
 	createtodosubtasks.push({ title: string, duration: myduration, id: generateID() })
 
 	updatecreatetodo()
-
+	
+	resetcreatetodocreatesubtask()
+}
+function resetcreatetodocreatesubtask(){
+	let createtodosubtaskinput = getElement('createtodosubtaskinput')
 	createtodosubtaskinput.value = ''
 }
+
 function deletecreatetodosubtask(id){
 	createtodosubtasks = createtodosubtasks.filter(d => d.id != id)
 
@@ -8319,7 +8308,6 @@ function clickcreatetododuration(event, id) {
 
 	closecreatetodoitemduedate()
 	closecreatetodoitempriority()
-	closecreatetodoitemtimepersession()
 	closecreatetodoitemavailability()
 
 	updatecreatetodoitemdurationlist()
@@ -8410,7 +8398,6 @@ function clickcreatetododuedate(event) {
 
 	closecreatetodoitemduration()
 	closecreatetodoitempriority()
-	closecreatetodoitemtimepersession()
 	closecreatetodoitemavailability()
 }
 
@@ -8644,7 +8631,6 @@ function clickcreatetodopriority(event, id) {
 
 	closecreatetodoitemduedate()
 	closecreatetodoitemduration()
-	closecreatetodoitemtimepersession()
 	closecreatetodoitemavailability()
 }
 
@@ -8689,7 +8675,6 @@ function clickcreatetodoavailability(event, id) {
 
 	closecreatetodoitemduedate()
 	closecreatetodoitemduration()
-	closecreatetodoitemtimepersession()
 	closecreatetodoitempriority()
 }
 
@@ -10016,7 +10001,7 @@ function addsubtask(event, id){
 	if (!item) return
 
 	let newendbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
-	let newduration = Math.min(item.duration, 30)
+	let newduration = 60
 	let newtitle = `${item.title || 'New Task'} (part ${Calendar.Todo.getChildren(item).length + 1})`
 	
 	let newtask = new Calendar.Todo(newendbeforedate.getFullYear(), newendbeforedate.getMonth(), newendbeforedate.getDate(), newendbeforedate.getHours() * 60 + newendbeforedate.getMinutes(), newduration, newtitle)

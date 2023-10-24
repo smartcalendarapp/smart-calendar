@@ -1880,13 +1880,13 @@
 										
 
 										<div class="display-flex flex-row gap-12px">
-											<div class="inputgroupitem flex-1">
+											<div class="inputgroupitem flex-2">
 												<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ submitcreatetodosubtask() }" id="createtodosubtaskinput" class="infoinput" type="text" placeholder="1. Brainstorm for project"></input>
 												<span class="inputline"></span>
 											</div>
 
-											<div class="inputgroupitem width-192px">
-												<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ submitcreatetodosubtask() }" id="createtodosubtaskduration" class="infoinput inputdurationpicker" type="text" placeholder="1. Brainstorm for project"></input>
+											<div class="inputgroupitem flex-1">
+												<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ submitcreatetodosubtask() }" id="createtodosubtaskduration" class="infoinput inputdurationpicker" type="text" placeholder="Add duration"></input>
 												<span class="inputline"></span>
 											</div>
 
@@ -1896,27 +1896,6 @@
 				
 										</div>
 
-										<div class="display-flex flex-row align-center gap-6px">
-											<div class="horizontalbar"></div>
-											<div class="text-tertiary text-14px">or</div>
-											<div class="horizontalbar"></div>
-										</div>
-
-										<div class="display-flex flex-row gap-12px">
-											<div class="text-primary text-14px">Add</div>
-
-											<div class="inputgroupitem flex-1">
-												<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ addblanksubtasks() }" id="blanksubtasks" class="infoinput" type="number" min="1" placeholder="Amount"></input>
-												<span class="inputline"></span>
-											</div>
-
-											<div class="text-primary text-14px">repeated subtasks</div>
-
-											<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="addblanksubtasks()">					
-												<div class="text-14px text-white display-flex flex-row gap-6px pointer-none nowrap transition-none">Add</div>
-											</div>
-				
-										</div>
 
 										<div class="overflow-y-auto overflow-x-hidden border-8px overflow-y-auto bordertertiary display-flex flex-column" id="createtodosubtasklist"></div>
 
