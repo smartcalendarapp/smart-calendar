@@ -1847,7 +1847,7 @@ class Calendar {
 						</g>
 						</svg>
 	
-						<span class="tooltiptextcenter" id="eventinfoedittooltiptext">Done</span>`
+						<span class="tooltiptextcenter">Done</span>`
 
 					if (updateStructure) {
 						//UPDATE EDIT EVENT HTML
@@ -2238,7 +2238,7 @@ class Calendar {
 						</g>
 						</svg>
 	
-						<span class="tooltiptextcenter" id="eventinfoedittooltiptext">Edit</span>`
+						<span class="tooltiptextcenter">Edit</span>`
 
 
 					let output = []
@@ -8007,7 +8007,6 @@ function resetcreatetodo() {
 	}
 	createtodopriorityvalue = 0
 
-	createtodotimepersessionvalue = null
 	createtodoavailabilityvalue = 0
 
 	createtodosubtasks = []
@@ -8023,7 +8022,6 @@ function resetcreatetodo() {
 let createtodosubtasks = []
 let createtododurationvalue;
 let createtodoavailabilityvalue = 0
-let createtodotimepersessionvalue;
 let createtododuedatevalue = {
 	year: null,
 	month: null,
@@ -8036,7 +8034,6 @@ function updatecreatetodo() {
 	let createtododuration = getElement('createtododuration')
 	let createtododuedate = getElement('createtododuedate')
 	let createtodopriority = getElement('createtodopriority')
-	let createtodotimepersession = getElement('createtodotimepersession')
 	let createtodoavailability = getElement('createtodoavailability')
 
 	let createtododurationonboarding = getElement('createtododurationonboarding')
@@ -8061,8 +8058,6 @@ function updatecreatetodo() {
 	createtododurationprompttodotoday.innerHTML = tempdurationvalue
 
 
-	//time per session
-	createtodotimepersession.innerHTML = `Time per session: ${!createtodotimepersessionvalue ? 'Time per session (optional)' : getDHMText(createtodotimepersessionvalue)}`
 	//here4
 
 	//time slot
@@ -8132,45 +8127,75 @@ function updatecreatetodo() {
 	let createtodosubtasklist = getElement('createtodosubtasklist')
 	let output = []
 	for(let item of createtodosubtasks){
-		output.push(`
-		<div class="todoitemwrap">
-			<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px">
-				<div class="display-flex flex-row align-center justify-space-between">
-					<div class="display-flex flex-row gap-12px">
-						<div class="scalebutton todoitemcheckbox tooltip display-flex">
-							${getcheckcircle(false)}
-						</div>
+	
+		output.push(`<div class="relative todoitem todoitemwrap">
 
-						<div class="text-16px text-primary">${item.title ? cleanInput(item.title) : 'New Task'}</div>
-					</div>
-					
-					<div class="todoitembuttongroup small:visibility-visible popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="deletecreatetodosubtask('${item.id}')">
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-						<g>
-						<path d="M207.414 223.445L207.414 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M71.3433 246L184.657 246" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M207.414 223.445C207.414 235.902 197.226 246 184.657 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M238 57.6433L18 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M48.5864 223.445L48.5864 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M48.5864 223.445C48.5864 235.902 58.775 246 71.3433 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M96.1228 10L159.881 10" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M173.737 23.7283C173.737 16.1464 167.534 10 159.881 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M82.2668 23.7283C82.2668 16.1464 88.4703 10 96.1228 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M82.2668 23.7283L82.2668 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M173.737 23.7283L173.737 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M165.379 101.49L165.379 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
-						<path d="M90.6212 101.49L90.6212 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
-						<path d="M128 101.49L128 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
-						</g>
-						</svg>
+		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 
-						<span class="tooltiptextcenter z-index-1">Delete</span>
-					</div>
-
+			   <div class="display-flex flex-row gap-12px">
+			   
+				<div class="scalebutton todoitemcheckbox tooltip display-flex">
+					${getcheckcircle(false)}
 				</div>
-			</div>
-		</div>
-		`)
+
+			   <div class="justify-flex-end flex-1 display-flex flex-row small:flex-column gap-12px">
+
+				   <div class="flex-1 display-flex flex-column gap-6px">
+					   <div class="width-full display-flex flex-column">
+		
+						   <div class="todoitemtext text-16px">
+							   ${item.title ? cleanInput(item.title) : `New Task`}
+						   </div>
+
+					   </div>
+	   
+					   <div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
+
+							<div class="width-fit background-green transition-duration-100 hover:background-green-hover badgepadding border-round todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-white transition-duration-100 popupbutton">
+								Takes ${getDHMText(item.duration)}
+							</div>
+
+					   </div>
+
+				   </div>
+		   
+
+			   </div>
+
+			   
+			   <div class="gap-6px todoitembuttongroup z-index-1 height-fit justify-flex-end flex-row small:visibility-visible">						
+	   
+				   <div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="deletecreatetodosubtask('${item.id}')">
+					   <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					   <g>
+					   <path d="M207.414 223.445L207.414 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					   <path d="M71.3433 246L184.657 246" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					   <path d="M207.414 223.445C207.414 235.902 197.226 246 184.657 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+					   <path d="M238 57.6433L18 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					   <path d="M48.5864 223.445L48.5864 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					   <path d="M48.5864 223.445C48.5864 235.902 58.775 246 71.3433 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+					   <path d="M96.1228 10L159.881 10" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					   <path d="M173.737 23.7283C173.737 16.1464 167.534 10 159.881 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+					   <path d="M82.2668 23.7283C82.2668 16.1464 88.4703 10 96.1228 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+					   <path d="M82.2668 23.7283L82.2668 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					   <path d="M173.737 23.7283L173.737 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					   <path d="M165.379 101.49L165.379 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+					   <path d="M90.6212 101.49L90.6212 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+					   <path d="M128 101.49L128 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+					   </g>
+					   </svg>
+
+					   <span class="tooltiptextcenter">Delete</span>
+				   </div>
+
+			   </div>
+	
+		   </div>
+
+	   </div>
+
+
+	</div>`)
 	}
 	
 	createtodosubtasklist.innerHTML = output.join('')
@@ -8182,13 +8207,43 @@ function updatecreatetodo() {
 	}
 }
 
+
+//blank subtasks
+function addblanksubtasks(){
+	let blanksubtasks = getElement('blanksubtasks')
+
+	let amount = Math.max(Math.floor(+blanksubtasks.value || 1), 1)
+
+	let duration = floor(createtododurationvalue/amount, 5)
+
+	for(let i = 0; i < amount; i++){
+		createtodosubtasks.push({ title: null, duration: duration, id: generateID() })
+	}
+
+	updatecreatetodo()
+}
 //here4
 
+//custom subtask
 function submitcreatetodosubtask(event){
 	let createtodosubtaskinput = getElement('createtodosubtaskinput')
 	let string = createtodosubtaskinput.value
 
-	createtodosubtasks.push({ title: string, id: generateID() })
+	let createtodosubtaskduration = getElement('createtodosubtaskduration')
+	let string2 = createtodosubtaskduration.value
+	
+	let myduration;
+
+	let duration = getDuration(string2)
+	if(duration != null && duration != 0){
+		myduration = duration
+	}
+
+	if(myduration == null){
+		myduration = 30
+	}
+
+	createtodosubtasks.push({ title: string, duration: myduration, id: generateID() })
 
 	updatecreatetodo()
 
@@ -8205,6 +8260,13 @@ function deletecreatetodosubtask(id){
 let createtodotab = 0;
 function clickcreatetodotab(index){
 	createtodotab = index
+	
+	if(createtodotab == 1){
+		if(createtododurationvalue < 120){
+			createtododurationvalue = 120
+		}
+	}
+
 	updatecreatetodo()
 }
 
@@ -8236,82 +8298,8 @@ function closetodoitemduedate() {
 	clickcreatetododuration()
 	clickcreatetododuedate()
 	clickcreatetodopriority()
-	clickcreatetodotimepersession()
 	clickcreatetodoavailability()
 */
-
-
-
-//click on time per session
-function clickcreatetodotimepersession(event, id) {
-	//ui
-	let button = event.target
-	let createtodoitemtimepersession = getElement('createtodoitemtimepersession')
-	createtodoitemtimepersession.classList.toggle('hiddenpopup')
-
-	createtodoitemtimepersession.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, createtodoitemtimepersession) + 'px'
-	createtodoitemtimepersession.style.left = fixleft(button.getBoundingClientRect().left - createtodoitemtimepersession.offsetWidth * 0.5 + button.offsetWidth * 0.5, createtodoitemtimepersession) + 'px'
-
-	//input	
-	let createtodotimepersessioninput = getElement('createtodotimepersessioninput')
-	createtodotimepersessioninput.value = getDHMText(createtodotimepersessionvalue)
-
-	closecreatetodoitemduedate()
-	closecreatetodoitempriority()
-	closecreatetodoitemduration()
-	closecreatetodoitemavailability()
-}
-
-
-function updatecreatetodotimepersessionlist() {
-	let createtodotimepersessionlist = getElement('createtodotimepersessionlist')
-
-	let durations = [5, 10, 15, 30, 60, 120, 240]
-	let output = []
-	for (let item of durations) {
-		output.push(`<div class="helpitem" onclick="inputcreatetodotimepersession(event, ${item})">${getDHMText(item)}</div>`)
-	}
-
-	createtodotimepersessionlist.innerHTML = output.join('')
-}
-updatecreatetodotimepersessionlist()
-
-
-//close
-function closecreatetodoitemtimepersession() {
-	let createtodoitemtimepersession = getElement('createtodoitemtimepersession')
-	createtodoitemtimepersession.classList.add('hiddenpopup')
-}
-
-//input time per session
-function inputcreatetodotimepersession(event, duration) {
-
-	let myduration;
-	if (duration != null) {
-		myduration = duration
-	} else {
-		let createtodotimepersessioninput = getElement('createtodotimepersessioninput')
-		let string = createtodotimepersessioninput.value
-		myduration = getDuration(string).value
-	}
-
-	if (myduration == null) {
-		myduration = createtodotimepersessionvalue
-	}
-
-	if(myduration > MAX_TODO_DURATION){
-		myduration = MAX_TODO_DURATION
-	}
-
-	if (myduration != null && myduration != 0) {
-		createtodotimepersessionvalue = myduration
-
-		//close
-		closecreatetodoitemtimepersession()
-	}
-
-	updatecreatetodo()
-}
 
 
 
@@ -9072,7 +9060,7 @@ function submitcreatetodo(event) {
 		let notes = todoinputnotes.value || todoinputnotesonboarding.value || todoinputnotesprompttodotoday.value
 
 		
-		//create item
+		//CREATE ITEM
 		let item = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), myduration, title, notes)
 		if (createtododuedatevalue.year == null || createtododuedatevalue.month == null || createtododuedatevalue.day == null || createtododuedatevalue.minute == null) {
 			item.endbefore.year = null
@@ -9087,31 +9075,24 @@ function submitcreatetodo(event) {
 			let timeslotitem = timewindowpresets[createtodoavailabilityvalue]
 			if(timeslotitem){
 				item.timewindow.day = timeslotitem.day
-				item.timewindow.time = timeslotitem.time
+				item.timewindow.time.startminute = timeslotitem.time.startminute
+				item.timewindow.time.endminute = timeslotitem.time.endminute
 			}
-
 		}
 
 		calendar.todos.push(item)
-
-		//split up sessions
-		if(createtodotimepersessionvalue != null){
-			let timeleft = myduration
-			while(timeleft > 0){
-				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), Math.min(createtodotimepersessionvalue, timeleft), `${title || 'New Task'} (part ${Calendar.Todo.getChildren(item).length + 1})`)
-				childitem.parentid = item.id
-
-				calendar.todos.push(childitem)
-
-				timeleft -= createtodotimepersessionvalue
-			}
-		}
 		
-		//add sub tasks
+
+		//SUB TASKS
 		if(createtodosubtasks.length > 0){
 			for(let subtaskitem of createtodosubtasks){
-				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), Math.min(createtodotimepersessionvalue, timeleft), `${subtaskitem.title || 'New Task'} (part ${Calendar.Todo.getChildren(item).length + 1})`)
+				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), subtaskitem.duration, `${subtaskitem.title || `New Task (part ${Calendar.Todo.getChildren(item).length + 1})`}`)
+
 				childitem.parentid = item.id
+
+				childitem.timewindow.day = item.timewindow.day
+				childitem.timewindow.time.startminute = item.time.timewindow.startminute
+				childitem.timewindow.time.endminute = item.time.timewindow.endminute
 
 				calendar.todos.push(childitem)
 			}
@@ -9361,7 +9342,7 @@ function gettododata(item) {
 								</g>
 								</svg>
 			
-								<span class="tooltiptextcenter" id="eventinfoedittooltiptext">Edit</span>
+								<span class="tooltiptextcenter">Edit</span>
 							</div>
 				
 							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="deletetodo('${item.id}');if(gtag){gtag('event', 'button_click', { useraction: 'Delete - task' })}">
@@ -9384,7 +9365,7 @@ function gettododata(item) {
 								</g>
 								</svg>
 		
-								<span class="tooltiptextcenter" id="eventinfoedittooltiptext">Delete</span>
+								<span class="tooltiptextcenter">Delete</span>
 							</div>
 		
 						</div>
@@ -13459,7 +13440,6 @@ function clickevent(event, timestamp) {
 			if (newstartdate.getTime() != selectedeventdatetime.getTime() && selectedeventdatetime.getTime() >= currentdatemodified) {
 				item.type = 0
 				calendar.updateInfo(true)
-				calendar.updateTodo()
 			}
 			
 		}
