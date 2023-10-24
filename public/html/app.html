@@ -185,6 +185,11 @@
 	</div>
 
 
+
+	<div class="pointer-auto margin-top-12px z-index-1000 helpmenu absolute popup popuptransition border-8px display-flex flex-column hiddenpopup" id="createtodosubtasksuggestions">
+		<div class="helpitem" onclick="autocreatesubtask()">Auto-create subtasks</div>
+	</div>
+
 	
 	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="todoitemduration">
 		<div class="display-flex flex-row gap-12px justify-space-between align-center">
@@ -195,7 +200,7 @@
 					</svg>
 				</div>
 			
-			<div class="infotitle" id="todoitemdurationtitle">Time needed</div>
+			<div class="infotitle nowrap" id="todoitemdurationtitle">Time needed</div>
 
 			<div class="infotoprightgroup">
 				<div class="infotopright pointer" onclick="closetodoitemduration(event)">
@@ -233,7 +238,7 @@
 					</svg>
 				</div>
 			
-			<div class="infotitle" id="createtodoitemdurationtitle">Time needed</div>
+			<div class="infotitle nowrap" id="createtodoitemdurationtitle">Time needed</div>
 
 			<div class="infotoprightgroup">
 				<div class="infotopright pointer" onclick="closecreatetodoitemduration(event)">
@@ -1893,7 +1898,7 @@
 											<div class="relative overflow-hidden pointer-none width-fit display-flex flex-row align-center border-8px height-fit">					
 												<div class="transition-duration-100 padding-left-12px padding-top-8px padding-bottom-8px bluebutton text-14px text-white display-flex padding-right-6px flex-row gap-6px pointer-auto pointer nowrap transition-none" onclick="submitcreatetodosubtask()">Add</div>
 
-												<div class="pointer pointer-auto popupbutton padding-left-6px padding-right-6px padding-top-8px padding-bottom-8px transition-duration-100 bluebutton" onclick="togglecreatetodosubtaskpopup()">
+												<div class="pointer pointer-auto popupbutton padding-left-6px padding-right-6px padding-top-8px padding-bottom-8px transition-duration-100 bluebutton" onclick="togglecreatetodosubtaskpopup(event)">
 													<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 														<g>
 														<g opacity="1">
@@ -1904,9 +1909,6 @@
 													</svg>
 												</div>
 
-												<div class="pointer-auto helpmenu absolute popup addsubtasksuggestions popuptransition border-8px display-flex flex-column hiddenpopup" id="createtodosubtasksuggestions">
-													<div class="helpitem" onclick="autocreatesubtask()">Auto-populate subtasks</div>
-												</div>
 											</div>
 				
 										</div>

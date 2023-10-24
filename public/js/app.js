@@ -8209,9 +8209,14 @@ function updatecreatetodo() {
 
 //here4
 //add sub task button
-function togglecreatetodosubtaskpopup(){
+function togglecreatetodosubtaskpopup(event){
+	let button = event.target
+	
 	let createtodosubtasksuggestions = getElement('createtodosubtasksuggestions')
 	createtodosubtasksuggestions.classList.toggle('hiddenpopup')
+
+	createtodosubtasksuggestions.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, createtodosubtasksuggestions) + 'px'
+	createtodosubtasksuggestions.style.left = fixleft(button.getBoundingClientRect().left + button.offsetWidth - createtodosubtasksuggestions.offsetWidth, createtodosubtasksuggestions) + 'px'
 }
 function autocreatesubtask(){
 	let createtodosubtasksuggestions = getElement('createtodosubtasksuggestions')

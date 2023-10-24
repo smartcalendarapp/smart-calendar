@@ -3889,13 +3889,6 @@ body {
 	margin-top:12px;
 }
 
-.addsubtasksuggestions{
-	position:absolute;
-	top:100% !important;
-	right:0 !important;
-	margin-top:12px;
-}
-
 .switch {
 	position: relative;
 	display: inline-block;
