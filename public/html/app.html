@@ -154,6 +154,34 @@
 	</div>
 
 
+	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="createtodoitemavailability">
+		<div class="display-flex flex-row gap-12px justify-space-between align-center">
+			<div>
+				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+				<g>
+				</g>
+				</svg>
+			</div>
+			
+			<div class="infotitle">Time slot</div>
+
+			<div class="infotoprightgroup">
+				<div class="infotopright pointer" onclick="closecreatetodoitemavailability(event)">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+			</div>
+		</div>
+		<div class="display-flex flex-column overflow-auto border-8px listborder max-height-240px" id="createtodoitemavailabilitylist"></div>
+	</div>
+
+
 	
 	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="todoitemduration">
 		<div class="display-flex flex-row justify-space-between align-center">
@@ -190,44 +218,6 @@
 			</div>
 		</div>
 		<div class="display-flex flex-column overflow-auto border-8px listborder max-height-240px" id="todoitemdurationlist"></div>
-	</div>
-
-
-	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="todoitemtimepersession">
-		<div class="display-flex flex-row justify-space-between align-center">
-			<div>
-					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-					<g>
-					</g>
-					</svg>
-				</div>
-			
-			<div class="infotitle">Time per session</div>
-
-			<div class="infotoprightgroup">
-				<div class="infotopright pointer" onclick="closetodoitemduration(event)">
-					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-					<g>
-					<g opacity="1">
-					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-					</g>
-					</g>
-					</svg>
-				</div>
-			</div>
-		</div>
-		
-		<div class="infogroup">
-			<div class="inputgroup">
-				<div class="inputgroupitem flex-1">
-					<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtodoitemduration(event)" id="todoitemtimepersessioninput" class="infoinput" placeholder="Custom time needed" type="text">
-						<span class="inputline"></span>
-					</input>
-				</div>
-			</div>
-		</div>
-		<div class="display-flex flex-column overflow-auto border-8px listborder max-height-240px" id="todoitemtimepersessionlist"></div>
 	</div>
 
 
@@ -268,6 +258,45 @@
 		<div class="display-flex flex-column overflow-auto border-8px listborder max-height-240px" id="createtodoitemdurationlist">		
 		</div>
 	</div>
+
+
+	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="createtodoitemtimepersession">
+		<div class="display-flex gap-12px flex-row justify-space-between align-center">
+			<div>
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					</g>
+					</svg>
+				</div>
+			
+			<div class="infotitle">Time per session</div>
+
+			<div class="infotoprightgroup">
+				<div class="infotopright pointer" onclick="closecreatetodoitemtimepersession(event)">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+			</div>
+		</div>
+		
+		<div class="infogroup">
+			<div class="inputgroup">
+				<div class="inputgroupitem flex-1">
+					<input onclick="this.select()" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputcreatetodotimepersession(event)" id="createtodotimepersessioninput" class="infoinput" placeholder="Custom time per session" type="text">
+						<span class="inputline"></span>
+					</input>
+				</div>
+			</div>
+		</div>
+		<div class="display-flex flex-column overflow-auto border-8px listborder max-height-240px" id="createtodotimepersessionlist"></div>
+	</div>
+
 
 
 	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="todoitemduedate">
@@ -1849,7 +1878,7 @@
 							<!-- popup -->
 							<div class="width-full popuptransition overflow-hidden background-primary box-shadow addtodosuggestions z-index-100 border-8px display-flex popup flex-column hiddenpopup" id="addtodooptionspopup">
 
-								<div class="padding-12px display-flex flex-row align-center justify-center gap-24px">
+								<div class="padding-top-12px display-flex flex-row align-center justify-center gap-24px">
 									<div class="padding-top-6px nowrap padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clickcreatetodotab(0)" id="createtodotabtask">
 										Task
 										<span class="buttonunderline"></span>
@@ -1860,7 +1889,7 @@
 									</div>
 								</div>
 										
-								<div class="z-index-100 padding-12px border-box flex-1 align-center display-flex flex-row gap-12px padding-12px width-full flex-wrap-wrap">
+								<div class="padding-12px border-box flex-1 align-center display-flex flex-row gap-12px padding-12px width-full flex-wrap-wrap">
 									<div class="popupbutton border-8px padding-left-12px padding-right-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap popupbutton text-14px pointer-auto pointer transition-duration-100" onclick="readinteractivetourpopup('clickduedate');clickcreatetododuedate(event)" id="createtododuedate">
 									</div>
 				
@@ -1871,23 +1900,23 @@
 									</div>
 								</div>
 
-								<div class="horizontalbar"></div>
-
 								<!-- here4 -->
 
-								<div id="createtodoprojectwrap" class="display-flex flex-column">
-									<div class="display-flex flex-column gap-12px">
+								<div id="createtodoprojectwrap" class="width-full display-flex flex-column">
+									<div class="width-full padding-left-12px padding-right-12px padding-bottom-12px border-box flex-1 align-center display-flex flex-row gap-12px padding-12px width-full flex-wrap-wrap">
 										<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-orange pointer-auto pointer transition-duration-100 popupbutton"  onclick="clickcreatetodotimepersession(event)" id="createtodotimepersession">
 										</div>
 
-										<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-orange pointer-auto pointer transition-duration-100 popupbutton"  onclick="clickcreatetodotimepersession(event)" id="createtodotimepersession">
+										<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-orange pointer-auto pointer transition-duration-100 popupbutton"  onclick="clickcreatetodoavailability(event)" id="createtodoavailability">
 										</div>
 									</div>
 
-									<div class="text-primary text-14px text-bold">Subtasks</div>
-
 									<div class="horizontalbar"></div>
+
+									<div class="text-primary text-16px">Subtasks</div>
 								</div>
+
+								<div class="horizontalbar"></div>
 
 								<div class="inputgroup border-8px">
 									<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotes" maxlength="2000"></textarea>

@@ -8007,15 +8007,18 @@ function resetcreatetodo() {
 		minute: nextdate.getHours() * 60 + nextdate.getMinutes()
 	}
 	createtodopriorityvalue = 0
-	createtodotimepersessionvalue = 60
+	createtodotimepersessionvalue = null
+	createtodoavailabilityvalue = 0
 
 	createtodotab = 0
+
 	
 	typeaddtask()
 }
 
 
 let createtododurationvalue;
+let createtodoavailabilityvalue = 0
 let createtodotimepersessionvalue;
 let createtododuedatevalue = {
 	year: null,
@@ -8030,6 +8033,7 @@ function updatecreatetodo() {
 	let createtododuedate = getElement('createtododuedate')
 	let createtodopriority = getElement('createtodopriority')
 	let createtodotimepersession = getElement('createtodotimepersession')
+	let createtodoavailability = getElement('createtodoavailability')
 
 	let createtododurationonboarding = getElement('createtododurationonboarding')
 	let createtododuedateonboarding = getElement('createtododuedateonboarding')
@@ -8052,8 +8056,12 @@ function updatecreatetodo() {
 	createtododurationonboarding.innerHTML = tempdurationvalue
 	createtododurationprompttodotoday.innerHTML = tempdurationvalue
 
+
 	//time per session
-	createtodotimepersession.innerHTML = `Time per session: ${getDHMText(createtododurationvalue)}`
+	createtodotimepersession.innerHTML = `Time per session: ${getDHMText(createtodotimepersessionvalue)}`
+
+	//time slot
+	createtodoavailability.innerHTML = `Time slot: ${timewindowpresets[createtodoavailabilityvalue].text}`
 
 	//due date
 	let tempduedatevalue = duedate ? `
@@ -8119,6 +8127,7 @@ function updatecreatetodo() {
 let createtodotab = 0;
 function clickcreatetodotab(index){
 	createtodotab = index
+	updatecreatetodo()
 }
 
 function closetodoitemduration() {
@@ -8144,11 +8153,13 @@ function closetodoitemduedate() {
 
 
 /*
-	functions for opening popup:
+	QUICK REFERENCE:
 
 	clickcreatetododuration()
 	clickcreatetododuedate()
 	clickcreatetodopriority()
+	clickcreatetodotimepersession()
+	clickcreatetodoavailability()
 */
 
 
@@ -8157,46 +8168,52 @@ function closetodoitemduedate() {
 function clickcreatetodotimepersession(event, id) {
 	//ui
 	let button = event.target
-	let todoitemtimepersession = getElement('todoitemtimepersession')
-	todoitemtimepersession.classList.toggle('hiddenpopup')
+	let createtodoitemtimepersession = getElement('createtodoitemtimepersession')
+	createtodoitemtimepersession.classList.toggle('hiddenpopup')
 
-	todoitemtimepersession.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, todoitemtimepersession) + 'px'
-	todoitemtimepersession.style.left = fixleft(button.getBoundingClientRect().left - todoitemtimepersession.offsetWidth * 0.5 + button.offsetWidth * 0.5, todoitemtimepersession) + 'px'
+	createtodoitemtimepersession.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, createtodoitemtimepersession) + 'px'
+	createtodoitemtimepersession.style.left = fixleft(button.getBoundingClientRect().left - todoitemtimepersession.offsetWidth * 0.5 + button.offsetWidth * 0.5, createtodoitemtimepersession) + 'px'
 
 	//input	
-	let todoitemtimepersessioninput = getElement('todoitemtimepersessioninput')
-	todoitemtimepersessioninput.value = getDHMText(createtodotimepersessionvalue)
+	let createtodotimepersessioninput = getElement('createtodotimepersessioninput')
+	createtodotimepersessioninput.value = getDHMText(createtodotimepersessionvalue)
 
 	closecreatetodoitemduedate()
 	closecreatetodoitempriority()
 	closecreatetodoitemduration()
+	closecreatetodoitemavailability()
 }
 
 
-function updatecreatetodoitemtimepersessionlist() {
-	let todoitemtimepersessionlist = getElement('todoitemtimepersessionlist')
+function updatecreatetodotimepersessionlist() {
+	let createtodotimepersessionlist = getElement('createtodotimepersessionlist')
 
-	let durations = [5, 10, 15, 30, 60, 120]
+	let durations = [5, 10, 15, 30, 60, 120, 240]
 	let output = []
 	for (let item of durations) {
-		output.push(`<div class="helpitem" onclick="inputcreatetodoitemtimepersession(event, ${item})">${getDHMText(item)}</div>`)
+		output.push(`<div class="helpitem" onclick="inputcreatetodotimepersession(event, ${item})">${getDHMText(item)}</div>`)
 	}
 
-	todoitemtimepersessionlist.innerHTML = output.join('')
+	createtodotimepersessionlist.innerHTML = output.join('')
 }
-updatecreatetodoitemtimepersessionlist()
-//here4
+updatecreatetodotimepersessionlist()
 
+
+//close
+function closecreatetodoitemtimepersession() {
+	let createtodoitemtimepersession = getElement('createtodoitemtimepersession')
+	createtodoitemtimepersession.classList.add('hiddenpopup')
+}
 
 //input time per session
-function inputcreatetodoitemtimepersession(event, duration) {
+function inputcreatetodotimepersession(event, duration) {
 
 	let myduration;
 	if (duration != null) {
 		myduration = duration
 	} else {
-		let todoitemtimepersessioninput = getElement('todoitemtimepersessioninput')
-		let string = todoitemtimepersessioninput.value
+		let createtodotimepersessioninput = getElement('createtodotimepersessioninput')
+		let string = createtodotimepersessioninput.value
 		myduration = getDuration(string).value
 	}
 
@@ -8212,8 +8229,7 @@ function inputcreatetodoitemtimepersession(event, duration) {
 		createtodotimepersessionvalue = myduration
 
 		//close
-		let todoitemtimepersession = getElement('todoitemtimepersession')
-		todoitemtimepersession.classList.add('hiddenpopup')
+		closecreatetodoitemtimepersession()
 	}
 
 	updatecreatetodo()
@@ -8237,6 +8253,9 @@ function clickcreatetododuration(event, id) {
 
 	closecreatetodoitemduedate()
 	closecreatetodoitempriority()
+	closecreatetodoitemtimepersession()
+	closecreatetodoitemavailability()
+
 	updatecreatetodoitemdurationlist()
 }
 
@@ -8285,8 +8304,7 @@ function inputcreatetodoitemduration(event, duration) {
 		createtododurationvalue = myduration
 
 		//close
-		let createtodoitemduration = getElement('createtodoitemduration')
-		createtodoitemduration.classList.add('hiddenpopup')
+		closecreatetodoitemduration()
 	}
 
 	updatecreatetodo()
@@ -8326,6 +8344,8 @@ function clickcreatetododuedate(event) {
 
 	closecreatetodoitemduration()
 	closecreatetodoitempriority()
+	closecreatetodoitemtimepersession()
+	closecreatetodoitemavailability()
 }
 
 //update input value
@@ -8558,6 +8578,8 @@ function clickcreatetodopriority(event, id) {
 
 	closecreatetodoitemduedate()
 	closecreatetodoitemduration()
+	closecreatetodoitemtimepersession()
+	closecreatetodoitemavailability()
 }
 
 function updatecreatetodoitemprioritylist() {
@@ -8577,8 +8599,7 @@ function inputcreatetodoitempriority(event, index) {
 		createtodopriorityvalue = index
 
 		//close
-		let createtodoitempriority = getElement('createtodoitempriority')
-		createtodoitempriority.classList.add('hiddenpopup')
+		closecreatetodoitempriority()
 	}
 	updatecreatetodo()
 }
@@ -8586,6 +8607,54 @@ function closecreatetodoitempriority() {
 	let createtodoitempriority = getElement('createtodoitempriority')
 	createtodoitempriority.classList.add('hiddenpopup')
 }
+
+
+
+
+//click on availability
+function clickcreatetodoavailability(event, id) {
+	//ui
+	let button = event.target
+	let createtodoitemavailability = getElement('createtodoitemavailability')
+	createtodoitemavailability.classList.toggle('hiddenpopup')
+
+	createtodoitemavailability.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, createtodoitemavailability) + 'px'
+	createtodoitemavailability.style.left = fixleft(button.getBoundingClientRect().left - createtodoitemavailability.offsetWidth * 0.5 + button.offsetWidth * 0.5, createtodoitemavailability) + 'px'
+
+	closecreatetodoitemduedate()
+	closecreatetodoitemduration()
+	closecreatetodoitemtimepersession()
+	closecreatetodoitempriority()
+}
+
+function updatecreatetodoitemavailabilitylist() {
+	let createtodoitemavailabilitylist = getElement('createtodoitemavailabilitylist')
+
+	let output = []
+	let list = timewindowpresets.map(d => d.text)
+	for (let i = 0; i < list.length; i++) {
+		output.push(`<div class="helpitem" onclick="inputcreatetodoitemavailability(event, ${i})">${list[i]}</div>`)
+	}
+	createtodoitemavailabilitylist.innerHTML = output.join('')
+}
+updatecreatetodoitemavailabilitylist()
+
+function inputcreatetodoitemavailability(event, index) {
+	if (index != null) {
+		createtodoavailabilityvalue = index
+
+		//close
+		closecreatetodoitemavailability()
+	}
+	updatecreatetodo()
+}
+function closecreatetodoitemavailability() {
+	let createtodoitemavailability = getElement('createtodoitemavailability')
+	createtodoitemavailability.classList.add('hiddenpopup')
+}
+
+
+
 
 
 
@@ -8924,6 +8993,8 @@ function submitcreatetodo(event) {
 
 		let notes = todoinputnotes.value || todoinputnotesonboarding.value || todoinputnotesprompttodotoday.value
 
+		
+		//create item
 		let item = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), myduration, title, notes)
 		if (createtododuedatevalue.year == null || createtododuedatevalue.month == null || createtododuedatevalue.day == null || createtododuedatevalue.minute == null) {
 			item.endbefore.year = null
@@ -8933,7 +9004,34 @@ function submitcreatetodo(event) {
 		}
 		item.priority = createtodopriorityvalue
 
+		//time slot
+		if(createtodoavailabilityvalue != null){
+			let timeslotitem = timewindowpresets[createtodoavailabilityvalue]
+			if(timeslotitem){
+				item.timewindow.day = timeslotitem.day
+				item.timewindow.time = timeslotitem.time
+			}
+
+		}
+
 		calendar.todos.push(item)
+
+		//split up sessions
+		if(createtodotimepersessionvalue != null){
+			let timeleft = myduration
+			while(timeleft > 0){
+				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), Math.min(createtodotimepersessionvalue, timeleft), `${title || 'New Task'} (part ${Calendar.Todo.getChildren(item).length + 1})`)
+				childitem.parentid = item.id
+
+				calendar.todos.push(childitem)
+
+				timeleft -= createtodotimepersessionvalue
+			}
+		}
+
+
+		//fix sub task
+		fixsubandparenttask(item)
 
 
 
@@ -11648,7 +11746,6 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 					percentrange = (1 + childindex)/Calendar.Event.getChildren(Calendar.Event.getParent(item)).length * 0.9 //evenly space out sub tasks, finish by 90% of range
 				}
 			}
-			console.log(percentrange)
 
 			let daystartafterdate = new Date(startafterdate)
 			daystartafterdate.setHours(0,0,0,0)
