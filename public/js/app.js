@@ -9853,7 +9853,10 @@ function clicktodoitemduration(event, id) {
 }
 
 function updatetodoitemdurationlist() {
-	let item = [...calendar.events, ...calendar.todos].find(x => x.id == inputtodoid)
+	let item;
+	if(inputtodoid){
+		item = [...calendar.events, ...calendar.todos].find(x => x.id == inputtodoid)
+	}
 
 	let todoitemdurationlist = getElement('todoitemdurationlist')
 
