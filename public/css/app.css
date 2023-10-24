@@ -415,6 +415,11 @@ body {
 }
 
 
+.todaydayhighlight div{
+	color:var(--blue);
+	font-weight:600;
+}
+
 .selecteddatehighlight {
 	background-color:var(--blue) !important;
 }

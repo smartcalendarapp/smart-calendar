@@ -8229,7 +8229,7 @@ function autocreatesubtask(eachduration){
 
 	let timeleft = createtododurationvalue - createtodosubtasks.reduce((sum, obj) => sum + obj.duration, 0)
 	while(timeleft > 0){
-		createtodosubtasks.push({ title: string ? `${string} (part ${createtodosubtasks.length + 1})` : null, duration: Math.min(eachduration, timeleft), id: generateID() })
+		createtodosubtasks.push({ title: null, duration: Math.min(eachduration, timeleft), id: generateID() })
 		timeleft -= eachduration
 	}
 
@@ -8581,7 +8581,7 @@ function updatecreatetododatepicker() {
 		let selected = duedate && currentdate.getFullYear() == duedate.getFullYear() && currentdate.getMonth() == duedate.getMonth() && currentdate.getDate() == duedate.getDate()
 
 		column.push(`
-		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'background-blue-transparent hover:background-blue-transparent-hover' : ''} ${selected ? 'selecteddatehighlight' : ''}" onclick="inputcreatetodoitemduedate(event, ${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
+		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'todaydayhighlight' : ''} ${selected ? 'selecteddatehighlight' : ''}" onclick="inputcreatetodoitemduedate(event, ${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
 			<div class="text-14px text-primary text-center pointer-none  ${currentdate.getMonth() == createtododatepickerdate.getMonth() && currentdate.getFullYear() == createtododatepickerdate.getFullYear() ? '' : 'text-secondary'}">${currentdate.getDate()}</div>
 		</div>`)
 
@@ -9645,7 +9645,7 @@ function updatetododatepicker() {
 		let selected = duedate && currentdate.getFullYear() == duedate.getFullYear() && currentdate.getMonth() == duedate.getMonth() && currentdate.getDate() == duedate.getDate()
 
 		column.push(`
-		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'background-blue-transparent hover:background-blue-transparent-hover' : ''} ${selected ? 'selecteddatehighlight' : ''}" onclick="inputtodoitemduedate(event, ${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
+		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'todaydayhighlight' : ''} ${selected ? 'selecteddatehighlight' : ''}" onclick="inputtodoitemduedate(event, ${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
 			<div class="text-14px text-primary text-center pointer-none  ${currentdate.getMonth() == tododatepickerdate.getMonth() && currentdate.getFullYear() == tododatepickerdate.getFullYear() ? '' : 'text-secondary'}">${currentdate.getDate()}</div>
 		</div>`)
 
@@ -10066,7 +10066,7 @@ function addsubtask(event, id){
 
 
 	
-	fixsubandparenttask(item)
+	fixsubandparenttask(newtask)
 
 	calendar.updateTodo()
 	calendar.updateHistory()
@@ -10753,7 +10753,7 @@ function updatedatepicker() {
 		let selected = !isNaN(duedate.getTime()) && currentdate.getFullYear() == duedate.getFullYear() && currentdate.getMonth() == duedate.getMonth() && currentdate.getDate() == duedate.getDate()
 
 		column.push(`
-		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'background-blue-transparent hover:background-blue-transparent-hover' : ''} ${selected ? 'selecteddatehighlight' : ''}" onclick="selectedatepicker(${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
+		<div class="flex-1 border-round hover:background-tint-1 padding-4px transition-duration-100 pointer ${today ? 'todaydayhighlight' : ''} ${selected ? 'selecteddatehighlight' : ''}" onclick="selectedatepicker(${currentdate.getFullYear()}, ${currentdate.getMonth()}, ${currentdate.getDate()})">
 			<div class="text-14px text-primary text-center pointer-none  ${currentdate.getMonth() == datepickerdate.getMonth() && currentdate.getFullYear() == datepickerdate.getFullYear() ? '' : 'text-secondary'}">${currentdate.getDate()}</div>
 		</div>`)
 
