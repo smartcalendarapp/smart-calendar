@@ -8208,7 +8208,7 @@ function updatecreatetodo() {
 
 
 //here4
-//hover add sub task button
+//add sub task button
 function togglecreatetodosubtaskpopup(){
 	let createtodosubtasksuggestions = getElement('createtodosubtasksuggestions')
 	createtodosubtasksuggestions.classList.toggle('hiddenpopup')
