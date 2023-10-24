@@ -195,7 +195,7 @@
 					</svg>
 				</div>
 			
-			<div class="infotitle">Total time needed</div>
+			<div class="infotitle" id="todoitemdurationtitle">Time needed</div>
 
 			<div class="infotoprightgroup">
 				<div class="infotopright pointer" onclick="closetodoitemduration(event)">
@@ -233,7 +233,7 @@
 					</svg>
 				</div>
 			
-			<div class="infotitle">Total time needed</div>
+			<div class="infotitle" id="createtodoitemdurationtitle">Time needed</div>
 
 			<div class="infotoprightgroup">
 				<div class="infotopright pointer" onclick="closecreatetodoitemduration(event)">
@@ -1877,7 +1877,7 @@
 
 									<div class="padding-12px display-flex gap-12px flex-column">
 										<div class="text-primary text-16px text-bold">Add subtasks</div>
-										
+
 
 										<div class="display-flex flex-row gap-12px">
 											<div class="inputgroupitem flex-2">
@@ -1890,14 +1890,26 @@
 												<span class="inputline"></span>
 											</div>
 
-											<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodosubtask()">					
-												<div class="text-14px text-white display-flex flex-row gap-6px pointer-none nowrap transition-none">Add</div>
+											<div class="relative pointer-none width-fit display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodosubtask()">					
+												<div class="transition-duration-100 padding-left-12px padding-top-8px padding-bottom-8px bluebutton text-14px text-white display-flex padding-right-6px flex-row gap-6px pointer-auto pointer nowrap transition-none">Add</div>
+
+												<div class="popupbutton padding-left-6px padding-right-12px padding-top-8px padding-bottom-8px transition-duration-100 bluebutton" onclick="togglecreatetodosubtaskpopup()">
+													<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+														<g>
+														<g opacity="1">
+														<path d="M208.112 88.6229L128 167.377" fill-rule="nonzero" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+														<path d="M47.8879 88.6229L128 167.377" fill-rule="nonzero" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+														</g>
+														</g>
+													</svg>
+												</div>
+
+												<div class="absolute popup addsubtasksuggestions popuptransition border-8px display-flex flex-column hiddenpopup" id="createtodosubtasksuggestions">
+													<div class="helpitem" onclick="autocreatesubtask()">Auto-populate subtasks</div>
+												</div>
 											</div>
 				
 										</div>
-
-
-										<div class="overflow-y-auto overflow-x-hidden border-8px overflow-y-auto bordertertiary display-flex flex-column" id="createtodosubtasklist"></div>
 
 									</div>
 								</div>
@@ -1908,6 +1920,11 @@
 									<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotes" maxlength="2000"></textarea>
 									<span class="inputline"></span>
 								</div>
+
+								<div class="align-self-flex-end padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodo()" id="submitcreatetodobutton2">
+									<div class="text-16px text-white display-flex flex-row gap-6px  pointer-none nowrap transition-none">Create</div>
+								</div>
+
 							</div>
 						</div>
 

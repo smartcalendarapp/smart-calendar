@@ -7,7 +7,10 @@ const SHORTESTDAYLIST = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 
 const DEFAULTCOLORS = ['#f54842', '#faa614', '#2bc451', '#2693ff', '#916bfa']
 
-const reminderlist = [0, 300000, 900000, 3600000, 86400000]
+const REMINDER_PRESETS = [0, 300000, 900000, 3600000, 3600000*6, 86400000]
+
+const TODO_DURATION_PRESETS_LONG = [60, 120, 240, 600, 1200]
+const TODO_DURATION_PRESETS = [5, 10, 15, 30, 60, 120, 240]
 
 const repeatoptiondata = [
 	{ interval: null, frequency: null, byday: [], text: 'No repeat' },
@@ -49,8 +52,6 @@ const timewindowpresets = [
 	{ day: { byday: [0, 6] }, time: { startminute: null, endminute: null }, text: 'Weekends' },
 	{ day: { byday: [] }, time: { startminute: 5*60, endminute: 9*60 }, text: 'Early morning', fulltext: 'Early morning (5am-9am)' },
 ]
-
-const MAX_TODO_DURATION = 1440
 
 
 //FUNCTIONS
@@ -5360,9 +5361,6 @@ function inputeventduration(event) {
 		let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 
 		let myduration = getDuration(string).value
-		if(myduration > MAX_TODO_DURATION){
-			myduration = MAX_TODO_DURATION
-		}
 
 		let enddate = new Date(startdate.getTime() + (myduration * 60000))
 
@@ -8109,16 +8107,19 @@ function updatecreatetodo() {
 	let clickcreatetodotabtask = getElement('createtodotabtask')
 	let clickcreatetodotabproject = getElement('createtodotabproject')
 	let createtodoprojectwrap = getElement('createtodoprojectwrap')
+	let submitcreatetodobutton2 = getElement('submitcreatetodobutton2')
 
 	clickcreatetodotabtask.classList.remove('selectedbuttonunderline')
 	clickcreatetodotabproject.classList.remove('selectedbuttonunderline')
 	createtodoprojectwrap.classList.add('display-none')
+	submitcreatetodobutton2.classList.add('display-none')
 
 	if(createtodotab == 0){
 		clickcreatetodotabtask.classList.add('selectedbuttonunderline')
 	}else if(createtodotab == 1){
 		clickcreatetodotabproject.classList.add('selectedbuttonunderline')
 		createtodoprojectwrap.classList.remove('display-none')
+		submitcreatetodobutton2.classList.remove('display-none')
 	}
 
 	//subtasks
@@ -8207,6 +8208,32 @@ function updatecreatetodo() {
 
 
 //here4
+//hover add sub task button
+function togglecreatetodosubtaskpopup(){
+	let createtodosubtasksuggestions = getElement('createtodosubtasksuggestions')
+	createtodosubtasksuggestions.classList.toggle('hiddenpopup')
+}
+function autocreatesubtask(){
+	let createtodosubtaskduration = getElement('createtodosubtaskduration')
+	let string2 = createtodosubtaskduration.value
+	
+	let myduration;
+
+	let duration = getDuration(string2).value
+	if(duration != null && duration != 0){
+		myduration = duration
+	}
+
+	if(myduration == null){
+		myduration = 60
+	}
+
+
+	let timeleft = createtododurationvalue - createtodosubtasks.reduce((sum, obj) => sum + obj.duration, 0)
+	while(timeleft > 0){
+		createtodosubtasks.push({ title: string, duration: Math.min(myduration, timeleft), id: generateID() })
+	}
+}
 
 //custom subtask
 function submitcreatetodosubtask(event){
@@ -8221,6 +8248,7 @@ function submitcreatetodosubtask(event){
 	let duration = getDuration(string2).value
 	if(duration != null && duration != 0){
 		myduration = duration
+
 	}
 
 	if(myduration == null){
@@ -8236,6 +8264,9 @@ function submitcreatetodosubtask(event){
 function resetcreatetodocreatesubtask(){
 	let createtodosubtaskinput = getElement('createtodosubtaskinput')
 	createtodosubtaskinput.value = ''
+
+	let createtodosubtaskduration = getElement('createtodosubtaskduration')
+	createtodosubtaskduration.value = '1h'
 }
 
 function deletecreatetodosubtask(id){
@@ -8321,9 +8352,9 @@ function closecreatetodoitemduration() {
 function updatecreatetodoitemdurationlist() {
 	let createtodoitemdurationlist = getElement('createtodoitemdurationlist')
 
-	let durations = [5, 10, 15, 30, 60, 120, 240]
+	let durations = TODO_DURATION_PRESETS
 	if(createtodotab == 1){
-		durations = [60, 120, 240, 600, 1200]
+		durations = TODO_DURATION_PRESETS_LONG
 	}
 	let output = []
 	for (let item of durations) {
@@ -8331,6 +8362,14 @@ function updatecreatetodoitemdurationlist() {
 	}
 
 	createtodoitemdurationlist.innerHTML = output.join('')
+
+	//title
+	let createtodoitemdurationtitle = getElement('createtodoitemdurationtitle')
+	if(createtodotab == 0){
+		createtodoitemdurationtitle.innerHTML = 'Time needed'
+	}else if(createtodotab == 1){
+		createtodoitemdurationtitle.innerHTML = 'Total time needed'
+	}
 }
 updatecreatetodoitemdurationlist()
 
@@ -8348,10 +8387,6 @@ function inputcreatetodoitemduration(event, duration) {
 
 	if (myduration == null) {
 		myduration = createtododurationvalue
-	}
-
-	if(myduration > MAX_TODO_DURATION){
-		myduration = MAX_TODO_DURATION
 	}
 
 	if (myduration != null && myduration != 0) {
@@ -8999,10 +9034,6 @@ function typeaddtask(event, submit, index) {
 	}
 
 	if (finalduration != null && finalduration != 0) {
-		if(finalduration > MAX_TODO_DURATION){
-			finalduration = MAX_TODO_DURATION
-		}
-
 		createtododurationvalue = finalduration
 	}
 
@@ -9068,16 +9099,16 @@ function submitcreatetodo(event) {
 		calendar.todos.push(item)
 		
 
-		//SUB TASKS
-		if(createtodosubtasks.length > 0){
+		//sub tasks
+		if(createtodotab == 1 && createtodosubtasks.length > 0){
 			for(let subtaskitem of createtodosubtasks){
 				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), subtaskitem.duration, `${subtaskitem.title || `New Task (part ${Calendar.Todo.getChildren(item).length + 1})`}`)
 
 				childitem.parentid = item.id
 
 				childitem.timewindow.day = item.timewindow.day
-				childitem.timewindow.time.startminute = item.time.timewindow.startminute
-				childitem.timewindow.time.endminute = item.time.timewindow.endminute
+				childitem.timewindow.time.startminute = item.timewindow.time.startminute
+				childitem.timewindow.time.endminute = item.timewindow.time.endminute
 
 				calendar.todos.push(childitem)
 			}
@@ -9817,18 +9848,35 @@ function clicktodoitemduration(event, id) {
 
 	closetodoitemduedate()
 	closetodoitempriority()
+
+	updatetodoitemdurationlist()
 }
 
 function updatetodoitemdurationlist() {
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == inputtodoid)
+
 	let todoitemdurationlist = getElement('todoitemdurationlist')
 
-	let durations = [5, 10, 15, 30, 60, 120, 240]
+	let durations;
+
+	let createtodoitemdurationtitle = getElement('createtodoitemdurationtitle')
+	if(item && Calendar.Todo.isParent(item)){
+		createtodoitemdurationtitle.innerHTML = 'Total time needed'
+
+		durations = TODO_DURATION_PRESETS_LONG
+	}else{
+		createtodoitemdurationtitle.innerHTML = 'Time needed'
+
+		durations = TODO_DURATION_PRESETS
+	}
+
 	let output = []
 	for (let item of durations) {
 		output.push(`<div class="helpitem" onclick="inputtodoitemduration(event, ${item})">${getDHMText(item)}</div>`)
 	}
 
 	todoitemdurationlist.innerHTML = output.join('')
+
 }
 updatetodoitemdurationlist()
 
@@ -9853,10 +9901,6 @@ function inputtodoitemduration(event, duration) {
 		}else{
 			myduration = Math.floor((new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()) / 60000)
 		}
-	}
-
-	if(myduration > MAX_TODO_DURATION){
-		myduration = MAX_TODO_DURATION
 	}
 
 	if (myduration != null && myduration != 0) {
@@ -10388,9 +10432,6 @@ function inputtododuration(event){
 	if(Calendar.Todo.isTodo(item)){
 		let myduration = getDuration(string).value
 
-		if(myduration > MAX_TODO_DURATION){
-			myduration = MAX_TODO_DURATION
-		}
 
 		if(myduration != null && myduration != 0){
 			item.duration = myduration
@@ -10398,10 +10439,6 @@ function inputtododuration(event){
 	}else{
 		let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 		let myduration = getDuration(string).value
-
-		if(myduration > MAX_TODO_DURATION){
-			myduration = MAX_TODO_DURATION
-		}
 
 		let enddate = new Date(startdate.getTime() + (myduration * 60000))
 
@@ -10583,7 +10620,7 @@ function updatetimepicker() {
 function updatedurationpicker() {
 	let durationpicker = getElement('durationpicker')
 
-	let durations = [5, 10, 15, 30, 60, 120, 240]
+	let durations = TODO_DURATION_PRESETS
 	let output = []
 	for (let item of durations) {
 		output.push(`<div class="helpitem" onclick="selectdurationpicker(${item})">${getDHMText(item)}</div>`)
@@ -10768,10 +10805,10 @@ function clickeventremindme() {
 function remindme(option) {
 	let item = calendar.events.find(d => d.id == selectedeventid)
 	if (!item) return
-	if (item.reminder.find(d => d.timebefore == reminderlist[option])) {
-		item.reminder = item.reminder.filter(d => d.timebefore != reminderlist[option])
+	if (item.reminder.find(d => d.timebefore == REMINDER_PRESETS[option])) {
+		item.reminder = item.reminder.filter(d => d.timebefore != REMINDER_PRESETS[option])
 	} else {
-		item.reminder.push({ timebefore: reminderlist[option] })
+		item.reminder.push({ timebefore: REMINDER_PRESETS[option] })
 	}
 	calendar.updateInfo()
 }
@@ -10781,7 +10818,7 @@ function updateitemreminders() {
 	if (!item) return
 
 	function isselectedreminder(thisindex) {
-		return item.reminder.find(d => d.timebefore == reminderlist[thisindex])
+		return item.reminder.find(d => d.timebefore == REMINDER_PRESETS[thisindex])
 	}
 
 	let remindmetime = getElement('remindmetime')
