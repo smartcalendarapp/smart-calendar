@@ -186,8 +186,39 @@
 
 
 
-	<div class="pointer-auto margin-top-12px z-index-1000 helpmenu absolute popup popuptransition border-8px display-flex flex-column hiddenpopup" id="createtodosubtasksuggestions">
-		<div class="helpitem" onclick="autocreatesubtask()">Auto-create subtasks</div>
+	<div class="pointer-auto max-width-300px z-index-1000 helpmenu absolute popup popuptransition border-8px display-flex flex-column hiddenpopup" id="createtodosubtasksuggestions">
+		<div class="display-flex flex-row gap-12px justify-space-between align-center">
+			<div>
+				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+				<g>
+				</g>
+				</svg>
+			</div>
+			
+			<div class="infotitle">Auto-fill subtasks</div>
+
+			<div class="infotoprightgroup">
+				<div class="infotopright pointer" onclick="closeautofillsubtasks(event)">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="text-14px text-quaternary">Split up your project into even chunks of work. Select how long you want each to be.</div>
+
+		<div class="display-flex flex-column overflow-auto border-8px listborder max-height-240px">
+			<div class="helpitem" onclick="autocreatesubtask(30)">30m each</div>
+			<div class="helpitem" onclick="autocreatesubtask(60)">1h each</div>
+			<div class="helpitem" onclick="autocreatesubtask(120)">2h each</div>
+		</div>
 	</div>
 
 	

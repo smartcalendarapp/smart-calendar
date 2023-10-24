@@ -8218,31 +8218,23 @@ function togglecreatetodosubtaskpopup(event){
 	createtodosubtasksuggestions.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, createtodosubtasksuggestions) + 'px'
 	createtodosubtasksuggestions.style.left = fixleft(button.getBoundingClientRect().left + button.offsetWidth - createtodosubtasksuggestions.offsetWidth, createtodosubtasksuggestions) + 'px'
 }
-function autocreatesubtask(){
+function autocreatesubtask(eachduration){
+	let createtodosubtaskinput = getElement('createtodosubtaskinput')
+	let string = createtodosubtaskinput.value
+
 	let createtodosubtasksuggestions = getElement('createtodosubtasksuggestions')
 	createtodosubtasksuggestions.classList.add('hiddenpopup')
-
-	let createtodosubtaskduration = getElement('createtodosubtaskduration')
-	let string2 = createtodosubtaskduration.value
-	
-	let myduration;
-
-	let duration = getDuration(string2).value
-	if(duration != null && duration != 0){
-		myduration = duration
-	}
-
-	if(myduration == null){
-		myduration = 60
-	}
 
 
 	let timeleft = createtododurationvalue - createtodosubtasks.reduce((sum, obj) => sum + obj.duration, 0)
 	while(timeleft > 0){
-		createtodosubtasks.push({ title: string, duration: Math.min(myduration, timeleft), id: generateID() })
+		createtodosubtasks.push({ title: string ? `${string} (part ${createtodosubtasks.length + 1})` : null, duration: Math.min(eachduration, timeleft), id: generateID() })
 	}
 }
-
+function closeautofillsubtasks(){
+	let createtodosubtasksuggestions = getElement('createtodosubtasksuggestions')
+	createtodosubtasksuggestions.classList.add('hiddenpopup')
+}
 
 //custom subtask
 function submitcreatetodosubtask(event){
@@ -8264,7 +8256,7 @@ function submitcreatetodosubtask(event){
 		myduration = 60
 	}
 
-	createtodosubtasks.push({ title: string, duration: myduration, id: generateID() })
+	createtodosubtasks.push({ title: string ? `${string} (part ${createtodosubtasks.length + 1})` : null , duration: myduration, id: generateID() })
 
 	updatecreatetodo()
 	
