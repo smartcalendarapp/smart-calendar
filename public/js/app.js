@@ -8008,6 +8008,8 @@ function resetcreatetodo() {
 
 	createtodosubtasks = []
 
+	createtodoshowsubtask = false
+
 
 	resetcreatetodocreatesubtask()
 	
@@ -8175,7 +8177,6 @@ function updatecreatetodo() {
 					   </g>
 					   </svg>
 
-					   <span class="tooltiptextleft">Delete</span>
 				   </div>
 
 			   </div>
