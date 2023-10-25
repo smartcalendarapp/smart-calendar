@@ -8473,7 +8473,7 @@ function updatecreatetodotimepickeronce() {
 	}
 	times.push(1440-1)
 	for(let min of times){
-		output.push(`<div class="helpitem" onclick="inputtodoitemduetime(event, ${min})">${getHMText(min)}</div>`)
+		output.push(`<div class="helpitem" onclick="inputcreatetodoitemduetime(event, ${min})">${getHMText(min)}</div>`)
 	}
 	let createtodoitemduetimelist = getElement('createtodoitemduetimelist')
 	createtodoitemduetimelist.innerHTML = output.join('')
@@ -9868,18 +9868,7 @@ function updatetodoitemdurationlist() {
 
 	let todoitemdurationlist = getElement('todoitemdurationlist')
 
-	let durations;
-
-	let createtodoitemdurationtitle = getElement('createtodoitemdurationtitle')
-	if(item && Calendar.Todo.isParent(item)){
-		createtodoitemdurationtitle.innerHTML = 'Total time needed'
-
-		durations = TODO_DURATION_PRESETS_LONG
-	}else{
-		createtodoitemdurationtitle.innerHTML = 'Time needed'
-
-		durations = TODO_DURATION_PRESETS
-	}
+	let durations = TODO_DURATION_PRESETS
 
 	let output = []
 	for (let item of durations) {
@@ -10063,7 +10052,6 @@ function addsubtask(event, id){
 	newtask.parentid = item.id
 
 	calendar.todos.push(newtask)
-
 
 	
 	fixsubandparenttask(newtask)
