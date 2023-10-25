@@ -1879,7 +1879,7 @@
 							<!-- popup -->
 							<div class="width-full popuptransition overflow-hidden background-primary box-shadow addtodosuggestions z-index-100 border-8px display-flex popup flex-column hiddenpopup" id="addtodooptionspopup">
 
-								<div class="padding-top-12px display-flex flex-row align-center justify-center gap-24px">
+								<div class="padding-top-12px display-flex flex-row align-center justify-center gap-24px display-none">
 									<div class="padding-top-6px nowrap padding-bottom-6px relative text-bold text-16px text-quaternary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clickcreatetodotab(0)" id="createtodotabtask">
 										Task
 										<span class="buttonunderline"></span>
@@ -1889,8 +1889,6 @@
 										<span class="buttonunderline"></span>
 									</div>
 								</div>
-
-								<div class="horizontalbar"></div>
 										
 								<div class="padding-12px border-box flex-1 align-center display-flex flex-row gap-12px padding-12px width-full flex-wrap-wrap">
 									<div class="popupbutton border-8px padding-left-12px padding-right-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap popupbutton text-14px pointer-auto pointer transition-duration-100" onclick="readinteractivetourpopup('clickduedate');clickcreatetododuedate(event)" id="createtododuedate">
@@ -1954,10 +1952,6 @@
 								<div class="inputgroup border-8px">
 									<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotes" maxlength="2000"></textarea>
 									<span class="inputline"></span>
-								</div>
-
-								<div class="margin-12px align-self-flex-end padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit display-none" onclick="submitcreatetodo()" id="submitcreatetodobutton2">
-									<div class="border-8px text-16px text-white display-flex flex-row gap-6px  pointer-none nowrap transition-none">Create</div>
 								</div>
 
 							</div>

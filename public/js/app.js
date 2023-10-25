@@ -9,8 +9,7 @@ const DEFAULTCOLORS = ['#f54842', '#faa614', '#2bc451', '#2693ff', '#916bfa']
 
 const REMINDER_PRESETS = [0, 300000, 900000, 3600000, 3600000*6, 86400000]
 
-const TODO_DURATION_PRESETS_LONG = [60, 120, 240, 600, 1200]
-const TODO_DURATION_PRESETS = [5, 10, 15, 30, 60, 120, 240]
+const TODO_DURATION_PRESETS = [5, 10, 15, 30, 60, 120, 240, 600, 1200]
 
 const repeatoptiondata = [
 	{ interval: null, frequency: null, byday: [], text: 'No repeat' },
@@ -8355,9 +8354,6 @@ function updatecreatetodoitemdurationlist() {
 	let createtodoitemdurationlist = getElement('createtodoitemdurationlist')
 
 	let durations = TODO_DURATION_PRESETS
-	if(createtodotab == 1){
-		durations = TODO_DURATION_PRESETS_LONG
-	}
 	let output = []
 	for (let item of durations) {
 		output.push(`<div class="helpitem" onclick="inputcreatetodoitemduration(event, ${item})">${getDHMText(item)}</div>`)
@@ -8367,11 +8363,6 @@ function updatecreatetodoitemdurationlist() {
 
 	//title
 	let createtodoitemdurationtitle = getElement('createtodoitemdurationtitle')
-	if(createtodotab == 0){
-		createtodoitemdurationtitle.innerHTML = 'Time needed'
-	}else if(createtodotab == 1){
-		createtodoitemdurationtitle.innerHTML = 'Total time needed'
-	}
 }
 updatecreatetodoitemdurationlist()
 
@@ -8393,6 +8384,12 @@ function inputcreatetodoitemduration(event, duration) {
 
 	if (myduration != null && myduration != 0) {
 		createtododurationvalue = myduration
+
+		if(createtododurationvalue > 0){
+			createtodotab = 1
+		}else{
+			createtodotab = 0
+		}
 
 		//close
 		closecreatetodoitemduration()
