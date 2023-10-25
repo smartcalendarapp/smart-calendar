@@ -8385,7 +8385,7 @@ function inputcreatetodoitemduration(event, duration) {
 	if (myduration != null && myduration != 0) {
 		createtododurationvalue = myduration
 
-		if(createtododurationvalue > 0){
+		if(createtododurationvalue >= 120){
 			createtodotab = 1
 		}else{
 			createtodotab = 0
