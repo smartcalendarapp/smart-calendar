@@ -8108,19 +8108,16 @@ function updatecreatetodo() {
 	let clickcreatetodotabtask = getElement('createtodotabtask')
 	let clickcreatetodotabproject = getElement('createtodotabproject')
 	let createtodoprojectwrap = getElement('createtodoprojectwrap')
-	let submitcreatetodobutton2 = getElement('submitcreatetodobutton2')
 
 	clickcreatetodotabtask.classList.remove('selectedbuttonunderline')
 	clickcreatetodotabproject.classList.remove('selectedbuttonunderline')
 	createtodoprojectwrap.classList.add('display-none')
-	submitcreatetodobutton2.classList.add('display-none')
 
 	if(createtodotab == 0){
 		clickcreatetodotabtask.classList.add('selectedbuttonunderline')
 	}else if(createtodotab == 1){
 		clickcreatetodotabproject.classList.add('selectedbuttonunderline')
 		createtodoprojectwrap.classList.remove('display-none')
-		submitcreatetodobutton2.classList.remove('display-none')
 	}
 
 	//subtasks
@@ -8260,7 +8257,7 @@ function submitcreatetodosubtask(event){
 		myduration = 60
 	}
 
-	createtodosubtasks.push({ title: string ? `${string} (part ${createtodosubtasks.length + 1})` : null , duration: myduration, id: generateID() })
+	createtodosubtasks.push({ title: string, duration: myduration, id: generateID() })
 
 	updatecreatetodo()
 	
@@ -9110,7 +9107,7 @@ function submitcreatetodo(event) {
 		//sub tasks
 		if(createtodotab == 1 && createtodosubtasks.length > 0){
 			for(let subtaskitem of createtodosubtasks){
-				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), subtaskitem.duration, `${subtaskitem.title || `New Task (part ${Calendar.Todo.getChildren(item).length + 1})`}`)
+				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), subtaskitem.duration, `${subtaskitem.title || `${item.title || 'New Task'} (part ${Calendar.Todo.getChildren(item).length + 1})`}`)
 
 				childitem.parentid = item.id
 
