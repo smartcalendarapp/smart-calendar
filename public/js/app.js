@@ -8009,8 +8009,6 @@ function resetcreatetodo() {
 	createtodosubtasks = []
 
 
-	createtodotab = 0
-
 	resetcreatetodocreatesubtask()
 	
 	typeaddtask()
@@ -8104,19 +8102,15 @@ function updatecreatetodo() {
 
 
 	//create todo tab
-	let clickcreatetodotabtask = getElement('createtodotabtask')
-	let clickcreatetodotabproject = getElement('createtodotabproject')
 	let createtodoprojectwrap = getElement('createtodoprojectwrap')
+	let clickaddsubtaskbutton = getElement('clickaddsubtaskbutton')
 
-	clickcreatetodotabtask.classList.remove('selectedbuttonunderline')
-	clickcreatetodotabproject.classList.remove('selectedbuttonunderline')
-	createtodoprojectwrap.classList.add('display-none')
-
-	if(createtodotab == 0){
-		clickcreatetodotabtask.classList.add('selectedbuttonunderline')
-	}else if(createtodotab == 1){
-		clickcreatetodotabproject.classList.add('selectedbuttonunderline')
+	if(createtodoshowsubtask){
+		clickaddsubtaskbutton.classList.add('display-none')
 		createtodoprojectwrap.classList.remove('display-none')
+	}else{
+		clickaddsubtaskbutton.classList.remove('display-none')
+		createtodoprojectwrap.classList.add('display-none')
 	}
 
 	//subtasks
@@ -8204,6 +8198,13 @@ function updatecreatetodo() {
 }
 
 
+let createtodoshowsubtask = false
+function clickaddsubtask(){
+	createtodoshowsubtask = true
+
+	updatecreatetodo()
+}
+
 //here4
 //add sub task button
 function togglecreatetodosubtaskpopup(event){
@@ -8236,6 +8237,7 @@ function closeautofillsubtasks(){
 	createtodosubtasksuggestions.classList.add('hiddenpopup')
 }
 
+
 //custom subtask
 function submitcreatetodosubtask(event){
 	let createtodosubtaskinput = getElement('createtodosubtaskinput')
@@ -8261,6 +8263,9 @@ function submitcreatetodosubtask(event){
 	updatecreatetodo()
 	
 	resetcreatetodocreatesubtask()
+
+	let createtodosubtasklist = getElement('createtodosubtasklist')
+	createtodosubtasklist.scrollTo(0, createtodosubtasklist.scrollHeight)
 }
 function resetcreatetodocreatesubtask(){
 	let createtodosubtaskinput = getElement('createtodosubtaskinput')
@@ -8277,19 +8282,6 @@ function deletecreatetodosubtask(id){
 }
 
 
-//create todo tab
-let createtodotab = 0;
-function clickcreatetodotab(index){
-	createtodotab = index
-	
-	if(createtodotab == 1){
-		if(createtododurationvalue < 120){
-			createtododurationvalue = 120
-		}
-	}
-
-	updatecreatetodo()
-}
 
 function closetodoitemduration() {
 	let createtododuration = getElement('createtododuration')
@@ -8384,12 +8376,6 @@ function inputcreatetodoitemduration(event, duration) {
 
 	if (myduration != null && myduration != 0) {
 		createtododurationvalue = myduration
-
-		if(createtododurationvalue >= 120){
-			createtodotab = 1
-		}else{
-			createtodotab = 0
-		}
 
 		//close
 		closecreatetodoitemduration()
@@ -9102,7 +9088,7 @@ function submitcreatetodo(event) {
 		
 
 		//sub tasks
-		if(createtodotab == 1 && createtodosubtasks.length > 0){
+		if(createtodosubtasks.length > 0){
 			for(let subtaskitem of createtodosubtasks){
 				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), subtaskitem.duration, `${subtaskitem.title || `${item.title || 'New Task'} (part ${Calendar.Todo.getChildren(item).length + 1})`}`)
 
