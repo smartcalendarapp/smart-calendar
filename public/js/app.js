@@ -553,22 +553,33 @@ function getMinute(string, lax, fullstring) { //lax is for when getting time fro
 
 		temptime = (fullstring || string).match(regex)
 		if(temptime){
-			let temptime2 = temptime[0].replace(datematch, '').match(/\d+/)
+			const dateMatchIndex = datematch && temptime[0].indexOf(datematch)
+			const dateMatchEnd = datematch && (dateMatchIndex + datematch.length)
 
-			if(firstmatchindex == null || temptime.index + temptime2.index < firstmatchindex){
-				match = temptime2[0]
-	
-				let temptime4;
-				let temp = (+temptime2[0] || 0) * 60
-				if(temp < calendar.settings.sleep.endminute){//FIX THIS HERE4
-					temptime4 = temp + 12 * 60
-				}else if(temp > calendar.settings.sleep.startminute){
-					temptime4 = temp - 12 * 60
-				}else{
-					temptime4 = temp
+			const matches = [...temptime[0].matchAll(/\d+/g)].filter(match => {
+				const matchStart = match.index
+				const matchEnd = match.index + match[0].length
+				return !(matchStart >= dateMatchIndex && matchEnd <= dateMatchEnd)
+			})
+
+			let temptime2 = matches[0]
+			if(temptime2){
+				console.log(temptime.index + temptime2.index, firstmatchindex)
+				if(firstmatchindex == null || (temptime.index + temptime2.index < firstmatchindex)){
+					match = temptime2[0]
+		
+					let temptime4;
+					let temp = (+temptime2[0] || 0) * 60
+					if(temp < calendar.settings.sleep.endminute){//FIX THIS HERE4
+						temptime4 = temp + 12 * 60
+					}else if(temp > calendar.settings.sleep.startminute){
+						temptime4 = temp - 12 * 60
+					}else{
+						temptime4 = temp
+					}
+		
+					myminute = temptime4
 				}
-	
-				myminute = temptime4
 			}
 		}
 	}
@@ -8135,7 +8146,7 @@ function updatecreatetodo() {
 				   <div class="flex-1 display-flex flex-column gap-6px">
 					   <div class="align-flex-start width-full display-flex flex-column">
 		
-						   <div class="todoitemtext text-14px">
+						   <div class="todoitemtext text-16px">
 							   ${item.title ? cleanInput(item.title) : `New Task`}
 						   </div>
 
@@ -8143,7 +8154,7 @@ function updatecreatetodo() {
 	   
 					   <div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 
-							<div class="width-fit background-green transition-duration-100 hover:background-green-hover badgepadding border-round todoitemtext nowrap text-12px pointer-auto pointer transition-duration-100 text-white transition-duration-100 popupbutton">
+							<div class="width-fit background-green transition-duration-100 hover:background-green-hover badgepadding border-round todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-white transition-duration-100 popupbutton">
 								Takes ${getDHMText(item.duration)}
 							</div>
 
