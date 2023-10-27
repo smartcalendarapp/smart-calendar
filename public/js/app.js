@@ -8869,7 +8869,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		totalTranscriptCopy = totalTranscript
 		updaterecognitionui()
 	})
-	
+
 	recognition.addEventListener('start', () => {
 		isspeaking = true
 
@@ -8903,8 +8903,8 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		console.log("Recognition ended")
 	})
 }else{
-	getElement('recognitionwrap').classList.add('display-none')
-	getElement('recognitionwrap2').classList.add('display-none')
+	getElement('todorecognitionwrap').classList.add('display-none')
+	getElement('eventrecognitionwrap').classList.add('display-none')
 }
 
 function updaterecognitionui(){
@@ -8926,8 +8926,17 @@ function updaterecognitionui(){
 	addtododictationtext2.classList.add('display-none')
 	addeventdictationtext2.classList.add('display-none')
 
+	let eventrecognitionbutton = getElement('eventrecognitionbutton')
+	let todorecognitionbutton = getElement('todorecognitionbutton')
+
+	eventrecognitionbutton.classList.remove('display-none')
+	todorecognitionbutton.classList.remove('display-none')
+
 	//display ui
 	if(isspeaking){
+		eventrecognitionbutton.classList.add('display-none')
+		todorecognitionbutton.classList.add('display-none')
+
 		if(recognitionoutputtype == 'task'){
 			addtododictationpopup.classList.remove('hiddenpopup')
 			addtododictationbutton.classList.add('recognitionredanimation')
