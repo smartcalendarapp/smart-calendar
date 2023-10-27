@@ -92,7 +92,7 @@
 	</div>
 	
 
-	<div class="z-index-10000 small:padding-0 backdrop-blur fixed top-0 left-0 bottom-0 right-0 display-flex display-none padding-60px border-box" id="videopopup">
+	<div class="z-index-10000 small:padding-0 backdrop-blur fixed top-0 left-0 bottom-0 right-0 display-flex display-none padding-60px border-box" id="videopopup" onclick="if(event.target === getElement('videopopup'))closedemovideo()">
 		<div class="relative gap-12px flex-1 display-flex flex-column justify-center">
 			<div class="small:display-none infotopright pointer absolute top-0 left-full margin-left-12px" onclick="closedemovideo()">
 				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
