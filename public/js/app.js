@@ -2320,7 +2320,6 @@ class Calendar {
 
 						output.push('<div class="horizontalbar"></div>')
 						
-						//here4
 						output.push(`
 						<div class="display-flex flex-row flex-wrap-wrap gap-12px">
 
@@ -8167,7 +8166,7 @@ function updatecreatetodo() {
 				   <div class="flex-1 display-flex flex-column gap-6px">
 					   <div class="align-flex-start width-full display-flex flex-column">
 		
-						   <div class="todoitemtext text-16px">
+						   <div class="white-space-normal break-word todoitemtext text-16px">
 							   ${item.title ? cleanInput(item.title) : `New Task`}
 						   </div>
 
@@ -8928,18 +8927,18 @@ function updaterecognitionui(){
 			addtododictationbutton.classList.add('recognitionredanimation')
 
 			if(totalTranscriptCopy){
-				addtododictationtext.innerHTML =  `<span class="text-primary text-16px">${totalTranscriptCopy}</span>`
+				addtododictationtext.innerHTML =  `<span class="text-left white-space-normal break-word text-primary text-16px">${totalTranscriptCopy}</span>`
 			}else{
-				addtododictationtext.innerHTML = `<span class="text-quaternary text-16px">Listening...</span>`
+				addtododictationtext.innerHTML = `<span class="text-left white-space-normal break-word text-quaternary text-16px">Listening...</span>`
 			}
 		}else if(recognitionoutputtype == 'event'){
 			addeventdictationpopup.classList.remove('hiddenpopup')
 			addeventdictationbutton.classList.add('recognitionredanimation')
 
 			if(totalTranscriptCopy){
-				addeventdictationtext.innerHTML =  `<span class="text-primary text-16px">${totalTranscriptCopy}</span>`
+				addeventdictationtext.innerHTML =  `<span class="text-left white-space-normal break-word text-primary text-16px">${totalTranscriptCopy}</span>`
 			}else{
-				addeventdictationtext.innerHTML = `<span class="text-quaternary text-16px">Listening...</span>`
+				addeventdictationtext.innerHTML = `<span class="text-left white-space-normal break-word text-quaternary text-16px">Listening...</span>`
 			}
 		}
 	}else{
@@ -8958,7 +8957,7 @@ function updaterecognitionui(){
 	//error
 	const permanentrecognitionerrors = ['service-not-allowed', 'not-allowed']
 	if(recognitionerror && permanentrecognitionerrors.includes(recognitionerror)){
-		let errorhtml = `<span class="text-red text-16px">No permission to use dictation, please check your browser/device settings.</span>`
+		let errorhtml = `<span class="text-left white-space-normal break-word text-red text-16px">No permission to use dictation, please check your browser/device settings.</span>`
 		if(recognitionoutputtype == 'task'){
 			addtododictationtext.innerHTML = errorhtml
 		}else if(recognitionoutputtype == 'event'){
@@ -8987,6 +8986,13 @@ function startrecognition(){
 	if(!isspeaking){
 		recognition.start()
 	}
+}
+
+function closerecognitionpopup(){
+	stoprecognition()
+	ispaused = false
+
+	updaterecognitionui()
 }
 function submitdictation(){
 	if(totalTranscriptCopy){
@@ -9400,7 +9406,7 @@ function gettododata(item) {
 									${item.googleclassroomid ? `<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none text-14px hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open Google Classroom assignment</a>` : ``}
 
 									${item.notes && !item.completed ?
-									`<div class="pointer-auto pre-wrap break-word todoitemtext text-quaternary text-14px overflow-hidden ${itemclasses.join(' ')}">${formatURL(cleanInput(item.notes))}</div>` : ''}
+									`<div class="pointer-auto white-space-normal break-word todoitemtext text-quaternary text-14px overflow-hidden ${itemclasses.join(' ')}">${formatURL(cleanInput(item.notes))}</div>` : ''}
 	
 								</div>
 				
