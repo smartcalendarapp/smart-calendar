@@ -3899,14 +3899,18 @@ body {
 	margin-top:12px;
 }
 
-.addtodosuggestionitem{
-	min-width:160px;
-}
+
 .addtodosuggestions{
 	position:absolute;
 	top:100% !important;
 	left:0 !important;
 	margin-top:12px;
+}
+
+.addeventsuggestions{
+	position:absolute;
+	top:100% !important;
+	left:0 !important;
 }
 
 .switch {

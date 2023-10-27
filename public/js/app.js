@@ -8068,10 +8068,12 @@ function updatecreatetodo() {
 	let createtododurationonboarding = getElement('createtododurationonboarding')
 	let createtododuedateonboarding = getElement('createtododuedateonboarding')
 	let createtodopriorityonboarding = getElement('createtodopriorityonboarding')
+	let createtodoavailabilityonboarding = getElement('createtodoavailabilityonboarding')
 
 	let createtododurationprompttodotoday = getElement('createtododurationprompttodotoday')
 	let createtododuedateprompttodotoday = getElement('createtododuedateprompttodotoday')
 	let createtodopriorityprompttodotoday = getElement('createtodopriorityprompttodotoday')
+	let createtodoavailabilityprompttodotoday = getElement('createtodoavailabilityprompttodotoday')
 
 	let currentdate = new Date()
 
@@ -8088,7 +8090,10 @@ function updatecreatetodo() {
 
 
 	//time slot
-	createtodoavailability.innerHTML = `Time slot: ${timewindowpresets[createtodoavailabilityvalue].text}`
+	let tempavailabilityvalue = `Time slot: ${timewindowpresets[createtodoavailabilityvalue].text}`
+	createtodoavailability.innerHTML = tempavailabilityvalue
+	createtodoavailabilityprompttodotoday.innerHTML = tempavailabilityvalue
+	createtodoavailabilityonboarding.innerHTML = tempavailabilityvalue
 
 	//due date
 	let tempduedatevalue = duedate ? `
@@ -8116,6 +8121,7 @@ function updatecreatetodo() {
 	createtodopriority.innerHTML = temppriorityvalue
 	createtodopriorityonboarding.innerHTML = temppriorityvalue
 	createtodopriorityprompttodotoday.innerHTML = temppriorityvalue
+	
 
 	//add button # of tasks
 	let finalstring = todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
@@ -8903,8 +8909,8 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 function updaterecognitionui(){
 	let addtododictationpopup = getElement('addtododictationpopup')
-	let addtododictationtext = getElement('addtododictationtext')
 	let addeventdictationpopup = getElement('addeventdictationpopup')
+	let addtododictationtext = getElement('addtododictationtext')
 	let addeventdictationtext = getElement('addeventdictationtext')
 	let addtododictationbutton = getElement('addtododictationbutton')
 	let addeventdictationbutton = getElement('addeventdictationbutton')
@@ -8927,18 +8933,18 @@ function updaterecognitionui(){
 			addtododictationbutton.classList.add('recognitionredanimation')
 
 			if(totalTranscriptCopy){
-				addtododictationtext.innerHTML =  `<span class="text-left white-space-normal break-word text-primary text-16px">${totalTranscriptCopy}</span>`
+				addtododictationtext.innerHTML =  `<span class="text-primary">${totalTranscriptCopy}</span>`
 			}else{
-				addtododictationtext.innerHTML = `<span class="text-left white-space-normal break-word text-quaternary text-16px">Listening...</span>`
+				addtododictationtext.innerHTML = `<span class="text-quaternary">Listening...</span>`
 			}
 		}else if(recognitionoutputtype == 'event'){
 			addeventdictationpopup.classList.remove('hiddenpopup')
 			addeventdictationbutton.classList.add('recognitionredanimation')
 
 			if(totalTranscriptCopy){
-				addeventdictationtext.innerHTML =  `<span class="text-left white-space-normal break-word text-primary text-16px">${totalTranscriptCopy}</span>`
+				addeventdictationtext.innerHTML =  `<span class="text-primary">${totalTranscriptCopy}</span>`
 			}else{
-				addeventdictationtext.innerHTML = `<span class="text-left white-space-normal break-word text-quaternary text-16px">Listening...</span>`
+				addeventdictationtext.innerHTML = `<span class="text-quaternary">Listening...</span>`
 			}
 		}
 	}else{
@@ -8947,9 +8953,13 @@ function updaterecognitionui(){
 			if(recognitionoutputtype == 'task'){
 				addtododictationpopup.classList.remove('hiddenpopup')
 				addtododictationtext2.classList.remove('display-none')
+
+				addtododictationtext.innerHTML = ''
 			}else if(recognitionoutputtype == 'event'){
 				addeventdictationpopup.classList.remove('hiddenpopup')
 				addeventdictationtext2.classList.remove('display-none')
+
+				addeventdictationtext.innerHTML = ''
 			}
 		}
 	}
@@ -8957,7 +8967,7 @@ function updaterecognitionui(){
 	//error
 	const permanentrecognitionerrors = ['service-not-allowed', 'not-allowed']
 	if(recognitionerror && permanentrecognitionerrors.includes(recognitionerror)){
-		let errorhtml = `<span class="text-left white-space-normal break-word text-red text-16px">No permission to use dictation, please check your browser/device settings.</span>`
+		let errorhtml = `<span class="text-red">No permission to use dictation, please check your browser/device settings.</span>`
 		if(recognitionoutputtype == 'task'){
 			addtododictationtext.innerHTML = errorhtml
 		}else if(recognitionoutputtype == 'event'){
@@ -8971,6 +8981,14 @@ function togglerecognition(type){
 		if(!isspeaking){
 			recognitionoutputtype = type
 
+			let addtododictationpopup = getElement('addtododictationpopup')
+			let addeventdictationpopup = getElement('addeventdictationpopup')
+			if(recognitionoutputtype == 'task'){
+				addtododictationpopup.classList.remove('hiddenpopup')
+			}else if(recognitionoutputtype == 'event'){
+				addeventdictationpopup.classList.remove('hiddenpopup')
+			}
+
 			recognition.start()
 		}else{
 			recognition.stop()
@@ -8980,11 +8998,6 @@ function togglerecognition(type){
 function stoprecognition(){
 	if(isspeaking){
 		recognition.stop()
-	}
-}
-function startrecognition(){
-	if(!isspeaking){
-		recognition.start()
 	}
 }
 
@@ -9406,7 +9419,7 @@ function gettododata(item) {
 									${item.googleclassroomid ? `<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none text-14px hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open Google Classroom assignment</a>` : ``}
 
 									${item.notes && !item.completed ?
-									`<div class="pointer-auto white-space-normal break-word todoitemtext text-quaternary text-14px overflow-hidden ${itemclasses.join(' ')}">${formatURL(cleanInput(item.notes))}</div>` : ''}
+									`<div class="pointer-auto pre-wrap break-word todoitemtext text-quaternary text-14px overflow-hidden ${itemclasses.join(' ')}">${formatURL(cleanInput(item.notes))}</div>` : ''}
 	
 								</div>
 				
