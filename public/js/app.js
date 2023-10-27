@@ -8887,7 +8887,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition.addEventListener('error', (event) => {
 		finalTranscript = ''
 		interimTranscript = ''
-		
+
 		isspeaking = false
 
 		recognitionerror = event.error
@@ -8914,10 +8914,16 @@ function updaterecognitionui(){
 	let recognitionsvg = getElement('recognitionsvg')
 	let recognitionsvg2 = getElement('recognitionsvg2')
 
+	let addtododictationpopup = getElement('addtododictationpopup')
+
+	addtododictationpopup.classList.add('hiddenpopup')
+
 	//display ui
 	if(isspeaking){
 		if(recognitionoutputtype == 'task'){
 			recognitionsvg.classList.add('recognitionredanimation')
+
+			addtododictationpopup.classList.remove('hiddenpopup')
 		}else if(recognitionoutputtype == 'event'){
 			recognitionsvg2.classList.add('recognitionredanimation')
 		}
@@ -8960,7 +8966,10 @@ function stoprecognition(){
 		recognition.stop()
 	}
 }
-
+function redorecognition(){
+	recognition.stop()
+	recognition.start()
+}
 
 
 function typeaddtask(event, submit, index) {
@@ -8981,7 +8990,7 @@ function typeaddtask(event, submit, index) {
 	let temptext = tempmatch1.match ? finalstring.replace(tempmatch1.match, '') : finalstring
 	let tempmatch5 = getMinute(temptext, false, finalstring)
 	if (tempmatch1.match || tempmatch5.match) {
-		let regex = new RegExp(`\\b((due|by|due\\s+at|due\\s+on|deadline|deadline\\s+at|deadline\\s+on|due\\s+by|finish\\s+by|done\\s+by|complete\\s+by)\\s+((${tempmatch1.match}\\s+((at|on|by)\\s+)?${tempmatch5.match})|(${tempmatch5.match}\\s+((at|on|by)\\s+)?${tempmatch1.match})|(${tempmatch1.match})|(${tempmatch5.match})))\\b`, 'i')
+		let regex = new RegExp(`\\b(((due|by|due\\s+at|due\\s+on|deadline|deadline\\s+at|deadline\\s+on|due\\s+by|finish\\s+by|done\\s+by|complete\\s+by)\\s+)?((${tempmatch1.match}\\s+((at|on|by)\\s+)?${tempmatch5.match})|(${tempmatch5.match}\\s+((at|on|by)\\s+)?${tempmatch1.match})|(${tempmatch1.match})|(${tempmatch5.match})))\\b`, 'i')
 		let tempmatch2 = finalstring.match(regex)
 		if (tempmatch2) {
 			let tempmatch6 = getDate(tempmatch2[0])

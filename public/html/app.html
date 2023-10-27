@@ -1880,7 +1880,19 @@
 								<div class="text-16px text-white display-flex flex-row gap-6px  pointer-none nowrap transition-none" id="submitcreatetodoaddnumber">Add</div>
 							</div>
 
-							<!-- popup -->
+							<!-- dictation popup -->
+							<div class="width-full popuptransition overflow-hidden background-primary box-shadow padding-12px gap-24px addtodosuggestions z-index-100 border-8px display-flex flex-column hiddenpopup" id="addtododictationpopup">
+								<div class="display-flex flex-row justify-center align-center gap-12px">
+									<div class="padding-8px-12px pointer transition-duration-100 width-fit text-blue hover:text-blue-hover display-flex gap-6px text-16px flex-row align-center height-fit" onclick="redorecognition()">			
+										Redo
+									</div>
+									<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px text-white text-16px flex-row align-center border-round height-fit" onclick="submitcreatetodo()">					
+										Submit
+									</div>
+								</div>
+							</div>
+
+							<!-- options popup -->
 							<div class="width-full popuptransition overflow-hidden background-primary box-shadow addtodosuggestions z-index-100 border-8px display-flex popup flex-column hiddenpopup" id="addtodooptionspopup">
 
 								<div class="padding-top-12px display-flex flex-row align-center justify-center gap-24px display-none">
@@ -1908,7 +1920,6 @@
 									</div>
 								</div>
 
-								<!-- here4 -->
 
 								<div class="horizontalbar"></div>
 
