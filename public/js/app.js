@@ -8845,6 +8845,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 	let finalTranscript = ''
 	let interimTranscript = ''
+	totalTranscriptCopy = ''
 
 	recognition.addEventListener('result', event => {
 		interimTranscript = ''
@@ -8873,6 +8874,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition.addEventListener('error', (event) => {
 		finalTranscript = ''
 		interimTranscript = ''
+		totalTranscriptCopy = ''
 
 		isspeaking = false
 
@@ -8885,6 +8887,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition.addEventListener('end', () => {
 		finalTranscript = ''
 		interimTranscript = ''
+		totalTranscriptCopy = ''
 
 		isspeaking = false
 		updaterecognitionui()
@@ -8902,8 +8905,11 @@ function updaterecognitionui(){
 
 	let addtododictationpopup = getElement('addtododictationpopup')
 	let addtododictationtext = getElement('addtododictationtext')
+	let addeventdictationpopup = getElement('addeventdictationpopup')
+	let addeventdictationtext = getElement('addeventdictationtext')
 
 	addtododictationpopup.classList.add('hiddenpopup')
+	addeventdictationpopup.classList.add('hiddenpopup')
 
 	//display ui
 	if(isspeaking){
@@ -8918,6 +8924,13 @@ function updaterecognitionui(){
 			}
 		}else if(recognitionoutputtype == 'event'){
 			recognitionsvg2.classList.add('recognitionredanimation')
+
+			addeventdictationpopup.classList.remove('hiddenpopup')
+			if(totalTranscriptCopy){
+				addeventdictationtext.innerHTML =  `<span class="text-primary text-16px">${totalTranscriptCopy}</span>`
+			}else{
+				addeventdictationtext.innerHTML = `<span class="text-quaternary text-16px">Listening...</span>`
+			}
 		}
 	}else{
 		if(recognitionoutputtype == 'task'){
@@ -8973,7 +8986,10 @@ function submitdictation(){
 		typeaddevent()
 		createeventtitle.focus()
 	}
+
+	stoprecognition()
 }
+
 
 function typeaddtask(event, submit, index) {
 	let todoinputtitle = getElement('todoinputtitle')

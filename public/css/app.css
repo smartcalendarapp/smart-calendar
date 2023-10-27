@@ -1146,8 +1146,8 @@ body {
 
 
 .recognitionbuttonlarge{
-	height: 36px;
-	width: 36px;
+	height: 24px;
+	width: 24px;
 	fill: var(--white);
 	display: inline;
 	vertical-align: middle;
