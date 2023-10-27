@@ -1898,7 +1898,7 @@ body {
 
 
 .dragtododiv {
-	transform: scale(0.8)
+	transition:background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.5s;
 }
 
 .navbar {

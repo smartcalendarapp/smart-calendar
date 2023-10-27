@@ -549,7 +549,7 @@ function getMinute(string, lax, fullstring) { //lax is for when getting time fro
 	if(true){
 		let datematch = getDate(fullstring || string).match
 
-		let regex = new RegExp(`(((1[0-9]|2[0-4]|0?[0-9])(\\s+(at|on|by|from|to|until|through|start|starts|starting|end|ends|ending|due${datematch ? `|${datematch}` : ''})\\b|-))|((\\b(at|on|by|from|to|until|through|start|starts|starting|end|ends|ending|due${datematch ? `|${datematch}` : ''})\\s+|-)(1[0-9]|2[0-4]|0?[0-9])))`)
+		let regex = new RegExp(`\\b(((1[0-9]|2[0-4]|0?[0-9])(\\s+(at|on|by|from|to|until|through|start|starts|starting|end|ends|ending|due${datematch ? `|${datematch}` : ''})\\b|-))|((\\b(at|on|by|from|to|until|through|start|starts|starting|end|ends|ending|due${datematch ? `|${datematch}` : ''})\\s+|-)(1[0-9]|2[0-4]|0?[0-9])))\\b`)
 
 		temptime = (fullstring || string).match(regex)
 		if(temptime){
@@ -8241,6 +8241,9 @@ function clickaddsubtask(){
 	createtodoshowsubtask = true
 
 	updatecreatetodo()
+
+	let createtodosubtaskinput = getElement('createtodosubtaskinput')
+	createtodosubtaskinput.focus()
 }
 
 //here4
@@ -10065,6 +10068,7 @@ function dragtodo(event, id) {
 	let todoelement = getElement(`todo-${id}`)
 
 	let dragtododiv = getElement('dragtododiv')
+	dragtododiv.style = 'transform:scale(1)'
 	dragtododiv.classList.remove('display-none')
 	dragtododiv.innerHTML = todoelement.innerHTML
 
@@ -10125,6 +10129,7 @@ function dragtodo(event, id) {
 function movedragtodo(event) {
 	let dragtododiv = getElement('dragtododiv')
 	dragtododiv.classList.remove('display-none')
+	dragtododiv.style = 'transform:scale(0.8)'
 
 	dragtododiv.style.left = event.clientX - initialdragtodox + 'px'
 	dragtododiv.style.top = event.clientY - initialdragtodoy + 'px'
