@@ -8885,6 +8885,9 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	})
 	  
 	recognition.addEventListener('error', (event) => {
+		finalTranscript = ''
+		interimTranscript = ''
+		
 		isspeaking = false
 
 		recognitionerror = event.error
@@ -8894,6 +8897,9 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	})
 	
 	recognition.addEventListener('end', () => {
+		finalTranscript = ''
+		interimTranscript = ''
+
 		isspeaking = false
 		updaterecognitionui()
 
