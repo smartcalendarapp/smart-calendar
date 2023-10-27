@@ -1148,7 +1148,7 @@ body {
 .recognitionbuttonlarge{
 	height: 24px;
 	width: 24px;
-	fill: var(--white);
+	fill: var(--text-primary);
 	display: inline;
 	vertical-align: middle;
 	pointer-events: none;
@@ -1175,8 +1175,15 @@ body {
 	animation-iteration-count: infinite;
 	animation-timing-function: ease-in-out;
 	opacity: 1;
-	fill:var(--red) !important
+	background-color:var(--red) !important
 }
+.recognitionredanimation:hover{
+	background-color:var(--red-hover) !important
+}
+.recognitionredanimation svg{
+	fill:var(--white) !important;
+}
+
 
 .fillbuttonwhite{
 	height: 18px;

@@ -8831,6 +8831,7 @@ async function uploadtaskpicture(event) {
 
 //speech recognition to add task
 let isspeaking = false
+let ispaused = false
 let recognition;
 let recognitionoutputtype;
 let recognitionerror;
@@ -8866,6 +8867,8 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	
 	recognition.addEventListener('start', () => {
 		isspeaking = true
+		ispaused = false
+
 		updaterecognitionui()
 
 		console.log("Recognition started")
@@ -8877,6 +8880,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		totalTranscriptCopy = ''
 
 		isspeaking = false
+		ispaused = false
 
 		recognitionerror = event.error
 		updaterecognitionui()
@@ -8890,6 +8894,8 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		totalTranscriptCopy = ''
 
 		isspeaking = false
+		ispaused = false
+
 		updaterecognitionui()
 
 		console.log("Recognition ended")
@@ -8900,57 +8906,56 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 }
 
 function updaterecognitionui(){
-	let recognitionsvg = getElement('recognitionsvg')
-	let recognitionsvg2 = getElement('recognitionsvg2')
-
 	let addtododictationpopup = getElement('addtododictationpopup')
 	let addtododictationtext = getElement('addtododictationtext')
 	let addeventdictationpopup = getElement('addeventdictationpopup')
 	let addeventdictationtext = getElement('addeventdictationtext')
+	let addtododictationbutton = getElement('addtododictationbutton')
+	let addeventdictationbutton = getElement('addeventdictationbutton')
 
 	addtododictationpopup.classList.add('hiddenpopup')
 	addeventdictationpopup.classList.add('hiddenpopup')
+	addeventdictationbutton.classList.remove('recognitionredanimation')
+	addtododictationbutton.classList.remove('recognitionredanimation')
 
 	//display ui
 	if(isspeaking){
 		if(recognitionoutputtype == 'task'){
-			recognitionsvg.classList.add('recognitionredanimation')
-
 			addtododictationpopup.classList.remove('hiddenpopup')
+			addtododictationbutton.classList.add('recognitionredanimation')
+
 			if(totalTranscriptCopy){
 				addtododictationtext.innerHTML =  `<span class="text-primary text-16px">${totalTranscriptCopy}</span>`
 			}else{
 				addtododictationtext.innerHTML = `<span class="text-quaternary text-16px">Listening...</span>`
 			}
 		}else if(recognitionoutputtype == 'event'){
-			recognitionsvg2.classList.add('recognitionredanimation')
-
 			addeventdictationpopup.classList.remove('hiddenpopup')
+			addeventdictationbutton.classList.add('recognitionredanimation')
+
 			if(totalTranscriptCopy){
 				addeventdictationtext.innerHTML =  `<span class="text-primary text-16px">${totalTranscriptCopy}</span>`
 			}else{
 				addeventdictationtext.innerHTML = `<span class="text-quaternary text-16px">Listening...</span>`
 			}
 		}
-	}else{
+	}
+	if(ispaused){
 		if(recognitionoutputtype == 'task'){
-			recognitionsvg.classList.remove('recognitionredanimation')
+			addtododictationpopup.classList.remove('hiddenpopup')
 		}else if(recognitionoutputtype == 'event'){
-			recognitionsvg2.classList.remove('recognitionredanimation')
+			addeventdictationpopup.classList.remove('hiddenpopup')
 		}
 	}
 
 	//error
 	const permanentrecognitionerrors = ['service-not-allowed', 'not-allowed']
 	if(recognitionerror && permanentrecognitionerrors.includes(recognitionerror)){
-		let recognitiontooltip = getElement('recognitiontooltip')
-		let recognitiontooltip2 = getElement('recognitiontooltip2')
-
-		let errorhtml = `<span class="text-red text-14px">No permission to use dictation,<br>please check your browser/device settings</span>`
+		let errorhtml = `<span class="text-red text-16px">No permission to use dictation, please check your browser/device settings.</span>`
 		if(recognitionoutputtype == 'task'){
-			recognitiontooltip.innerHTML = errorhtml
+			addtododictationtext.innerHTML = errorhtml
 		}else if(recognitionoutputtype == 'event'){
-			recognitiontooltip2.innerHTML = errorhtml
+			addeventdictationtext.innerHTML = errorhtml
 		}
 	}
 }
@@ -8972,22 +8977,29 @@ function stoprecognition(){
 	}
 }
 function submitdictation(){
-	if(recognitionoutputtype == 'task'){
-		let todoinputtitle = getElement('todoinputtitle')
-		todoinputtitle.value = totalTranscriptCopy
+	if(totalTranscriptCopy){
+		if(recognitionoutputtype == 'task'){
+			let todoinputtitle = getElement('todoinputtitle')
+			todoinputtitle.value = totalTranscriptCopy
 
-		typeaddtask()
-		clickaddonetask()
-		resizeaddtask()
-	}else if(recognitionoutputtype == 'event'){
-		let createeventtitle = getElement('createeventtitle')
-		createeventtitle.value = totalTranscriptCopy
+			typeaddtask()
+			clickaddonetask()
+			resizeaddtask()
+		}else if(recognitionoutputtype == 'event'){
+			let createeventtitle = getElement('createeventtitle')
+			createeventtitle.value = totalTranscriptCopy
 
-		typeaddevent()
-		createeventtitle.focus()
+			typeaddevent()
+			createeventtitle.focus()
+		}
+
+		stoprecognition()
+	}else{
+		isspeaking = false
+		ispaused = true
+
+		updaterecognitionui()
 	}
-
-	stoprecognition()
 }
 
 
