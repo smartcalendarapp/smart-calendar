@@ -8940,11 +8940,20 @@ function updaterecognitionui(){
 			}
 		}
 	}
+
+	let addeventdictationtext2 = getElement('addeventdictationtext2')
+	let addtododictationtext2 = getElement('addtododictationtext2')
+
+	addtododictationtext2.classList.add('display-none')
+	addeventdictationtext2.classList.add('display-none')
+
 	if(ispaused){
 		if(recognitionoutputtype == 'task'){
 			addtododictationpopup.classList.remove('hiddenpopup')
+			addtododictationtext2.classList.remove('display-none')
 		}else if(recognitionoutputtype == 'event'){
 			addeventdictationpopup.classList.remove('hiddenpopup')
+			addeventdictationtext2.classList.remove('display-none')
 		}
 	}
 
@@ -8995,8 +9004,15 @@ function submitdictation(){
 
 		stoprecognition()
 	}else{
-		isspeaking = false
-		ispaused = true
+		if(isspeaking){
+			ispaused = true
+			isspeaking = false
+		}else{
+			ispaused = false
+			isspeaking = true
+		}
+		
+		togglerecognition(recognitionoutputtype)
 
 		updaterecognitionui()
 	}
