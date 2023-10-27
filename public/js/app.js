@@ -8867,7 +8867,6 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	
 	recognition.addEventListener('start', () => {
 		isspeaking = true
-		ispaused = false
 
 		updaterecognitionui()
 
@@ -8880,7 +8879,6 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		totalTranscriptCopy = ''
 
 		isspeaking = false
-		ispaused = false
 
 		recognitionerror = event.error
 		updaterecognitionui()
@@ -8894,7 +8892,6 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		totalTranscriptCopy = ''
 
 		isspeaking = false
-		ispaused = false
 
 		updaterecognitionui()
 
@@ -8918,6 +8915,12 @@ function updaterecognitionui(){
 	addeventdictationbutton.classList.remove('recognitionredanimation')
 	addtododictationbutton.classList.remove('recognitionredanimation')
 
+	let addeventdictationtext2 = getElement('addeventdictationtext2')
+	let addtododictationtext2 = getElement('addtododictationtext2')
+
+	addtododictationtext2.classList.add('display-none')
+	addeventdictationtext2.classList.add('display-none')
+
 	//display ui
 	if(isspeaking){
 		if(recognitionoutputtype == 'task'){
@@ -8939,21 +8942,16 @@ function updaterecognitionui(){
 				addeventdictationtext.innerHTML = `<span class="text-quaternary text-16px">Listening...</span>`
 			}
 		}
-	}
+	}else{
 
-	let addeventdictationtext2 = getElement('addeventdictationtext2')
-	let addtododictationtext2 = getElement('addtododictationtext2')
-
-	addtododictationtext2.classList.add('display-none')
-	addeventdictationtext2.classList.add('display-none')
-
-	if(ispaused){
-		if(recognitionoutputtype == 'task'){
-			addtododictationpopup.classList.remove('hiddenpopup')
-			addtododictationtext2.classList.remove('display-none')
-		}else if(recognitionoutputtype == 'event'){
-			addeventdictationpopup.classList.remove('hiddenpopup')
-			addeventdictationtext2.classList.remove('display-none')
+		if(ispaused){
+			if(recognitionoutputtype == 'task'){
+				addtododictationpopup.classList.remove('hiddenpopup')
+				addtododictationtext2.classList.remove('display-none')
+			}else if(recognitionoutputtype == 'event'){
+				addeventdictationpopup.classList.remove('hiddenpopup')
+				addeventdictationtext2.classList.remove('display-none')
+			}
 		}
 	}
 
@@ -8985,8 +8983,15 @@ function stoprecognition(){
 		recognition.stop()
 	}
 }
+function startrecognition(){
+	if(!isspeaking){
+		recognition.start()
+	}
+}
 function submitdictation(){
 	if(totalTranscriptCopy){
+		ispaused = false
+
 		if(recognitionoutputtype == 'task'){
 			let todoinputtitle = getElement('todoinputtitle')
 			todoinputtitle.value = totalTranscriptCopy
@@ -9004,14 +9009,8 @@ function submitdictation(){
 
 		stoprecognition()
 	}else{
-		if(isspeaking){
-			ispaused = true
-			isspeaking = false
-		}else{
-			ispaused = false
-			isspeaking = true
-		}
-		
+		ispaused = true
+
 		togglerecognition(recognitionoutputtype)
 
 		updaterecognitionui()
