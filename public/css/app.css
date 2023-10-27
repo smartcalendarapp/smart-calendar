@@ -1145,6 +1145,14 @@ body {
 }
 
 
+.recognitionbuttonlarge{
+	height: 36px;
+	width: 36px;
+	fill: var(--white);
+	display: inline;
+	vertical-align: middle;
+	pointer-events: none;
+}
 
 
 @keyframes recognitionredanimation {

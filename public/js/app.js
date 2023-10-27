@@ -8834,6 +8834,7 @@ let isspeaking = false
 let recognition;
 let recognitionoutputtype;
 let recognitionerror;
+let totalTranscriptCopy;
 
 if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
@@ -8858,23 +8859,8 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 		let totalTranscript = finalTranscript.trim() + ' ' + interimTranscript.trim()
 
-
-		if(totalTranscript){
-			if(recognitionoutputtype == 'task'){
-				let todoinputtitle = getElement('todoinputtitle')
-				todoinputtitle.value = totalTranscript
-
-				typeaddtask()
-				clickaddonetask()
-				resizeaddtask()
-			}else if(recognitionoutputtype == 'event'){
-				let createeventtitle = getElement('createeventtitle')
-				createeventtitle.value = totalTranscript
-
-				typeaddevent()
-				createeventtitle.focus()
-			}
-		}
+		totalTranscriptCopy = totalTranscript
+		updaterecognitionui()
 	})
 	
 	recognition.addEventListener('start', () => {
@@ -8915,6 +8901,7 @@ function updaterecognitionui(){
 	let recognitionsvg2 = getElement('recognitionsvg2')
 
 	let addtododictationpopup = getElement('addtododictationpopup')
+	let addtododictationtext = getElement('addtododictationtext')
 
 	addtododictationpopup.classList.add('hiddenpopup')
 
@@ -8924,6 +8911,11 @@ function updaterecognitionui(){
 			recognitionsvg.classList.add('recognitionredanimation')
 
 			addtododictationpopup.classList.remove('hiddenpopup')
+			if(totalTranscriptCopy){
+				addtododictationtext.innerHTML =  `<span class="text-primary text-16px">${totalTranscriptCopy}</span>`
+			}else{
+				addtododictationtext.innerHTML = `<span class="text-quaternary text-16px">Listening...</span>`
+			}
 		}else if(recognitionoutputtype == 'event'){
 			recognitionsvg2.classList.add('recognitionredanimation')
 		}
@@ -8966,11 +8958,22 @@ function stoprecognition(){
 		recognition.stop()
 	}
 }
-function redorecognition(){
-	recognition.stop()
-	recognition.start()
-}
+function submitdictation(){
+	if(recognitionoutputtype == 'task'){
+		let todoinputtitle = getElement('todoinputtitle')
+		todoinputtitle.value = totalTranscriptCopy
 
+		typeaddtask()
+		clickaddonetask()
+		resizeaddtask()
+	}else if(recognitionoutputtype == 'event'){
+		let createeventtitle = getElement('createeventtitle')
+		createeventtitle.value = totalTranscriptCopy
+
+		typeaddevent()
+		createeventtitle.focus()
+	}
+}
 
 function typeaddtask(event, submit, index) {
 	let todoinputtitle = getElement('todoinputtitle')
