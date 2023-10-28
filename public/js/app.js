@@ -2336,7 +2336,7 @@ class Calendar {
 								</svg>
 
 
-								<div class="pointer-none nowrap text-white text-14px">Undo schedule</div>
+								<div class="pointer-none nowrap text-primary text-14px">Undo schedule</div>
 							</div>
 
 							<div class="text-white display-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-green hover:background-green-hover pointer-auto transition-duration-100 border-8px pointer display-none" onclick="startnow(selectedeventid);if(gtag){gtag('event', 'button_click', { useraction: 'Start now - event info' })}">
@@ -4873,7 +4873,58 @@ function updateinteractivetour() {
 				hidepopup(mypopup)
 			}
 
+		}else if (key == 'timeslot') {
+
+			let tourbutton = getElement('createtodoavailability')
+			if (isviewable(tourbutton)) {
+				let rect = tourbutton.getBoundingClientRect()
+
+				if (value == false && key != selectedinteractivetourpopupindex) {
+					showbeacon(mybeacon)
+					movebeacon(mybeacon, rect.top, rect.left + rect.width)
+				} else {
+					hidebeacon(mybeacon)
+				}
+
+				if (key == selectedinteractivetourpopupindex) {
+					showpopup(mypopup)
+				} else {
+					hidepopup(mypopup)
+				}
+
+				movepopup(mypopup, rect.top + rect.height, rect.left + rect.width / 2 - mypopup.offsetWidth / 2)
+			} else {
+				hidebeacon(mybeacon)
+				hidepopup(mypopup)
+			}
+
+		}else if (key == 'subtask') {
+
+			let tourbutton = getElement('clickaddsubtaskbutton')
+			if (isviewable(tourbutton)) {
+				let rect = tourbutton.getBoundingClientRect()
+
+				if (value == false && key != selectedinteractivetourpopupindex) {
+					showbeacon(mybeacon)
+					movebeacon(mybeacon, rect.top, rect.left + rect.width)
+				} else {
+					hidebeacon(mybeacon)
+				}
+
+				if (key == selectedinteractivetourpopupindex) {
+					showpopup(mypopup)
+				} else {
+					hidepopup(mypopup)
+				}
+
+				movepopup(mypopup, rect.top + rect.height, rect.left + rect.width / 2 - mypopup.offsetWidth / 2)
+			} else {
+				hidebeacon(mybeacon)
+				hidepopup(mypopup)
+			}
+
 		}
+
 
 	}
 
@@ -8937,10 +8988,9 @@ function updaterecognitionui(){
 
 	//display ui
 	if(isspeaking){
-		eventrecognitionbutton.classList.add('display-none')
-		todorecognitionbutton.classList.add('display-none')
-
 		if(recognitionoutputtype == 'task'){
+			todorecognitionbutton.classList.add('display-none')
+
 			addtododictationpopup.classList.remove('hiddenpopup')
 			addtododictationbutton.classList.add('recognitionredanimation')
 
@@ -8950,6 +9000,8 @@ function updaterecognitionui(){
 				addtododictationtext.innerHTML = `<span class="text-quaternary">Listening...</span>`
 			}
 		}else if(recognitionoutputtype == 'event'){
+			eventrecognitionbutton.classList.add('display-none')
+
 			addeventdictationpopup.classList.remove('hiddenpopup')
 			addeventdictationbutton.classList.add('recognitionredanimation')
 
@@ -8963,11 +9015,15 @@ function updaterecognitionui(){
 
 		if(ispaused){
 			if(recognitionoutputtype == 'task'){
+				todorecognitionbutton.classList.add('display-none')
+
 				addtododictationpopup.classList.remove('hiddenpopup')
 				addtododictationtext2.classList.remove('display-none')
 
 				addtododictationtext.innerHTML = ''
 			}else if(recognitionoutputtype == 'event'){
+				eventrecognitionbutton.classList.add('display-none')
+
 				addeventdictationpopup.classList.remove('hiddenpopup')
 				addeventdictationtext2.classList.remove('display-none')
 
@@ -9088,7 +9144,7 @@ function typeaddtask(event, submit, index) {
 	//duration
 	let tempmatch3 = getDuration(finalstring)
 	if (tempmatch3.match) {
-		let regex = new RegExp(`\\b((takes|needs|requires|takes\\s+me|lasts)\\s+${tempmatch3.match})\\b`)
+		let regex = new RegExp(`\\b(((takes|needs|requires|takes\\s+me|lasts)\\s+)?${tempmatch3.match})\\b`)
 		let tempmatch4 = finalstring.match(regex)
 		if (tempmatch4) {
 			finalduration = tempmatch3.value
@@ -10068,7 +10124,6 @@ function dragtodo(event, id) {
 	let todoelement = getElement(`todo-${id}`)
 
 	let dragtododiv = getElement('dragtododiv')
-	dragtododiv.style = 'transform:scale(1)'
 	dragtododiv.classList.remove('display-none')
 	dragtododiv.innerHTML = todoelement.innerHTML
 
@@ -10076,6 +10131,7 @@ function dragtodo(event, id) {
 
 	dragtododiv.style.width = rect.width + 'px'
 	dragtododiv.style.height = rect.height + 'px'
+	dragtododiv.style.transform = 'scale(1)'
 
 	initialdragtodox = event.clientX - rect.left
 	initialdragtodoy = event.clientY - rect.top
@@ -10129,8 +10185,8 @@ function dragtodo(event, id) {
 function movedragtodo(event) {
 	let dragtododiv = getElement('dragtododiv')
 	dragtododiv.classList.remove('display-none')
-	dragtododiv.style = 'transform:scale(0.8)'
 
+	dragtododiv.style.transform = 'scale(0.8)'
 	dragtododiv.style.left = event.clientX - initialdragtodox + 'px'
 	dragtododiv.style.top = event.clientY - initialdragtodoy + 'px'
 }
