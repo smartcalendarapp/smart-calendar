@@ -76,9 +76,15 @@
 
 	<div class="fadetransition absolute welcomeshadow z-index-999 pointer-none hiddenfade display-none" id="welcomeshadow"></div>
 	
-	<div class="absolute top-0 left-0 width-full z-index-2000 height-full display-flex justify-center align-center fadetransition transition-duration-200 background-primary flex-column gap-24px" id="loadingscreen">
-		<div class="text-24px text-bold text-primary">Smart Calendar</div>
-		<div class="loader width200px"></div>
+	<div class="absolute top-0 padding-top-60px padding-bottom-60px border-box left-0 width-full z-index-2000 height-full display-flex justify-space-between center align-center fadetransition transition-duration-200 background-primary flex-column gap-24px" id="loadingscreen">
+		<div class="flex-1"></div>
+		<div class="flex-column display-flex gap-24px flex-1 justify-center">
+			<img src="logo.png" class="loadinglogo" class="flex-1 justify-self-center"></img>
+		</div>
+		<div class="flex-column display-flex align-center gap-24px flex-1 justify-flex-end">
+			<div class="text-24px text-bold text-primary">Smart Calendar</div>
+			<div class="loader width200px"></div>
+		</div>
 	</div>
 
 
@@ -496,6 +502,13 @@
 		</div>
 
 		<a href="https://smartcalendar.us/contact" target="_blank" rel="noopener noreferrer" class="helpitem align-center display-flex flex-row gap-12px" onclick="closehelp()">
+			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite">
+				<g>
+				<path d="M52.2188 4.75C23.3798 4.75 0 28.1298 0 56.9688L0 149.469C0 178.308 23.3798 201.687 52.2188 201.688L133.344 201.688L184 248.594C190.422 254.536 200.83 249.937 200.781 241.188L200.594 201.656L203.719 201.688C232.633 201.688 256 178.308 256 149.469L256 56.9688C256 28.1298 232.62 4.75 203.781 4.75L52.2188 4.75ZM52.2188 24.75L203.781 24.75C221.574 24.75 236 39.1755 236 56.9688L236 149.469C236 167.262 221.575 181.687 203.781 181.688L190.594 181.594C185.02 181.552 180.5 186.082 180.531 191.656L180.688 218.25L144.031 184.344C142.183 182.633 139.768 181.687 137.25 181.688L52.2188 181.688C34.4255 181.688 20 167.262 20 149.469L20 56.9688C20 39.1755 34.4255 24.75 52.2188 24.75Z" fill-rule="nonzero" opacity="1" ></path>
+				</g>
+			</svg>
+
+				
 			<div class="text-14px text-primary pointer-none">Contact us</div>
 		</a>
 
@@ -508,14 +521,12 @@
 	</div>
 
 
-	<div class="helpmenu hiddenpopup popup" id="leftmenuwrap">
-		<div id="userinfodisplay" class="display-flex flex-column gap-6px white-space-normal break-word"></div>
+	<div class="helpmenu hiddenpopup popup max-width-200px" id="leftmenuwrap">
+		<div id="userinfodisplay" class="padding-12px display-flex flex-column gap-6px white-space-normal break-word"></div>
 
 		<div class="horizontalbar"></div>
 		
 		<div class="helpitem align-center display-flex flex-row gap-12px" id="toggletheme" onclick="toggletheme()"></div>
-
-		<div class="horizontalbar"></div>
 
 		<div class="helpitem align-center display-flex flex-row gap-12px" onclick="closehelp();clicktab([3]);if(gtag){gtag('event', 'button_click', { useraction: 'Settings - nav bar' })} ">
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -1715,7 +1726,7 @@
 
 			<!-- right -->
 			<div class="display-flex flex-row gap-12px align-center flex-1 justify-flex-end">			
-				<div class="popupbutton border-box overflow-hidden pointer display-flex flex-row  align-center transition-duration-100" id="leftmenubutton" onclick="openleftmenu(event);if(gtag){gtag('event', 'button_click', { useraction: 'More - nav bar' })} ">
+				<div class="popupbutton border-box overflow-hidden pointer display-flex flex-row  align-center transition-duration-100" id="leftmenubutton" onclick="openleftmenu(event);if(gtag){gtag('event', 'button_click', { useraction: 'Avatar - nav bar' })} ">
 				</div>
 			</div>
 
@@ -1914,17 +1925,9 @@
 							</div>
 
 							<div class="flex-1 display-flex flex-row justify-flex-end">
-								<div class="padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px display-none" onclick="readinteractivetourpopup('clickaddtask');opencreatetodo(event);if(gtag){gtag('event', 'button_click', { useraction: 'Add task - to do list' })}" id="addtaskbutton">
-									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
-									<g>
-									<g opacity="1">
-									<path d="M128.004 10.0039L128.004 246.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-									<path d="M246.004 128.004L10.0039 128.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-									</g>
-									</g>
-									</svg>
-						
-									<div class="text-16px text-white pointer-none nowrap transition-none">Add task</div>
+								<div class="display-none small:display-flex flex-row gap-12px align-center flex-1 justify-flex-end">			
+									<div class="popupbutton border-box overflow-hidden pointer display-flex flex-row  align-center transition-duration-100" id="leftmenubutton2" onclick="openleftmenu2(event);if(gtag){gtag('event', 'button_click', { useraction: 'Avatar - nav bar' })} ">
+									</div>
 								</div>
 							</div>
 						</div>

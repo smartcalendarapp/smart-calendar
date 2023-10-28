@@ -3215,6 +3215,9 @@ body {
 .max-width-300px{
 	max-width:300px;
 }
+.max-width-200px{
+	max-width:200px;
+}
 
 .borderbottom {
 	border-bottom: 1px solid var(--text-tertiary)
@@ -3448,6 +3451,12 @@ body {
 	height:22px;
 	width:auto;
 	vertical-align:middle;
+}
+
+
+.loadinglogo{
+	height:120px;
+	width:auto;
 }
 
 .eventtextdisplay {

@@ -1030,6 +1030,14 @@ class Calendar {
 			this.reminder = [{ timebefore: 6*3600*1000, timebefore: 0 }]
 			this.lastmodified = 0
 			this.parentid = null
+			this.repeat = {
+				frequency: null,
+				interval: null,
+				byday: [],
+				until: null,
+				count: null,
+			}
+			this.repeatid = null
 
 			this.timewindow = {
 				day: {
@@ -1337,7 +1345,7 @@ class Calendar {
 		let str = `${MONTHLIST[this.getDate().getMonth()]} ${this.getDate().getFullYear()}`
 		let topbarinfodate2 = getElement('topbarinfodate2')
 		topbarinfodate2.innerHTML = calendarmode != 2 ? `
-		<div class="transition-duration-100 border-8px padding-6px-12px flex-row gap-6px align-center hover:background-tint-1 pointer pointer-auto" onclick="setcalendarmode(2)">
+		<div class="transition-duration-100 border-8px flex-row gap-6px align-center padding-top-6px padding-bottom-6px pointer pointer-auto" onclick="setcalendarmode(2)">
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmall">
 			<g>
 			<path d="M186 10L70 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -4003,8 +4011,9 @@ function run() {
 	//check for onboarding
 	updateonboardingscreen()
 
-	//avatar
+	//avatar and userinfo
 	updateAvatar()
+	updateuserinfo()
 
 	//set initial save data
 	lastbodydata = calendar.getChangedJSON()
@@ -5030,10 +5039,20 @@ function openleftmenu(event) {
 	leftmenuwrap.style.left = fixleft(leftmenubutton.offsetLeft + leftmenubutton.offsetWidth/2 - leftmenuwrap.offsetWidth/2, leftmenuwrap) + 'px'
 }
 
+
+function openleftmenu2(event) {
+	let leftmenubutton2 = getElement('leftmenubutton2')
+	let leftmenuwrap = getElement('leftmenuwrap')
+	leftmenuwrap.classList.toggle('hiddenpopup')
+
+	leftmenuwrap.style.top = (leftmenubutton2.offsetTop + leftmenubutton2.offsetHeight) + 'px'
+	leftmenuwrap.style.left = fixleft(leftmenubutton2.offsetLeft + leftmenubutton2.offsetWidth/2 - leftmenuwrap.offsetWidth/2, leftmenuwrap) + 'px'
+}
+
 function updateuserinfo(){
 	let userinfodisplay = getElement('userinfodisplay')
 	userinfodisplay.innerHTML = `
-	<div class="text-16px text-primary text-bold">${getUserName() ? cleanInput(getUserName()) : ''}</div>
+	<div class="text-16px text-primary text-bold">${getUserName() ? cleanInput(getUserName()) : ''}${clientinfo?.betatester ? `<span class="text-14px margin-left-6px badgepadding border-8px text-white">Beta tester</span>` : ''}</div>
 	<div class="text-14px text-primary">${getUserEmail() && isEmail(getUserEmail()) ? getUserEmail() : ''}</div>`
 }
 function updateAvatar(){
@@ -5047,7 +5066,10 @@ function updateAvatar(){
 	let avatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : avataricon}` : avataricon
 	
 	let leftmenubutton = getElement('leftmenubutton')
-	leftmenubutton.innerHTML = `${avatar}`
+	leftmenubutton.innerHTML = avatar
+
+	let leftmenubutton2 = getElement('leftmenubutton2')
+	leftmenubutton2.innerHTML = avatar
 }
 
 
@@ -7340,155 +7362,6 @@ function closedemovideo(){
 
 
 
-//NOTIFICATIONS
-
-//browser notification
-function browsernotification(id) {
-	let item = calendar.events.find(d => d.id == id)
-	if (!item) return
-
-	function sendnotification() {
-		const notification = new Notification('Reminder', { body: item.title ? item.title : 'New Event' })
-	}
-
-	if (!window.Notification) {
-	} else {
-		if (Notification.permission == 'granted') {
-			sendnotification()
-		} else if (Notification.permission != 'denied') {
-			Notification.requestPermission().then((permission) => {
-				if (permission == 'granted') {
-					sendnotification()
-				}
-			})
-		}
-	}
-}
-
-//start loop
-function getnotifications() {
-	let currentdate = new Date()
-	let startdate = new Date(currentdate.getTime())
-	let enddate = new Date(startdate.getTime())
-	enddate.setDate(enddate.getDate() + 1)
-	enddate.setMinutes(enddate.getMinutes() + 1)
-
-	let myevents = getevents(startdate, enddate)
-
-	for (let item of myevents) {
-		let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-		//remind me dates
-		let tempreminders = item.reminders.map(d => {
-			let tempreminddate = new Date(tempstartdate.getTime())
-			tempreminddate.setTime(tempreminddate.getTime() - [0, 300000, 900000, 3600000, 86400000][d])
-			return tempreminddate.getTime()
-		})
-
-		for (let reminder of tempreminders) {
-			let reminderstartdate = new Date(reminder)
-
-			if (currentdate.getTime() >= reminderstartdate.getTime() && calendar.lastnotificationdate < reminderstartdate.getTime()) {
-				//remove double reminder
-				calendar.notifications = calendar.notifications.filter(f => f.id != item.id)
-
-				let notifitem = new Calendar.Notification(item.id, tempstartdate.getTime())
-				calendar.notifications.push(notifitem)
-				pushnotificationdata.push(notifitem)
-
-			}
-		}
-	}
-	calendar.lastnotificationdate = currentdate.getTime()
-
-	if (pushnotificationdata > 0) {
-		updatenotificationslist()
-	}
-	updatenotificationsnumber()
-
-	broadcastnotifications()
-}
-
-//update notifications number
-function updatenotificationsnumber() {
-	let notificationnumber = getElement('notificationnumber')
-	notificationnumber.classList.add('display-none')
-
-	let notificationcount = calendar.notifications.filter(d => calendar.events.find(f => f.id == d.id) && !d.read).length
-	if (notificationcount > 0) {
-		notificationnumber.classList.remove('display-none')
-		notificationnumber.innerHTML = `${notificationcount}`
-	}
-}
-
-//update notifications list
-function updatenotificationslist() {
-
-	let notificationslist = getElement('notificationslist')
-
-	let currentdate = new Date()
-	let output = []
-
-	for (let notification of calendar.notifications) {
-		let item = calendar.events.find(d => d.id == notification.id)
-		if (!item) continue
-		let tempstartdate = new Date(notification.timestamp)
-		let difference = Math.floor((currentdate.getTime() - tempstartdate.getTime()) / 60000)
-
-		output.push(`
-		<div class="notificationitem">
-			<div class="notificationitemtitle">${item.title ? cleanInput(item.title) : 'New Event'}</div>
-			<div class="notificationitemtext text-quaternary">${getRelativeDHMText(difference)}</div>
-		</div>`)
-	}
-
-	if (output.length == 0) {
-		output.push(`<div class="notificationsnone">No notifications</div>`)
-	}
-
-	notificationslist.innerHTML = output.reverse().join('')
-}
-
-
-//open notifications
-function opennotifications(event) {
-	let notificationsbutton = getElement('notificationsbutton')
-	let notificationswrap = getElement('notificationswrap')
-
-	notificationswrap.classList.toggle('hiddenpopup')
-
-	notificationswrap.style.top = (notificationsbutton.offsetTop + notificationsbutton.offsetHeight) + 'px'
-	notificationswrap.style.left = fixleft(notificationsbutton.offsetLeft + notificationsbutton.offsetWidth * 0.5 - notificationswrap.offsetWidth * 0.5, notificationswrap) + 'px'
-
-	readnotifications()
-}
-
-
-//close notifications
-function closenotifications(event) {
-	let notificationswrap = getElement('notificationswrap')
-
-	notificationswrap.classList.add('hiddenpopup')
-}
-
-//read notifications
-function readnotifications() {
-	for (let item of calendar.notifications) {
-		item.read = true
-	}
-
-	updatenotificationslist()
-	updatenotificationsnumber()
-}
-
-//delete notifications
-function deletenotifications() {
-	calendar.notifications = []
-
-	updatenotificationslist()
-	updatenotificationsnumber()
-}
-
-
 //SCHEDULE
 function sortduedate(val) {
 	return val.sort((a, b) => {
@@ -7500,7 +7373,6 @@ function sortstartdate(val) {
 		return new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime() - new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime()
 	})
 }
-
 
 
 //close menu
@@ -7796,10 +7668,107 @@ function getcircleprogressbar(value, max, text, color) {
 //TODOS
 
 
+
+function fixsubandparenttask(item){
+	let parent;
+	if(Calendar.Todo.isChild(item)){
+		parent = Calendar.Todo.getParent(item)
+	}else if(Calendar.Todo.isParent(item)){
+		parent = item
+	}
+	if(!parent) return
+
+	let children = Calendar.Todo.getChildren(parent)
+	if(children.length == 0) return
+
+	//update parent based on children
+	if(Calendar.Todo.isChild(item)){
+		parent.completed = children.every(d => d.completed)
+
+		parent.endbefore = deepCopy(item.endbefore)
+		parent.priority = item.priority
+
+		for(let childitem of children){
+			childitem.endbefore = deepCopy(item.endbefore)
+			childitem.priority = item.priority
+		}
+	}
+
+	//sync child to parent
+	if(Calendar.Todo.isParent(item)){
+		for(let childitem of children){
+			childitem.completed = item.completed
+			childitem.endbefore = deepCopy(item.endbefore)
+			childitem.priority = item.priority
+		}
+	}
+}
+
+
+
+//fix and update recurring todos
+function fixrecurringtodo(){
+	let loopitems = calendar.todos.filter(d => !d.repeatid)
+	for(let item of loopitems){
+		if(item.repeat.frequency != null && item.repeat.interval != null){
+			let relatedtodos = sortduedate([item, ...calendar.todos.filter(d => d.repeatid == item.id)])
+
+			let lasttodo = relatedtodos[relatedtodos.length - 1]
+			
+			if(lasttodo.completed){
+				let lasttododuedate = new Date(lasttododuedate.endbefore.year, lasttododuedate.endbefore.month, lasttododuedate.endbefore.day, 0, lasttododuedate.endbefore.minute)
+
+				let newtododuedate = new Date(lasttododuedate)
+				
+				if (item.repeat.frequency == 1) {
+					let oldday = lasttododuedate.getDay()
+					if(item.byday.length > 0){
+						let oldbydayindex = item.byday.findIndex(d => d == oldday)
+						if(oldbydayindex != -1){
+							let newbyday = item.byday[(oldbydayindex + 1) % item.byday.length]
+							newtododuedate.setDate(newtododuedate.getDate() + (newbyday - newtododuedate.getDay() + 7) % 7)
+						}
+					}
+				}
+				
+				if(newtododuedate.getTime() <= lasttododuedate.getTime()){
+					for(let i = 0; i < item.repeat.interval; i++){
+						if (item.repeat.frequency == 0) {
+							newtododuedate.setDate(newtododuedate.getDate() + 1)
+						} else if (item.repeat.frequency == 1) {
+							newtododuedate.setDate(newtododuedate.getDate() + 7)
+						} else if (item.repeat.frequency == 2) {
+							newtododuedate.setMonth(newtododuedate.getMonth() + 1)
+						} else if (item.repeat.frequency == 3) {
+							newtododuedate.setFullYear(newtododuedate.getFullYear() + 1)
+						}
+					}
+				}
+
+				let newitem = deepCopy(lasttodo)
+
+				newitem.endbefore.year = newtododuedate.getFullYear()
+				newitem.endbefore.month = newtododuedate.getMonth()
+				newitem.endbefore.day = newtododuedate.getDate()
+				newitem.endbefore.minute = newtododuedate.getHours() * 60 + newtododuedate.getMinutes()
+				
+				newitem.completed = false
+				newitem.id = generateID()
+				newitem.repeatid = lasttodo.id
+				calendar.todos.push(newitem)
+			}
+		}
+	}
+}
+
+//here3
+
 //get todos
 function gettodos(option1, option2) {
 	let output = []
 	let data = calendar.todos
+
+	fixrecurringtodo()
 
 	for (let item of data) {
 		if (option1 == null && option2 == null) {
@@ -9309,7 +9278,7 @@ function submitcreatetodo(event) {
 
 		if(i == length - 1){
 			setTimeout(function(){
-				scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
+				scrolltodoY(getElement(`todo-${item.id}`).getBoundingClientRect().top)
 			}, 300)
 		}
 	}
@@ -9852,7 +9821,7 @@ function inputtodoitemnotdue(event, id) {
 	closetodoitemduedate()
 
 	setTimeout(function(){
-		scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
+		scrolltodoY(getElement(`todo-${item.id}`).getBoundingClientRect().top)
 	}, 300)
 }
 
@@ -9898,7 +9867,7 @@ function inputtodoitemduedate(event, dueyear, duemonth, duedate) {
 	updatetododateinput(inputtodoid)
 
 	setTimeout(function(){
-		scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
+		scrolltodoY(getElement(`todo-${item.id}`).getBoundingClientRect().top)
 	}, 300)
 }
 //input due time
@@ -9939,7 +9908,7 @@ function inputtodoitemduetime(event, duetime) {
 	closetodoitemduedate()
 	
 	setTimeout(function(){
-		scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
+		scrolltodoY(getElement(`todo-${item.id}`).getBoundingClientRect().top)
 	}, 300)
 }
 
@@ -10140,7 +10109,6 @@ function dragtodo(event, id) {
 
 	dragtododiv.style.width = rect.width + 'px'
 	dragtododiv.style.height = rect.height + 'px'
-	dragtododiv.classList.remove('dragtododivtransform')
 
 	initialdragtodox = event.clientX - rect.left
 	initialdragtodoy = event.clientY - rect.top
@@ -10161,6 +10129,7 @@ function dragtodo(event, id) {
 		dragtododiv.innerHTML = ''
 
 		dragtodohighlight.classList.add('hiddenfade')
+		dragtododiv.classList.remove('dragtododivtransform')
 
 
 		//drop
@@ -10347,7 +10316,7 @@ function unscheduleevent(id){
 	calendar.updateEvents()
 	
 	setTimeout(function(){
-		scrolltodoY(getElement(`todo-${todoitem.id}`).offsetTop)
+		scrolltodoY(getElement(`todo-${todoitem.id}`).getBoundingClientRect().top)
 	}, 300)
 }
 
@@ -10579,42 +10548,6 @@ function inputtododuetime(event){
 	edittodoinputduetime.value = endbeforedate ? getHMText(endbeforedate.getHours() * 60 + endbeforedate.getMinutes()) : 'None'
 
 	calendar.updateHistory()
-}
-
-
-function fixsubandparenttask(item){
-	let parent;
-	if(Calendar.Todo.isChild(item)){
-		parent = Calendar.Todo.getParent(item)
-	}else if(Calendar.Todo.isParent(item)){
-		parent = item
-	}
-	if(!parent) return
-
-	let children = Calendar.Todo.getChildren(parent)
-	if(children.length == 0) return
-
-	//update parent based on children
-	if(Calendar.Todo.isChild(item)){
-		parent.completed = children.every(d => d.completed)
-
-		parent.endbefore = deepCopy(item.endbefore)
-		parent.priority = item.priority
-
-		for(let childitem of children){
-			childitem.endbefore = deepCopy(item.endbefore)
-			childitem.priority = item.priority
-		}
-	}
-
-	//sync child to parent
-	if(Calendar.Todo.isParent(item)){
-		for(let childitem of children){
-			childitem.completed = item.completed
-			childitem.endbefore = deepCopy(item.endbefore)
-			childitem.priority = item.priority
-		}
-	}
 }
 
 
@@ -11431,8 +11364,6 @@ function getsleepingevents(data) {
 	}
 	return output
 }
-
-
 
 //get events between range, given existing events (including repeating)
 function geteventslite(startrange, endrange, filterevents){
