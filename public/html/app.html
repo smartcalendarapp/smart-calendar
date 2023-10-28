@@ -509,6 +509,9 @@
 
 
 	<div class="helpmenu hiddenpopup popup" id="leftmenuwrap">
+		<div id="userinfodisplay" class="display-flex flex-column gap-6px white-space-normal break-word"></div>
+
+		<div class="horizontalbar"></div>
 		
 		<div class="helpitem align-center display-flex flex-row gap-12px" id="toggletheme" onclick="toggletheme()"></div>
 
@@ -1572,7 +1575,7 @@
 					<div class="text-14px text-quaternary nowrap">TIP</div>
 					<div class="text-18px text-primary nowrap text-bold">Add task</div>
 				</div>
-				<div class="text-18px text-quaternary">Quickly jot down your tasks here. Click the microphone to use add a task by voice.</div>
+				<div class="text-18px text-quaternary">Quickly jot down your tasks here. Click the microphone to add a task by voice.</div>
 					 
 				<div class="display-flex flex-row justify-space-between align-center">
 					<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
@@ -1616,7 +1619,7 @@
 					<div class="text-14px text-quaternary nowrap">TIP</div>
 					<div class="text-18px text-primary nowrap text-bold">Time slot</div>
 				</div>
-				<div class="text-18px text-quaternary">Choose the days and times you want to work on a task. The app will take it into account when building your schedule.</div>
+				<div class="text-18px text-quaternary">Choose the days and times you want to work on a task. The app will take your preference into account when building your schedule.</div>
 						 
 				<div class="display-flex flex-row justify-space-between align-center">
 					<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
@@ -1629,7 +1632,7 @@
 					<div class="text-14px text-quaternary nowrap">TIP</div>
 					<div class="text-18px text-primary nowrap text-bold">Add a sub task</div>
 				</div>
-				<div class="text-18px text-quaternary">Add subtasks to break down a project into manageable pieces. The app will schedule them evenly before the project's due date.</div>
+				<div class="text-18px text-quaternary">Add subtasks to break down a project into manageable pieces.</div>
 	
 				<div class="display-flex flex-row justify-space-between align-center">
 					<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
@@ -2043,14 +2046,14 @@
 									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetodopriority(event)" id="createtodopriority">
 									</div>
 
-									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-purple pointer-auto pointer transition-duration-100 popupbutton"  onclick="clickcreatetodoavailability(event)" id="createtodoavailability">
+									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-purple pointer-auto pointer transition-duration-100 popupbutton"  onclick="readinteractivetourpopup('timeslot');clickcreatetodoavailability(event)" id="createtodoavailability">
 									</div>
 								</div>
 
 
 								<div class="horizontalbar"></div>
 
-								<div class="margin-12px padding-8px-12px pointer transition-duration-100 width-fit bordertertiary hover:background-tint-1 transition-duration-100 display-flex gap-6px flex-row align-center border-8px height-fit" id="clickaddsubtaskbutton" onclick="clickaddsubtask()">
+								<div class="margin-12px padding-8px-12px pointer transition-duration-100 width-fit bordertertiary hover:background-tint-1 transition-duration-100 display-flex gap-6px flex-row align-center border-8px height-fit" id="clickaddsubtaskbutton" onclick="readinteractivetourpopup('subtask');clickaddsubtask()" >
 									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 										<g>
 										<g opacity="1">
@@ -2060,7 +2063,7 @@
 										</g>
 									</svg>
 
-									<div class="text-14px text-primary display-flex flex-row gap-6px  pointer-none nowrap transition-none" id="submitcreatetodoaddnumber">Add subtask</div>
+									<div class="text-14px text-primary display-flex flex-row gap-6px  pointer-none nowrap transition-none">Add subtask</div>
 								</div>
 
 								<div id="createtodoprojectwrap" class="width-full">

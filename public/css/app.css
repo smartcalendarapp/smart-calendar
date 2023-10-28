@@ -191,6 +191,10 @@ body {
 	transform: translate(-50%, -50%) scale(1.1);
 }
 
+.dragtododivtransform{
+	transform:scale(0.8)
+}
+
 .interactivetourpopup {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s, opacity 0.2s;
 	position: absolute;

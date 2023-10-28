@@ -3035,6 +3035,7 @@ class Calendar {
 	updateSettings() {
 		updatecalendarlist()
 		updateAvatar()
+		updateuserinfo()
 
 		//mode
 		let autoschedulemodes2 = getElement('autoschedulemodes2')
@@ -3328,7 +3329,7 @@ class Calendar {
 		enableemailnotif.checked = calendar.emailreminderenabled
 		enableemailnotif2.checked = calendar.emailreminderenabled
 
-		let sendtoemail = getUserEmail(clientinfo)
+		let sendtoemail = getUserEmail()
 		if(!isEmail(sendtoemail)){
 			sendtoemail = null
 		}
@@ -3782,11 +3783,11 @@ function isEmail(str) {
 	return pattern.test(str)
 }
 
-function getUserEmail(clientinfo){
+function getUserEmail(){
 	return clientinfo?.google_email || clientinfo?.apple?.email || clientinfo?.username
 }
 
-function getUserName(clientinfo){
+function getUserName(){
 	return (clientinfo?.google?.firstname || clientinfo?.google?.name || clientinfo?.google_email) || clientinfo?.apple?.email || clientinfo?.username
 }
 
@@ -4570,7 +4571,7 @@ function updateonboardingscreen(){
 
 	if(currentonboarding == 'start'){
 		let welcometosmartcalendartext = getElement('welcometosmartcalendartext')
-		welcometosmartcalendartext.innerHTML = `Welcome to Smart Calendar${getUserName(clientinfo) ? `, ${getUserName(clientinfo)}` : ''}`
+		welcometosmartcalendartext.innerHTML = `Welcome to Smart Calendar${getUserName() ? `, ${cleanInput(getUserName())}` : ''}`
 	}else if(currentonboarding == 'connectcalendars'){
 		let onboardingconnectcalendarsgooglecalendar = getElement('onboardingconnectcalendarsgooglecalendar')
 
@@ -5029,6 +5030,12 @@ function openleftmenu(event) {
 	leftmenuwrap.style.left = fixleft(leftmenubutton.offsetLeft + leftmenubutton.offsetWidth/2 - leftmenuwrap.offsetWidth/2, leftmenuwrap) + 'px'
 }
 
+function updateuserinfo(){
+	let userinfodisplay = getElement('userinfodisplay')
+	userinfodisplay.innerHTML = `
+	<div class="text-16px text-primary text-bold">${getUserName() ? cleanInput(getUserName()) : ''}</div>
+	<div class="text-14px text-primary">${getUserEmail() && isEmail(getUserEmail()) ? getUserEmail() : ''}</div>`
+}
 function updateAvatar(){
 	const avataricon = `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="avatarsvg">
 		<g>
@@ -5040,8 +5047,7 @@ function updateAvatar(){
 	let avatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : avataricon}` : avataricon
 	
 	let leftmenubutton = getElement('leftmenubutton')
-	leftmenubutton.innerHTML = `
-		${avatar}`
+	leftmenubutton.innerHTML = `${avatar}`
 }
 
 
@@ -7310,6 +7316,9 @@ function openbottomhelpmenu(event){
 function closehelp() {
 	let leftmenuwrap = getElement('leftmenuwrap')
 	leftmenuwrap.classList.add('hiddenpopup')
+
+	let bottomhelpmenu = getElement('bottomhelpmenu')
+	bottomhelpmenu.classList.add('hiddenpopup')
 }
 
 
@@ -8297,7 +8306,7 @@ function clickaddsubtask(){
 	createtodosubtaskinput.focus()
 }
 
-//here4
+
 //add sub task button
 function togglecreatetodosubtaskpopup(event){
 	let button = event.target
@@ -8918,7 +8927,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 			}
 		}
 
-		let totalTranscript = finalTranscript.trim() + ' ' + interimTranscript.trim()
+		let totalTranscript = (finalTranscript.trim() + ' ' + interimTranscript.trim()).trim()
 
 		totalTranscriptCopy = totalTranscript
 		updaterecognitionui()
@@ -10131,7 +10140,7 @@ function dragtodo(event, id) {
 
 	dragtododiv.style.width = rect.width + 'px'
 	dragtododiv.style.height = rect.height + 'px'
-	dragtododiv.style.transform = 'scale(1)'
+	dragtododiv.classList.remove('dragtododivtransform')
 
 	initialdragtodox = event.clientX - rect.left
 	initialdragtodoy = event.clientY - rect.top
@@ -10186,7 +10195,7 @@ function movedragtodo(event) {
 	let dragtododiv = getElement('dragtododiv')
 	dragtododiv.classList.remove('display-none')
 
-	dragtododiv.style.transform = 'scale(0.8)'
+	dragtododiv.classList.add('dragtododivtransform')
 	dragtododiv.style.left = event.clientX - initialdragtodox + 'px'
 	dragtododiv.style.top = event.clientY - initialdragtodoy + 'px'
 }
