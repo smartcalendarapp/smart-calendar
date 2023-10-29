@@ -814,15 +814,14 @@ class Calendar {
 			this.googleid = null
 			this.lastmodified = 0
 		}
-	}
 
-	static Notification = class {
-		constructor(id, timestamp) {
-			this.id = id
-			this.timestamp = timestamp
-			this.read = false
+		static getTitle(item){
+			if(!item) return
+			if(item.title) return cleanInput(item.title)
+			return `New Calendar`
 		}
 	}
+
 
 	static Event = class {
 		constructor(startyear, startmonth, startday, startminute, endyear, endmonth, endday, endminute, title = '', notes = '', type = 0) {
@@ -889,6 +888,15 @@ class Calendar {
 			}
 		}
 
+		static getTitle(item){
+			if(!item) return
+			if(item.title) return cleanInput(item.title)
+			if(this.isChild(item)){
+				return `${cleanInput(this.getTitle(this.getParent(item)))} (part ${this.getChildIndex(item)})`
+			}
+			return `New Event`
+		}
+
 		static getParent(item){
 			let parent = [...calendar.events, ...calendar.todos].find(d => d.id == item.parentid)
 			return parent
@@ -896,6 +904,10 @@ class Calendar {
 
 		static getChildren(item){
 			return [...calendar.events, ...calendar.todos].filter(d => d.parentid == item.id)
+		}
+
+		static getChildIndex(item){
+			return this.getChildren(item).findIndex(f => f.id == item.id)
 		}
 
 		static isParent(item){
@@ -1049,6 +1061,15 @@ class Calendar {
 			}
 		}
 
+		static getTitle(item){
+			if(!item) return
+			if(item.title) return cleanInput(item.title)
+			if(this.isChild(item)){
+				return `${cleanInput(this.getTitle(this.getParent(item)))} (part ${this.getChildIndex(item)})`
+			}
+			return `New Todo`
+		}
+
 		static getParent(item){
 			let parent = [...calendar.events, ...calendar.todos].find(d => d.id == item.parentid)
 			return parent
@@ -1056,6 +1077,10 @@ class Calendar {
 
 		static getChildren(item){
 			return [...calendar.events, ...calendar.todos].filter(d => d.parentid == item.id)
+		}
+
+		static getChildIndex(item){
+			return this.getChildren(item).findIndex(f => f.id == item.id)
 		}
 
 		static isParent(item){
@@ -2099,7 +2124,7 @@ class Calendar {
 
 					//title
 					let eventinfotitle = getElement('eventinfotitle')
-					eventinfotitle.innerHTML = `Edit ${item.title ? cleanInput(item.title) : 'New Event'}`
+					eventinfotitle.innerHTML = `Edit ${Calendar.Event.getTitle(item)}`
 
 					//inputs
 					let tempdate3 = new Date(item.start.year, item.start.month, item.start.day)
@@ -2235,7 +2260,8 @@ class Calendar {
 
 					//calendar
 					let calendaroptionbutton = getElement('calendaroptionbutton')
-					let calendartext = Calendar.Event.getCalendar(item).title ? cleanInput(Calendar.Event.getCalendar(item).title) : 'New Calendar'
+					let calendaritem = Calendar.Event.getCalendar(item)
+					let calendartext = Calendar.Calendar.getTitle(calendaritem)
 					calendartext += `<span><svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline rotate90">
 					<g>
 					<path d="M88.6229 47.8879L167.377 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -2263,7 +2289,7 @@ class Calendar {
 					output.push(`<div class="infogroup">
 						<div class="display-flex flex-row align-center gap-12px width-full">
 
-							<div class="infotitle min-width-0 selecttext">${item.title ? cleanInput(item.title) : 'New Event'}</div>
+							<div class="infotitle min-width-0 selecttext">${Calendar.Event.getTitle(item)}</div>
 							${item.type == 1 ?
 								`${item.priority != 0 ?
 									`<div class="height-fit display-flex tooltip display-flex">
@@ -2864,7 +2890,7 @@ class Calendar {
 			output.push(`
 	 			<div class="display-flex flex-column gap-6px">
 		 			<div class="display-flex flex-row justify-space-between flex-wrap-wrap">
-						<div class="text-16px text-bold text-primary break-word overflow-hidden">${item.title ? cleanInput(item.title) : 'New Event'}</div>
+						<div class="text-16px text-bold text-primary break-word overflow-hidden">${Calendar.Event.getTitle(item)}</div>
 						<div class="text-16px text-quaternary nowrap">Ends at ${getHMText(tempenddate.getHours() * 60 + tempenddate.getMinutes())} (${getDHMText(Math.abs(difference))} left)</div>
 					</div>
 		 			${getlineprogressbar(currentdate.getTime() - tempstartdate.getTime(), tempenddate.getTime() - tempstartdate.getTime())}
@@ -2895,7 +2921,7 @@ class Calendar {
 				output2.push(`
 			 		<div class="summarycolumnprogressbargroup">
 			 			<div class="summarytextrow flex-wrap-wrap">
-			 				<div class="text-16px text-bold text-primary break-word overflow-hidden">${item.title ? cleanInput(item.title) : 'New Event'}</div>
+			 				<div class="text-16px text-bold text-primary break-word overflow-hidden">${Calendar.Event.getTitle(item)}</div>
 				 			<div class="text-16px text-quaternary nowrap">Starts at ${getHMText(tempstartdate.getHours() * 60 + tempstartdate.getMinutes())} (${getFullRelativeDHMText(difference)})</div>
 						</div>
 					</div>`)
@@ -3134,7 +3160,7 @@ class Calendar {
 				</div>
 		 
 				<div class="display-flex flex-column flex-1">
-					<div class="text-primary calendaritemtext text-bold text-14px">${item.title ? cleanInput(item.title) : 'New Calendar'}</div>
+					<div class="text-primary calendaritemtext text-bold text-14px">${Calendar.Calendar.getTitle(item)}</div>
 			 		<div class="text-quaternary calendaritemtext text-14px">${item.notes ? cleanInput(item.notes) : ''}</div>
 				</div>
 	
@@ -3467,7 +3493,7 @@ class Calendar {
 
 				tempoutput.push(`
 				<div class="display-flex flex-column flex-wrap-wrap">		
-					<div class="text-24px text-bold text-center text-primary overflow-hidden break-word">${tempitem.title ? cleanInput(tempitem.title) : 'New Event'}</div>
+					<div class="text-24px text-bold text-center text-primary overflow-hidden break-word">${Calendar.Event.getTitle(tempitem)}</div>
 					<div class="text-24px text-center text-quaternary nowrap">Ends at ${getHMText(enddate.getHours() * 60 + enddate.getMinutes())} (${getDHMText(Math.abs(difference))} left)</div>
 				</div>`)
 			}
@@ -3497,7 +3523,7 @@ class Calendar {
 
 				tempoutput.push(`
 				<div class="display-flex flex-column">		
-					<div class="text-24px text-center text-bold text-primary text-bold overflow-hidden break-word">${tempitem.title ? cleanInput(tempitem.title) : 'New Event'}</div>
+					<div class="text-24px text-center text-bold text-primary text-bold overflow-hidden break-word">${Calendar.Event.getTitle(tempitem)}</div>
 					<div class="text-24px text-center text-quaternary nowrap">Starts at ${getHMText(startdate.getHours() * 60 + startdate.getMinutes())} (${getFullRelativeDHMText(difference)})</div>
 				</div>`)
 			}
@@ -5712,7 +5738,7 @@ function getalldayeventdata(item, currentdate, timestamp) {
 			:
 			''
 		}
-					${item.title ? cleanInput(item.title) : 'New Event'}
+					${Calendar.Event.getTitle(item)}
 				</div>
 			</div>
 	 
@@ -5865,7 +5891,7 @@ function getmontheventdata(item, currentdate, timestamp) {
 		<div class="monthcontainerwraptextgroup">
 			<div class="monthcontainerwraptext">
 				<div class="monthcontainerwraptextdisplay ${itemclasses2.join(' ')}">
-					<span class="text-bold">${item.title ? cleanInput(item.title) : 'New Event'}</span>
+					<span class="text-bold">${Calendar.Event.getTitle(item)}</span>
 					${item.type == 1 && item.priority != 0 ?
 						`<span class="todoitemcheckbox tooltip">
 							${getpriorityicon(item.priority)}
@@ -8170,7 +8196,7 @@ function updatecreatetodo() {
 
 
 	//repeat
-	let temprepeatvalue = createtodorepeatvalue.frequency == null && createtodorepeatvalue.interval == null ? '<span class="text-quaternary">No repeat</span>' : `<span class="text-blue">Repeats ${getRepeatText({ repeat: createtodorepeatvalue }, true)}</span>`
+	let temprepeatvalue = createtodorepeatvalue.frequency == null && createtodorepeatvalue.interval == null ? '<span class="text-quaternary pointer-none">No repeat</span>' : `<span class="pointer-none text-blue">Repeats ${getRepeatText({ repeat: createtodorepeatvalue }, true)}</span>`
 	createtodorepeat.innerHTML = temprepeatvalue
 	createtodorepeatprompttodotoday.innerHTML = temprepeatvalue
 	createtodorepeatonboarding.innerHTML = temprepeatvalue
@@ -9369,7 +9395,7 @@ function submitcreatetodo(event) {
 			//sub tasks
 			if(createtodosubtasks.length > 0){
 				for(let subtaskitem of createtodosubtasks){
-					let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), subtaskitem.duration, `${subtaskitem.title || `${item.title || 'New Task'} (part ${Calendar.Todo.getChildren(item).length + 1})`}`)
+					let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), subtaskitem.duration, `${subtaskitem.title || item.title}`)
 
 					childitem.parentid = item.id
 
@@ -9453,7 +9479,7 @@ function gettododata(item) {
 		//edit
 		output = `<div class="todoitem todoedititemwrap box-shadow-2 bordertertiary border-8px margin-left-12px margin-right-12px border-box" id="todo-${item.id}">
 		<div class="todoitemcontainer padding-12px">
-			<div class="text-16px text-primary text-bold">Edit ${item.title ? cleanInput(item.title) : 'New Task'}</div>
+			<div class="text-16px text-primary text-bold">Edit ${Calendar.Todo.getTitle(item)}</div>
 			<div class="display-flex flex-column gap-12px">
 				<div class="inputgroup">
 					<div class="text-14px text-primary width90px">Title</div>
@@ -10388,7 +10414,7 @@ function addsubtask(event, id){
 
 	let newendbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 	let newduration = 60
-	let newtitle = `${item.title || 'New Task'} (part ${Calendar.Todo.getChildren(item).length + 1})`
+	let newtitle = item.title
 	
 	let newtask = new Calendar.Todo(newendbeforedate.getFullYear(), newendbeforedate.getMonth(), newendbeforedate.getDate(), newendbeforedate.getHours() * 60 + newendbeforedate.getMinutes(), newduration, newtitle)
 	newtask.parentid = item.id
@@ -11284,7 +11310,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 						: ''
 					}
 
-					<span class="text-bold">${item.title ? cleanInput(item.title) : 'New Event'}</span>
+					<span class="text-bold">${Calendar.Event.getTitle(item)}</span>
 			
 					${item.type == 1 && item.priority != 0 ?
 						`<span class="todoitemcheckbox tooltip">
@@ -11392,7 +11418,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 						: ''
 					}
 
-					<span class="text-bold">${item.title ? cleanInput(item.title) : 'New Event'}</span>
+					<span class="text-bold">${Calendar.Event.getTitle(item)}</span>
 			
 					${item.type == 1 && item.priority != 0 ?
 						`<span class="todoitemcheckbox tooltip">
@@ -12126,7 +12152,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 
 		//show popup
 		let rescheduletaskpopuptext = getElement('rescheduletaskpopuptext')
-		rescheduletaskpopuptext.innerHTML = `We want to keep your schedule up-to-date.<br>Have you completed <span class="text-bold">${overdueitem.title ? cleanInput(overdueitem.title) : 'New Event'}</span>?`
+		rescheduletaskpopuptext.innerHTML = `We want to keep your schedule up-to-date.<br>Have you completed <span class="text-bold">${Calendar.Event.getTitle(overdueitem)}</span>?`
 
 		let rescheduletaskpopupbuttons = getElement('rescheduletaskpopupbuttons')
 		rescheduletaskpopupbuttons.innerHTML = `
@@ -12669,7 +12695,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 
 		autoscheduleframemenucontent.innerHTML = `
 		<div class="infotop">
-			<div class="infotitle">${newitem.title ? cleanInput(newitem.title) : 'New Event'}</div>
+			<div class="infotitle">${Calendar.Event.getTitle(newitem)}</div>
 		</div>
 		<div class="info">
 			<div class="infotext">Scheduled for ${getDMDYText(new Date(newitem.start.year, newitem.start.month, newitem.start.day, 0, newitem.start.minute))} ${getHMText(newitem.start.minute)}.${addedtodos.find(d => d.id == newitem.id) ? `` : ` Keep this time?`}</div>
@@ -13169,7 +13195,7 @@ function updatecalendarlist() {
 					${getcolorcheckbox(!item.hidden, item.hexcolor)}
 				</div>
 		 
-				<div class="pointer-none text-primary calendaritemtext text-overflow-ellipsis text-14px nowrap calendaritemtext">${item.title ? cleanInput(item.title) : 'New Calendar'}</div>
+				<div class="pointer-none text-primary calendaritemtext text-overflow-ellipsis text-14px nowrap calendaritemtext">${Calendar.Calendar.getTitle(item)}</div>
 			</div>
 
 	 		<div class="display-none pointer calendaritembutton popupbutton" onclick="togglecalendaritempopup2('${item.id}', this)">
@@ -13234,7 +13260,7 @@ function updatecalendaroptionmenu() {
 
 	let selectablecalendars = calendar.calendars.filter(d => !d.readonly)
 	for (let calendaritem of selectablecalendars) {
-		output.push(`<div class="helpitem display-flex flex-row gap-12px" onclick="selectcalendaroption('${calendaritem.id}')"><span>${getcheck(item.calendarid == calendaritem.id || (item.calendarid == null && calendaritem.isprimary))}</span>${calendaritem.title ? cleanInput(calendaritem.title) : 'New Calendar'}</div>`)
+		output.push(`<div class="helpitem display-flex flex-row gap-12px" onclick="selectcalendaroption('${calendaritem.id}')"><span>${getcheck(item.calendarid == calendaritem.id || (item.calendarid == null && calendaritem.isprimary))}</span>${Calendar.Calendar.getTitle(calendaritem)}</div>`)
 	}
 
 	output.push(`<div class="helpitem display-flex flex-row gap-12px" onclick="opencreatecalendarbutton()">
