@@ -5278,6 +5278,7 @@ function keydowndocument(event) {
 			if (Calendar.Event.isReadOnly(item)) return
 
 			calendar.events = calendar.events.filter(d => d.id != item.id)
+			fixrecurringtodo(item)
 
 			selectedeventid = null
 			if(item.type == 1){
@@ -5450,6 +5451,8 @@ function clickeventinfodelete(event) {
 	if (!item) return
 
 	calendar.events = calendar.events.filter(x => x.id != item.id)
+	fixrecurringtodo(item)
+
 	selectedeventid = null
 
 	if(item.type == 1){
@@ -10480,6 +10483,13 @@ function movedragtodo(event) {
 
 //delete all completed
 function deletecompletedtodos(){
+	for(let item of calendar.todos.filter(d => !d.completed)){
+		fixrecurringtodo(item)
+	}
+	for(let item of calendar.events.filter(d => d.type != 1 || !d.completed)){
+		fixrecurringtodo(item)
+	}
+
 	calendar.todos = calendar.todos.filter(d => !d.completed)
 	calendar.events = calendar.events.filter(d => d.type != 1 || !d.completed)
 
@@ -11568,7 +11578,7 @@ function getborders(startrange, endrange) {
 
 		let itemenddate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 
-		if (item.repeat.interval == null || item.repeat.frequency == null) {
+		if (item.repeat.interval == null || item.repeat.frequency == null || item.type == 1) {
 			//no repeat
 			if (!startrange || !endrange || (itemenddate.getTime() > startrange.getTime() && itemenddate.getTime() <= endrange.getTime())) {
 				output.push(item)
@@ -13746,6 +13756,7 @@ async function eventcompleted(event, id) {
 	}
 
 
+	fixrecurringtodo(item)
 	fixsubandparenttask(item)
 
 	if(item.type == 1){
