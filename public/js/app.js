@@ -238,7 +238,7 @@ function getOrdinal(n) {
 
 function getRepeatText(item, lowercase) {
 	let repeattext = REPEAT_OPTION_DATA.find(f => f.interval == item.repeat.interval && f.frequency == item.repeat.frequency && isEqualArray(item.repeat.byday, f.byday))
-	repeattext = ((repeattext && repeattext.text.toLowerCase()) || `${lowercase ? 'every' : 'Every'}${item.repeat.interval == 1 ? '' : ` ${getOrdinal(item.repeat.interval)}`} ${['day', item.repeat.byday.length == 0 ? 'week' : `${item.repeat.byday.sort((a, b) => a - b).map(d => DAYLIST[d]).join(', ')}`, 'month', 'year'][item.repeat.frequency]}`) + `${item.repeat.until ? ` until ${getDMDYText(new Date(item.repeat.until))}` : ''}${item.repeat.count ? ` for ${item.repeat.count} times` : ''}`
+	repeattext = ((repeattext && (lowercase ? repeattext.text.toLowerCase() : repeattext.text)) || `${lowercase ? 'every' : 'Every'}${item.repeat.interval == 1 ? '' : ` ${getOrdinal(item.repeat.interval)}`} ${['day', item.repeat.byday.length == 0 ? 'week' : `${item.repeat.byday.sort((a, b) => a - b).map(d => DAYLIST[d]).join(', ')}`, 'month', 'year'][item.repeat.frequency]}`) + `${item.repeat.until ? ` until ${getDMDYText(new Date(item.repeat.until))}` : ''}${item.repeat.count ? ` for ${item.repeat.count} times` : ''}`
 	return repeattext
 }
 
@@ -5052,7 +5052,7 @@ function updateuserinfo(){
 	let userinfodisplay = getElement('userinfodisplay')
 	userinfodisplay.innerHTML = `
 	<div class="text-16px text-primary text-bold">${getUserName() ? cleanInput(getUserName()) : ''}${clientinfo?.betatester ? `<span class="text-14px margin-left-6px badgepadding background-green border-8px text-white">Beta tester</span>` : ''}</div>
-	<div class="text-14px text-primary">${getUserEmail() && isEmail(getUserEmail()) ? getUserEmail() : ''}</div>`
+	<div class="text-14px text-primary">${getUserEmail() && isEmail(getUserEmail()) && getUserEmail()  != getUserName() ? getUserEmail() : ''}</div>`
 }
 function updateAvatar(){
 	const avataricon = `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="avatarsvg">
@@ -7704,6 +7704,7 @@ function fixsubandparenttask(item){
 }
 
 
+//here3
 
 //fix and update recurring todos
 function fixrecurringtodo(){
@@ -7722,7 +7723,7 @@ function fixrecurringtodo(){
 				if (item.repeat.frequency == 1) {
 					let oldday = lasttododuedate.getDay()
 					if(item.repeat.byday.length > 0){
-						let oldbydayindex = item.byday.findIndex(d => d == oldday)
+						let oldbydayindex = item.repeat.byday.findIndex(d => d == oldday)
 						if(oldbydayindex != -1){
 							let newbyday = item.repeat.byday[(oldbydayindex + 1) % item.repeat.byday.length]
 							newtododuedate.setDate(newtododuedate.getDate() + (newbyday - newtododuedate.getDay() + 7) % 7)
@@ -7761,7 +7762,6 @@ function fixrecurringtodo(){
 	}
 }
 
-//here3
 
 //get todos
 function gettodos(option1, option2) {
@@ -8101,8 +8101,8 @@ let createtodorepeatvalue = {
 	count: null,
 	until: null
 }
-function updatecreatetodo() {
 
+function updatecreatetodo() {
 	let createtododuration = getElement('createtododuration')
 	let createtododuedate = getElement('createtododuedate')
 	let createtodopriority = getElement('createtodopriority')
@@ -8170,7 +8170,7 @@ function updatecreatetodo() {
 
 
 	//repeat
-	let temprepeatvalue = createtodorepeatvalue.frequency == null && createtodorepeatvalue.interval == null ? 'No repeat' : `Repeats ${getRepeatText({ repeat: createtodorepeatvalue }, true)}`
+	let temprepeatvalue = createtodorepeatvalue.frequency == null && createtodorepeatvalue.interval == null ? '<span class="text-quaternary">No repeat</span>' : `<span class="text-blue">Repeats ${getRepeatText({ repeat: createtodorepeatvalue }, true)}</span>`
 	createtodorepeat.innerHTML = temprepeatvalue
 	createtodorepeatprompttodotoday.innerHTML = temprepeatvalue
 	createtodorepeatonboarding.innerHTML = temprepeatvalue
@@ -8424,7 +8424,6 @@ function clickcreatetodorepeat(event, id) {
 	closecreatetodoitempriority()
 	closecreatetodoitemduration()
 	closecreatetodoitemavailability()
-
 }
 
 
@@ -8447,11 +8446,8 @@ function inputcreatetodoitemrepeat(index){
 		closecreatetodoitemrepeat()
 		updatecreatetodo()
 
-	}else{
-		//custom
 	}
 }
-//here5
 
 
 //click on due date
@@ -9548,7 +9544,7 @@ function gettododata(item) {
 				<div class="infogroup">
 					<div class="inputgroup">
 						<div class="text-14px text-primary width90px">Repeat</div>
-						<div class="flex-1 border-8px transition-duration-100 pointer background-tint-1 hover:background-tint-2 text-14px text-primary padding-8px-12px popupbutton display-flex flex-row justify-space-between" onclick="clicktodorepeatoption()">
+						<div class="flex-1 border-8px transition-duration-100 pointer background-tint-1 hover:background-tint-2 text-14px text-primary padding-8px-12px popupbutton display-flex flex-row justify-space-between" onclick="clicktodorepeatoption()" id="todorepeatoptionbutton">
 							${getRepeatText(item)}
 							<span><svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline rotate90">
 							<g>
@@ -9717,12 +9713,12 @@ function gettododata(item) {
 //todo repeat
 function clicktodorepeatoption() {
 	let todorepeatoptionmenu = getElement('todorepeatoptionmenu')
-	let repeatoptionbutton = getElement('repeatoptionbutton')
+	let todorepeatoptionbutton = getElement('todorepeatoptionbutton')
 	todorepeatoptionmenu.classList.toggle('hiddenpopup')
 
-	todorepeatoptionmenu.style.top = fixtop(repeatoptionbutton.getBoundingClientRect().top + repeatoptionbutton.offsetHeight, todorepeatoptionmenu) + 'px'
-	todorepeatoptionmenu.style.left = fixleft(repeatoptionbutton.getBoundingClientRect().left, repeatoptionmenu) + 'px'
-	todorepeatoptionmenu.style.width = repeatoptionbutton.offsetWidth + 'px'
+	todorepeatoptionmenu.style.top = fixtop(todorepeatoptionbutton.getBoundingClientRect().top + todorepeatoptionbutton.offsetHeight, todorepeatoptionmenu) + 'px'
+	todorepeatoptionmenu.style.left = fixleft(todorepeatoptionbutton.getBoundingClientRect().left, repeatoptionmenu) + 'px'
+	todorepeatoptionmenu.style.width = todorepeatoptionbutton.offsetWidth + 'px'
 
 	updatetodorepeatoptionmenu()
 }
@@ -9737,7 +9733,7 @@ function updatetodorepeatoptionmenu() {
 		return f.interval == item.repeat.interval && f.frequency == item.repeat.frequency && isEqualArray(item.repeat.byday, f.byday)
 	}
 
-	let item = [...calendar.todos, ...calendar.events].find(f => f.id == selectedeventid)
+	let item = [...calendar.todos, ...calendar.events].find(f => f.id == selectededittodoid)
 	if (!item) return
 
 	let repeatoption0 = getElement('todorepeatoption0')
@@ -9757,7 +9753,7 @@ function updatetodorepeatoptionmenu() {
 
 //select repeat preset
 function selecttodorepeatoption(index) {
-	let item = [...calendar.todos, ...calendar.events].find(f => f.id == selectedeventid)
+	let item = [...calendar.todos, ...calendar.events].find(f => f.id == selectededittodoid)
 	if (!item) return
 	if (index != null) {
 		let option = REPEAT_OPTION_DATA[index]
