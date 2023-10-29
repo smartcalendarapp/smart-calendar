@@ -1,5 +1,3 @@
-const { start } = require("repl")
-
 //CONSTANTS
 const MONTHLIST = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 const SHORTMONTHLIST = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -12268,7 +12266,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 					startafterdate = new Date(previoustodo.endbefore.year, previoustodo.endbefore.month, previoustodo.endbefore.day, 0, previoustodo.endbefore.minute)
 				}
 			}
-			
+
 
 			let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 			if (endbeforedate.getTime() < startafterdate.getTime()) {
