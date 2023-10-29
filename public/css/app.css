@@ -1111,6 +1111,16 @@ body {
 	display: inline-block;
 }
 
+
+.repeatbutton{
+	height: 14px;
+	width: 14px;
+	fill: var(--green);
+	stroke: none;
+	pointer-events: none;
+	display: inline-block;
+}
+
 .iconred {
 	height: 14px;
 	width: 14px;
