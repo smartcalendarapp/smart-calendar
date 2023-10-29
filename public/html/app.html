@@ -306,6 +306,43 @@
 
 
 
+	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="createtodoitemrepeat">
+		<div class="display-flex flex-row gap-12px justify-space-between align-center">
+			<div>
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					</g>
+					</svg>
+				</div>
+			
+			<div class="infotitle nowrap" id="createtodoitemdurationtitle">Repeat</div>
+
+			<div class="infotoprightgroup">
+				<div class="infotopright pointer" onclick="closecreatetodoitemduration(event)">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+			</div>
+		</div>
+	
+		<div class="display-flex flex-column overflow-auto border-8px listborder max-height-240px" id="createtodoitemrepeatlist">
+			<div class="helpitem display-flex flex-row gap-12px" onclick="inputcreatetodoitemrepeat(0)">No repeat</div>
+			<div class="helpitem display-flex flex-row gap-12px" onclick="inputcreatetodoitemrepeat(1)">Daily</div>
+			<div class="helpitem display-flex flex-row gap-12px" onclick="inputcreatetodoitemrepeat(2)">Weekly</div>
+			<div class="helpitem display-flex flex-row gap-12px" onclick="inputcreatetodoitemrepeat(3)">Monthly</div>
+			<div class="helpitem display-flex flex-row gap-12px" onclick="inputcreatetodoitemrepeat(4)">Yearly</div>
+			<div class="helpitem display-flex flex-row gap-12px" onclick="inputcreatetodoitemrepeat(5)">Weekdays</div>
+			<div class="helpitem display-flex flex-row gap-12px" onclick="inputcreatetodoitemrepeat()">Custom repeat...</div>
+		</div>
+	</div>
+
+
 	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px max-width-400px" id="todoitemduedate">
 		<div class="display-flex flex-row justify-space-between align-center">
 
@@ -936,7 +973,10 @@
 							<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetodopriority(event)" id="createtodopriorityprompttodotoday">
 							</div>
 
-							<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-purple pointer-auto pointer transition-duration-100 popupbutton"  onclick="clickcreatetodoavailability(event)" id="createtodoavailabilityprompttodotoday">
+							<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-purple pointer-auto pointer transition-duration-100 popupbutton"  onclick="readinteractivetourpopup('timeslot');clickcreatetodoavailability(event)" id="createtodoavailabilityprompttodotoday">
+							</div>
+
+							<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-blue pointer-auto pointer transition-duration-100 popupbutton display-none"  onclick="clickcreatetodorepeat(event)" id="createtodorepeatprompttodotoday">
 							</div>
 						</div>
 
@@ -1239,7 +1279,10 @@
 									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetodopriority(event)" id="createtodopriorityonboarding">
 									</div>
 
-									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-purple pointer-auto pointer transition-duration-100 popupbutton"  onclick="clickcreatetodoavailability(event)" id="createtodoavailabilityonboarding">
+									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-purple pointer-auto pointer transition-duration-100 popupbutton"  onclick="readinteractivetourpopup('timeslot');clickcreatetodoavailability(event)" id="createtodoavailabilityonboarding">
+									</div>
+
+									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-blue pointer-auto pointer transition-duration-100 popupbutton display-none"  onclick="clickcreatetodorepeat(event)" id="createtodorepeatonboarding">
 									</div>
 								</div>
 
@@ -2050,6 +2093,9 @@
 									</div>
 
 									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-purple pointer-auto pointer transition-duration-100 popupbutton"  onclick="readinteractivetourpopup('timeslot');clickcreatetodoavailability(event)" id="createtodoavailability">
+									</div>
+
+									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-blue pointer-auto pointer transition-duration-100 popupbutton display-none"  onclick="clickcreatetodorepeat(event)" id="createtodorepeat">
 									</div>
 								</div>
 

@@ -11,7 +11,7 @@ const REMINDER_PRESETS = [0, 300000, 900000, 3600000, 3600000*6, 86400000]
 
 const TODO_DURATION_PRESETS = [5, 10, 15, 30, 60, 120, 240, 600, 1200]
 
-const repeatoptiondata = [
+const REPEAT_OPTION_DATA = [
 	{ interval: null, frequency: null, byday: [], text: 'No repeat' },
 	{ interval: 1, frequency: 0, byday: [], text: 'Daily' },
 	{ interval: 1, frequency: 1, byday: [], text: 'Weekly' },
@@ -28,13 +28,13 @@ const repeatoptiondata = [
 	{ interval: 1, frequency: 1, byday: [6], text: 'Weekly' },
 ]
 
-const daytimewindowoptiondata = [
+const DAY_TIMEWINDOW_OPTION_DATA = [
 	{ byday: [], text: 'Any day' },
 	{ byday: [1, 2, 3, 4, 5], text: 'Weekdays' },
 	{ byday: [0, 6], text: 'Weekends' },
 ]
 
-const timetimewindowoptiondata = [
+const TIME_TIMEWINDOW_OPTION_DATA = [
 	{ startminute: null, endminute: null, text: 'Any time' },
 	{ startminute: 420, endminute: 720, text: 'Morning' },
 	{ startminute: 720, endminute: 1020, text: 'Afternoon' },
@@ -42,7 +42,7 @@ const timetimewindowoptiondata = [
 	{ startminute: 540, endminute: 1020, text: 'Work hours' },
 ]
 
-const timewindowpresets = [
+const TIMEWINDOW_PRESETS = [
 	{ day: { byday: [] }, time: { startminute: null, endminute: null }, text: 'Any time' },
 	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 9*60, endminute: 17*60 }, text: 'Work hours', fulltext: 'Work hours (M-F 9am-5pm)' },
 	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 8*60, endminute: 15*60 }, text: 'School hours', fulltext: 'School hours (M-F 8am-3pm)' },
@@ -237,7 +237,7 @@ function getOrdinal(n) {
 
 
 function getRepeatText(item) {
-	let repeattext = repeatoptiondata.find(f => f.interval == item.repeat.interval && f.frequency == item.repeat.frequency && isEqualArray(item.repeat.byday, f.byday))
+	let repeattext = REPEAT_OPTION_DATA.find(f => f.interval == item.repeat.interval && f.frequency == item.repeat.frequency && isEqualArray(item.repeat.byday, f.byday))
 	repeattext = ((repeattext && repeattext.text) || `Every${item.repeat.interval == 1 ? '' : ` ${getOrdinal(item.repeat.interval)}`} ${['day', item.repeat.byday.length == 0 ? 'week' : `${item.repeat.byday.sort((a, b) => a - b).map(d => DAYLIST[d]).join(', ')}`, 'month', 'year'][item.repeat.frequency]}`) + `${item.repeat.until ? ` until ${getDMDYText(new Date(item.repeat.until))}` : ''}${item.repeat.count ? ` for ${item.repeat.count} times` : ''}`
 	return repeattext
 }
@@ -1038,7 +1038,6 @@ class Calendar {
 				count: null,
 			}
 			this.repeatid = null
-
 			this.timewindow = {
 				day: {
 					byday: []
@@ -1998,7 +1997,7 @@ class Calendar {
 							<div class="infogroup">
 								<div class="inputgroup">
 				 					<div class="text-14px text-primary width90px">Time slot</div>
-					 				<div class="inputeventtype" id="inputtimewindowpresets">
+					 				<div class="inputeventtype" id="inputTIMEWINDOW_PRESETS">
 									 	<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(0)">Any time</div>
 										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(1)">Work hours</div>
 										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(2)">School hours</div>
@@ -2152,11 +2151,11 @@ class Calendar {
 						}
 
 						//time window presets
-						let inputtimewindowpresets = getElement('inputtimewindowpresets')
-						for (let [index, div] of Object.entries(inputtimewindowpresets.children)) {
+						let inputTIMEWINDOW_PRESETS = getElement('inputTIMEWINDOW_PRESETS')
+						for (let [index, div] of Object.entries(inputTIMEWINDOW_PRESETS.children)) {
 							let itemvalue = item.timewindow.day
 							let itemvalue2 = item.timewindow.time
-							let modelvalue = timewindowpresets[+index]
+							let modelvalue = TIMEWINDOW_PRESETS[+index]
 
 							if (isEqualArray(modelvalue.day.byday, itemvalue.byday) && itemvalue2.startminute == modelvalue.time.startminute && itemvalue2.endminute == modelvalue.time.endminute) {
 								div.classList.add('selectedbutton')
@@ -2169,7 +2168,7 @@ class Calendar {
 						let inputtimewindowday = getElement('inputtimewindowday')
 						for (let [index, div] of Object.entries(inputtimewindowday.children)) {
 							let itemvalue = item.timewindow.day
-							let modelvalue = daytimewindowoptiondata[+index]
+							let modelvalue = DAY_TIMEWINDOW_OPTION_DATA[+index]
 
 							if (isEqualArray(modelvalue.byday, itemvalue.byday)) {
 								div.classList.add('selectedbutton')
@@ -2181,7 +2180,7 @@ class Calendar {
 						let inputtimewindowtime = getElement('inputtimewindowtime')
 						for (let [index, div] of Object.entries(inputtimewindowtime.children)) {
 							let itemvalue = item.timewindow.time
-							let modelvalue = timetimewindowoptiondata[+index]
+							let modelvalue = TIME_TIMEWINDOW_OPTION_DATA[+index]
 							if (itemvalue.startminute == modelvalue.startminute && itemvalue.endminute == modelvalue.endminute) {
 								div.classList.add('selectedbutton')
 							} else {
@@ -2433,11 +2432,11 @@ class Calendar {
 		}
 
 		//time window presets
-		let inputtodotimewindowpresets = getElement('inputtodotimewindowpresets')
-		for (let [index, div] of Object.entries(inputtodotimewindowpresets.children)) {
+		let inputtodoTIMEWINDOW_PRESETS = getElement('inputtodoTIMEWINDOW_PRESETS')
+		for (let [index, div] of Object.entries(inputtodoTIMEWINDOW_PRESETS.children)) {
 			let itemvalue = item.timewindow.day
 			let itemvalue2 = item.timewindow.time
-			let modelvalue = timewindowpresets[+index]
+			let modelvalue = TIMEWINDOW_PRESETS[+index]
 
 			if (isEqualArray(modelvalue.day.byday, itemvalue.byday) && itemvalue2.startminute == modelvalue.time.startminute && itemvalue2.endminute == modelvalue.time.endminute) {
 				div.classList.add('selectedbutton')
@@ -2450,7 +2449,7 @@ class Calendar {
 		let todoedittimewindowday = getElement('todoedittimewindowday')
 		for (let [index, div] of Object.entries(todoedittimewindowday.children)) {
 			let itemvalue = item.timewindow.day
-			let modelvalue = daytimewindowoptiondata[+index]
+			let modelvalue = DAY_TIMEWINDOW_OPTION_DATA[+index]
 
 			if (isEqualArray(modelvalue.byday, itemvalue.byday)) {
 				div.classList.add('selectedbutton')
@@ -2462,7 +2461,7 @@ class Calendar {
 		let todoedittimewindowtime = getElement('todoedittimewindowtime')
 		for (let [index, div] of Object.entries(todoedittimewindowtime.children)) {
 			let itemvalue = item.timewindow.time
-			let modelvalue = timetimewindowoptiondata[+index]
+			let modelvalue = TIME_TIMEWINDOW_OPTION_DATA[+index]
 			if (itemvalue.startminute == modelvalue.startminute && itemvalue.endminute == modelvalue.endminute) {
 				div.classList.add('selectedbutton')
 			} else {
@@ -5052,7 +5051,7 @@ function openleftmenu2(event) {
 function updateuserinfo(){
 	let userinfodisplay = getElement('userinfodisplay')
 	userinfodisplay.innerHTML = `
-	<div class="text-16px text-primary text-bold">${getUserName() ? cleanInput(getUserName()) : ''}${clientinfo?.betatester ? `<span class="text-14px margin-left-6px badgepadding border-8px text-white">Beta tester</span>` : ''}</div>
+	<div class="text-16px text-primary text-bold">${getUserName() ? cleanInput(getUserName()) : ''}${clientinfo?.betatester ? `<span class="text-14px margin-left-6px badgepadding background-green border-8px text-white">Beta tester</span>` : ''}</div>
 	<div class="text-14px text-primary">${getUserEmail() && isEmail(getUserEmail()) ? getUserEmail() : ''}</div>`
 }
 function updateAvatar(){
@@ -7407,7 +7406,7 @@ function clickeventtimewindowpreset(index){
 	let item = calendar.events.find(x => x.id == selectedeventid)
 	if (!item) return
 
-	let option = timewindowpresets[index]
+	let option = TIMEWINDOW_PRESETS[index]
 	if (option) {
 		item.timewindow.time.startminute = option.time.startminute
 		item.timewindow.time.endminute = option.time.endminute
@@ -7424,7 +7423,7 @@ function clickeventtimewindowday(index) {
 	let item = calendar.events.find(x => x.id == selectedeventid)
 	if (!item) return
 
-	let option = daytimewindowoptiondata[index]
+	let option = DAY_TIMEWINDOW_OPTION_DATA[index]
 	if (!option) return
 
 	item.timewindow.day.byday = option.byday
@@ -7438,7 +7437,7 @@ function clickeventtimewindowtime(index) {
 	let item = calendar.events.find(x => x.id == selectedeventid)
 	if (!item) return
 
-	let option = timetimewindowoptiondata[index]
+	let option = TIME_TIMEWINDOW_OPTION_DATA[index]
 	if (!option) return
 
 	item.timewindow.time.startminute = option.startminute
@@ -7716,16 +7715,16 @@ function fixrecurringtodo(){
 			let lasttodo = relatedtodos[relatedtodos.length - 1]
 			
 			if(lasttodo.completed){
-				let lasttododuedate = new Date(lasttododuedate.endbefore.year, lasttododuedate.endbefore.month, lasttododuedate.endbefore.day, 0, lasttododuedate.endbefore.minute)
+				let lasttododuedate = new Date(lasttodo.endbefore.year, lasttodo.endbefore.month, lasttodo.endbefore.day, 0, lasttodo.endbefore.minute)
 
 				let newtododuedate = new Date(lasttododuedate)
 				
 				if (item.repeat.frequency == 1) {
 					let oldday = lasttododuedate.getDay()
-					if(item.byday.length > 0){
+					if(item.repeat.byday.length > 0){
 						let oldbydayindex = item.byday.findIndex(d => d == oldday)
 						if(oldbydayindex != -1){
-							let newbyday = item.byday[(oldbydayindex + 1) % item.byday.length]
+							let newbyday = item.repeat.byday[(oldbydayindex + 1) % item.repeat.byday.length]
 							newtododuedate.setDate(newtododuedate.getDate() + (newbyday - newtododuedate.getDay() + 7) % 7)
 						}
 					}
@@ -7754,7 +7753,8 @@ function fixrecurringtodo(){
 				
 				newitem.completed = false
 				newitem.id = generateID()
-				newitem.repeatid = lasttodo.id
+				newitem.repeatid = item.id
+
 				calendar.todos.push(newitem)
 			}
 		}
@@ -8063,8 +8063,14 @@ function resetcreatetodo() {
 		minute: nextdate.getHours() * 60 + nextdate.getMinutes()
 	}
 	createtodopriorityvalue = 0
-
 	createtodoavailabilityvalue = 0
+	createtodorepeatvalue = {
+		frequency: null,
+		interval: null,
+		byday: [],
+		count: null,
+		until: null
+	}
 
 	createtodosubtasks = []
 
@@ -8077,6 +8083,7 @@ function resetcreatetodo() {
 }
 
 
+//create todo
 let createtodosubtasks = []
 let createtododurationvalue;
 let createtodoavailabilityvalue = 0
@@ -8087,22 +8094,32 @@ let createtododuedatevalue = {
 	minute: null
 }
 let createtodopriorityvalue;
+let createtodorepeatvalue = {
+	frequency: null,
+	interval: null,
+	byday: [],
+	count: null,
+	until: null
+}
 function updatecreatetodo() {
 
 	let createtododuration = getElement('createtododuration')
 	let createtododuedate = getElement('createtododuedate')
 	let createtodopriority = getElement('createtodopriority')
 	let createtodoavailability = getElement('createtodoavailability')
+	let createtodorepeat = getElement('createtodorepeat')
 
 	let createtododurationonboarding = getElement('createtododurationonboarding')
 	let createtododuedateonboarding = getElement('createtododuedateonboarding')
 	let createtodopriorityonboarding = getElement('createtodopriorityonboarding')
 	let createtodoavailabilityonboarding = getElement('createtodoavailabilityonboarding')
+	let createtodorepeatonboarding = getElement('createtodorepeatonboarding')
 
 	let createtododurationprompttodotoday = getElement('createtododurationprompttodotoday')
 	let createtododuedateprompttodotoday = getElement('createtododuedateprompttodotoday')
 	let createtodopriorityprompttodotoday = getElement('createtodopriorityprompttodotoday')
 	let createtodoavailabilityprompttodotoday = getElement('createtodoavailabilityprompttodotoday')
+	let createtodorepeatprompttodotoday = getElement('createtodorepeatprompttodotoday')
 
 	let currentdate = new Date()
 
@@ -8119,7 +8136,7 @@ function updatecreatetodo() {
 
 
 	//time slot
-	let tempavailabilityvalue = `Time slot: ${timewindowpresets[createtodoavailabilityvalue].text}`
+	let tempavailabilityvalue = `Time slot: ${TIMEWINDOW_PRESETS[createtodoavailabilityvalue].text}`
 	createtodoavailability.innerHTML = tempavailabilityvalue
 	createtodoavailabilityprompttodotoday.innerHTML = tempavailabilityvalue
 	createtodoavailabilityonboarding.innerHTML = tempavailabilityvalue
@@ -8150,7 +8167,14 @@ function updatecreatetodo() {
 	createtodopriority.innerHTML = temppriorityvalue
 	createtodopriorityonboarding.innerHTML = temppriorityvalue
 	createtodopriorityprompttodotoday.innerHTML = temppriorityvalue
-	
+
+
+	//repeat
+	let tempitemobject = { repeat: createtodorepeatvalue }
+	let temprepeatvalue = `Repeats ${getRepeatText(tempitemobject)}`
+	createtodorepeat.innerHTML = temprepeatvalue
+	createtodorepeatprompttodotoday.innerHTML = temprepeatvalue
+	createtodorepeatonboarding.innerHTML = temprepeatvalue
 
 	//add button # of tasks
 	let finalstring = todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
@@ -8382,8 +8406,89 @@ function closetodoitemduedate() {
 	clickcreatetododuedate()
 	clickcreatetodopriority()
 	clickcreatetodoavailability()
+	clickcreatetodorepeat()
 */
 
+
+//click on repeat
+function clickcreatetodorepeat(event, id) {
+	//ui
+	let button = event.target
+	let createtodoitemrepeat = getElement('createtodoitemrepeat')
+	createtodoitemrepeat.classList.toggle('hiddenpopup')
+
+	createtodoitemrepeat.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, createtodoitemrepeat) + 'px'
+	createtodoitemrepeat.style.left = fixleft(button.getBoundingClientRect().left - createtodoitemrepeat.offsetWidth * 0.5 + button.offsetWidth * 0.5, createtodoitemrepeat) + 'px'
+
+
+	closecreatetodoitemduedate()
+	closecreatetodoitempriority()
+	closecreatetodoitemduration()
+	closecreatetodoitemavailability()
+
+}
+
+
+function closecreatetodoitemrepeat() {
+	let createtodoitemrepeat = getElement('createtodoitemrepeat')
+	createtodoitemrepeat.classList.add('hiddenpopup')
+}
+
+function inputcreatetodoitemrepeat(index){
+	if(index != null){
+		//preset
+
+		let option = REPEAT_OPTION_DATA[index]
+		if (!option) return
+
+		createtodorepeatvalue.frequency = option.frequency
+		createtodorepeatvalue.interval = option.interval
+		createtodorepeatvalue.byday = option.byday
+
+		updatecreatetodo()
+	}else{
+		//custom
+	}
+}
+//here5
+
+
+//click on due date
+function clickcreatetododuedate(event) {
+	//ui
+	let button = event.target
+	let createtodoitemduedate = getElement('createtodoitemduedate')
+	createtodoitemduedate.classList.toggle('hiddenpopup')
+
+	createtodoitemduedate.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, createtodoitemduedate) + 'px'
+	createtodoitemduedate.style.left = fixleft(button.getBoundingClientRect().left - createtodoitemduedate.offsetWidth * 0.5 + button.offsetWidth * 0.5, createtodoitemduedate) + 'px'
+
+	updatecreatetododateinput()
+	updatecreatetodotimeinput()
+
+	let duedate;
+	if (createtododuedatevalue.year != null && createtododuedatevalue.month != null && createtododuedatevalue.day != null && createtododuedatevalue.minute != null) {
+		duedate = new Date(createtododuedatevalue.year, createtododuedatevalue.month, createtododuedatevalue.day, 0, createtododuedatevalue.minute)
+	}
+
+	let currentdate = new Date()
+	let [year, month, day] = getDate(getDMDYText(duedate ? duedate : new Date())).value
+	if (year == null) {
+		year = currentdate.getFullYear()
+	}
+	if (month == null) {
+		month = currentdate.getMonth()
+	}
+	createtododatepickerdate = new Date(year, month, 1)
+
+	updatecreatetodotimepicker()
+	updatecreatetododatepicker()
+
+	closecreatetodoitemduration()
+	closecreatetodoitempriority()
+	closecreatetodoitemavailability()
+	closecreatetodoitemrepeat()
+}
 
 
 //click on duration
@@ -8403,6 +8508,7 @@ function clickcreatetododuration(event, id) {
 	closecreatetodoitemduedate()
 	closecreatetodoitempriority()
 	closecreatetodoitemavailability()
+	closecreatetodoitemrepeat()
 
 	updatecreatetodoitemdurationlist()
 }
@@ -8489,6 +8595,7 @@ function clickcreatetododuedate(event) {
 	closecreatetodoitemduration()
 	closecreatetodoitempriority()
 	closecreatetodoitemavailability()
+	closecreatetodoitemrepeat()
 }
 
 //update input value
@@ -8722,6 +8829,7 @@ function clickcreatetodopriority(event, id) {
 	closecreatetodoitemduedate()
 	closecreatetodoitemduration()
 	closecreatetodoitemavailability()
+	closecreatetodoitemrepeat()
 }
 
 function updatecreatetodoitemprioritylist() {
@@ -8766,13 +8874,14 @@ function clickcreatetodoavailability(event, id) {
 	closecreatetodoitemduedate()
 	closecreatetodoitemduration()
 	closecreatetodoitempriority()
+	closecreatetodoitemrepeat()
 }
 
 function updatecreatetodoitemavailabilitylist() {
 	let createtodoitemavailabilitylist = getElement('createtodoitemavailabilitylist')
 
 	let output = []
-	let list = timewindowpresets.map(d => d.fulltext || d.text)
+	let list = TIMEWINDOW_PRESETS.map(d => d.fulltext || d.text)
 	for (let i = 0; i < list.length; i++) {
 		output.push(`<div class="helpitem" onclick="inputcreatetodoitemavailability(event, ${i})">${list[i]}</div>`)
 	}
@@ -9237,7 +9346,7 @@ function submitcreatetodo(event) {
 
 		//time slot
 		if(createtodoavailabilityvalue != null){
-			let timeslotitem = timewindowpresets[createtodoavailabilityvalue]
+			let timeslotitem = TIMEWINDOW_PRESETS[createtodoavailabilityvalue]
 			if(timeslotitem){
 				item.timewindow.day = timeslotitem.day
 				item.timewindow.time.startminute = timeslotitem.time.startminute
@@ -9245,28 +9354,40 @@ function submitcreatetodo(event) {
 			}
 		}
 
-		calendar.todos.push(item)
+		//repeat
+		if(createtodorepeatvalue.interval != null && createtodorepeatvalue.frequency != null){
+			item.repeat.frequency = createtodorepeatvalue.frequency
+			item.repeat.interval = createtodorepeatvalue.interval
+			item.repeat.byday = deepCopy(createtodorepeatvalue.byday)
+			item.repeat.until = createtodorepeatvalue.until
+			item.repeat.count = createtodorepeatvalue.count
+			fixrepeat(item)
+		}
+
 		
+		calendar.todos.push(item)
+	
 
-		//sub tasks
-		if(createtodosubtasks.length > 0){
-			for(let subtaskitem of createtodosubtasks){
-				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), subtaskitem.duration, `${subtaskitem.title || `${item.title || 'New Task'} (part ${Calendar.Todo.getChildren(item).length + 1})`}`)
+		if(createtodorepeatvalue.interval == null && createtodorepeatvalue.frequency == null){
+			//sub tasks
+			if(createtodosubtasks.length > 0){
+				for(let subtaskitem of createtodosubtasks){
+					let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), subtaskitem.duration, `${subtaskitem.title || `${item.title || 'New Task'} (part ${Calendar.Todo.getChildren(item).length + 1})`}`)
 
-				childitem.parentid = item.id
+					childitem.parentid = item.id
 
-				childitem.timewindow.day = item.timewindow.day
-				childitem.timewindow.time.startminute = item.timewindow.time.startminute
-				childitem.timewindow.time.endminute = item.timewindow.time.endminute
+					childitem.timewindow.day = item.timewindow.day
+					childitem.timewindow.time.startminute = item.timewindow.time.startminute
+					childitem.timewindow.time.endminute = item.timewindow.time.endminute
 
-				calendar.todos.push(childitem)
+					calendar.todos.push(childitem)
+				}
 			}
 		}
 
 
 		//fix sub task
 		fixsubandparenttask(item)
-
 
 
 		if(isprompttodotoday){
@@ -9278,7 +9399,7 @@ function submitcreatetodo(event) {
 
 		if(i == length - 1){
 			setTimeout(function(){
-				scrolltodoY(getElement(`todo-${item.id}`).getBoundingClientRect().top)
+				scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
 			}, 300)
 		}
 	}
@@ -9388,7 +9509,7 @@ function gettododata(item) {
 				<div class="infogroup">
 					<div class="inputgroup">
 						<div class="text-14px text-primary width90px">Time slot</div>
-						<div class="inputeventtype width-fit flex-grow-0 flex-basis-auto" id="inputtodotimewindowpresets">
+						<div class="inputeventtype width-fit flex-grow-0 flex-basis-auto" id="inputtodoTIMEWINDOW_PRESETS">
 							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(0)">Any time</div>
 							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(1)">Work hours</div>
 							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(2)">School hours</div>
@@ -9821,7 +9942,7 @@ function inputtodoitemnotdue(event, id) {
 	closetodoitemduedate()
 
 	setTimeout(function(){
-		scrolltodoY(getElement(`todo-${item.id}`).getBoundingClientRect().top)
+		scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
 	}, 300)
 }
 
@@ -9867,7 +9988,7 @@ function inputtodoitemduedate(event, dueyear, duemonth, duedate) {
 	updatetododateinput(inputtodoid)
 
 	setTimeout(function(){
-		scrolltodoY(getElement(`todo-${item.id}`).getBoundingClientRect().top)
+		scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
 	}, 300)
 }
 //input due time
@@ -9908,7 +10029,7 @@ function inputtodoitemduetime(event, duetime) {
 	closetodoitemduedate()
 	
 	setTimeout(function(){
-		scrolltodoY(getElement(`todo-${item.id}`).getBoundingClientRect().top)
+		scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
 	}, 300)
 }
 
@@ -10263,6 +10384,8 @@ async function todocompleted(event, id) {
 
 	
 	fixsubandparenttask(item)
+
+	fixrecurringtodo()
 	
 
 	calendar.updateTodo()
@@ -10423,12 +10546,12 @@ function edittodo(id) {
 
 	selectededittodoid = id
 
-	let selectedoption = daytimewindowoptiondata.findIndex(d => isEqualArray(d.byday, item.timewindow.day.byday))
+	let selectedoption = DAY_TIMEWINDOW_OPTION_DATA.findIndex(d => isEqualArray(d.byday, item.timewindow.day.byday))
 	if (selectedoption != -1) {
 		edittodopreferredday = selectedoption
 	}
 
-	let selectedoption2 = timetimewindowoptiondata.findIndex(d => d.startminute == item.timewindow.time.startminute && d.endminute == item.timewindow.time.endminute)
+	let selectedoption2 = TIME_TIMEWINDOW_OPTION_DATA.findIndex(d => d.startminute == item.timewindow.time.startminute && d.endminute == item.timewindow.time.endminute)
 	if (selectedoption2 != -1) {
 		edittodopreferredtime = selectedoption2
 	}
@@ -10447,7 +10570,7 @@ function clicktodotimewindowpreset(index){
 	let item = [...calendar.events, ...calendar.todos].find(d => d.id == selectededittodoid)
 	if (!item) return
 
-	let option = timewindowpresets[index]
+	let option = TIMEWINDOW_PRESETS[index]
 	if (option) {
 		item.timewindow.time.startminute = option.time.startminute
 		item.timewindow.time.endminute = option.time.endminute
@@ -13091,9 +13214,17 @@ function selectrepeatfrequency(index) {
 }
 
 function fixrepeat(item) {
-	if (item.repeat.frequency == 1 && item.repeat.interval != null) {
-		if (item.repeat.byday.length == 0) {
-			item.repeat.byday = [new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getDay()]
+	if(Calendar.Event.isEvent(item)){
+		if (item.repeat.frequency == 1 && item.repeat.interval != null) {
+			if (item.repeat.byday.length == 0) {
+				item.repeat.byday = [new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getDay()]
+			}
+		}
+	}else if(Calendar.Todo.isTodo(item)){
+		if (item.repeat.frequency == 1 && item.repeat.interval != null) {
+			if (item.repeat.byday.length == 0) {
+				item.repeat.byday = [new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute).getDay()]
+			}
 		}
 	}
 }
@@ -13264,10 +13395,10 @@ function clickrepeatoption() {
 
 function updaterepeatoptionmenu() {
 	function isnotrepeat() {
-		return !repeatoptiondata.find(f => f.interval == item.repeat.interval && f.frequency == item.repeat.frequency && isEqualArray(item.repeat.byday, f.byday))
+		return !REPEAT_OPTION_DATA.find(f => f.interval == item.repeat.interval && f.frequency == item.repeat.frequency && isEqualArray(item.repeat.byday, f.byday))
 	}
 	function isselectedrepeat(myindex) {
-		let f = repeatoptiondata[myindex]
+		let f = REPEAT_OPTION_DATA[myindex]
 		return f.interval == item.repeat.interval && f.frequency == item.repeat.frequency && isEqualArray(item.repeat.byday, f.byday)
 	}
 
@@ -13309,7 +13440,7 @@ function selectrepeatoption(index) {
 		repeatcustommenu.style.top = fixtop(repeatoptionbutton.getBoundingClientRect().top + repeatoptionbutton.offsetHeight, repeatcustommenu) + 'px'
 		repeatcustommenu.style.left = fixleft(repeatoptionbutton.getBoundingClientRect().left, repeatcustommenu) + 'px'
 	} else {
-		let option = repeatoptiondata[index]
+		let option = REPEAT_OPTION_DATA[index]
 		if (!option) return
 
 		item.repeat.frequency = option.frequency
@@ -13563,6 +13694,7 @@ function clickevent(event, timestamp) {
 	selectedeventdatetime = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 	selectedeventfromdate = new Date(timestamp)
 	selectedeventinitialy = event.clientY - item.start.minute + barcolumncontainer.scrollTop
+	fixrepeat(item)
 	selectedeventbyday = item.repeat.byday
 
 	updatedeventsaftermove = false
@@ -13670,9 +13802,8 @@ function moveevent(event) {
 				selectedeventdate2.setDate(selectedeventdate2.getDate() - index)
 
 				let dayindex = Math.round((selectedeventdate.getTime() - selectedeventdate2.getTime()) / (1000 * 24 * 3600))
-				if (item.repeat.frequency == 1 && item.repeat.interval != null) {
+				if (item.repeat.frequency == 1 && item.repeat.interval != null && item.repeat.byday.length == 1) {
 					item.repeat.byday = selectedeventbyday.map(d => ((d - dayindex) % 7 + 7) % 7)
-					fixrepeat(item)
 				}
 			}
 		}
