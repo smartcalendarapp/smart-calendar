@@ -474,16 +474,6 @@ function getDuration(string) {
 		'hundred': 100, 'a hundred': 100, 'one hundred': 100
 	}
 
-	const replacenumwords = (str) => {
-		const numwordspattern = new RegExp(`\\b(${Object.keys(numwords).join('|')})\\b`, 'g')
-		return str.replace(numwordspattern, (match) => {
-		  return numwords[match.toLowerCase()]
-		})
-	}
-	
-
-	string = replacenumwords(string)
-
 	let allmatch = string.match(/\b(((\d+(\.\d+)?\s*(days|day|d))\s*(\d+(\.\d+)?\s*(hours|hour|hrs|hr|h))\s*(\d+(\.\d+)?\s*(minutes|minute|mins|min|m)))|((\d+(\.\d+)?\s*(days|day|d))\s*(\d+(\.\d+)?\s*(hours|hour|hrs|hr|h)))|((\d+(\.\d+)?\s*(days|day|d))\s*(\d+(\.\d+)?\s*(minutes|minute|mins|min|m)))|((\d+(\.\d+)?\s*(hours|hour|hrs|hr|h))\s*(\d+(\.\d+)?\s*(minutes|minute|mins|min|m)))|(\d+(\.\d+)?\s*(days|day|d))|(\d+(\.\d+)?\s*(hours|hour|hrs|hr|h))|(\d+(\.\d+)?\s*(minutes|minute|mins|min|m)))\b/)
 	if (allmatch && allmatch[0]) {
 		match = allmatch[0]
@@ -504,6 +494,36 @@ function getDuration(string) {
 		if (tempminute) {
 			let tempminute2 = tempminute[0].match(/\d+(\.\d+)?/)
 			myduration = (myduration || 0) + +tempminute2[0]
+		}
+
+	}
+
+	let allmatch2 = string.match(new RegExp(`\\b((((${Object.keys(numwords).join('|')})\\s+(days|day|d))\\s+((${Object.keys(numwords).join('|')})\\s+(hours|hour|hrs|hr|h))\\s+((${Object.keys(numwords).join('|')})\\s+(minutes|minute|mins|min|m)))|(((${Object.keys(numwords).join('|')})\\s+(days|day|d))\\s+((${Object.keys(numwords).join('|')})\\s+(hours|hour|hrs|hr|h)))|(((${Object.keys(numwords).join('|')})\\s+(days|day|d))\\s+((${Object.keys(numwords).join('|')})\\s+(minutes|minute|mins|min|m)))|(((${Object.keys(numwords).join('|')})\\s+(hours|hour|hrs|hr|h))\\s+((${Object.keys(numwords).join('|')})\\s+(minutes|minute|mins|min|m)))|((${Object.keys(numwords).join('|')})\\s+(days|day|d))|((${Object.keys(numwords).join('|')})\\s+(hours|hour|hrs|hr|h))|((${Object.keys(numwords).join('|')})\\s+(minutes|minute|mins|min|m)))\\b`))
+	if (allmatch2 && allmatch2[0]) {
+		match = allmatch2[0]
+
+		let tempday = allmatch2[0].match(new RegExp(`(${Object.keys(numwords).join('|')})\\s*(d|day|days)`))
+		if (tempday) {
+			let tempday2 = tempday[0].match(new RegExp(`${Object.keys(numwords).join('|')}`))
+			if(numwords[tempday2]){
+				myduration = (myduration || 0) + (numwords[tempday2] * 1440)
+			}
+		}
+
+		let temphour = allmatch2[0].match(new RegExp(`(${Object.keys(numwords).join('|')})\\s*(h|hr|hrs|hour|hours)`))
+		if (temphour) {
+			let temphour2 = temphour[0].match(new RegExp(`${Object.keys(numwords).join('|')}`))
+			if(numwords[temphour2]){
+				myduration = (myduration || 0) + (numwords[temphour2] * 60)
+			}
+		}
+
+		let tempminute = allmatch2[0].match(new RegExp(`(${Object.keys(numwords).join('|')})\\s*(m|min|mins|minutes)`))
+		if (tempminute) {
+			let tempminute2 = tempminute[0].match(new RegExp(`${Object.keys(numwords).join('|')}`))
+			if(numwords[tempminute2]){
+				myduration = (myduration || 0) + (numwords[tempminute2])
+			}
 		}
 
 	}
@@ -1067,7 +1087,7 @@ class Calendar {
 			if(this.isChild(item)){
 				return `${cleanInput(this.getTitle(this.getParent(item)))} (part ${this.getChildIndex(item) + 1})`
 			}
-			return `New Todo`
+			return `New Task`
 		}
 
 		static getParent(item){
@@ -4586,6 +4606,8 @@ function updateonboardingscreen(){
 	getElement('createtodoitemduedate').classList.remove('z-index-10001')
 	getElement('createtodoitemduration').classList.remove('z-index-10001')
 	getElement('createtodoitempriority').classList.remove('z-index-10001')
+	getElement('createtodoitemavailability').classList.remove('z-index-10001')
+	getElement('createtodoitemrepeat').classList.remove('z-index-10001')
 	getElement('todoitempriority').classList.remove('z-index-10001')
 	getElement('todoitemduedate').classList.remove('z-index-10001')
 	getElement('todoitemduration').classList.remove('z-index-10001')
@@ -4659,6 +4681,8 @@ function updateonboardingscreen(){
 		getElement('createtodoitemduedate').classList.add('z-index-10001')
 		getElement('createtodoitemduration').classList.add('z-index-10001')
 		getElement('createtodoitempriority').classList.add('z-index-10001')
+		getElement('createtodoitemavailability').classList.add('z-index-10001')
+		getElement('createtodoitemrepeat').classList.add('z-index-10001')
 		getElement('todoitempriority').classList.add('z-index-10001')
 		getElement('todoitemduedate').classList.add('z-index-10001')
 		getElement('todoitemduration').classList.add('z-index-10001')
@@ -9246,6 +9270,7 @@ function typeaddtask(event, submit, index) {
 		finalstring = finalstring.replace(regex, '')
 	}
 
+
 	//duration
 	let tempmatch3 = getDuration(finalstring)
 	if (tempmatch3.match) {
@@ -10481,11 +10506,9 @@ async function todocompleted(event, id) {
 	}
 
 
-	
-	fixsubandparenttask(item)
-
 	fixrecurringtodo(item)
 	
+	fixsubandparenttask(item)
 
 	calendar.updateTodo()
 	if(Calendar.Event.isEvent(item)){
@@ -12825,7 +12848,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 	})
 
 	let promises = []
-	for (let item of modifiedevents.filter(g => addedtodos.find(f => f.id == g.id))) {
+	for (let item of modifiedevents) {
 		let itemelement = getElement(item.id)
 		if (!itemelement) continue
 		let itemrect = itemelement.getBoundingClientRect()
