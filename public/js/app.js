@@ -236,9 +236,9 @@ function getOrdinal(n) {
 }
 
 
-function getRepeatText(item) {
+function getRepeatText(item, lowercase) {
 	let repeattext = REPEAT_OPTION_DATA.find(f => f.interval == item.repeat.interval && f.frequency == item.repeat.frequency && isEqualArray(item.repeat.byday, f.byday))
-	repeattext = ((repeattext && repeattext.text) || `Every${item.repeat.interval == 1 ? '' : ` ${getOrdinal(item.repeat.interval)}`} ${['day', item.repeat.byday.length == 0 ? 'week' : `${item.repeat.byday.sort((a, b) => a - b).map(d => DAYLIST[d]).join(', ')}`, 'month', 'year'][item.repeat.frequency]}`) + `${item.repeat.until ? ` until ${getDMDYText(new Date(item.repeat.until))}` : ''}${item.repeat.count ? ` for ${item.repeat.count} times` : ''}`
+	repeattext = ((repeattext && repeattext.text.toLowerCase()) || `${lowercase ? 'every' : 'Every'}${item.repeat.interval == 1 ? '' : ` ${getOrdinal(item.repeat.interval)}`} ${['day', item.repeat.byday.length == 0 ? 'week' : `${item.repeat.byday.sort((a, b) => a - b).map(d => DAYLIST[d]).join(', ')}`, 'month', 'year'][item.repeat.frequency]}`) + `${item.repeat.until ? ` until ${getDMDYText(new Date(item.repeat.until))}` : ''}${item.repeat.count ? ` for ${item.repeat.count} times` : ''}`
 	return repeattext
 }
 
@@ -2307,7 +2307,7 @@ class Calendar {
 
 					if (item.repeat.frequency != null && item.repeat.interval != null) {
 						output.push(`
-							<div class="infotext selecttext text-14px"><span class="text-bold text-14px">Repeats</span> ${getRepeatText(item)}</div>`)
+							<div class="infotext selecttext text-14px"><span class="text-bold text-14px">Repeats</span> ${getRepeatText(item, true)}</div>`)
 					}
 
 					if(item.googleclassroomid){
@@ -2432,8 +2432,8 @@ class Calendar {
 		}
 
 		//time window presets
-		let inputtodoTIMEWINDOW_PRESETS = getElement('inputtodoTIMEWINDOW_PRESETS')
-		for (let [index, div] of Object.entries(inputtodoTIMEWINDOW_PRESETS.children)) {
+		let inputtodotimewindow = getElement('inputtodotimewindow')
+		for (let [index, div] of Object.entries(inputtodotimewindow.children)) {
 			let itemvalue = item.timewindow.day
 			let itemvalue2 = item.timewindow.time
 			let modelvalue = TIMEWINDOW_PRESETS[+index]
@@ -8170,7 +8170,7 @@ function updatecreatetodo() {
 
 
 	//repeat
-	let temprepeatvalue = createtodorepeatvalue.frequency == null && createtodorepeatvalue.interval == null ? 'No repeat' : `Repeats ${getRepeatText({ repeat: createtodorepeatvalue })}`
+	let temprepeatvalue = createtodorepeatvalue.frequency == null && createtodorepeatvalue.interval == null ? 'No repeat' : `Repeats ${getRepeatText({ repeat: createtodorepeatvalue }, true)}`
 	createtodorepeat.innerHTML = temprepeatvalue
 	createtodorepeatprompttodotoday.innerHTML = temprepeatvalue
 	createtodorepeatonboarding.innerHTML = temprepeatvalue
@@ -9510,7 +9510,7 @@ function gettododata(item) {
 				<div class="infogroup">
 					<div class="inputgroup">
 						<div class="text-14px text-primary width90px">Time slot</div>
-						<div class="inputeventtype width-fit flex-grow-0 flex-basis-auto" id="inputtodoTIMEWINDOW_PRESETS">
+						<div class="inputeventtype width-fit flex-grow-0 flex-basis-auto" id="inputtodotimewindow">
 							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(0)">Any time</div>
 							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(1)">Work hours</div>
 							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(2)">School hours</div>
@@ -9540,6 +9540,22 @@ function gettododata(item) {
 							<div class="inputeventtypechild" onclick="clickedittodotimewindowtime(2)">Afternoon</div>
 							<div class="inputeventtypechild" onclick="clickedittodotimewindowtime(3)">Evening</div>
 							<div class="inputeventtypechild" onclick="clickedittodotimewindowtime(4)">Work hours</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="infogroup">
+					<div class="inputgroup">
+						<div class="text-14px text-primary width90px">Repeat</div>
+						<div class="flex-1 border-8px transition-duration-100 pointer background-tint-1 hover:background-tint-2 text-14px text-primary padding-8px-12px popupbutton display-flex flex-row justify-space-between" onclick="clicktodorepeatoption()">
+							${getRepeatText(item)}
+							<span><svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline rotate90">
+							<g>
+							<path d="M88.6229 47.8879L167.377 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M88.6229 208.112L167.377 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							</g>
+							</svg></span>
 						</div>
 					</div>
 				</div>
@@ -9694,6 +9710,71 @@ function gettododata(item) {
 	}
 
 	return output
+}
+
+
+
+//todo repeat
+function clicktodorepeatoption() {
+	let todorepeatoptionmenu = getElement('todorepeatoptionmenu')
+	let repeatoptionbutton = getElement('repeatoptionbutton')
+	todorepeatoptionmenu.classList.toggle('hiddenpopup')
+
+	todorepeatoptionmenu.style.top = fixtop(repeatoptionbutton.getBoundingClientRect().top + repeatoptionbutton.offsetHeight, todorepeatoptionmenu) + 'px'
+	todorepeatoptionmenu.style.left = fixleft(repeatoptionbutton.getBoundingClientRect().left, repeatoptionmenu) + 'px'
+	todorepeatoptionmenu.style.width = repeatoptionbutton.offsetWidth + 'px'
+
+	updatetodorepeatoptionmenu()
+}
+
+
+function updatetodorepeatoptionmenu() {
+	function isnotrepeat() {
+		return !REPEAT_OPTION_DATA.find(f => f.interval == item.repeat.interval && f.frequency == item.repeat.frequency && isEqualArray(item.repeat.byday, f.byday))
+	}
+	function isselectedrepeat(myindex) {
+		let f = REPEAT_OPTION_DATA[myindex]
+		return f.interval == item.repeat.interval && f.frequency == item.repeat.frequency && isEqualArray(item.repeat.byday, f.byday)
+	}
+
+	let item = [...calendar.todos, ...calendar.events].find(f => f.id == selectedeventid)
+	if (!item) return
+
+	let repeatoption0 = getElement('todorepeatoption0')
+	let repeatoption1 = getElement('todorepeatoption1')
+	let repeatoption2 = getElement('todorepeatoption2')
+	let repeatoption3 = getElement('todorepeatoption3')
+	let repeatoption4 = getElement('todorepeatoption4')
+	let repeatoption5 = getElement('todorepeatoption5')
+
+	repeatoption0.innerHTML = getcheck(isselectedrepeat(0))
+	repeatoption1.innerHTML = getcheck(isselectedrepeat(1))
+	repeatoption2.innerHTML = getcheck([2, 7, 8, 9, 10, 11, 12, 13].find(d => isselectedrepeat(d)))
+	repeatoption3.innerHTML = getcheck(isselectedrepeat(3))
+	repeatoption4.innerHTML = getcheck(isselectedrepeat(4))
+	repeatoption5.innerHTML = getcheck(isselectedrepeat(5))
+}
+
+//select repeat preset
+function selecttodorepeatoption(index) {
+	let item = [...calendar.todos, ...calendar.events].find(f => f.id == selectedeventid)
+	if (!item) return
+	if (index != null) {
+		let option = REPEAT_OPTION_DATA[index]
+		if (!option) return
+
+		item.repeat.frequency = option.frequency
+		item.repeat.interval = option.interval
+		item.repeat.byday = option.byday
+		fixrepeat(item)
+
+		updatetodorepeatoptionmenu()
+		calendar.updateTodo()
+		calendar.updateHistory()
+	}
+
+	let todorepeatoptionmenu = getElement('todorepeatoptionmenu')
+	todorepeatoptionmenu.classList.add('hiddenpopup')
 }
 
 
