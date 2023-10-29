@@ -8170,8 +8170,7 @@ function updatecreatetodo() {
 
 
 	//repeat
-	let tempitemobject = { repeat: createtodorepeatvalue }
-	let temprepeatvalue = `Repeats ${getRepeatText(tempitemobject)}`
+	let temprepeatvalue = createtodorepeatvalue.frequency == null && createtodorepeatvalue.interval == null ? 'No repeat' : `Repeats ${getRepeatText({ repeat: createtodorepeatvalue })}`
 	createtodorepeat.innerHTML = temprepeatvalue
 	createtodorepeatprompttodotoday.innerHTML = temprepeatvalue
 	createtodorepeatonboarding.innerHTML = temprepeatvalue
@@ -8445,7 +8444,9 @@ function inputcreatetodoitemrepeat(index){
 		createtodorepeatvalue.interval = option.interval
 		createtodorepeatvalue.byday = option.byday
 
+		closecreatetodoitemrepeat()
 		updatecreatetodo()
+
 	}else{
 		//custom
 	}
