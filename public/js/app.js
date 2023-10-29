@@ -892,7 +892,7 @@ class Calendar {
 			if(!item) return
 			if(item.title) return cleanInput(item.title)
 			if(this.isChild(item)){
-				return `${cleanInput(this.getTitle(this.getParent(item)))} (part ${this.getChildIndex(item)})`
+				return `${cleanInput(this.getTitle(this.getParent(item)))} (part ${this.getChildIndex(item) + 1})`
 			}
 			return `New Event`
 		}
@@ -907,7 +907,7 @@ class Calendar {
 		}
 
 		static getChildIndex(item){
-			return this.getChildren(item).findIndex(f => f.id == item.id)
+			return this.getChildren(this.getParent(item)).findIndex(f => f.id == item.id)
 		}
 
 		static isParent(item){
@@ -1065,7 +1065,7 @@ class Calendar {
 			if(!item) return
 			if(item.title) return cleanInput(item.title)
 			if(this.isChild(item)){
-				return `${cleanInput(this.getTitle(this.getParent(item)))} (part ${this.getChildIndex(item)})`
+				return `${cleanInput(this.getTitle(this.getParent(item)))} (part ${this.getChildIndex(item) + 1})`
 			}
 			return `New Todo`
 		}
@@ -1080,7 +1080,7 @@ class Calendar {
 		}
 
 		static getChildIndex(item){
-			return this.getChildren(item).findIndex(f => f.id == item.id)
+			return this.getChildren(this.getParent(item)).findIndex(f => f.id == item.id)
 		}
 
 		static isParent(item){
@@ -7730,60 +7730,57 @@ function fixsubandparenttask(item){
 }
 
 
-//here3
+//here5
 
 //fix and update recurring todos
-function fixrecurringtodo(){
-	let loopitems = calendar.todos.filter(d => !d.repeatid)
-	for(let item of loopitems){
-		if(item.repeat.frequency != null && item.repeat.interval != null){
-			let relatedtodos = sortduedate([item, ...calendar.todos.filter(d => d.repeatid == item.id)])
+function fixrecurringtodo(item){
+	if(item.repeat.frequency != null && item.repeat.interval != null){
+		let relatedtodos = sortduedate([item, ...calendar.todos.filter(d => d.repeatid == item.id)])
 
-			let lasttodo = relatedtodos[relatedtodos.length - 1]
+		let lasttodo = relatedtodos[relatedtodos.length - 1]
+		
+		if(lasttodo.completed){
+			let lasttododuedate = new Date(lasttodo.endbefore.year, lasttodo.endbefore.month, lasttodo.endbefore.day, 0, lasttodo.endbefore.minute)
+
+			let newtododuedate = new Date(lasttododuedate)
 			
-			if(lasttodo.completed){
-				let lasttododuedate = new Date(lasttodo.endbefore.year, lasttodo.endbefore.month, lasttodo.endbefore.day, 0, lasttodo.endbefore.minute)
-
-				let newtododuedate = new Date(lasttododuedate)
-				
-				if (item.repeat.frequency == 1) {
-					let oldday = lasttododuedate.getDay()
-					if(item.repeat.byday.length > 0){
-						let oldbydayindex = item.repeat.byday.findIndex(d => d == oldday)
-						if(oldbydayindex != -1){
-							let newbyday = item.repeat.byday[(oldbydayindex + 1) % item.repeat.byday.length]
-							newtododuedate.setDate(newtododuedate.getDate() + (newbyday - newtododuedate.getDay() + 7) % 7)
-						}
+			if (item.repeat.frequency == 1) {
+				let oldday = lasttododuedate.getDay()
+				if(item.repeat.byday.length > 0){
+					let oldbydayindex = item.repeat.byday.findIndex(d => d == oldday)
+					if(oldbydayindex != -1){
+						let newbyday = item.repeat.byday[(oldbydayindex + 1) % item.repeat.byday.length]
+						newtododuedate.setDate(newtododuedate.getDate() + (newbyday - newtododuedate.getDay() + 7) % 7)
 					}
 				}
-				
-				if(newtododuedate.getTime() <= lasttododuedate.getTime()){
-					for(let i = 0; i < item.repeat.interval; i++){
-						if (item.repeat.frequency == 0) {
-							newtododuedate.setDate(newtododuedate.getDate() + 1)
-						} else if (item.repeat.frequency == 1) {
-							newtododuedate.setDate(newtododuedate.getDate() + 7)
-						} else if (item.repeat.frequency == 2) {
-							newtododuedate.setMonth(newtododuedate.getMonth() + 1)
-						} else if (item.repeat.frequency == 3) {
-							newtododuedate.setFullYear(newtododuedate.getFullYear() + 1)
-						}
-					}
-				}
-
-				let newitem = deepCopy(lasttodo)
-
-				newitem.endbefore.year = newtododuedate.getFullYear()
-				newitem.endbefore.month = newtododuedate.getMonth()
-				newitem.endbefore.day = newtododuedate.getDate()
-				newitem.endbefore.minute = newtododuedate.getHours() * 60 + newtododuedate.getMinutes()
-				
-				newitem.completed = false
-				newitem.id = generateID()
-				newitem.repeatid = item.id
-
-				calendar.todos.push(newitem)
 			}
+			
+			if(newtododuedate.getTime() <= lasttododuedate.getTime()){
+				for(let i = 0; i < item.repeat.interval; i++){
+					if (item.repeat.frequency == 0) {
+						newtododuedate.setDate(newtododuedate.getDate() + 1)
+					} else if (item.repeat.frequency == 1) {
+						newtododuedate.setDate(newtododuedate.getDate() + 7)
+					} else if (item.repeat.frequency == 2) {
+						newtododuedate.setMonth(newtododuedate.getMonth() + 1)
+					} else if (item.repeat.frequency == 3) {
+						newtododuedate.setFullYear(newtododuedate.getFullYear() + 1)
+					}
+				}
+			}
+
+			let newitem = deepCopy(lasttodo)
+
+			newitem.endbefore.year = newtododuedate.getFullYear()
+			newitem.endbefore.month = newtododuedate.getMonth()
+			newitem.endbefore.day = newtododuedate.getDate()
+			newitem.endbefore.minute = newtododuedate.getHours() * 60 + newtododuedate.getMinutes()
+			
+			newitem.completed = false
+			newitem.id = generateID()
+			newitem.repeatid = lasttodo.id
+
+			calendar.todos.push(newitem)
 		}
 	}
 }
@@ -7793,8 +7790,6 @@ function fixrecurringtodo(){
 function gettodos(option1, option2) {
 	let output = []
 	let data = calendar.todos
-
-	fixrecurringtodo()
 
 	for (let item of data) {
 		if (option1 == null && option2 == null) {
@@ -8251,7 +8246,7 @@ function updatecreatetodo() {
 					   <div class="align-flex-start width-full display-flex flex-column">
 		
 						   <div class="white-space-normal break-word todoitemtext text-16px">
-							   ${item.title ? cleanInput(item.title) : `New Task`}
+							   ${Calendar.Todo.getTitle(item)}
 						   </div>
 
 					   </div>
@@ -9619,7 +9614,7 @@ function gettododata(item) {
 											``
 										}
 
-										${item.title ? cleanInput(item.title) : `New Task`}
+										${Calendar.Todo.getTitle(item)}
 									</div>
 
 									${item.googleclassroomid ? `<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none text-14px hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open Google Classroom assignment</a>` : ``}
@@ -10489,7 +10484,7 @@ async function todocompleted(event, id) {
 	
 	fixsubandparenttask(item)
 
-	fixrecurringtodo()
+	fixrecurringtodo(item)
 	
 
 	calendar.updateTodo()
