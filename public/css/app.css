@@ -1113,12 +1113,15 @@ body {
 
 
 .repeatbutton{
-	height: 14px;
-	width: 14px;
+	height: 18px;
+	width: 18px;
 	fill: var(--green);
 	stroke: none;
 	pointer-events: none;
 	display: inline-block;
+}
+.completedtext .repeatbutton{
+	fill:var(--text-secondary) !important
 }
 
 .iconred {

@@ -1,3 +1,5 @@
+const { start } = require("repl")
+
 //CONSTANTS
 const MONTHLIST = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 const SHORTMONTHLIST = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -7756,14 +7758,39 @@ function fixsubandparenttask(item){
 	}
 }
 
-
+//here3
 //fix and update recurring todos
 function fixrecurringtodo(item){
 	if(item.repeat.frequency != null && item.repeat.interval != null){
-		let relatedtodos = sortduedate([item, ...calendar.todos.filter(d => d.repeatid == item.id)])
+		let relatedtodos = sortduedate([item, ...[...calendar.todos, ...calendar.events].filter(d => d.repeatid == item.id || d.repeatid == item.repeatid)])
+
+		let originaltodo = [...calendar.todos, ...calendar.events].find(d => item.repeatid ? d.id == item.repeatid : d.id == item.id)
 
 		let lasttodo = relatedtodos[relatedtodos.length - 1]
 		
+		//complete past todos
+		if(item.completed){
+			for(let tempitem of relatedtodos){
+				if(tempitem.id == item.id) break
+				tempitem.completed = true
+			}
+		}
+
+		//if deleted todo, adjust repeatids
+		if(![...calendar.todos, ...calendar.events].find(d => d.id == item.id)){
+			let filteredtodos = relatedtodos.filter(d => d.id != item.id)
+			if(filteredtodos[0]){
+				for(let tempitem of relatedtodos){
+					tempitem.repeatid = filteredtodos[0].id
+				}
+				item.repeatid = null
+			}
+		}
+
+		if(!originaltodo) return
+
+		if(item.id != lasttodo.id) return
+
 		if(lasttodo.completed){
 			let lasttododuedate = new Date(lasttodo.endbefore.year, lasttodo.endbefore.month, lasttodo.endbefore.day, 0, lasttodo.endbefore.minute)
 
@@ -7773,7 +7800,14 @@ function fixrecurringtodo(item){
 				let oldday = lasttododuedate.getDay()
 				if(item.repeat.byday.length > 0){
 					let oldbydayindex = item.repeat.byday.findIndex(d => d == oldday)
-					if(oldbydayindex != -1){
+					if(oldbydayindex == -1){
+						let mindayindex = Math.min(...item.repeat.byday)
+						oldbydayindex = item.repeat.byday.findIndex(d => d == mindayindex)
+						lasttododuedate.setDate(lasttododuedate.getDate() + (oldbydayindex - lasttododuedate.getDay() + 7) % 7)
+
+						let newbyday = item.repeat.byday[(oldbydayindex) % item.repeat.byday.length]
+						newtododuedate.setDate(newtododuedate.getDate() + newbyday - newtododuedate.getDay())
+					}else{
 						let newbyday = item.repeat.byday[(oldbydayindex + 1) % item.repeat.byday.length]
 						newtododuedate.setDate(newtododuedate.getDate() + newbyday - newtododuedate.getDay())
 					}
@@ -7794,7 +7828,14 @@ function fixrecurringtodo(item){
 				}
 			}
 
-			//until and count HERE4
+			//until
+			if(lasttodo.repeat.until && newtododuedate.getTime() > new Date(lasttodo.repeat.until).getTime()){
+				return
+			}
+			//count
+			if(lasttodo.repeat.count && relatedtodos.length >= lasttodo.repeat.count){
+				return
+			}
 
 			let newitem = deepCopy(lasttodo)
 
@@ -7805,9 +7846,15 @@ function fixrecurringtodo(item){
 			
 			newitem.completed = false
 			newitem.id = generateID()
-			newitem.repeatid = lasttodo.id
+			newitem.repeatid = originaltodo.id
 
 			calendar.todos.push(newitem)
+
+			//schedule event
+			if(Calendar.Todo.isEvent(lasttodo)){
+				startAutoSchedule({scheduletodos: [newitem]})
+			}
+			
 		}
 	}
 }
@@ -9502,7 +9549,7 @@ function gettododata(item) {
 		//edit
 		output = `<div class="todoitem todoedititemwrap box-shadow-2 bordertertiary border-8px margin-left-12px margin-right-12px border-box" id="todo-${item.id}">
 		<div class="todoitemcontainer padding-12px">
-			<div class="text-16px text-primary text-bold">Edit ${Calendar.Todo.getTitle(item)}</div>
+			<div class="text-16px text-primary text-bold white-space-normal break-word">Edit ${Calendar.Todo.getTitle(item)}</div>
 			<div class="display-flex flex-column gap-12px">
 				<div class="inputgroup">
 					<div class="text-14px text-primary width90px">Title</div>
@@ -9645,7 +9692,7 @@ function gettododata(item) {
 										${Calendar.Todo.getTitle(item)}
 
 										${item.repeat.frequency != null && item.repeat.interval != null ? `
-										<div class="margin-left-6px height-fit display-flex pointer pointer-auto tooltip">
+										<span class="margin-left-6px height-fit display-inline-flex pointer pointer-auto tooltip vertical-align-middle">
 											<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="repeatbutton">
 											<g>
 											<g opacity="1">
@@ -9655,7 +9702,7 @@ function gettododata(item) {
 											</svg>
 
 											<span class="tooltiptextcenter">Repeats ${getRepeatText(item, true)}</span>
-										</div>` : ''}
+										</span>` : ''}
 									</div>
 
 									${item.googleclassroomid ? `<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none text-14px hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open Google Classroom assignment</a>` : ``}
@@ -10668,6 +10715,8 @@ function deletetodo(id) {
 	calendar.events = calendar.events.filter(d => !totaldelete.find(f => f.id == d.id))
 
 
+	fixrecurringtodo(item)
+
 	fixsubandparenttask(item)
 	
 	calendar.updateTodo()
@@ -10906,7 +10955,7 @@ function geteventfromtodo(item) {
 	newitem.googleclassroomlink = item.googleclassroomlink
 	newitem.parentid = item.parentid
 
-	newitem.repeat = deepyCopy(item.repeat)
+	newitem.repeat = deepCopy(item.repeat)
 
 	newitem.timewindow = deepCopy(item.timewindow)
 
@@ -11661,7 +11710,7 @@ function getevents(startrange, endrange, filterevents) {
 		let itemstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 		let itemenddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
 
-		if (item.repeat.interval == null || item.repeat.frequency == null) {
+		if (item.repeat.interval == null || item.repeat.frequency == null || item.type == 1) {
 			//no repeat
 			if (!startrange || !endrange || (itemenddate.getTime() > startrange.getTime() && itemstartdate.getTime() < endrange.getTime())) {
 				output.push(item)
@@ -12209,6 +12258,17 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 		for(let item of smartevents){
 			let startafterdate = new Date()
 			startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
+
+			//move repeat task to after last repeat
+			if(item.repeatid){
+				let relatedtodos = sortduedate([...calendar.events, ...calendar.todos].filter(d => d.repeatid == item.repeatid || d.id == item.repeatid))
+				let currentindex = relatedtodos.findIndex(d => d.id == item.id)
+				if(currentindex > 0){
+					let previoustodo = relatedtodos[currentindex - 1]
+					startafterdate = new Date(previoustodo.endbefore.year, previoustodo.endbefore.month, previoustodo.endbefore.day, 0, previoustodo.endbefore.minute)
+				}
+			}
+			
 
 			let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 			if (endbeforedate.getTime() < startafterdate.getTime()) {
