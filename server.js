@@ -3119,7 +3119,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 		let item = req.body.item
 
 		//`Task: ${item.title} - takes ${item.duration}m. Provide: 1-2 SPECIFIC, CONCISE, SHORT steps with links and resources.`
-		let gptresponse = await getgptresponse(`Task: ${item.title}. Provide: ONLY 2-4 names of subtasks, separated by comma in ONLY 1 line. No formatting.`)
+		let gptresponse = await getgptresponse(`Task: ${item.title}. Provide: ONLY 2-4 names of subtasks, separated by comma in ONLY 1 line, with time needed for each. Example: Research 30m. No formatting.`)
 		if(!gptresponse){
 			return res.status(401).json({ error: 'Could not get response from Chat GPT.' })
 		}

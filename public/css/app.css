@@ -1112,6 +1112,30 @@ body {
 }
 
 
+@keyframes suggestionborder {
+	0% {
+		opacity: 1
+	}
+
+	50% {
+		opacity: 0.5;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+
+.suggestionborder{
+	animation-name: suggestionborder;
+	animation-duration: 2s;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+	opacity: 1;
+	border:1px solid var(--purple);
+	box-shadow: var(--purple-transparent) 0px 1px 12px 0px;
+}
+
 .repeatbutton{
 	height: 18px;
 	width: 18px;

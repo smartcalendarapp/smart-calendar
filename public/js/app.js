@@ -4110,7 +4110,7 @@ function run() {
 		let suggesttodo = suggestabletodos[0]
 
 		try{
-			const response = await fetch('/subtasksuggestions', {
+			const response = await fetch('/getsubtasksuggestions', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -4121,10 +4121,26 @@ function run() {
 			})
 			if(response.status == 200){
 				let data = await response.json()
-				console.log(data.data)
 				
-				let suggestions = data.split(/,/g).map(d => d.trim())
-				suggesttodo.subtasksuggestions = suggestions
+				let rawtext = data.data.split(/,|\n/g).map(d => d.trim()).filter(d => d)
+
+				let newitems = []
+				for(let temptext of rawtext){
+					let myduration;
+					
+					let duration = getDuration(temptext)
+					if(duration.value != null){
+						myduration = duration.value
+						temptext = temptext.replace(duration.match, '').trim()
+					}
+
+					if(myduration == null){
+						myduration = 60
+					}
+
+					newitems.push({ title: temptext, duration: myduration })
+				}
+				suggesttodo.subtasksuggestions = newitems
 
 				calendar.updateTodo()
 			}
@@ -7896,7 +7912,7 @@ function fixrecurringtodo(item){
 			newitem.id = generateID()
 			newitem.repeatid = originaltodo.id
 
-			
+
 			if(Calendar.Event.isEvent(lasttodo)){
 				//schedule event
 				let newitemtodo = gettodofromevent(newitem)
@@ -9863,12 +9879,25 @@ function gettododata(item) {
 
 				${childrenoutput}
 
+				${item.subtasksuggestions.length > 0 ? `
+				<div class="display-flex flex-row gap-12px flex-wrap-wrap width-192px">
+					${item.subtasksuggestions.map(d => `<div class="white-space-normal break-word suggestionborder padding-8px-12px pointer hover:background-tint-1 border-8px" onclick="clicksubtasksuggestion('${item.id}', '${d}')">
+						<span class="text-bold text-14px text-secondary">Suggestion:</span>
+						<span class="text-bold text-bold text-14px">${d}</span>
+					</div>`)}
+				</div>
+				` : ''}
+
 		 	</div>`
 	}
 
 	return output
 }
 
+//suggestion
+function clicksubtasksuggestion(id, title){
+	
+}
 
 
 //todo repeat
