@@ -4104,7 +4104,7 @@ function run() {
 			return currentdate.getTime() * (tempitem.priority + 1) / Math.max(timedifference, 1) * tempitem.duration
 		}
 
-		let suggestabletodos = calendar.todos.filter(d => d.duration >= 60 && d.title.length > 3 && d.subtasksuggestions.length == 0 && new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*7 && !Calendar.Todo.isSubtask(d) &&  (d.repeat.frequency == null && d.repeat.interval == null)).sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
+		let suggestabletodos = calendar.todos.filter(d => d.duration >= 60 && d.title.length > 3 && d.subtasksuggestions.length == 0 && !d.hidesubtasksuggestions && new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*7 && !Calendar.Todo.isSubtask(d) && (d.repeat.frequency == null && d.repeat.interval == null)).sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
 		if(suggestabletodos.length == 0) return
 
 		let suggesttodo = suggestabletodos[0]
@@ -9880,12 +9880,15 @@ function gettododata(item) {
 
 				${childrenoutput}
 
-				${Calendar.Todo.isTodo(item) && item.subtasksuggestions.length > 0 ? `
-				<div class="display-flex flex-row gap-12px flex-wrap-wrap width-192px">
-					${item.subtasksuggestions.map(d => `<div class="white-space-normal break-word suggestionborder display-flex transition-duration-100 flex-column padding-8px-12px pointer hover:background-tint-1 border-8px" onclick="clicksubtasksuggestion('${item.id}', '${d.id}')">
-						<span class="text-12px text-secondary">Suggestion:</span>
-						<span class="text-bold text-bold text-14px text-primary">${d.title} <span class="text-quaternary">• ${getDHMText(d.duration)}</span></span>
-					</div>`).join('')}
+				${Calendar.Todo.isTodo(item) && item.subtasksuggestions.length > 0 && !item.hidesubtasksuggestions ? `
+				<div class="display-flex flex-column gap-12px">
+					<div class="display-flex flex-row gap-12px flex-wrap-wrap">
+						${item.subtasksuggestions.map(d => `<div class="white-space-normal break-word suggestionborder display-flex transition-duration-100 flex-column padding-8px-12px pointer hover:background-tint-1 border-8px" onclick="clicksubtasksuggestion('${item.id}', '${d.id}')">
+							<span class="text-12px text-secondary">Suggestion:</span>
+							<span class="text-bold text-bold text-14px text-primary">${d.title} <span class="text-secondary">•</span> <span class="text-quaternary">${getDHMText(d.duration)}</span></span>
+						</div>`).join('')}
+					</div>
+					<div class="text-quaternary pointer hover:text-decoration-underline text-14px" onclick="hidesuggestions('${item.id}')">Hide suggestions</div>
 				</div>
 				` : ''}
 
@@ -9909,6 +9912,16 @@ function clicksubtasksuggestion(id, suggestionid){
 	let subtaskitem = new Calendar.Todo(item.endbefore.year, item.endbefore.month, item.endbefore.day, item.endbefore.minute, suggestionitem.duration, suggestionitem.title)
 
 	fixsubandparenttask(subtaskitem)
+
+	calendar.updateTodo()
+}
+
+function hidesuggestions(id){
+	let item = [...calendar.todos, ...calendar.events].find(f => f.id == id)
+	if (!item) return
+
+	item.subtasksuggestions = []
+	item.hidesubtasksuggestions = true
 
 	calendar.updateTodo()
 }
