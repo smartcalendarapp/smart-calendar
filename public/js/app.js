@@ -4153,6 +4153,7 @@ function run() {
 		let lastgetsubtasksuggestionsdate = Date.now()
 		setInterval(async function(){
 			if(document.visibilityState === 'visible' && Date.now() - lastgetsubtasksuggestionsdate > 60000){
+				lastgetsubtasksuggestionsdate = Date.now()
 				usegpt()
 			}
 		}, 1000)
