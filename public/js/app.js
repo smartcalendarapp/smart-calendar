@@ -4111,7 +4111,7 @@ function run() {
 		let suggestabletodos = calendar.todos.filter(d => 
 			!d.completed && d.duration >= 60 && d.title.length > 3
 			&&
-			!d.gottensubtasksuggestions && d.subtasksuggestions.length == 0 
+			!d.gotsubtasksuggestions && d.subtasksuggestions.length == 0 
 			&&
 			new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*7
 			&&
@@ -4160,7 +4160,7 @@ function run() {
 				}
 
 				suggesttodo.subtasksuggestions = newitems
-				suggesttodo.gottensubtasksuggestions = true
+				suggesttodo.gotsubtasksuggestions = true
 
 				calendar.updateTodo()
 			}
@@ -9961,6 +9961,8 @@ function clicksubtasksuggestion(id, suggestionid){
 	item.subtasksuggestions = item.subtasksuggestions.filter(d => d.id != suggestionitem.id)
 
 	let subtaskitem = new Calendar.Todo(item.endbefore.year, item.endbefore.month, item.endbefore.day, item.endbefore.minute, suggestionitem.duration, suggestionitem.title)
+	subtaskitem.parentid = item.id
+
 	calendar.todos.push(subtaskitem)
 
 	fixsubandparenttask(subtaskitem)
