@@ -1136,6 +1136,10 @@ body {
 	box-shadow: var(--purple-transparent) 0px 2px 12px -5px;
 }
 
+.todosuggestionwrap:hover .hovertodosuggestiongroup{
+	visibility: visible;
+}
+
 .repeatbutton{
 	height: 18px;
 	width: 18px;
@@ -1581,9 +1585,8 @@ body {
 .subtaskgroup{
 	margin:0px 12px 12px 42px;
 }
-.subtaskmargin{
-	margin-left:42px;
-}
+
+
 
 .min-width-160px{
 	min-width:160px
