@@ -4138,7 +4138,7 @@ function run() {
 						myduration = 60
 					}
 
-					newitems.push({ title: temptext, duration: myduration })
+					newitems.push({ title: temptext, duration: myduration, id: generateID() })
 				}
 				suggesttodo.subtasksuggestions = newitems
 
@@ -9879,11 +9879,11 @@ function gettododata(item) {
 
 				${childrenoutput}
 
-				${item.subtasksuggestions.length > 0 ? `
+				${Calendar.Todo.isTodo(item) && item.subtasksuggestions.length > 0 ? `
 				<div class="display-flex flex-row gap-12px flex-wrap-wrap width-192px">
-					${item.subtasksuggestions.map(d => `<div class="white-space-normal break-word suggestionborder padding-8px-12px pointer hover:background-tint-1 border-8px" onclick="clicksubtasksuggestion('${item.id}', '${d}')">
+					${item.subtasksuggestions.map(d => `<div class="white-space-normal break-word suggestionborder padding-8px-12px pointer hover:background-tint-1 border-8px" onclick="clicksubtasksuggestion('${item.id}', '${d.id}')">
 						<span class="text-bold text-14px text-secondary">Suggestion:</span>
-						<span class="text-bold text-bold text-14px">${d}</span>
+						<span class="text-bold text-bold text-14px text-primary">${d.title} • <span class="text-quaternary">${getHMText(d.duration)}</span></span>
 					</div>`)}
 				</div>
 				` : ''}
@@ -9894,9 +9894,22 @@ function gettododata(item) {
 	return output
 }
 
+//here3
 //suggestion
-function clicksubtasksuggestion(id, title){
-	
+function clicksubtasksuggestion(id, suggestionid){
+	let item = [...calendar.todos, ...calendar.events].find(f => f.id == id)
+	if (!item) return
+
+	let suggestionitem = item.subtasksuggestions.find(g => g.id == suggestionid)
+	if(!suggestionitem) return
+
+	item.subtasksuggestions = item.subtasksuggestions.filter(d => d.id != suggestionitem.id)
+
+	let subtaskitem = new Calendar.Todo(item.endbefore.year, item.endbefore.month, item.endbefore.day, item.endbefore.minute, suggestionitem.duration, suggestionitem.title)
+
+	fixsubandparenttask(subtaskitem)
+
+	calendar.updateTodo()
 }
 
 
