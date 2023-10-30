@@ -10483,15 +10483,14 @@ function movedragtodo(event) {
 
 //delete all completed
 function deletecompletedtodos(){
-	for(let item of calendar.todos.filter(d => !d.completed)){
-		fixrecurringtodo(item)
-	}
-	for(let item of calendar.events.filter(d => d.type != 1 || !d.completed)){
-		fixrecurringtodo(item)
-	}
+	let deletedones = [...calendar.todos.filter(d => d.completed), ...calendar.events.filter(d => d.type == 1 && d.completed)]
 
 	calendar.todos = calendar.todos.filter(d => !d.completed)
 	calendar.events = calendar.events.filter(d => d.type != 1 || !d.completed)
+
+	for(let item of deletedones){
+		fixrecurringtodo(item)
+	}
 
 	calendar.updateTodo()
 	calendar.updateInfo()
@@ -10964,6 +10963,7 @@ function geteventfromtodo(item) {
 	newitem.parentid = item.parentid
 
 	newitem.repeat = deepCopy(item.repeat)
+	newitem.repeatid = item.repeatid
 
 	newitem.timewindow = deepCopy(item.timewindow)
 
@@ -10986,6 +10986,7 @@ function gettodofromevent(item) {
 	newitem.parentid = item.parentid
 
 	newitem.repeat = deepCopy(item.repeat)
+	newitem.repeatid = item.repeatid
 
 	newitem.timewindow = deepCopy(item.timewindow)
 
