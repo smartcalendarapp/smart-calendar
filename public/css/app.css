@@ -1581,6 +1581,13 @@ body {
 .subtaskgroup{
 	margin:0px 12px 12px 42px;
 }
+.subtaskmargin{
+	margin-left:42px;
+}
+
+.min-width-160px{
+	min-width:160px
+}
 
 .scalebutton svg{
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s !important

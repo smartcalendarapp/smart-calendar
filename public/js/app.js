@@ -3304,7 +3304,6 @@ class Calendar {
 		}
 
 
-
 		//google login
 		let googleemail = getElement('googleemail')
 		let connectgoogle = getElement('connectgoogle')
@@ -3483,8 +3482,12 @@ class Calendar {
 			appleemail.classList.remove('display-none')
 		}
 		appleemail.innerHTML = clientinfo.apple.email || 'Could not load email'
-	}
 
+
+		//task suggestions
+		let tasksuggestionscheckbox = getElement('tasksuggestionscheckbox')
+		tasksuggestionscheckbox.checked = calendar.settings.gettasksuggestions
+	}
 
 
 	//focus
@@ -4096,7 +4099,7 @@ function run() {
 	}, 100)
 
 
-	async function usegpt(){
+	async function gettasksuggestions(){
 		//here3
 		function getcalculatedweight(tempitem){
 			let currentdate = new Date()
@@ -4110,7 +4113,7 @@ function run() {
 		let suggesttodo = suggestabletodos[0]
 
 		try{
-			const response = await fetch('/getsubtasksuggestions', {
+			const response = await fetch('/gettasksuggestions', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -4131,7 +4134,7 @@ function run() {
 					let duration = getDuration(temptext)
 					if(duration.value != null){
 						myduration = duration.value
-						temptext = temptext.replace(duration.match, '').trim()
+						temptext = temptext.replace(duration.match, '').replace(/^(\d+\.|-)/, '').trim()
 					}
 
 					if(myduration == null){
@@ -4150,11 +4153,11 @@ function run() {
 	}
 
 	if(clientinfo.betatester){
-		let lastgetsubtasksuggestionsdate = Date.now()
+		let lastgettasksuggestionsdate = Date.now()
 		setInterval(async function(){
-			if(document.visibilityState === 'visible' && Date.now() - lastgetsubtasksuggestionsdate > 60000){
-				lastgetsubtasksuggestionsdate = Date.now()
-				usegpt()
+			if(document.visibilityState === 'visible' && Date.now() - lastgettasksuggestionsdate > 10000){
+				lastgettasksuggestionsdate = Date.now()
+				gettasksuggestions()
 			}
 		}, 1000)
 	}
@@ -6447,6 +6450,11 @@ function displayalert(title) {
 
 
 //SETTINGS
+
+function toggletasksuggestions(){
+	calendar.settings.gettasksuggestions = event.target.checked
+	calendar.updateSettings()
+}
 
 function toggleemailnotifs(event){
 	calendar.emailreminderenabled = event.target.checked
@@ -9613,6 +9621,40 @@ function gettododata(item) {
 		</div>`
 	}
 
+
+	let subtasksuggestionsoutput = ''
+	if(calendar.settings.gettasksuggestions != false && Calendar.Todo.isTodo(item) && item.subtasksuggestions.length > 0 && !item.hidesubtasksuggestions){
+		let tempoutput = []
+		let tempoutput2 = []
+		for(let i = 0; i < item.subtasksuggestions.length; i++){
+			let d = item.subtasksuggestions[i]
+
+			tempoutput.push(`<div class="min-width-160px flex-1 white-space-normal break-word suggestionborder display-flex border-box transition-duration-100 flex-column padding-8px-12px pointer hover:background-tint-1 border-8px" onclick="clicksubtasksuggestion('${item.id}', '${d.id}')">
+				<span class="text-12px text-secondary">AI Suggestion:</span>
+				<span class="text-bold text-bold text-14px text-primary">${d.title} <span class="text-quaternary">(${getDHMText(d.duration)})</span></span>
+			</div>`)
+
+			if(i % 2 == 1 || i == item.subtasksuggestions.length - 1){
+				if(i % 2 == 0){
+					tempoutput.push(`<div class="min-width-160px flex-1"></div>`)
+				}
+
+				tempoutput2.push(`<div class="gap-12px display-flex flex-row flex-1 flex-wrap-wrap">${tempoutput.join('')}</div>`)
+				tempoutput = []
+			}
+		}
+		subtasksuggestionsoutput = `
+		<div class="padding-12px display-flex flex-column gap-6px ${Calendar.Todo.getSubtasks(item).length > 0 ? 'subtaskmargin' : ''}">
+			<div class="display-flex flex-column gap-12px">
+				${tempoutput2.join('')}
+			</div>
+			<div class="todoitembuttongroup small:visibility-visible display-flex flex-row gap-12px justify-flex-end">
+				<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-14px" onclick="hidesuggestions('${item.id}')">Hide</div>
+				<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-14px" onclick="turnoffsuggestions()">Turn off</div>
+			</div>
+		</div>` 
+	}
+
 	let output = ''
 	if (selectededittodoid == item.id) {
 
@@ -9881,17 +9923,7 @@ function gettododata(item) {
 
 				${childrenoutput}
 
-				${Calendar.Todo.isTodo(item) && item.subtasksuggestions.length > 0 && !item.hidesubtasksuggestions ? `
-				<div class="display-flex flex-column gap-12px">
-					<div class="display-flex flex-row gap-12px flex-wrap-wrap">
-						${item.subtasksuggestions.map(d => `<div class="white-space-normal break-word suggestionborder display-flex transition-duration-100 flex-column padding-8px-12px pointer hover:background-tint-1 border-8px" onclick="clicksubtasksuggestion('${item.id}', '${d.id}')">
-							<span class="text-12px text-secondary">Suggestion:</span>
-							<span class="text-bold text-bold text-14px text-primary">${d.title} <span class="text-secondary">•</span> <span class="text-quaternary">${getDHMText(d.duration)}</span></span>
-						</div>`).join('')}
-					</div>
-					<div class="text-quaternary pointer hover:text-decoration-underline text-14px" onclick="hidesuggestions('${item.id}')">Hide suggestions</div>
-				</div>
-				` : ''}
+				${subtasksuggestionsoutput}
 
 		 	</div>`
 	}
@@ -9927,6 +9959,10 @@ function hidesuggestions(id){
 	calendar.updateTodo()
 }
 
+function turnoffsuggestions(){
+	calendar.settings.gettasksuggestions = false
+	calendar.updateTodo()
+}
 
 //todo repeat
 function clicktodorepeatoption() {

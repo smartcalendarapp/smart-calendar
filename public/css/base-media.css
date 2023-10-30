@@ -417,9 +417,6 @@
 	.small\:width-fit{
 		width:fit-content !important
 	}
-	.small\:width-1em{
-		width:1em !important
-	}
 	.small\:width-96px{
 		width:96px !important
 	}
