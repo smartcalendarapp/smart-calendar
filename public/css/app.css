@@ -1118,7 +1118,7 @@ body {
 	}
 
 	50% {
-		opacity: 0.5;
+		opacity: 0.7;
 	}
 
 	100% {
@@ -1128,12 +1128,12 @@ body {
 
 .suggestionborder{
 	animation-name: suggestionborder;
-	animation-duration: 2s;
+	animation-duration: 4s;
 	animation-iteration-count: infinite;
 	animation-timing-function: ease-in-out;
 	opacity: 1;
-	border:1px solid var(--purple);
-	box-shadow: var(--purple-transparent) 0px 1px 12px 0px;
+	border:1px solid var(--purple-transparent);
+	box-shadow: var(--purple-transparent) 0px 2px 12px -5px;
 }
 
 .repeatbutton{

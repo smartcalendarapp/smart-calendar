@@ -911,31 +911,31 @@ class Calendar {
 		static getTitle(item){
 			if(!item) return
 			if(item.title) return cleanInput(item.title)
-			if(this.isChild(item)){
-				return `${cleanInput(this.getTitle(this.getParent(item)))} (part ${this.getChildIndex(item) + 1})`
+			if(this.isSubtask(item)){
+				return `${cleanInput(this.getTitle(this.getMainTask(item)))} (part ${this.getSubtaskIndex(item) + 1})`
 			}
 			return `New Event`
 		}
 
-		static getParent(item){
+		static getMainTask(item){
 			let parent = [...calendar.events, ...calendar.todos].find(d => d.id == item.parentid)
 			return parent
 		}
 
-		static getChildren(item){
+		static getSubtasks(item){
 			return [...calendar.events, ...calendar.todos].filter(d => d.parentid == item.id)
 		}
 
-		static getChildIndex(item){
-			return this.getChildren(this.getParent(item)).findIndex(f => f.id == item.id)
+		static getSubtaskIndex(item){
+			return this.getSubtasks(this.getMainTask(item)).findIndex(f => f.id == item.id)
 		}
 
-		static isParent(item){
-			return this.getChildren(item).length > 0
+		static isMainTask(item){
+			return this.getSubtasks(item).length > 0
 		}
 
-		static isChild(item){
-			return !!this.getParent(item)
+		static isSubtask(item){
+			return !!this.getMainTask(item)
 		}
 
 		static isEvent(item){
@@ -1085,31 +1085,31 @@ class Calendar {
 		static getTitle(item){
 			if(!item) return
 			if(item.title) return cleanInput(item.title)
-			if(this.isChild(item)){
-				return `${cleanInput(this.getTitle(this.getParent(item)))} (part ${this.getChildIndex(item) + 1})`
+			if(this.isSubtask(item)){
+				return `${cleanInput(this.getTitle(this.getMainTask(item)))} (part ${this.getSubtaskIndex(item) + 1})`
 			}
 			return `New Task`
 		}
 
-		static getParent(item){
+		static getMainTask(item){
 			let parent = [...calendar.events, ...calendar.todos].find(d => d.id == item.parentid)
 			return parent
 		}
 
-		static getChildren(item){
+		static getSubtasks(item){
 			return [...calendar.events, ...calendar.todos].filter(d => d.parentid == item.id)
 		}
 
-		static getChildIndex(item){
-			return this.getChildren(this.getParent(item)).findIndex(f => f.id == item.id)
+		static getSubtaskIndex(item){
+			return this.getSubtasks(this.getMainTask(item)).findIndex(f => f.id == item.id)
 		}
 
-		static isParent(item){
-			return this.getChildren(item).length > 0
+		static isMainTask(item){
+			return this.getSubtasks(item).length > 0
 		}
 
-		static isChild(item){
-			return !!this.getParent(item)
+		static isSubtask(item){
+			return !!this.getMainTask(item)
 		}
 
 		static isSchedulable(item) {
@@ -2568,7 +2568,7 @@ class Calendar {
 		//old code with schedule vs unscheduled categories
 		/*
 		if(true){
-			let mytodos = calendar.events.filter(d => d.type == 1 && !d.completed && Calendar.Event.getChildren(d).length == 0)
+			let mytodos = calendar.events.filter(d => d.type == 1 && !d.completed && Calendar.Event.getSubtasks(d).length == 0)
 			let sortedtodos = sortstartdate(mytodos)
 
 
@@ -2610,7 +2610,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = calendar.todos.filter(d => !d.completed && !Calendar.Todo.isChild(d))
+			let mytodos = calendar.todos.filter(d => !d.completed && !Calendar.Todo.isSubtask(d))
 
 			let duetodos = sortduedate(mytodos.filter(d => d.endbefore.year != null && d.endbefore.month != null && d.endbefore.day != null && d.endbefore.minute != null))
 			let notduetodos = mytodos.filter(d => d.endbefore.year == null || d.endbefore.month == null || d.endbefore.day == null || d.endbefore.minute == null)
@@ -2695,7 +2695,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = [...calendar.todos.filter(d => d.completed && !Calendar.Todo.isChild(d)), ...calendar.events.filter(d => d.type == 1 && d.completed)]
+			let mytodos = [...calendar.todos.filter(d => d.completed && !Calendar.Todo.isSubtask(d)), ...calendar.events.filter(d => d.type == 1 && d.completed)]
 
 
 			let tempoutput = []
@@ -2749,7 +2749,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = [...calendar.todos.filter(d => !d.completed && !Calendar.Todo.isChild(d)), ...calendar.events.filter(d => d.type == 1 && !d.completed && !Calendar.Todo.isChild(d))]
+			let mytodos = [...calendar.todos.filter(d => !d.completed && !Calendar.Todo.isSubtask(d)), ...calendar.events.filter(d => d.type == 1 && !d.completed && !Calendar.Todo.isSubtask(d))]
 
 			let duetodos = sortduedate(mytodos.filter(d => d.endbefore.year != null && d.endbefore.month != null && d.endbefore.day != null && d.endbefore.minute != null))
 			let notduetodos = mytodos.filter(d => d.endbefore.year == null || d.endbefore.month == null || d.endbefore.day == null || d.endbefore.minute == null)
@@ -2818,7 +2818,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = [ ...calendar.events.filter(d => d.type == 1 && d.completed && !Calendar.Todo.isChild(d)), ...calendar.todos.filter(d => d.completed && !Calendar.Todo.isChild(d))]
+			let mytodos = [ ...calendar.events.filter(d => d.type == 1 && d.completed && !Calendar.Todo.isSubtask(d)), ...calendar.todos.filter(d => d.completed && !Calendar.Todo.isSubtask(d))]
 
 
 			let tempoutput = []
@@ -4104,7 +4104,7 @@ function run() {
 			return currentdate.getTime() * (tempitem.priority + 1) / Math.max(timedifference, 1) * tempitem.duration
 		}
 
-		let suggestabletodos = calendar.todos.filter(d => d.duration >= 60 && d.title.length > 3 && d.subtasksuggestions.length == 0 && (d.repeat.frequency == null && d.repeat.interval == null)).sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
+		let suggestabletodos = calendar.todos.filter(d => d.duration >= 60 && d.title.length > 3 && d.subtasksuggestions.length == 0 && new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*7 && !Calendar.Todo.isSubtask(d) &&  (d.repeat.frequency == null && d.repeat.interval == null)).sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
 		if(suggestabletodos.length == 0) return
 
 		let suggesttodo = suggestabletodos[0]
@@ -4150,11 +4150,12 @@ function run() {
 	}
 
 	if(clientinfo.betatester){
+		let lastgetsubtasksuggestionsdate = Date.now()
 		setInterval(async function(){
-			if(document.visibilityState === 'visible'){
+			if(document.visibilityState === 'visible' && Date.now() - lastgetsubtasksuggestionsdate > 60000){
 				usegpt()
 			}
-		}, 10000)
+		}, 1000)
 	}
 
 
@@ -4574,7 +4575,7 @@ function updateprompttodotoday(){
 	}
 	
 	let output = []
-	let tempdata = [...sortstartdate(calendar.events.filter(d => prompttodotodayadded.find(g => g == d.id))), ...sortduedate(calendar.todos.filter(d => prompttodotodayadded.find(g => g == d.id)))].filter(d => !Calendar.Todo.isChild(d))
+	let tempdata = [...sortstartdate(calendar.events.filter(d => prompttodotodayadded.find(g => g == d.id))), ...sortduedate(calendar.todos.filter(d => prompttodotodayadded.find(g => g == d.id)))].filter(d => !Calendar.Todo.isSubtask(d))
 	for(let item of tempdata){
 		output.push(gettododata(item))
 	}
@@ -4732,7 +4733,7 @@ function updateonboardingscreen(){
 		calendar.updateSettings()
 	}else if(currentonboarding == 'addtask'){
 		let output = []
-		let tempdata = sortduedate(calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id) && !Calendar.Todo.isChild(d)))
+		let tempdata = sortduedate(calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id) && !Calendar.Todo.isSubtask(d)))
 		for(let item of tempdata){
 			output.push(gettododata(item))
 		}
@@ -7592,7 +7593,7 @@ function clickschedulemode(mode) {
 let schedulemytaskslist = []
 let schedulemytasksenabled = false
 function clickschedulemytasks(event) {
-	schedulemytaskslist = [...calendar.todos.filter(item => Calendar.Todo.isSchedulable(item) && (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null) && !Calendar.Todo.isParent(item)).map(d => d.id)]
+	schedulemytaskslist = [...calendar.todos.filter(item => Calendar.Todo.isSchedulable(item) && (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null) && !Calendar.Todo.isMainTask(item)).map(d => d.id)]
 	selectededittodoid = null
 	schedulemytasksenabled = true
 	calendar.updateTodo()
@@ -7607,7 +7608,7 @@ function selectallschedulemytasks(){
 	if(schedulemytaskslist.length > 0){
 		schedulemytaskslist = []
 	}else{
-		schedulemytaskslist = [...calendar.todos.filter(item => Calendar.Todo.isSchedulable(item) && (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null && !Calendar.Todo.isParent(item))).map(d => d.id)]
+		schedulemytaskslist = [...calendar.todos.filter(item => Calendar.Todo.isSchedulable(item) && (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null && !Calendar.Todo.isMainTask(item))).map(d => d.id)]
 	}
 	calendar.updateTodo()
 }
@@ -7618,7 +7619,7 @@ function toggleschedulesubtasks(event, id){
 	let item = calendar.todos.find(g => g.id == id)
 	if (!item) return
 
-	let children = Calendar.Todo.getChildren(item)
+	let children = Calendar.Todo.getSubtasks(item)
 	if(children.filter(d => Calendar.Todo.isTodo(d)).every(d => schedulemytaskslist.find(g => g == d.id))){
 		for(let tempitem of children){
 			schedulemytaskslist = schedulemytaskslist.filter(d => d != tempitem.id)
@@ -7671,7 +7672,7 @@ function startAutoSchedule({scheduletodos}) {
 
 
 	let finalscheduleevents = calendar.events.filter(d => Calendar.Event.isSchedulable(d))
-	let finalscheduletodos = calendar.todos.filter(d => Calendar.Todo.isSchedulable(d) && scheduletodos.find(g => g.id == d.id) && Calendar.Todo.getChildren(d).length == 0)
+	let finalscheduletodos = calendar.todos.filter(d => Calendar.Todo.isSchedulable(d) && scheduletodos.find(g => g.id == d.id) && Calendar.Todo.getSubtasks(d).length == 0)
 
 	let addedtodos = []
 	for (let item of finalscheduletodos) {
@@ -7786,18 +7787,18 @@ function getcircleprogressbar(value, max, text, color) {
 
 function fixsubandparenttask(item){
 	let parent;
-	if(Calendar.Todo.isChild(item)){
-		parent = Calendar.Todo.getParent(item)
-	}else if(Calendar.Todo.isParent(item)){
+	if(Calendar.Todo.isSubtask(item)){
+		parent = Calendar.Todo.getMainTask(item)
+	}else if(Calendar.Todo.isMainTask(item)){
 		parent = item
 	}
 	if(!parent) return
 
-	let children = Calendar.Todo.getChildren(parent)
+	let children = Calendar.Todo.getSubtasks(parent)
 	if(children.length == 0) return
 
 	//update parent based on children
-	if(Calendar.Todo.isChild(item)){
+	if(Calendar.Todo.isSubtask(item)){
 		parent.completed = children.every(d => d.completed)
 
 		parent.endbefore = deepCopy(item.endbefore)
@@ -7810,7 +7811,7 @@ function fixsubandparenttask(item){
 	}
 
 	//sync child to parent
-	if(Calendar.Todo.isParent(item)){
+	if(Calendar.Todo.isMainTask(item)){
 		let setcompleted = (children.every(d => d.completed) && !item.completed) || (item.completed)
 		for(let childitem of children){
 			if(setcompleted){
@@ -9603,7 +9604,7 @@ function gettododata(item) {
 
 
 	let childrenoutput = ''
-	let children = Calendar.Todo.getChildren(item)
+	let children = Calendar.Todo.getSubtasks(item)
 	if(children.length > 0){
 		childrenoutput = `
 		<div class="border-8px subtaskgroup bordertertiary display-flex flex-column border-box">
@@ -9636,7 +9637,7 @@ function gettododata(item) {
 					</div>
 		 		</div>
 
-				<div class="inputgroup ${Calendar.Todo.isChild(item) ? 'display-none' : ''}">
+				<div class="inputgroup ${Calendar.Todo.isSubtask(item) ? 'display-none' : ''}">
 					<div class="text-14px text-primary width90px">Due date</div>
 					<div class="inputgroupitem">
 						<input class="infoinput inputdatepicker width-192px" onkeydown="if(event.key == 'Enter'){ this.blur() }" onblur="inputtododuedate(event)" placeholder="Add date" onclick="this.select()" id="edittodoinputduedate" value="${endbeforedate ? getDMDYText(endbeforedate) : 'None'}"></input>
@@ -9656,7 +9657,7 @@ function gettododata(item) {
 					</div>
 				</div>
 
-				<div class="infogroup ${Calendar.Todo.isChild(item) ? 'display-none' : ''}">
+				<div class="infogroup ${Calendar.Todo.isSubtask(item) ? 'display-none' : ''}">
 					<div class="inputgroup">
 						<div class="text-14px text-primary width90px">Priority</div>
 						<div class="inputeventtype width-fit flex-grow-0 flex-basis-auto" id="todoeditpriority">
@@ -9782,7 +9783,7 @@ function gettododata(item) {
 				
 								<div class="display-flex flex-wrap-wrap flex-row align-center column-gap-12px row-gap-6px">
 				
-									${!Calendar.Todo.isChild(item) ? 
+									${!Calendar.Todo.isSubtask(item) ? 
 										`<div class="gap-6px pointer-auto pointer display-flex transition-duration-100 flex-row text-14px align-center width-fit todoitemtext badgepadding ${!endbeforedate ? ` background-tint-1 text-primary hover:background-tint-2` : (isoverdue ? ` background-red text-white hover:background-red-hover` : ` background-blue text-white hover:background-blue-hover`)} border-round nowrap popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduedate(event, '${item.id}')">
 											${endbeforedate ? `Due ${getHMText(item.endbefore.minute)}` : 'No due date'}
 										</div>`
@@ -9797,7 +9798,7 @@ function gettododata(item) {
 										</div>`
 									}
 	
-									${!Calendar.Todo.isChild(item) ? `
+									${!Calendar.Todo.isSubtask(item) ? `
 										<div class="text-14px badgepadding border-round nowrap pointer-auto transition-duration-100 pointer popupbutton transition-duration-100 ${['background-tint-1 text-primary hover:background-tint-2 visibility-hidden hoverpriority small:visibility-visible', 'background-orange hover:background-orange-hover text-white', 'background-red hover:background-red-hover text-white'][item.priority]} ${itemclasses.join(' ')}" onclick="clicktodoitempriority(event, '${item.id}')">
 											${['Low', 'Medium', 'High'][item.priority]} priority
 										</div>` : ''}
@@ -9849,9 +9850,9 @@ function gettododata(item) {
 					</div>
 
 					${schedulemytasksenabled ? 
-						Calendar.Todo.isParent(item) ? 
+						Calendar.Todo.isMainTask(item) ? 
 						`<div class="absolute box-shadow display-flex todoitemselectcheck background-secondary border-8px box-shadow pointer pointer-auto" onclick="toggleschedulesubtasks(event, '${item.id}')">
-							${getbigcheckbox(Calendar.Todo.getChildren(item).filter(r => Calendar.Todo.isTodo(r)).every(g => schedulemytaskslist.find(f => f == g.id)))}
+							${getbigcheckbox(Calendar.Todo.getSubtasks(item).filter(r => Calendar.Todo.isTodo(r)).every(g => schedulemytaskslist.find(f => f == g.id)))}
 						</div>`
 						: 
 						Calendar.Todo.isSchedulable(item) && Calendar.Todo.isTodo(item) ? 
@@ -9866,7 +9867,7 @@ function gettododata(item) {
 				</div>
 
 
-				${!schedulemytasksenabled && !Calendar.Todo.isChild(item) ? 
+				${!schedulemytasksenabled && !Calendar.Todo.isSubtask(item) ? 
 					`<div class="small:visibility-visible scalebutton absolute bottom-0 left-0 margin-12px todoitemcheckbox visibility-hidden addsubtask tooltip display-flex" onclick="addsubtask(event, '${item.id}')">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsecondary">
 						<g>
@@ -9881,10 +9882,10 @@ function gettododata(item) {
 
 				${Calendar.Todo.isTodo(item) && item.subtasksuggestions.length > 0 ? `
 				<div class="display-flex flex-row gap-12px flex-wrap-wrap width-192px">
-					${item.subtasksuggestions.map(d => `<div class="white-space-normal break-word suggestionborder padding-8px-12px pointer hover:background-tint-1 border-8px" onclick="clicksubtasksuggestion('${item.id}', '${d.id}')">
-						<span class="text-bold text-14px text-secondary">Suggestion:</span>
-						<span class="text-bold text-bold text-14px text-primary">${d.title} • <span class="text-quaternary">${getHMText(d.duration)}</span></span>
-					</div>`)}
+					${item.subtasksuggestions.map(d => `<div class="white-space-normal break-word suggestionborder display-flex transition-duration-100 flex-column padding-8px-12px pointer hover:background-tint-1 border-8px" onclick="clicksubtasksuggestion('${item.id}', '${d.id}')">
+						<span class="text-12px text-secondary">Suggestion:</span>
+						<span class="text-bold text-bold text-14px text-primary">${d.title} <span class="text-quaternary">• ${getDHMText(d.duration)}</span></span>
+					</div>`).join('')}
 				</div>
 				` : ''}
 
@@ -10494,7 +10495,7 @@ function dragtodo(event, id) {
 	let item = [...calendar.todos].find(x => x.id == id)
 	if (!item) return
 
-	let children = Calendar.Todo.getChildren(item)
+	let children = Calendar.Todo.getSubtasks(item)
 	if(children.length > 0){
 		if(children.every(d => Calendar.Event.isEvent(d))){
 			return
@@ -10554,7 +10555,7 @@ function dragtodo(event, id) {
 			fixsubandparenttask(item)
 
 
-			startAutoSchedule({scheduletodos: [item, ...Calendar.Todo.getChildren(item)]})
+			startAutoSchedule({scheduletodos: [item, ...Calendar.Todo.getSubtasks(item)]})
 
 			if(gtag){gtag('event', 'button_click', { useraction: 'Drop task - calendar' })}
 		}
@@ -12383,12 +12384,12 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 
 			//subtask scheduling
 			let percentrange = 0.4 //default schedule at 40% of range
-			let parent = Calendar.Event.getParent(item)
+			let parent = Calendar.Event.getMainTask(item)
 			if(parent){
-				let scheduledchildren = Calendar.Event.getChildren(parent).filter(d => Calendar.Event.isEvent(item))
+				let scheduledchildren = Calendar.Event.getSubtasks(parent).filter(d => Calendar.Event.isEvent(item))
 				let childindex = scheduledchildren.findIndex(d => d.id == item.id)
 				if(childindex != -1){
-					percentrange = (1 + childindex)/Calendar.Event.getChildren(Calendar.Event.getParent(item)).length * 0.9 //evenly space out sub tasks, finish by 90% of range
+					percentrange = (1 + childindex)/Calendar.Event.getSubtasks(Calendar.Event.getMainTask(item)).length * 0.9 //evenly space out sub tasks, finish by 90% of range
 				}
 			}
 
