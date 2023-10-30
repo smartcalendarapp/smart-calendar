@@ -7852,7 +7852,7 @@ function fixrecurringtodo(item){
 			calendar.todos.push(newitem)
 
 			//schedule event
-			if(Calendar.Todo.isEvent(lasttodo)){
+			if(Calendar.Event.isEvent(lasttodo)){
 				startAutoSchedule({scheduletodos: [newitem]})
 			}
 			

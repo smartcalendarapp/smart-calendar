@@ -726,7 +726,7 @@ function cacheReminders(user){
 			let itemstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 			let itemenddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
 
-			if(item.repeat.interval == null || item.repeat.frequency == null){
+			if(item.repeat.interval == null || item.repeat.frequency == null || item.type == 1){
 				//no repeat
 				output.push(item)
 			}else{
