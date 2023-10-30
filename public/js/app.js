@@ -1079,6 +1079,7 @@ class Calendar {
 					endminute: null
 				}
 			}
+			this.subtasksuggestions = []
 		}
 
 		static getTitle(item){
@@ -4093,6 +4094,52 @@ function run() {
 			updateinteractivetour()
 		}
 	}, 100)
+
+
+	async function usegpt(){
+		//here3
+		function getcalculatedweight(tempitem){
+			let currentdate = new Date()
+			let timedifference = new Date(tempitem.endbefore.year, tempitem.endbefore.month, tempitem.endbefore.day, 0, tempitem.endbefore.minute).getTime() - currentdate.getTime()
+			return currentdate.getTime() * (tempitem.priority + 1) / Math.max(timedifference, 1) * tempitem.duration
+		}
+
+		let suggestabletodos = calendar.todos.filter(d => d.duration >= 60 && d.title.length > 3 && d.subtasksuggestions.length == 0 && (d.repeat.frequency == null && d.repeat.interval == null)).sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
+		if(suggestabletodos.length == 0) return
+
+		let suggesttodo = suggestabletodos[0]
+
+		try{
+			const response = await fetch('/subtasksuggestions', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					item: suggesttodo
+				})
+			})
+			if(response.status == 200){
+				let data = await response.json()
+				console.log(data.data)
+				
+				let suggestions = data.split(/,/g).map(d => d.trim())
+				suggesttodo.subtasksuggestions = suggestions
+
+				calendar.updateTodo()
+			}
+		}catch(err){
+			console.log(err)
+		}
+	}
+
+	if(clientinfo.betatester){
+		setInterval(async function(){
+			if(document.visibilityState === 'visible'){
+				usegpt()
+			}
+		}, 10000)
+	}
 
 
 	//tick
@@ -7849,11 +7896,15 @@ function fixrecurringtodo(item){
 			newitem.id = generateID()
 			newitem.repeatid = originaltodo.id
 
-			calendar.todos.push(newitem)
-
-			//schedule event
+			
 			if(Calendar.Event.isEvent(lasttodo)){
-				startAutoSchedule({scheduletodos: [newitem]})
+				//schedule event
+				let newitemtodo = gettodofromevent(newitem)
+				calendar.todos.push(newitemtodo)
+
+				startAutoSchedule({scheduletodos: [newitemtodo]})
+			}else{
+				calendar.todos.push(newitem)
 			}
 			
 		}
@@ -12268,7 +12319,8 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 			let startafterdate = new Date()
 			startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
 
-			//move repeat task to after last repeat
+			//repeat task scheduling
+			//move repeat to start after last repeat is due
 			if(item.repeatid){
 				let relatedtodos = sortduedate([...calendar.events, ...calendar.todos].filter(d => d.repeatid == item.repeatid || d.id == item.repeatid))
 				let currentindex = relatedtodos.findIndex(d => d.id == item.id)
@@ -12287,6 +12339,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 			let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 
 
+			//subtask scheduling
 			let percentrange = 0.4 //default schedule at 40% of range
 			let parent = Calendar.Event.getParent(item)
 			if(parent){
