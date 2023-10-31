@@ -3118,8 +3118,29 @@ app.post('/gettasksuggestions', async (req, res) => {
 		
 		let item = req.body.item
 
-		//`Task: ${item.title} - takes ${item.duration}m. Provide: 1-2 SPECIFIC, CONCISE, SHORT steps with links and resources.`
-		let gptresponse = await getgptresponse(`Task: ${item.title}. Provide: ONLY 2-4 names of subtasks, separated by comma in ONLY 1 line, with time needed for each. Example: Research 30m. No formatting.`)
+
+		//prepare prompt
+
+		function getDHMText(input) {
+			let temp = input
+			let days = Math.floor(temp / 1440)
+			temp -= days * 1440
+		
+			let hours = Math.floor(temp / 60)
+			temp -= hours * 60
+		
+			let minutes = temp
+		
+			if (days) days += 'd'
+			if (hours) hours += 'h'
+			if (minutes || (hours == 0 && days == 0)) minutes += 'm'
+		
+			return [days, hours, minutes].filter(f => f).join(' ')
+		}
+
+		//`Task: ${item.title} - takes ${getDHMText(item.duration)}. Provide: 1-2 SPECIFIC, CONCISE, SHORT steps with links and resources.`
+		let gptresponse = await getgptresponse(`Task: ${item.title} ${getDHMText(item.duration)}. Provide: ONLY 2-4 names of subtasks, separated by comma in ONLY 1 line, with time needed for each. Example: Research 30m. No formatting.`)
+		
 		if(!gptresponse){
 			return res.status(401).json({ error: 'Could not get response from Chat GPT.' })
 		}

@@ -9975,6 +9975,7 @@ function clicksubtasksuggestion(id, suggestionid){
 	fixsubandparenttask(subtaskitem)
 
 	calendar.updateTodo()
+	calendar.updateHistory()
 }
 function hidesubtasksuggestions(id){
 	let item = [...calendar.todos, ...calendar.events].find(f => f.id == id)
@@ -9983,6 +9984,7 @@ function hidesubtasksuggestions(id){
 	item.subtasksuggestions = []
 
 	calendar.updateTodo()
+	calendar.updateHistory()
 }
 function turnoffsubtasksuggestions(){
 	calendartabs = [3]
@@ -11737,10 +11739,25 @@ function eventtype(type) {
 		endbeforedate.setHours(0, 0, 0, 0)
 		endbeforedate.setDate(endbeforedate.getDate() + 1)
 		endbeforedate.setMinutes(-1)
+
 		item.endbefore.year = endbeforedate.getFullYear()
 		item.endbefore.month = endbeforedate.getMonth()
 		item.endbefore.day = endbeforedate.getDate()
 		item.endbefore.minute = endbeforedate.getHours() * 60 + endbeforedate.getMinutes()
+
+		if(Calendar.Event.isAllDay(item)){
+			let currentdate = new Date()
+			currentdate.setHours(12, 0, 0, 0)
+
+			item.start.minute = currentdate.getHours() * 60 + currentdate.getMinutes()
+			
+			let tempdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+			tempdate.setHours(tempdate.getHours() + 1)
+			item.end.year = tempdate.getFullYear()
+			item.end.month = tempdate.getMonth()
+			item.end.day = tempdate.getDate()
+			item.end.minute = tempdate.getHours() * 60 + tempdate.getMinutes()
+		}
 	}
 
 	calendar.updateInfo(true)
