@@ -3086,7 +3086,8 @@ async function getgptresponse(prompt) {
 	}
 }
 
-const MAX_GPT_PER_DAY = 10
+const MAX_GPT_PER_DAY = 12
+const MAX_GPT_PER_DAY_BETA_TESTER = 36
 app.post('/gettasksuggestions', async (req, res) => {
 	try{
 		if(!req.session.user){
@@ -3104,11 +3105,16 @@ app.post('/gettasksuggestions', async (req, res) => {
 			return res.status(401).json({ error: 'No access.' })
 		}
 
+		let appliedratelimit = MAX_GPT_PER_DAY
+		if(user.accountdata.betatester){
+			appliedratelimit = MAX_GPT_PER_DAY_BETA_TESTER
+		}
+
 
 		let currenttime = Date.now()
 
 		//check ratelimit
-		if(user.accountdata.gptusedtimestamps.filter(d => currenttime - d < 86400000).length >= MAX_GPT_PER_DAY){
+		if(user.accountdata.gptusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
 			return res.status(401).json({ error: 'Daily Chat GPT limit reached.' })
 		}
 
@@ -3140,7 +3146,7 @@ app.post('/gettasksuggestions', async (req, res) => {
 
 		//`Task: ${item.title} - takes ${getDHMText(item.duration)}. Provide: 1-2 SPECIFIC, CONCISE, SHORT steps with links and resources.`
 		let gptresponse = await getgptresponse(`Task: ${item.title} ${getDHMText(item.duration)}. Provide: ONLY 2-4 names of subtasks, separated by comma in ONLY 1 line, with time needed for each. Example: Research 30m. No formatting.`)
-		
+
 		if(!gptresponse){
 			return res.status(401).json({ error: 'Could not get response from Chat GPT.' })
 		}
