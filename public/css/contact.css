@@ -39,6 +39,11 @@ html, body{
 	z-index:99;
 }
 
+
+.filterblureffect{
+	filter:blur(5px)
+}
+
 .buttonlogo{
 	height:32px;
 	width:32px;

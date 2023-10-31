@@ -321,6 +321,14 @@ img{
 	animation: slideupdown 2s ease-in-out infinite;
 }
 
+.newbadge{
+	color:var(--text-white) !important;
+	font-size:16px;
+	font-weight:600;
+	background-color:var(--red);
+	border-radius:8px;
+	padding:2px 7px;
+}
 
 .menu{
 	transition: max-height 0.2s;

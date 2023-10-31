@@ -10801,6 +10801,7 @@ function unscheduleevent(id){
 	calendar.updateInfo()
 	calendar.updateTodo()
 	calendar.updateEvents()
+	calendar.updateHistory()
 	
 	setTimeout(function(){
 		scrolltodoY(getElement(`todo-${todoitem.id}`).getBoundingClientRect().top)
