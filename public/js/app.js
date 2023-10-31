@@ -2246,8 +2246,8 @@ class Calendar {
 					let eventinfoeventtype = getElement('eventinfoeventtype')
 					eventinfoeventtype.innerHTML = `
 					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto">
-						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100 width90px" onclick="eventtype(0)">Event</div>
-						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100 width90px" onclick="eventtype(1)">Task</div>
+						<div class="pointer text-center pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100 width90px" onclick="eventtype(0)">Event</div>
+						<div class="pointer text-center pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100 width90px" onclick="eventtype(1)">Task</div>
 					</div>`
 
 					if (item.type == 1) {
@@ -2440,8 +2440,8 @@ class Calendar {
 					let eventinfoeventtype = getElement('eventinfoeventtype')
 					eventinfoeventtype.innerHTML = `
 					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto">
-						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100 width90px" onclick="eventtype(0)">Event</div>
-						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100 width90px" onclick="eventtype(1)">Task</div>
+						<div class="pointer text-center pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100 width90px" onclick="eventtype(0)">Event</div>
+						<div class="pointer text-center pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100 width90px" onclick="eventtype(1)">Task</div>
 					</div>`
 				}
 
@@ -9936,7 +9936,7 @@ function gettododata(item) {
 
 
 				${!schedulemytasksenabled && !Calendar.Todo.isSubtask(item) ? 
-					`<div class="small:visibility-visible scalebutton absolute bottom-0 left-0 margin-12px todoitemcheckbox visibility-hidden addsubtask tooltip display-flex" onclick="addsubtask(event, '${item.id}')">
+					`<div class="small:visibility-visible scalebutton absolute bottom-0 left-0 margin-12px todoitemcheckbox visibility-hidden  addsubtask tooltip display-flex" onclick="addsubtask(event, '${item.id}')">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsecondary">
 						<g>
 						<path d="M128 6.1875C121.925 6.1875 117 11.1124 117 17.1875L117 117L17.1875 117C11.1124 117 6.1875 121.925 6.1875 128C6.1875 134.075 11.1124 139 17.1875 139L117 139L117 238.812C117 244.888 121.925 249.813 128 249.812C134.075 249.812 139 244.888 139 238.812L139 139L238.812 139C244.888 139 249.813 134.075 249.812 128C249.812 121.925 244.888 117 238.812 117L139 117L139 17.1875C139 11.1124 134.075 6.1875 128 6.1875Z" fill-rule="nonzero" opacity="1" ></path>
@@ -9985,8 +9985,9 @@ function hidesubtasksuggestions(id){
 	calendar.updateTodo()
 }
 function turnoffsubtasksuggestions(){
-	calendar.settings.gettasksuggestions = false
-	calendar.updateTodo()
+	calendartabs = [3]
+	settingstab = 1
+	calendar.updateTabs()
 }
 
 
@@ -10674,9 +10675,8 @@ function addsubtask(event, id){
 
 	let newendbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 	let newduration = 60
-	let newtitle = item.title
 	
-	let newtask = new Calendar.Todo(newendbeforedate.getFullYear(), newendbeforedate.getMonth(), newendbeforedate.getDate(), newendbeforedate.getHours() * 60 + newendbeforedate.getMinutes(), newduration, newtitle)
+	let newtask = new Calendar.Todo(newendbeforedate.getFullYear(), newendbeforedate.getMonth(), newendbeforedate.getDate(), newendbeforedate.getHours() * 60 + newendbeforedate.getMinutes(), newduration)
 	newtask.parentid = item.id
 
 	calendar.todos.push(newtask)

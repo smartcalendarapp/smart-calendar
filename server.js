@@ -3100,7 +3100,7 @@ app.post('/gettasksuggestions', async (req, res) => {
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
 
-		if(!user.accountdata.betatester || !user.accountdata.discord.id){
+		if(!user.accountdata.betatester && !user.accountdata.discord.id){
 			return res.status(401).json({ error: 'No access.' })
 		}
 
