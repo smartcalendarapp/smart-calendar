@@ -1152,6 +1152,19 @@ body {
 	fill:var(--text-secondary) !important
 }
 
+.repeatbuttonevent{
+	height: 14px;
+	width: 14px;
+	fill: var(--green);
+	stroke: none;
+	pointer-events: none;
+	display: inline-block;
+	vertical-align:middle;
+}
+.completedtext .repeatbuttonevent{
+	fill:var(--text-secondary) !important
+}
+
 .iconred {
 	height: 14px;
 	width: 14px;
