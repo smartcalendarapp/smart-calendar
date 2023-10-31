@@ -258,9 +258,9 @@ function getpriorityicon(value) {
 	if (value == 0) {
 		return ''
 	} else if (value == 1) {
-		return `<span class="text-white priorityiconpadding border-round background-orange text-12px text-bold">Medium</span>`
+		return `<span class="text-white priorityiconpadding border-round background-orange text-12px">Medium</span>`
 	} else if (value == 2) {
-		return `<span class="text-white priorityiconpadding border-round background-red text-12px text-bold">High</span>`
+		return `<span class="text-white priorityiconpadding border-round background-red text-12px">High</span>`
 	}
 }
 
@@ -1939,7 +1939,7 @@ class Calendar {
 							<div class="infogroup">
 			 					<div class="inputgroup">
 								 	<div class="text-14px text-primary width90px">Type</div>
-									<div class="display-flex" id="eventinfosmartschedule"></div>
+									<div class="display-flex" id="eventinfoeventtype"></div>
 				 				</div>
 							</div>
 							
@@ -2243,11 +2243,11 @@ class Calendar {
 
 
 					//event type
-					let eventinfosmartschedule = getElement('eventinfosmartschedule')
-					eventinfosmartschedule.innerHTML = `
+					let eventinfoeventtype = getElement('eventinfoeventtype')
+					eventinfoeventtype.innerHTML = `
 					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto">
-						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(0)">Event</div>
-						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(1)">Task</div>
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100 width90px" onclick="eventtype(0)">Event</div>
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100 width90px" onclick="eventtype(1)">Task</div>
 					</div>`
 
 					if (item.type == 1) {
@@ -2255,9 +2255,13 @@ class Calendar {
 						let infopriority = getElement('infopriority')
 						infopriority.innerHTML = `
 							${item.priority != 0 ?
-								`<div class="height-fit display-flex tooltip display-flex">
-									${getpriorityicon(item.priority)}
-								</div>`
+								`${item.priority != 0 ?
+									`<div class="text-14px badgepadding border-round nowrap transition-duration-100 pointer-none transition-duration-100 ${['background-tint-1 text-primary hover:background-tint-2 visibility-hidden hoverpriority small:visibility-visible', 'background-orange hover:background-orange-hover text-white', 'background-red hover:background-red-hover text-white'][item.priority]}">
+										${['Low', 'Medium', 'High'][item.priority]} priority
+									</div>`
+									:
+									''
+								}`
 								:
 								''
 							}`
@@ -2313,9 +2317,9 @@ class Calendar {
 							<div class="infotitle min-width-0 selecttext">${Calendar.Event.getTitle(item)}</div>
 							${item.type == 1 ?
 								`${item.priority != 0 ?
-									`<div class="height-fit display-flex tooltip display-flex">
-											${getpriorityicon(item.priority)}
-										</div>`
+									`<div class="text-14px badgepadding border-round nowrap transition-duration-100 pointer-none transition-duration-100 ${['background-tint-1 text-primary hover:background-tint-2 visibility-hidden hoverpriority small:visibility-visible', 'background-orange hover:background-orange-hover text-white', 'background-red hover:background-red-hover text-white'][item.priority]}">
+										${['Low', 'Medium', 'High'][item.priority]} priority
+									</div>`
 									:
 									''
 								}`
@@ -2336,27 +2340,31 @@ class Calendar {
 						<div class="infotext selecttext nowrap">${Calendar.Event.getFullStartEndText(item)}</div>
 					</div>`)
 
+					//type
 					if(!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item)){
 						output.push(`<div class="infogroup">
 							<div class="inputgroup">
 								
-								<div class="display-flex" id="eventinfosmartschedule"></div></div>
+								<div class="display-flex" id="eventinfoeventtype"></div></div>
 							</div>
 						</div>`)
 					}
 
+					//due and takes
 					if (item.type == 1) {
 						output.push(`
-							<div class="infotext selecttext infotext"><span class="text-bold">Due</span> ${Calendar.Event.getDueText(item)}</div>`)
+							<div class="infotext selecttext infotext ${new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute) < Date.now() ? 'text-red' : 'text-blue'}">Due ${Calendar.Event.getDueText(item)}</div>`)
 						output.push(`
-							<div class="infotext selecttext infotext"><span class="text-bold">Takes</span> ${getDHMText(Math.floor((new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())/60000))}</div>`)
+							<div class="infotext selecttext infotext text-green">Takes ${getDHMText(Math.floor((new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())/60000))}</div>`)
 					}
 
+					//repeats
 					if (item.repeat.frequency != null && item.repeat.interval != null) {
 						output.push(`
-							<div class="infotext selecttext text-14px"><span class="text-bold text-14px">Repeats</span> ${getRepeatText(item, true)}</div>`)
+							<div class="infotext selecttext text-14px">Repeats ${getRepeatText(item, true)}</div>`)
 					}
 
+					//google classroom
 					if(item.googleclassroomid){
 						output.push(`<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none text-14px hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open Google Classroom assignment</a>`)
 					}
@@ -2429,11 +2437,11 @@ class Calendar {
 
 				if(!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item)){
 					//event type
-					let eventinfosmartschedule = getElement('eventinfosmartschedule')
-					eventinfosmartschedule.innerHTML = `
+					let eventinfoeventtype = getElement('eventinfoeventtype')
+					eventinfoeventtype.innerHTML = `
 					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto">
-						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(0)">Event</div>
-						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100" onclick="eventtype(1)">Task</div>
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100 width90px" onclick="eventtype(0)">Event</div>
+						<div class="pointer pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100 width90px" onclick="eventtype(1)">Task</div>
 					</div>`
 				}
 
@@ -4100,7 +4108,6 @@ function run() {
 
 
 	async function gettasksuggestions(){
-		//here3
 		function getcalculatedweight(tempitem){
 			let currentdate = new Date()
 			let timedifference = new Date(tempitem.endbefore.year, tempitem.endbefore.month, tempitem.endbefore.day, 0, tempitem.endbefore.minute).getTime() - currentdate.getTime()
@@ -4109,6 +4116,8 @@ function run() {
 
 		//select eligible todos to get suggestion
 		let suggestabletodos = calendar.todos.filter(d => 
+			calendar.settings.gettasksuggestions == true
+			&&
 			!d.completed && d.duration >= 60 && d.title.length > 3
 			&&
 			!d.gotsubtasksuggestions && d.subtasksuggestions.length == 0 
@@ -4169,15 +4178,13 @@ function run() {
 		}
 	}
 
-	if(clientinfo.betatester){
-		let lastgettasksuggestionsdate = Date.now()
-		setInterval(async function(){
-			if(document.visibilityState === 'visible' && Date.now() - lastgettasksuggestionsdate > 10000){
-				lastgettasksuggestionsdate = Date.now()
-				gettasksuggestions()
-			}
-		}, 1000)
-	}
+	let lastgettasksuggestionsdate = Date.now()
+	setInterval(async function(){
+		if(document.visibilityState === 'visible' && Date.now() - lastgettasksuggestionsdate > 10000){
+			lastgettasksuggestionsdate = Date.now()
+			gettasksuggestions()
+		}
+	}, 1000)
 
 
 	//tick
@@ -4994,7 +5001,7 @@ function updateinteractivetour() {
 
 		} else if (key == 'autoschedule') {
 
-			let tourbutton = getElement('eventinfosmartschedule')
+			let tourbutton = getElement('eventinfoeventtype')
 			if (isviewable(tourbutton)) {
 				let rect = tourbutton.getBoundingClientRect()
 
@@ -6468,7 +6475,7 @@ function displayalert(title) {
 
 //SETTINGS
 
-function toggletasksuggestions(){
+function toggletasksuggestions(event){
 	calendar.settings.gettasksuggestions = event.target.checked
 	calendar.updateSettings()
 }
@@ -9639,9 +9646,9 @@ function gettododata(item) {
 	}
 
 
-	//here3
+
 	let subtasksuggestionsoutput = ''
-	if(calendar.settings.gettasksuggestions != false && Calendar.Todo.isTodo(item) && item.subtasksuggestions.length > 0){
+	if(calendar.settings.gettasksuggestions == true && Calendar.Todo.isTodo(item) && item.subtasksuggestions.length > 0){
 		let tempoutput = []
 		let tempoutput2 = []
 		for(let i = 0; i < item.subtasksuggestions.length; i++){
@@ -9666,7 +9673,7 @@ function gettododata(item) {
 			<div class="display-flex flex-column gap-12px">
 				${tempoutput2.join('')}
 			</div>
-			<div class="hovertodosuggestiongroup small:visibility-visible display-flex flex-row gap-12px justify-flex-end">
+			<div class="visibility-hidden hovertodosuggestiongroup small:visibility-visible display-flex flex-row gap-12px justify-flex-end">
 				<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-14px" onclick="hidesubtasksuggestions('${item.id}')">Hide</div>
 				<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-14px" onclick="turnoffsubtasksuggestions()">Turn off</div>
 			</div>
@@ -9949,7 +9956,7 @@ function gettododata(item) {
 	return output
 }
 
-//here3
+
 //AI suggestion
 function clicksubtasksuggestion(id, suggestionid){
 	let item = [...calendar.todos, ...calendar.events].find(f => f.id == id)
@@ -11569,15 +11576,9 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 					}
 
 					<span class="text-bold">${Calendar.Event.getTitle(item)}</span>
-			
-					${item.type == 1 && item.priority != 0 ?
-						`<span class="todoitemcheckbox tooltip">
-							${getpriorityicon(item.priority)}
-						</span>` : '' }
-
 				
-					${item.repeat.frequency != null && item.repeat.interval != null ? `
-					<span class="height-fit display-inline-flex pointer-none checkcircletop">
+					${item.repeat.frequency != null && item.repeat.interval != null && item.type == 1 ? `
+					<span class="todoitemcheckbox tooltip checkcircletop pointer-none">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="repeatbuttonevent">
 						<g>
 						<g opacity="1">
@@ -11586,6 +11587,12 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 						</g>
 						</svg>
 					</span>` : ''}
+
+					${item.type == 1 && item.priority != 0 ?
+						`<span class="todoitemcheckbox tooltip">
+							${getpriorityicon(item.priority)}
+						</span>` : '' }
+
 					
 			
 					${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item)}</span>
@@ -11686,14 +11693,10 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 					}
 
 					<span class="text-bold">${Calendar.Event.getTitle(item)}</span>
-			
-					${item.type == 1 && item.priority != 0 ?
-						`<span class="todoitemcheckbox tooltip">
-							${getpriorityicon(item.priority)}
-						</span>` : '' }
+		
 
-					${item.repeat.frequency != null && item.repeat.interval != null ? `
-					<span class="height-fit display-inline-flex pointer-none checkcircletop">
+					${item.repeat.frequency != null && item.repeat.interval != null && item.type == 1 ? `
+					<span class="todoitemcheckbox tooltip checkcircletop pointer-none">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="repeatbuttonevent">
 						<g>
 						<g opacity="1">
@@ -11702,6 +11705,11 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 						</g>
 						</svg>
 					</span>` : ''}
+
+					${item.type == 1 && item.priority != 0 ?
+						`<span class="todoitemcheckbox tooltip">
+							${getpriorityicon(item.priority)}
+						</span>` : '' }
 					
 			
 					${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item)}</span>
