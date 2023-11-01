@@ -9,91 +9,91 @@
 	border-radius:1000px
 }
 .hover\:background-transparent:hover{
-	background-color:transparent
+	background:transparent
 }
 .hover\:background-primary:hover{
-	background-color:var(--background-primary)
+	background:var(--background-primary)
 }
 .hover\:background-primary-transparent:hover{
-	background-color:var(--background-primary-transparent)
+	background:var(--background-primary-transparent)
 }
 .hover\:background-secondary:hover{
-	background-color:var(--background-secondary)
+	background:var(--background-secondary)
 }
 .hover\:background-secondary-transparent:hover{
-	background-color:var(--background-secondary-transparent)
+	background:var(--background-secondary-transparent)
 }
 .hover\:background-tint-1:hover{
-	background-color:var(--background-tint-1)
+	background:var(--background-tint-1)
 }
 .hover\:background-tint-2:hover{
-	background-color:var(--background-tint-2)
+	background:var(--background-tint-2)
 }
 .hover\:background-tint-3:hover{
-	background-color:var(--background-tint-3)
+	background:var(--background-tint-3)
 }
 .hover\:background-red:hover{
-	background-color:var(--red)
+	background:var(--red)
 }
 .hover\:background-orange:hover{
-	background-color:var(--orange)
+	background:var(--orange)
 }
 .hover\:background-yellow:hover{
-	background-color:var(--yellow)
+	background:var(--yellow)
 }
 .hover\:background-green:hover{
-	background-color:var(--green)
+	background:var(--green)
 }
 .hover\:background-blue:hover{
-	background-color:var(--blue)
+	background:var(--blue)
 }
 .hover\:background-purple:hover{
-	background-color:var(--purple)
+	background:var(--purple)
 }
 .hover\:background-red-transparent:hover{
-	background-color:var(--red-transparent)
+	background:var(--red-transparent)
 }
 .hover\:background-orange-transparent:hover{
-	background-color:var(--orange-transparent)
+	background:var(--orange-transparent)
 }
 .hover\:background-yellow-transparent:hover{
-	background-color:var(--yellow-transparent)
+	background:var(--yellow-transparent)
 }
 .hover\:background-green-transparent:hover{
-	background-color:var(--green-transparent)
+	background:var(--green-transparent)
 }
 .hover\:background-blue-transparent:hover{
-	background-color:var(--blue-transparent)
+	background:var(--blue-transparent)
 }
 .hover\:background-purple-transparent:hover{
-	background-color:var(--purple-transparent)
+	background:var(--purple-transparent)
 }
 .hover\:background-red-hover:hover{
-	background-color:var(--red-hover)
+	background:var(--red-hover)
 }
 .hover\:background-blue-hover:hover{
-	background-color:var(--blue-hover)
+	background:var(--blue-hover)
 }
 .hover\:background-green-hover:hover{
-	background-color:var(--green-hover)
+	background:var(--green-hover)
 }
 .hover\:background-orange-hover:hover{
-	background-color:var(--orange-hover)
+	background:var(--orange-hover)
 }
 .hover\:background-red-transparent-hover:hover{
-	background-color:var(--red-transparent-hover)
+	background:var(--red-transparent-hover)
 }
 .hover\:background-orange-transparent-hover:hover{
-	background-color:var(--orange-transparent-hover)
+	background:var(--orange-transparent-hover)
 }
 .hover\:background-green-transparent-hover:hover{
-	background-color:var(--green-transparent-hover)
+	background:var(--green-transparent-hover)
 }
 .hover\:background-blue-transparent-hover:hover{
-	background-color:var(--blue-transparent-hover)
+	background:var(--blue-transparent-hover)
 }
 .hover\:background-purple-transparent-hover:hover{
-	background-color:var(--purple-transparent-hover)
+	background:var(--purple-transparent-hover)
 }
 
 .hover\:text-transparent:hover{

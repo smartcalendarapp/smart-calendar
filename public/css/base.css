@@ -52,6 +52,7 @@
 	
 	--font: "Wix Madefor Text", "Avenir Next", "Helvetica", "Arial", "sans-serif";
 }
+
 [data-theme="dark"] {
 	--background-primary-home: #000000;
 	--background-primary-home-transparent: #000000b3;
@@ -101,6 +102,56 @@
 	--black-transparent-3:#333333CC;
 }
 
+[data-theme="midnightblue"] {
+	--background-primary-home: #000000;
+	--background-primary-home-transparent: #000000b3;
+	--background-primary: #202124;
+	--background-primary-transparent:#202124b3;
+	--background-secondary: #17171a;
+	--background-secondary-transparent:#17171ab3;
+	--background-tint-1: #ffffff0F;
+	--background-tint-2: #ffffff1F;
+	--background-tint-3: #ffffff2E;
+	
+	--text-primary:#ffffff;
+	--text-secondary:#ffffff59;
+	--text-tertiary:#ffffff1A;
+	--text-quaternary:#ffffffB3;
+	--text-quinary:#ffffff80;
+
+	--red:#e63832;
+	--orange:#e8980e;
+	--yellow:#f2d91b;
+	--green:#1cb843;
+	--blue:#258df5;
+	--purple:#8d68f2;
+
+	--red-hover:#b32c27;
+	--orange-hover:#b5770b;
+	--green-hover:#148530;
+	--blue-hover:#1d6fc2;
+	--purple-hover:#6f52bf;
+	
+	--red-transparent:#e6383280;
+	--orange-transparent:#e8980e80;
+	--yellow-transparent:#f2d91b80;
+	--green-transparent:#1cb84380;
+	--blue-transparent:#258df580;
+	--purple-transparent:#8d68f280;
+
+	--red-transparent-hover:#b32c2780;
+	--orange-transparent-hover:#b5770b80;
+	--green-transparent-hover:#14853080;
+	--blue-transparent-hover:#1d6fc280;
+	--purple-transparent-hover:#6f52bf80;
+
+	--white-hover:#cccccc;
+	--black-transparent:#000000E6;
+	--black-transparent-2:#000000BF;
+	--black-transparent-3:#333333CC;
+}
+
+
 .border-0{
 	border-radius:0
 }
@@ -114,94 +165,94 @@
 	border-radius:1000px
 }
 .background-transparent{
-	background-color:transparent
+	background:transparent
 }
 .background-primary{
-	background-color:var(--background-primary)
+	background:var(--background-primary)
 }
 .background-primary-transparent{
-	background-color:var(--background-primary-transparent)
+	background:var(--background-primary-transparent)
 }
 .background-secondary{
-	background-color:var(--background-secondary)
+	background:var(--background-secondary)
 }
 .background-secondary-transparent{
-	background-color:var(--background-secondary-transparent)
+	background:var(--background-secondary-transparent)
 }
 .background-tint-1{
-	background-color:var(--background-tint-1)
+	background:var(--background-tint-1)
 }
 .background-tint-2{
-	background-color:var(--background-tint-2)
+	background:var(--background-tint-2)
 }
 .background-tint-3{
-	background-color:var(--background-tint-3)
+	background:var(--background-tint-3)
 }
 .background-red{
-	background-color:var(--red)
+	background:var(--red)
 }
 .background-orange{
-	background-color:var(--orange)
+	background:var(--orange)
 }
 .background-yellow{
-	background-color:var(--yellow)
+	background:var(--yellow)
 }
 .background-green{
-	background-color:var(--green)
+	background:var(--green)
 }
 .background-blue{
-	background-color:var(--blue)
+	background:var(--blue)
 }
 .background-purple{
-	background-color:var(--purple)
+	background:var(--purple)
 }
 .background-red-transparent{
-	background-color:var(--red-transparent)
+	background:var(--red-transparent)
 }
 .background-orange-transparent{
-	background-color:var(--orange-transparent)
+	background:var(--orange-transparent)
 }
 .background-yellow-transparent{
-	background-color:var(--yellow-transparent)
+	background:var(--yellow-transparent)
 }
 .background-green-transparent{
-	background-color:var(--green-transparent)
+	background:var(--green-transparent)
 }
 .background-blue-transparent{
-	background-color:var(--blue-transparent)
+	background:var(--blue-transparent)
 }
 .background-purple-transparent{
-	background-color:var(--purple-transparent)
+	background:var(--purple-transparent)
 }
 .background-red-hover{
-	background-color:var(--red-hover)
+	background:var(--red-hover)
 }
 .background-orange-hover{
-	background-color:var(--orange-hover)
+	background:var(--orange-hover)
 }
 .background-green-hover{
-	background-color:var(--green-hover)
+	background:var(--green-hover)
 }
 .background-blue-hover{
-	background-color:var(--blue-hover)
+	background:var(--blue-hover)
 }
 .background-purple-hover{
-	background-color:var(--purple-hover)
+	background:var(--purple-hover)
 }
 .background-red-transparent-hover{
-	background-color:var(--red-transparent-hover)
+	background:var(--red-transparent-hover)
 }
 .background-orange-transparent-hover{
-	background-color:var(--orange-transparent-hover)
+	background:var(--orange-transparent-hover)
 }
 .background-green-transparent-hover{
-	background-color:var(--green-transparent-hover)
+	background:var(--green-transparent-hover)
 }
 .background-blue-transparent-hover{
-	background-color:var(--blue-transparent-hover)
+	background:var(--blue-transparent-hover)
 }
 .background-purple-transparent-hover{
-	background-color:var(--purple-transparent-hover)
+	background:var(--purple-transparent-hover)
 }
 
 .text-transparent{

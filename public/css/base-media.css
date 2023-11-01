@@ -9,67 +9,67 @@
 		border-radius:1000px !important
 	}
 	.small\:background-transparent{
-		background-color:transparent !important
+		background:transparent !important
 	}
 	.small\:background-primary{
-		background-color:var(--background-primary) !important
+		background:var(--background-primary) !important
 	}
 	.small\:background-primary-transparent{
-		background-color:var(--background-primary-transparent) !important
+		background:var(--background-primary-transparent) !important
 	}
 	.small\:background-secondary{
-		background-color:var(--background-secondary) !important
+		background:var(--background-secondary) !important
 	}
 	.small\:background-secondary-transparent{
-		background-color:var(--background-secondary-transparent) !important
+		background:var(--background-secondary-transparent) !important
 	}
 	.small\:background-tint-1{
-		background-color:var(--background-tint-1) !important
+		background:var(--background-tint-1) !important
 	}
 	.small\:background-tint-2{
-		background-color:var(--background-tint-2) !important
+		background:var(--background-tint-2) !important
 	}
 	.small\:background-red{
-		background-color:var(--red) !important
+		background:var(--red) !important
 	}
 	.small\:background-orange{
-		background-color:var(--orange) !important
+		background:var(--orange) !important
 	}
 	.small\:background-yellow{
-		background-color:var(--yellow) !important
+		background:var(--yellow) !important
 	}
 	.small\:background-green{
-		background-color:var(--green) !important
+		background:var(--green) !important
 	}
 	.small\:background-blue{
-		background-color:var(--blue) !important
+		background:var(--blue) !important
 	}
 	.small\:background-purple{
-		background-color:var(--purple) !important
+		background:var(--purple) !important
 	}
 	.small\:background-red-transparent{
-		background-color:var(--red-transparent) !important
+		background:var(--red-transparent) !important
 	}
 	.small\:background-orange-transparent{
-		background-color:var(--orange-transparent) !important
+		background:var(--orange-transparent) !important
 	}
 	.small\:background-yellow-transparent{
-		background-color:var(--yellow-transparent) !important
+		background:var(--yellow-transparent) !important
 	}
 	.small\:background-green-transparent{
-		background-color:var(--green-transparent) !important
+		background:var(--green-transparent) !important
 	}
 	.small\:background-blue-transparent{
-		background-color:var(--blue-transparent) !important
+		background:var(--blue-transparent) !important
 	}
 	.small\:background-purple-transparent{
-		background-color:var(--purple-transparent) !important
+		background:var(--purple-transparent) !important
 	}
 	.small\:background-red-hover{
-		background-color:var(--red-hover) !important
+		background:var(--red-hover) !important
 	}
 	.small\:background-blue-hover{
-		background-color:var(--blue-hover) !important
+		background:var(--blue-hover) !important
 	}
 	
 	.small\:text-transparent{

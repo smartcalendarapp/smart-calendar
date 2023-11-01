@@ -731,7 +731,7 @@ function getDate(string) {
 
 		mymonth = temp
 		myday = +tempdatedate[0]
-		myyear = +tempdatelist[2] || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate()) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
+		myyear = +tempdatelist[2] || (new Date(currentdate.getFullYear(), mymonth).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth()) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
 	}
 
 	let tempdatestring2 = string.match(new RegExp(`(?<=^|\\s)((0?[1-9]|1[0-9]|2[0-9]|3[0-1])(st|nd|rd|th)?\\s+(${SHORTMONTHLIST.map(d => d.toLowerCase()).join('|')}|${MONTHLIST.map(d => d.toLowerCase()).join('|')})(\\s+\\d{4})?)(?:$|\\s)`))
@@ -754,7 +754,7 @@ function getDate(string) {
 
 		mymonth = temp
 		myday = +tempdatedate[0]
-		myyear = +tempdatelist[2] || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate()) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
+		myyear = +tempdatelist[2] || (new Date(currentdate.getFullYear(), mymonth).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth()) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
 	}
 
 	let tempdate2 = string.match(/\b((0?[1-9]|1[0-2])(\/|-)([1-9]|1[0-9]|2[0-9]|3[0-1])((\/|-)(\d{2}(\d{2})?))?)\b/)
@@ -764,7 +764,7 @@ function getDate(string) {
 		let tempdate3 = tempdate2[0].split(/\/|-/)
 		mymonth = +tempdate3[0] - 1
 		myday = +tempdate3[1]
-		myyear = (+tempdate3[2] && (!tempdate3[2].match(/\d{4}/) ? (floor(currentdate.getFullYear(), 100) + +tempdate3[2]) : (+tempdate3[2]))) || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate()) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
+		myyear = (+tempdate3[2] && (!tempdate3[2].match(/\d{4}/) ? (floor(currentdate.getFullYear(), 100) + +tempdate3[2]) : (+tempdate3[2]))) || (new Date(currentdate.getFullYear(), mymonth).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth()) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
 	}
 
 	let tempdate12 = string.match(/\b((\d{4})(\/|-)(0?[1-9]|1[0-2])(\/|-)([1-9]|1[0-9]|2[0-9]|3[0-1]))\b/)
@@ -774,7 +774,7 @@ function getDate(string) {
 		let tempdate13 = tempdate12[0].split(/\/|-/)
 		mymonth = +tempdate13[1] - 1
 		myday = +tempdate13[2]
-		myyear = +tempdate13[0] || (new Date(currentdate.getFullYear(), mymonth, myday).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth(), currentdate.getDate()) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
+		myyear = +tempdate13[0] || (new Date(currentdate.getFullYear(), mymonth).getTime() < new Date(currentdate.getFullYear(), currentdate.getMonth()) ? currentdate.getFullYear() + 1 : currentdate.getFullYear())
 	}
 
 	let tempdate8 = string.match(/\btoday\b/)
@@ -2353,7 +2353,7 @@ class Calendar {
 					//due and takes
 					if (item.type == 1) {
 						output.push(`
-							<div class="infotext selecttext infotext ${new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute) < Date.now() ? 'text-red' : 'text-blue'}">Due ${Calendar.Event.getDueText(item)}</div>`)
+							<div class="infotext selecttext infotext ${new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute) < Date.now() && !item.completed ? 'text-red' : 'text-blue'}">Due ${Calendar.Event.getDueText(item)}</div>`)
 						output.push(`
 							<div class="infotext selecttext infotext text-green">Takes ${getDHMText(Math.floor((new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())/60000))}</div>`)
 					}
@@ -14545,10 +14545,12 @@ function moveeventtop(event) {
 // PUSH NOTIFS
 
 async function removePushNotifs() {
-	const existing = await navigator.serviceWorker.getRegistration()
-	if (existing) {
-		console.log("Unregistering from push notifications...")
-		existing.unregister()
+	if ("serviceWorker" in navigator && "PushManager" in window) {
+		const existing = await navigator.serviceWorker.getRegistration()
+		if (existing) {
+			console.log("Unregistering from push notifications...")
+			existing.unregister()
+		}
 	}
 }
 
