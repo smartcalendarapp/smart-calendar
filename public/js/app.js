@@ -4048,6 +4048,84 @@ function updatetime() {
 	}
 }
 
+let lastgettasksuggestionsdate;
+async function gettasksuggestions(inputitem){
+	function getcalculatedweight(tempitem){
+		let currentdate = new Date()
+		let timedifference = new Date(tempitem.endbefore.year, tempitem.endbefore.month, tempitem.endbefore.day, 0, tempitem.endbefore.minute).getTime() - currentdate.getTime()
+		return currentdate.getTime() * (tempitem.priority + 1) / Math.max(timedifference, 1) * tempitem.duration
+	}
+
+	let suggesttodo;
+	if(inputitem){
+		suggesttodo = inputitem
+	}else{
+		//select eligible todos to get suggestion
+
+		let suggestabletodos = calendar.todos.filter(d => 
+			calendar.settings.gettasksuggestions == true
+			&&
+			!d.completed && d.duration >= 60 && d.title.length > 3
+			&&
+			!d.gotsubtasksuggestions && d.subtasksuggestions.length == 0 
+			&&
+			new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*7
+			&&
+			!Calendar.Todo.isSubtask(d)
+			&&
+			d.repeat.frequency == null && d.repeat.interval == null
+		).sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
+		if(suggestabletodos.length == 0) return
+
+		suggesttodo = suggestabletodos[0]
+	}
+
+	try{
+		const response = await fetch('/gettasksuggestions', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				item: suggesttodo
+			})
+		})
+		if(response.status == 200){
+			let data = await response.json()
+
+			//parse and import subtasks
+			
+			let rawtext = data.data.split(/,|\n/g).map(d => d.trim()).filter(d => d)
+
+			let newitems = []
+			for(let temptext of rawtext){
+				let myduration;
+				
+				let duration = getDuration(temptext)
+				if(duration.value != null){
+					myduration = duration.value
+					temptext = temptext.replace(duration.match, '').replace(/^(\d+\.|-)/, '').trim()
+				}
+
+				if(myduration == null){
+					myduration = 60
+				}
+
+				if(temptext){
+					newitems.push({ title: temptext, duration: myduration, id: generateID() })
+				}
+			}
+
+			suggesttodo.subtasksuggestions = newitems
+			suggesttodo.gotsubtasksuggestions = true
+
+			calendar.updateTodo()
+		}
+	}catch(err){
+		console.log(err)
+	}
+}
+
 
 function run() {
 	//ONCE
@@ -4106,85 +4184,7 @@ function run() {
 		}
 	}, 100)
 
-
-	async function gettasksuggestions(inputitem){
-		function getcalculatedweight(tempitem){
-			let currentdate = new Date()
-			let timedifference = new Date(tempitem.endbefore.year, tempitem.endbefore.month, tempitem.endbefore.day, 0, tempitem.endbefore.minute).getTime() - currentdate.getTime()
-			return currentdate.getTime() * (tempitem.priority + 1) / Math.max(timedifference, 1) * tempitem.duration
-		}
-
-		let suggesttodo;
-		if(inputitem){
-			suggesttodo = inputitem
-		}else{
-			//select eligible todos to get suggestion
-
-			let suggestabletodos = calendar.todos.filter(d => 
-				calendar.settings.gettasksuggestions == true
-				&&
-				!d.completed && d.duration >= 60 && d.title.length > 3
-				&&
-				!d.gotsubtasksuggestions && d.subtasksuggestions.length == 0 
-				&&
-				new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*7
-				&&
-				!Calendar.Todo.isSubtask(d)
-				&&
-				d.repeat.frequency == null && d.repeat.interval == null
-			).sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
-			if(suggestabletodos.length == 0) return
-
-			suggesttodo = suggestabletodos[0]
-		}
-
-		try{
-			const response = await fetch('/gettasksuggestions', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					item: suggesttodo
-				})
-			})
-			if(response.status == 200){
-				let data = await response.json()
-
-				//parse and import subtasks
-				
-				let rawtext = data.data.split(/,|\n/g).map(d => d.trim()).filter(d => d)
-
-				let newitems = []
-				for(let temptext of rawtext){
-					let myduration;
-					
-					let duration = getDuration(temptext)
-					if(duration.value != null){
-						myduration = duration.value
-						temptext = temptext.replace(duration.match, '').replace(/^(\d+\.|-)/, '').trim()
-					}
-
-					if(myduration == null){
-						myduration = 60
-					}
-
-					if(temptext){
-						newitems.push({ title: temptext, duration: myduration, id: generateID() })
-					}
-				}
-
-				suggesttodo.subtasksuggestions = newitems
-				suggesttodo.gotsubtasksuggestions = true
-
-				calendar.updateTodo()
-			}
-		}catch(err){
-			console.log(err)
-		}
-	}
-
-	let lastgettasksuggestionsdate = Date.now()
+	lastgettasksuggestionsdate = Date.now()
 	setInterval(async function(){
 		if(document.visibilityState === 'visible' && Date.now() - lastgettasksuggestionsdate > 10000){
 			lastgettasksuggestionsdate = Date.now()
