@@ -4048,6 +4048,8 @@ function updatetime() {
 	}
 }
 
+
+//AI suggestions
 let lastgettasksuggestionsdate;
 async function gettasksuggestions(inputitem){
 	function getcalculatedweight(tempitem){
@@ -4095,7 +4097,13 @@ async function gettasksuggestions(inputitem){
 
 			//parse and import subtasks
 			
-			let rawtext = data.data.split(/,|\n/g).map(d => d.trim()).filter(d => d)
+			let rawtext = data.data
+			if (rawtext.includes('\n')) {
+				rawtext = rawtext.replace(/,/g, '').split(/\n/g)
+			} else {
+				rawtext = rawtext.split(/,/g)
+			}
+			rawtext = rawtext.map(d => d.trim()).filter(d => d)
 
 			let newitems = []
 			for(let temptext of rawtext){
@@ -4125,6 +4133,7 @@ async function gettasksuggestions(inputitem){
 		console.log(err)
 	}
 }
+
 
 
 function run() {
