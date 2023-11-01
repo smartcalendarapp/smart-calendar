@@ -18,7 +18,7 @@ div {
 
 html {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s;
-	background: var(--background-primary);
+	background-color: var(--background-primary);
 }
 
 html,
@@ -60,11 +60,11 @@ body {
 }
 
 .sidebutton:hover {
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 .sidebutton:active {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 
@@ -199,7 +199,7 @@ body {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s, opacity 0.2s;
 	position: absolute;
 	border-radius: 8px;
-	background: var(--background-primary);
+	background-color: var(--background-primary);
 	box-shadow: 0 0 40px 0px var(--black-transparent);
 	color: var(--text-primary);
 	padding: 12px;
@@ -233,7 +233,7 @@ body {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s, opacity 0.2s;
 	position: absolute;
 	border-radius: 8px;
-	background: var(--background-primary);
+	background-color: var(--background-primary);
 	box-shadow: 0 0 40px 0px var(--black-transparent);
 	color: var(--text-primary);
 	padding: 12px;
@@ -284,11 +284,11 @@ body {
 }
 
 .leftwrapitem:hover {
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 .leftwrapitem:active {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 .selectedbutton div {
@@ -311,7 +311,7 @@ body {
 	width: fit-content;
 	color: var(--white);
 	font-size: 14px;
-	background: var(--blue);
+	background-color: var(--blue);
 	padding: 8px 12px;
 	transition: background-color 0.1s;
 	border-radius: 8px;
@@ -319,7 +319,7 @@ body {
 }
 
 .accountbutton:hover {
-	background: var(--blue-hover);
+	background-color: var(--blue-hover);
 }
 
 .logout {
@@ -328,14 +328,14 @@ body {
 	color: var(--white);
 	font-size: 14px;
 	padding: 8px 12px;
-	background: var(--red);
+	background-color: var(--red);
 	border-radius: 8px;
 	text-align: center;
 	cursor: pointer;
 }
 
 .logout:hover {
-	background: var(--red-hover)
+	background-color: var(--red-hover)
 }
 
 .deleteaccount{
@@ -359,7 +359,7 @@ body {
 	display: flex;
 	overflow: hidden;
 	border-radius: 8px;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 .formtext {
@@ -370,7 +370,7 @@ body {
 .formsubmit {
 	text-align: center;
 	transition: background-color 0.1s;
-	background: var(--blue);
+	background-color: var(--blue);
 	color: var(--white);
 	font-size: 14px;
 	border-radius: 8px;
@@ -382,7 +382,7 @@ body {
 }
 
 .formsubmit:hover {
-	background: var(--blue-hover);
+	background-color: var(--blue-hover);
 }
 
 .formwrap {
@@ -425,17 +425,17 @@ body {
 }
 
 .selecteddatehighlight {
-	background:var(--blue) !important;
+	background-color:var(--blue) !important;
 }
 .selecteddatehighlight:hover {
-	background:var(--blue-hover) !important;
+	background-color:var(--blue-hover) !important;
 }
 .selecteddatehighlight div{
 	color:white !important;
 }
 
 .specialtodolist .todoitem{
-	background:var(--background-primary);
+	background-color:var(--background-primary);
 	border-radius:8px;
 }
 .specialtodolist .todoitemcontainer{
@@ -493,11 +493,11 @@ body {
 
 .googlebutton{
 	color:var(--black);
-	background:var(--white);
+	background-color:var(--white);
 	box-shadow:0 0 8px -2px var(--black-transparent);
 }
 .googlebutton:hover{
-	background:var(--white-hover)
+	background-color:var(--white-hover)
 }
 
 .buttonfilldiscord{
@@ -510,10 +510,10 @@ body {
 }
 .discordbutton{
 	color:var(--white);
-	background:#5865F2;
+	background-color:#5865F2;
 }
 .discordbutton:hover{
-	background:#454fbf
+	background-color:#454fbf
 }
 
 .fadetransition {
@@ -538,7 +538,7 @@ body {
 	position: absolute;
 	z-index: 300;
 	border-radius: 8px;
-	background: var(--background-primary-transparent);
+	background-color: var(--background-primary-transparent);
 	backdrop-filter: blur(30px);
 	-webkit-backdrop-filter: blur(30px);
 	display: flex;
@@ -552,7 +552,7 @@ body {
 .scheduleoptiongroup {
 	display: flex;
 	flex-direction: row;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	border-radius: 8px;
 }
 
@@ -569,7 +569,7 @@ body {
 }
 
 .scheduleoption:hover {
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 .schedulebutton {
@@ -579,12 +579,12 @@ body {
 	text-align: center;
 	padding: 8px 12px;
 	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
-	background: var(--blue);
+	background-color: var(--blue);
 	cursor: pointer;
 }
 
 .schedulebutton:hover {
-	background: var(--blue-hover);
+	background-color: var(--blue-hover);
 }
 
 
@@ -595,12 +595,12 @@ body {
 	text-align: center;
 	padding: 8px 12px;
 	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	cursor: pointer;
 }
 
 .undobutton:hover {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 
@@ -685,7 +685,7 @@ body {
 }
 
 .alerttext {
-	background: var(--black-transparent-3);
+	background-color: var(--black-transparent-3);
 	pointer-events: none;
 }
 
@@ -700,14 +700,14 @@ body {
 	height: 1px;
 	flex-basis: auto;
 	flex-shrink: 0;
-	background: var(--text-tertiary);
+	background-color: var(--text-tertiary);
 }
 
 .verticalbar {
 	width: 1px;
 	flex-basis: auto;
 	flex-shrink: 0;
-	background: var(--text-tertiary);
+	background-color: var(--text-tertiary);
 }
 
 .helpmenu {
@@ -720,7 +720,7 @@ body {
 	position: absolute;
 	z-index: 300;
 	border-radius: 8px;
-	background: var(--background-primary-transparent);
+	background-color: var(--background-primary-transparent);
 	backdrop-filter: blur(30px);
 	-webkit-backdrop-filter: blur(30px);
 	display: flex;
@@ -739,7 +739,7 @@ body {
 }
 
 .helpitem:hover {
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 
@@ -762,20 +762,20 @@ body {
 	padding-bottom: 8px;
 	padding-left: 12px;
 	padding-right: 12px;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 .welcomepopupbutton:hover {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 .bluebutton {
-	background: var(--blue) !important;
+	background-color: var(--blue) !important;
 	color: var(--white);
 }
 
 .bluebutton:hover {
-	background: var(--blue-hover) !important;
+	background-color: var(--blue-hover) !important;
 }
 
 .greyedoutevent {
@@ -788,11 +788,11 @@ body {
 }
 
 .blackbackground{
-	background: var(--black-transparent-2);
+	background-color: var(--black-transparent-2);
 }
 
 .settingsscreen {
-	background: var(--black-transparent-2);
+	background-color: var(--black-transparent-2);
 	transition: opacity 0.2s, visibility 0.2s;
 	position: absolute;
 	width: 100%;
@@ -864,7 +864,7 @@ body {
 
 .loader {
 	height: 6px;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	overflow: hidden;
 	position: relative;
 	border-radius: 1000px;
@@ -878,12 +878,12 @@ body {
 	width: 100%;
 	height: 100%;
 	border-radius: 1000px;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	animation: loaderanimation 1.5s linear infinite;
 }
 
 .loaderred:before {
-	background: red;
+	background-color: red;
 }
 
 @keyframes loaderanimation {
@@ -900,7 +900,7 @@ body {
 
 .manualloader {
 	height: 6px;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	overflow: hidden;
 	position: relative;
 	border-radius: 1000px;
@@ -914,7 +914,7 @@ body {
 	width: 100%;
 	height: 100%;
 	border-radius: 1000px;
-	background: var(--blue);
+	background-color: var(--blue);
 }
 
 
@@ -1233,10 +1233,10 @@ body {
 	animation-iteration-count: infinite;
 	animation-timing-function: ease-in-out;
 	opacity: 1;
-	background:var(--red) !important
+	background-color:var(--red) !important
 }
 .recognitionredanimation:hover{
-	background:var(--red-hover) !important
+	background-color:var(--red-hover) !important
 }
 .recognitionredanimation svg{
 	fill:var(--white) !important;
@@ -1282,7 +1282,7 @@ body {
 	padding-top: 4px;
 	padding-bottom: 4px;
 	border-radius: 8px;
-	background: var(--blue);
+	background-color: var(--blue);
 	color: var(--white);
 	font-size: 14px;
 	height: fit-content;
@@ -1303,14 +1303,14 @@ body {
 	gap: 6px;
 	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
 	border-radius: 8px;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	padding-left: 12px;
 	padding-right: 12px;
 	cursor: pointer;
 }
 
 .todofilterbutton:hover {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 .notificationslist {
@@ -1329,7 +1329,7 @@ body {
 }
 
 .notificationitem:hover {
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 .notificationitemtitle {
@@ -1371,7 +1371,7 @@ body {
 
 
 .quickeventevent {
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	border-radius: 8px;
 }
 
@@ -1391,7 +1391,7 @@ body {
 }
 
 .dragtodohighlight {
-	background: var(--blue-transparent);
+	background-color: var(--blue-transparent);
 	border: 2px solid var(--blue);
 	border-radius: 8px;
 	transition: opacity 0.2s, visibility 0.2s;
@@ -1434,7 +1434,7 @@ body {
 
 .schedulingscreenbackground {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s;
-	background: var(--purple-transparent);
+	background-color: var(--purple-transparent);
 	box-sizing: border-box;
 	border-radius: 8px;
 	border: 2px solid var(--purple);
@@ -1617,7 +1617,7 @@ body {
 	height: fit-content;
 	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
 	border-radius: 8px;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	color: var(--text-primary);
 	font-size: 14px;
 	padding: 8px 12px;
@@ -1627,14 +1627,14 @@ body {
 }
 
 .todoitembutton:hover {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 .todobigbutton {
 	flex: 1;
 	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
 	border-radius: 8px;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	padding: 12px;
 	cursor: pointer;
 	gap: 12px;
@@ -1643,7 +1643,7 @@ body {
 }
 
 .todobigbutton:hover {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 .todobuttongroup {
@@ -1674,21 +1674,21 @@ body {
 
 
 .bluebutton {
-	background: var(--blue) !important;
+	background-color: var(--blue) !important;
 	color: var(--white) !important;
 }
 
 .bluebutton:hover {
-	background: var(--blue-hover) !important;
+	background-color: var(--blue-hover) !important;
 }
 
 .redbutton {
-	background: var(--red) !important;
+	background-color: var(--red) !important;
 	color: var(--white) !important;
 }
 
 .redbutton:hover {
-	background: var(--red-hover) !important;
+	background-color: var(--red-hover) !important;
 }
 
 
@@ -1730,7 +1730,7 @@ body {
 
 .focuswrap {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s;
-	background: var(--background-primary-home)
+	background-color: var(--background-primary-home)
 }
 
 .summarywrap {
@@ -1739,7 +1739,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	overflow-y: auto;
-	background: var(--background-primary);
+	background-color: var(--background-primary);
 }
 
 .summarycontainer {
@@ -1774,7 +1774,7 @@ body {
 	flex: 1;
 	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
 	border-radius: 8px;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	padding: 12px;
 	cursor: pointer;
 	gap: 12px;
@@ -1785,7 +1785,7 @@ body {
 }
 
 .summaryrowbutton:hover {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 .summarycolumn {
@@ -1873,12 +1873,12 @@ body {
 .lineprogressbar {
 	overflow: hidden;
 	position: relative;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	border-radius: 50vh;
 }
 
 .lineprogressbarchild {
-	background: var(--blue);
+	background-color: var(--blue);
 	height: 24px;
 	border-radius: 50vh;
 }
@@ -2003,18 +2003,18 @@ body {
 	flex-direction: row;
 	flex: 0;
 	border-radius: 8px;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	height: fit-content;
 }
 
 
 .whitebackgroundbutton {
-	background: var(--white);
+	background-color: var(--white);
 	color: var(--black);
 }
 
 .whitebackgroundbutton:hover {
-	background: var(--white-hover);
+	background-color: var(--white-hover);
 }
 
 .calendarsplash {
@@ -2031,15 +2031,15 @@ body {
 }
 
 .modeoptionbutton:hover {
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 .topbarmodechild:hover {
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 .topbarmodechild:active {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 .topbarmodechild {
@@ -2055,7 +2055,7 @@ body {
 }
 
 .selectedbutton {
-	background: var(--blue) !important;
+	background-color: var(--blue) !important;
 	color: var(--white) !important;
 }
 
@@ -2078,7 +2078,7 @@ body {
 	width: 0;
 	left: 50%;
 	bottom: 0;
-	background: var(--blue);
+	background-color: var(--blue);
 	border-radius:99px;
 }
 
@@ -2089,7 +2089,7 @@ body {
 
 
 .selectedbuttongrey{
-	background:var(--background-tint-2) !important;
+	background-color:var(--background-tint-2) !important;
 }
 
 
@@ -2132,11 +2132,11 @@ body {
 }
 
 .topbarbutton:hover {
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 .topbarbutton:active {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 .topbarbuttontext {
@@ -2156,11 +2156,11 @@ body {
 }
 
 .topbarbuttontext:hover {
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 .topbarbuttontext:active {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 .topbarbuttontextfill {
@@ -2175,11 +2175,11 @@ body {
 	cursor: pointer;
 	height: fit-content;
 	white-space: nowrap;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 .topbarbuttontextfill:hover {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 .navtitle {
@@ -2236,7 +2236,7 @@ body {
 }
 
 .hovertopbarchild:hover {
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 .topbarchildtext {
@@ -2257,7 +2257,7 @@ body {
 }
 
 .highlightdate {
-	background: var(--blue);
+	background-color: var(--blue);
 	color: var(--white);
 	border-radius: 1000px;
 	padding: 0px 6px;
@@ -2353,7 +2353,7 @@ body {
 	flex-direction: column;
 	overflow-y: auto;
 	overflow-x:hidden;
-	background: var(--background-primary)
+	background-color: var(--background-primary)
 }
 
 .todowrap {
@@ -2382,7 +2382,7 @@ body {
 	position: absolute;
 	z-index: 101;
 	border-radius: 8px;
-	background: var(--background-primary-transparent);
+	background-color: var(--background-primary-transparent);
 	backdrop-filter: blur(30px);
 	-webkit-backdrop-filter: blur(30px);
 	display: flex;
@@ -2472,11 +2472,11 @@ body {
 }
 
 .infotopright:hover {
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 .infotopright:active {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 
@@ -2500,7 +2500,7 @@ body {
 	overflow-x: auto;
 	display: flex;
 	flex-direction: row;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	border-radius: 8px;
 	flex: 1;
 }
@@ -2521,14 +2521,14 @@ body {
 }
 
 .inputeventtypechild:hover {
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 .inputgroupitem {
 	position: relative;
 	display: flex;
 	overflow: hidden;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	border-radius: 8px;
 }
 
@@ -2536,7 +2536,7 @@ body {
 
 .picker {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s, opacity 0.2s, visibility 0.2s;
-	background: var(--background-primary-transparent);
+	background-color: var(--background-primary-transparent);
 }
 
 
@@ -2549,7 +2549,7 @@ body {
 	padding-right: 12px;
 	color: var(--text-primary);
 	font-size: 14px;
-	background: transparent;
+	background-color: transparent;
 	flex: 1;
 	margin: 0;
 	border: none;
@@ -2559,7 +2559,7 @@ body {
 }
 
 .infoinput:hover {
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 
@@ -2583,7 +2583,7 @@ body {
 	width: 0;
 	left: 50%;
 	bottom: 0;
-	background: var(--blue);
+	background-color: var(--blue);
 }
 
 .infoinput:focus~.inputline {
@@ -2607,11 +2607,11 @@ body {
 	white-space:nowrap;
 }
 .addtaskbackground{
-	background:var(--background-primary) !important;
+	background-color:var(--background-primary) !important;
 }
 
 .nobackground {
-	background: transparent !important;
+	background-color: transparent !important;
 }
 
 
@@ -2681,7 +2681,7 @@ body {
 }
 
 .devtext > :nth-child(even){
-	background:var(--background-tint-1)
+	background-color:var(--background-tint-1)
 }
 
 
@@ -2702,7 +2702,7 @@ body {
 
 .repeatchild {
 	text-align: center;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	flex: 1;
 	padding-left: 6px;
 	padding-right: 6px;
@@ -2716,7 +2716,7 @@ body {
 }
 
 .repeatchild:hover {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 .eventcolorgroup {
@@ -2754,44 +2754,44 @@ body {
 }
 
 .redbackgroundtransparent {
-	background: var(--red-transparent);
+	background-color: var(--red-transparent);
 }
 
 .orangebackgroundtransparent {
-	background: var(--orange-transparent);
+	background-color: var(--orange-transparent);
 }
 
 .greenbackgroundtransparent {
-	background: var(--green-transparent);
+	background-color: var(--green-transparent);
 }
 
 .bluebackgroundtransparent {
-	background: var(--blue-transparent);
+	background-color: var(--blue-transparent);
 }
 
 .purplebackgroundtransparent {
-	background: var(--purple-transparent);
+	background-color: var(--purple-transparent);
 }
 
 
 .redbackground {
-	background: var(--red) !important;
+	background-color: var(--red) !important;
 }
 
 .orangebackground {
-	background: var(--orange) !important;
+	background-color: var(--orange) !important;
 }
 
 .greenbackground {
-	background: var(--green) !important;
+	background-color: var(--green) !important;
 }
 
 .bluebackground {
-	background: var(--blue) !important;
+	background-color: var(--blue) !important;
 }
 
 .purplebackground {
-	background: var(--purple) !important;
+	background-color: var(--purple) !important;
 }
 
 
@@ -2828,7 +2828,7 @@ body {
 .sleepborder {
 	pointer-events: none;
 	box-sizing: border-box;
-	background: #3400b833;
+	background-color: #3400b833;
 	height: 100%;
 }
 
@@ -2916,7 +2916,7 @@ body {
 .realbardisplay {
 	height: 1px;
 	top: -0.5px;
-	background: var(--red);
+	background-color: var(--red);
 	pointer-events: none;
 	border-radius: 1px;
 	position: absolute;
@@ -2930,7 +2930,7 @@ body {
 }
 
 .monthdate:hover {
-	background: var(--background-tint-1)
+	background-color: var(--background-tint-1)
 }
 
 .monthscreens {
@@ -3103,7 +3103,7 @@ body {
 }
 
 .listbuttonselected {
-	background: var(--blue) !important;
+	background-color: var(--blue) !important;
 }
 
 .listbuttonselected .listbuttontext {
@@ -3123,7 +3123,7 @@ body {
 	flex: 1;
 	cursor: pointer;
 	border-radius: 8px;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -3131,7 +3131,7 @@ body {
 }
 
 .listbutton:hover {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 .listbuttontext {
@@ -3173,12 +3173,12 @@ body {
 	border-radius: 8px;
 	display: flex;
 	flex-direction: row;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	align-items: center;
 }
 
 .listwrap:hover {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 .listadditem {
@@ -3193,7 +3193,7 @@ body {
 	border-radius: 8px;
 	display: flex;
 	flex-direction: row;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 .listadditemgroup2 {
@@ -3207,7 +3207,7 @@ body {
 .listadditembutton {
 	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
 	cursor: pointer;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	border-radius: 8px;
 	color: var(--text-primary);
 	font-size: 14px;
@@ -3218,7 +3218,7 @@ body {
 }
 
 .listadditembutton:hover {
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 }
 
 
@@ -3230,7 +3230,7 @@ body {
 	flex-basis: auto;
 	height: 1px;
 	border-radius: 1px;
-	background: var(--red);
+	background-color: var(--red);
 	pointer-events: none;
 	flex-shrink: 0;
 }
@@ -3458,7 +3458,7 @@ body {
 .completedtext.background-orange,
 .completedtext.background-red,
 .completedtext.background-tint-1 {
-    background: transparent !important;
+    background-color: transparent !important;
 	padding:0 !important;
 }
 
@@ -3503,7 +3503,7 @@ body {
 }
 
 .whitebackground{
-	background: var(--white);
+	background-color: var(--white);
 }
 
 .logopng{
@@ -3637,7 +3637,7 @@ body {
 	right: 0;
 	left: 0;
 	display: none;
-	background: var(--orange);
+	background-color: var(--orange);
 	overflow: hidden;
 	border-radius: 1000px;
 	padding: 0px 6px;
@@ -3672,7 +3672,7 @@ body {
 	display: block;
 	position: absolute;
 	border-radius: 8px;
-	background: var(--background-primary);
+	background-color: var(--background-primary);
 	box-shadow: 0 0 40px 0px var(--black-transparent);
 	color: var(--text-primary);
 	padding-left: 12px;
@@ -3718,7 +3718,7 @@ body {
 	display: block;
 	position: absolute;
 	border-radius: 8px;
-	background: var(--background-primary);
+	background-color: var(--background-primary);
 	box-shadow: 0 0 40px 0px var(--black-transparent);
 	color: var(--text-primary);
 	padding-left: 12px;
@@ -3761,7 +3761,7 @@ body {
 	display: block;
 	position: absolute;
 	border-radius: 8px;
-	background: var(--background-primary);
+	background-color: var(--background-primary);
 	box-shadow: 0 0 40px 0px var(--black-transparent);
 	color: var(--text-primary);
 	padding-left: 12px;
@@ -3804,7 +3804,7 @@ body {
 }
 
 .todoinputhighlight {
-	background: var(--background-blue-transparent);
+	background-color: var(--background-blue-transparent);
 	padding: 4px 6px;
 }
 
@@ -3842,7 +3842,7 @@ body {
 	flex: 1;
 	display: flex;
 	flex-direction: row;
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 	border-radius: 8px;
 }
 
@@ -3857,7 +3857,7 @@ body {
 }
 
 .infoprioritychild:hover {
-	background: var(--background-tint-1);
+	background-color: var(--background-tint-1);
 }
 
 
@@ -3888,7 +3888,7 @@ body {
 	#todopopup,
 	#eventinfo,
 	#createeventpopup {
-		background: var(--background-primary) !important;
+		background-color: var(--background-primary) !important;
 	}
 
 	#todopopup,
@@ -3931,7 +3931,7 @@ body {
 
 
 .darktransparentbackground {
-	background: var(--black-transparent-2);
+	background-color: var(--black-transparent-2);
 }
 
 .hiddenfade {
@@ -4007,7 +4007,7 @@ body {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background: var(--background-tint-2);
+	background-color: var(--background-tint-2);
 	transition: .2s ease;
 }
 
@@ -4019,12 +4019,12 @@ body {
 	width: 18px;
 	left: 2px;
 	bottom: 2px;
-	background: white;
+	background-color: white;
 	transition: .2s ease;
 }
 
 input:checked+.slider {
-	background: var(--green);
+	background-color: var(--green);
 }
 
 input:focus+.slider {

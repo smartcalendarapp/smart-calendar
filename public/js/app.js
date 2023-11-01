@@ -4107,30 +4107,36 @@ function run() {
 	}, 100)
 
 
-	async function gettasksuggestions(){
+	async function gettasksuggestions(inputitem){
 		function getcalculatedweight(tempitem){
 			let currentdate = new Date()
 			let timedifference = new Date(tempitem.endbefore.year, tempitem.endbefore.month, tempitem.endbefore.day, 0, tempitem.endbefore.minute).getTime() - currentdate.getTime()
 			return currentdate.getTime() * (tempitem.priority + 1) / Math.max(timedifference, 1) * tempitem.duration
 		}
 
-		//select eligible todos to get suggestion
-		let suggestabletodos = calendar.todos.filter(d => 
-			calendar.settings.gettasksuggestions == true
-			&&
-			!d.completed && d.duration >= 60 && d.title.length > 3
-			&&
-			!d.gotsubtasksuggestions && d.subtasksuggestions.length == 0 
-			&&
-			new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*7
-			&&
-			!Calendar.Todo.isSubtask(d)
-			&&
-			d.repeat.frequency == null && d.repeat.interval == null
-		).sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
-		if(suggestabletodos.length == 0) return
+		let suggesttodo;
+		if(inputitem){
+			suggesttodo = inputitem
+		}else{
+			//select eligible todos to get suggestion
 
-		let suggesttodo = suggestabletodos[0]
+			let suggestabletodos = calendar.todos.filter(d => 
+				calendar.settings.gettasksuggestions == true
+				&&
+				!d.completed && d.duration >= 60 && d.title.length > 3
+				&&
+				!d.gotsubtasksuggestions && d.subtasksuggestions.length == 0 
+				&&
+				new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*7
+				&&
+				!Calendar.Todo.isSubtask(d)
+				&&
+				d.repeat.frequency == null && d.repeat.interval == null
+			).sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
+			if(suggestabletodos.length == 0) return
+
+			suggesttodo = suggestabletodos[0]
+		}
 
 		try{
 			const response = await fetch('/gettasksuggestions', {
@@ -9674,6 +9680,7 @@ function gettododata(item) {
 				${tempoutput2.join('')}
 			</div>
 			<div class="visibility-hidden hovertodosuggestiongroup small:visibility-visible display-flex flex-row gap-12px justify-flex-end">
+				<div class="text-blue pointer width-fit hover:text-decoration-underline text-14px" onclick="regeneratesubtasksuggestions('${item.id}')">Regenerate</div>
 				<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-14px" onclick="hidesubtasksuggestions('${item.id}')">Hide</div>
 				<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-14px" onclick="turnoffsubtasksuggestions()">Turn off</div>
 			</div>
@@ -9973,6 +9980,20 @@ function clicksubtasksuggestion(id, suggestionid){
 	calendar.todos.push(subtaskitem)
 
 	fixsubandparenttask(subtaskitem)
+
+	calendar.updateTodo()
+	calendar.updateHistory()
+}
+function regeneratesubtasksuggestions(id){
+	let item = [...calendar.todos, ...calendar.events].find(f => f.id == id)
+	if (!item) return
+
+	item.subtasksuggestions = []
+	item.gotsubtasksuggestions = false
+
+	//send request
+	lastgettasksuggestionsdate = Date.now()
+	gettasksuggestions(item)
 
 	calendar.updateTodo()
 	calendar.updateHistory()
@@ -10967,7 +10988,7 @@ function inputtodotitle(event){
 	item.title = event.target.value
 
 	let edittodoinputtitle = getElement('edittodoinputtitle')
-	edittodoinputtitle.value = cleanInput(item.title)
+	edittodoinputtitle.value = item.title
 
 	calendar.updateHistory()
 }
@@ -10979,7 +11000,7 @@ function inputtodonotes(event){
 	item.notes = event.target.value
 
 	let edittodoinputnotes = getElement('edittodoinputnotes')
-	edittodoinputnotes.value = cleanInput(item.notes)
+	edittodoinputnotes.value = item.notes
 
 	calendar.updateHistory()
 }
