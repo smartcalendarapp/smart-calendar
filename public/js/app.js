@@ -7875,7 +7875,7 @@ function fixsubandparenttask(item){
 //fix and update recurring todos
 function fixrecurringtodo(item){
 	if(item.repeat.frequency != null && item.repeat.interval != null){
-		let relatedtodos = sortduedate([item, ...[...calendar.todos, ...calendar.events].filter(d => d.repeatid == item.id || d.repeatid == item.repeatid)])
+		let relatedtodos = sortduedate([item, ...[...calendar.todos, ...calendar.events].filter(d => d.repeatid == item.id || (item.repeatid && d.repeatid == item.repeatid))])
 
 		let originaltodo = [...calendar.todos, ...calendar.events].find(d => item.repeatid ? d.id == item.repeatid : d.id == item.id)
 
