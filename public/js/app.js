@@ -4156,7 +4156,7 @@ function geteventsuggestion(){
 		&&
 		new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*7
 		&&
-		!Calendar.Todo.isParent(d)
+		!Calendar.Todo.isMainTask(d)
 	).sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
 	if(suggestabletodos.length == 0) return
 
@@ -4169,15 +4169,17 @@ function geteventsuggestion(){
 	for(todoitem of suggesttodos){
 		let eventitem = geteventfromtodo(todoitem)
 		eventitem.iseventsuggestion = true
+		eventitem.id = generateID()
 
 		todoitem.eventsuggestionid = eventitem.id
+		todoitem.goteventsuggestion = true
 
 		newevents.push(eventitem)
 	}
 
 	calendar.events.push(...newevents)
 
-	startAutoSchedule({eventsuggestiontodos: newevents})
+	startAutoSchedule({scheduletodos: [], eventsuggestiontodos: newevents})
 }
 //here2
 
@@ -4247,13 +4249,15 @@ function run() {
 		}
 	}, 1000)
 
-	lastgeteventsuggestiondate = Date.now()
-	setInterval(async function(){
-		if(document.visibilityState === 'visible' && Date.now() - lastgeteventsuggestiondate > 10000){
-			lastgeteventsuggestiondate = Date.now()
-			geteventsuggestion()
-		}
-	}, 10000)
+	if(clientinfo.betatester){
+		lastgeteventsuggestiondate = Date.now()
+		setInterval(async function(){
+			if(document.visibilityState === 'visible' && Date.now() - lastgeteventsuggestiondate > 10000){
+				lastgeteventsuggestiondate = Date.now()
+				geteventsuggestion()
+			}
+		}, 10000)
+	}
 	//here2
 
 
@@ -9675,6 +9679,7 @@ function submitcreatetodo(event) {
 
 //get todo data
 function gettododata(item) {
+	console.log(!item.start ? item : '')
 	let itemclasses = []
 
 	if (item.completed) {
@@ -9718,7 +9723,7 @@ function gettododata(item) {
 			let d = item.subtasksuggestions[i]
 
 			tempoutput.push(`<div class="min-width-160px flex-1 white-space-normal break-word suggestionborder display-flex gap-4px border-box transition-duration-100 flex-column padding-8px-12px pointer hover:background-tint-1 border-8px" onclick="clicksubtasksuggestion('${item.id}', '${d.id}')">
-				<span class="text-12px text-purple">AI suggestion:</span>
+				<span class="text-12px nowrap text-purple">AI suggestion:</span>
 				<span class="text-bold text-bold text-14px text-primary">${d.title} <span class="text-quaternary">- ${getDHMText(d.duration)}</span></span>
 			</div>`)
 
@@ -12530,7 +12535,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 
 
 	//initialize
-	if(eventsuggestiontodos.length > 0){
+	if(eventsuggestiontodos && eventsuggestiontodos.length > 0){
 		smartevents = [...eventsuggestiontodos]
 	}
 	let iteratedevents = getiteratedevents()
