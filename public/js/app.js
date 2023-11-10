@@ -10795,7 +10795,7 @@ function gototaskincalendar(id){
 
 
 //accept event suggestion
-function accepteventsuggestion(id){
+function accepteventsuggestion(event, id){
 	let item = [...calendar.events].find(x => x.id == id)
 	if (!item) return
 
@@ -10805,6 +10805,28 @@ function accepteventsuggestion(id){
 	calendar.updateEvents()
 	calendar.updateHistory()
 	calendar.updateInfo()
+
+	let confetticanvas = getElement('confetticanvas')
+		let myconfetti = confetti.create(confetticanvas, {
+			resize: true,
+			useWorker: true
+		})
+
+		await myconfetti({
+			particleCount: 20,
+			gravity: 0.75,
+			startVelocity: 15,
+			decay: 0.94,
+			ticks: 100,
+			origin: {
+				x: (event.clientX) / (window.innerWidth || document.body.clientWidth),
+				y: (event.clientY) / (window.innerHeight || document.body.clientHeight)
+			}
+		})
+
+		try{
+			myconfetti.reset()
+		}catch(e){}
 }
 //here5
 
@@ -11674,7 +11696,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 	let aisuggestiontext = item.iseventsuggestion ? `
 	<span class="display-inline-flex pointer-auto gap-6px">
 		<span class="border-8px background-purple text-white nowrap badgepadding text-12px text-bold">AI Suggestion</span>
-		<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="accepteventsuggestion('${item.id}')">Accept</div>
+		<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
 		<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
 	</span>` : ''
 
@@ -11691,14 +11713,6 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
 				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
-					
-					${item.iseventsuggestion ? `
-					<span class="display-inline-flex pointer-auto gap-6px">
-						<span class="border-8px background-purple nowrap text-white badgepadding text-12px text-bold">AI Suggestion</span>
-						<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="accepteventsuggestion('${item.id}')">Accept</div>
-						<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
-					</span>
-					${myheight < 45 ? ' ' : '</br>'}` : ''}
 
 					${item.type == 1 ? 
 						`<span class="todoitemcheckbox tooltip checkcircletop">
@@ -11817,7 +11831,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	let aisuggestiontext = item.iseventsuggestion ? `
 	<span class="display-inline-flex pointer-auto gap-6px">
 		<span class="border-8px background-purple text-white nowrap badgepadding text-12px text-bold">AI Suggestion</span>
-		<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="accepteventsuggestion('${item.id}')">Accept</div>
+		<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
 		<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
 	</span>` : ''
 
@@ -12391,269 +12405,26 @@ let animatenextitem;
 let isautoscheduling = false;
 let rescheduletaskfunction;
 async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eventsuggestiontodos}) {
-	//functions
-	function sleep(time) {
-		return new Promise(resolve => {
-			setTimeout(resolve, time)
-		})
-	}
-
-	function fixconflict(item, conflictitem, spacing = 0) {
-		let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
-		//get penetration
-		let differenceA = Math.abs(new Date(conflictitem.end.year, conflictitem.end.month, conflictitem.end.day, 0, conflictitem.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))
-		let differenceB = Math.abs(new Date(conflictitem.start.year, conflictitem.start.month, conflictitem.start.day, 0, conflictitem.start.minute).getTime() - new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute))
-
-		let penetration = Math.min(differenceA, differenceB) + spacing
-
-		//move time
-		let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-		startdate.setTime(startdate.getTime() + penetration)
-		startdate.setMinutes(ceil(startdate.getMinutes(), 5))
-		let enddate = new Date(startdate.getTime() + duration)
-
-		item.start.year = startdate.getFullYear()
-		item.start.month = startdate.getMonth()
-		item.start.day = startdate.getDate()
-		item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
-
-		item.end.year = enddate.getFullYear()
-		item.end.month = enddate.getMonth()
-		item.end.day = enddate.getDate()
-		item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
-	}
-
-
-	function getbreaktime(item) {
-		let eventspacingratio = calendar.settings.eventspacing / 60
-		if(isNaN(eventspacingratio)){
-			eventspacingratio = 15
+	try{
+		//functions
+		function sleep(time) {
+			return new Promise(resolve => {
+				setTimeout(resolve, time)
+			})
 		}
 
-		let duration = (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
-		return Math.min(Math.max(round(duration * eventspacingratio, 60000 * 5), 60000 * 5), 60 * 60000)
-		
-	  }
-	  
-
-	function getconflictingevent(data, item1) {
-		let sortdata = data.sort((a, b) => {
-			return new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime() - new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime()
-		})
-
-		
-		for (let item2 of sortdata) {
-			if (item1.id == item2.id || Calendar.Event.isAllDay(item2)) continue
-			let tempstartdate1 = new Date(item1.start.year, item1.start.month, item1.start.day, 0, item1.start.minute)
-			let tempenddate1 = new Date(item1.end.year, item1.end.month, item1.end.day, 0, item1.end.minute)
-
-			let tempstartdate2 = new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute)
-			let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
-
-			let spacing = getbreaktime(item2)
-
-			if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
-				return [item2, spacing]
-			}
-		}
-
-		return null
-	}
-
-
-	function isoutofrange(item) {
-		let startafterdate = new Date()
-		startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
-
-		let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-		let enddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
-
-		return getavailabletime(item, startdate, enddate).length != 1
-	}
-
-	function fixrange(item) {
-		let startafterdate = new Date()
-		startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
-		let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
-		if (endbeforedate.getTime() < startafterdate.getTime()) {
-			endbeforedate.setTime(startafterdate.getTime())
-		}
-
-		let oldstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-		let oldenddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
-		let duration = oldenddate.getTime() - oldstartdate.getTime()
-
-		let nextdate = new Date(oldstartdate)
-		nextdate.setDate(nextdate.getDate() + 30) //check for openings 1 month in future
-
-		function moveitemto(starttimestamp) {
-			let temprangestart = new Date(starttimestamp)
-			let temprangeend = new Date(temprangestart)
-			temprangeend.setTime(temprangeend.getTime() + duration)
-
-			item.start.year = temprangestart.getFullYear()
-			item.start.month = temprangestart.getMonth()
-			item.start.day = temprangestart.getDate()
-			item.start.minute = temprangestart.getHours() * 60 + temprangestart.getMinutes()
-
-			item.end.year = temprangeend.getFullYear()
-			item.end.month = temprangeend.getMonth()
-			item.end.day = temprangeend.getDate()
-			item.end.minute = temprangeend.getHours() * 60 + temprangeend.getMinutes()
-		}
-
-		let availabletime = getavailabletime(item, oldstartdate, nextdate)
-
-		if (availabletime[0]) {
-			let rangeindex = 0
-			let finalrangeindex = 0
-			for (let range of availabletime) {
-				if (oldstartdate.getTime() <= range.end && oldstartdate.getTime() >= range.start) {
-					finalrangeindex = rangeindex + 1
-					break
-				}
-				rangeindex++
-			}
-
-			rangeindex = Math.min(finalrangeindex, availabletime.length - 1)
-			let myrange = availabletime[rangeindex]
-
-			moveitemto(myrange.start)
-		}
-	}
-
-	function getcalculatedpriority(tempitem) {
-		let currentdate = new Date()
-		let timedifference = new Date(tempitem.endbefore.year, tempitem.endbefore.month, tempitem.endbefore.day, 0, tempitem.endbefore.minute).getTime() - currentdate.getTime()
-		return currentdate.getTime() * (tempitem.priority + 1) / Math.max(timedifference, 1)
-	}
-
-
-	//============================================================================
-
-
-	if (isautoscheduling == true && resolvedpassedtodos.length == 0) return
-	isautoscheduling = true
-
-
-	//stats
-	const autoschedulestats = {}
-	const startautoscheduleprocess = performance.now()
-
-
-	//initialize
-	if(eventsuggestiontodos && eventsuggestiontodos.length > 0){
-		smartevents = [...eventsuggestiontodos]
-	}
-	let iteratedevents = getiteratedevents()
-	let oldsmartevents = deepCopy(smartevents)
-	let oldcalendarevents = deepCopy(calendar.events)
-
-	smartevents = smartevents.filter(d => Calendar.Event.isSchedulable(d)).sort((a, b) => {
-		return getcalculatedpriority(b) - getcalculatedpriority(a)
-	})
-
-
-	//check for todos that are currently being done - don't reschedule first one
-	let doingtodos = sortstartdate(smartevents).filter(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now() && !getconflictingevent(iteratedevents, d))
-	if(doingtodos[0]){
-		smartevents = smartevents.filter(d => d.id != doingtodos[0].id)
-	}
-
-
-	//check for todos that haven't been done - ask to reschedule them
-	let passedtodos = smartevents.filter(d => (!eventsuggestiontodos || !eventsuggestiontodos.find(g => g.id == d.id)) && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() <= Date.now())
-	if(resolvedpassedtodos){
-		passedtodos = passedtodos.filter(d => !resolvedpassedtodos.find(f => f == d.id))
-	}
-	
-	if(passedtodos.length > 0){
-		let overdueitem = passedtodos[0]
-
-		rescheduletaskfunction = async function(complete){
-			let tempitem = calendar.events.find(d => d.id == overdueitem.id)
-
-			if(complete){
-				if(tempitem){
-					tempitem.completed = true
-					calendar.updateTodo()
-				}
-				calendar.updateEvents()
-			}
-
-			let rescheduletaskpopup = getElement('rescheduletaskpopup')
-			rescheduletaskpopup.classList.add('hiddenpopup')
-
-			let newresolvedpassedtodos = resolvedpassedtodos || []
-
-			newresolvedpassedtodos.push(overdueitem.id)
-
-			await sleep(300)
-
-			autoScheduleV2({smartevents: smartevents, addedtodos: addedtodos, resolvedpassedtodos: newresolvedpassedtodos})
-		}
-
-		//show popup
-		let rescheduletaskpopuptext = getElement('rescheduletaskpopuptext')
-		rescheduletaskpopuptext.innerHTML = `We want to keep your schedule up-to-date.<br>Have you completed <span class="text-bold">${Calendar.Event.getTitle(overdueitem)}</span>?`
-
-		let rescheduletaskpopupbuttons = getElement('rescheduletaskpopupbuttons')
-		rescheduletaskpopupbuttons.innerHTML = `
-			<div class="border-8px background-tint-1 hover:background-tint-2 padding-8px-12px text-primary text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction()">No, reschedule it</div>
-			<div class="border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction(true)">Yes, mark completed</div>`
-
-		let rescheduletaskpopup = getElement('rescheduletaskpopup')
-		rescheduletaskpopup.classList.remove('hiddenpopup')
-		return
-	}
-
-	//start
-	if (true) {
-		//SMART FOCUS
-
-		//set to best time
-		for(let item of smartevents){
-			let startafterdate = new Date()
-			startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
-
-			//repeat task scheduling
-			//move repeat to start after last repeat is due
-			if(item.repeatid){
-				let relatedtodos = sortduedate([...calendar.events, ...calendar.todos].filter(d => d.repeatid == item.repeatid || d.id == item.repeatid))
-				let currentindex = relatedtodos.findIndex(d => d.id == item.id)
-				if(currentindex > 0){
-					let previoustodo = relatedtodos[currentindex - 1]
-					startafterdate = new Date(previoustodo.endbefore.year, previoustodo.endbefore.month, previoustodo.endbefore.day, 0, previoustodo.endbefore.minute)
-				}
-			}
-
-
-			let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
-			if (endbeforedate.getTime() < startafterdate.getTime()) {
-				endbeforedate.setTime(startafterdate.getTime())
-			}
-
+		function fixconflict(item, conflictitem, spacing = 0) {
 			let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
+			//get penetration
+			let differenceA = Math.abs(new Date(conflictitem.end.year, conflictitem.end.month, conflictitem.end.day, 0, conflictitem.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))
+			let differenceB = Math.abs(new Date(conflictitem.start.year, conflictitem.start.month, conflictitem.start.day, 0, conflictitem.start.minute).getTime() - new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute))
 
+			let penetration = Math.min(differenceA, differenceB) + spacing
 
-			//subtask scheduling
-			let percentrange = 0.4 //default schedule at 40% of range
-			let parent = Calendar.Event.getMainTask(item)
-			if(parent){
-				let scheduledchildren = Calendar.Event.getSubtasks(parent).filter(d => Calendar.Event.isEvent(item))
-				let childindex = scheduledchildren.findIndex(d => d.id == item.id)
-				if(childindex != -1){
-					percentrange = (1 + childindex)/Calendar.Event.getSubtasks(Calendar.Event.getMainTask(item)).length * 0.9 //evenly space out sub tasks, finish by 90% of range
-				}
-			}
-
-			let daystartafterdate = new Date(startafterdate)
-			daystartafterdate.setHours(0,0,0,0)
-			let dayindex = Math.floor((endbeforedate.getTime() - daystartafterdate.getTime()) * percentrange / 86400000)
-
-			let startdate = new Date(daystartafterdate.getTime())
-			startdate.setDate(startdate.getDate() + dayindex)
-			startdate.setTime(Math.max(startdate.getTime(), startafterdate.getTime()))
+			//move time
+			let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+			startdate.setTime(startdate.getTime() + penetration)
+			startdate.setMinutes(ceil(startdate.getMinutes(), 5))
 			let enddate = new Date(startdate.getTime() + duration)
 
 			item.start.year = startdate.getFullYear()
@@ -12668,184 +12439,261 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 		}
 
 
-		//fix conflicts
-		let donesmartevents = []
-		smartevents = smartevents.sort((a, b) => {
+		function getbreaktime(item) {
+			let eventspacingratio = calendar.settings.eventspacing / 60
+			if(isNaN(eventspacingratio)){
+				eventspacingratio = 15
+			}
+
+			let duration = (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
+			return Math.min(Math.max(round(duration * eventspacingratio, 60000 * 5), 60000 * 5), 60 * 60000)
+			
+		}
+		
+
+		function getconflictingevent(data, item1) {
+			let sortdata = data.sort((a, b) => {
+				return new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime() - new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime()
+			})
+
+			
+			for (let item2 of sortdata) {
+				if (item1.id == item2.id || Calendar.Event.isAllDay(item2)) continue
+				let tempstartdate1 = new Date(item1.start.year, item1.start.month, item1.start.day, 0, item1.start.minute)
+				let tempenddate1 = new Date(item1.end.year, item1.end.month, item1.end.day, 0, item1.end.minute)
+
+				let tempstartdate2 = new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute)
+				let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
+
+				let spacing = getbreaktime(item2)
+
+				if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
+					return [item2, spacing]
+				}
+			}
+
+			return null
+		}
+
+
+		function isoutofrange(item) {
+			let startafterdate = new Date()
+			startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
+
+			let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+			let enddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
+
+			return getavailabletime(item, startdate, enddate).length != 1
+		}
+
+		function fixrange(item) {
+			let startafterdate = new Date()
+			startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
+			let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
+			if (endbeforedate.getTime() < startafterdate.getTime()) {
+				endbeforedate.setTime(startafterdate.getTime())
+			}
+
+			let oldstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+			let oldenddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
+			let duration = oldenddate.getTime() - oldstartdate.getTime()
+
+			let nextdate = new Date(oldstartdate)
+			nextdate.setDate(nextdate.getDate() + 30) //check for openings 1 month in future
+
+			function moveitemto(starttimestamp) {
+				let temprangestart = new Date(starttimestamp)
+				let temprangeend = new Date(temprangestart)
+				temprangeend.setTime(temprangeend.getTime() + duration)
+
+				item.start.year = temprangestart.getFullYear()
+				item.start.month = temprangestart.getMonth()
+				item.start.day = temprangestart.getDate()
+				item.start.minute = temprangestart.getHours() * 60 + temprangestart.getMinutes()
+
+				item.end.year = temprangeend.getFullYear()
+				item.end.month = temprangeend.getMonth()
+				item.end.day = temprangeend.getDate()
+				item.end.minute = temprangeend.getHours() * 60 + temprangeend.getMinutes()
+			}
+
+			let availabletime = getavailabletime(item, oldstartdate, nextdate)
+
+			if (availabletime[0]) {
+				let rangeindex = 0
+				let finalrangeindex = 0
+				for (let range of availabletime) {
+					if (oldstartdate.getTime() <= range.end && oldstartdate.getTime() >= range.start) {
+						finalrangeindex = rangeindex + 1
+						break
+					}
+					rangeindex++
+				}
+
+				rangeindex = Math.min(finalrangeindex, availabletime.length - 1)
+				let myrange = availabletime[rangeindex]
+
+				moveitemto(myrange.start)
+			}
+		}
+
+		function getcalculatedpriority(tempitem) {
+			let currentdate = new Date()
+			let timedifference = new Date(tempitem.endbefore.year, tempitem.endbefore.month, tempitem.endbefore.day, 0, tempitem.endbefore.minute).getTime() - currentdate.getTime()
+			return currentdate.getTime() * (tempitem.priority + 1) / Math.max(timedifference, 1)
+		}
+
+
+		//============================================================================
+
+
+		if (isautoscheduling == true && resolvedpassedtodos.length == 0) return
+		isautoscheduling = true
+
+
+		//stats
+		const autoschedulestats = {}
+		const startautoscheduleprocess = performance.now()
+
+
+		//initialize
+		if(eventsuggestiontodos && eventsuggestiontodos.length > 0){
+			smartevents = [...eventsuggestiontodos]
+		}
+		let alleventsuggestiontodos = calendar.todos.filter(d => d.iseventsuggestion)
+		for(let tempitem of alleventsuggestiontodos){
+			let todoitem = calendar.todos.find(g => g.eventsuggestionid == tempitem.id)
+			if(!todoitem) continue
+
+			let startdate = new Date(tempitem.start.year, tempitem.start.month, tempitem.start.day, 0, tempitem.start.minute)
+			let enddate = new Date(startdate)
+			enddate.setTime(enddate.getTime() + todoitem.duration * 60000)
+
+			tempitem = geteventfromtodo(todoitem)
+			tempitem.iseventsuggestion = true
+			tempitem.id = todoitem.eventsuggestionid
+
+			tempitem.start.year = startdate.getFullYear()
+			tempitem.start.month = startdate.getMonth()
+			tempitem.start.day = startdate.getDate()
+			tempitem.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+
+			tempitem.end.year = enddate.getFullYear()
+			tempitem.end.month = enddate.getMonth()
+			tempitem.end.day = enddate.getDate()
+			tempitem.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+		}
+
+		let iteratedevents = getiteratedevents()
+		let oldsmartevents = deepCopy(smartevents)
+		let oldcalendarevents = deepCopy(calendar.events)
+
+		smartevents = smartevents.filter(d => Calendar.Event.isSchedulable(d)).sort((a, b) => {
 			return getcalculatedpriority(b) - getcalculatedpriority(a)
 		})
-		for (let item of smartevents) {
-			donesmartevents.push(item)
-
-			let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !smartevents.find(g => g.id == d.id))
 
 
-			//fix conflict
-			let loopindex = 0
-			while (true) {
-				let outofrange = isoutofrange(item)
-				if (outofrange) {
-					fixrange(item)
-				}
-
-
-				let temp = getconflictingevent(tempiteratedevents, item)
-				let conflictitem, spacing;
-				if(temp) [conflictitem, spacing] = temp
-				if (conflictitem) {
-					fixconflict(item, conflictitem, spacing)
-				}
-
-				//exit
-				loopindex++
-				if ((!outofrange && !conflictitem) || loopindex > 1000) {
-					break
-				}
-			}
-
+		//check for todos that are currently being done - don't reschedule first one
+		let doingtodos = sortstartdate(smartevents).filter(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now() && !getconflictingevent(iteratedevents, d))
+		if(doingtodos[0]){
+			smartevents = smartevents.filter(d => d.id != doingtodos[0].id)
 		}
 
 
+		//check for todos that haven't been done - ask to reschedule them
+		let passedtodos = smartevents.filter(d => (!eventsuggestiontodos || !eventsuggestiontodos.find(g => g.id == d.id)) && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() <= Date.now())
+		if(resolvedpassedtodos){
+			passedtodos = passedtodos.filter(d => !resolvedpassedtodos.find(f => f == d.id))
+		}
 		
-		//adjust time
-		/*
-		smartevents = smartevents.sort((a, b) => {
-			return new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime() - new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime()
-		})
-		for(let item of smartevents){
-			let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
+		if(passedtodos.length > 0){
+			let overdueitem = passedtodos[0]
 
-			let startafterdate = new Date()
-			startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
+			rescheduletaskfunction = async function(complete){
+				let tempitem = calendar.events.find(d => d.id == overdueitem.id)
 
-			let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
-			if (endbeforedate.getTime() < startafterdate.getTime()) {
-				endbeforedate.setTime(startafterdate.getTime())
-			}
-
-			let range = endbeforedate.getTime() - startafterdate.getTime()
-
-
-			let freetimes = []
-			let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-			let oldstartdatetime = tempstartdate.getTime()
-			while(tempstartdate.getTime() <= (startafterdate.getTime() + range * 0.4) - duration){ //0.4 is the magic constant
-				let tempenddate = new Date(tempstartdate)
-				tempenddate.setTime(tempenddate.getTime() + duration)
-
-				item.start.year = tempstartdate.getFullYear()
-				item.start.month = tempstartdate.getMonth()
-				item.start.day = tempstartdate.getDate()
-				item.start.minute = tempstartdate.getHours() * 60 + tempstartdate.getMinutes()
-
-				item.end.year = tempenddate.getFullYear()
-				item.end.month = tempenddate.getMonth()
-				item.end.day = tempenddate.getDate()
-				item.end.minute = tempenddate.getHours() * 60 + tempenddate.getMinutes()
-
-				if(!getconflictingevent(iteratedevents, item) && !isoutofrange(item)){
-					freetimes.push(tempstartdate.getTime())
+				if(complete){
+					if(tempitem){
+						tempitem.completed = true
+						calendar.updateTodo()
+					}
+					calendar.updateEvents()
 				}
 
-				tempstartdate.setMinutes(tempstartdate.getMinutes() + 60)
+				let rescheduletaskpopup = getElement('rescheduletaskpopup')
+				rescheduletaskpopup.classList.add('hiddenpopup')
+
+				let newresolvedpassedtodos = resolvedpassedtodos || []
+
+				newresolvedpassedtodos.push(overdueitem.id)
+
+				await sleep(300)
+
+				autoScheduleV2({smartevents: smartevents, addedtodos: addedtodos, resolvedpassedtodos: newresolvedpassedtodos})
 			}
 
-			let lastfreetime = oldstartdatetime
-			if(freetimes.length > 0){
-				lastfreetime = Math.max(...freetimes)
-			}
+			//show popup
+			let rescheduletaskpopuptext = getElement('rescheduletaskpopuptext')
+			rescheduletaskpopuptext.innerHTML = `We want to keep your schedule up-to-date.<br>Have you completed <span class="text-bold">${Calendar.Event.getTitle(overdueitem)}</span>?`
 
+			let rescheduletaskpopupbuttons = getElement('rescheduletaskpopupbuttons')
+			rescheduletaskpopupbuttons.innerHTML = `
+				<div class="border-8px background-tint-1 hover:background-tint-2 padding-8px-12px text-primary text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction()">No, reschedule it</div>
+				<div class="border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction(true)">Yes, mark completed</div>`
 
-			let lastfreestartdate = new Date(lastfreetime)
-			let lastfreeenddate = new Date(lastfreetime + duration)
-			
-			item.start.year = lastfreestartdate.getFullYear()
-			item.start.month = lastfreestartdate.getMonth()
-			item.start.day = lastfreestartdate.getDate()
-			item.start.minute = lastfreestartdate.getHours() * 60 + lastfreestartdate.getMinutes()
-
-			item.end.year = lastfreeenddate.getFullYear()
-			item.end.month = lastfreeenddate.getMonth()
-			item.end.day = lastfreeenddate.getDate()
-			item.end.minute = lastfreeenddate.getHours() * 60 + lastfreeenddate.getMinutes()
+			let rescheduletaskpopup = getElement('rescheduletaskpopup')
+			rescheduletaskpopup.classList.remove('hiddenpopup')
+			return
 		}
-		*/
-	} else if (calendar.smartschedule.mode == 1) {
-		//BALANCED
 
-		//set to specific part of range
-		let priorityindex = 0;
-		for (let item of smartevents) {
-			let startafterdate = new Date()
-			startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
-			let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
-			if (endbeforedate.getTime() < startafterdate.getTime()) {
-				endbeforedate.setTime(startafterdate.getTime())
-			}
+		//start
+		if (true) {
+			//SMART FOCUS
 
+			//set to best time
+			for(let item of smartevents){
+				let startafterdate = new Date()
+				startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
 
-			let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
-
-
-			let availabletime = getavailabletime(item, startafterdate, endbeforedate)
-			let totaltime = 0
-			for (let myrange of availabletime) {
-				totaltime += myrange.end - myrange.start
-			}
-			let percenttime = (totaltime - duration) * priorityindex / (Math.max(smartevents.length - 1), 1)
-
-			let temptime = 0
-			let finaltime = startafterdate.getTime()
-			for (let myrange of availabletime) {
-				let rangeduration = myrange.end - myrange.start
-				temptime += rangeduration
-				if (temptime >= percenttime) {
-					finaltime = myrange.start + (percenttime - (temptime - rangeduration))
-					break
+				//repeat task scheduling
+				//move repeat to start after last repeat is due
+				if(item.repeatid){
+					let relatedtodos = sortduedate([...calendar.events, ...calendar.todos].filter(d => d.repeatid == item.repeatid || d.id == item.repeatid))
+					let currentindex = relatedtodos.findIndex(d => d.id == item.id)
+					if(currentindex > 0){
+						let previoustodo = relatedtodos[currentindex - 1]
+						startafterdate = new Date(previoustodo.endbefore.year, previoustodo.endbefore.month, previoustodo.endbefore.day, 0, previoustodo.endbefore.minute)
+					}
 				}
-			}
 
-			let startdate = new Date(finaltime)
-			startdate.setMinutes(ceil(startdate.getMinutes(), 5))
-			let enddate = new Date(startdate)
-			enddate.setTime(enddate.getTime() + duration)
 
-			item.start.year = startdate.getFullYear()
-			item.start.month = startdate.getMonth()
-			item.start.day = startdate.getDate()
-			item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+				let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
+				if (endbeforedate.getTime() < startafterdate.getTime()) {
+					endbeforedate.setTime(startafterdate.getTime())
+				}
 
-			item.end.year = enddate.getFullYear()
-			item.end.month = enddate.getMonth()
-			item.end.day = enddate.getDate()
-			item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+				let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 
-			priorityindex++
-		}
 
-		//final touch
-		let donesmartevents = []
-		for (let item of smartevents) {
-			donesmartevents.push(item)
+				//subtask scheduling
+				let percentrange = 0.4 //default schedule at 40% of range
+				let parent = Calendar.Event.getMainTask(item)
+				if(parent){
+					let scheduledchildren = Calendar.Event.getSubtasks(parent).filter(d => Calendar.Event.isEvent(item))
+					let childindex = scheduledchildren.findIndex(d => d.id == item.id)
+					if(childindex != -1){
+						percentrange = (1 + childindex)/Calendar.Event.getSubtasks(Calendar.Event.getMainTask(item)).length * 0.9 //evenly space out sub tasks, finish by 90% of range
+					}
+				}
 
-			let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !smartevents.find(g => g.id == d.id))
+				let daystartafterdate = new Date(startafterdate)
+				daystartafterdate.setHours(0,0,0,0)
+				let dayindex = Math.floor((endbeforedate.getTime() - daystartafterdate.getTime()) * percentrange / 86400000)
 
-			//get basic variables
-			let startafterdate = new Date()
-			startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
-			let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
-			if (endbeforedate.getTime() < startafterdate.getTime()) {
-				endbeforedate.setTime(startafterdate.getTime())
-			}
-
-			let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
-
-			let availabletime = getavailabletime(item, startafterdate, endbeforedate)
-			if (availabletime.length > 0) {
-				let leastbusydate = getLeastBusyDateV2(item, smartevents, availabletime)
-
-				let startdate = new Date(leastbusydate)
-				let enddate = new Date(startdate)
-				enddate.setTime(enddate.getTime() + duration)
+				let startdate = new Date(daystartafterdate.getTime())
+				startdate.setDate(startdate.getDate() + dayindex)
+				startdate.setTime(Math.max(startdate.getTime(), startafterdate.getTime()))
+				let enddate = new Date(startdate.getTime() + duration)
 
 				item.start.year = startdate.getFullYear()
 				item.start.month = startdate.getMonth()
@@ -12858,244 +12706,322 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 				item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
 			}
 
-			//fix conflict
-			let loopindex = 0
-			while (true) {
-				let outofrange = isoutofrange(item)
-				if (outofrange) {
-					fixrange(item)
+
+			//fix conflicts
+			let donesmartevents = []
+			smartevents = smartevents.sort((a, b) => {
+				return getcalculatedpriority(b) - getcalculatedpriority(a)
+			})
+			for (let item of smartevents) {
+				donesmartevents.push(item)
+
+				let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !smartevents.find(g => g.id == d.id))
+
+
+				//fix conflict
+				let loopindex = 0
+				while (true) {
+					let outofrange = isoutofrange(item)
+					if (outofrange) {
+						fixrange(item)
+					}
+
+
+					let temp = getconflictingevent(tempiteratedevents, item)
+					let conflictitem, spacing;
+					if(temp) [conflictitem, spacing] = temp
+					if (conflictitem) {
+						fixconflict(item, conflictitem, spacing)
+					}
+
+					//exit
+					loopindex++
+					if ((!outofrange && !conflictitem) || loopindex > 1000) {
+						break
+					}
 				}
 
-				let temp = getconflictingevent(tempiteratedevents, item)
-				let conflictitem, spacing;
-				if(temp) [conflictitem, spacing] = temp
-				if (conflictitem) {
-					fixconflict(item, conflictitem, spacing)
-				}
-
-				//exit
-				loopindex++
-				if ((!outofrange && !conflictitem) || loopindex > 1000) {
-					break
-				}
 			}
 
-		}
-	}
 
-
-
-	let modifiedevents = sortstartdate(oldsmartevents.filter(item1 => {
-		let item2 = smartevents.find(f => f.id == item1.id)
-		if (!item2) return false
-
-		if (addedtodos.find(d => d.id == item1.id) || eventsuggestiontodos.find(g => g.id == item1.id)) return true
-
-		if (new Date(item1.start.year, item1.start.month, item1.start.day, 0, item1.start.minute).getTime() == new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute).getTime()) {
-			return false
-		}
-		return true
-	}))
-	
-
-	//stop if no change
-	if(modifiedevents.length == 0){
-		isautoscheduling = false
-		return
-	}
-
-	//stats
-	autoschedulestats.scheduleduration = performance.now() - startautoscheduleprocess
-	autoschedulestats.iteratedeventslength = iteratedevents.length
-	autoschedulestats.smarteventslength = smartevents.length
-	autoschedulestats.modifiedeventslength = modifiedevents.length
-
-
-	//scroll to first event
-	let oldcalendaryear = calendaryear
-	let oldcalendarmonth = calendarmonth
-	let oldcalendarday = calendarday
-
-	if (addedtodos.length > 0) {
-		let firstitem = calendar.events.find(f => f.id == modifiedevents[0].id)
-		if(firstitem){
-			let firstitemdate = new Date(firstitem.start.year, firstitem.start.month, firstitem.start.day, 0, firstitem.start.minute)
-
-			if(!isNaN(firstitemdate.getTime())){
-				//horizontal
-				calendaryear = firstitemdate.getFullYear()
-				calendarmonth = firstitemdate.getMonth()
-				calendarday = firstitemdate.getDate()
-
-				//vertical
-				let target = firstitemdate.getHours() * 60 + firstitemdate.getMinutes()
-				scrollcalendarY(target)
-			}
-		}
-	}
-
-	if (oldcalendaryear != calendaryear || oldcalendarmonth != calendarmonth || oldcalendarday != calendarday) {
-		calendar.updateCalendar()
-	}
-
-
-	//stats
-	const startautoscheduleanimate = performance.now()
-
-	//animate
-	let newcalendarevents = deepCopy(calendar.events)
-	calendar.events = deepCopy(oldcalendarevents)
-
-
-	function animateitem(id){
-		return new Promise(resolve => {
-			let newitem = newcalendarevents.find(d => d.id == id)
-			let olditem = oldsmartevents.find(d => d.id == id)
-			let item = calendar.events.find(d => d.id == id)
-			let todoitem = [...addedtodos, ...eventsuggestiontodos].find(d => d.id == id)
-
-			if(!newitem || !olditem || !item){
-				resolve()
-				return
-			}
-
-			let oldstartdate = new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute)
-			let oldenddate = new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute)
-			let duration = oldenddate.getTime() - oldstartdate.getTime()
-
-			let realfinalstartdate = new Date(newitem.start.year, newitem.start.month, newitem.start.day, 0, newitem.start.minute)
-			let finalstartdate = new Date(oldstartdate)
-			finalstartdate.setHours(realfinalstartdate.getHours(), realfinalstartdate.getMinutes())
 			
-			let difference = finalstartdate.getTime() - oldstartdate.getTime()
+			//adjust time
+			/*
+			smartevents = smartevents.sort((a, b) => {
+				return new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime() - new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime()
+			})
+			for(let item of smartevents){
+				let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 
-			const frames = 30
-			function nextframe(){
-				if(todoitem){
-					let percentage = easeoutcubic(tick/frames)
-					
-					let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
-					if(autoscheduleitem){
-						autoscheduleitem.percentage = percentage
-						calendar.updateAnimatedEvents()
+				let startafterdate = new Date()
+				startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
+
+				let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
+				if (endbeforedate.getTime() < startafterdate.getTime()) {
+					endbeforedate.setTime(startafterdate.getTime())
+				}
+
+				let range = endbeforedate.getTime() - startafterdate.getTime()
+
+
+				let freetimes = []
+				let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+				let oldstartdatetime = tempstartdate.getTime()
+				while(tempstartdate.getTime() <= (startafterdate.getTime() + range * 0.4) - duration){ //0.4 is the magic constant
+					let tempenddate = new Date(tempstartdate)
+					tempenddate.setTime(tempenddate.getTime() + duration)
+
+					item.start.year = tempstartdate.getFullYear()
+					item.start.month = tempstartdate.getMonth()
+					item.start.day = tempstartdate.getDate()
+					item.start.minute = tempstartdate.getHours() * 60 + tempstartdate.getMinutes()
+
+					item.end.year = tempenddate.getFullYear()
+					item.end.month = tempenddate.getMonth()
+					item.end.day = tempenddate.getDate()
+					item.end.minute = tempenddate.getHours() * 60 + tempenddate.getMinutes()
+
+					if(!getconflictingevent(iteratedevents, item) && !isoutofrange(item)){
+						freetimes.push(tempstartdate.getTime())
 					}
-				}else{
-					let percentage = beziercurve(tick/frames)
 
-					let newstartdate = new Date(oldstartdate.getTime() + difference * percentage)
-					let newenddate = new Date(newstartdate.getTime() + duration)
+					tempstartdate.setMinutes(tempstartdate.getMinutes() + 60)
+				}
 
-					item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()
-					item.start.day = newstartdate.getDate()
-					item.start.month = newstartdate.getMonth()
-					item.start.year = newstartdate.getFullYear()
-
-					item.end.minute = newenddate.getHours() * 60 + newenddate.getMinutes()
-					item.end.day = newenddate.getDate()
-					item.end.month = newenddate.getMonth()
-					item.end.year = newenddate.getFullYear()
-
-					let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
-					if(autoscheduleitem){
-						autoscheduleitem.percentage = percentage
-						calendar.updateAnimatedEvents()
-					}
+				let lastfreetime = oldstartdatetime
+				if(freetimes.length > 0){
+					lastfreetime = Math.max(...freetimes)
 				}
 
 
-				if (tick >= frames || todoitem) {
-					let newstartdate = new Date(realfinalstartdate)
-					let newenddate = new Date(newstartdate.getTime() + duration)
-	
-					item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()
-					item.start.day = newstartdate.getDate()
-					item.start.month = newstartdate.getMonth()
-					item.start.year = newstartdate.getFullYear()
-					
-					item.end.minute = newenddate.getHours() * 60 + newenddate.getMinutes()
-					item.end.day = newenddate.getDate()
-					item.end.month = newenddate.getMonth()
-					item.end.year = newenddate.getFullYear()
+				let lastfreestartdate = new Date(lastfreetime)
+				let lastfreeenddate = new Date(lastfreetime + duration)
+				
+				item.start.year = lastfreestartdate.getFullYear()
+				item.start.month = lastfreestartdate.getMonth()
+				item.start.day = lastfreestartdate.getDate()
+				item.start.minute = lastfreestartdate.getHours() * 60 + lastfreestartdate.getMinutes()
+
+				item.end.year = lastfreeenddate.getFullYear()
+				item.end.month = lastfreeenddate.getMonth()
+				item.end.day = lastfreeenddate.getDate()
+				item.end.minute = lastfreeenddate.getHours() * 60 + lastfreeenddate.getMinutes()
+			}
+			*/
+		} else if (calendar.smartschedule.mode == 1) {
+			//BALANCED
+
+			//set to specific part of range
+			let priorityindex = 0;
+			for (let item of smartevents) {
+				let startafterdate = new Date()
+				startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
+				let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
+				if (endbeforedate.getTime() < startafterdate.getTime()) {
+					endbeforedate.setTime(startafterdate.getTime())
 				}
 
-				if(tick >= frames && !todoitem){
-					let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
-					if(autoscheduleitem){
-						autoscheduleitem.percentage = 0
-						calendar.updateAnimatedEvents()
+
+				let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
+
+
+				let availabletime = getavailabletime(item, startafterdate, endbeforedate)
+				let totaltime = 0
+				for (let myrange of availabletime) {
+					totaltime += myrange.end - myrange.start
+				}
+				let percenttime = (totaltime - duration) * priorityindex / (Math.max(smartevents.length - 1), 1)
+
+				let temptime = 0
+				let finaltime = startafterdate.getTime()
+				for (let myrange of availabletime) {
+					let rangeduration = myrange.end - myrange.start
+					temptime += rangeduration
+					if (temptime >= percenttime) {
+						finaltime = myrange.start + (percenttime - (temptime - rangeduration))
+						break
 					}
 				}
 
+				let startdate = new Date(finaltime)
+				startdate.setMinutes(ceil(startdate.getMinutes(), 5))
+				let enddate = new Date(startdate)
+				enddate.setTime(enddate.getTime() + duration)
 
-				if (tick >= frames) {
-					//stop
-					
-					return resolve()
-				} else {
-					//continue
-					tick++
-					calendar.updateAnimatedEvents()
-					requestAnimationFrame(nextframe, 10)
+				item.start.year = startdate.getFullYear()
+				item.start.month = startdate.getMonth()
+				item.start.day = startdate.getDate()
+				item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+
+				item.end.year = enddate.getFullYear()
+				item.end.month = enddate.getMonth()
+				item.end.day = enddate.getDate()
+				item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+
+				priorityindex++
+			}
+
+			//final touch
+			let donesmartevents = []
+			for (let item of smartevents) {
+				donesmartevents.push(item)
+
+				let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !smartevents.find(g => g.id == d.id))
+
+				//get basic variables
+				let startafterdate = new Date()
+				startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
+				let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
+				if (endbeforedate.getTime() < startafterdate.getTime()) {
+					endbeforedate.setTime(startafterdate.getTime())
+				}
+
+				let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
+
+				let availabletime = getavailabletime(item, startafterdate, endbeforedate)
+				if (availabletime.length > 0) {
+					let leastbusydate = getLeastBusyDateV2(item, smartevents, availabletime)
+
+					let startdate = new Date(leastbusydate)
+					let enddate = new Date(startdate)
+					enddate.setTime(enddate.getTime() + duration)
+
+					item.start.year = startdate.getFullYear()
+					item.start.month = startdate.getMonth()
+					item.start.day = startdate.getDate()
+					item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+
+					item.end.year = enddate.getFullYear()
+					item.end.month = enddate.getMonth()
+					item.end.day = enddate.getDate()
+					item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+				}
+
+				//fix conflict
+				let loopindex = 0
+				while (true) {
+					let outofrange = isoutofrange(item)
+					if (outofrange) {
+						fixrange(item)
+					}
+
+					let temp = getconflictingevent(tempiteratedevents, item)
+					let conflictitem, spacing;
+					if(temp) [conflictitem, spacing] = temp
+					if (conflictitem) {
+						fixconflict(item, conflictitem, spacing)
+					}
+
+					//exit
+					loopindex++
+					if ((!outofrange && !conflictitem) || loopindex > 1000) {
+						break
+					}
 				}
 
 			}
+		}
 
-			let tick = 0
-			nextframe()
-		})
-	}
 
-	
-	function animateitems(items) {
-		return new Promise(resolve => {
 
-			if (items.length == 0) {
-				resolve()
-				return
+		let modifiedevents = sortstartdate(oldsmartevents.filter(item1 => {
+			let item2 = smartevents.find(f => f.id == item1.id)
+			if (!item2) return false
+
+			if (addedtodos.find(d => d.id == item1.id) || (eventsuggestiontodos && eventsuggestiontodos.find(g => g.id == item1.id))) return true
+
+			if (new Date(item1.start.year, item1.start.month, item1.start.day, 0, item1.start.minute).getTime() == new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute).getTime()) {
+				return false
 			}
+			return true
+		}))
+		
 
-			const frames = 30
-			function nextframe() {
-				for (let id of items) {
-					let newitem = newcalendarevents.find(d => d.id == id)
-					let olditem = oldsmartevents.find(d => d.id == id)
-					let item = calendar.events.find(d => d.id == id)
+		//stop if no change
+		if(modifiedevents.length == 0){
+			isautoscheduling = false
+			return
+		}
 
-					if (!newitem || !olditem || !item) {
-						continue
-					}
-
-					let oldstartdate = new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute)
-					let oldenddate = new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute)
-					let duration = oldenddate.getTime() - oldstartdate.getTime()
-
-					let realfinalstartdate = new Date(newitem.start.year, newitem.start.month, newitem.start.day, 0, newitem.start.minute)
-					let finalstartdate = new Date(oldstartdate)
-					finalstartdate.setHours(realfinalstartdate.getHours(), realfinalstartdate.getMinutes())
-
-					let difference = finalstartdate.getTime() - oldstartdate.getTime()
+		//stats
+		autoschedulestats.scheduleduration = performance.now() - startautoscheduleprocess
+		autoschedulestats.iteratedeventslength = iteratedevents.length
+		autoschedulestats.smarteventslength = smartevents.length
+		autoschedulestats.modifiedeventslength = modifiedevents.length
 
 
-					let newstartdate = new Date(oldstartdate.getTime() + difference * beziercurve(tick / frames))
-					let newenddate = new Date(newstartdate.getTime() + duration)
+		//scroll to first event
+		let oldcalendaryear = calendaryear
+		let oldcalendarmonth = calendarmonth
+		let oldcalendarday = calendarday
 
-					item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()
-					item.start.day = newstartdate.getDate()
-					item.start.month = newstartdate.getMonth()
-					item.start.year = newstartdate.getFullYear()
+		if (addedtodos.length > 0) {
+			let firstitem = calendar.events.find(f => f.id == modifiedevents[0].id)
+			if(firstitem){
+				let firstitemdate = new Date(firstitem.start.year, firstitem.start.month, firstitem.start.day, 0, firstitem.start.minute)
 
-					item.end.minute = newenddate.getHours() * 60 + newenddate.getMinutes()
-					item.end.day = newenddate.getDate()
-					item.end.month = newenddate.getMonth()
-					item.end.year = newenddate.getFullYear()
+				if(!isNaN(firstitemdate.getTime())){
+					//horizontal
+					calendaryear = firstitemdate.getFullYear()
+					calendarmonth = firstitemdate.getMonth()
+					calendarday = firstitemdate.getDate()
 
-					let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
-					if (autoscheduleitem) {
-						autoscheduleitem.percentage = beziercurve(tick / frames)
-					}
+					//vertical
+					let target = firstitemdate.getHours() * 60 + firstitemdate.getMinutes()
+					scrollcalendarY(target)
+				}
+			}
+		}
 
-					if (tick >= frames) {
-						let newstartdate = new Date(realfinalstartdate)
+		if (oldcalendaryear != calendaryear || oldcalendarmonth != calendarmonth || oldcalendarday != calendarday) {
+			calendar.updateCalendar()
+		}
+
+
+		//stats
+		const startautoscheduleanimate = performance.now()
+
+		//animate
+		let newcalendarevents = deepCopy(calendar.events)
+		calendar.events = deepCopy(oldcalendarevents)
+
+
+		function animateitem(id){
+			return new Promise(resolve => {
+				let newitem = newcalendarevents.find(d => d.id == id)
+				let olditem = oldsmartevents.find(d => d.id == id)
+				let item = calendar.events.find(d => d.id == id)
+				let todoitem = [...addedtodos, ...eventsuggestiontodos].find(d => d.id == id)
+
+				if(!newitem || !olditem || !item){
+					resolve()
+					return
+				}
+
+				let oldstartdate = new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute)
+				let oldenddate = new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute)
+				let duration = oldenddate.getTime() - oldstartdate.getTime()
+
+				let realfinalstartdate = new Date(newitem.start.year, newitem.start.month, newitem.start.day, 0, newitem.start.minute)
+				let finalstartdate = new Date(oldstartdate)
+				finalstartdate.setHours(realfinalstartdate.getHours(), realfinalstartdate.getMinutes())
+				
+				let difference = finalstartdate.getTime() - oldstartdate.getTime()
+
+				const frames = 30
+				function nextframe(){
+					if(todoitem){
+						let percentage = easeoutcubic(tick/frames)
+						
+						let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
+						if(autoscheduleitem){
+							autoscheduleitem.percentage = percentage
+							calendar.updateAnimatedEvents()
+						}
+					}else{
+						let percentage = beziercurve(tick/frames)
+
+						let newstartdate = new Date(oldstartdate.getTime() + difference * percentage)
 						let newenddate = new Date(newstartdate.getTime() + duration)
 
 						item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()
@@ -13107,99 +13033,216 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 						item.end.day = newenddate.getDate()
 						item.end.month = newenddate.getMonth()
 						item.end.year = newenddate.getFullYear()
+
+						let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
+						if(autoscheduleitem){
+							autoscheduleitem.percentage = percentage
+							calendar.updateAnimatedEvents()
+						}
+					}
+
+
+					if (tick >= frames || todoitem) {
+						let newstartdate = new Date(realfinalstartdate)
+						let newenddate = new Date(newstartdate.getTime() + duration)
+		
+						item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()
+						item.start.day = newstartdate.getDate()
+						item.start.month = newstartdate.getMonth()
+						item.start.year = newstartdate.getFullYear()
+						
+						item.end.minute = newenddate.getHours() * 60 + newenddate.getMinutes()
+						item.end.day = newenddate.getDate()
+						item.end.month = newenddate.getMonth()
+						item.end.year = newenddate.getFullYear()
+					}
+
+					if(tick >= frames && !todoitem){
+						let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
+						if(autoscheduleitem){
+							autoscheduleitem.percentage = 0
+							calendar.updateAnimatedEvents()
+						}
+					}
+
+
+					if (tick >= frames) {
+						//stop
+						
+						return resolve()
+					} else {
+						//continue
+						tick++
+						calendar.updateAnimatedEvents()
+						requestAnimationFrame(nextframe, 10)
 					}
 
 				}
 
-				if (tick >= frames) {
-					//stop
-					return resolve()
-				} else {
-					//continue
-					tick++
-					calendar.updateAnimatedEvents()
-					requestAnimationFrame(nextframe, 10)
+				let tick = 0
+				nextframe()
+			})
+		}
+
+		
+		function animateitems(items) {
+			return new Promise(resolve => {
+
+				if (items.length == 0) {
+					resolve()
+					return
 				}
 
-			}
+				const frames = 30
+				function nextframe() {
+					for (let id of items) {
+						let newitem = newcalendarevents.find(d => d.id == id)
+						let olditem = oldsmartevents.find(d => d.id == id)
+						let item = calendar.events.find(d => d.id == id)
 
-			let tick = 0
-			nextframe()
-		})
-	}
+						if (!newitem || !olditem || !item) {
+							continue
+						}
 
-	function closeanimate() {
-		autoscheduleeventslist = []
-		oldautoscheduleeventslist = []
-		newautoscheduleeventslist = []
+						let oldstartdate = new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute)
+						let oldenddate = new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute)
+						let duration = oldenddate.getTime() - oldstartdate.getTime()
 
-		calendar.updateAnimatedEvents()
+						let realfinalstartdate = new Date(newitem.start.year, newitem.start.month, newitem.start.day, 0, newitem.start.minute)
+						let finalstartdate = new Date(oldstartdate)
+						finalstartdate.setHours(realfinalstartdate.getHours(), realfinalstartdate.getMinutes())
+
+						let difference = finalstartdate.getTime() - oldstartdate.getTime()
+
+
+						let newstartdate = new Date(oldstartdate.getTime() + difference * beziercurve(tick / frames))
+						let newenddate = new Date(newstartdate.getTime() + duration)
+
+						item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()
+						item.start.day = newstartdate.getDate()
+						item.start.month = newstartdate.getMonth()
+						item.start.year = newstartdate.getFullYear()
+
+						item.end.minute = newenddate.getHours() * 60 + newenddate.getMinutes()
+						item.end.day = newenddate.getDate()
+						item.end.month = newenddate.getMonth()
+						item.end.year = newenddate.getFullYear()
+
+						let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
+						if (autoscheduleitem) {
+							autoscheduleitem.percentage = beziercurve(tick / frames)
+						}
+
+						if (tick >= frames) {
+							let newstartdate = new Date(realfinalstartdate)
+							let newenddate = new Date(newstartdate.getTime() + duration)
+
+							item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()
+							item.start.day = newstartdate.getDate()
+							item.start.month = newstartdate.getMonth()
+							item.start.year = newstartdate.getFullYear()
+
+							item.end.minute = newenddate.getHours() * 60 + newenddate.getMinutes()
+							item.end.day = newenddate.getDate()
+							item.end.month = newenddate.getMonth()
+							item.end.year = newenddate.getFullYear()
+						}
+
+					}
+
+					if (tick >= frames) {
+						//stop
+						return resolve()
+					} else {
+						//continue
+						tick++
+						calendar.updateAnimatedEvents()
+						requestAnimationFrame(nextframe, 10)
+					}
+
+				}
+
+				let tick = 0
+				nextframe()
+			})
+		}
+
+		function closeanimate() {
+			autoscheduleeventslist = []
+			oldautoscheduleeventslist = []
+			newautoscheduleeventslist = []
+
+			calendar.updateAnimatedEvents()
+			calendar.updateEvents()
+
+			calendar.updateHistory()
+			calendar.updateInfo(true)
+			calendar.updateTodo()
+
+			isautoscheduling = false
+			return
+		}
+
+		//pre animate
+		autoscheduleeventslist = [...modifiedevents.map(d => { return { id: d.id, percentage: 0, addedtodo: !!addedtodos.find(f => f.id == d.id) || (eventsuggestiontodos && !!eventsuggestiontodos.find(g => g.id == d.id))} })]
+		oldautoscheduleeventslist = oldsmartevents
+		newautoscheduleeventslist = newcalendarevents
+
 		calendar.updateEvents()
+		calendar.updateAnimatedEvents()
 
-		calendar.updateHistory()
-		calendar.updateInfo(true)
-		calendar.updateTodo()
+		//animate
+		for(let item of modifiedevents){
+			await animateitem(item.id)
+			await sleep(400)
+		}
 
+		//post animate
+		if(addedtodos.length > 0){
+			displayalert(`${addedtodos.length} task${addedtodos.length == 1 ? ' was' : 's were'} successfully scheduled.`)
+		}
+
+		closeanimate()
+
+		//stats
+		autoschedulestats.animateduration = performance.now() - startautoscheduleanimate
+		//console.log(autoschedulestats)
+
+		//confetti
+		let confetticanvas = getElement('confetticanvas')
+		let myconfetti = confetti.create(confetticanvas, {
+			resize: true,
+			useWorker: true
+		})
+
+		let promises = []
+		for (let item of modifiedevents) {
+			let itemelement = getElement(item.id)
+			if (!itemelement) continue
+			let itemrect = itemelement.getBoundingClientRect()
+
+			promises.push(myconfetti({
+				spread: 30,
+				particleCount: 20,
+				gravity: 0.75,
+				startVelocity: 15,
+				decay: 0.94,
+				ticks: 100,
+				origin: {
+					x: (itemrect.x + itemrect.width / 2) / (window.innerWidth || document.body.clientWidth),
+					y: (itemrect.y + itemrect.height / 2) / (window.innerHeight || document.body.clientHeight)
+				}
+			}))
+		}
+		await Promise.all(promises)
+
+		try{
+			myconfetti.reset()
+		}catch(e){}
+	}catch(err){
 		isautoscheduling = false
-		return
+		console.log(err)
 	}
-
-	//pre animate	
-	autoscheduleeventslist = [...modifiedevents.map(d => { return { id: d.id, percentage: 0, addedtodo: !!addedtodos.find(f => f.id == d.id) || !!eventsuggestiontodos.find(g => g.id == d.id)} })]
-	oldautoscheduleeventslist = oldsmartevents
-	newautoscheduleeventslist = newcalendarevents
-
-	calendar.updateEvents()
-	calendar.updateAnimatedEvents()
-
-	//animate
-	for(let item of modifiedevents){
-		await animateitem(item.id)
-		await sleep(400)
-	}
-
-	//post animate
-	if(addedtodos.length > 0){
-		displayalert(`${addedtodos.length} task${addedtodos.length == 1 ? ' was' : 's were'} successfully scheduled.`)
-	}
-
-	closeanimate()
-
-	//stats
-	autoschedulestats.animateduration = performance.now() - startautoscheduleanimate
-	//console.log(autoschedulestats)
-
-	//confetti
-	let confetticanvas = getElement('confetticanvas')
-	let myconfetti = confetti.create(confetticanvas, {
-		resize: true,
-		useWorker: true
-	})
-
-	let promises = []
-	for (let item of modifiedevents) {
-		let itemelement = getElement(item.id)
-		if (!itemelement) continue
-		let itemrect = itemelement.getBoundingClientRect()
-
-		promises.push(myconfetti({
-			spread: 30,
-			particleCount: 20,
-			gravity: 0.75,
-			startVelocity: 15,
-			decay: 0.94,
-			ticks: 100,
-			origin: {
-				x: (itemrect.x + itemrect.width / 2) / (window.innerWidth || document.body.clientWidth),
-				y: (itemrect.y + itemrect.height / 2) / (window.innerHeight || document.body.clientHeight)
-			}
-		}))
-	}
-	await Promise.all(promises)
-
-	try{
-		myconfetti.reset()
-	}catch(e){}
 }
 
 
