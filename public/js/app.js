@@ -7780,7 +7780,7 @@ function startAutoSchedule({scheduletodos, eventsuggestiontodos}) {
 	}
 	if (addedtodos.length > 0) {
 		calendar.todos = calendar.todos.filter(d => !addedtodos.find(f => f.id == d.id))
-		calendar.events = calendar.events.filter(d => !addedtodos.find(f => f.id == d.id) && finalscheduletodos.find(h => h.eventsuggestionid == d.id) && !addedtodos.find(g => g.id == d.eventsuggestiontodoid))
+		calendar.events = calendar.events.filter(d => (!addedtodos.find(f => f.id == d.id) || finalscheduletodos.find(h => h.eventsuggestionid == d.id)) && !addedtodos.find(g => g.id == d.eventsuggestiontodoid))
 		calendar.events.push(...addedtodos)
 	}
 
