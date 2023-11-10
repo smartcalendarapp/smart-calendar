@@ -1136,6 +1136,19 @@ body {
 	box-shadow: var(--purple-transparent) 0px 2px 12px -5px;
 }
 
+.eventsuggestion{
+	opacity:0.5;
+}
+.eventsuggestionglow{
+	animation-name: suggestionborder;
+	animation-duration: 4s;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+	opacity: 1;
+	border:1px solid var(--purple-transparent) !important;
+	box-shadow: var(--purple-transparent) 0px 2px 12px -5px;
+}
+
 .todosuggestionwrap:hover .hovertodosuggestiongroup{
 	visibility: visible;
 }

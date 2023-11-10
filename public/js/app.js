@@ -895,6 +895,7 @@ class Calendar {
 			}
 			this.lastmodified = 0
 			this.parentid = null
+			this.iseventsuggestion = false
 
 			this.reminder = []
 			let tempstart = new Date(this.start.year, this.start.month, this.start.day, 0, this.start.minute).getTime()
@@ -1080,6 +1081,9 @@ class Calendar {
 				}
 			}
 			this.subtasksuggestions = []
+			this.gotsubtasksuggestions = false
+			this.eventsuggestionid = null
+			this.goteventsuggestion = false
 		}
 
 		static getTitle(item){
@@ -2757,7 +2761,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = [...calendar.todos.filter(d => !d.completed && !Calendar.Todo.isSubtask(d)), ...calendar.events.filter(d => d.type == 1 && !d.completed && !Calendar.Todo.isSubtask(d))]
+			let mytodos = [...calendar.todos.filter(d => !d.completed && !Calendar.Todo.isSubtask(d)), ...calendar.events.filter(d => d.type == 1 && !d.completed && !Calendar.Todo.isSubtask(d) && !d.iseventsuggestion)]
 
 			let duetodos = sortduedate(mytodos.filter(d => d.endbefore.year != null && d.endbefore.month != null && d.endbefore.day != null && d.endbefore.minute != null))
 			let notduetodos = mytodos.filter(d => d.endbefore.year == null || d.endbefore.month == null || d.endbefore.day == null || d.endbefore.minute == null)
@@ -2826,7 +2830,7 @@ class Calendar {
 
 
 		if(true){
-			let mytodos = [ ...calendar.events.filter(d => d.type == 1 && d.completed && !Calendar.Todo.isSubtask(d)), ...calendar.todos.filter(d => d.completed && !Calendar.Todo.isSubtask(d))]
+			let mytodos = [ ...calendar.events.filter(d => d.type == 1 && d.completed && !Calendar.Todo.isSubtask(d) && !d.iseventsuggestion), ...calendar.todos.filter(d => d.completed && !Calendar.Todo.isSubtask(d))]
 
 
 			let tempoutput = []
@@ -3674,7 +3678,6 @@ let historydata = []
 let historyindex = 0
 let selectedeventid, selectedeventinitialy, selectedeventdate, selectedeventdatetime, selectedeventfromdate, editeventid;
 let selectedeventbyday = []
-let autoscheduleeventid;
 let copiedevent;
 let editinfo = false;
 let movingevent = false;
@@ -3812,7 +3815,7 @@ function scrolltodoY(targetminute) {
 		todocontainer = getElement('todocontainer')
 	}
 
-	let target = targetminute - 60*2
+	let target = targetminute - 200
 
 	let duration = 500
 	let start = todocontainer.scrollTop
@@ -4067,7 +4070,7 @@ async function gettasksuggestions(inputitem){
 		let suggestabletodos = calendar.todos.filter(d => 
 			calendar.settings.gettasksuggestions == true
 			&&
-			!d.completed && d.duration >= 60 && d.title.length > 3
+			!d.completed && d.duration > 30 && d.title.length > 5
 			&&
 			!d.gotsubtasksuggestions && d.subtasksuggestions.length == 0 
 			&&
@@ -4134,6 +4137,49 @@ async function gettasksuggestions(inputitem){
 	}
 }
 
+let lastgeteventsuggestiondate;
+function geteventsuggestion(){
+	function getcalculatedweight(tempitem){
+		let currentdate = new Date()
+		let timedifference = new Date(tempitem.endbefore.year, tempitem.endbefore.month, tempitem.endbefore.day, 0, tempitem.endbefore.minute).getTime() - currentdate.getTime()
+		return currentdate.getTime() * (tempitem.priority + 1) / Math.max(timedifference, 1) * tempitem.duration
+	}
+
+
+	//select eligible todos to get suggestion
+	let suggestabletodos = calendar.todos.filter(d => 
+		calendar.settings.gettasksuggestions == true
+		&&
+		!d.completed
+		&&
+		!d.goteventsuggestion
+		&&
+		new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*7
+		&&
+		!Calendar.Todo.isParent(d)
+	).sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
+	if(suggestabletodos.length == 0) return
+
+	let existingeventsuggestionslength = calendar.events.filter(d => d.iseventsuggestion)
+	const MAX_EVENT_SUGGESTIONS = 5
+
+	let suggesttodos = suggestabletodos.slice(0, Math.max(MAX_EVENT_SUGGESTIONS - existingeventsuggestionslength, 0))
+
+	let newevents = []
+	for(todoitem of suggesttodos){
+		let eventitem = geteventfromtodo(todoitem)
+		eventitem.iseventsuggestion = true
+
+		todoitem.eventsuggestionid = eventitem.id
+
+		newevents.push(eventitem)
+	}
+
+	calendar.events.push(...newevents)
+
+	startAutoSchedule({eventsuggestiontodos: newevents})
+}
+//here2
 
 
 function run() {
@@ -4200,6 +4246,15 @@ function run() {
 			gettasksuggestions()
 		}
 	}, 1000)
+
+	lastgeteventsuggestiondate = Date.now()
+	setInterval(async function(){
+		if(document.visibilityState === 'visible' && Date.now() - lastgeteventsuggestiondate > 10000){
+			lastgeteventsuggestiondate = Date.now()
+			geteventsuggestion()
+		}
+	}, 10000)
+	//here2
 
 
 	//tick
@@ -7538,13 +7593,6 @@ function sortstartdate(val) {
 	})
 }
 
-
-//close menu
-function clickscheduleframeclose() {
-	let autoscheduleframemenu = getElement('autoscheduleframemenu')
-	autoscheduleframemenu.classList.add('hiddenfade')
-}
-
 //priority
 function clickeventpriority(index) {
 	let item = calendar.events.find(x => x.id == selectedeventid)
@@ -7713,7 +7761,7 @@ function submitschedulemytasks() {
 
 
 
-function startAutoSchedule({scheduletodos}) {
+function startAutoSchedule({scheduletodos, eventsuggestiontodos}) {
 	if (isautoscheduling == true) return
 
 	let oldcalendartabs = [...calendartabs]
@@ -7728,7 +7776,7 @@ function startAutoSchedule({scheduletodos}) {
 	}
 	if (addedtodos.length > 0) {
 		calendar.todos = calendar.todos.filter(d => !addedtodos.find(f => f.id == d.id))
-		calendar.events = calendar.events.filter(d => !addedtodos.find(f => f.id == d.id))
+		calendar.events = calendar.events.filter(d => !addedtodos.find(f => f.id == d.id) && (!d.iseventsuggestion || finalscheduletodos.find(h => h.eventsuggestionid == d.id)))
 		calendar.events.push(...addedtodos)
 	}
 
@@ -7756,7 +7804,7 @@ function startAutoSchedule({scheduletodos}) {
 	}
 
 	//start
-	autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos})
+	autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos, eventsuggestiontodos: eventsuggestiontodos})
 }
 
 
@@ -10741,6 +10789,34 @@ function gototaskincalendar(id){
 	scrollcalendarY(item.start.minute)
 }
 
+
+//accept event suggestion
+function accepteventsuggestion(id){
+	let item = [...calendar.events].find(x => x.id == id)
+	if (!item) return
+
+	calendar.todos = calendar.todos.filter(d => d.eventsuggestionid != item.id)
+	item.iseventsuggestion = false
+
+	calendar.updateEvents()
+	calendar.updateHistory()
+	calendar.updateInfo()
+}
+//here5
+
+//reject event suggestion
+function rejecteventsuggestion(id){
+	let item = [...calendar.events].find(x => x.id == id)
+	if (!item) return
+
+	calendar.events = calendar.events.filter(d => d.id != item.id)
+
+	calendar.updateEvents()
+	calendar.updateHistory()
+	calendar.updateInfo()
+}
+
+
 //check completed
 async function todocompleted(event, id) {
 	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
@@ -10917,7 +10993,7 @@ function deletetodo(id) {
 	//get children
 	let children = [...calendar.todos, ...calendar.events].filter(d => d.parentid == item.id)
 
-	let totaldelete = [item, ...children]
+	let totaldelete = [item, ...children, calendar.events.filter(d => d.iseventsuggestion && d.id == item.eventsuggestionid)]
 
 	let includesevent = totaldelete.find(d => Calendar.Event.isEvent(d))
 
@@ -11577,7 +11653,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 	}
 
 
-	if (selectedeventid == item.id || autoscheduleeventid == item.id) {
+	if (selectedeventid == item.id) {
 		itemclasses.push('selectedevent')
 		itemclasses3.push('selectedcalendarevent')
 		itemclasses2.push('selectedtext')
@@ -11585,6 +11661,11 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 
 	if(myheight <= 15){
 		itemclasses2.push('smalleventtext')
+	}
+
+	if(item.iseventsuggestion){
+		itemclasses.push('eventsuggestionglow')
+		itemclasses3.push('eventsuggestion')
 	}
 
 
@@ -11601,6 +11682,14 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 				<div class="eventtextspace"></div>
 				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
 					
+					${item.iseventsuggestion ? `
+					<span class="display-inline-flex gap-6px">
+						<span class="border-8px background-purple text-white badgepadding text-14px text-bold">AI Suggestion</span>
+						<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-14px" onclick="accepteventsuggestion('${item.id}')">Accept</div>
+						<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-14px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
+					</span>
+					${myheight < 45 ? ' ' : '</br>'}` : ''}
+
 					${item.type == 1 ? 
 						`<span class="todoitemcheckbox tooltip checkcircletop">
 							${myheight <= 15 ? `${getwhitecheckcirclesmall(item.completed)}` : `${getwhitecheckcircle(item.completed)}`}
@@ -11695,7 +11784,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	}
 
 
-	if (selectedeventid == item.id || autoscheduleeventid == item.id) {
+	if (selectedeventid == item.id) {
 		itemclasses.push('selectedevent')
 		itemclasses3.push('selectedcalendarevent')
 		itemclasses2.push('selectedtext')
@@ -11709,6 +11798,11 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 		itemclasses2.push('smalleventtext')
 	}
 
+	if(item.iseventsuggestion){
+		itemclasses.push('eventsuggestionglow')
+		itemclasses3.push('eventsuggestion')
+	}
+
 	let output = ''
 	output = `
 	<div class="absolute pointer-none ${itemclasses3.join(' ')}" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
@@ -11717,6 +11811,14 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
 				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
+
+					${item.iseventsuggestion ? `
+					<span class="display-inline-flex gap-6px">
+						<span class="border-8px background-purple text-white badgepadding text-14px text-bold">AI Suggestion</span>
+						<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-14px" onclick="accepteventsuggestion('${item.id}')">Accept</div>
+						<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-14px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
+					</span>
+					${myheight < 45 ? ' ' : '</br>'}` : ''}
 					
 					${item.type == 1 ? 
 						`<span class="scalebutton todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="eventcompleted(event, '${item.id}')">
@@ -12273,21 +12375,16 @@ function getavailabletime(item, startrange, endrange) {
 
 //auto schedule V2
 let animatenextitem;
-let reviewanimate;
-let closeanimate;
 let isautoscheduling = false;
-
 let rescheduletaskfunction;
-
-async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
+async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eventsuggestiontodos}) {
+	//here3
 	//functions
 	function sleep(time) {
 		return new Promise(resolve => {
 			setTimeout(resolve, time)
 		})
 	}
-
-
 
 	function fixconflict(item, conflictitem, spacing = 0) {
 		let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
@@ -12433,6 +12530,9 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 
 
 	//initialize
+	if(eventsuggestiontodos.length > 0){
+		smartevents = [...eventsuggestiontodos]
+	}
 	let iteratedevents = getiteratedevents()
 	let oldsmartevents = deepCopy(smartevents)
 	let oldcalendarevents = deepCopy(calendar.events)
@@ -12831,14 +12931,8 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 	const startautoscheduleanimate = performance.now()
 
 	//animate
-	let autoscheduleframemenu = getElement('autoscheduleframemenu')
-	let autoscheduleframemenucontent = getElement('autoscheduleframemenucontent')
-
-	clickscheduleframeclose()
-
 	let newcalendarevents = deepCopy(calendar.events)
 	calendar.events = deepCopy(oldcalendarevents)
-
 
 
 	function animateitem(id){
@@ -13022,106 +13116,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 		})
 	}
 
-	function displayitem(id) {
-		let newitem = newcalendarevents.find(d => d.id == id)
-		let olditem = oldsmartevents.find(d => d.id == id)
-
-		if (!newitem || !olditem) return
-
-		let currentdate = new Date()
-		let itemstartdate = new Date(newitem.start.year, newitem.start.month, newitem.start.day, 0, newitem.start.minute)
-
-		autoscheduleeventid = id
-
-		autoscheduleeventslist = [{ id: id, percentage: 0 }]
-		calendar.updateEvents()
-		calendar.updateAnimatedEvents()
-
-		autoscheduleframemenucontent.innerHTML = `
-		<div class="infotop">
-			<div class="infotitle">${Calendar.Event.getTitle(newitem)}</div>
-		</div>
-		<div class="info">
-			<div class="infotext">Scheduled for ${getDMDYText(new Date(newitem.start.year, newitem.start.month, newitem.start.day, 0, newitem.start.minute))} ${getHMText(newitem.start.minute)}.${addedtodos.find(d => d.id == newitem.id) ? `` : ` Keep this time?`}</div>
-			<div class="display-flex flex-row justify-space-between align-center gap-12px">
-	 			<div class="text-14px text-secondary">Event ${animateindex + 1} of ${modifiedevents.length}</div>
-		 		<div class="display-flex flex-row gap-12px">
-		 			${addedtodos.find(d => d.id == newitem.id) ? `<div class="border-8px background-blue hover:background-blue-hover transition-duration-100 padding-8px-12px text-white text-14px pointer" onclick="animatenextitem(false)">Next</div>` :
-				`<div class="border-8px background-red hover:background-red-hover transition-duration-100 padding-8px-12px text-white text-14px pointer" onclick="animatenextitem(true)">Decline</div>
-					<div class="border-8px background-blue hover:background-blue-hover transition-duration-100 padding-8px-12px text-white text-14px pointer" onclick="animatenextitem(false)">Accept</div>`}
-				</div>
-			</div>
-	 		
-	 	</div>`
-	}
-
-	function scrollitem(id) {
-		let newitem = newcalendarevents.find(d => d.id == id)
-		if (!newitem) return
-
-		calendaryear = newitem.start.year
-		calendarmonth = newitem.start.month
-		calendarday = newitem.start.day
-		calendar.updateCalendar()
-
-		scrollcalendarY(newitem.start.minute)
-	}
-
-
-	function displaydone() {
-		autoscheduleframemenu.classList.remove('hiddenfade')
-		autoscheduleframemenucontent.innerHTML = `
-		<div class="infotop">
-			<div class="infotitle">Schedule Completed</div>
-		</div>
-		<div class="info">
-			<div class="infotext">Success! ${addedtodos.length > 0 ? `I've added ${addedtodos.length} new tasks to your calendar.` : ''}</div>
-	 		<div class="display-flex flex-row justify-flex-end gap-12px">
-				${modifiedevents.length > 0 ? `<div class="border-8px background-blue hover:background-blue-hover transition-duration-100 padding-8px-12px text-white text-14px pointer" onclick="reviewanimate()">Review changes</div>` : ''}
-				<div class="border-8px background-blue hover:background-blue-hover transition-duration-100 padding-8px-12px text-white text-14px pointer" onclick="closeanimate()">Done</div>
-		 	</div>
-	 	</div>`
-	}
-
-	animatenextitem = function (reject) {
-		if (reject == true) {
-			let currentitem = calendar.events.find(d => d.id == modifiedevents[animateindex - 1].id)
-			let olditem = modifiedevents.find(d => d.id == modifiedevents[animateindex - 1].id)
-			if (currentitem && olditem) {
-				[currentitem.start.year, currentitem.start.month, currentitem.start.day, currentitem.start.minute, currentitem.end.year, currentitem.end.month, currentitem.end.day, currentitem.end.minute] = [olditem.start.year, olditem.start.month, olditem.start.day, olditem.start.minute, olditem.end.year, olditem.end.month, olditem.end.day, olditem.end.minute]
-
-				calendar.updateEvents()
-			}
-		}
-
-		if (animateindex < modifiedevents.length) {
-			scrollitem(modifiedevents[animateindex].id)
-			displayitem(modifiedevents[animateindex].id)
-
-			animateindex++
-		} else if (animateindex == modifiedevents.length) {
-			closeanimate()
-		}
-	}
-
-	reviewanimate = function () {
-		autoscheduleeventid = null
-
-		//remove animate
-		autoscheduleeventslist = []
-		oldautoscheduleeventslist = []
-		newautoscheduleeventslist = []
-		calendar.updateEvents()
-		calendar.updateAnimatedEvents()
-
-		animateindex = 0
-		animatenextitem()
-	}
-
-	closeanimate = function () {
-		autoscheduleeventid = null
-
-		//remove animate
+	function closeanimate() {
 		autoscheduleeventslist = []
 		oldautoscheduleeventslist = []
 		newautoscheduleeventslist = []
@@ -13133,14 +13128,11 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 		calendar.updateInfo(true)
 		calendar.updateTodo()
 
-		clickscheduleframeclose()
-
 		isautoscheduling = false
 		return
 	}
 
 	//pre animate	
-	autoscheduleeventid = null
 	autoscheduleeventslist = [...modifiedevents.map(d => { return { id: d.id, percentage: 0, addedtodo: !!addedtodos.find(f => f.id == d.id) } })]
 	oldautoscheduleeventslist = oldsmartevents
 	newautoscheduleeventslist = newcalendarevents
@@ -13159,7 +13151,6 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos}) {
 		displayalert(`${addedtodos.length} task${addedtodos.length == 1 ? ' was' : 's were'} successfully scheduled.`)
 	}
 
-	let animateindex = 0
 	closeanimate()
 
 	//stats
@@ -13954,6 +13945,7 @@ function eventallday() {
 	calendar.updateInfo(true)
 	calendar.updateHistory()
 }
+
 
 
 
