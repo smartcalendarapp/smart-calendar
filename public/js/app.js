@@ -12882,7 +12882,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 		let item2 = smartevents.find(f => f.id == item1.id)
 		if (!item2) return false
 
-		if (addedtodos.find(d => d.id == item1.id)) return true
+		if (addedtodos.find(d => d.id == item1.id) || eventsuggestiontodos.find(g => g.id == item1.id)) return true
 
 		if (new Date(item1.start.year, item1.start.month, item1.start.day, 0, item1.start.minute).getTime() == new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute).getTime()) {
 			return false
@@ -12945,7 +12945,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 			let newitem = newcalendarevents.find(d => d.id == id)
 			let olditem = oldsmartevents.find(d => d.id == id)
 			let item = calendar.events.find(d => d.id == id)
-			let todoitem = addedtodos.find(d => d.id == id)
+			let todoitem = [...addedtodos, ...eventsuggestiontodos].find(d => d.id == id)
 
 			if(!newitem || !olditem || !item){
 				resolve()
@@ -13138,7 +13138,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 	}
 
 	//pre animate	
-	autoscheduleeventslist = [...modifiedevents.map(d => { return { id: d.id, percentage: 0, addedtodo: !!addedtodos.find(f => f.id == d.id) } })]
+	autoscheduleeventslist = [...modifiedevents.map(d => { return { id: d.id, percentage: 0, addedtodo: !!addedtodos.find(f => f.id == d.id) || !!eventsuggestiontodos.find(g => g.id == d.id)} })]
 	oldautoscheduleeventslist = oldsmartevents
 	newautoscheduleeventslist = newcalendarevents
 
