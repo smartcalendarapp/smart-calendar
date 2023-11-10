@@ -12555,7 +12555,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 
 
 	//check for todos that haven't been done - ask to reschedule them
-	let passedtodos = smartevents.filter(d => new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() <= Date.now())
+	let passedtodos = smartevents.filter(d => !eventsuggestiontodos.find(g => g.id == d.id) && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() <= Date.now())
 	if(resolvedpassedtodos){
 		passedtodos = passedtodos.filter(d => !resolvedpassedtodos.find(f => f == d.id))
 	}
