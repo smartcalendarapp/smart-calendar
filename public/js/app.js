@@ -10795,7 +10795,7 @@ function gototaskincalendar(id){
 
 
 //accept event suggestion
-function accepteventsuggestion(event, id){
+async function accepteventsuggestion(event, id){
 	let item = [...calendar.events].find(x => x.id == id)
 	if (!item) return
 
