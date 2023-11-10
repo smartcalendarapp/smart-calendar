@@ -1145,7 +1145,6 @@ body {
 	border:1px solid var(--purple-transparent) !important;
 	box-shadow: var(--purple-transparent) 0px 2px 12px -2px;
 
-	background-color:var(--background-primary);
 	background-image: repeating-linear-gradient(
 		-45deg, 
 		transparent, 
