@@ -1136,9 +1136,6 @@ body {
 	box-shadow: var(--purple-transparent) 0px 2px 12px -5px;
 }
 
-.eventsuggestion{
-	opacity:0.5;
-}
 .eventsuggestionglow{
 	animation-name: suggestionborder;
 	animation-duration: 4s;
@@ -1146,7 +1143,15 @@ body {
 	animation-timing-function: ease-in-out;
 	opacity: 1;
 	border:1px solid var(--purple-transparent) !important;
-	box-shadow: var(--purple-transparent) 0px 2px 12px -5px;
+	box-shadow: var(--purple-transparent) 0px 2px 12px -2px;
+
+	background-image: repeating-linear-gradient(
+		-45deg, 
+		transparent, 
+		transparent 10px, 
+		var(--background-tint-1) 10px, 
+		var(--background-tint-1)  20px
+	)
 }
 
 .todosuggestionwrap:hover .hovertodosuggestiongroup{
