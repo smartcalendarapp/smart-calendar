@@ -1746,6 +1746,16 @@ body {
 	border:1px solid var(--text-secondary) !important
 }
 
+.todoeventsuggestiondate{
+	border:1px solid var(--purple)
+}
+.todoeventsuggestiondate:hover{
+	border:1px solid var(--purple-hover)
+}
+.todoeventsuggestiondate.completedtext{
+	border:1px solid var(--text-secondary) !important
+}
+
 .focuswrap {
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s;
 	background-color: var(--background-primary-home)

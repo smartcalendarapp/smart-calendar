@@ -896,6 +896,7 @@ class Calendar {
 			this.lastmodified = 0
 			this.parentid = null
 			this.iseventsuggestion = false
+			this.goteventsuggestion = false
 
 			this.reminder = []
 			let tempstart = new Date(this.start.year, this.start.month, this.start.day, 0, this.start.minute).getTime()
@@ -1082,6 +1083,7 @@ class Calendar {
 			}
 			this.subtasksuggestions = []
 			this.gotsubtasksuggestions = false
+			this.goteventsuggestion = false
 		}
 
 		static getTitle(item){
@@ -4152,6 +4154,8 @@ function geteventsuggestion(){
 		d.title.length > 2
 		&&
 		!d.completed
+		&&
+		!d.goteventsuggestion
 		&&
 		new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*3 //within 3 days
 		&&
@@ -9879,9 +9883,7 @@ function gettododata(item) {
 									<div class="todoitemtext text-16px ${itemclasses.join(' ')}">
 										${Calendar.Event.isEvent(item) ? 
 											`${calendar.settings.gettasksuggestions == true && item.iseventsuggestion ?
-												`<span class="margin-left-6px text-12px suggestionborder hover:text-purple-hover pointer-auto gap-6px text-purple todoscheduleddate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="accepteventsuggestion(event, '${item.id}')">
-													AI suggestion: ${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}
-												</span>`
+												``
 												:
 												`<span class="margin-right-6px text-12px hover:text-red-hover pointer-auto tooltip gap-6px text-red todoscheduleddate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">
 													${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}
@@ -9905,6 +9907,20 @@ function gettododata(item) {
 
 											<span class="tooltiptextcenter">Repeats ${getRepeatText(item, true)}</span>
 										</span>` : ''}
+
+
+										${Calendar.Event.isEvent(item) ? 
+											`${calendar.settings.gettasksuggestions == true && item.iseventsuggestion ?
+												`<span class="tooltip margin-left-6px text-12px suggestionborder hover:text-purple-hover pointer-auto gap-6px text-purple todoeventsuggestiondate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="accepteventsuggestion(event, '${item.id}')">
+													AI suggestion: ${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}
+
+													<span class="tooltiptextcenter">Accept</span>
+												</span>`
+												:
+												``}`
+											:
+											``
+										}
 									</div>
 
 									${item.googleclassroomid ? `<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none text-14px hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open Google Classroom assignment</a>` : ``}
