@@ -1111,6 +1111,9 @@ body {
 	display: inline-block;
 }
 
+.borderpurple{
+	border:1px solid var(--purple)
+}
 
 @keyframes suggestionborder {
 	0% {
@@ -2962,7 +2965,6 @@ body {
 }
 
 .monthscreens {
-	scroll-snap-type: y mandatory;
 	overflow-y: auto;
 	box-sizing: border-box;
 	display: flex;
@@ -2982,7 +2984,6 @@ body {
 	display: flex;
 	flex-direction: row;
 	flex: 1;
-	scroll-snap-align: start;
 }
 
 .monthcontainer {

@@ -4067,10 +4067,10 @@ async function gettasksuggestions(inputitem){
 	}else{
 		//select eligible todos to get suggestion
 
-		let suggestabletodos = calendar.todos.filter(d => 
+		let suggestabletodos = [...calendar.events, ...calendar.todos].filter(d => 
 			calendar.settings.gettasksuggestions == true
 			&&
-			!d.completed && d.duration > 30 && d.title.length > 5
+			!d.completed && (!Calendar.Todo.isTodo(d) || d.duration > 30) && d.title.length > 5
 			&&
 			!d.gotsubtasksuggestions && d.subtasksuggestions.length == 0 
 			&&
@@ -9911,10 +9911,10 @@ function gettododata(item) {
 
 										${Calendar.Event.isEvent(item) ? 
 											`${calendar.settings.gettasksuggestions == true && item.iseventsuggestion ?
-												`<span class="tooltip margin-left-6px text-12px suggestionborder hover:text-purple-hover pointer-auto gap-6px text-purple todoeventsuggestiondate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="accepteventsuggestion(event, '${item.id}')">
-													AI suggestion: ${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}
-
-													<span class="tooltiptextcenter">Accept</span>
+												`<span class="display-inline-flex flex-row gap-6px">
+													<span class="text-12px suggestionborder hover:text-purple-hover pointer-auto gap-6px text-purple todoeventsuggestiondate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}">AI suggestion: ${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}</span>
+													<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
+													<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
 												</span>`
 												:
 												``}`
@@ -11712,9 +11712,8 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 		itemclasses.push('eventsuggestionglow')
 	}
 
-	let aisuggestiontext = item.iseventsuggestion ? `
-	<span class="display-inline-flex pointer-auto gap-6px">
-		<span class="border-8px background-purple text-white nowrap badgepadding text-12px text-bold">AI Suggestion</span>
+	let aisuggestiontext = item.iseventsuggestion ? `<span class="display-inline-flex flex-row gap-6px">
+		<span class="text-12px borderpurple hover:text-purple-hover pointer-auto gap-6px text-purple todoeventsuggestiondate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap">AI suggestion: ${Calendar.Event.getShortStartEndText(item)}</span>
 		<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
 		<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
 	</span>` : ''
@@ -11757,13 +11756,9 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 						`<span class="todoitemcheckbox tooltip">
 							${getpriorityicon(item.priority)}
 						</span>` : '' }
-
-					${myheight < 45 ? '' : aisuggestiontext}
 				
-					${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item)}</span>
+					${item.iseventsuggestion ? aisuggestiontext : `${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item)}</span>`}
 
-					${myheight < 45 ? aisuggestiontext : ''}
-				
 				</div>
 				
 			</div>
@@ -11847,9 +11842,8 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 		itemclasses.push('eventsuggestionglow')
 	}
 
-	let aisuggestiontext = item.iseventsuggestion ? `
-	<span class="display-inline-flex pointer-auto gap-6px">
-		<span class="border-8px background-purple text-white nowrap badgepadding text-12px text-bold">AI Suggestion</span>
+	let aisuggestiontext = item.iseventsuggestion ? `<span class="display-inline-flex flex-row gap-6px">
+		<span class="text-12px borderpurple hover:text-purple-hover pointer-auto gap-6px text-purple todoeventsuggestiondate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap">AI suggestion: ${Calendar.Event.getShortStartEndText(item)}</span>
 		<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
 		<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
 	</span>` : ''
@@ -11888,12 +11882,8 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 						`<span class="todoitemcheckbox tooltip">
 							${getpriorityicon(item.priority)}
 						</span>` : '' }
-
-					${myheight < 45 ? '' : aisuggestiontext}
 					
-					${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item)}</span>
-
-					${myheight < 45 ? aisuggestiontext : ''}
+					${item.iseventsuggestion ? aisuggestiontext : `${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item)}</span>`}
 				
 				</div>
 				
