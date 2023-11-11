@@ -116,6 +116,21 @@ img{
 }
 
 
+.buttongoogle{
+	height:22px;
+	width:22px;
+	pointer-events:none;
+}
+.googlebutton{
+	color:var(--black);
+	background-color:var(--white);
+	box-shadow:0 0 8px -2px var(--black-transparent);
+}
+.googlebutton:hover{
+	background-color:var(--white-hover)
+}
+
+
 .navbarspace{
 	max-width:60px;
 	width:100%;

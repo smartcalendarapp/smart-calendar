@@ -80,6 +80,9 @@
 .hover\:background-orange-hover:hover{
 	background-color:var(--orange-hover)
 }
+.hover\:background-purple-hover:hover{
+	background-color:var(--purple-hover)
+}
 .hover\:background-red-transparent-hover:hover{
 	background-color:var(--red-transparent-hover)
 }

@@ -1121,7 +1121,7 @@ body {
 	}
 
 	50% {
-		box-shadow: var(--purple-transparent) 0px 2px 20px -5px;
+		box-shadow: var(--purple-transparent) 0px 2px 20px -4px;
 	}
 
 	100% {

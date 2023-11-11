@@ -1957,7 +1957,7 @@ class Calendar {
 											</g>
 											</g>
 										</svg>	
-										<span class="tooltiptextcenter text-left">Event: a fixed-time commitment.<br>Task: auto-scheduled by our app<br>for the optimal time.</span>
+										<span class="tooltiptextleft text-left">Event: a fixed-time commitment.<br>Task: auto-scheduled by our app<br>for the optimal time.</span>
 									</div>
 								</div>
 							</div>
@@ -2358,7 +2358,9 @@ class Calendar {
 					<div class="infogroup">
 						<div class="infotext selecttext nowrap">${calendar.settings.gettasksuggestions == true && item.iseventsuggestion ?
 						`<span class="align-center pointer-auto display-inline-flex flex-row column-gap-6px">
-							<span class="transition-duration-100 text-12px suggestionborder hover:text-purple-hover pointer-auto gap-6px text-purple todoeventsuggestiondate pointer transition-duration-100 padding-6px-12px border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: <span class="text-bold">${Calendar.Event.getFullStartEndText(item)}</span></span>
+							<span class="tooltip transition-duration-100 text-12px suggestionborder hover:background-tint-1 pointer-auto gap-6px text-purple todoeventsuggestiondate pointer transition-duration-100 padding-6px-12px border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: <span class="text-bold">${Calendar.Event.getFullStartEndText(item)}</span>
+							<span class="tooltiptextcenter">Click to accept time</span>
+							</span>
 							<div class="display-flex flex-row gap-6px">
 								<div class="text-white transition-duration-100 nowrap pointer width-fit background-green hover:background-green-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
 								<div class="text-white transition-duration-100 nowrap pointer width-fit background-red hover:background-red-hover border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
@@ -4207,7 +4209,6 @@ function geteventsuggestion(){
 
 	startAutoSchedule({scheduletodos: [], eventsuggestiontodos: suggesttodos })
 }
-//here6
 
 
 
