@@ -6066,10 +6066,14 @@ function getmontheventdata(item, currentdate, timestamp) {
 		itemclasses.push('greyedoutevent')
 	}
 
+	if(item.iseventsuggestion){
+		itemclasses.push('eventsuggestionglow')
+	}
+
 
 	let output = ''
 	output = `
-	<div style="background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`}" class="popupbutton monthcontainerwrap ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickmonthcontainer(event, ${timestamp})">
+	<div style="${!item.iseventsuggestion ? `background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`}` : ''}" class="popupbutton monthcontainerwrap ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickmonthcontainer(event, ${timestamp})">
 		<div class="monthcontainerwraptextgroup">
 			<div class="monthcontainerwraptext">
 				<div class="monthcontainerwraptextdisplay ${itemclasses2.join(' ')}">
