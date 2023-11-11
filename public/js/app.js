@@ -10895,7 +10895,7 @@ async function accepteventsuggestion(event, id){
 		myconfetti.reset()
 	}catch(e){}
 }
-//here5
+
 
 //reject event suggestion
 function rejecteventsuggestion(id){
