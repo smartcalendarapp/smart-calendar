@@ -6103,6 +6103,7 @@ function getmontheventdata(item, currentdate, timestamp) {
 	}
 
 	if(item.iseventsuggestion){
+		itemclasses.push('suggestionborder')
 		itemclasses.push('eventsuggestionglow')
 	}
 
@@ -11772,6 +11773,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 	}
 
 	if(item.iseventsuggestion){
+		itemclasses.push('suggestionborder')
 		itemclasses.push('eventsuggestionglow')
 	}
 
@@ -11905,6 +11907,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	}
 
 	if(item.iseventsuggestion){
+		itemclasses.push('suggestionborder')
 		itemclasses.push('eventsuggestionglow')
 	}
 
