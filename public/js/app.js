@@ -3496,9 +3496,12 @@ class Calendar {
 		appleemail.innerHTML = clientinfo.apple.email || 'Could not load email'
 
 
-		//task suggestions
+		//AI suggestions
 		let tasksuggestionscheckbox = getElement('tasksuggestionscheckbox')
 		tasksuggestionscheckbox.checked = calendar.settings.gettasksuggestions
+
+		let eventsuggestionscheckbox = getElement('eventsuggestionscheckbox')
+		eventsuggestionscheckbox.checked = calendar.settings.geteventsuggestions
 	}
 
 
@@ -4148,7 +4151,7 @@ function geteventsuggestion(){
 
 	//select eligible todos to get suggestion
 	let suggestabletodos = calendar.todos.filter(d => 
-		calendar.settings.gettasksuggestions == true
+		calendar.settings.geteventsuggestions == true
 		&&
 		d.title.length > 2
 		&&
@@ -6539,6 +6542,12 @@ function toggletasksuggestions(event){
 	calendar.settings.gettasksuggestions = event.target.checked
 	calendar.updateSettings()
 }
+
+function toggleeventsuggestions(event){
+	calendar.settings.geteventsuggestions = event.target.checked
+	calendar.updateSettings()
+}
+
 
 function toggleemailnotifs(event){
 	calendar.emailreminderenabled = event.target.checked
@@ -9913,7 +9922,7 @@ function gettododata(item) {
 										${Calendar.Event.isEvent(item) ? 
 											`${calendar.settings.gettasksuggestions == true && item.iseventsuggestion ?
 												`<span class="margin-left-6px"></span>
-												<span class="pointer-auto display-inline-flex flex-row column-gap-6px">
+												<span class="align-center pointer-auto display-inline-flex flex-row column-gap-6px">
 													<span class="transition-duration-100 text-12px suggestionborder hover:text-purple-hover pointer-auto gap-6px text-purple todoeventsuggestiondate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: ${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}</span>
 													<div class="display-flex flex-row gap-6px visibility-hidden todoeventsuggestiongroup">
 														<div class="nowrap text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
@@ -10824,26 +10833,26 @@ async function accepteventsuggestion(event, id){
 	calendar.updateTodo()
 
 	let confetticanvas = getElement('confetticanvas')
-		let myconfetti = confetti.create(confetticanvas, {
-			resize: true,
-			useWorker: true
-		})
+	let myconfetti = confetti.create(confetticanvas, {
+		resize: true,
+		useWorker: true
+	})
 
-		await myconfetti({
-			particleCount: 20,
-			gravity: 0.75,
-			startVelocity: 15,
-			decay: 0.94,
-			ticks: 100,
-			origin: {
-				x: (event.clientX) / (window.innerWidth || document.body.clientWidth),
-				y: (event.clientY) / (window.innerHeight || document.body.clientHeight)
-			}
-		})
+	await myconfetti({
+		particleCount: 20,
+		gravity: 0.75,
+		startVelocity: 15,
+		decay: 0.94,
+		ticks: 100,
+		origin: {
+			x: (event.clientX) / (window.innerWidth || document.body.clientWidth),
+			y: (event.clientY) / (window.innerHeight || document.body.clientHeight)
+		}
+	})
 
-		try{
-			myconfetti.reset()
-		}catch(e){}
+	try{
+		myconfetti.reset()
+	}catch(e){}
 }
 //here5
 
@@ -10871,6 +10880,9 @@ async function todocompleted(event, id) {
 
 	if(item.completed){
 		if(Calendar.Event.isEvent(item)){
+			//cancel suggestion
+			item.iseventsuggestion = false
+
 			let currentdate = new Date()
 
 			if(new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() > currentdate.getTime()){
@@ -14314,6 +14326,10 @@ function moveevent(event) {
 	let oldtempdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 	if (Math.abs(tempdate1.getTime() - oldtempdate.getTime()) < 900000) return
 
+	//accept suggestion
+	item.iseventsuggestion = false
+
+
 	item.start.minute = tempdate1.getHours() * 60 + tempdate1.getMinutes()
 	item.start.day = tempdate1.getDate()
 	item.start.month = tempdate1.getMonth()
@@ -14509,6 +14525,10 @@ function moveeventbottom(event) {
 	let oldtempdate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
 	if (Math.abs(tempdate1.getTime() - oldtempdate.getTime()) < 900000) return
 
+	//accept suggestion
+	item.iseventsuggestion = false
+
+
 	if (tempdate1.getTime() - tempdate2.getTime() < 15 * 60000 && tempdate1.getTime() - tempdate2.getTime() >= 0) {
 		tempdate1.setTime(tempdate2.getTime() + 15 * 60000)
 	}
@@ -14586,6 +14606,10 @@ function moveeventtop(event) {
 	//min delta y 15 minutes
 	let oldtempdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 	if (Math.abs(tempdate1.getTime() - oldtempdate.getTime()) < 900000) return
+
+	//accept suggestion
+	item.iseventsuggestion = false
+
 
 	if (tempdate1.getTime() - tempdate2.getTime() > -15 * 60000 && tempdate1.getTime() - tempdate2.getTime() <= 0) {
 		tempdate1.setTime(tempdate2.getTime() - 15 * 60000)
