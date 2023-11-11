@@ -342,6 +342,24 @@ function closedemovideo(){
 }
 
 
+//LOGIN
+async function logingoogle(options){
+	let errorwrap = getElement('errorwrap')
+	errorwrap.classList.add('display-none')
+	const response = await fetch('/auth/google', { 
+		method: 'POST',
+		redirect: 'follow',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({ options: options })
+	})
+	if(response.status == 200){
+		const data = await response.json()
+		window.location.replace(data.url)
+	}
+}
+
 //MENU
 function clickmenu(){
 	let menu = getElement('menu')
