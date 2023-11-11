@@ -178,6 +178,13 @@ img{
 }
 
 
+.buttonblack {
+	height:18px;
+	width:auto;
+	stroke: var(--black);
+	fill: none;
+	display: block;
+}
 .buttonwhite {
 	height:18px;
 	width:auto;
