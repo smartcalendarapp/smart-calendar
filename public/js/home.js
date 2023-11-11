@@ -344,8 +344,7 @@ function closedemovideo(){
 
 //LOGIN
 async function logingoogle(options){
-	let errorwrap = getElement('errorwrap')
-	errorwrap.classList.add('display-none')
+	
 	const response = await fetch('/auth/google', { 
 		method: 'POST',
 		redirect: 'follow',
