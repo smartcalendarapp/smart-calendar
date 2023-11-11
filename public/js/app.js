@@ -4081,7 +4081,7 @@ async function gettasksuggestions(inputitem){
 	}else{
 		//select eligible todos to get suggestion
 
-		let suggestabletodos = [...calendar.events, ...calendar.todos].filter(d => 
+		let suggestabletodos = [...calendar.events.filter(d => d.type == 1), ...calendar.todos].filter(d => 
 			calendar.settings.gettasksuggestions == true
 			&&
 			!d.completed && (!Calendar.Todo.isTodo(d) || d.duration > 30) && d.title.length > 5
