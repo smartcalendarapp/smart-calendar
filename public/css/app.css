@@ -1590,11 +1590,6 @@ body {
 	visibility: visible;
 }
 
-.todoitemcontainer:hover .todoeventsuggestiongroup{
-	visibility:visible;
-}
-
-
 .todoitemcontainer:hover .hoverpriority {
 	visibility: visible;
 }

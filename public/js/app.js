@@ -68,6 +68,7 @@ function generateID() {
 }
 
 function formatURL(text) {
+	if(!text) return ''
 	let regex = /((?:https?:\/\/)?(?:www\.)?(?:[\w-]+\.)+[\w]{2,}(?:\/[\w-_.~%\/#?&=!$()'*+,;:@]+)?)/gi
 	return text.replace(regex, function (url) {
 		return `<a href="${url}" class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">${url}</a>`
@@ -75,6 +76,7 @@ function formatURL(text) {
 }
 
 function cleanInput(text) {
+	if(!text) return ''
 	let map = {
 		'&': '&amp;',
 		'<': '&lt;',
@@ -1946,7 +1948,18 @@ class Calendar {
 			 					<div class="inputgroup">
 								 	<div class="text-14px text-primary width90px">Type</div>
 									<div class="display-flex" id="eventinfoeventtype"></div>
-				 				</div>
+
+									<div class="tooltip popupbutton padding-6px bordertertiary border-round transition-duration-100 hover:background-tint-1 pointer pointer-auto">
+										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhitesmall">
+											<g>
+											<g opacity="1">
+											<path d="M121.533 186.571C130.867 186.571 135.134 180.171 135.134 171.637L135.134 163.103C135.401 145.501 141.668 138.167 163.003 123.5C185.938 108.032 200.473 90.1634 200.473 64.4279C200.473 24.4244 167.937 0.489134 127.4 0.489134C97.264 0.489134 70.8618 15.757 59.5275 41.4926C56.7272 47.7598 55.5271 53.8936 55.5271 58.9607C55.5271 66.5614 59.9275 71.8952 68.0615 71.8952C74.8621 71.8952 79.3958 67.8948 81.396 61.3609C88.1966 36.0254 104.998 28.4246 126.467 28.4246C152.469 28.4246 171.871 41.0925 171.871 64.2945C171.871 83.3628 161.003 93.0304 143.935 105.031C123 119.566 107.665 136.167 107.665 159.636L107.665 172.037C107.665 180.571 112.332 186.571 121.533 186.571ZM121.533 255.511C132.2 255.511 140.601 246.977 140.601 236.576C140.601 226.042 132.2 217.641 121.533 217.641C111.132 217.641 102.598 226.042 102.598 236.576C102.598 246.977 111.132 255.511 121.533 255.511Z" fill-rule="nonzero" opacity="1"></path>
+											</g>
+											</g>
+										</svg>	
+										<span class="tooltiptextcenter text-left">Event: a fixed-time commitment.<br>Task: auto-scheduled by our app<br>for the optimal time.</span>
+									</div>
+								</div>
 							</div>
 							
 							<div class="horizontalbar"></div>`)
@@ -2345,10 +2358,10 @@ class Calendar {
 					<div class="infogroup">
 						<div class="infotext selecttext nowrap">${calendar.settings.gettasksuggestions == true && item.iseventsuggestion ?
 						`<span class="align-center pointer-auto display-inline-flex flex-row column-gap-6px">
-							<span class="transition-duration-100 text-12px suggestionborder hover:text-purple-hover pointer-auto gap-6px text-purple todoeventsuggestiondate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: ${Calendar.Event.getFullStartEndText(item)}</span>
+							<span class="transition-duration-100 text-12px suggestionborder hover:text-purple-hover pointer-auto gap-6px text-purple todoeventsuggestiondate pointer transition-duration-100 padding-6px-12px border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: <span class="text-bold">${Calendar.Event.getFullStartEndText(item)}</span></span>
 							<div class="display-flex flex-row gap-6px">
-								<div class="transition-duration-100 nowrap pointer width-fit background-green hover:background-green-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
-								<div class="transition-duration-100 nowrap pointer width-fit background-red hover:background-red-hover border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
+								<div class="text-white transition-duration-100 nowrap pointer width-fit background-green hover:background-green-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
+								<div class="text-white transition-duration-100 nowrap pointer width-fit background-red hover:background-red-hover border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
 							</div>
 						</span>`
 						:
@@ -2357,10 +2370,22 @@ class Calendar {
 
 					//type
 					if(!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item)){
-						output.push(`<div class="infogroup">
+						output.push(`
+						<div class="infogroup">
 							<div class="inputgroup">
-								
-								<div class="display-flex" id="eventinfoeventtype"></div></div>
+								<div class="display-flex" id="eventinfoeventtype"></div>
+
+								<div class="tooltip popupbutton padding-6px bordertertiary border-round transition-duration-100 hover:background-tint-1 pointer pointer-auto">
+									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhitesmall">
+										<g>
+										<g opacity="1">
+										<path d="M121.533 186.571C130.867 186.571 135.134 180.171 135.134 171.637L135.134 163.103C135.401 145.501 141.668 138.167 163.003 123.5C185.938 108.032 200.473 90.1634 200.473 64.4279C200.473 24.4244 167.937 0.489134 127.4 0.489134C97.264 0.489134 70.8618 15.757 59.5275 41.4926C56.7272 47.7598 55.5271 53.8936 55.5271 58.9607C55.5271 66.5614 59.9275 71.8952 68.0615 71.8952C74.8621 71.8952 79.3958 67.8948 81.396 61.3609C88.1966 36.0254 104.998 28.4246 126.467 28.4246C152.469 28.4246 171.871 41.0925 171.871 64.2945C171.871 83.3628 161.003 93.0304 143.935 105.031C123 119.566 107.665 136.167 107.665 159.636L107.665 172.037C107.665 180.571 112.332 186.571 121.533 186.571ZM121.533 255.511C132.2 255.511 140.601 246.977 140.601 236.576C140.601 226.042 132.2 217.641 121.533 217.641C111.132 217.641 102.598 226.042 102.598 236.576C102.598 246.977 111.132 255.511 121.533 255.511Z" fill-rule="nonzero" opacity="1"></path>
+										</g>
+										</g>
+									</svg>	
+									<span class="tooltiptextcenter text-left">Event: a fixed-time commitment.<br>Task: auto-scheduled by our app<br>for the optimal time.</span>
+								</div>
+
 							</div>
 						</div>`)
 					}
@@ -4129,7 +4154,7 @@ async function gettasksuggestions(inputitem){
 				let duration = getDuration(temptext)
 				if(duration.value != null){
 					myduration = duration.value
-					temptext = temptext.replace(duration.match, '').replace(/^(\d+\.|-)/, '').trim()
+					temptext = temptext.replace(duration.match, '').replace(/^(\d+\.|-)/, '').replace(/\.+$/, '').trim()
 				}
 
 				if(myduration == null){
@@ -9747,7 +9772,7 @@ function gettododata(item) {
 
 			if(i % 2 == 1 || i == item.subtasksuggestions.length - 1){
 				if(i % 2 == 0){
-					tempoutput.push(`<div class="min-width-160px padding-left-12px padding-right-12px flex-1"></div>`)
+					tempoutput.push(`<div class="min-width-160px flex-1 display-flex border-box flex-column padding-left-12px padding-right-12px"></div>`)
 				}
 
 				tempoutput2.push(`<div class="gap-12px display-flex flex-row flex-1 flex-wrap-wrap">${tempoutput.join('')}</div>`)
@@ -9756,7 +9781,7 @@ function gettododata(item) {
 		}
 
 		subtasksuggestionsoutput = `
-		<div class="todosuggestionwrap padding-right-12px padding-top-12px display-flex flex-column gap-6px subtaskgroup">
+		<div class="todosuggestionwrap display-flex flex-column gap-6px subtaskgroup">
 			<div class="display-flex flex-column gap-12px">
 				${tempoutput2.join('')}
 			</div>
@@ -9768,6 +9793,21 @@ function gettododata(item) {
 		</div>` 
 	}
 
+
+	let eventsuggestionoutput = ''
+	if(Calendar.Event.isEvent(item) && calendar.settings.gettasksuggestions == true && item.iseventsuggestion){
+		eventsuggestionoutput = `
+		<span class="margin-left-6px"></span>
+		<span class="flex-wrap-wrap align-center pointer-auto display-inline-flex flex-row gap-6px">
+			<span class="pointer-auto tooltip hover:background-tint-1 text-12px suggestionborder gap-6px text-purple todoeventsuggestiondate padding-6px-12px pointer border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: <span class="text-bold">${Calendar.Event.getStartText(item)}</span>
+			<span class="tooltiptextcenter">Click to accept time</span>
+			</span>
+			<div class="display-flex flex-row gap-6px small:visibility-visible visibility-hidden todoeventsuggestiongroup">
+				<div class="text-white transition-duration-100 nowrap pointer width-fit background-green hover:background-green-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
+				<div class="text-white transition-duration-100 nowrap pointer width-fit background-red hover:background-red-hover border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
+			</div>
+		</span>`
+	}
 
 	let output = ''
 	if (selectededittodoid == item.id) {
@@ -9911,7 +9951,7 @@ function gettododata(item) {
 												``
 												:
 												`<span class="margin-right-6px text-12px hover:text-red-hover pointer-auto tooltip gap-6px text-red todoscheduleddate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">
-													${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}
+													${Calendar.Event.getStartText(item)}
 													<span class="tooltiptextcenter">Show calendar event</span>
 												</span>`}`
 											:
@@ -9933,22 +9973,8 @@ function gettododata(item) {
 											<span class="tooltiptextcenter">Repeats ${getRepeatText(item, true)}</span>
 										</span>` : ''}
 
-
-										${Calendar.Event.isEvent(item) ? 
-											`${calendar.settings.gettasksuggestions == true && item.iseventsuggestion ?
-												`<span class="margin-left-6px"></span>
-												<span class="align-center pointer-auto display-inline-flex flex-row column-gap-6px">
-													<span class="transition-duration-100 text-12px suggestionborder hover:text-purple-hover pointer-auto gap-6px text-purple todoeventsuggestiondate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: ${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}</span>
-													<div class="display-flex flex-row gap-6px visibility-hidden todoeventsuggestiongroup">
-														<div class="transition-duration-100 nowrap pointer width-fit background-green hover:background-green-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
-														<div class="transition-duration-100 nowrap pointer width-fit background-red hover:background-red-hover border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
-													</div>
-												</span>`
-												:
-												``}`
-											:
-											``
-										}
+										${eventsuggestionoutput}
+										
 									</div>
 
 									${item.googleclassroomid ? `<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none text-14px hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open Google Classroom assignment</a>` : ``}
@@ -11753,7 +11779,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 	<span class="margin-left-6px"></span>
 	<span class="flex-wrap-wrap align-center pointer-auto 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-auto gap-6px text-white background-purple todoeventsuggestiondate hover:background-purple-hover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: ${Calendar.Event.getShortStartEndText(item)}</span>
+		<span class="transition-duration-100 text-12px pointer-auto gap-6px text-white background-purple todoeventsuggestiondate hover:background-purple-hover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: <span class="text-bold">${Calendar.Event.getShortStartEndText(item)}</span></span>
 		<div class="transition-duration-100 text-white background-green hover:background-green-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
 		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
 	</span>` : ''
@@ -11886,7 +11912,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	<span class="margin-left-6px"></span>
 	<span class="flex-wrap-wrap align-center pointer-auto 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-auto gap-6px text-white background-purple todoeventsuggestiondate hover:background-purple-hover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: ${Calendar.Event.getShortStartEndText(item)}</span>
+		<span class="transition-duration-100 text-12px pointer-auto gap-6px text-white background-purple todoeventsuggestiondate hover:background-purple-hover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: <span class="text-bold">${Calendar.Event.getShortStartEndText(item)}</span></span>
 		<div class="transition-duration-100 text-white background-green hover:background-green-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
 		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
 	</span>` : ''
