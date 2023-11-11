@@ -4138,7 +4138,6 @@ async function gettasksuggestions(inputitem){
 }
 
 const MAX_EVENT_SUGGESTIONS = 5
-let lastgeteventsuggestiondate;
 function geteventsuggestion(){
 	function getcalculatedweight(tempitem){
 		let currentdate = new Date()
@@ -4239,13 +4238,11 @@ function run() {
 	}, 1000)
 
 	if(clientinfo.betatester){
-		lastgeteventsuggestiondate = Date.now()
 		setInterval(async function(){
-			if(document.visibilityState === 'visible' && Date.now() - lastgeteventsuggestiondate > 10000){
-				lastgeteventsuggestiondate = Date.now()
+			if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && !isautoscheduling){
 				geteventsuggestion()
 			}
-		}, 10000)
+		}, 1000)
 	}
 	//here2
 
@@ -7805,7 +7802,7 @@ function startAutoSchedule({scheduletodos, eventsuggestiontodos}) {
 	}
 
 	//start
-	autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos, eventsuggestiontodos: eventsuggestiontodos})
+	autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos, eventsuggestiontodos: addedtodos.filter(d => eventsuggestiontodos.find(g => g.id == d.id))})
 }
 
 
@@ -9915,11 +9912,12 @@ function gettododata(item) {
 
 										${Calendar.Event.isEvent(item) ? 
 											`${calendar.settings.gettasksuggestions == true && item.iseventsuggestion ?
-												`<span class="display-inline-flex flex-row gap-6px">
+												`<span class="margin-left-6px"></span>
+												<span class="pointer-auto display-inline-flex flex-row column-gap-6px">
 													<span class="transition-duration-100 text-12px suggestionborder hover:text-purple-hover pointer-auto gap-6px text-purple todoeventsuggestiondate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: ${getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))} ${getHMText(item.start.minute)}</span>
 													<div class="display-flex flex-row gap-6px visibility-hidden todoeventsuggestiongroup">
-														<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
-														<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
+														<div class="nowrap text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
+														<div class="nowrap text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
 													</div>
 												</span>`
 												:
@@ -11718,9 +11716,11 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 		itemclasses.push('eventsuggestionglow')
 	}
 
-	let aisuggestiontext = item.iseventsuggestion ? `<span class="flex-wrap-wrap align-center pointer-auto 
+	let aisuggestiontext = item.iseventsuggestion ? `
+	<span class="margin-left-6px"></span>
+	<span class="flex-wrap-wrap align-center pointer-auto 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-auto gap-6px text-white background-purple todoeventsuggestiondate hover:background-purple-hover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap">AI suggestion: ${Calendar.Event.getShortStartEndText(item)}</span>
+		<span class="transition-duration-100 text-12px pointer-auto gap-6px text-white background-purple todoeventsuggestiondate hover:background-purple-hover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: ${Calendar.Event.getShortStartEndText(item)}</span>
 		<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
 		<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
 	</span>` : ''
@@ -11849,9 +11849,11 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 		itemclasses.push('eventsuggestionglow')
 	}
 
-	let aisuggestiontext = item.iseventsuggestion ? `<span class="flex-wrap-wrap align-center pointer-auto 
+	let aisuggestiontext = item.iseventsuggestion ? `
+	<span class="margin-left-6px"></span>
+	<span class="flex-wrap-wrap align-center pointer-auto 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-auto gap-6px text-white background-purple todoeventsuggestiondate hover:background-purple-hover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap">AI suggestion: ${Calendar.Event.getShortStartEndText(item)}</span>
+		<span class="transition-duration-100 text-12px pointer-auto gap-6px text-white background-purple todoeventsuggestiondate hover:background-purple-hover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: ${Calendar.Event.getShortStartEndText(item)}</span>
 		<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
 		<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
 	</span>` : ''
@@ -12588,7 +12590,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 
 
 		//check for todos that are currently being done - don't reschedule first one
-		let doingtodos = sortstartdate(smartevents).filter(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now() && !getconflictingevent(iteratedevents, d))
+		let doingtodos = sortstartdate(smartevents).filter(d => !d.iseventsuggestion && new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now() && !getconflictingevent(iteratedevents, d))
 		if(doingtodos[0]){
 			smartevents = smartevents.filter(d => d.id != doingtodos[0].id)
 		}
@@ -12623,7 +12625,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 
 				await sleep(300)
 
-				autoScheduleV2({smartevents: smartevents, addedtodos: addedtodos, resolvedpassedtodos: newresolvedpassedtodos})
+				autoScheduleV2({smartevents: smartevents, addedtodos: addedtodos, resolvedpassedtodos: newresolvedpassedtodos, eventsuggestiontodos: eventsuggestiontodos})
 			}
 
 			//show popup
@@ -13209,8 +13211,9 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 			useWorker: true
 		})
 
+		let confettievents = modifiedevents.filter(d => !d.iseventsuggestion)
 		let promises = []
-		for (let item of modifiedevents) {
+		for (let item of confettievents) {
 			let itemelement = getElement(item.id)
 			if (!itemelement) continue
 			let itemrect = itemelement.getBoundingClientRect()
