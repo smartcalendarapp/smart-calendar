@@ -13210,8 +13210,9 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 		}
 
 		//post animate
-		if(addedtodos.length > 0){
-			displayalert(`${addedtodos.length} task${addedtodos.length == 1 ? ' was' : 's were'} successfully scheduled.`)
+		let realaddedtodos = addedtodos.filter(d => !d.iseventsuggestion)
+		if(realaddedtodos.length > 0){
+			displayalert(`${realaddedtodos.length} task${realaddedtodos.length == 1 ? ' was' : 's were'} successfully scheduled.`)
 		}
 
 		closeanimate()

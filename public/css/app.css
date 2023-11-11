@@ -1130,50 +1130,31 @@ body {
 }
 
 .suggestionborder{
-	border:1px solid var(--purple-transparent);
-	position:relative;
-}
-.suggestionborder::after{
-	position:absolute;
-	content:"";
-	left:0;
-	top:0;
-	right:0;
-	bottom:0;
-	box-shadow: var(--purple-transparent) 0px 2px 12px -2px;
 	animation-name: suggestionborder;
 	animation-duration: 4s;
 	animation-iteration-count: infinite;
 	animation-timing-function: ease-in-out;
 	opacity: 1;
+	border:1px solid var(--purple-transparent);
+	box-shadow: var(--purple-transparent) 0px 2px 12px -5px;
 }
 
 .eventsuggestionglow{
+	animation-name: suggestionborder;
+	animation-duration: 4s;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+	opacity: 1;
 	border:1px solid var(--purple-transparent) !important;
+	box-shadow: var(--purple-transparent) 0px 2px 12px -2px;
 	background-image: repeating-linear-gradient(
 		-45deg, 
 		transparent, 
 		transparent 10px, 
 		var(--background-tint-1) 10px, 
 		var(--background-tint-1)  20px
-	);
-	position:relative;
+	)
 }
-.eventsuggestionglow::after{
-	position:absolute;
-	content:"";
-	left:0;
-	top:0;
-	right:0;
-	bottom:0;
-	box-shadow: var(--purple-transparent) 0px 2px 12px -2px;
-	animation-name: suggestionborder;
-	animation-duration: 4s;
-	animation-iteration-count: infinite;
-	animation-timing-function: ease-in-out;
-	opacity: 1;
-}
-
 
 .todosuggestionwrap:hover .hovertodosuggestiongroup{
 	visibility: visible;
