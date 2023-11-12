@@ -1149,6 +1149,10 @@ body {
 	)
 }
 
+.selectedeventsuggestion{
+	background-color:var(--background-tint-1);
+}
+
 .todosuggestionwrap:hover .hovertodosuggestiongroup{
 	visibility: visible;
 }
@@ -1539,7 +1543,6 @@ body {
 .selectedevent .text-quaternary{
 	color:var(--white) !important;
 }
-
 
 
 .completedtext {

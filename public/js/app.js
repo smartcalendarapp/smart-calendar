@@ -5936,16 +5936,25 @@ function getalldayeventdata(item, currentdate, timestamp) {
 
 
 	if (selectedeventid == item.id) {
-		itemclasses.push('selectedevent')
-		itemclasses2.push('selectedtext')
+		if(item.iseventsuggestion){
+			itemclasses.push('selectedeventsugestion')
+		}else{
+			itemclasses.push('selectedevent')
+			itemclasses2.push('selectedtext')
+		}
 	}
 
 	if (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() < Date.now()) {
 		itemclasses.push('greyedoutevent')
 	}
 
+	if(item.iseventsuggestion){
+		itemclasses.push('suggestionborder')
+		itemclasses.push('eventsuggestionglow')
+	}
+
 	let output = ''
-	output = `<div style="background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`}" class="popupbutton monthcontainerwrap ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickdayevent(event, ${timestamp})">
+	output = `<div style="${!item.iseventsuggestion ? `background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`}` : ''}" class="popupbutton monthcontainerwrap ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickdayevent(event, ${timestamp})">
 		<div class="monthcontainerwraptextgroup">
 
 			<div class="monthcontainerwraptext">
@@ -6095,8 +6104,12 @@ function getmontheventdata(item, currentdate, timestamp) {
 	let itemclasses2 = []
 
 	if (selectedeventid == item.id) {
-		itemclasses.push('selectedevent')
-		itemclasses2.push('selectedtext')
+		if(item.iseventsuggestion){
+			itemclasses.push('selectedeventsugestion')
+		}else{
+			itemclasses.push('selectedevent')
+			itemclasses2.push('selectedtext')
+		}
 	}
 
 	if (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() < Date.now()) {
@@ -11764,9 +11777,13 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 
 
 	if (selectedeventid == item.id) {
-		itemclasses.push('selectedevent')
-		itemclasses3.push('selectedcalendarevent')
-		itemclasses2.push('selectedtext')
+		if(item.iseventsuggestion){
+			itemclasses.push('selectedeventsugestion')
+		}else{
+			itemclasses.push('selectedevent')
+			itemclasses3.push('selectedcalendarevent')
+			itemclasses2.push('selectedtext')
+		}
 	}
 
 	if(myheight <= 15){
@@ -11894,9 +11911,13 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 
 	if (selectedeventid == item.id) {
-		itemclasses.push('selectedevent')
-		itemclasses3.push('selectedcalendarevent')
-		itemclasses2.push('selectedtext')
+		if(item.iseventsuggestion){
+			itemclasses.push('selectedeventsugestion')
+		}else{
+			itemclasses.push('selectedevent')
+			itemclasses3.push('selectedcalendarevent')
+			itemclasses2.push('selectedtext')
+		}
 	}
 
 	if (tempenddate.getTime() < Date.now()) {
