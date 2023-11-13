@@ -5,7 +5,7 @@ const DAYLIST = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday
 const SHORTDAYLIST = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const SHORTESTDAYLIST = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 
-const DEFAULTCOLORS = ['#f54842', '#faa614', '#2bc451', '#2693ff', '#916bfa']
+const DEFAULTCOLORS = ['#ff2e2e', '#ff932e', '#ffe32e', '#b4f22e', '#2ad143', '#18f595', '#18f5ea', '#18a4f5', '#185bf5', '#4724f2', '#8138ff', '#b232fc', '#f022d8', '#e62971', '#000000']//['#f54842', '#faa614', '#2bc451', '#2693ff', '#916bfa']
 
 const REMINDER_PRESETS = [0, 300000, 900000, 3600000, 3600000*6, 86400000]
 
@@ -2119,28 +2119,30 @@ class Calendar {
 								<div class="inputgroup">
 						 			<div class="text-14px text-primary width90px">Color</div>
 									<div class="display-flex flex-row gap-6px">
-										<div class="eventcolorgroup">
+										<div class="flex-wrap-wrap eventcolorgroup">
 											${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" onclick="eventcolor('${d}')">${getchecksmall(d == item.hexcolor)}</div>`).join('')}
-										</div>
-										${!DEFAULTCOLORS.find(d => d == item.hexcolor) ? 
-											`<div class="eventcolor eventcolorinputwrap padding-0 overflow-hidden relative" style="background-color:${item.hexcolor}">
-												<div class="padding-6px display-flex">
-													${getchecksmall(true)}
-												</div>
-												<input type="color" value="${item.hexcolor}" class="eventcolorinput" onchange="eventcolor(event.target.value)"/>
-											</div>`
-											:
-											`<div class="relative eventcolorinputwrap border-round text-14px text-primary background-tint-1 pointer transition-duration-100 hover:background-tint-2">
-												<div class="padding-6px display-flex">
-													<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallfill">
-														<g>
-														<path d="M128 6.1875C121.925 6.1875 117 11.1124 117 17.1875L117 117L17.1875 117C11.1124 117 6.1875 121.925 6.1875 128C6.1875 134.075 11.1124 139 17.1875 139L117 139L117 238.812C117 244.888 121.925 249.813 128 249.812C134.075 249.812 139 244.888 139 238.812L139 139L238.812 139C244.888 139 249.813 134.075 249.812 128C249.812 121.925 244.888 117 238.812 117L139 117L139 17.1875C139 11.1124 134.075 6.1875 128 6.1875Z" fill-rule="nonzero" opacity="1" ></path>
-														</g>
-													</svg>
-												</div>
-												<input type="color" class="eventcolorinput" onchange="eventcolor(event.target.value)"/>
-											</div>`}
-											
+
+											${!DEFAULTCOLORS.find(d => d == item.hexcolor) ? 
+												`<div class="eventcolor eventcolorinputwrap padding-0 overflow-hidden relative" style="background-color:${item.hexcolor}">
+													<div class="padding-6px display-flex">
+														${getchecksmall(true)}
+													</div>
+													<input type="color" value="${item.hexcolor}" class="eventcolorinput" onchange="eventcolor(event.target.value)"/>
+												</div>`
+												:
+												`<div class="relative eventcolorinputwrap border-round text-14px text-primary background-tint-1 pointer transition-duration-100 hover:background-tint-2">
+													<div class="padding-6px display-flex">
+														<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallfill">
+															<g>
+															<path d="M128 6.1875C121.925 6.1875 117 11.1124 117 17.1875L117 117L17.1875 117C11.1124 117 6.1875 121.925 6.1875 128C6.1875 134.075 11.1124 139 17.1875 139L117 139L117 238.812C117 244.888 121.925 249.813 128 249.812C134.075 249.812 139 244.888 139 238.812L139 139L238.812 139C244.888 139 249.813 134.075 249.812 128C249.812 121.925 244.888 117 238.812 117L139 117L139 17.1875C139 11.1124 134.075 6.1875 128 6.1875Z" fill-rule="nonzero" opacity="1" ></path>
+															</g>
+														</svg>
+													</div>
+													<input type="color" class="eventcolorinput" onchange="eventcolor(event.target.value)"/>
+												</div>`}
+
+											</div>
+												
 										</div>
 									</div>
 								</div>
@@ -7151,7 +7153,7 @@ async function getclientgooglecalendar() {
 		} else if (response.status == 200) {
 			const data = await response.json()
 
-			if(calendar.lastmodified > tempstartgetclientgooglecalendardate || isautoscheduling){
+			if(calendar.lastmodified > tempstartgetclientgooglecalendardate || isautoscheduling || issettingclientgooglecalendar){
 				isgettingclientgooglecalendar = false
 				return
 			}
@@ -7420,25 +7422,25 @@ function updatecalendaritempopup(id) {
 				<div class="display-flex flex-row gap-6px">
 					<div class="eventcolorgroup">
 						${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" onclick="calendarcolor(event, '${d}', '${item.id}')">${getchecksmall(d == item.hexcolor)}</div>`).join('')}
-					</div>
-					${!DEFAULTCOLORS.find(d => d == item.hexcolor) ? 
-						`<div class="eventcolor eventcolorinputwrap padding-0 overflow-hidden relative" style="background-color:${item.hexcolor}">
-							<div class="padding-6px display-flex">
-								${getchecksmall(true)}
-							</div>
-							<input type="color" value="${item.hexcolor}" class="eventcolorinput" onchange="calendarcolor(event, event.target.value, '${item.id}')"/>
-						</div>`
-						:
-						`<div class="relative eventcolorinputwrap border-round text-14px text-primary background-tint-1 pointer transition-duration-100 hover:background-tint-2">
-							<div class="padding-6px display-flex">
-								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallfill">
-									<g>
-									<path d="M128 6.1875C121.925 6.1875 117 11.1124 117 17.1875L117 117L17.1875 117C11.1124 117 6.1875 121.925 6.1875 128C6.1875 134.075 11.1124 139 17.1875 139L117 139L117 238.812C117 244.888 121.925 249.813 128 249.812C134.075 249.812 139 244.888 139 238.812L139 139L238.812 139C244.888 139 249.813 134.075 249.812 128C249.812 121.925 244.888 117 238.812 117L139 117L139 17.1875C139 11.1124 134.075 6.1875 128 6.1875Z" fill-rule="nonzero" opacity="1" ></path>
-									</g>
-								</svg>
-							</div>
-							<input type="color" class="eventcolorinput" onchange="calendarcolor(event, event.target.value, '${item.id}')"/>
-						</div>`}
+						${!DEFAULTCOLORS.find(d => d == item.hexcolor) ? 
+							`<div class="eventcolor eventcolorinputwrap padding-0 overflow-hidden relative" style="background-color:${item.hexcolor}">
+								<div class="padding-6px display-flex">
+									${getchecksmall(true)}
+								</div>
+								<input type="color" value="${item.hexcolor}" class="eventcolorinput" onchange="calendarcolor(event, event.target.value, '${item.id}')"/>
+							</div>`
+							:
+							`<div class="relative eventcolorinputwrap border-round text-14px text-primary background-tint-1 pointer transition-duration-100 hover:background-tint-2">
+								<div class="padding-6px display-flex">
+									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallfill">
+										<g>
+										<path d="M128 6.1875C121.925 6.1875 117 11.1124 117 17.1875L117 117L17.1875 117C11.1124 117 6.1875 121.925 6.1875 128C6.1875 134.075 11.1124 139 17.1875 139L117 139L117 238.812C117 244.888 121.925 249.813 128 249.812C134.075 249.812 139 244.888 139 238.812L139 139L238.812 139C244.888 139 249.813 134.075 249.812 128C249.812 121.925 244.888 117 238.812 117L139 117L139 17.1875C139 11.1124 134.075 6.1875 128 6.1875Z" fill-rule="nonzero" opacity="1" ></path>
+										</g>
+									</svg>
+								</div>
+								<input type="color" class="eventcolorinput" onchange="calendarcolor(event, event.target.value, '${item.id}')"/>
+							</div>`}
+						</div>
 				</div>
 			</div>
 
