@@ -5,7 +5,7 @@ const DAYLIST = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday
 const SHORTDAYLIST = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const SHORTESTDAYLIST = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 
-const DEFAULTCOLORS = ['#ff2e2e', '#ff932e', '#ffe32e', '#b4f22e', '#2ad143', '#18f595', '#18f5ea', '#18a4f5', '#185bf5', '#4724f2', '#8138ff', '#b232fc', '#f022d8', '#e62971', '#000000']//['#f54842', '#faa614', '#2bc451', '#2693ff', '#916bfa']
+const DEFAULTCOLORS = ['#ff2e2e', '#ff932e', '#ffe32e', '#b4f22e', '#2ad143', '#18f595', '#18f5ea', '#18a4f5', '#185bf5', '#4724f2', '#8138ff', '#b232fc', '#f022d8', '#e62971', '#000000']//['#f54842', '#faa614', '#2bc451', '#18a4f5', '#916bfa']
 
 const REMINDER_PRESETS = [0, 300000, 900000, 3600000, 3600000*6, 86400000]
 
@@ -831,7 +831,7 @@ class Calendar {
 			this.subscriptionurl = subscriptionurl
 			this.isprimary = isprimary
 			this.hidden = false
-			this.hexcolor = '#2693ff'
+			this.hexcolor = '#18a4f5'
 			this.id = generateID()
 			this.googleid = null
 			this.lastmodified = 0
@@ -878,7 +878,7 @@ class Calendar {
 			this.type = type
 			this.notes = notes
 			this.priority = 0
-			this.hexcolor = '#2693ff'
+			this.hexcolor = '#18a4f5'
 			this.repeat = {
 				frequency: null,
 				interval: null,
