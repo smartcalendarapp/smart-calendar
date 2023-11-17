@@ -3088,7 +3088,7 @@ async function getgptresponse(prompt) {
 
 const MAX_GPT_PER_DAY = 12
 const MAX_GPT_PER_DAY_BETA_TESTER = 36
-app.post('/gettasksuggestions', async (req, res) => {
+app.post('/getsubtasksuggestions', async (req, res) => {
 	try{
 		if(!req.session.user){
 			return res.status(401).json({ error: 'User is not signed in.' })

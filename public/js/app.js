@@ -2366,6 +2366,7 @@ class Calendar {
 							<div class="display-flex flex-row gap-6px">
 								<div class="text-white transition-duration-100 nowrap pointer width-fit background-green hover:background-green-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
 								<div class="text-white transition-duration-100 nowrap pointer width-fit background-red hover:background-red-hover border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
+								<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-14px" onclick="turnoffaisuggestions()">Turn off</div>
 							</div>
 						</span>`
 						:
@@ -4097,12 +4098,28 @@ function updatetime() {
 
 //AI suggestions
 let lastgettasksuggestionsdate;
-async function gettasksuggestions(inputitem){
+function getsubtasksuggestiontodos(){
+	return [...calendar.events.filter(d => d.type == 1), ...calendar.todos].filter(d => 
+		calendar.settings.gettasksuggestions == true
+		&&
+		!d.completed && (Calendar.Event.isEvent(d) || d.duration > 30) && d.title.length > 5
+		&&
+		(Calendar.Event.isEvent(d) || (!d.gotsubtasksuggestions && d.subtasksuggestions.length == 0))
+		&&
+		new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*30 //within 30 days
+		&&
+		!Calendar.Todo.isSubtask(d)
+		&&
+		d.repeat.frequency == null && d.repeat.interval == null
+	)
+}
+async function getsubtasksuggestions(inputitem){
 	function getcalculatedweight(tempitem){
 		let currentdate = new Date()
 		let timedifference = new Date(tempitem.endbefore.year, tempitem.endbefore.month, tempitem.endbefore.day, 0, tempitem.endbefore.minute).getTime() - currentdate.getTime()
 		return currentdate.getTime() * (tempitem.priority + 1) / Math.max(timedifference, 1) * tempitem.duration
 	}
+
 
 	let suggesttodo;
 	if(inputitem){
@@ -4110,26 +4127,16 @@ async function gettasksuggestions(inputitem){
 	}else{
 		//select eligible todos to get suggestion
 
-		let suggestabletodos = [...calendar.events.filter(d => d.type == 1), ...calendar.todos].filter(d => 
-			calendar.settings.gettasksuggestions == true
-			&&
-			!d.completed && (!Calendar.Todo.isTodo(d) || d.duration > 30) && d.title.length > 5
-			&&
-			(!Calendar.Todo.isTodo(d) || (!d.gotsubtasksuggestions && d.subtasksuggestions.length == 0))
-			&&
-			new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*30 //within 30 days
-			&&
-			!Calendar.Todo.isSubtask(d)
-			&&
-			d.repeat.frequency == null && d.repeat.interval == null
-		).sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
-		if(suggestabletodos.length == 0) return
+		let suggestabletodos = getsubtasksuggestiontodos().sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
+		if(suggestabletodos.length == 0){
+			return
+		}
 
 		suggesttodo = suggestabletodos[0]
 	}
 
 	try{
-		const response = await fetch('/gettasksuggestions', {
+		const response = await fetch('/getsubtasksuggestions', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -4178,19 +4185,13 @@ async function gettasksuggestions(inputitem){
 	}catch(err){
 		console.log(err)
 	}
+
 }
 
 const MAX_EVENT_SUGGESTIONS = 5
-function geteventsuggestion(){
-	function getcalculatedweight(tempitem){
-		let currentdate = new Date()
-		let timedifference = new Date(tempitem.endbefore.year, tempitem.endbefore.month, tempitem.endbefore.day, 0, tempitem.endbefore.minute).getTime() - currentdate.getTime()
-		return currentdate.getTime() * (tempitem.priority + 1) / Math.max(timedifference, 1)
-	}
-
-
-	//select eligible todos to get suggestion
-	let suggestabletodos = calendar.todos.filter(d => 
+function geteventsuggestiontodos(){
+	let subtasksuggestiontodos = getsubtasksuggestiontodos()
+	return calendar.todos.filter(d => 
 		calendar.settings.geteventsuggestions == true
 		&&
 		d.title.length > 2
@@ -4202,7 +4203,21 @@ function geteventsuggestion(){
 		new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*3 //within 3 days
 		&&
 		!Calendar.Todo.isMainTask(d)
-	).sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
+		&&
+		(!d.gotsubtasksuggestions && d.subtasksuggestions.length == 0)
+		&& 
+		!subtasksuggestiontodos.find(g => g.id == d.id)
+	)
+}
+function geteventsuggestion(){
+	function getcalculatedweight(tempitem){
+		let currentdate = new Date()
+		let timedifference = new Date(tempitem.endbefore.year, tempitem.endbefore.month, tempitem.endbefore.day, 0, tempitem.endbefore.minute).getTime() - currentdate.getTime()
+		return currentdate.getTime() * (tempitem.priority + 1) / Math.max(timedifference, 1)
+	}
+
+	//select eligible todos to get suggestion
+	let suggestabletodos = geteventsuggestiontodos().sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
 	if(suggestabletodos.length == 0) return
 
 	let existingeventsuggestionslength = calendar.events.filter(d => d.iseventsuggestion).length
@@ -4271,21 +4286,19 @@ function run() {
 		}
 	}, 100)
 
-	lastgettasksuggestionsdate = Date.now()
+	lastgettasksuggestionsdate = 0
 	setInterval(async function(){
-		if(document.visibilityState === 'visible' && Date.now() - lastgettasksuggestionsdate > 10000){
+		if(document.visibilityState === 'visible' && Date.now() - lastgettasksuggestionsdate > 5000 && selectededittodoid == null){
 			lastgettasksuggestionsdate = Date.now()
-			gettasksuggestions()
+			getsubtasksuggestions()
 		}
 	}, 1000)
 
-	if(clientinfo.betatester){
-		setInterval(async function(){
-			if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && !isautoscheduling){
-				geteventsuggestion()
-			}
-		}, 1000)
-	}
+	setInterval(async function(){
+		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && !isautoscheduling && selectededittodoid == null){
+			geteventsuggestion()
+		}
+	}, 1000)
 
 
 	//tick
@@ -7420,7 +7433,7 @@ function updatecalendaritempopup(id) {
 			<div class="inputgroup">
 				<div class="infotext width90px">Color</div>
 				<div class="display-flex flex-row gap-6px">
-					<div class="eventcolorgroup">
+					<div class="eventcolorgroup flex-wrap-wrap">
 						${DEFAULTCOLORS.map(d => `<div class="eventcolor" style="background-color:${d}" onclick="calendarcolor(event, '${d}', '${item.id}')">${getchecksmall(d == item.hexcolor)}</div>`).join('')}
 						${!DEFAULTCOLORS.find(d => d == item.hexcolor) ? 
 							`<div class="eventcolor eventcolorinputwrap padding-0 overflow-hidden relative" style="background-color:${item.hexcolor}">
@@ -8549,7 +8562,7 @@ function updatecreatetodo() {
 				   <div class="flex-1 display-flex flex-column gap-6px">
 					   <div class="align-flex-start width-full display-flex flex-column">
 		
-						   <div class="white-space-normal break-word todoitemtext text-16px">
+						   <div class="text-left white-space-normal break-word todoitemtext text-16px">
 							   ${Calendar.Todo.getTitle(item)}
 						   </div>
 
@@ -9554,7 +9567,7 @@ function typeaddtask(event, submit, index) {
 	//duration
 	let tempmatch3 = getDuration(finalstring)
 	if (tempmatch3.match) {
-		let regex = new RegExp(`\\b(((takes|needs|requires|takes\\s+me|lasts)\\s+)?${tempmatch3.match})\\b`)
+		let regex = new RegExp(`\\b(((takes|needs|requires|takes\\s+me|lasts)\\s+)${tempmatch3.match})\\b`)
 		let tempmatch4 = finalstring.match(regex)
 		if (tempmatch4) {
 			finalduration = tempmatch3.value
@@ -9803,8 +9816,8 @@ function gettododata(item) {
 			</div>
 			<div class="visibility-hidden hovertodosuggestiongroup small:visibility-visible display-flex flex-row gap-12px justify-flex-end">
 				<div class="text-blue pointer width-fit hover:text-decoration-underline text-14px" onclick="regeneratesubtasksuggestions('${item.id}')">Regenerate</div>
-				<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-14px" onclick="hidesubtasksuggestions('${item.id}')">Hide</div>
-				<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-14px" onclick="turnoffsubtasksuggestions()">Turn off</div>
+				<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-14px" onclick="hidesubtasksuggestions('${item.id}')">Ignore</div>
+				<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-14px" onclick="turnoffaisuggestions()">Turn off</div>
 			</div>
 		</div>` 
 	}
@@ -10137,7 +10150,7 @@ function regeneratesubtasksuggestions(id){
 
 	//send request
 	lastgettasksuggestionsdate = Date.now()
-	gettasksuggestions(item)
+	getsubtasksuggestions(item)
 
 	calendar.updateTodo()
 	calendar.updateHistory()
@@ -10151,7 +10164,7 @@ function hidesubtasksuggestions(id){
 	calendar.updateTodo()
 	calendar.updateHistory()
 }
-function turnoffsubtasksuggestions(){
+function turnoffaisuggestions(){
 	calendartabs = [3]
 	settingstab = 1
 	calendar.updateTabs()
@@ -11144,12 +11157,8 @@ function edittodo(id) {
 	if (selectedoption2 != -1) {
 		edittodopreferredtime = selectedoption2
 	}
-	edittodopriority = item.priority
 
 	calendar.updateTodo()
-
-	let edittodoinputtitle = getElement('edittodoinputtitle')
-	edittodoinputtitle.focus()
 }
 
 
@@ -12767,9 +12776,13 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 					}
 				}
 
+				//calc day index
 				let daystartafterdate = new Date(startafterdate)
 				daystartafterdate.setHours(0,0,0,0)
-				let dayindex = Math.floor((endbeforedate.getTime() - daystartafterdate.getTime()) * percentrange / 86400000)
+				let dayendbeforedate = new Date(endbeforedate)
+				dayendbeforedate.setHours(0,0,0,0)
+
+				let dayindex = Math.round((dayendbeforedate.getTime() - daystartafterdate.getTime()) * percentrange/86400000)
 
 				let startdate = new Date(daystartafterdate.getTime())
 				startdate.setDate(startdate.getDate() + dayindex)
