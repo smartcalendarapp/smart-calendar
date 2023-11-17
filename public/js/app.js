@@ -4105,7 +4105,8 @@ function getsubtasksuggestiontodos(){
 		!d.completed
 		&&
 		((Calendar.Event.isEvent(d) && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() - new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() > 30*1000) || (Calendar.Todo.isTodo(d) && d.duration > 30))
-		&& d.title.length > 5
+		&&
+		d.title.length > 5
 		&&
 		!d.gotsubtasksuggestions && d.subtasksuggestions.length == 0
 		&&
@@ -4191,7 +4192,79 @@ async function getsubtasksuggestions(inputitem){
 
 }
 
-const MAX_EVENT_SUGGESTIONS = 5
+async function createtodogetsubtasksuggestions(inputtext){
+	let tempitem = {
+		title: inputtext,
+		duration: createtododurationvalue
+	}
+
+	let clickcreatetodoaisuggestionsubtasksdivloading = getElement('clickcreatetodoaisuggestionsubtasksdivloading')
+	clickcreatetodoaisuggestionsubtasksdivloading.classList.remove('display-none')
+
+	let clickcreatetodoaisuggestionsubtasksdiverror = getElement('clickcreatetodoaisuggestionsubtasksdiverror')
+
+	try{
+		const response = await fetch('/getsubtasksuggestions', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				item: tempitem
+			})
+		})
+		if(response.status == 200){
+			let data = await response.json()
+
+			//parse and import subtasks
+			
+			let rawtext = data.data
+			if (rawtext.includes('\n')) {
+				rawtext = rawtext.replace(/,/g, '').split(/\n/g)
+			} else {
+				rawtext = rawtext.split(/,/g)
+			}
+			rawtext = rawtext.map(d => d.trim()).filter(d => d)
+
+			let newitems = []
+			for(let temptext of rawtext){
+				let myduration;
+				
+				let duration = getDuration(temptext)
+				if(duration.value != null){
+					myduration = duration.value
+					temptext = temptext.replace(duration.match, '').replace(/^(\d+\.|-)/, '').replace(/\.+$/, '').trim()
+				}
+
+				if(myduration == null){
+					myduration = 60
+				}
+
+				if(temptext){
+					newitems.push({ title: temptext, duration: myduration, id: generateID() })
+				}
+			}
+
+
+			createtodoaisuggestionsubtasks = newitems
+			updatecreatetodo()
+		}else if(response.status == 401){
+			let data = await response.json()
+			clickcreatetodoaisuggestionsubtasksdiverror.innerHTML = data.error
+		}
+	}catch(err){
+		console.log(err)
+
+		clickcreatetodoaisuggestionsubtasksdiverror.innerHTML = `Unexpected error, please try later or contact us.`
+	}
+
+	clickcreatetodoaisuggestionsubtasksdivloading.classList.add('display-none')
+
+}
+
+
+
+const MAX_EVENT_SUGGESTIONS = 3
 function geteventsuggestiontodos(){
 	return calendar.todos.filter(d => 
 		calendar.settings.geteventsuggestions == true
@@ -4202,11 +4275,13 @@ function geteventsuggestiontodos(){
 		&&
 		!d.goteventsuggestion
 		&&
-		new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*3 //within 3 days
+		new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*7 //within 7 days
 		&&
 		!Calendar.Todo.isMainTask(d)
 		&&
 		d.subtasksuggestions.length == 0
+		&&
+		(Calendar.Todo.isSubtask(d) || d.duration <= 60 || d.gotsubtasksuggestions)
 	)
 }
 function geteventsuggestion(){
@@ -8393,6 +8468,11 @@ function resetcreatetodo() {
 	let todoinputnotesprompttodotoday = getElement('todoinputnotesprompttodotoday')
 	todoinputnotesprompttodotoday.value = ''
 
+	let clickcreatetodoaisuggestionsubtasksdiv = getElement('clickcreatetodoaisuggestionsubtasksdiv')
+	clickcreatetodoaisuggestionsubtasksdiv.classList.remove('display-none')
+	let clickcreatetodoaisuggestionsubtasksdivloading = getElement('clickcreatetodoaisuggestionsubtasksdivloading')
+	clickcreatetodoaisuggestionsubtasksdivloading.classList.add('display-none')
+
 	createtododurationvalue = 30
 	createtododuedatevalue = {
 		year: nextdate.getFullYear(),
@@ -8411,6 +8491,8 @@ function resetcreatetodo() {
 	}
 
 	createtodosubtasks = []
+
+	createtodoaisuggestionsubtasks = []
 
 	createtodoshowsubtask = false
 
@@ -8439,6 +8521,7 @@ let createtodorepeatvalue = {
 	count: null,
 	until: null
 }
+let createtodoaisuggestionsubtasks = []
 
 function updatecreatetodo() {
 	let createtododuration = getElement('createtododuration')
@@ -8623,7 +8706,56 @@ function updatecreatetodo() {
 	}else{
 		createtodosubtasklist.classList.remove('display-none')
 	}
+
+	//ai suggestions
+	let tempoutput = []
+	let tempoutput2 = []
+	for(let i = 0; i < createtodoaisuggestionsubtasks.length; i++){
+		let d = createtodoaisuggestionsubtasks[i]
+
+		tempoutput.push(`<div class="min-width-160px flex-1 white-space-normal break-word suggestionborder display-flex gap-4px border-box transition-duration-100 flex-column padding-8px-12px pointer hover:background-tint-1 border-8px" onclick="clickcreatetodosubtasksuggestion('${d.id}')">
+			<span class="text-12px nowrap text-purple">AI suggestion:</span>
+			<span class="text-bold text-bold text-14px text-primary">${d.title} <span class="text-quaternary">- ${getDHMText(d.duration)}</span></span>
+		</div>`)
+
+		if(i % 2 == 1 || i == createtodoaisuggestionsubtasks.length - 1){
+			if(i % 2 == 0){
+				tempoutput.push(`<div class="min-width-160px flex-1 display-flex border-box flex-column padding-left-12px padding-right-12px"></div>`)
+			}
+
+			tempoutput2.push(`<div class="gap-12px display-flex flex-row flex-1 flex-wrap-wrap">${tempoutput.join('')}</div>`)
+			tempoutput = []
+		}
+	}
+
+	let createtodoaisuggestionsubtasksdiv = getElement('createtodoaisuggestionsubtasksdiv')
+	if(createtodoaisuggestionsubtasks.length > 0){
+		createtodoaisuggestionsubtasksdiv.classList.remove('display-none')
+	}else{
+		createtodoaisuggestionsubtasksdiv.classList.add('display-none')
+	}
+	createtodoaisuggestionsubtasksdiv.innerHTML = tempoutput2.join('')
 }
+
+function clickcreatetodosubtasksuggestion(id){
+	let subtaskitem = createtodoaisuggestionsubtasks.find(d => d.id == id)
+	if(!subtaskitem) return
+
+	createtodoaisuggestionsubtasks = createtodoaisuggestionsubtasks.filter(d => d.id != id)
+	createtodosubtasks.push(subtaskitem)
+	updatecreatetodo()
+}
+function clickcreatetodoaisuggestionsubtasks(){
+	let clickcreatetodoaisuggestionsubtasksdiv = getElement('clickcreatetodoaisuggestionsubtasksdiv')
+	clickcreatetodoaisuggestionsubtasksdiv.classList.add('display-none')
+
+	let todoinputtitle = getElement('todoinputtitle')
+	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
+	let todoinputtitleprompttodotoday = getElement('todoinputtitleprompttodotoday')
+	let finalstring = todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
+	createtodogetsubtasksuggestions(finalstring)
+}
+//here3
 
 
 let createtodoshowsubtask = false

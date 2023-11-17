@@ -3101,9 +3101,6 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
 
-		if(!user.accountdata.betatester && !user.accountdata.discord.id){
-			return res.status(401).json({ error: 'No access.' })
-		}
 
 		let appliedratelimit = MAX_GPT_PER_DAY
 		if(user.accountdata.betatester){
@@ -3115,7 +3112,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 
 		//check ratelimit
 		if(user.accountdata.gptusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
-			return res.status(401).json({ error: 'Daily Chat GPT limit reached.' })
+			return res.status(401).json({ error: 'Daily AI limit reached.' })
 		}
 
 		//set ratelimit
@@ -3148,7 +3145,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 		let gptresponse = await getgptresponse(`Task: ${item.title.slice(0, 50)}. Takes: ${getDHMText(item.duration)}. Provide: ONLY 2-4 names of subtasks, separated by comma in ONLY 1 line, with time needed for each. Example: Research 30m. No formatting.`)
 
 		if(!gptresponse){
-			return res.status(401).json({ error: 'Could not get response from Chat GPT.' })
+			return res.status(401).json({ error: 'Could not get response from AI.' })
 		}
 
 		return res.json({ data: gptresponse })
