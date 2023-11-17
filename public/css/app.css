@@ -1387,6 +1387,10 @@ body {
 }
 
 
+#clickcreatetodoaisuggestionsubtaskswrap:hover #createtodoaisubtasksuggestionsbuttons{
+	visibility:visible;
+}
+
 .quickeventevent {
 	background-color: var(--background-tint-1);
 	border-radius: 8px;

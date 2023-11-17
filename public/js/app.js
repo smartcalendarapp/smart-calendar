@@ -4197,6 +4197,12 @@ async function createtodogetsubtasksuggestions(inputtext){
 		title: inputtext,
 		duration: createtododurationvalue
 	}
+	
+	let clickcreatetodoaisuggestionsubtasksdiv = getElement('clickcreatetodoaisuggestionsubtasksdiv')
+	clickcreatetodoaisuggestionsubtasksdiv.classList.add('display-none')
+
+	let createtodoaisubtasksuggestionsbuttons = getElement('createtodoaisubtasksuggestionsbuttons')
+	createtodoaisubtasksuggestionsbuttons.classList.add('display-none')
 
 	let clickcreatetodoaisuggestionsubtasksdivloading = getElement('clickcreatetodoaisuggestionsubtasksdivloading')
 	clickcreatetodoaisuggestionsubtasksdivloading.classList.remove('display-none')
@@ -4262,11 +4268,14 @@ async function createtodogetsubtasksuggestions(inputtext){
 
 	clickcreatetodoaisuggestionsubtasksdivloading.classList.add('display-none')
 
+	createtodoaisubtasksuggestionsbuttons.classList.remove('display-none')
+
 }
 
 
 
 const MAX_EVENT_SUGGESTIONS = 3
+let EVENT_SUGGESTION_PERCENTILE = 0.5
 function geteventsuggestiontodos(){
 	return calendar.todos.filter(d => 
 		calendar.settings.geteventsuggestions == true
@@ -4286,6 +4295,7 @@ function geteventsuggestiontodos(){
 		(Calendar.Todo.isSubtask(d) || d.duration <= 60 || d.gotsubtasksuggestions)
 	)
 }
+//here4
 function geteventsuggestion(){
 	function getcalculatedweight(tempitem){
 		let currentdate = new Date()
@@ -4297,9 +4307,20 @@ function geteventsuggestion(){
 	let suggestabletodos = geteventsuggestiontodos().sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
 	if(suggestabletodos.length == 0) return
 
-	let existingeventsuggestionslength = calendar.events.filter(d => d.iseventsuggestion).length
+	let allelligibletodos = calendar.todos.filter(d =>
+		!d.completed
+		&&
+		new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*7 //within 7 days
+		&&
+		!Calendar.Todo.isMainTask(d)
+	).sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
+	
+	let medianindex = Math.round(allelligibletodos.length/2)
+	let medianweight = Math.min(...allelligibletodos.slice(0, medianindex).map(d=> getcalculatedweight(d)))
 
-	let suggesttodos = suggestabletodos.slice(0, Math.max(MAX_EVENT_SUGGESTIONS - existingeventsuggestionslength, 0))
+	let existingeventsuggestions = calendar.events.filter(d => d.iseventsuggestion)
+
+	let suggesttodos = suggestabletodos.filter(d => getcalculatedweight(d) > medianweight).slice(0, Math.max(MAX_EVENT_SUGGESTIONS - existingeventsuggestions.length, 0))
 
 	startAutoSchedule({scheduletodos: [], eventsuggestiontodos: suggesttodos })
 }
@@ -8741,6 +8762,10 @@ function updatecreatetodo() {
 	createtodoaisuggestionsubtasksdiv.innerHTML = tempoutput2.join('')
 }
 
+function regeneratecreatetodoaisubtasksuggestions(){
+	clickcreatetodoaisuggestionsubtasks()
+}
+
 function clickcreatetodosubtasksuggestion(id){
 	let subtaskitem = createtodoaisuggestionsubtasks.find(d => d.id == id)
 	if(!subtaskitem) return
@@ -8752,9 +8777,6 @@ function clickcreatetodosubtasksuggestion(id){
 	clickaddsubtask()
 }
 function clickcreatetodoaisuggestionsubtasks(){
-	let clickcreatetodoaisuggestionsubtasksdiv = getElement('clickcreatetodoaisuggestionsubtasksdiv')
-	clickcreatetodoaisuggestionsubtasksdiv.classList.add('display-none')
-
 	let todoinputtitle = getElement('todoinputtitle')
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
 	let todoinputtitleprompttodotoday = getElement('todoinputtitleprompttodotoday')
@@ -10895,6 +10917,8 @@ function dragtodo(event, id) {
 	if(mobilescreen){
 		return
 	}
+
+	if(selectededittodoid) return
 
 	let item = [...calendar.todos].find(x => x.id == id)
 	if (!item) return
