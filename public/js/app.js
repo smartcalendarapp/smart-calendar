@@ -8717,7 +8717,7 @@ function updatecreatetodo() {
 	for(let i = 0; i < createtodoaisuggestionsubtasks.length; i++){
 		let d = createtodoaisuggestionsubtasks[i]
 
-		tempoutput.push(`<div class="min-width-160px flex-1 white-space-normal break-word suggestionborder display-flex gap-4px border-box transition-duration-100 flex-column padding-8px-12px pointer hover:background-tint-1 border-8px" onclick="clickcreatetodosubtasksuggestion('${d.id}')">
+		tempoutput.push(`<div class="text-left min-width-160px flex-1 white-space-normal break-word suggestionborder display-flex gap-4px border-box transition-duration-100 flex-column padding-8px-12px pointer hover:background-tint-1 border-8px" onclick="clickcreatetodosubtasksuggestion('${d.id}')">
 			<span class="text-12px nowrap text-purple">AI suggestion:</span>
 			<span class="text-bold text-bold text-14px text-primary">${d.title} <span class="text-quaternary">- ${getDHMText(d.duration)}</span></span>
 		</div>`)
