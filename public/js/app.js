@@ -2366,7 +2366,7 @@ class Calendar {
 							<div class="display-flex flex-row gap-6px">
 								<div class="text-white transition-duration-100 nowrap pointer width-fit background-green hover:background-green-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
 								<div class="text-white transition-duration-100 nowrap pointer width-fit background-red hover:background-red-hover border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
-								<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-14px" onclick="turnoffaisuggestions()">Turn off</div>
+								<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="turnoffaisuggestions()">Turn off</div>
 							</div>
 						</span>`
 						:
@@ -4210,7 +4210,7 @@ function geteventsuggestiontodos(){
 		&&
 		!Calendar.Todo.isMainTask(d)
 		&&
-		(!d.gotsubtasksuggestions && d.subtasksuggestions.length == 0)
+		d.subtasksuggestions.length == 0
 		&& 
 		!subtasksuggestiontodos.find(g => g.id == d.id)
 	)
@@ -7847,7 +7847,7 @@ function startAutoSchedule({scheduletodos, eventsuggestiontodos}) {
 	let addedtodos = []
 	for (let item of finalscheduletodos) {
 		let newitem = geteventfromtodo(item)
-		if(eventsuggestiontodos.find(g => g.id == item.id)){
+		if(eventsuggestiontodos && eventsuggestiontodos.find(g => g.id == item.id)){
 			newitem.iseventsuggestion = true
 			newitem.goteventsuggestion = true
 		}
