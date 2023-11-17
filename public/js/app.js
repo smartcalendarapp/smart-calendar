@@ -4197,6 +4197,9 @@ async function createtodogetsubtasksuggestions(inputtext){
 		title: inputtext,
 		duration: createtododurationvalue
 	}
+
+	let createtodoaisuggestionsubtasksdiv = getElement('createtodoaisuggestionsubtasksdiv')
+	createtodoaisuggestionsubtasksdiv.classList.add('display-none')
 	
 	let clickcreatetodoaisuggestionsubtasksdiv = getElement('clickcreatetodoaisuggestionsubtasksdiv')
 	clickcreatetodoaisuggestionsubtasksdiv.classList.add('display-none')
@@ -4253,7 +4256,11 @@ async function createtodogetsubtasksuggestions(inputtext){
 
 
 			createtodoaisuggestionsubtasks = newitems
+			
 			updatecreatetodo()
+
+			createtodoaisubtasksuggestionsbuttons.classList.remove('display-none')
+
 		}else if(response.status == 401){
 			let data = await response.json()
 			clickcreatetodoaisuggestionsubtasksdiverror.innerHTML = data.error
@@ -4267,9 +4274,6 @@ async function createtodogetsubtasksuggestions(inputtext){
 	}
 
 	clickcreatetodoaisuggestionsubtasksdivloading.classList.add('display-none')
-
-	createtodoaisubtasksuggestionsbuttons.classList.remove('display-none')
-
 }
 
 
@@ -4295,7 +4299,7 @@ function geteventsuggestiontodos(){
 		(Calendar.Todo.isSubtask(d) || d.duration <= 60 || d.gotsubtasksuggestions)
 	)
 }
-//here4
+//here3
 function geteventsuggestion(){
 	function getcalculatedweight(tempitem){
 		let currentdate = new Date()
@@ -4307,7 +4311,7 @@ function geteventsuggestion(){
 	let suggestabletodos = geteventsuggestiontodos().sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
 	if(suggestabletodos.length == 0) return
 
-	let allelligibletodos = calendar.todos.filter(d =>
+	let allelligibletodos = [...calendar.todos, ...calendar.events.filter(d=>d.type == 1)].filter(d =>
 		!d.completed
 		&&
 		new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*7 //within 7 days
@@ -4315,10 +4319,16 @@ function geteventsuggestion(){
 		!Calendar.Todo.isMainTask(d)
 	).sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
 	
-	let medianindex = Math.round(allelligibletodos.length/2)
-	let medianweight = Math.min(...allelligibletodos.slice(0, medianindex).map(d=> getcalculatedweight(d)))
+	let medianweight;
+	if(allelligibletodos.length % 2 == 1){
+		medianweight = getcalculatedweight(allelligibletodos[allelligibletodos.length/2])
+	}else{
+		medianweight = (getcalculatedweight(allelligibletodos[allelligibletodos.length/2]) + getcalculatedweight(allelligibletodos[allelligibletodos.length/2 - 1]))/2
+	}
 
 	let existingeventsuggestions = calendar.events.filter(d => d.iseventsuggestion)
+	console.log(suggestabletodos.map(d => d.title + ' ' + getcalculatedweight(d)))
+	console.log(medianweight)
 
 	let suggesttodos = suggestabletodos.filter(d => getcalculatedweight(d) > medianweight).slice(0, Math.max(MAX_EVENT_SUGGESTIONS - existingeventsuggestions.length, 0))
 
@@ -4393,7 +4403,7 @@ function run() {
 	}, 1000)
 
 	setInterval(async function(){
-		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 10000 && !isautoscheduling && selectededittodoid == null){
+		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && !isautoscheduling && selectededittodoid == null){
 			geteventsuggestion()
 		}
 	}, 1000)
@@ -13190,10 +13200,10 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 
 
 		let modifiedevents = sortstartdate(oldsmartevents.filter(item1 => {
+			if (addedtodos.find(d => d.id == item1.id) || ((eventsuggestiontodos || []).find(g => g.id == item1.id))) return true
+
 			let item2 = smartevents.find(f => f.id == item1.id)
 			if (!item2) return false
-
-			if (addedtodos.find(d => d.id == item1.id) || ((eventsuggestiontodos || []).find(g => g.id == item1.id))) return true
 
 			if (new Date(item1.start.year, item1.start.month, item1.start.day, 0, item1.start.minute).getTime() == new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute).getTime()) {
 				return false
