@@ -4113,6 +4113,7 @@ function getsubtasksuggestiontodos(){
 		d.repeat.frequency == null && d.repeat.interval == null
 	)
 }
+let gettingsubtasksuggestionstodos = []
 async function getsubtasksuggestions(inputitem){
 	function getcalculatedweight(tempitem){
 		let currentdate = new Date()
@@ -4133,6 +4134,9 @@ async function getsubtasksuggestions(inputitem){
 		}
 
 		suggesttodo = suggestabletodos[0]
+
+		gettingsubtasksuggestionstodos.push(suggesttodo.id)
+		calendar.updateTodo()
 	}
 
 	try{
@@ -4146,6 +4150,8 @@ async function getsubtasksuggestions(inputitem){
 			})
 		})
 		if(response.status == 200){
+			gettingsubtasksuggestionstodos = gettingsubtasksuggestionstodos.filter(d => d != suggesttodo.id)
+
 			let data = await response.json()
 
 			//parse and import subtasks
@@ -9788,6 +9794,11 @@ function gettododata(item) {
 
 
 	let subtasksuggestionsoutput = ''
+	if(!item.gotsubtasksuggestions && gettingsubtasksuggestionstodos.find(f => f == item.id)){
+		subtasksuggestionsoutput = `<div class="subtaskgroup width-fit flex-1 white-space-normal break-word suggestionborder display-flex gap-4px border-box flex-column padding-8px-12px border-8px">
+			<span class="text-12px nowrap text-purple">AI generating subtasks...</span>
+		</div>`
+	}
 	if(calendar.settings.gettasksuggestions == true && Calendar.Todo.isTodo(item) && item.subtasksuggestions.length > 0){
 		let tempoutput = []
 		let tempoutput2 = []
