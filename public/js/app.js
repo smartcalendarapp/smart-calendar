@@ -4363,16 +4363,16 @@ function run() {
 		}
 	}, 100)
 
-	lastgettasksuggestionsdate = 0
+	lastgettasksuggestionsdate = Date.now()
 	setInterval(async function(){
-		if(document.visibilityState === 'visible' && Date.now() - lastgettasksuggestionsdate > 5000 && selectededittodoid == null){
+		if(document.visibilityState === 'visible' && Date.now() - lastgettasksuggestionsdate > 10000 && selectededittodoid == null){
 			lastgettasksuggestionsdate = Date.now()
 			getsubtasksuggestions()
 		}
 	}, 1000)
 
 	setInterval(async function(){
-		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && !isautoscheduling && selectededittodoid == null){
+		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 10000 && !isautoscheduling && selectededittodoid == null){
 			geteventsuggestion()
 		}
 	}, 1000)
@@ -8748,7 +8748,7 @@ function clickcreatetodosubtasksuggestion(id){
 	createtodoaisuggestionsubtasks = createtodoaisuggestionsubtasks.filter(d => d.id != id)
 	createtodosubtasks.push(subtaskitem)
 	updatecreatetodo()
-	
+
 	clickaddsubtask()
 }
 function clickcreatetodoaisuggestionsubtasks(){
@@ -9855,7 +9855,7 @@ function submitcreatetodo(event) {
 			//sub tasks
 			if(createtodosubtasks.length > 0){
 				for(let subtaskitem of createtodosubtasks){
-					let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), subtaskitem.duration, `${subtaskitem.title || item.title}`)
+					let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), subtaskitem.duration, `${subtaskitem.title}`)
 
 					childitem.parentid = item.id
 
