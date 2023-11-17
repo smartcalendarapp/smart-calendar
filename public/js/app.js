@@ -8748,6 +8748,8 @@ function clickcreatetodosubtasksuggestion(id){
 	createtodoaisuggestionsubtasks = createtodoaisuggestionsubtasks.filter(d => d.id != id)
 	createtodosubtasks.push(subtaskitem)
 	updatecreatetodo()
+	
+	clickaddsubtask()
 }
 function clickcreatetodoaisuggestionsubtasks(){
 	let clickcreatetodoaisuggestionsubtasksdiv = getElement('clickcreatetodoaisuggestionsubtasksdiv')
@@ -9933,7 +9935,7 @@ function gettododata(item) {
 
 
 	let subtasksuggestionsoutput = ''
-	if(calendar.settings.gettasksuggestions == true && item.subtasksuggestions.length > 0){
+	if(calendar.settings.gettasksuggestions == true && item.subtasksuggestions.length > 0 && !item.completed){
 		let tempoutput = []
 		let tempoutput2 = []
 		for(let i = 0; i < item.subtasksuggestions.length; i++){
@@ -9969,7 +9971,7 @@ function gettododata(item) {
 
 
 	let eventsuggestionoutput = ''
-	if(Calendar.Event.isEvent(item) && calendar.settings.gettasksuggestions == true && item.iseventsuggestion){
+	if(Calendar.Event.isEvent(item) && calendar.settings.gettasksuggestions == true && item.iseventsuggestion && !item.completed){
 		eventsuggestionoutput = `
 		<span class="margin-left-6px"></span>
 		<span class="flex-wrap-wrap align-center pointer-auto display-inline-flex flex-row gap-6px">
