@@ -2363,7 +2363,7 @@ class Calendar {
 							<span class="tooltip transition-duration-100 text-12px suggestionborder hover:background-tint-1 pointer-auto gap-6px text-purple todoeventsuggestiondate pointer transition-duration-100 padding-6px-12px border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: <span class="text-bold">${Calendar.Event.getFullStartEndText(item)}</span>
 							<span class="tooltiptextcenter">Click to accept time</span>
 							</span>
-							<div class="display-flex flex-row gap-6px">
+							<div class="align-center display-flex flex-row gap-6px">
 								<div class="text-white transition-duration-100 nowrap pointer width-fit background-green hover:background-green-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
 								<div class="text-white transition-duration-100 nowrap pointer width-fit background-red hover:background-red-hover border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
 								<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="turnoffaisuggestions()">Turn off</div>
@@ -4102,9 +4102,12 @@ function getsubtasksuggestiontodos(){
 	return [...calendar.events.filter(d => d.type == 1), ...calendar.todos].filter(d => 
 		calendar.settings.gettasksuggestions == true
 		&&
-		!d.completed && (Calendar.Event.isEvent(d) || d.duration > 30) && d.title.length > 5
+		!d.completed
 		&&
-		(Calendar.Event.isEvent(d) || (!d.gotsubtasksuggestions && d.subtasksuggestions.length == 0))
+		((Calendar.Event.isEvent(d) && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() - new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() > 30*1000) || (Calendar.Todo.isTodo(d) && d.duration > 30))
+		&& d.title.length > 5
+		&&
+		!d.gotsubtasksuggestions && d.subtasksuggestions.length == 0
 		&&
 		new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*30 //within 30 days
 		&&
@@ -4196,7 +4199,6 @@ async function getsubtasksuggestions(inputitem){
 
 const MAX_EVENT_SUGGESTIONS = 5
 function geteventsuggestiontodos(){
-	let subtasksuggestiontodos = getsubtasksuggestiontodos()
 	return calendar.todos.filter(d => 
 		calendar.settings.geteventsuggestions == true
 		&&
@@ -4211,8 +4213,6 @@ function geteventsuggestiontodos(){
 		!Calendar.Todo.isMainTask(d)
 		&&
 		d.subtasksuggestions.length == 0
-		&& 
-		!subtasksuggestiontodos.find(g => g.id == d.id)
 	)
 }
 function geteventsuggestion(){
@@ -9794,7 +9794,7 @@ function gettododata(item) {
 
 
 	let subtasksuggestionsoutput = ''
-	if(!item.gotsubtasksuggestions && gettingsubtasksuggestionstodos.find(f => f == item.id)){
+	if(gettingsubtasksuggestionstodos.find(f => f == item.id) && !(Calendar.Event.isEvent(item) && calendar.settings.gettasksuggestions == true && item.iseventsuggestion)){
 		subtasksuggestionsoutput = `<div class="subtaskgroup width-fit flex-1 white-space-normal break-word suggestionborder display-flex gap-4px border-box flex-column padding-8px-12px border-8px">
 			<span class="text-12px nowrap text-purple">AI generating subtasks...</span>
 		</div>`
