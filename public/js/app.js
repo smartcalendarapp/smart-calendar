@@ -4251,11 +4251,13 @@ async function createtodogetsubtasksuggestions(inputtext){
 		}else if(response.status == 401){
 			let data = await response.json()
 			clickcreatetodoaisuggestionsubtasksdiverror.innerHTML = data.error
+			clickcreatetodoaisuggestionsubtasksdiverror.classList.remove('display-none')
 		}
 	}catch(err){
 		console.log(err)
 
 		clickcreatetodoaisuggestionsubtasksdiverror.innerHTML = `Unexpected error, please try later or contact us.`
+		clickcreatetodoaisuggestionsubtasksdiverror.classList.remove('display-none')
 	}
 
 	clickcreatetodoaisuggestionsubtasksdivloading.classList.add('display-none')
@@ -8472,6 +8474,8 @@ function resetcreatetodo() {
 	clickcreatetodoaisuggestionsubtasksdiv.classList.remove('display-none')
 	let clickcreatetodoaisuggestionsubtasksdivloading = getElement('clickcreatetodoaisuggestionsubtasksdivloading')
 	clickcreatetodoaisuggestionsubtasksdivloading.classList.add('display-none')
+	let clickcreatetodoaisuggestionsubtasksdiverror = getElement('clickcreatetodoaisuggestionsubtasksdiverror')
+	clickcreatetodoaisuggestionsubtasksdiverror.classList.add('display-none')
 
 	createtododurationvalue = 30
 	createtododuedatevalue = {
@@ -9664,7 +9668,16 @@ function typeaddtask(event, submit, index) {
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
 	let todoinputtitleprompttodotoday = getElement('todoinputtitleprompttodotoday')
 	let finalstring = todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
+
+	let clickcreatetodoaisuggestionsubtaskswrap = getElement('clickcreatetodoaisuggestionsubtaskswrap')
+	if(finalstring.length < 5){
+		clickcreatetodoaisuggestionsubtaskswrap.classList.add('display-none')
+	}else{
+		clickcreatetodoaisuggestionsubtaskswrap.classList.remove('display-none')
+	}
+
 	finalstring = finalstring.split('\n').filter(d => d != '')[index || 0] || ''
+
 
 	let currentdate = new Date()
 
