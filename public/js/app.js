@@ -4104,7 +4104,7 @@ function getsubtasksuggestiontodos(){
 		&&
 		!d.completed
 		&&
-		((Calendar.Event.isEvent(d) && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() - new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() > 30*1000) || (Calendar.Todo.isTodo(d) && d.duration > 30))
+		((Calendar.Event.isEvent(d) && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() - new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() > 30*60000) || (Calendar.Todo.isTodo(d) && d.duration > 30))
 		&&
 		d.title.length > 5
 		&&
