@@ -901,6 +901,7 @@ class Calendar {
 			this.gotsubtasksuggestions = false
 			this.iseventsuggestion = false
 			this.goteventsuggestion = false
+			this.autoschedulelocked = false
 
 			this.reminder = []
 			let tempstart = new Date(this.start.year, this.start.month, this.start.day, 0, this.start.minute).getTime()
@@ -4256,7 +4257,7 @@ async function createtodogetsubtasksuggestions(inputtext){
 
 
 			createtodoaisuggestionsubtasks = newitems
-			
+
 			updatecreatetodo()
 
 			createtodoaisubtasksuggestionsbuttons.classList.remove('display-none')
@@ -4299,7 +4300,7 @@ function geteventsuggestiontodos(){
 		(Calendar.Todo.isSubtask(d) || d.duration <= 60 || d.gotsubtasksuggestions)
 	)
 }
-//here3
+
 function geteventsuggestion(){
 	function getcalculatedweight(tempitem){
 		let currentdate = new Date()
@@ -8793,7 +8794,6 @@ function clickcreatetodoaisuggestionsubtasks(){
 	let finalstring = todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
 	createtodogetsubtasksuggestions(finalstring)
 }
-//here3
 
 
 let createtodoshowsubtask = false
@@ -12923,6 +12923,8 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 
 			//set to best time
 			for(let item of smartevents){
+				if(item.autoschedulelocked) continue
+
 				let startafterdate = new Date()
 				startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
 
@@ -12998,6 +13000,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 				while (true) {
 					let outofrange = isoutofrange(item)
 					if (outofrange) {
+						item.autoschedulelocked = false
 						fixrange(item)
 					}
 
@@ -13006,6 +13009,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 					let conflictitem, spacing;
 					if(temp) [conflictitem, spacing] = temp
 					if (conflictitem) {
+						item.autoschedulelocked = false
 						fixconflict(item, conflictitem, spacing)
 					}
 
@@ -14288,6 +14292,7 @@ async function eventcompleted(event, id) {
 	if (!item) return
 	item.completed = !item.completed
 
+	/*
 	if(item.completed){
 		if(Calendar.Event.isEvent(item)){
 			let currentdate = new Date()
@@ -14317,6 +14322,7 @@ async function eventcompleted(event, id) {
 			}
 		}
 	}
+	*/
 
 
 	fixrecurringtodo(item)
@@ -14491,7 +14497,7 @@ function clickevent(event, timestamp) {
 
 			let newstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 			if (newstartdate.getTime() != selectedeventdatetime.getTime() && selectedeventdatetime.getTime() >= currentdatemodified) {
-				item.type = 0
+				item.autoschedulelocked = true
 				calendar.updateInfo(true)
 			}
 			
