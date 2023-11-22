@@ -1102,6 +1102,15 @@ body {
 	stroke: var(--blue-hover)
 }
 
+.buttonorangesmall {
+	height: 14px;
+	width: 14px;
+	stroke: var(--orange);
+	fill: none;
+	display: block;
+	pointer-events: none;
+}
+
 .iconorange {
 	height: 14px;
 	width: 14px;
