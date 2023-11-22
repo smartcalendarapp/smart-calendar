@@ -2358,7 +2358,7 @@ class Calendar {
 					</div>`)
 
 					output.push(`
-					<div class="infogroup">
+					<div class="display-flex flex-row align-center gap-12px">
 						<div class="infotext selecttext nowrap">${calendar.settings.gettasksuggestions == true && item.iseventsuggestion ?
 						`<span class="align-center pointer-auto display-inline-flex flex-row column-gap-6px">
 							<span class="tooltip transition-duration-100 text-12px suggestionborder hover:background-tint-1 pointer-auto gap-6px text-purple todoeventsuggestiondate pointer transition-duration-100 padding-6px-12px border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: <span class="text-bold">${Calendar.Event.getFullStartEndText(item)}</span>
@@ -2372,6 +2372,20 @@ class Calendar {
 						</span>`
 						:
 						`${Calendar.Event.getFullStartEndText(item)}`}</div>
+
+						${!item.iseventsuggestion && item.type == 1 ? (item.autoschedulelocked ? 
+						`<div class="display-flex text-bold text-14px flex-row gap-6px text-white smartbuttonbackground align-center" onclick="synctoautoschedule('${item.id}')">Sync to auto-schedule</div>`
+						:
+						`<div class="display-flex flex-row gap-6px align-center">
+							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonorange">
+							<g>
+							<path d="M93.2369 211.648L10 120.493" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+							<path d="M93.2369 211.648L246 44.3518" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+							</g>
+							</svg>
+							<div class="text-14px text-bold text-orange">Auto-scheduling</div>
+						</div>`)
+						: ``}
 					</div>`)
 
 					//type
@@ -12917,14 +12931,23 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 			return
 		}
 
+		//unlock events with conflict
+		for(let item of smartevents){
+			let temp = getconflictingevent(iteratedevents, item)
+			let conflictitem, spacing;
+			if(temp) [conflictitem, spacing] = temp
+			if(conflictitem && conflictitem.type == 0){
+				item.autoschedulelocked = false
+			}
+		}
+		smartevents = smartevents.filter(d => !d.autoschedulelocked)
+
 		//start
 		if (true) {
 			//SMART FOCUS
 
 			//set to best time
 			for(let item of smartevents){
-				if(item.autoschedulelocked) continue
-
 				let startafterdate = new Date()
 				startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
 
@@ -12989,7 +13012,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 			smartevents = smartevents.sort((a, b) => {
 				return getcalculatedpriority(b) - getcalculatedpriority(a)
 			})
-			for (let item of smartevents) {
+			for (let item of smartevents) {				
 				donesmartevents.push(item)
 
 				let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !smartevents.find(g => g.id == d.id))
@@ -13000,7 +13023,6 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 				while (true) {
 					let outofrange = isoutofrange(item)
 					if (outofrange) {
-						item.autoschedulelocked = false
 						fixrange(item)
 					}
 
@@ -13009,7 +13031,6 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 					let conflictitem, spacing;
 					if(temp) [conflictitem, spacing] = temp
 					if (conflictitem) {
-						item.autoschedulelocked = false
 						fixconflict(item, conflictitem, spacing)
 					}
 
@@ -13262,7 +13283,12 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 
 		//animate
 		let newcalendarevents = deepCopy(calendar.events)
-		calendar.events = deepCopy(oldcalendarevents)
+		for(let item of modifiedevents){
+			let olditem = oldcalendarevents.find(g => g.id == item.id)
+			if(!olditem) continue
+			item.start = deepCopy(olditem.start)
+			item.end = deepCopy(olditem.end)
+		}
 
 
 		function animateitem(id){
@@ -14283,7 +14309,17 @@ function eventallday() {
 }
 
 
+//sync to auto schedule
+function synctoautoschedule(id){
+	let item = calendar.events.find(f => f.id == id)
+	if (!item) return
 
+	item.autoschedulelocked = false
+
+	calendar.updateEvents()
+	calendar.updateInfo(true)
+	calendar.updateHistory()
+}
 
 
 //event completed
