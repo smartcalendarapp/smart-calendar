@@ -2592,9 +2592,9 @@ class Calendar {
 		//schedule button
 		let scheduleoncalendar = getElement('scheduleoncalendar')
 		if (calendar.todos.filter(d => !d.completed).length > 0 && !schedulemytasksenabled && !isautoscheduling && !iseditingschedule) {
-			scheduleoncalendar.classList.remove('display-none')
+			scheduleoncalendar.classList.remove('hiddenpopupstatic')
 		} else {
-			scheduleoncalendar.classList.add('display-none')
+			scheduleoncalendar.classList.add('hiddenpopupstatic')
 		}
 
 		let editscheduleoncalendar = getElement('editscheduleoncalendar')
@@ -2608,10 +2608,10 @@ class Calendar {
 		let schedulemytasksactive = getElement('schedulemytasksactive')
 		if (schedulemytasksenabled) {
 			schedulemytasksactivepopup.classList.remove('hiddenfade')
-			schedulemytasksactive.classList.remove('display-none')
+			schedulemytasksactive.classList.remove('hiddenpopupstatic')
 		} else {
 			schedulemytasksactivepopup.classList.add('hiddenfade')
-			schedulemytasksactive.classList.add('display-none')
+			schedulemytasksactive.classList.add('hiddenpopupstatic')
 		}
 
 		let plantasksselectall = getElement('plantasksselectall')
@@ -5737,7 +5737,7 @@ function mousedowndocument(event) {
 	}
 
 	//unselect event
-	if ((eventinfoshown == true && !eventinfo.contains(event.target)) || (editschedulepopupshown == true && !scheduleeditorpopup.contains(event.target))) {
+	if ((eventinfoshown == true && !eventinfo.contains(event.target) && eventinfo.classList.contains('hiddenpopup')) || (editschedulepopupshown == true && !scheduleeditorpopup.contains(event.target) && scheduleeditorpopup.classList.contains('hiddenpopup'))) {
 		selectedeventid = null
 		calendar.updateEvents()
 		calendar.updateInfo(true)
@@ -13669,7 +13669,7 @@ function openscheduleeditorpopup(id){
 		<div class="flex-column display-flex gap-6px">
 			<div class="text-16px text-primary">This is a fixed-time event.</div>
 			
-			<div class="width-fit text-14px display-flex flex-row align-center gap-6px padding-8px-12px  infotopright bluebutton text-primary pointer-auto transition-duration-100 border-8px pointer popupbutton" onclick="eventtype(1)">
+			<div class="width-fit text-14px display-flex flex-row align-center gap-6px padding-8px-12px  infotopright bluebutton text-primary pointer-auto transition-duration-100 border-8px pointer popupbutton" onclick="closescheduleeditorpopup();eventtype(1)">
 				<div class="pointer-none nowrap text-primary text-14px">Convert to task</div>
 			</div>
 		</div>`)
@@ -13680,27 +13680,37 @@ function openscheduleeditorpopup(id){
 
 
 	//position
+	scheduleeditorpopupposition = 0
+
 	scheduleeditorpopupinterval = setInterval(function(){
 		requestAnimationFrame(function(){
 			let eventdiv = getElement(item.id)
+			if(!eventdiv) return
 	
-			scheduleeditorpopup.style.top = fixtop(eventdiv.getBoundingClientRect().top + eventdiv.offsetHeight, scheduleeditorpopup) + 'px'
 
 			if(scheduleeditorpopup.getBoundingClientRect().top + scheduleeditorpopup.offsetHeight >= (window.innerHeight || document.body.clientHeight)){
+				scheduleeditorpopupposition = 1
+			}else if(scheduleeditorpopup.getBoundingClientRect().top <= 0){
+				scheduleeditorpopupposition = 0
+			}
+
+			if(scheduleeditorpopupposition == 0){
+				scheduleeditorpopup.style.top = fixtop(eventdiv.getBoundingClientRect().top + eventdiv.offsetHeight, scheduleeditorpopup) + 'px'
+
+				scheduleeditorpopup.classList.add('scheduleeditorpopupbottom')
+				scheduleeditorpopup.classList.remove('scheduleeditorpopuptop')
+			}else if(scheduleeditorpopupposition == 1){
 				scheduleeditorpopup.style.top = fixtop(eventdiv.getBoundingClientRect().top - scheduleeditorpopup.offsetHeight, scheduleeditorpopup) + 'px'
 
 				scheduleeditorpopup.classList.add('scheduleeditorpopuptop')
 				scheduleeditorpopup.classList.remove('scheduleeditorpopupbottom')
-				
-			}else{
-				scheduleeditorpopup.classList.add('scheduleeditorpopupbottom')
-				scheduleeditorpopup.classList.remove('scheduleeditorpopuptop')
 			}
 
 			scheduleeditorpopup.style.left = fixleft(eventdiv.getBoundingClientRect().left + eventdiv.offsetWidth/2 - scheduleeditorpopup.offsetWidth/2, scheduleeditorpopup) + 'px'
 		})
 	}, 10)
 }
+let scheduleeditorpopupposition = 0
 
 function closescheduleeditorpopup(){
 	let scheduleeditorpopup = getElement('scheduleeditorpopup')

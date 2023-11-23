@@ -1759,7 +1759,7 @@
 
 		<div class="background-secondary small:background-primary pagewrap border-box flex-column">
 		
-			<div class="relative panelwrap background-primary small:flex-column" id="panelwrap">
+			<div class="relative panelwrap small:flex-column" id="panelwrap">
 
 				<div class="small:display-none z-index-1000 pointer-none absolute right-0 bottom-0 padding-24px">
 					<div class="backdrop-blur popupbutton padding-6px background-tint-1 bordertertiary border-round transition-duration-100 hover:background-tint-2 pointer pointer-auto" onclick="openbottomhelpmenu(event)">
@@ -2163,7 +2163,17 @@
 
 						<div class="sticky top-0 flex-wrap-wrap pointer-none justify-flex-end z-index-50 todobuttonstop display-flex flex-row gap-24px">
 
-							<div class="pointer-auto padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit smartbuttonbackground display-flex  gap-6px flex-row align-center border-round" onclick="clickschedulemytasks(event);if(gtag){gtag('event', 'button_click', { useraction: 'Build my schedule - to do list' })}" id="scheduleoncalendar">
+							<div class="absolute popuptransition right-0 top-0 hiddenpopupstatic pointer-auto display-flex border-box flex-1 justify-flex-end flex-row gap-12px align-center" id="schedulemytasksactive">
+								<div class="display-flex align-center flex-row gap-12px">
+									<div class="bordertertiary hover:background-tint-1 backdrop-blur transition-duration-100 pointer text-primary pointer-auto nowrap border-8px padding-8px-12px text-14px" onclick="closeschedulemytasks(event)">Cancel</div>
+
+									<div class="bordertertiary hover:background-tint-1 backdrop-blur transition-duration-100 pointer text-primary pointer-auto nowrap border-8px padding-8px-12px text-14px" id="plantasksselectall" onclick="selectallschedulemytasks()"></div>
+
+									<div id="plantaskssubmit" class="backdrop-blur pointer-auto"></div>
+								</div>
+							</div>
+
+							<div class="absolute hiddenpopupstatic popuptransition right-0 top-0 pointer-auto padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit smartbuttonbackground display-flex  gap-6px flex-row align-center border-round" onclick="clickschedulemytasks(event);if(gtag){gtag('event', 'button_click', { useraction: 'Build my schedule - to do list' })}" id="scheduleoncalendar">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhitefill">
 									<g>
 									<path d="M123.469 74C122.822 74.0085 122.171 74.2768 121.688 74.7812L111.469 85.4688C110.526 86.4533 110.532 88.0083 111.5 88.9688L231.781 208.344C233.566 210.044 234.506 211.567 234.719 212.938C234.883 213.998 234.134 215.602 232.156 217.688L219.875 230.531C217.917 232.596 216.447 233.386 215.562 233.25C214.374 233.068 213.016 232.141 211.531 230.344L100.219 101.219C99.2493 100.094 97.5164 100.042 96.5 101.125L86.375 111.938C85.5003 112.869 85.4478 114.313 86.2812 115.281L198.375 245.562C203.611 251.706 209.136 255.086 214.906 255.5C220.742 255.919 226.202 253.337 231.188 248L249 229.125C253.953 223.824 256.272 218.121 255.844 212.125C255.42 206.199 252.346 200.497 246.75 195.062L125.25 74.7188C124.754 74.2272 124.115 73.9915 123.469 74Z" fill-rule="nonzero" opacity="1" ></path>
@@ -2174,16 +2184,6 @@
 								<div class="text-16px text-white pointer-none nowrap transition-none">Build my Schedule</div>
 							</div>
 
-
-							<div class="pointer-auto display-flex border-box flex-1 justify-flex-end flex-row gap-12px align-center" id="schedulemytasksactive">
-								<div class="display-flex align-center flex-row gap-12px">
-									<div class="bordertertiary hover:background-tint-1 backdrop-blur transition-duration-100 pointer text-primary pointer-auto nowrap border-8px padding-8px-12px text-14px" onclick="closeschedulemytasks(event)">Cancel</div>
-
-									<div class="bordertertiary hover:background-tint-1 backdrop-blur transition-duration-100 pointer text-primary pointer-auto nowrap border-8px padding-8px-12px text-14px" id="plantasksselectall" onclick="selectallschedulemytasks()"></div>
-
-									<div id="plantaskssubmit" class="backdrop-blur pointer-auto"></div>
-								</div>
-							</div>
 
 						</div>
 						
@@ -2200,8 +2200,8 @@
 					<div class="paneldividermove" onmousedown="clickpaneldivider(event)"></div>
 				</div>
 				
-				<div class="calendarwrap relative display-none" id="calendarwrap">
-						<div class="display-flex flex-column padding-top-12px gap-12px calendartopbar">
+				<div class="calendarwrap border-16px relative display-none" id="calendarwrap">
+						<div class="display-flex flex-column padding-top-12px gap-12px box-shadow-2">
 							
 							<div class="display-flex flex-row justify-space-between padding-left-12px padding-right-12px align-center gap-12px">
 								
