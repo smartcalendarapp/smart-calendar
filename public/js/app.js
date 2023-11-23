@@ -5737,7 +5737,7 @@ function mousedowndocument(event) {
 	}
 
 	//unselect event
-	if ((eventinfoshown == true || editschedulepopupshown == true) && eventinfo.classList.contains('hiddenpopup')) {
+	if ((eventinfoshown == true && !eventinfo.contains(event.target)) || (editschedulepopupshown == true && !scheduleeditorpopup.contains(event.target))) {
 		selectedeventid = null
 		calendar.updateEvents()
 		calendar.updateInfo(true)
@@ -13579,107 +13579,126 @@ function openscheduleeditorpopup(id){
 	let scheduleeditorpopup = getElement('scheduleeditorpopup')
 	scheduleeditorpopup.classList.remove('hiddenpopup')
 
+	if(item.type == 1){
+		//content
+		let currentdate = new Date()
+		let endrangedate = new Date(currentdate)
+		endrangedate.setDate(endrangedate.getDate() + 7)
 
-	//content
-	let currentdate = new Date()
-	let endrangedate = new Date(currentdate)
-	endrangedate.setDate(endrangedate.getDate() + 7)
+		//get available time
+		let availabletime = getavailabletime(item, currentdate, endrangedate)
 
-	//get available time
-	let availabletime = getavailabletime(item, currentdate, endrangedate)
+		function gettextfromavailabletime(timestamp){
+			const now = new Date()
+			const date = new Date(timestamp)
 
-	function gettextfromavailabletime(timestamp){
-		const now = new Date()
-		const date = new Date(timestamp)
+			const nowday = new Date(now)
+			nowday.setHours(0,0,0,0)
+			const dateday = new Date(date)
+			dateday.setHours(0,0,0,0)
 
-		const nowday = new Date(now)
-		nowday.setHours(0,0,0,0)
-		const dateday = new Date(date)
-		dateday.setHours(0,0,0,0)
+			function timeOfDay(hour) {
+				if (hour < 12) return 'morning'
+				if (hour < 18) return 'afternoon'
+				return 'evening'
+			}
 
-		function timeOfDay(hour) {
-			if (hour < 12) return 'morning'
-			if (hour < 18) return 'afternoon'
-			return 'evening'
+			const today = nowday.getTime() == dateday.getTime()
+
+			const tomorrowday = new Date(nowday)
+			tomorrowday.setDate(tomorrowday.getDate() + 1)
+			const isTomorrow = tomorrowday.getTime() == dateday.getTime()
+
+			if (today) {
+				return `This ${timeOfDay(date.getHours())}`
+			} else if (isTomorrow) {
+				return `Tomorrow ${timeOfDay(date.getHours())}`
+			} else {
+				return `${DAYLIST[date.getDay()]}`
+			}
 		}
 
-		const today = nowday.getTime() == dateday.getTime()
+		let availabletimeoutput = []
+		let addedavailabletimes = []
+		for(let tempavailabletime of availabletime){
+			
+			let availabletimetext = gettextfromavailabletime(tempavailabletime.start)
+			if(addedavailabletimes.includes(availabletimetext)) continue
 
-		const tomorrowday = new Date(nowday)
-		tomorrowday.setDate(tomorrowday.getDate() + 1)
-		const isTomorrow = tomorrowday.getTime() == dateday.getTime()
+			addedavailabletimes.push(availabletimetext)
 
-		if (today) {
-			return `This ${timeOfDay(date.getHours())}`
-		} else if (isTomorrow) {
-			return `Tomorrow ${timeOfDay(date.getHours())}`
-		} else {
-			return `${DAYLIST[date.getDay()]}`
-    	}
+			availabletimeoutput.push(`<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulemoveevent('${item.id}', ${tempavailabletime.start})">${availabletimetext}</div>`)
+			
+			if(availabletimeoutput.length == 5) break
+		}
+		//better available time windows - not necessarily the one from fx
+		//here2
+		//maybe 'auto', which unfrezes it
+
+		let output = []
+		output.push(`
+		<div class="flex-column display-flex gap-6px">
+			<div class="text-16px text-primary">Move to:</div>
+			<div class="display-flex flex-row flex-wrap-wrap gap-12px">
+				${availabletimeoutput.join('')}
+				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px">Custom</div>
+			</div>
+		</div>`)
+
+		output.push(`<div class="width-fit text-14px display-flex flex-row align-center gap-6px padding-8px-12px  infotopright background-tint-1 tooltip hover:background-tint-2 text-primary pointer-auto transition-duration-100 border-8px pointer popupbutton" onclick="closescheduleeditorpopup();unscheduleevent('${id}')">
+								
+		<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite">
+	<g>
+			<g opacity="1">
+			<path d="M116.007 236.883C120.045 236.883 123.369 235.577 125.981 232.965C128.594 230.353 129.9 227.028 129.9 222.991L129.9 177.633L133.343 177.633C148.7 177.633 162.276 179.137 174.071 182.145C185.865 185.153 196.275 190.318 205.299 197.64C214.323 204.962 222.278 215.114 229.165 228.096C231.223 231.896 233.539 234.31 236.111 235.34C238.684 236.369 241.237 236.883 243.77 236.883C246.936 236.883 249.766 235.518 252.26 232.787C254.753 230.056 256 226.118 256 220.972C256 199.045 253.605 179.315 248.816 161.781C244.027 144.247 236.665 129.267 226.731 116.839C216.797 104.411 204.092 94.9116 188.616 88.3414C173.14 81.7712 154.716 78.4861 133.343 78.4861L129.9 78.4861L129.9 33.603C129.9 29.645 128.594 26.2412 125.981 23.3915C123.369 20.5417 119.965 19.1169 115.77 19.1169C112.841 19.1169 110.229 19.7699 107.933 21.0761C105.638 22.3822 102.907 24.5393 99.7403 27.5473L6.05566 115.176C3.76005 117.314 2.17687 119.49 1.30612 121.707C0.435374 123.923 0 126.021 0 128C0 129.9 0.435374 131.958 1.30612 134.174C2.17687 136.391 3.76005 138.568 6.05566 140.705L99.7403 229.165C102.59 231.857 105.281 233.816 107.814 235.043C110.348 236.27 113.079 236.883 116.007 236.883ZM109.239 211.354C108.527 211.354 107.854 210.998 107.221 210.286L22.5603 130.256C22.0853 129.781 21.7489 129.365 21.551 129.009C21.3531 128.653 21.2542 128.317 21.2542 128C21.2542 127.288 21.6895 126.536 22.5603 125.744L107.102 44.6456C107.419 44.4082 107.735 44.1905 108.052 43.9926C108.369 43.7947 108.725 43.6957 109.121 43.6957C110.229 43.6957 110.783 44.2498 110.783 45.3581L110.783 92.4972C110.783 95.1095 112.129 96.4156 114.82 96.4156L130.731 96.4156C147.038 96.4156 161.168 98.4935 173.121 102.649C185.074 106.805 195.166 112.544 203.399 119.866C211.631 127.189 218.281 135.639 223.347 145.217C228.413 154.795 232.193 165.027 234.686 175.911C237.18 186.795 238.664 197.818 239.139 208.98C239.139 209.85 238.823 210.286 238.189 210.286C237.952 210.286 237.754 210.187 237.596 209.989C237.437 209.791 237.279 209.494 237.121 209.098C232.45 199.203 225.365 190.536 215.866 183.095C206.367 175.654 194.513 169.895 180.304 165.818C166.095 161.741 149.571 159.703 130.731 159.703L114.82 159.703C112.129 159.703 110.783 161.009 110.783 163.622L110.783 209.573C110.783 210.761 110.268 211.354 109.239 211.354Z" fill-rule="nonzero" opacity="1"></path>
+			</g>
+			</g>
+			</svg>
+
+
+			<div class="pointer-none nowrap text-primary text-14px">Undo schedule</div>
+		</div>`)
+
+
+		let scheduleeditorpopupcontent = getElement('scheduleeditorpopupcontent')
+		scheduleeditorpopupcontent.innerHTML = output.join('')
+
+	}else{
+		let output = []
+		output.push(`
+		<div class="flex-column display-flex gap-6px">
+			<div class="text-16px text-primary">This is a fixed-time event.</div>
+			
+			<div class="width-fit text-14px display-flex flex-row align-center gap-6px padding-8px-12px  infotopright bluebutton text-primary pointer-auto transition-duration-100 border-8px pointer popupbutton" onclick="eventtype(1)">
+				<div class="pointer-none nowrap text-primary text-14px">Convert to task</div>
+			</div>
+		</div>`)
+
+		let scheduleeditorpopupcontent = getElement('scheduleeditorpopupcontent')
+		scheduleeditorpopupcontent.innerHTML = output.join('')
 	}
-
-	let availabletimeoutput = []
-	let addedavailabletimes = []
-	for(let tempavailabletime of availabletime){
-		
-		let availabletimetext = gettextfromavailabletime(tempavailabletime.start)
-		if(addedavailabletimes.includes(availabletimetext)) continue
-
-		addedavailabletimes.push(availabletimetext)
-
-		availabletimeoutput.push(`<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulemoveevent('${item.id}', ${tempavailabletime.start})">${availabletimetext}</div>`)
-		
-		if(availabletimeoutput.length == 5) break
-	}
-	//better available time windows - not necessarily the one from fx
-	//here2
-
-	let output = []
-	output.push(`
-	<div class="flex-column display-flex gap-6px">
-		<div class="text-16px text-primary">Move to:</div>
-		<div class="display-flex flex-row flex-wrap-wrap gap-12px">
-			${availabletimeoutput.join('')}
-			<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px">Custom</div>
-		</div>
-	</div>`)
-
-	output.push(`<div class="width-fit text-14px display-flex flex-row align-center gap-6px padding-8px-12px  infotopright background-tint-1 tooltip hover:background-tint-2 text-primary pointer-auto transition-duration-100 border-8px pointer popupbutton" onclick="closescheduleeditorpopup();unscheduleevent('${id}')">
-							
-	<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite">
-<g>
-		<g opacity="1">
-		<path d="M116.007 236.883C120.045 236.883 123.369 235.577 125.981 232.965C128.594 230.353 129.9 227.028 129.9 222.991L129.9 177.633L133.343 177.633C148.7 177.633 162.276 179.137 174.071 182.145C185.865 185.153 196.275 190.318 205.299 197.64C214.323 204.962 222.278 215.114 229.165 228.096C231.223 231.896 233.539 234.31 236.111 235.34C238.684 236.369 241.237 236.883 243.77 236.883C246.936 236.883 249.766 235.518 252.26 232.787C254.753 230.056 256 226.118 256 220.972C256 199.045 253.605 179.315 248.816 161.781C244.027 144.247 236.665 129.267 226.731 116.839C216.797 104.411 204.092 94.9116 188.616 88.3414C173.14 81.7712 154.716 78.4861 133.343 78.4861L129.9 78.4861L129.9 33.603C129.9 29.645 128.594 26.2412 125.981 23.3915C123.369 20.5417 119.965 19.1169 115.77 19.1169C112.841 19.1169 110.229 19.7699 107.933 21.0761C105.638 22.3822 102.907 24.5393 99.7403 27.5473L6.05566 115.176C3.76005 117.314 2.17687 119.49 1.30612 121.707C0.435374 123.923 0 126.021 0 128C0 129.9 0.435374 131.958 1.30612 134.174C2.17687 136.391 3.76005 138.568 6.05566 140.705L99.7403 229.165C102.59 231.857 105.281 233.816 107.814 235.043C110.348 236.27 113.079 236.883 116.007 236.883ZM109.239 211.354C108.527 211.354 107.854 210.998 107.221 210.286L22.5603 130.256C22.0853 129.781 21.7489 129.365 21.551 129.009C21.3531 128.653 21.2542 128.317 21.2542 128C21.2542 127.288 21.6895 126.536 22.5603 125.744L107.102 44.6456C107.419 44.4082 107.735 44.1905 108.052 43.9926C108.369 43.7947 108.725 43.6957 109.121 43.6957C110.229 43.6957 110.783 44.2498 110.783 45.3581L110.783 92.4972C110.783 95.1095 112.129 96.4156 114.82 96.4156L130.731 96.4156C147.038 96.4156 161.168 98.4935 173.121 102.649C185.074 106.805 195.166 112.544 203.399 119.866C211.631 127.189 218.281 135.639 223.347 145.217C228.413 154.795 232.193 165.027 234.686 175.911C237.18 186.795 238.664 197.818 239.139 208.98C239.139 209.85 238.823 210.286 238.189 210.286C237.952 210.286 237.754 210.187 237.596 209.989C237.437 209.791 237.279 209.494 237.121 209.098C232.45 199.203 225.365 190.536 215.866 183.095C206.367 175.654 194.513 169.895 180.304 165.818C166.095 161.741 149.571 159.703 130.731 159.703L114.82 159.703C112.129 159.703 110.783 161.009 110.783 163.622L110.783 209.573C110.783 210.761 110.268 211.354 109.239 211.354Z" fill-rule="nonzero" opacity="1"></path>
-		</g>
-		</g>
-		</svg>
-
-
-		<div class="pointer-none nowrap text-primary text-14px">Undo schedule</div>
-	</div>`)
-
-	output.push(`
-	<div class="align-self-flex-end text-14px text-white background-blue hover:background-blue-hover transition-duration-100 pointer border-8px padding-8px-12px" onclick="closescheduleeditorpopup()">Done</div>`)
-
-	let scheduleeditorpopupcontent = getElement('scheduleeditorpopupcontent')
-	scheduleeditorpopupcontent.innerHTML = output.join('')
 
 
 	//position
-	scheduleeditorpopup.classList.remove('scheduleeditorpopupbottom')
-	scheduleeditorpopup.classList.remove('scheduleeditorpopuptop')
-
 	scheduleeditorpopupinterval = setInterval(function(){
-		let eventdiv = getElement(item.id)
+		requestAnimationFrame(function(){
+			let eventdiv = getElement(item.id)
+	
+			scheduleeditorpopup.style.top = fixtop(eventdiv.getBoundingClientRect().top + eventdiv.offsetHeight, scheduleeditorpopup) + 'px'
 
-		scheduleeditorpopup.style.top = (eventdiv.getBoundingClientRect().top + eventdiv.offsetHeight) + 'px'
-		if(scheduleeditorpopup.getBoundingClientRect().top + scheduleeditorpopup.offsetHeight > (window.innerHeight || document.body.clientHeight)){
-			scheduleeditorpopup.style.top = (eventdiv.getBoundingClientRect().top - scheduleeditorpopup.offsetHeight) + 'px'
-			scheduleeditorpopup.classList.add('scheduleeditorpopuptop')
-		}else{
-			scheduleeditorpopup.classList.add('scheduleeditorpopupbottom')
-		}
-		scheduleeditorpopup.style.left = fixleft(eventdiv.getBoundingClientRect().left + eventdiv.offsetWidth/2 - scheduleeditorpopup.offsetWidth/2, scheduleeditorpopup) + 'px'
+			if(scheduleeditorpopup.getBoundingClientRect().top + scheduleeditorpopup.offsetHeight >= (window.innerHeight || document.body.clientHeight)){
+				scheduleeditorpopup.style.top = fixtop(eventdiv.getBoundingClientRect().top - scheduleeditorpopup.offsetHeight, scheduleeditorpopup) + 'px'
+
+				scheduleeditorpopup.classList.add('scheduleeditorpopuptop')
+				scheduleeditorpopup.classList.remove('scheduleeditorpopupbottom')
+				
+			}else{
+				scheduleeditorpopup.classList.add('scheduleeditorpopupbottom')
+				scheduleeditorpopup.classList.remove('scheduleeditorpopuptop')
+			}
+
+			scheduleeditorpopup.style.left = fixleft(eventdiv.getBoundingClientRect().left + eventdiv.offsetWidth/2 - scheduleeditorpopup.offsetWidth/2, scheduleeditorpopup) + 'px'
+		})
 	}, 10)
 }
 
@@ -13721,6 +13740,8 @@ async function nextscheduleeditorevent(){
 
 	scrollcalendarY(item.start.minute)
 
+	await sleep(500)
+
 	requestAnimationFrame(function(){
 		updateeditscheduleui()
 		openscheduleeditorpopup(editscheduleevents[editscheduleeventsindex].id)
@@ -13745,6 +13766,8 @@ async function previousscheduleeditorevent(){
 	calendar.updateCalendar()
 	
 	scrollcalendarY(item.start.minute)
+
+	await sleep(500)
 
 	requestAnimationFrame(function(){
 		updateeditscheduleui()
