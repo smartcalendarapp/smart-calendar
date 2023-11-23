@@ -2507,7 +2507,7 @@ class Calendar {
 				}
 
 
-				if (movingevent) {
+				if (movingevent || iseditingschedule) {
 					eventinfo.classList.add('hiddenpopup')
 					return
 				}
@@ -2591,7 +2591,7 @@ class Calendar {
 
 		//schedule button
 		let scheduleoncalendar = getElement('scheduleoncalendar')
-		if (calendar.todos.filter(d => !d.completed).length > 0 && !schedulemytasksenabled) {
+		if (calendar.todos.filter(d => !d.completed).length > 0 && !schedulemytasksenabled && !isautoscheduling && !iseditingschedule) {
 			scheduleoncalendar.classList.remove('display-none')
 		} else {
 			scheduleoncalendar.classList.add('display-none')
@@ -12714,7 +12714,7 @@ let animatenextitem;
 let isautoscheduling = false;
 let iseditingschedule = false;
 let rescheduletaskfunction;
-async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eventsuggestiontodos, editscheduletimestamp}) {
+async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassedtodos = [], eventsuggestiontodos = [], editscheduletimestamp}) {
 	try{
 		//functions
 		function sleep(time) {
@@ -12857,7 +12857,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 		//============================================================================
 
 
-		if (isautoscheduling == true && resolvedpassedtodos.length == 0 && !editscheduletimestamp) return
+		if (isautoscheduling == true && (resolvedpassedtodos || []).length == 0 && !editscheduletimestamp) return
 		isautoscheduling = true
 
 
@@ -13171,7 +13171,7 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 
 
 		let modifiedevents = sortstartdate(oldsmartevents.filter(item1 => {
-			if (addedtodos.find(d => d.id == item1.id) || ((eventsuggestiontodos || []).find(g => g.id == item1.id))) return true
+			if ((addedtodos || []).find(d => d.id == item1.id) || ((eventsuggestiontodos || []).find(g => g.id == item1.id))) return true
 
 			let item2 = smartevents.find(f => f.id == item1.id)
 			if (!item2) return false
@@ -13475,40 +13475,38 @@ async function autoScheduleV2({smartevents, addedtodos, resolvedpassedtodos, eve
 		//console.log(autoschedulestats)
 
 
-		if(!editscheduletimestamp){
-			//confetti
-			let confetticanvas = getElement('confetticanvas')
-			let myconfetti = confetti.create(confetticanvas, {
-				resize: true,
-				useWorker: true
-			})
+		//confetti
+		let confetticanvas = getElement('confetticanvas')
+		let myconfetti = confetti.create(confetticanvas, {
+			resize: true,
+			useWorker: true
+		})
 
-			let confettievents = modifiedevents.filter(d => !d.iseventsuggestion)
-			let promises = []
-			for (let item of confettievents) {
-				let itemelement = getElement(item.id)
-				if (!itemelement) continue
-				let itemrect = itemelement.getBoundingClientRect()
+		let confettievents = modifiedevents.filter(d => !d.iseventsuggestion)
+		let promises = []
+		for (let item of confettievents) {
+			let itemelement = getElement(item.id)
+			if (!itemelement) continue
+			let itemrect = itemelement.getBoundingClientRect()
 
-				promises.push(myconfetti({
-					spread: 30,
-					particleCount: 20,
-					gravity: 0.75,
-					startVelocity: 15,
-					decay: 0.94,
-					ticks: 100,
-					origin: {
-						x: (itemrect.x + itemrect.width / 2) / (window.innerWidth || document.body.clientWidth),
-						y: (itemrect.y + itemrect.height / 2) / (window.innerHeight || document.body.clientHeight)
-					}
-				}))
-			}
-			await Promise.all(promises)
-
-			try{
-				myconfetti.reset()
-			}catch(e){}
+			promises.push(myconfetti({
+				spread: 30,
+				particleCount: 20,
+				gravity: 0.75,
+				startVelocity: 15,
+				decay: 0.94,
+				ticks: 100,
+				origin: {
+					x: (itemrect.x + itemrect.width / 2) / (window.innerWidth || document.body.clientWidth),
+					y: (itemrect.y + itemrect.height / 2) / (window.innerHeight || document.body.clientHeight)
+				}
+			}))
 		}
+		await Promise.all(promises)
+
+		try{
+			myconfetti.reset()
+		}catch(e){}
 	}catch(err){
 		isautoscheduling = false
 		console.log(err)
@@ -13535,10 +13533,9 @@ function finishscheduleeditor(){
 	iseditingschedule = false
 	isautoscheduling = false
 
-	closescheduleeditorpopup()
 	updateeditscheduleui()
+	closescheduleeditorpopup()
 }
-//here2
 
 function clickeventopeneditschedulepopup(id){
 	let item = calendar.events.find(d => d.id == id)
@@ -13586,7 +13583,7 @@ function openscheduleeditorpopup(id){
 		const date = new Date(timestamp)
 
 		const nowday = new Date(now)
-		nowdate.setHours(0,0,0,0)
+		nowday.setHours(0,0,0,0)
 		const dateday = new Date(date)
 		dateday.setHours(0,0,0,0)
 
@@ -13635,7 +13632,7 @@ function openscheduleeditorpopup(id){
 		</div>
 	</div>`)
 
-	output.push(`<div class="text-14px display-flex flex-row align-center gap-6px padding-8px-12px  infotopright background-tint-1 tooltip hover:background-tint-2 text-primary pointer-auto transition-duration-100 border-8px pointer popupbutton" onclick="closescheduleeditorpopup();unscheduleevent('${id}')">
+	output.push(`<div class="width-fit text-14px display-flex flex-row align-center gap-6px padding-8px-12px  infotopright background-tint-1 tooltip hover:background-tint-2 text-primary pointer-auto transition-duration-100 border-8px pointer popupbutton" onclick="closescheduleeditorpopup();unscheduleevent('${id}')">
 							
 	<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite">
 <g>
@@ -13668,7 +13665,7 @@ function editschedulemoveevent(id, timestamp){
 	
 	closescheduleeditorpopup()
 
-	autoScheduleV2({smartevents: [item], editscheduletimestamp: timestamp})
+	autoScheduleV2({smartevents: [item], editscheduletimestamp: timestamp, addedtodos: []})
 }
 
 let editscheduleeventsindex;
@@ -13680,6 +13677,13 @@ function nextscheduleeditorevent(){
 	openscheduleeditorpopup(editscheduleevents[editscheduleeventsindex])
 	updateeditscheduleui()
 
+	selectedeventid = item.id
+
+	calendarday = item.start.day
+	calendarmonth = item.start.month
+	calendaryear = item.start.year
+	calendar.updateCalendar()
+
 	scrollcalendarY(item.start.minute)
 }
 function previousscheduleeditorevent(){
@@ -13689,6 +13693,8 @@ function previousscheduleeditorevent(){
 
 	openscheduleeditorpopup(editscheduleevents[editscheduleeventsindex])
 	updateeditscheduleui()
+
+	selectedeventid = item.id
 
 	calendarday = item.start.day
 	calendarmonth = item.start.month

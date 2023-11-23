@@ -343,27 +343,7 @@
 
 	<div class="helpmenu hiddenpopup popup z-index-300 padding-12px gap-12px max-width-400px" id="scheduleeditorpopup">
 		<div class="display-flex flex-row justify-space-between align-center">
-			<div>
-				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-				<g>
-				</g>
-				</svg>
-			</div>
-			
 			<div class="infotitle" id="scheduleeditorpopuptitle"></div>
-
-			<div class="infotoprightgroup">
-				<div class="infotopright pointer" onclick="closescheduleeditorpopup(event)">
-					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-					<g>
-					<g opacity="1">
-					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-					</g>
-					</g>
-					</svg>
-				</div>
-			</div>
 		</div>
 
 		<div class="display-flex flex-column gap-12px" id="scheduleeditorpopupcontent"></div>
@@ -2191,11 +2171,10 @@
 							<div class="pointer-auto padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit smartbuttonbackground display-flex gap-6px flex-row align-center border-round" onclick="clickschedulemytasks(event);if(gtag){gtag('event', 'button_click', { useraction: 'Build my schedule - to do list' })}" id="scheduleoncalendar">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhitefill">
 									<g>
-									<g opacity="1">
-									<path d="M250.012 224.565L231.81 242.871C227.208 247.544 222.343 249.706 217.218 249.357C212.092 249.008 207.053 246.079 202.102 240.57L87.5583 114.31L97.9143 103.85L211.621 228.959C213.504 231.12 215.405 232.341 217.322 232.62C219.24 232.899 221.454 231.783 223.965 229.272L236.518 216.824C239.028 214.314 240.126 212.1 239.813 210.182C239.499 208.264 238.261 206.329 236.099 204.376L113.187 88.6816L123.647 78.3256L247.815 194.962C253.115 199.843 255.957 204.829 256.34 209.92C256.724 215.011 254.614 219.893 250.012 224.565ZM181.285 29.6837C183.517 31.8456 184.772 34.3213 185.051 37.1108C185.33 39.9003 184.842 42.3411 183.587 44.4332C182.332 46.3858 180.501 47.8503 178.095 48.8267C175.689 49.803 172.743 49.8727 169.256 49.0359C161.445 47.2227 153.53 46.473 145.51 46.7868C137.49 47.1006 129.645 49.7681 121.974 54.7892L128.25 70.3755C130.063 74.8387 130.569 78.7266 129.767 82.0391C128.965 85.3517 127.134 88.4724 124.275 91.4014L99.6926 116.193C97.1123 118.843 94.6017 120.377 92.1609 120.796C89.7201 121.214 87.0004 121.144 84.0016 120.587L72.5996 118.494L65.4863 125.712L65.9048 131.675C66.114 134.325 65.7827 136.766 64.911 138.997C64.0393 141.229 62.3133 143.635 59.733 146.215L51.5737 154.165C48.9934 156.745 46.1865 158.088 43.1529 158.192C40.1193 158.297 37.3473 157.094 34.8367 154.584L3.66405 123.306C1.1535 120.796-0.0669103 118.059 0.0028272 115.095C0.0725647 112.131 1.39758 109.359 3.97786 106.779L12.2418 98.6192C14.7523 96.0389 17.1059 94.2781 19.3027 93.3366C21.4994 92.3952 23.8879 92.029 26.4682 92.2382L32.64 92.7613L39.544 85.9619L36.9288 73.9322C36.2315 70.9334 36.3709 68.1265 37.3473 65.5113C38.3236 62.8962 40.3808 60.0195 43.519 56.8813L67.0554 33.4495C75.9818 24.5929 85.4836 17.9504 95.5606 13.522C105.638 9.09371 115.785 6.79238 126.001 6.61803C136.218 6.44369 146.051 8.30917 155.5 12.2145C164.949 16.1198 173.545 21.9428 181.285 29.6837ZM165.281 33.6587C158.795 28.9166 151.839 25.5343 144.412 23.5119C136.985 21.4896 129.47 20.8445 121.869 21.5767C114.268 22.309 106.893 24.3488 99.7449 27.6962C92.5968 31.0436 86.0589 35.716 80.1312 41.7134L54.0843 67.5512C52.829 68.8064 52.0444 70.0269 51.7306 71.2124C51.4168 72.3979 51.4691 73.8973 51.8875 75.7105L55.3395 91.6106L39.2302 107.511L28.6649 106.883C27.3399 106.813 26.3287 106.901 25.6314 107.145C24.934 107.389 24.0623 108.034 23.0162 109.08L16.8444 115.252L42.996 141.403L49.1678 135.231C50.2138 134.185 50.8763 133.314 51.1553 132.616C51.4342 131.919 51.5388 130.873 51.4691 129.478L50.7369 119.017L66.7416 103.117L83.0602 105.837C84.8036 106.186 86.1809 106.238 87.1921 105.994C88.2033 105.75 89.3714 105 90.6964 103.745L112.141 82.3006C113.535 81.0454 114.32 79.8424 114.494 78.6917C114.669 77.5411 114.337 75.9894 113.501 74.0368L104.086 51.651C112.455 43.8404 121.869 38.4358 132.33 35.4371C142.79 32.4383 153.46 32.5429 164.339 35.7509C165.176 35.9601 165.717 35.8032 165.961 35.2801C166.205 34.7571 165.978 34.2166 165.281 33.6587Z" fill-rule="nonzero" opacity="1" ></path>
-									</g>
+									<path d="M250.012 224.565L231.81 242.871C227.208 247.544 222.343 249.706 217.218 249.357C212.092 249.008 207.053 246.079 202.102 240.57L87.5583 114.31L97.9143 103.85L113.187 88.6816L123.647 78.3256L247.815 194.962C253.115 199.843 255.957 204.829 256.34 209.92C256.724 215.011 254.614 219.893 250.012 224.565ZM181.285 29.6837C183.517 31.8456 184.772 34.3213 185.051 37.1108C185.33 39.9003 184.842 42.3411 183.587 44.4332C182.332 46.3858 180.501 47.8503 178.095 48.8267C175.689 49.803 172.743 49.8727 169.256 49.0359C161.445 47.2227 153.53 46.473 145.51 46.7868C137.49 47.1006 129.645 49.7681 121.974 54.7892L128.25 70.3755C130.063 74.8387 130.569 78.7266 129.767 82.0391C128.965 85.3517 127.134 88.4724 124.275 91.4014L99.6926 116.193C97.1123 118.843 94.6017 120.377 92.1609 120.796C89.7201 121.214 87.0004 121.144 84.0016 120.587L72.5996 118.494L65.4863 125.712L65.9048 131.675C66.114 134.325 65.7827 136.766 64.911 138.997C64.0393 141.229 62.3133 143.635 59.733 146.215L51.5737 154.165C48.9934 156.745 46.1865 158.088 43.1529 158.192C40.1193 158.297 37.3473 157.094 34.8367 154.584L3.66405 123.306C1.1535 120.796-0.0669103 118.059 0.0028272 115.095C0.0725647 112.131 1.39758 109.359 3.97786 106.779L12.2418 98.6192C14.7523 96.0389 17.1059 94.2781 19.3027 93.3366C21.4994 92.3952 23.8879 92.029 26.4682 92.2382L32.64 92.7613L39.544 85.9619L36.9288 73.9322C36.2315 70.9334 36.3709 68.1265 37.3473 65.5113C38.3236 62.8962 40.3808 60.0195 43.519 56.8813L67.0554 33.4495C75.9818 24.5929 85.4836 17.9504 95.5606 13.522C105.638 9.09371 115.785 6.79238 126.001 6.61803C136.218 6.44369 146.051 8.30917 155.5 12.2145C164.949 16.1198 173.545 21.9428 181.285 29.6837Z" fill-rule="nonzero" opacity="1" ></path>
 									</g>
 								</svg>
+									
 								<div class="text-16px text-white pointer-none nowrap transition-none">Build my Schedule</div>
 							</div>
 
@@ -2308,15 +2287,15 @@
 							</div>
 
 							<!-- schedule editor -->
-							<div class="align-self-center small:width-full padding-12px z-index-200 absolute top-0 display-flex gap-12px flex-column align-center justify-center hiddenpopup popuptransition border-box" id="scheduleeditorpopupdisplay">
-								<div class="padding-24px width-full border-box display-flex flex-column align-center box-shadow background-blue border-8px">
+							<div class="pointer-none popuptransition align-self-center small:width-full padding-12px z-index-200 absolute top-0 display-flex gap-12px flex-column align-center justify-center hiddenpopup border-box" id="scheduleeditorpopupdisplay">
+								<div class="pointer-auto padding-24px width-full border-box display-flex flex-column align-center box-shadow background-blue border-8px">
 									<div class="text-white text-18px all-small-caps text-bold">Schedule Builder</div>
 									<div class="text-white text-18px">Review and adjust your AI-scheduled tasks</div>
 								</div>
-								<div class="display-flex flex-row justify-flex-end gap-24px align-center">
+								<div class="display-flex flex-row width-full justify-flex-end gap-24px align-center">
 									
-									<div class="display-flex flex-row gap-12px align-center">
-										<div class="text-16px text-primary" id="scheduleeditorpopupdisplaytitle"></div>
+									<div class="pointer-auto box-shadow background-primary-transparent padding-4px-12px border-8px backdrop-blur bordertertiary flex-1 display-flex flex-row gap-12px align-center">
+										<div class="flex-1 text-16px text-primary" id="scheduleeditorpopupdisplaytitle"></div>
 
 										<div class="topbarbutton rotate90" onclick="previousscheduleeditorevent()">
 											<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -2337,7 +2316,7 @@
 										</div>
 									</div>
 
-									<div class="box-shadow text-16px bluebutton display-flex flex-row gap-6px align-center padding-8px-12px border-round transition-duration-100 pointer" onclick="finishscheduleeditor()">Done</div>
+									<div class="pointer-auto box-shadow text-16px bluebutton display-flex flex-row gap-6px align-center padding-8px-12px border-round transition-duration-100 pointer" onclick="finishscheduleeditor()">Done</div>
 								</div>
 							</div>
 		
