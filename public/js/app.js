@@ -13554,9 +13554,6 @@ function openscheduleeditorpopup(id){
 	let item = calendar.events.find(d => d.id == id)
 	if(!item) return
 	
-	//title
-	let scheduleeditorpopuptitle = getElement('scheduleeditorpopuptitle')
-	scheduleeditorpopuptitle.innerHTML = `${cleanInput(Calendar.Event.getTitle(item))}`
 
 	let scheduleeditorpopup = getElement('scheduleeditorpopup')
 	scheduleeditorpopup.classList.remove('hiddenpopup')
@@ -13697,8 +13694,10 @@ async function nextscheduleeditorevent(){
 
 	scrollcalendarY(item.start.minute)
 
-	openscheduleeditorpopup(editscheduleevents[editscheduleeventsindex].id)
-	updateeditscheduleui()
+	requestAnimationFrame(function(){
+		updateeditscheduleui()
+		openscheduleeditorpopup(editscheduleevents[editscheduleeventsindex].id)
+	})
 }
 async function previousscheduleeditorevent(){
 	function sleep(time) {
@@ -13720,8 +13719,10 @@ async function previousscheduleeditorevent(){
 	
 	scrollcalendarY(item.start.minute)
 
-	openscheduleeditorpopup(editscheduleevents[editscheduleeventsindex].id)
-	updateeditscheduleui()
+	requestAnimationFrame(function(){
+		updateeditscheduleui()
+		openscheduleeditorpopup(editscheduleevents[editscheduleeventsindex].id)
+	})
 }
 //here3
 
