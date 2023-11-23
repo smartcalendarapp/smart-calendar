@@ -4109,7 +4109,7 @@ input:checked+.slider:before {
 	border-left: 10px solid transparent;
 	border-right: 10px solid transparent;
 	border-top: 10px solid var(--background-primary);
-	top:100%:
+	top:100%;
 	left: 50%;
 	transform: translateX(-50%);
 }
