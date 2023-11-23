@@ -491,6 +491,15 @@ body {
 
 
 
+.regularwhitebutton{
+	color:var(--black);
+	background-color:var(--white);
+}
+.regularwhitebutton:hover{
+	background-color:var(--white-hover)
+}
+
+
 .googlebutton{
 	color:var(--black);
 	background-color:var(--white);
@@ -1124,6 +1133,9 @@ body {
 	border:1px solid var(--purple)
 }
 
+
+
+
 @keyframes suggestionborder {
 	0% {
 		box-shadow: var(--purple-transparent) 0px 2px 12px -7px;
@@ -1425,6 +1437,25 @@ body {
 	border: 2px solid var(--blue);
 	border-radius: 8px;
 	transition: opacity 0.2s, visibility 0.2s;
+
+	animation-name: opacityglow;
+	animation-duration: 4s;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+	opacity:1;
+}
+@keyframes opacityglow {
+	0% {
+		opacity:1;
+	}
+
+	50% {
+		opacity:0.7;
+	}
+
+	100% {
+		opacity:1;
+	}
 }
 
 .panelwrap {

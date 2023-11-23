@@ -341,16 +341,44 @@
 		</div>
 	</div>
 
+	<div class="helpmenu hiddenpopup popup z-index-300 padding-12px gap-12px max-width-400px" id="scheduleeditorpopup">
+		<div class="display-flex flex-row justify-space-between align-center">
+			<div>
+				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+				<g>
+				</g>
+				</svg>
+			</div>
+			
+			<div class="infotitle" id="scheduleeditorpopuptitle"></div>
+
+			<div class="infotoprightgroup">
+				<div class="infotopright pointer" onclick="closescheduleeditorpopup(event)">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+			</div>
+		</div>
+
+		<div class="display-flex flex-column gap-12px" id="scheduleeditorpopupcontent"></div>
+
+	</div>
 
 	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px max-width-400px" id="todoitemduedate">
 		<div class="display-flex flex-row justify-space-between align-center">
 
 			<div>
-					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-					<g>
-					</g>
-					</svg>
-				</div>
+				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+				<g>
+				</g>
+				</svg>
+			</div>
 			
 			<div class="infotitle">Due date</div>
 
@@ -369,11 +397,11 @@
 		</div>
 
 		<div class="display-flex flex-row gap-12px flex-wrap-wrap">
-			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-8px hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputtodoitemduetime(event, 1440-1)">Today</div>
-			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-8px hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);inputtodoitemduetime(event, 1440-1)">Tomorrow</div>
-			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-8px hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7);inputtodoitemduetime(event, 1440-1)">In 1 week</div>
-			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-8px hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate());inputtodoitemduetime(event, 1440-1)">In 1 month</div>
-			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-8px hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemnotdue(event, inputtodoid)">No due date</div>
+			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-round hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputtodoitemduetime(event, 1440-1)">Today</div>
+			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-round hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);inputtodoitemduetime(event, 1440-1)">Tomorrow</div>
+			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-round hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7);inputtodoitemduetime(event, 1440-1)">In 1 week</div>
+			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-round hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemduedate(event, new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate());inputtodoitemduetime(event, 1440-1)">In 1 month</div>
+			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-round hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputtodoitemnotdue(event, inputtodoid)">No due date</div>
 		</div>
 
 		<div class="horizontalbar"></div>
@@ -439,11 +467,11 @@
 		</div>
 
 		<div class="display-flex flex-row gap-12px flex-wrap-wrap">
-			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-8px hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputcreatetodoitemduetime(event, 1440-1)">Today</div>
-			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-8px hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);inputcreatetodoitemduetime(event, 1440-1)">Tomorrow</div>
-			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-8px hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7);inputcreatetodoitemduetime(event, 1440-1)">In 1 week</div>
-			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-8px hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate());inputcreatetodoitemduetime(event, 1440-1)">In 1 month</div>
-			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-8px hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemnotdue(event)">No due date</div>
+			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-round hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate());inputcreatetodoitemduetime(event, 1440-1)">Today</div>
+			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-round hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1);inputcreatetodoitemduetime(event, 1440-1)">Tomorrow</div>
+			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-round hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7);inputcreatetodoitemduetime(event, 1440-1)">In 1 week</div>
+			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-round hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemduedate(event, new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate());inputcreatetodoitemduetime(event, 1440-1)">In 1 month</div>
+			<div class="background-tint-1 transition-duration-100 nowrap width-fit border-round hover:background-tint-2 padding-8px-12px text-14px text-primary pointer" onclick="inputcreatetodoitemnotdue(event)">No due date</div>
 		</div>
 
 		<div class="horizontalbar"></div>
@@ -1929,7 +1957,8 @@
 					
 					<div class="todobar relative padding-12px display-flex flex-column align-center gap-12px">
 
-						<div class="z-index-200 display-flex background-blue border-8px align-center justify-center absolute hiddenfade right-0 left-0 top-0 bottom-0 fadetransition border-box" id="schedulemytasksactivepopup">
+						<div class="z-index-200 display-flex flex-column background-blue border-8px align-center justify-center absolute hiddenfade right-0 left-0 top-0 bottom-0 fadetransition border-box" id="schedulemytasksactivepopup">
+							<div class="text-white text-18px all-small-caps text-bold">Schedule Builder</div>
 							<div class="text-white text-18px">Select tasks to schedule in calendar</div>
 						</div>
 
@@ -2161,14 +2190,11 @@
 
 							<div class="pointer-auto padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit smartbuttonbackground display-flex gap-6px flex-row align-center border-round" onclick="clickschedulemytasks(event);if(gtag){gtag('event', 'button_click', { useraction: 'Build my schedule - to do list' })}" id="scheduleoncalendar">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhitefill">
-								<g>
-								<path d="M46-4.10783e-15C20.5949-4.10783e-15 0 20.4899 0 45.7654L0 65.6633L0 85.5613L0 210.235C0 235.51 20.5949 256 46 256L210 256C235.405 256 256 235.51 256 210.235L256 85.5613L256 65.6633L256 45.7654C256 20.4899 235.405-1.01206e-05 210-4.10783e-15L46-4.10783e-15ZM46 59.694L210 59.694C224.359 59.694 236 71.2752 236 85.5613L236 210.235C236 224.521 224.359 236.102 210 236.102L46 236.102C31.6406 236.102 20 224.521 20 210.235L20 85.5613C20 71.2752 31.6406 59.694 46 59.694Z" fill-rule="nonzero" opacity="1"></path>
-								<path d="M56.4316 90.9174L80.4316 90.9174C84.8499 90.9174 88.4316 94.4991 88.4316 98.9174L88.4316 122.917C88.4316 127.336 84.8499 130.917 80.4316 130.917L56.4316 130.917C52.0134 130.917 48.4316 127.336 48.4316 122.917L48.4316 98.9174C48.4316 94.4991 52.0134 90.9174 56.4316 90.9174Z" fill-rule="nonzero" opacity="1"></path>
-								<path d="M116 90.9174L140 90.9174C144.418 90.9174 148 94.4991 148 98.9174L148 122.917C148 127.336 144.418 130.917 140 130.917L116 130.917C111.582 130.917 108 127.336 108 122.917L108 98.9174C108 94.4991 111.582 90.9174 116 90.9174Z" fill-rule="nonzero" opacity="1"></path>
-								<path d="M173.596 90.9174L197.596 90.9174C202.014 90.9174 205.596 94.4991 205.596 98.9174L205.596 122.917C205.596 127.336 202.014 130.917 197.596 130.917L173.596 130.917C169.178 130.917 165.596 127.336 165.596 122.917L165.596 98.9174C165.596 94.4991 169.178 90.9174 173.596 90.9174Z" fill-rule="nonzero" opacity="1"></path>
-								<path d="M56.4316 147.412L80.4316 147.412C84.8499 147.412 88.4316 150.994 88.4316 155.412L88.4316 179.412C88.4316 183.83 84.8499 187.412 80.4316 187.412L56.4316 187.412C52.0134 187.412 48.4316 183.83 48.4316 179.412L48.4316 155.412C48.4316 150.994 52.0134 147.412 56.4316 147.412Z" fill-rule="nonzero" opacity="1"></path>
-								<path d="M116 147.412L140 147.412C144.418 147.412 148 150.994 148 155.412L148 179.412C148 183.83 144.418 187.412 140 187.412L116 187.412C111.582 187.412 108 183.83 108 179.412L108 155.412C108 150.994 111.582 147.412 116 147.412Z" fill-rule="nonzero" opacity="1"></path>
-								</g>
+									<g>
+									<g opacity="1">
+									<path d="M250.012 224.565L231.81 242.871C227.208 247.544 222.343 249.706 217.218 249.357C212.092 249.008 207.053 246.079 202.102 240.57L87.5583 114.31L97.9143 103.85L211.621 228.959C213.504 231.12 215.405 232.341 217.322 232.62C219.24 232.899 221.454 231.783 223.965 229.272L236.518 216.824C239.028 214.314 240.126 212.1 239.813 210.182C239.499 208.264 238.261 206.329 236.099 204.376L113.187 88.6816L123.647 78.3256L247.815 194.962C253.115 199.843 255.957 204.829 256.34 209.92C256.724 215.011 254.614 219.893 250.012 224.565ZM181.285 29.6837C183.517 31.8456 184.772 34.3213 185.051 37.1108C185.33 39.9003 184.842 42.3411 183.587 44.4332C182.332 46.3858 180.501 47.8503 178.095 48.8267C175.689 49.803 172.743 49.8727 169.256 49.0359C161.445 47.2227 153.53 46.473 145.51 46.7868C137.49 47.1006 129.645 49.7681 121.974 54.7892L128.25 70.3755C130.063 74.8387 130.569 78.7266 129.767 82.0391C128.965 85.3517 127.134 88.4724 124.275 91.4014L99.6926 116.193C97.1123 118.843 94.6017 120.377 92.1609 120.796C89.7201 121.214 87.0004 121.144 84.0016 120.587L72.5996 118.494L65.4863 125.712L65.9048 131.675C66.114 134.325 65.7827 136.766 64.911 138.997C64.0393 141.229 62.3133 143.635 59.733 146.215L51.5737 154.165C48.9934 156.745 46.1865 158.088 43.1529 158.192C40.1193 158.297 37.3473 157.094 34.8367 154.584L3.66405 123.306C1.1535 120.796-0.0669103 118.059 0.0028272 115.095C0.0725647 112.131 1.39758 109.359 3.97786 106.779L12.2418 98.6192C14.7523 96.0389 17.1059 94.2781 19.3027 93.3366C21.4994 92.3952 23.8879 92.029 26.4682 92.2382L32.64 92.7613L39.544 85.9619L36.9288 73.9322C36.2315 70.9334 36.3709 68.1265 37.3473 65.5113C38.3236 62.8962 40.3808 60.0195 43.519 56.8813L67.0554 33.4495C75.9818 24.5929 85.4836 17.9504 95.5606 13.522C105.638 9.09371 115.785 6.79238 126.001 6.61803C136.218 6.44369 146.051 8.30917 155.5 12.2145C164.949 16.1198 173.545 21.9428 181.285 29.6837ZM165.281 33.6587C158.795 28.9166 151.839 25.5343 144.412 23.5119C136.985 21.4896 129.47 20.8445 121.869 21.5767C114.268 22.309 106.893 24.3488 99.7449 27.6962C92.5968 31.0436 86.0589 35.716 80.1312 41.7134L54.0843 67.5512C52.829 68.8064 52.0444 70.0269 51.7306 71.2124C51.4168 72.3979 51.4691 73.8973 51.8875 75.7105L55.3395 91.6106L39.2302 107.511L28.6649 106.883C27.3399 106.813 26.3287 106.901 25.6314 107.145C24.934 107.389 24.0623 108.034 23.0162 109.08L16.8444 115.252L42.996 141.403L49.1678 135.231C50.2138 134.185 50.8763 133.314 51.1553 132.616C51.4342 131.919 51.5388 130.873 51.4691 129.478L50.7369 119.017L66.7416 103.117L83.0602 105.837C84.8036 106.186 86.1809 106.238 87.1921 105.994C88.2033 105.75 89.3714 105 90.6964 103.745L112.141 82.3006C113.535 81.0454 114.32 79.8424 114.494 78.6917C114.669 77.5411 114.337 75.9894 113.501 74.0368L104.086 51.651C112.455 43.8404 121.869 38.4358 132.33 35.4371C142.79 32.4383 153.46 32.5429 164.339 35.7509C165.176 35.9601 165.717 35.8032 165.961 35.2801C166.205 34.7571 165.978 34.2166 165.281 33.6587Z" fill-rule="nonzero" opacity="1" ></path>
+									</g>
+									</g>
 								</svg>
 								<div class="text-16px text-white pointer-none nowrap transition-none">Build my Schedule</div>
 							</div>
@@ -2279,6 +2305,40 @@
 							<!-- drop task -->
 							<div class="hiddenfade z-index-100 display-flex flex-column pointer-none align-center justify-center absolute bottom-0 left-0 right-0 top-0 dragtodohighlight" id="dragtodohighlight">
 								<div class="text-18px text-bold text-white">Drop task to schedule on calendar</div>
+							</div>
+
+							<!-- schedule editor -->
+							<div class="align-self-center small:width-full padding-12px z-index-200 absolute top-0 display-flex gap-12px flex-column align-center justify-center hiddenpopup popuptransition border-box" id="scheduleeditorpopupdisplay">
+								<div class="padding-24px width-full border-box display-flex flex-column align-center box-shadow background-blue border-8px">
+									<div class="text-white text-18px all-small-caps text-bold">Schedule Builder</div>
+									<div class="text-white text-18px">Review and adjust your AI-scheduled tasks</div>
+								</div>
+								<div class="display-flex flex-row justify-flex-end gap-24px align-center">
+									
+									<div class="display-flex flex-row gap-12px align-center">
+										<div class="text-16px text-primary" id="scheduleeditorpopupdisplaytitle"></div>
+
+										<div class="topbarbutton rotate90" onclick="previousscheduleeditorevent()">
+											<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+											<g>
+											<path d="M186 10L70 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+											<path d="M186 246L70 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+											</g>
+											</svg>
+										</div>
+
+										<div class="topbarbutton rotate90" onclick="nextscheduleeditorevent()">
+											<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+											<g>
+											<path d="M70 10L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+											<path d="M70 246L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+											</g>
+											</svg>
+										</div>
+									</div>
+
+									<div class="box-shadow text-16px bluebutton display-flex flex-row gap-6px align-center padding-8px-12px border-round transition-duration-100 pointer" onclick="finishscheduleeditor()">Done</div>
+								</div>
 							</div>
 		
 
