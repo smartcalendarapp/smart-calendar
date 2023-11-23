@@ -5737,7 +5737,7 @@ function mousedowndocument(event) {
 	}
 
 	//unselect event
-	if ((eventinfoshown == true && !eventinfo.contains(event.target) && eventinfo.classList.contains('hiddenpopup')) || (editschedulepopupshown == true && !scheduleeditorpopup.contains(event.target) && scheduleeditorpopup.classList.contains('hiddenpopup'))) {
+	if ((eventinfoshown == true && !eventinfo.contains(event.target) && eventinfo.classList.contains('hiddenpopup')) && (editschedulepopupshown == true && !scheduleeditorpopup.contains(event.target) && scheduleeditorpopup.classList.contains('hiddenpopup'))) {
 		selectedeventid = null
 		calendar.updateEvents()
 		calendar.updateInfo(true)
@@ -13471,6 +13471,9 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			iseditingschedule = true
 			editscheduleeventsindex = 0
 			editscheduleevents = modifiedevents
+
+			selectedeventid = calendar.events.filter(d => d.type == 1 && !d.completed)[0].id
+			openscheduleeditorpopup(calendar.events.filter(d => d.type == 1 && !d.completed)[0])
 			}
 		}
 		updateeditscheduleui()
@@ -13786,7 +13789,6 @@ async function previousscheduleeditorevent(){
 }
 //here3
 
-
 //edit my schedule
 function clickeditschedulemytasks(){
 	iseditingschedule = true
@@ -13794,7 +13796,14 @@ function clickeditschedulemytasks(){
 	editscheduleevents = calendar.events.filter(d => d.type == 1 && !d.completed)
 
 	updateeditscheduleui()
+	
 	calendar.updateTodoButtons()
+
+	selectedeventid = null
+	calendar.updateInfo(true)
+
+	selectedeventid = calendar.events.filter(d => d.type == 1 && !d.completed)[0].id
+	openscheduleeditorpopup(calendar.events.filter(d => d.type == 1 && !d.completed)[0])
 }
 
 
