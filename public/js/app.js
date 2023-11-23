@@ -13476,7 +13476,10 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			openscheduleeditorpopup(calendar.events.filter(d => d.type == 1 && !d.completed)[0])
 			}
 		}
+		
 		updateeditscheduleui()
+		
+		calendar.updateInfo(true)
 
 		if(!iseditingschedule){
 			isautoscheduling = false
@@ -13799,11 +13802,11 @@ function clickeditschedulemytasks(){
 	
 	calendar.updateTodoButtons()
 
-	selectedeventid = null
-	calendar.updateInfo(true)
-
 	selectedeventid = calendar.events.filter(d => d.type == 1 && !d.completed)[0].id
 	openscheduleeditorpopup(calendar.events.filter(d => d.type == 1 && !d.completed)[0])
+
+	selectedeventid = null
+	calendar.updateInfo(true)
 }
 
 
