@@ -2597,6 +2597,13 @@ class Calendar {
 			scheduleoncalendar.classList.add('display-none')
 		}
 
+		let editscheduleoncalendar = getElement('editscheduleoncalendar')
+		if(calendar.events.filter(d => d.type == 1 && !d.completed).length > 0 && !iseditingschedule && !isautoscheduling && !schedulemytasksenabled){
+			editscheduleoncalendar.classList.remove('hiddenpopupstatic')
+		}else{
+			editscheduleoncalendar.classList.add('hiddenpopupstatic')
+		}
+
 		let schedulemytasksactivepopup = getElement('schedulemytasksactivepopup')
 		let schedulemytasksactive = getElement('schedulemytasksactive')
 		if (schedulemytasksenabled) {
@@ -5701,6 +5708,9 @@ window.addEventListener('touchstart', mousedowndocument, false)
 function mousedowndocument(event) {
 	let eventinfo = getElement('eventinfo')
 	let eventinfoshown = !eventinfo.classList.contains('hiddenpopup')
+	
+	let scheduleeditorpopup = getElement('scheduleeditorpopup')
+	let editschedulepopupshown = !scheduleeditorpopup.classList.contains('hiddenpopup')
 
 	let popuplist = Array.from(document.getElementsByClassName('popup'))
 	let popupbuttonlist = [...Array.from(document.getElementsByClassName('popupbutton')), ...Array.from(document.getElementsByClassName('inputtimepicker')), ...Array.from(document.getElementsByClassName('inputdatepicker')), ...Array.from(document.getElementsByClassName('inputdurationpicker'))]
@@ -5727,7 +5737,7 @@ function mousedowndocument(event) {
 	}
 
 	//unselect event
-	if (eventinfoshown == true && eventinfo.classList.contains('hiddenpopup')) {
+	if ((eventinfoshown == true || editschedulepopupshown == true) && eventinfo.classList.contains('hiddenpopup')) {
 		selectedeventid = null
 		calendar.updateEvents()
 		calendar.updateInfo(true)
@@ -11144,6 +11154,7 @@ async function todocompleted(event, id) {
 	if (!item) return
 	item.completed = !item.completed
 
+	/*
 	if(item.completed){
 		if(Calendar.Event.isEvent(item)){
 			//cancel suggestion
@@ -11176,6 +11187,7 @@ async function todocompleted(event, id) {
 			}
 		}
 	}
+	*/
 
 
 	fixrecurringtodo(item)
@@ -13533,6 +13545,11 @@ function finishscheduleeditor(){
 	iseditingschedule = false
 	isautoscheduling = false
 
+	selectedeventid = null
+
+	calendar.updateEvents()
+	calendar.updateInfo(true)
+
 	updateeditscheduleui()
 	closescheduleeditorpopup()
 }
@@ -13725,6 +13742,12 @@ async function previousscheduleeditorevent(){
 	})
 }
 //here3
+
+
+//edit my schedule
+function clickeditschedulemytasks(){
+	autoScheduleV2({smartevents: [calendar.events.filter(d => d.type == 1 && !d.completed)], addedtodos: []})
+}
 
 
 
