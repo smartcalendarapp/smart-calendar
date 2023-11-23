@@ -5737,7 +5737,7 @@ function mousedowndocument(event) {
 	}
 
 	//unselect event
-	if ((eventinfoshown == true && !eventinfo.contains(event.target) && eventinfo.classList.contains('hiddenpopup')) && (editschedulepopupshown == true && !scheduleeditorpopup.contains(event.target) && scheduleeditorpopup.classList.contains('hiddenpopup'))) {
+	if (selectedeventid != null && !eventinfo.contains(event.target) && !scheduleeditorpopup.contains(event.target)) {
 		selectedeventid = null
 		calendar.updateEvents()
 		calendar.updateInfo(true)
@@ -13732,7 +13732,15 @@ function editschedulemoveevent(id, timestamp){
 	
 	closescheduleeditorpopup()
 
-	autoScheduleV2({smartevents: [item], editscheduletimestamp: timestamp, addedtodos: []})
+	await autoScheduleV2({smartevents: [item], editscheduletimestamp: timestamp, addedtodos: []})
+
+	
+	calendarday = item.start.day
+	calendarmonth = item.start.month
+	calendaryear = item.start.year
+	calendar.updateCalendar()
+
+	scrollcalendarY(item.start.minute)
 }
 
 let editscheduleeventsindex;
