@@ -13724,7 +13724,7 @@ function closescheduleeditorpopup(){
 
 	clearInterval(scheduleeditorpopupinterval)
 }
-function editschedulemoveevent(id, timestamp){
+async function editschedulemoveevent(id, timestamp){
 	let item = calendar.events.find(d => d.id == id)
 	if(!item) return
 
