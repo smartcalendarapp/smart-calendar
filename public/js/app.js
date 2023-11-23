@@ -1888,7 +1888,7 @@ class Calendar {
 					editinfo = false
 				}
 
-				if (showinfo) {
+				if (showinfo && !iseditingschedule) {
 					eventinfo.classList.remove('hiddenpopup')
 					return
 				}
@@ -13561,14 +13561,6 @@ function openscheduleeditorpopup(id){
 	let scheduleeditorpopup = getElement('scheduleeditorpopup')
 	scheduleeditorpopup.classList.remove('hiddenpopup')
 
-	//position
-	let eventdiv = getElement(item.id)
-	scheduleeditorpopup.style.top = (eventdiv.getBoundingClientRect().top + eventdiv.offsetHeight) + 'px'
-	if(scheduleeditorpopup.getBoundingClientRect().top + scheduleeditorpopup.offsetHeight > (window.innerHeight || document.body.clientHeight)){
-		scheduleeditorpopup.style.top = (eventdiv.getBoundingClientRect().top - scheduleeditorpopup.offsetHeight) + 'px'
-	}
-	scheduleeditorpopup.style.left = fixleft(eventdiv.getBoundingClientRect().left + eventdiv.offsetWidth/2 - scheduleeditorpopup.offsetWidth/2, scheduleeditorpopup) + 'px'
-
 
 	//content
 	let currentdate = new Date()
@@ -13651,6 +13643,22 @@ function openscheduleeditorpopup(id){
 
 	let scheduleeditorpopupcontent = getElement('scheduleeditorpopupcontent')
 	scheduleeditorpopupcontent.innerHTML = output.join('')
+
+
+	//position
+	scheduleeditorpopup.classList.remove('scheduleeditorpopupbottom')
+	scheduleeditorpopup.classList.remove('scheduleeditorpopuptop')
+
+	let eventdiv = getElement(item.id)
+
+	scheduleeditorpopup.style.top = (eventdiv.getBoundingClientRect().top + eventdiv.offsetHeight) + 'px'
+	if(scheduleeditorpopup.getBoundingClientRect().top + scheduleeditorpopup.offsetHeight > (window.innerHeight || document.body.clientHeight)){
+		scheduleeditorpopup.style.top = (eventdiv.getBoundingClientRect().top - scheduleeditorpopup.offsetHeight) + 'px'
+		scheduleeditorpopup.classList.add('scheduleeditorpopuptop')
+	}else{
+		scheduleeditorpopup.classList.add('scheduleeditorpopupbottom')
+	}
+	scheduleeditorpopup.style.left = fixleft(eventdiv.getBoundingClientRect().left + eventdiv.offsetWidth/2 - scheduleeditorpopup.offsetWidth/2, scheduleeditorpopup) + 'px'
 }
 
 function closescheduleeditorpopup(){
@@ -13661,7 +13669,7 @@ function editschedulemoveevent(id, timestamp){
 	let item = calendar.events.find(d => d.id == id)
 	if(!item) return
 
-	item.autoschedulelocked = false
+	item.autoschedulelocked = true
 	
 	closescheduleeditorpopup()
 
@@ -13669,13 +13677,16 @@ function editschedulemoveevent(id, timestamp){
 }
 
 let editscheduleeventsindex;
-function nextscheduleeditorevent(){
+async function nextscheduleeditorevent(){
+	function sleep(time) {
+		return new Promise(resolve => {
+			setTimeout(resolve, time)
+		})
+	}
+
 	editscheduleeventsindex = (editscheduleeventsindex + 1 + editscheduleevents.length) % editscheduleevents.length
 
 	let item = editscheduleevents[editscheduleeventsindex]
-
-	openscheduleeditorpopup(editscheduleevents[editscheduleeventsindex])
-	updateeditscheduleui()
 
 	selectedeventid = item.id
 
@@ -13685,14 +13696,20 @@ function nextscheduleeditorevent(){
 	calendar.updateCalendar()
 
 	scrollcalendarY(item.start.minute)
+
+	openscheduleeditorpopup(editscheduleevents[editscheduleeventsindex].id)
+	updateeditscheduleui()
 }
-function previousscheduleeditorevent(){
+async function previousscheduleeditorevent(){
+	function sleep(time) {
+		return new Promise(resolve => {
+			setTimeout(resolve, time)
+		})
+	}
+
 	editscheduleeventsindex = (editscheduleeventsindex - 1 + editscheduleevents.length) % editscheduleevents.length
 
 	let item = editscheduleevents[editscheduleeventsindex]
-
-	openscheduleeditorpopup(editscheduleevents[editscheduleeventsindex])
-	updateeditscheduleui()
 
 	selectedeventid = item.id
 
@@ -13702,6 +13719,9 @@ function previousscheduleeditorevent(){
 	calendar.updateCalendar()
 	
 	scrollcalendarY(item.start.minute)
+
+	openscheduleeditorpopup(editscheduleevents[editscheduleeventsindex].id)
+	updateeditscheduleui()
 }
 //here3
 
@@ -14899,6 +14919,11 @@ function clickeventbottom(event, timestamp) {
 	movingevent = true
 	calendar.updateInfo(true)
 
+	//edit schedule popup
+	if(iseditingschedule){
+		clickeventopeneditschedulepopup(item.id)
+	}
+
 	document.addEventListener("mousemove", moveeventbottom, false)
 	document.addEventListener("mouseup", finishfunction, false);
 	function finishfunction() {
@@ -14933,6 +14958,11 @@ function clickeventtop(event, timestamp) {
 
 	movingevent = true
 	calendar.updateInfo(true)
+
+	//edit schedule popup
+	if(iseditingschedule){
+		clickeventopeneditschedulepopup(item.id)
+	}
 
 	document.addEventListener("mousemove", moveeventtop, false)
 	document.addEventListener("mouseup", finishfunction, false);

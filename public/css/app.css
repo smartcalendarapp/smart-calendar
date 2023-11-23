@@ -4095,3 +4095,38 @@ input:focus+.slider {
 input:checked+.slider:before {
 	transform: translateX(18px);
 }
+
+
+.scheduleeditorpopupbottom{
+	margin-top:15px
+}
+.scheduleeditorpopupbottom::before {
+	content: '';
+	display: block;
+	width: 0;
+	height: 0;
+	position: absolute;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-bottom: 10px solid var(--background-primary);
+	top: -10px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.scheduleeditorpopuptop{
+	margin-bottom:15px
+}
+.scheduleeditorpopuptop::before {
+	content: '';
+	display: block;
+	width: 0;
+	height: 0;
+	position: absolute;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-bottom: 10px solid var(--background-primary);
+	bottom: -10px;
+	left: 50%;
+	transform: translateX(-50%);
+}
