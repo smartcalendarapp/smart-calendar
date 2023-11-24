@@ -2007,16 +2007,6 @@ class Calendar {
 				 					<div class="text-14px text-primary width90px">All day</div>
 					 				<div class="todoitemcheckbox tooltip display-flex" onclick="eventallday()" id="infoallday"></div>
 				 				</div>`)
-
-							infodata.push(`
-								<div class="infogroup">
-									<div class="inputgroup">
-										<div class="text-14px text-primary width90px">Repeat</div>
-										<div class="flex-1 border-8px transition-duration-100 pointer background-tint-1 hover:background-tint-2 text-14px text-primary padding-8px-12px popupbutton display-flex flex-row justify-space-between" id="repeatoptionbutton" onclick="clickrepeatoption()"></div>
-									</div>
-								</div>`)
-
-							infodata.push(`<div class="horizontalbar"></div>`)
 						}
 
 						if (item.type == 1) {
@@ -2099,9 +2089,17 @@ class Calendar {
 				 				</div>
 							</div>
 							`)
-
-							infodata.push(`<div class="horizontalbar"></div>`)
 						}
+
+						infodata.push(`
+							<div class="infogroup">
+								<div class="inputgroup">
+									<div class="text-14px text-primary width90px">Repeat</div>
+									<div class="flex-1 border-8px transition-duration-100 pointer background-tint-1 hover:background-tint-2 text-14px text-primary padding-8px-12px popupbutton display-flex flex-row justify-space-between" id="repeatoptionbutton" onclick="clickrepeatoption()"></div>
+								</div>
+							</div>`)
+
+						infodata.push(`<div class="horizontalbar"></div>`)
 
 						infodata.push(`
 				 			<div class="infogroup">
@@ -2290,20 +2288,18 @@ class Calendar {
 							}`
 					}
 
-					if(item.type == 0){
-						//repeat
-						let repeatoptionbutton = getElement('repeatoptionbutton')
+					//repeat
+					let repeatoptionbutton = getElement('repeatoptionbutton')
 
-						let repeattext = getRepeatText(item)
-						repeattext += `<span><svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline rotate90">
-						<g>
-						<path d="M88.6229 47.8879L167.377 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M88.6229 208.112L167.377 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-						</g>
-						</svg></span>`
+					let repeattext = getRepeatText(item)
+					repeattext += `<span><svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline rotate90">
+					<g>
+					<path d="M88.6229 47.8879L167.377 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					<path d="M88.6229 208.112L167.377 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					</g>
+					</svg></span>`
 
-						repeatoptionbutton.innerHTML = repeattext
-					}
+					repeatoptionbutton.innerHTML = repeattext
 
 
 					//calendar
@@ -2598,10 +2594,13 @@ class Calendar {
 		}
 
 		let editscheduleoncalendar = getElement('editscheduleoncalendar')
+		let editscheduleoncalendar2 = getElement('editscheduleoncalendar2')
 		if(calendar.events.filter(d => d.type == 1 && !d.completed).length > 0 && !iseditingschedule && !isautoscheduling && !schedulemytasksenabled){
 			editscheduleoncalendar.classList.remove('hiddenpopupstatic')
+			editscheduleoncalendar2.classList.remove('hiddenpopupstatic')
 		}else{
 			editscheduleoncalendar.classList.add('hiddenpopupstatic')
+			editscheduleoncalendar2.classList.add('hiddenpopupstatic')
 		}
 
 		let schedulemytasksactivepopup = getElement('schedulemytasksactivepopup')
@@ -5737,7 +5736,7 @@ function mousedowndocument(event) {
 	}
 
 	//unselect event
-	if (selectedeventid != null && !eventinfo.contains(event.target) && !scheduleeditorpopup.contains(event.target)) {
+	if (selectedeventid != null && ![...popuplist, ...popupbuttonlist].find(d => d.contains(event.target))) {
 		selectedeventid = null
 		calendar.updateEvents()
 		calendar.updateInfo(true)
@@ -13472,14 +13471,19 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			editscheduleeventsindex = 0
 			editscheduleevents = modifiedevents
 
-			selectedeventid = calendar.events.filter(d => d.type == 1 && !d.completed)[0].id
-			openscheduleeditorpopup(calendar.events.filter(d => d.type == 1 && !d.completed)[0])
+			let firstevent = sortstartdate(calendar.events.filter(d => d.type == 1 && !d.completed))[0]
+			selectedeventid = firstevent.id
+
+			calendar.updateEvents()
+			calendar.updateInfo(true)
+
+			requestAnimationFrame(function(){
+				openscheduleeditorpopup(firstevent.id)
+				updateeditscheduleui()
+			})
 			}
 		}
-		
-		updateeditscheduleui()
-		
-		calendar.updateInfo(true)
+
 
 		if(!iseditingschedule){
 			isautoscheduling = false
@@ -13672,10 +13676,10 @@ function openscheduleeditorpopup(id){
 	}else{
 		let output = []
 		output.push(`
-		<div class="flex-column display-flex gap-6px">
+		<div class="flex-column display-flex gap-12px">
 			<div class="text-16px text-primary">This is a fixed-time event.</div>
 			
-			<div class="width-fit text-14px display-flex flex-row align-center gap-6px padding-8px-12px  infotopright bluebutton text-primary pointer-auto transition-duration-100 border-8px pointer popupbutton" onclick="closescheduleeditorpopup();eventtype(1)">
+			<div class="align-self-flex-end width-fit text-14px display-flex flex-row align-center gap-6px padding-8px-12px infotopright bluebutton text-primary pointer-auto transition-duration-100 border-round pointer popupbutton" onclick="closescheduleeditorpopup();eventtype(1)">
 				<div class="pointer-none nowrap text-primary text-14px">Convert to task</div>
 			</div>
 		</div>`)
@@ -13806,15 +13810,17 @@ function clickeditschedulemytasks(){
 	editscheduleeventsindex = 0
 	editscheduleevents = calendar.events.filter(d => d.type == 1 && !d.completed)
 
-	updateeditscheduleui()
-	
+	let firstevent = sortstartdate(calendar.events.filter(d => d.type == 1 && !d.completed))[0]
+	selectedeventid = firstevent.id
+
+	calendar.updateInfo(true)
+	calendar.updateEvents()
 	calendar.updateTodoButtons()
 
-	selectedeventid = calendar.events.filter(d => d.type == 1 && !d.completed)[0].id
-	openscheduleeditorpopup(calendar.events.filter(d => d.type == 1 && !d.completed)[0])
-
-	selectedeventid = null
-	calendar.updateInfo(true)
+	requestAnimationFrame(function(){
+		updateeditscheduleui()
+		openscheduleeditorpopup(firstevent.id)
+	})
 }
 
 

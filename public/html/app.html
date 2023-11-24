@@ -2161,7 +2161,14 @@
 					
 					<div class="relative flex-1 todocontainer padding-12px border-box" id="todocontainer">	
 
-						<div class="sticky top-0 flex-wrap-wrap pointer-none justify-flex-end z-index-50 todobuttonstop display-flex flex-row gap-24px">
+						<div class="padding-top-12px sticky top-0 flex-wrap-wrap pointer-none justify-flex-end z-index-50 todobuttonstop display-flex flex-row gap-24px">
+
+							<div class="visibility-hidden pointer-none padding-8px-12px display-flex gap-6px flex-row align-center">
+								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhitefill">
+								</svg>
+									
+								<div class="text-16px text-white pointer-none nowrap transition-none">Build my Schedule</div>
+							</div>
 
 							<div class="absolute popuptransition right-0 top-0 hiddenpopupstatic pointer-auto display-flex border-box flex-1 justify-flex-end flex-row gap-12px align-center" id="schedulemytasksactive">
 								<div class="display-flex align-center flex-row gap-12px">
@@ -2173,7 +2180,7 @@
 								</div>
 							</div>
 
-							<div class="absolute hiddenpopupstatic popuptransition right-0 top-0 pointer-auto padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit smartbuttonbackground display-flex  gap-6px flex-row align-center border-round" onclick="clickschedulemytasks(event);if(gtag){gtag('event', 'button_click', { useraction: 'Build my schedule - to do list' })}" id="scheduleoncalendar">
+							<div class="absolute hiddenpopupstatic popuptransition right-0 top-0 pointer-auto padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit smartbuttonbackground display-flex gap-6px flex-row align-center border-round" onclick="clickschedulemytasks(event);if(gtag){gtag('event', 'button_click', { useraction: 'Build my schedule - to do list' })}" id="scheduleoncalendar">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhitefill">
 									<g>
 									<path d="M123.469 74C122.822 74.0085 122.171 74.2768 121.688 74.7812L111.469 85.4688C110.526 86.4533 110.532 88.0083 111.5 88.9688L231.781 208.344C233.566 210.044 234.506 211.567 234.719 212.938C234.883 213.998 234.134 215.602 232.156 217.688L219.875 230.531C217.917 232.596 216.447 233.386 215.562 233.25C214.374 233.068 213.016 232.141 211.531 230.344L100.219 101.219C99.2493 100.094 97.5164 100.042 96.5 101.125L86.375 111.938C85.5003 112.869 85.4478 114.313 86.2812 115.281L198.375 245.562C203.611 251.706 209.136 255.086 214.906 255.5C220.742 255.919 226.202 253.337 231.188 248L249 229.125C253.953 223.824 256.272 218.121 255.844 212.125C255.42 206.199 252.346 200.497 246.75 195.062L125.25 74.7188C124.754 74.2272 124.115 73.9915 123.469 74Z" fill-rule="nonzero" opacity="1" ></path>
@@ -2276,7 +2283,7 @@
 							<div class="barcolumncontainer" id="barcolumncontainer"></div>
 
 							<!-- edit my schedule -->
-							<div class="small:display-none absolute popuptransition z-index-200 top-0 left-0 margin-12px pointer-auto padding-8px-12px box-shadow pointer popupbutton transition-duration-100 hiddenpopupstatic popuptransition width-fit smartbuttonbackground display-flex gap-6px flex-row align-center border-round" onclick="clickeditschedulemytasks(event);if(gtag){gtag('event', 'button_click', { useraction: 'Edit my schedule - calendar' })}" id="editscheduleoncalendar2">
+							<div class="small:display-none absolute popuptransition z-index-200 top-0 left-0 margin-24px pointer-auto padding-8px-12px box-shadow pointer popupbutton transition-duration-100 hiddenpopupstatic popuptransition width-fit smartbuttonbackground display-flex gap-6px flex-row align-center border-round" onclick="clickeditschedulemytasks(event);if(gtag){gtag('event', 'button_click', { useraction: 'Edit my schedule - calendar' })}" id="editscheduleoncalendar">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 									<g>
 									<path d="M178.389 21.6002L31.105 168.884M234.4 77.6109L87.1156 224.895M178.389 21.6002C193.856 6.13327 218.933 6.13327 234.4 21.6002C249.867 37.0671 249.867 62.1439 234.4 77.6109M10 245.998L31.105 168.884M10.0017 246L87.1156 224.895" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -2287,7 +2294,7 @@
 							</div>
 
 							<!-- edit my schedule mobile -->
-							<div class="display-none absolute popuptransition z-index-200 bottom-0 right-0 margin-12px pointer-auto padding-8px-12px box-shadow pointer popupbutton transition-duration-100 hiddenpopupstatic popuptransition width-fit smartbuttonbackground small:display-flex gap-6px flex-row align-center border-round" onclick="clickeditschedulemytasks(event);if(gtag){gtag('event', 'button_click', { useraction: 'Edit my schedule - calendar' })}" id="editscheduleoncalendar">
+							<div class="display-none absolute popuptransition z-index-200 bottom-0 right-0 margin-24px pointer-auto padding-8px-12px box-shadow pointer popupbutton transition-duration-100 hiddenpopupstatic popuptransition width-fit smartbuttonbackground small:display-flex gap-6px flex-row align-center border-round" onclick="clickeditschedulemytasks(event);if(gtag){gtag('event', 'button_click', { useraction: 'Edit my schedule - calendar' })}" id="editscheduleoncalendar2">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 									<g>
 									<path d="M178.389 21.6002L31.105 168.884M234.4 77.6109L87.1156 224.895M178.389 21.6002C193.856 6.13327 218.933 6.13327 234.4 21.6002C249.867 37.0671 249.867 62.1439 234.4 77.6109M10 245.998L31.105 168.884M10.0017 246L87.1156 224.895" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
