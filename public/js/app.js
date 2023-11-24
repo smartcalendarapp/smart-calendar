@@ -2768,7 +2768,7 @@ class Calendar {
 <div class="text-18px text-secondary">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span>.</div>
 </div>`)
 		}else {
-			output.push(`<div class="align-self-flex-end text-secondary text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup()">We'd love your feedback</div>`)
+			output.push(`<div class="align-self-flex-end text-secondary text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">We'd love your feedback</div>`)
 		}
 
 		let alltodolist = getElement('alltodolist')
@@ -13633,7 +13633,7 @@ function openscheduleeditorpopup(id){
 
 		</div>`)
 
-		output.push(`<div class="text-secondary text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup()">We'd love your feedback</div>`)
+		output.push(`<div class="text-secondary text-14px align-self-flex-end width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">Feedback</div>`)
 
 
 		let scheduleeditorpopupcontent = getElement('scheduleeditorpopupcontent')
@@ -13649,8 +13649,6 @@ function openscheduleeditorpopup(id){
 				<div class="pointer-none nowrap text-primary text-14px">Convert to task</div>
 			</div>
 		</div>`)
-
-		output.push(`<div class="text-secondary text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup()">We'd love your feedback</div>`)
 
 		let scheduleeditorpopupcontent = getElement('scheduleeditorpopupcontent')
 		scheduleeditorpopupcontent.innerHTML = output.join('')
