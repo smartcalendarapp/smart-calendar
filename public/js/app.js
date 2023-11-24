@@ -2640,188 +2640,6 @@ class Calendar {
 	updateTodoList() {
 		let output = []
 
-		//old code with schedule vs unscheduled categories
-		/*
-		if(true){
-			let mytodos = calendar.events.filter(d => d.type == 1 && !d.completed && Calendar.Event.getSubtasks(d).length == 0)
-			let sortedtodos = sortstartdate(mytodos)
-
-
-			let laststartdate;
-			let tempoutput = []
-			let tempoutput2 = []
-			for (let i = 0; i < sortedtodos.length; i++) {
-				if(i == 0){
-					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
-						<div class="horizontalbar flex-1"></div>
-						<div class="text-quaternary all-small-caps text-18px text-bold">Scheduled</div>
-						<div class="horizontalbar flex-1"></div>
-					</div>`)
-				}
-
-				let item = sortedtodos[i]
-				let tempstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-				if (!laststartdate || tempstartdate.getDate() != laststartdate.getDate() || laststartdate.getMonth() != tempstartdate.getMonth() || laststartdate.getFullYear() != tempstartdate.getFullYear()) {
-					tempoutput.push(`<div class="text-16px text-bold text-primary">Scheduled for ${getDMDYText(tempstartdate)}</div>`)
-				}
-
-				tempoutput2.push(gettododata(item))
-
-				let nextitem = sortedtodos[i + 1]
-				let nextstartdate = nextitem ? new Date(nextitem.start.year, nextitem.start.month, nextitem.start.day, 0, nextitem.start.minute) : null
-				if (!nextstartdate || nextstartdate.getDate() != tempstartdate.getDate() || nextstartdate.getMonth() != tempstartdate.getMonth() || nextstartdate.getFullYear() != tempstartdate.getFullYear()) {
-					output.push(`<div class="display-flex flex-column gap-12px">
-						${tempoutput.join('')}
-				
-						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
-					</div>`)
-					tempoutput = []
-					tempoutput2 = []
-				}
-
-				laststartdate = tempstartdate
-			}
-		}
-
-
-		if(true){
-			let mytodos = calendar.todos.filter(d => !d.completed && !Calendar.Todo.isSubtask(d))
-
-			let duetodos = sortduedate(mytodos.filter(d => d.endbefore.year != null && d.endbefore.month != null && d.endbefore.day != null && d.endbefore.minute != null))
-			let notduetodos = mytodos.filter(d => d.endbefore.year == null || d.endbefore.month == null || d.endbefore.day == null || d.endbefore.minute == null)
-
-			let lastduedate;
-			let tempoutput = []
-			let tempoutput2 = []
-			for (let i = 0; i < duetodos.length; i++) {
-				if(i == 0){
-					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
-						<div class="horizontalbar flex-1"></div>
-						<div class="text-quaternary all-small-caps text-18px text-bold">Unscheduled</div>
-						<div class="horizontalbar flex-1"></div>
-					</div>`)
-				}
-
-				let item = duetodos[i]
-				let tempduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
-				if (!lastduedate || tempduedate.getDate() != lastduedate.getDate() || lastduedate.getMonth() != tempduedate.getMonth() || lastduedate.getFullYear() != tempduedate.getFullYear()) {
-					let today = new Date()
-					today.setHours(0,0,0,0)
-					let tomorrow = new Date(today)
-					tomorrow.setDate(tomorrow.getDate() + 1)
-					let yesterday = new Date(today)
-					yesterday.setDate(yesterday.getDate() - 1)
-
-					let tempduedate2 = new Date(tempduedate)
-					tempduedate2.setHours(0,0,0,0)
-					let difference = Math.floor((today.getTime() - tempduedate2)/60000)
-
-					let showrelative = true
-					if ((tempduedate2.getMonth() == today.getMonth() && tempduedate2.getDate() == today.getDate() && tempduedate2.getFullYear() == today.getFullYear()) || (tempduedate2.getMonth() == tomorrow.getMonth() && tempduedate2.getDate() == tomorrow.getDate() && tempduedate2.getFullYear() == tomorrow.getFullYear()) || (tempduedate2.getMonth() == yesterday.getMonth() && tempduedate2.getDate() == yesterday.getDate() && tempduedate2.getFullYear() == yesterday.getFullYear())){
-						showrelative = false
-					}
-					
-					tempoutput.push(`<div class="text-16px text-bold text-primary">Due ${getDMDYText(tempduedate)} ${showrelative ? `<span class="text-secondary">${getRelativeYMWDText(difference)}</span>` : ''}</div>`)
-				}
-
-				tempoutput2.push(gettododata(item))
-
-				let nextitem = duetodos[i + 1]
-				let nextduedate = nextitem ? new Date(nextitem.endbefore.year, nextitem.endbefore.month, nextitem.endbefore.day, 0, nextitem.endbefore.minute) : null
-				if (!nextduedate || nextduedate.getDate() != tempduedate.getDate() || nextduedate.getMonth() != tempduedate.getMonth() || nextduedate.getFullYear() != tempduedate.getFullYear()) {
-					output.push(`<div class="display-flex flex-column gap-12px">
-						${tempoutput.join('')}
-				
-						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
-					</div>`)
-					tempoutput = []
-					tempoutput2 = []
-				}
-
-				lastduedate = tempduedate
-			}
-
-			for (let i = 0; i < notduetodos.length; i++) {
-				if(i == 0 && duetodos.length == 0){
-					tempoutput.push(`<div class="flex-row gap-12px justify-center align-center display-flex">
-						<div class="horizontalbar flex-1"></div>
-						<div class="text-quaternary all-small-caps text-18px text-bold">Unscheduled</div>
-						<div class="horizontalbar flex-1"></div>
-					</div>`)
-				}
-
-				let item = notduetodos[i]
-				if (i == 0) {
-					tempoutput.push(`<div class="text-16px text-primary text-bold">No due date</div>`)
-				}
-				tempoutput2.push(gettododata(item))
-				if (i == notduetodos.length - 1) {
-					output.push(`
-					<div class="display-flex flex-column gap-12px">
-						${tempoutput.join('')}
-						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
-					</div>`)
-					tempoutput = []
-					tempoutput2 = []
-				}
-			}
-			
-		}
-
-
-		if(true){
-			let mytodos = [...calendar.todos.filter(d => d.completed && !Calendar.Todo.isSubtask(d)), ...calendar.events.filter(d => d.type == 1 && d.completed)]
-
-
-			let tempoutput = []
-			let tempoutput2 = []
-
-			for (let i = 0; i < mytodos.length; i++) {
-				let item = mytodos[i]
-				if (i == 0) {
-					tempoutput.push(`<div class="display-flex flex-row justify-space-between align-center">
-						<div class="text-16px text-bold text-primary">Completed</div>
-
-						<div class="popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="deletecompletedtodos()">
-								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-								<g>
-								<path d="M207.414 223.445L207.414 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M71.3433 246L184.657 246" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M207.414 223.445C207.414 235.902 197.226 246 184.657 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M238 57.6433L18 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M48.5864 223.445L48.5864 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M48.5864 223.445C48.5864 235.902 58.775 246 71.3433 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M96.1228 10L159.881 10" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M173.737 23.7283C173.737 16.1464 167.534 10 159.881 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M82.2668 23.7283C82.2668 16.1464 88.4703 10 96.1228 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M82.2668 23.7283L82.2668 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M173.737 23.7283L173.737 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M165.379 101.49L165.379 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
-								<path d="M90.6212 101.49L90.6212 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
-								<path d="M128 101.49L128 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
-								</g>
-								</svg>
-		
-								<span class="tooltiptextleft">Delete completed tasks</span>
-							</div>
-					</div>`)
-				}
-				tempoutput2.push(gettododata(item))
-				if (i == mytodos.length - 1) {
-					output.push(`
-					<div class="display-flex flex-column gap-12px">
-						${tempoutput.join('')}
-						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
-					</div>`)
-					tempoutput = []
-					tempoutput2 = []
-				}
-			}
-			
-		}
-		*/
-
-
 
 		if(true){
 			let mytodos = [...calendar.todos.filter(d => !d.completed && !Calendar.Todo.isSubtask(d)), ...calendar.events.filter(d => d.type == 1 && !d.completed && !Calendar.Todo.isSubtask(d))]
@@ -2949,6 +2767,8 @@ class Calendar {
 			output.push(`<div class="absolute top-0 left-0 right-0 bottom-0 flex-1 display-flex flex-column align-center justify-center">
 <div class="text-18px text-secondary">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span>.</div>
 </div>`)
+		}else {
+			output.push(`<div class="align-self-flex-end text-secondary text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup()">We'd love your feedback</div>`)
 		}
 
 		let alltodolist = getElement('alltodolist')
@@ -8019,6 +7839,67 @@ function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], edits
 
 
 //FEEDBACK
+function closefeedbackpopup(){
+	let feedbackpopup = getElement('feedbackpopup')
+	feedbackpopup.classList.add('hiddenpopup')
+}
+async function submitfeedbackpopup(){
+	let feedbackpopuperrorwrap = getElement('feedbackpopuperrorwrap')
+	feedbackpopuperrorwrap.classList.add('display-none')
+
+	let feedbackpopupmessage = getElement('feedbackpopupmessage')
+
+	let content = feedbackpopupmessage.value
+	if(!content) return
+
+	try{
+		const response = await fetch(`/sendmessage`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ content: content })
+		})
+		if (response.status == 200) {
+			feedbackpopupmessage.value = ''
+
+			let feedbackpopupinputwrap = getElement('feedbackpopupinputwrap')
+			let feedbackpopupdonewrap = getElement('feedbackpopupdonewrap')
+
+			feedbackpopupinputwrap.classList.add('display-none')
+			feedbackpopupdonewrap.classList.remove('display-none')
+		}else{
+			let data = await response.json()
+
+			feedbackpopuperrorwrap.innerHTML = data.error
+			feedbackpopuperrorwrap.classList.remove('display-none')
+		}
+	}catch(err){
+		feedbackpopuperrorwrap.innerHTML = 'Unexpected error, please try again.'
+		feedbackpopuperrorwrap.classList.remove('display-none')
+	}
+}
+function openfeedbackpopup(event){
+	let button = event.target
+
+	let feedbackpopupinputwrap = getElement('feedbackpopupinputwrap')
+	let feedbackpopupdonewrap = getElement('feedbackpopupdonewrap')
+
+	feedbackpopupinputwrap.classList.remove('display-none')
+	feedbackpopupdonewrap.classList.add('display-none')
+
+	let feedbackpopuperrorwrap = getElement('feedbackpopuperrorwrap')
+	feedbackpopuperrorwrap.classList.add('display-none')
+
+	let feedbackpopup = getElement('feedbackpopup')
+	feedbackpopup.classList.remove('hiddenpopup')
+	feedbackpopup.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, feedbackpopup) + 'px'
+	feedbackpopup.style.left = fixleft(button.getBoundingClientRect().left - feedbackpopup.offsetWidth * 0.5 + button.offsetWidth * 0.5, feedbackpopup) + 'px'
+}
+
+
+
+//legacy
 async function submitfeedback(event) {
 	event.preventDefault()
 
@@ -13717,11 +13598,12 @@ function openscheduleeditorpopup(id){
 				<div class="text-14px display-flex flex-row gap-6px align-center text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulemoveeventauto('${item.id}')">
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite">
 					<g>
-					<path d="M90.7451 204.845C92.8059 204.845 93.9394 203.746 94.1454 201.547C95.0385 194.678 95.9486 189.286 96.876 185.37C97.8034 181.454 99.2803 178.501 101.307 176.509C103.333 174.516 106.339 173.005 110.323 171.975C114.307 170.944 119.803 169.88 126.809 168.78C129.214 168.368 130.416 167.201 130.416 165.277C130.416 164.315 130.107 163.543 129.488 162.959C128.87 162.375 128.114 161.98 127.221 161.774C120.215 160.469 114.685 159.284 110.632 158.219C106.579 157.154 103.505 155.66 101.41 153.737C99.3146 151.813 97.8034 148.928 96.876 145.081C95.9486 141.234 95.0385 135.876 94.1454 129.007C93.9394 126.809 92.8059 125.71 90.7451 125.71C89.7834 125.71 88.9762 126.001 88.3236 126.585C87.6711 127.169 87.3104 127.942 87.2417 128.904C86.3487 135.911 85.4213 141.389 84.4596 145.339C83.4979 149.289 82.0038 152.277 79.9774 154.303C77.9509 156.33 74.9112 157.841 70.8583 158.837C66.8053 159.833 61.2411 160.812 54.1657 161.774C53.2727 161.911 52.517 162.289 51.8988 162.907C51.2806 163.525 50.9714 164.315 50.9714 165.277C50.9714 166.239 51.2806 167.012 51.8988 167.596C52.517 168.179 53.2727 168.574 54.1657 168.78C61.2411 170.086 66.8053 171.288 70.8583 172.387C74.9112 173.486 77.9509 175.014 79.9774 176.972C82.0038 178.93 83.4807 181.832 84.4081 185.679C85.3355 189.526 86.28 194.884 87.2417 201.753C87.3104 202.646 87.6711 203.385 88.3236 203.969C88.9762 204.553 89.7834 204.845 90.7451 204.845ZM41.8008 115.096C43.1747 115.096 43.999 114.306 44.2738 112.726C45.1668 107.849 45.9911 103.985 46.7468 101.134C47.5024 98.2835 48.6015 96.0853 50.0441 94.5397C51.4866 92.9941 53.6505 91.8092 56.5356 90.9848C59.4208 90.1605 63.4737 89.3018 68.6944 88.4088C70.2744 88.134 71.0643 87.2754 71.0643 85.8328C71.0643 84.3902 70.2744 83.5316 68.6944 83.2568C63.4737 82.3638 59.4208 81.4879 56.5356 80.6293C53.6505 79.7706 51.4866 78.5856 50.0441 77.0744C48.6015 75.5631 47.5024 73.3821 46.7468 70.5313C45.9911 67.6805 45.1668 63.7821 44.2738 58.8362C43.999 57.3249 43.1747 56.5693 41.8008 56.5693C40.3583 56.5693 39.4996 57.3249 39.2248 58.8362C38.3318 63.7821 37.5075 67.6805 36.7518 70.5313C35.9962 73.3821 34.8971 75.5631 33.4545 77.0744C32.012 78.5856 29.8481 79.7706 26.963 80.6293C24.0778 81.4879 20.0593 82.3638 14.9072 83.2568C13.3273 83.5316 12.5373 84.3902 12.5373 85.8328C12.5373 87.2754 13.3273 88.134 14.9072 88.4088C20.0593 89.3018 24.0778 90.1605 26.963 90.9848C29.8481 91.8092 32.012 92.9941 33.4545 94.5397C34.8971 96.0853 35.9962 98.2835 36.7518 101.134C37.5075 103.985 38.3318 107.849 39.2248 112.726C39.3622 113.413 39.637 113.98 40.0491 114.427C40.4613 114.873 41.0452 115.096 41.8008 115.096ZM98.2671 49.1504C99.3662 49.1504 100.053 48.5321 100.328 47.2956C101.221 43.174 101.994 39.9282 102.646 37.5583C103.299 35.1884 104.226 33.368 105.428 32.0971C106.631 30.8263 108.434 29.8302 110.838 29.109C113.242 28.3877 116.574 27.5805 120.833 26.6875C122.138 26.4814 122.791 25.7945 122.791 24.6267C122.791 23.4589 122.138 22.7376 120.833 22.4628C116.574 21.5698 113.242 20.7627 110.838 20.0414C108.434 19.3201 106.631 18.3241 105.428 17.0532C104.226 15.7824 103.299 13.9792 102.646 11.6436C101.994 9.308 101.221 6.07939 100.328 1.95777C100.053 0.65259 99.3662-2.02945e-14 98.2671-2.02945e-14C97.0993-2.12199e-14 96.378 0.65259 96.1032 1.95777C95.2789 6.07939 94.5232 9.308 93.8363 11.6436C93.1494 13.9792 92.2048 15.7824 91.0027 17.0532C89.8006 18.3241 88.0145 19.3201 85.6446 20.0414C83.2747 20.7627 79.9258 21.5698 75.5981 22.4628C74.2929 22.7376 73.6404 23.4589 73.6404 24.6267C73.6404 25.7945 74.2929 26.4814 75.5981 26.6875C79.9258 27.5805 83.2747 28.3877 85.6446 29.109C88.0145 29.8302 89.8006 30.8263 91.0027 32.0971C92.2048 33.368 93.1494 35.1884 93.8363 37.5583C94.5232 39.9282 95.2789 43.174 96.1032 47.2956C96.378 48.5321 97.0993 49.1504 98.2671 49.1504ZM183.379 85.5237C184.752 85.5237 185.577 84.7681 185.852 83.2568C186.745 78.3108 187.569 74.4125 188.325 71.5617C189.08 68.7109 190.179 66.5299 191.622 65.0186C193.064 63.5073 195.245 62.3224 198.165 61.4637C201.084 60.605 205.12 59.7292 210.272 58.8362C211.852 58.5614 212.642 57.7027 212.642 56.2602C212.642 54.8176 211.852 53.9589 210.272 53.6841C205.12 52.7911 201.084 51.9325 198.165 51.1081C195.245 50.2838 193.064 49.0988 191.622 47.5532C190.179 46.0076 189.08 43.8094 188.325 40.9586C187.569 38.1078 186.745 34.2438 185.852 29.3666C185.577 27.7866 184.752 26.9966 183.379 26.9966C181.936 26.9966 181.077 27.7866 180.803 29.3666C179.91 34.2438 179.085 38.1078 178.33 40.9586C177.574 43.8094 176.475 46.0076 175.032 47.5532C173.59 49.0988 171.426 50.2838 168.541 51.1081C165.656 51.9325 161.637 52.7911 156.485 53.6841C155.798 53.8215 155.231 54.1135 154.785 54.56C154.338 55.0065 154.115 55.5732 154.115 56.2602C154.115 57.7027 154.905 58.5614 156.485 58.8362C161.637 59.7292 165.656 60.605 168.541 61.4637C171.426 62.3224 173.59 63.5073 175.032 65.0186C176.475 66.5299 177.574 68.7109 178.33 71.5617C179.085 74.4125 179.91 78.3108 180.803 83.2568C181.077 84.7681 181.936 85.5237 183.379 85.5237Z" fill-rule="nonzero" opacity="1"></path>
-					<path d="M213.442 250.225C215.207 252.703 218.222 253.932 220.847 255.054C223.471 256.176 227.006 256.019 229.81 255.726C232.615 255.433 235.141 254.422 237.39 252.693C240.883 249.97 243.776 245.873 244.428 241.544C245.079 237.215 245.038 232.693 242.663 229.12L128.292 68.0126C126.608 65.6473 123.632 64.4748 121.008 63.3525C118.384 62.2301 114.852 62.3627 112.056 62.6075C109.26 62.8524 106.737 63.8391 104.488 65.5676C100.995 68.2905 98.0741 72.408 97.3668 76.7776C96.6595 81.1472 96.7207 85.6976 99.192 89.2863L213.442 250.225ZM221.891 239.871L147.666 135.484L155.994 129.657L230.219 234.044C231.262 235.508 231.793 236.94 231.813 238.338C231.832 239.736 231.109 241.014 229.641 242.172C228.301 243.151 226.956 243.406 225.604 242.938C224.252 242.47 223.014 241.448 221.891 239.871Z" fill-rule="nonzero" opacity="1"></path>
+					<path d="M116.697 68.9269C111.629 69.2588 106.599 71.0688 102.28 74.4124C90.7618 83.3285 88.669 99.8408 97.5851 111.359C98.2562 112.226 200.877 244.813 201.548 245.68C210.464 257.198 227.011 259.317 238.529 250.401C250.047 241.485 252.162 224.907 243.246 213.389L139.288 79.0988C133.715 71.8999 125.144 68.3738 116.697 68.9269ZM150.93 119.849L230.775 223.006C233.039 225.93 233.221 234.599 228.942 237.926C224.213 241.603 216.316 239.012 214.053 236.089C213.538 235.423 162.596 169.648 134.177 132.935L150.93 119.849Z" fill-rule="nonzero" opacity="1" ></path>
+					<path d="M46.0296 117.475C48.1906 117.475 49.4872 116.286 49.9194 113.909C51.3241 106.13 52.6207 99.9978 53.8093 95.5137C54.9978 91.0296 56.7266 87.599 58.9957 85.2219C61.2648 82.8448 64.6954 80.9809 69.2875 79.6302C73.8797 78.2796 80.2277 76.902 88.3315 75.4973C90.8166 75.0651 92.0592 73.7145 92.0592 71.4454C92.0592 69.1763 90.8166 67.8257 88.3315 67.3935C80.2277 65.9888 73.8797 64.6382 69.2875 63.3416C64.6954 62.045 61.2648 60.1811 58.9957 57.75C56.7266 55.3188 54.9978 51.8612 53.8093 47.3771C52.6207 42.893 51.3241 36.8152 49.9194 29.1436C49.4872 26.6584 48.1906 25.4158 46.0296 25.4158C43.7605 25.4158 42.4099 26.6584 41.9777 29.1436C40.573 36.8152 39.2764 42.893 38.0879 47.3771C36.8993 51.8612 35.1705 55.3188 32.9014 57.75C30.6324 60.1811 27.2288 62.045 22.6906 63.3416C18.1525 64.6382 11.8316 65.9888 3.72775 67.3935C2.64724 67.6096 1.75582 68.0688 1.05349 68.7711C0.351165 69.4735-8.88178e-16 70.3649-8.88178e-16 71.4454C-8.88178e-16 73.7145 1.24258 75.0651 3.72775 75.4973C11.8316 76.902 18.1525 78.2796 22.6906 79.6302C27.2288 80.9809 30.6324 82.8448 32.9014 85.2219C35.1705 87.599 36.8993 91.0296 38.0879 95.5137C39.2764 99.9978 40.573 106.13 41.9777 113.909C42.4099 116.286 43.7605 117.475 46.0296 117.475Z" fill-rule="nonzero" opacity="1" ></path>
+					<path d="M71.5465 225.528C73.742 225.528 75.0593 224.321 75.4984 221.906C76.9255 214.002 78.2428 207.772 79.4503 203.217C80.6579 198.661 82.4143 195.176 84.7195 192.761C87.0248 190.345 90.5102 188.452 95.1756 187.08C99.8411 185.707 106.29 184.308 114.523 182.881C117.048 182.442 118.311 181.069 118.311 178.764C118.311 176.459 117.048 175.087 114.523 174.648C106.29 173.221 99.8411 171.848 95.1756 170.531C90.5102 169.214 87.0248 167.32 84.7195 164.85C82.4143 162.38 80.6579 158.867 79.4503 154.312C78.2428 149.756 76.9255 143.581 75.4984 135.787C75.0593 133.262 73.742 132 71.5465 132C69.2412 132 67.8691 133.262 67.43 135.787C66.0029 143.581 64.6856 149.756 63.4781 154.312C62.2705 158.867 60.5141 162.38 58.2088 164.85C55.9036 167.32 52.4457 169.214 47.8351 170.531C43.2245 171.848 36.8027 173.221 28.5696 174.648C27.4718 174.867 26.5662 175.334 25.8526 176.047C25.1391 176.761 24.7823 177.666 24.7823 178.764C24.7823 181.069 26.0447 182.442 28.5696 182.881C36.8027 184.308 43.2245 185.707 47.8351 187.08C52.4457 188.452 55.9036 190.345 58.2088 192.761C60.5141 195.176 62.2705 198.661 63.4781 203.217C64.6856 207.772 66.0029 214.002 67.43 221.906C67.8691 224.321 69.2412 225.528 71.5465 225.528Z" fill-rule="nonzero" opacity="1" ></path>
+					<path d="M169.411 95.851C171.661 95.851 173.011 94.6135 173.461 92.1385C174.924 84.0384 176.274 77.6539 177.512 72.9851C178.749 68.3163 180.549 64.7444 182.912 62.2694C185.274 59.7944 188.846 57.8537 193.627 56.4475C198.409 55.0412 205.018 53.6068 213.456 52.1443C216.043 51.6943 217.337 50.288 217.337 47.9255C217.337 45.563 216.043 44.1567 213.456 43.7067C205.018 42.2442 198.409 40.8379 193.627 39.4879C188.846 38.1379 185.274 36.1973 182.912 33.666C180.549 31.1347 178.749 27.5347 177.512 22.8659C176.274 18.1971 174.924 11.8689 173.461 3.88129C173.011 1.29376 171.661 0 169.411 0C167.049 0 165.643 1.29376 165.193 3.88129C163.73 11.8689 162.38 18.1971 161.143 22.8659C159.905 27.5347 158.105 31.1347 155.743 33.666C153.38 36.1973 149.836 38.1379 145.111 39.4879C140.386 40.8379 133.805 42.2442 125.367 43.7067C124.242 43.9317 123.314 44.4098 122.583 45.1411C121.852 45.8724 121.486 46.8005 121.486 47.9255C121.486 50.288 122.78 51.6943 125.367 52.1443C133.805 53.6068 140.386 55.0412 145.111 56.4475C149.836 57.8537 153.38 59.7944 155.743 62.2694C158.105 64.7444 159.905 68.3163 161.143 72.9851C162.38 77.6539 163.73 84.0384 165.193 92.1385C165.643 94.6135 167.049 95.851 169.411 95.851Z" fill-rule="nonzero" opacity="1" ></path>
 					</g>
 					</svg>
-
 				Auto
 				</div>
 
@@ -13751,6 +13633,8 @@ function openscheduleeditorpopup(id){
 
 		</div>`)
 
+		output.push(`<div class="text-secondary text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup()">We'd love your feedback</div>`)
+
 
 		let scheduleeditorpopupcontent = getElement('scheduleeditorpopupcontent')
 		scheduleeditorpopupcontent.innerHTML = output.join('')
@@ -13765,6 +13649,8 @@ function openscheduleeditorpopup(id){
 				<div class="pointer-none nowrap text-primary text-14px">Convert to task</div>
 			</div>
 		</div>`)
+
+		output.push(`<div class="text-secondary text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup()">We'd love your feedback</div>`)
 
 		let scheduleeditorpopupcontent = getElement('scheduleeditorpopupcontent')
 		scheduleeditorpopupcontent.innerHTML = output.join('')
