@@ -4349,8 +4349,8 @@ function geteventsuggestion(){
 	}
 
 	let existingeventsuggestions = calendar.events.filter(d => d.iseventsuggestion)
-	console.log(suggestabletodos.map(d => d.title + ' ' + getcalculatedweight(d)))
-	console.log(medianweight)
+	//console.log(suggestabletodos.map(d => d.title + ' ' + getcalculatedweight(d)))
+	//console.log(medianweight)
 
 	let suggesttodos = suggestabletodos.filter(d => getcalculatedweight(d) > medianweight).slice(0, Math.max(MAX_EVENT_SUGGESTIONS - existingeventsuggestions.length, 0))
 
@@ -8159,7 +8159,9 @@ function fixrecurringtodo(item){
 			}
 		}
 
-		if(!originaltodo) return
+		if(!originaltodo){
+			originaltodo = item
+		}
 
 		if(item.id != lasttodo.id) return
 
@@ -12640,17 +12642,21 @@ function getLeastBusyDateV2(item, myevents, availabletime) {
 }
 
 //get available times
-function getavailabletime(item, startrange, endrange) {
+function getavailabletime(item, startrange, endrange, isschedulebuilder) {
 	let availabletime = []
 
 	let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 
 	let endbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 
+	
 	//exclude events
-	let filteredevents = getevents(startrange, endrange).filter(d => d.id != item.id && d.type != 1 && !Calendar.Event.isAllDay(d)).sort((a, b) => {
-		return new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime() - new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime()
-	})
+	let filteredevents = []
+	if(!isschedulebuilder){
+		filteredevents = getevents(startrange, endrange).filter(d => d.id != item.id && d.type != 1 && !Calendar.Event.isAllDay(d)).sort((a, b) => {
+			return new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime() - new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime()
+		})
+	}
 
 	let lastendtime = startrange.getTime()
 	for (let tempevent of filteredevents) {
@@ -12665,6 +12671,43 @@ function getavailabletime(item, startrange, endrange) {
 
 	if (lastendtime < endrange.getTime()) {
 		availabletime.push({ start: lastendtime, end: endrange.getTime() })
+	}
+
+	
+	//split up morning, afternoon, evening
+	if(isschedulebuilder){
+		function splitIntoDaySegments(availabletime) {
+			const result = []
+		
+			availabletime.forEach(time => {
+				let start = new Date(time.start)
+				let end = new Date(time.end)
+		
+				while (start < end) {
+					const morningEnd = new Date(start).setHours(12, 0, 0, 0)
+					const afternoonEnd = new Date(start).setHours(18, 0, 0, 0)
+		
+					if (start < morningEnd) {
+						let segmentEnd = Math.min(morningEnd, end)
+						result.push({ start: start.getTime(), end: segmentEnd })
+						start = new Date(segmentEnd)
+					} else if (start < afternoonEnd) {
+						let segmentEnd = Math.min(afternoonEnd, end)
+						result.push({ start: start.getTime(), end: segmentEnd })
+						start = new Date(segmentEnd)
+					} else {
+						let dayEnd = new Date(start).setHours(24, 0, 0, 0)
+						let segmentEnd = Math.min(dayEnd, end)
+						result.push({ start: start.getTime(), end: segmentEnd })
+						start = new Date(segmentEnd)
+					}
+				}
+			})
+		
+			return result
+		}
+
+		availabletime = splitIntoDaySegments(availabletime)
 	}
 
 
@@ -12915,6 +12958,8 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 					if(complete){
 						if(tempitem){
 							tempitem.completed = true
+							tempitem.autoschedulelocked = false
+
 							calendar.updateTodo()
 						}
 						calendar.updateEvents()
@@ -12951,12 +12996,13 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				let temp = getconflictingevent(iteratedevents, item)
 				let conflictitem, spacing;
 				if(temp) [conflictitem, spacing] = temp
-				if(conflictitem && conflictitem.type == 0){
+				if(conflictitem && (conflictitem.type == 0 || conflictitem.type == 1 && conflictitem.autoschedulelocked)){
 					item.autoschedulelocked = false
 				}
 			}
 			smartevents = smartevents.filter(d => !d.autoschedulelocked)
 		}
+
 
 		//start
 		if (true) {
@@ -13245,7 +13291,9 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		
 		//animate
 		let newcalendarevents = deepCopy(calendar.events)
-		for(let item of calendar.events){
+
+		let tempevents = calendar.events.filter(d => modifiedevents.find(g => g.id == d.id))
+		for(let item of tempevents){
 			let olditem = oldcalendarevents.find(g => g.id == item.id)
 			if(!olditem) continue
 			item.start = deepCopy(olditem.start)
@@ -13589,11 +13637,15 @@ let scheduleeditorpopupposition = 0
 function openscheduleeditorpopup(id){
 	let item = calendar.events.find(d => d.id == id)
 	if(!item) return
+
+	hasopenedscheduleeditorpopup = true
 	
 	clearInterval(scheduleeditorpopupinterval)
 
+
 	let scheduleeditorpopup = getElement('scheduleeditorpopup')
 	scheduleeditorpopup.classList.remove('hiddenpopup')
+
 
 	if(item.type == 1){
 		//content
@@ -13602,7 +13654,7 @@ function openscheduleeditorpopup(id){
 		endrangedate.setDate(endrangedate.getDate() + 7)
 
 		//get available time
-		let availabletime = getavailabletime(item, currentdate, endrangedate)
+		let availabletime = getavailabletime(item, currentdate, endrangedate, true)
 
 		function gettextfromavailabletime(timestamp){
 			const now = new Date()
@@ -13641,23 +13693,28 @@ function openscheduleeditorpopup(id){
 			let availabletimetext = gettextfromavailabletime(tempavailabletime.start)
 			if(addedavailabletimes.includes(availabletimetext)) continue
 
+			let currenttimetext = gettextfromavailabletime(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))
+			if(availabletimetext == currenttimetext) continue
+
 			addedavailabletimes.push(availabletimetext)
 
 			availabletimeoutput.push(`<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulemoveevent('${item.id}', ${tempavailabletime.start})">${availabletimetext}</div>`)
 			
 			if(availabletimeoutput.length == 5) break
 		}
-		//better available time windows - not necessarily the one from fx
-		//here2
-		//maybe 'auto', which unfrezes it
+		
 
 		let output = []
 		output.push(`
 		<div class="flex-column display-flex gap-6px">
 			<div class="text-16px text-primary">Move to:</div>
 			<div class="display-flex flex-row flex-wrap-wrap gap-12px">
+				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px display-none" onclick="editschedulemoveeventauto('${item.id}')">Auto</div>
 				${availabletimeoutput.join('')}
-				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px">Custom</div>
+				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px display-none">Custom</div>
+				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px display-none" onclick="editschedulemoveeventlater('${item.id}', 60)">1h later</div>
+				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px display-none" onclick="editschedulemoveeventlater('${item.id}', 360)">6h later</div>
+				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px display-none" onclick="editschedulemoveeventlater('${item.id}', 1440)">1 day later</div>
 			</div>
 		</div>`)
 
@@ -13757,7 +13814,49 @@ async function editschedulemoveevent(id, timestamp){
 	
 	closescheduleeditorpopup()
 
-	await autoScheduleV2({smartevents: [item], editscheduletimestamp: timestamp, addedtodos: []})
+	await autoScheduleV2({smartevents: [item], editscheduletimestamp: timestamp})
+}
+
+//set event to auto
+async function editschedulemoveeventauto(id){
+	let item = calendar.events.find(d => d.id == id)
+	if(!item) return
+
+	item.autoschedulelocked = false
+
+	closescheduleeditorpopup()
+
+	await autoScheduleV2({smartevents: [calendar.events.filter(d => d.type == 1 && !d.completed)]})
+}
+
+//move event later
+async function editschedulemoveeventlater(id, minutes){
+	let item = calendar.events.find(d => d.id == id)
+	if(!item) return
+
+	item.autoschedulelocked = true
+	
+	//move
+	let duration = (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
+	let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+	startdate.setMinutes(startdate.getMinutes() + minutes)
+
+	let enddate = new Date(startdate)
+	enddate.setTime(enddate.getTime() + duration)
+
+	item.start.year = startdate.getFullYear()
+	item.start.month = startdate.getMonth()
+	item.start.day = startdate.getDate()
+	item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+
+	item.end.year = enddate.getFullYear()
+	item.end.month = enddate.getMonth()
+	item.end.day = enddate.getDate()
+	item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+	
+	closescheduleeditorpopup()
+
+	await autoScheduleV2({smartevents: [calendar.events.filter(d => d.type == 1 && !d.completed)]})
 }
 
 let editscheduleeventsindex;
@@ -13819,30 +13918,42 @@ async function previousscheduleeditorevent(){
 
 
 //edit my schedule
+let hasopenedscheduleeditorpopup = false
 function clickeditschedulemytasks(){
 	iseditingschedule = true
 	editscheduleeventsindex = 0
 	editscheduleevents = calendar.events.filter(d => d.type == 1 && !d.completed)
 
-	let firstevent = sortstartdate(calendar.events.filter(d => d.type == 1 && !d.completed))[0]
-	selectedeventid = firstevent.id
+	hasopenedscheduleeditorpopup = false
 
+	calendar.updateInfo()
 	calendar.updateTodoButtons()
 
-	calendarday = firstevent.start.day
-	calendarmonth = firstevent.start.month
-	calendaryear = firstevent.start.year
-	calendar.updateCalendar()
+	updateeditscheduleui()
 
-	scrollcalendarY(firstevent.start.minute)
+	if(selectedeventid != null){
+		hasopenedscheduleeditorpopup = true
+		openscheduleeditorpopup(selectedeventid)
+	}
 
-	requestAnimationFrame(function(){
-		updateeditscheduleui()
-		openscheduleeditorpopup(firstevent.id)
-	})
+	setTimeout(function(){
+		if(!hasopenedscheduleeditorpopup && iseditingschedule){
+			let firstevent = sortstartdate(calendar.events.filter(d => d.type == 1 && !d.completed))[0]
+			selectedeventid = firstevent.id
+		
+			calendarday = firstevent.start.day
+			calendarmonth = firstevent.start.month
+			calendaryear = firstevent.start.year
+			calendar.updateCalendar()
+		
+			scrollcalendarY(firstevent.start.minute)
+		
+			requestAnimationFrame(function(){
+				openscheduleeditorpopup(firstevent.id)
+			})
+		}
+	}, 5000)
 }
-
-
 
 
 
