@@ -12935,15 +12935,17 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		})
 
 
+
+		
 		//check for todos that are currently being done - don't reschedule first one
-		let doingtodos = sortstartdate(smartevents).filter(d => !d.iseventsuggestion && new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now() && !getconflictingevent(iteratedevents, d))
+		let doingtodos = sortstartdate(smartevents).filter(d => !d.iseventsuggestion && new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now() && !getconflictingevent(iteratedevents, d) && (!editscheduleitem || d.id != editscheduleitem.id))
 		if(doingtodos[0]){
 			smartevents = smartevents.filter(d => d.id != doingtodos[0].id)
 		}
 
 
 		//check for todos that haven't been done - ask to reschedule them
-		let passedtodos = smartevents.filter(d => !d.iseventsuggestion && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() <= Date.now())
+		let passedtodos = smartevents.filter(d => !d.iseventsuggestion && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() <= Date.now() && (!editscheduleitem || d.id != editscheduleitem.id))
 		if(resolvedpassedtodos){
 			passedtodos = passedtodos.filter(d => !resolvedpassedtodos.find(f => f == d.id))
 		}
@@ -13102,7 +13104,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 					let conflictitem, spacing;
 					if(temp) [conflictitem, spacing] = temp
 					if (conflictitem) {
-						if(!editscheduletimestamp || conflictitem.type == 0 || conflictitem.autoschedulelocked){
+						if(!editscheduleitem || conflictitem.type == 0 || conflictitem.autoschedulelocked){
 							fixconflict(item, conflictitem, spacing)
 						}
 					}
@@ -13497,6 +13499,8 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			calendar.updateTodo()
 
 			isautoscheduling = false
+
+			calendar.updateTodoButtons()
 		}
 
 		//pre animate
@@ -13709,7 +13713,18 @@ function openscheduleeditorpopup(id){
 		<div class="flex-column display-flex gap-6px">
 			<div class="text-16px text-primary">Move to:</div>
 			<div class="display-flex flex-row flex-wrap-wrap gap-12px">
-				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulemoveeventauto('${item.id}')">Auto</div>
+
+				<div class="text-14px display-flex flex-row gap-6px align-center text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulemoveeventauto('${item.id}')">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite">
+					<g>
+					<path d="M90.7451 204.845C92.8059 204.845 93.9394 203.746 94.1454 201.547C95.0385 194.678 95.9486 189.286 96.876 185.37C97.8034 181.454 99.2803 178.501 101.307 176.509C103.333 174.516 106.339 173.005 110.323 171.975C114.307 170.944 119.803 169.88 126.809 168.78C129.214 168.368 130.416 167.201 130.416 165.277C130.416 164.315 130.107 163.543 129.488 162.959C128.87 162.375 128.114 161.98 127.221 161.774C120.215 160.469 114.685 159.284 110.632 158.219C106.579 157.154 103.505 155.66 101.41 153.737C99.3146 151.813 97.8034 148.928 96.876 145.081C95.9486 141.234 95.0385 135.876 94.1454 129.007C93.9394 126.809 92.8059 125.71 90.7451 125.71C89.7834 125.71 88.9762 126.001 88.3236 126.585C87.6711 127.169 87.3104 127.942 87.2417 128.904C86.3487 135.911 85.4213 141.389 84.4596 145.339C83.4979 149.289 82.0038 152.277 79.9774 154.303C77.9509 156.33 74.9112 157.841 70.8583 158.837C66.8053 159.833 61.2411 160.812 54.1657 161.774C53.2727 161.911 52.517 162.289 51.8988 162.907C51.2806 163.525 50.9714 164.315 50.9714 165.277C50.9714 166.239 51.2806 167.012 51.8988 167.596C52.517 168.179 53.2727 168.574 54.1657 168.78C61.2411 170.086 66.8053 171.288 70.8583 172.387C74.9112 173.486 77.9509 175.014 79.9774 176.972C82.0038 178.93 83.4807 181.832 84.4081 185.679C85.3355 189.526 86.28 194.884 87.2417 201.753C87.3104 202.646 87.6711 203.385 88.3236 203.969C88.9762 204.553 89.7834 204.845 90.7451 204.845ZM41.8008 115.096C43.1747 115.096 43.999 114.306 44.2738 112.726C45.1668 107.849 45.9911 103.985 46.7468 101.134C47.5024 98.2835 48.6015 96.0853 50.0441 94.5397C51.4866 92.9941 53.6505 91.8092 56.5356 90.9848C59.4208 90.1605 63.4737 89.3018 68.6944 88.4088C70.2744 88.134 71.0643 87.2754 71.0643 85.8328C71.0643 84.3902 70.2744 83.5316 68.6944 83.2568C63.4737 82.3638 59.4208 81.4879 56.5356 80.6293C53.6505 79.7706 51.4866 78.5856 50.0441 77.0744C48.6015 75.5631 47.5024 73.3821 46.7468 70.5313C45.9911 67.6805 45.1668 63.7821 44.2738 58.8362C43.999 57.3249 43.1747 56.5693 41.8008 56.5693C40.3583 56.5693 39.4996 57.3249 39.2248 58.8362C38.3318 63.7821 37.5075 67.6805 36.7518 70.5313C35.9962 73.3821 34.8971 75.5631 33.4545 77.0744C32.012 78.5856 29.8481 79.7706 26.963 80.6293C24.0778 81.4879 20.0593 82.3638 14.9072 83.2568C13.3273 83.5316 12.5373 84.3902 12.5373 85.8328C12.5373 87.2754 13.3273 88.134 14.9072 88.4088C20.0593 89.3018 24.0778 90.1605 26.963 90.9848C29.8481 91.8092 32.012 92.9941 33.4545 94.5397C34.8971 96.0853 35.9962 98.2835 36.7518 101.134C37.5075 103.985 38.3318 107.849 39.2248 112.726C39.3622 113.413 39.637 113.98 40.0491 114.427C40.4613 114.873 41.0452 115.096 41.8008 115.096ZM98.2671 49.1504C99.3662 49.1504 100.053 48.5321 100.328 47.2956C101.221 43.174 101.994 39.9282 102.646 37.5583C103.299 35.1884 104.226 33.368 105.428 32.0971C106.631 30.8263 108.434 29.8302 110.838 29.109C113.242 28.3877 116.574 27.5805 120.833 26.6875C122.138 26.4814 122.791 25.7945 122.791 24.6267C122.791 23.4589 122.138 22.7376 120.833 22.4628C116.574 21.5698 113.242 20.7627 110.838 20.0414C108.434 19.3201 106.631 18.3241 105.428 17.0532C104.226 15.7824 103.299 13.9792 102.646 11.6436C101.994 9.308 101.221 6.07939 100.328 1.95777C100.053 0.65259 99.3662-2.02945e-14 98.2671-2.02945e-14C97.0993-2.12199e-14 96.378 0.65259 96.1032 1.95777C95.2789 6.07939 94.5232 9.308 93.8363 11.6436C93.1494 13.9792 92.2048 15.7824 91.0027 17.0532C89.8006 18.3241 88.0145 19.3201 85.6446 20.0414C83.2747 20.7627 79.9258 21.5698 75.5981 22.4628C74.2929 22.7376 73.6404 23.4589 73.6404 24.6267C73.6404 25.7945 74.2929 26.4814 75.5981 26.6875C79.9258 27.5805 83.2747 28.3877 85.6446 29.109C88.0145 29.8302 89.8006 30.8263 91.0027 32.0971C92.2048 33.368 93.1494 35.1884 93.8363 37.5583C94.5232 39.9282 95.2789 43.174 96.1032 47.2956C96.378 48.5321 97.0993 49.1504 98.2671 49.1504ZM183.379 85.5237C184.752 85.5237 185.577 84.7681 185.852 83.2568C186.745 78.3108 187.569 74.4125 188.325 71.5617C189.08 68.7109 190.179 66.5299 191.622 65.0186C193.064 63.5073 195.245 62.3224 198.165 61.4637C201.084 60.605 205.12 59.7292 210.272 58.8362C211.852 58.5614 212.642 57.7027 212.642 56.2602C212.642 54.8176 211.852 53.9589 210.272 53.6841C205.12 52.7911 201.084 51.9325 198.165 51.1081C195.245 50.2838 193.064 49.0988 191.622 47.5532C190.179 46.0076 189.08 43.8094 188.325 40.9586C187.569 38.1078 186.745 34.2438 185.852 29.3666C185.577 27.7866 184.752 26.9966 183.379 26.9966C181.936 26.9966 181.077 27.7866 180.803 29.3666C179.91 34.2438 179.085 38.1078 178.33 40.9586C177.574 43.8094 176.475 46.0076 175.032 47.5532C173.59 49.0988 171.426 50.2838 168.541 51.1081C165.656 51.9325 161.637 52.7911 156.485 53.6841C155.798 53.8215 155.231 54.1135 154.785 54.56C154.338 55.0065 154.115 55.5732 154.115 56.2602C154.115 57.7027 154.905 58.5614 156.485 58.8362C161.637 59.7292 165.656 60.605 168.541 61.4637C171.426 62.3224 173.59 63.5073 175.032 65.0186C176.475 66.5299 177.574 68.7109 178.33 71.5617C179.085 74.4125 179.91 78.3108 180.803 83.2568C181.077 84.7681 181.936 85.5237 183.379 85.5237Z" fill-rule="nonzero" opacity="1"></path>
+					<path d="M213.442 250.225C215.207 252.703 218.222 253.932 220.847 255.054C223.471 256.176 227.006 256.019 229.81 255.726C232.615 255.433 235.141 254.422 237.39 252.693C240.883 249.97 243.776 245.873 244.428 241.544C245.079 237.215 245.038 232.693 242.663 229.12L128.292 68.0126C126.608 65.6473 123.632 64.4748 121.008 63.3525C118.384 62.2301 114.852 62.3627 112.056 62.6075C109.26 62.8524 106.737 63.8391 104.488 65.5676C100.995 68.2905 98.0741 72.408 97.3668 76.7776C96.6595 81.1472 96.7207 85.6976 99.192 89.2863L213.442 250.225ZM221.891 239.871L147.666 135.484L155.994 129.657L230.219 234.044C231.262 235.508 231.793 236.94 231.813 238.338C231.832 239.736 231.109 241.014 229.641 242.172C228.301 243.151 226.956 243.406 225.604 242.938C224.252 242.47 223.014 241.448 221.891 239.871Z" fill-rule="nonzero" opacity="1"></path>
+					</g>
+					</svg>
+
+				Auto
+				</div>
+
 				${availabletimeoutput.join('')}
 				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px">Custom</div>
 			</div>
@@ -13760,6 +13775,11 @@ function openscheduleeditorpopup(id){
 	scheduleeditorpopupposition = 0
 
 	function positionit(){
+		if(!calendar.events.find(d => d.id == item.id)){
+			closescheduleeditorpopup()
+			return
+		}
+
 		let eventdiv = getElement(item.id)
 		if(!eventdiv) return
 
@@ -13823,7 +13843,7 @@ function editschedulemoveeventauto(id){
 
 	closescheduleeditorpopup()
 
-	startAutoSchedule({})//here2
+	startAutoSchedule({})
 }
 
 
@@ -14811,10 +14831,10 @@ function clickboxcolumn(event, timestamp) {
 	calendar.updateInfo(true)
 
 	document.addEventListener("mousemove", moveboxcolumn, false)
-	document.addEventListener("mouseup", finishfunction, false);
+	document.addEventListener("mouseup", finishfunction, false)
 	function finishfunction() {
-		document.removeEventListener("mousemove", moveboxcolumn, false);
-		document.removeEventListener("mouseup", finishfunction, false);
+		document.removeEventListener("mousemove", moveboxcolumn, false)
+		document.removeEventListener("mouseup", finishfunction, false)
 		movingevent = false
 		calendar.updateInfo(false, true)
 	}
@@ -14861,6 +14881,11 @@ function moveboxcolumn(event) {
 
 			editeventid = null
 			calendar.updateEvents()
+
+			if(iseditingschedule){
+				clickeventopeneditschedulepopup(item.id)
+			}
+	
 		}
 	}
 }
@@ -15126,15 +15151,15 @@ function clickeventbottom(event, timestamp) {
 	}
 
 	document.addEventListener("mousemove", moveeventbottom, false)
-	document.addEventListener("mouseup", finishfunction, false);
+	document.addEventListener("mouseup", finishfunction, false)
 	function finishfunction() {
-		document.removeEventListener("mousemove", moveeventbottom, false);
-		document.removeEventListener("mouseup", finishfunction, false);
+		document.removeEventListener("mousemove", moveeventbottom, false)
+		document.removeEventListener("mouseup", finishfunction, false)
 		movingevent = false
 		calendar.updateInfo(false, true)
 
 		//open edit schedule popup
-	if(iseditingschedule){
+		if(iseditingschedule){
 			clickeventopeneditschedulepopup(item.id)
 		}
 
