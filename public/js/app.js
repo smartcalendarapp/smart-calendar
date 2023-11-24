@@ -8012,8 +8012,6 @@ function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], edits
 		calendar.updateTodo()
 	}
 
-	let eventsuggestiontodos = addedtodos.filter(d => (eventsuggestiontodos || []).find(g => g.id == d.id))
-
 	//start
 	autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos, eventsuggestiontodos: eventsuggestiontodos, editscheduletimestamp: editscheduletimestamp, editscheduleitem: editscheduleitem })
 }
@@ -12995,7 +12993,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		//unlock events with conflict
 		for(let item of smartevents){
 			if(editscheduleitem && item.id == editscheduleitem.id) continue
-			
+
 			let temp = getconflictingevent(iteratedevents, item)
 			let conflictitem, spacing;
 			if(temp) [conflictitem, spacing] = temp
