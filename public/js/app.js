@@ -2587,7 +2587,7 @@ class Calendar {
 
 		//schedule button
 		let scheduleoncalendar = getElement('scheduleoncalendar')
-		if (calendar.todos.filter(d => !d.completed).length > 0 && !schedulemytasksenabled && !isautoscheduling && !iseditingschedule) {
+		if (calendar.todos.filter(d => !d.completed).length > 0 && !schedulemytasksenabled && !isautoscheduling) {
 			scheduleoncalendar.classList.remove('hiddenpopupstatic')
 		} else {
 			scheduleoncalendar.classList.add('hiddenpopupstatic')
@@ -2595,7 +2595,7 @@ class Calendar {
 
 		let editscheduleoncalendar = getElement('editscheduleoncalendar')
 		let editscheduleoncalendar2 = getElement('editscheduleoncalendar2')
-		if(calendar.events.filter(d => d.type == 1 && !d.completed).length > 0 && !iseditingschedule && !isautoscheduling && !schedulemytasksenabled){
+		if(calendar.events.filter(d => Calendar.Event.isSchedulable(d)).length > 0 && !iseditingschedule && !isautoscheduling && !schedulemytasksenabled){
 			editscheduleoncalendar.classList.remove('hiddenpopupstatic')
 			editscheduleoncalendar2.classList.remove('hiddenpopupstatic')
 		}else{
@@ -4161,11 +4161,13 @@ function geteventsuggestion(){
 		!Calendar.Todo.isMainTask(d)
 	).sort((a, b) => getcalculatedweight(b) - getcalculatedweight(a))
 	
+	if(allelligibletodos.length == 0) return
+
 	let medianweight;
 	if(allelligibletodos.length % 2 == 1){
-		medianweight = getcalculatedweight(allelligibletodos[allelligibletodos.length/2])
+		medianweight = getcalculatedweight(allelligibletodos[Math.floor(allelligibletodos.length/2)])
 	}else{
-		medianweight = (getcalculatedweight(allelligibletodos[allelligibletodos.length/2]) + getcalculatedweight(allelligibletodos[allelligibletodos.length/2 - 1]))/2
+		medianweight = (getcalculatedweight(allelligibletodos[Math.floor(allelligibletodos.length/2)]) + getcalculatedweight(allelligibletodos[Math.floor(allelligibletodos.length/2) - 1]))/2
 	}
 
 	let existingeventsuggestions = calendar.events.filter(d => d.iseventsuggestion)
@@ -7710,10 +7712,20 @@ function clickschedulemode(mode) {
 let schedulemytaskslist = []
 let schedulemytasksenabled = false
 function clickschedulemytasks(event) {
-	schedulemytaskslist = [...calendar.todos.filter(item => Calendar.Todo.isSchedulable(item) && (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null) && !Calendar.Todo.isMainTask(item)).map(d => d.id)]
-	selectededittodoid = null
+	schedulemytaskslist = sortduedate(calendar.todos.filter(item => Calendar.Todo.isSchedulable(item) && (item.endbefore.year != null && item.endbefore.month != null && item.endbefore.day != null && item.endbefore.minute != null) && !Calendar.Todo.isMainTask(item))).map(d => d.id).slice(0, 3)
+
 	schedulemytasksenabled = true
+
+	iseditingschedule = false
+
+	selectededittodoid = null
+	selectedeventid = null
+
+	updateeditscheduleui()
+
 	calendar.updateTodo()
+	calendar.updateInfo()
+	calendar.updateEvents()
 }
 
 function closeschedulemytasks() {
@@ -7892,7 +7904,7 @@ function openfeedbackpopup(event){
 	feedbackpopuperrorwrap.classList.add('display-none')
 
 	let feedbackpopup = getElement('feedbackpopup')
-	feedbackpopup.classList.remove('hiddenpopup')
+	feedbackpopup.classList.toggle('hiddenpopup')
 	feedbackpopup.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, feedbackpopup) + 'px'
 	feedbackpopup.style.left = fixleft(button.getBoundingClientRect().left - feedbackpopup.offsetWidth * 0.5 + button.offsetWidth * 0.5, feedbackpopup) + 'px'
 }
@@ -13189,7 +13201,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		function animateitem(id){
 			return new Promise(resolve => {
 				let newitem = newcalendarevents.find(d => d.id == id)
-				let olditem = oldsmartevents.find(d => d.id == id)
+				let olditem = oldcalendarevents.find(d => d.id == id)
 				let item = calendar.events.find(d => d.id == id)
 				let todoitem = [...addedtodos, ...(eventsuggestiontodos || [])].find(d => d.id == id)
 
@@ -13297,7 +13309,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				function nextframe() {
 					for (let id of items) {
 						let newitem = newcalendarevents.find(d => d.id == id)
-						let olditem = oldsmartevents.find(d => d.id == id)
+						let olditem = oldcalendarevents.find(d => d.id == id)
 						let item = calendar.events.find(d => d.id == id)
 
 						if (!newitem || !olditem || !item) {
@@ -13386,7 +13398,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 		//pre animate
 		autoscheduleeventslist = [...modifiedevents.map(d => { return { id: d.id, percentage: 0, addedtodo: !!addedtodos.find(f => f.id == d.id) || (!!(eventsuggestiontodos || []).find(g => g.id == d.id))} })]
-		oldautoscheduleeventslist = oldsmartevents
+		oldautoscheduleeventslist = calendar.events.filter(d => oldsmartevents.find(g => g.id == d.id))
 		newautoscheduleeventslist = newcalendarevents
 
 		calendar.updateEvents()
@@ -13411,16 +13423,35 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			editscheduleeventsindex = 0
 			editscheduleevents = modifiedevents
 
-			let firstevent = sortstartdate(calendar.events.filter(d => d.type == 1 && !d.completed))[0]
-			selectedeventid = firstevent.id
+			hasopenedscheduleeditorpopup = false
 
-			calendar.updateEvents()
-			calendar.updateInfo(true)
+			calendar.updateInfo()
+			calendar.updateTodoButtons()
 
-			requestAnimationFrame(function(){
-				openscheduleeditorpopup(firstevent.id)
-				updateeditscheduleui()
-			})
+			updateeditscheduleui()
+
+			if(selectedeventid != null){
+				hasopenedscheduleeditorpopup = true
+				openscheduleeditorpopup(selectedeventid)
+			}
+
+			setTimeout(function(){
+				if(!hasopenedscheduleeditorpopup && iseditingschedule){
+					let firstevent = sortstartdate(calendar.events.filter(d => Calendar.Event.isSchedulable(d)))[0]
+					selectedeventid = firstevent.id
+				
+					calendarday = firstevent.start.day
+					calendarmonth = firstevent.start.month
+					calendaryear = firstevent.start.year
+					calendar.updateCalendar()
+				
+					scrollcalendarY(firstevent.start.minute)
+				
+					requestAnimationFrame(function(){
+						openscheduleeditorpopup(firstevent.id)
+					})
+				}
+			}, 5000)
 		}
 
 
@@ -13484,6 +13515,7 @@ function updateeditscheduleui(){
 		scheduleeditorpopupdisplaytitle.innerHTML = `${tempitem ? Calendar.Event.getTitle(tempitem) : ''}`
 	}else{
 		scheduleeditorpopupdisplay.classList.add('hiddenpopupstatic')
+		closescheduleeditorpopup()
 	}
 }
 function finishscheduleeditor(){
@@ -13497,7 +13529,6 @@ function finishscheduleeditor(){
 	calendar.updateTodoButtons()
 
 	updateeditscheduleui()
-	closescheduleeditorpopup()
 
 	clearInterval(scheduleeditorpopupinterval)
 }
@@ -13794,7 +13825,7 @@ let hasopenedscheduleeditorpopup = false
 function clickeditschedulemytasks(){
 	iseditingschedule = true
 	editscheduleeventsindex = 0
-	editscheduleevents = calendar.events.filter(d => d.type == 1 && !d.completed)
+	editscheduleevents = calendar.events.filter(d => Calendar.Event.isSchedulable(d))
 
 	hasopenedscheduleeditorpopup = false
 
@@ -13810,7 +13841,7 @@ function clickeditschedulemytasks(){
 
 	setTimeout(function(){
 		if(!hasopenedscheduleeditorpopup && iseditingschedule){
-			let firstevent = sortstartdate(calendar.events.filter(d => d.type == 1 && !d.completed))[0]
+			let firstevent = sortstartdate(calendar.events.filter(d => Calendar.Event.isSchedulable(d)))[0]
 			selectedeventid = firstevent.id
 		
 			calendarday = firstevent.start.day

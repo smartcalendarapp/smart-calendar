@@ -279,6 +279,7 @@ class Message{
 		this.content = content
 		this.userid = userid
 		this.email = email
+		this.timestamp = Date.now()
 	}
 }
 
@@ -1016,6 +1017,7 @@ app.use(session({
 	cookie: {
 		maxAge: 604800000
 	},
+	rolling: true
 }))
 
 
