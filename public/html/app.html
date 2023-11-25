@@ -373,7 +373,7 @@
 		</div>
 
 		<div class="display-flex flex-column gap-12px" id="feedbackpopupinputwrap">
-			<div class="text-primary text-14px white-space-normal break-word">We're counting on your honest feedback to improve Smart Calendar. Let us know what you think.</div>
+			<div class="text-primary text-14px white-space-normal break-word">We're counting on your honest feedback to improve Smart Calendar. Please let us know what you think.</div>
 
 			<div class="display-flex flex-column gap-6px">
 				<div class="errorwrap display-none" id="feedbackpopuperrorwrap"></div>
@@ -960,7 +960,7 @@
 	</div>
 
 
-	<div class="absolute pointer-none top-0 z-index-1000 left-0 bottom-0 right-0 display-flex flex-column align-center justify-center">
+	<div class="padding-12px absolute pointer-none top-0 z-index-1000 left-0 bottom-0 right-0 display-flex flex-column align-center justify-center">
 		<div class="popuptransition box-shadow padding-12px pointer-auto display-flex flex-column gap-12px border-8px background-primary-transparent backdrop-blur hiddenpopup max-width-400px width-full border-box" id="rescheduletaskpopup">
 			<div class="infotitle text-center">Task completed?</div>
 			<div class="text-16px text-primary white-space-normal break-word" id="rescheduletaskpopuptext"></div>
@@ -1002,7 +1002,7 @@
 							<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetodopriority(event)" id="createtodopriorityprompttodotoday">
 							</div>
 
-							<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-purple pointer-auto pointer transition-duration-100 popupbutton"  onclick="readinteractivetourpopup('timeslot');clickcreatetodoavailability(event)" id="createtodoavailabilityprompttodotoday">
+							<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-purple pointer-auto pointer transition-duration-100 popupbutton"  onclick="clickcreatetodoavailability(event)" id="createtodoavailabilityprompttodotoday">
 							</div>
 
 							<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton"  onclick="clickcreatetodorepeat(event)" id="createtodorepeatprompttodotoday">
@@ -1308,7 +1308,7 @@
 									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetodopriority(event)" id="createtodopriorityonboarding">
 									</div>
 
-									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-purple pointer-auto pointer transition-duration-100 popupbutton"  onclick="readinteractivetourpopup('timeslot');clickcreatetodoavailability(event)" id="createtodoavailabilityonboarding">
+									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-purple pointer-auto pointer transition-duration-100 popupbutton"  onclick="clickcreatetodoavailability(event)" id="createtodoavailabilityonboarding">
 									</div>
 
 									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton"  onclick="clickcreatetodorepeat(event)" id="createtodorepeatonboarding">
@@ -1628,16 +1628,6 @@
 				</svg>
 			</div>
 	
-			<div class="absolute display-none popupbutton beaconwrap z-index-200" onclick="openinteractivetourpopup('timeslot');if(gtag){gtag('event', 'button_click', { useraction: 'Time slot beacon' })}" id="interactivetourbeacontimeslot">
-				<div class="beacon pointer-none"></div>
-				
-				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="beaconsymbol">
-				<g>
-				<path d="M128.001 0C114.798 0 103.421 14.0434 104.219 27.0996L110.806 159.354C111.129 170.465 117.509 178.33 128.001 178.33C138.483 178.33 144.621 170.687 145.197 159.354L151.783 27.0369C152.542 13.1194 141.568-5.10502e-06 128.001 0Z" fill-rule="nonzero" opacity="1" ></path>
-				<path d="M128.001 207.607C114.826 207.607 104.132 218.3 104.132 231.476C104.132 244.651 114.826 255.313 128.001 255.313C141.176 255.313 151.87 244.651 151.87 231.476C151.87 218.3 141.176 207.607 128.001 207.607Z" fill-rule="nonzero" opacity="1" ></path>
-				</g>
-				</svg>
-			</div>
 
 			<div class="absolute display-none popupbutton beaconwrap z-index-200" onclick="openinteractivetourpopup('subtask');if(gtag){gtag('event', 'button_click', { useraction: 'Sub task beacon' })}" id="interactivetourbeaconsubtask">
 				<div class="beacon pointer-none"></div>
@@ -1697,18 +1687,6 @@
 				</div>
 			</div>
 	
-			<div class="interactivetourpopup hiddenpopup popupbutton" id="interactivetourpopuptimeslot">
-				<div>
-					<div class="text-14px text-quaternary nowrap">TIP</div>
-					<div class="text-18px text-primary nowrap text-bold">Time slot</div>
-				</div>
-				<div class="text-18px text-quaternary">Choose the days and times you want to work on a task. The app will take your preference into account when building your schedule.</div>
-						 
-				<div class="display-flex flex-row justify-space-between align-center">
-					<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="skipinteractivetour()">Skip all tips</div>
-					<div class="text-14px pointer pointer-auto padding-8px-12px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="readinteractivetourpopup('timeslot')">Got it</div>
-				</div>
-			</div>
 	
 			<div class="interactivetourpopup hiddenpopup popupbutton" id="interactivetourpopupsubtask">
 				<div>
@@ -2122,7 +2100,7 @@
 									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton" onclick="clickcreatetodopriority(event)" id="createtodopriority">
 									</div>
 
-									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-purple pointer-auto pointer transition-duration-100 popupbutton"  onclick="readinteractivetourpopup('timeslot');clickcreatetodoavailability(event)" id="createtodoavailability">
+									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-purple pointer-auto pointer transition-duration-100 popupbutton"  onclick="clickcreatetodoavailability(event)" id="createtodoavailability">
 									</div>
 
 									<div class="popupbutton border-8px padding-6px-12px hover:background-tint-1 bordertertiary width-fit todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 pointer-auto pointer transition-duration-100 popupbutton"  onclick="clickcreatetodorepeat(event)" id="createtodorepeat">
@@ -2231,7 +2209,7 @@
 
 									<div class="bordertertiary hover:background-tint-1 backdrop-blur transition-duration-100 pointer text-primary pointer-auto nowrap border-8px padding-8px-12px text-14px" id="plantasksselectall" onclick="selectallschedulemytasks()"></div>
 
-									<div id="plantaskssubmit" class="backdrop-blur pointer-auto"></div>
+									<div id="plantaskssubmit" class="pointer-auto"></div>
 								</div>
 							</div>
 

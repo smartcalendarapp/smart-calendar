@@ -4143,6 +4143,7 @@ function geteventsuggestiontodos(){
 }
 
 function geteventsuggestion(){
+	return//here3
 	function getcalculatedweight(tempitem){
 		let currentdate = new Date()
 		let timedifference = new Date(tempitem.endbefore.year, tempitem.endbefore.month, tempitem.endbefore.day, 0, tempitem.endbefore.minute).getTime() - currentdate.getTime()
@@ -5068,31 +5069,6 @@ function updateinteractivetour() {
 		} else if (key == 'autoschedule') {
 
 			let tourbutton = getElement('eventinfoeventtype')
-			if (isviewable(tourbutton)) {
-				let rect = tourbutton.getBoundingClientRect()
-
-				if (value == false && key != selectedinteractivetourpopupindex) {
-					showbeacon(mybeacon)
-					movebeacon(mybeacon, rect.top, rect.left + rect.width)
-				} else {
-					hidebeacon(mybeacon)
-				}
-
-				if (key == selectedinteractivetourpopupindex) {
-					showpopup(mypopup)
-				} else {
-					hidepopup(mypopup)
-				}
-
-				movepopup(mypopup, rect.top + rect.height, rect.left + rect.width / 2 - mypopup.offsetWidth / 2)
-			} else {
-				hidebeacon(mybeacon)
-				hidepopup(mypopup)
-			}
-
-		}else if (key == 'timeslot') {
-
-			let tourbutton = getElement('createtodoavailability')
 			if (isviewable(tourbutton)) {
 				let rect = tourbutton.getBoundingClientRect()
 
@@ -7004,6 +6980,7 @@ function closeloginwithgooglepopup(){
 
 //set google calendar
 let issettingclientgooglecalendar = false
+let lastsetclientgooglecalendar = 0
 async function setclientgooglecalendar(requestchanges) {
 	let importgooglecalendarerror = getElement('importgooglecalendarerror')
 	importgooglecalendarerror.classList.add('display-none')
@@ -7032,6 +7009,8 @@ async function setclientgooglecalendar(requestchanges) {
 				timezoneoffset: new Date().getTimezoneOffset()
 			})
 		})
+
+		lastsetclientgooglecalendar = Date.now()
 
 		if (response.status == 401) {
 			const data = await response.json()
@@ -7121,7 +7100,7 @@ async function getclientgooglecalendar() {
 		} else if (response.status == 200) {
 			const data = await response.json()
 
-			if(calendar.lastmodified > tempstartgetclientgooglecalendardate || isautoscheduling || issettingclientgooglecalendar){
+			if(calendar.lastmodified > tempstartgetclientgooglecalendardate || isautoscheduling || issettingclientgooglecalendar || lastsetclientgooglecalendar > tempstartgetclientgooglecalendardate){
 				isgettingclientgooglecalendar = false
 				return
 			}
@@ -8116,15 +8095,7 @@ function fixrecurringtodo(item){
 			newitem.repeatid = originaltodo.id
 
 
-			if(Calendar.Event.isEvent(lasttodo)){
-				//schedule event
-				let newitemtodo = gettodofromevent(newitem)
-				calendar.todos.push(newitemtodo)
-
-				startAutoSchedule({scheduletodos: [newitemtodo]})
-			}else{
-				calendar.todos.push(newitem)
-			}
+			calendar.todos.push(newitem)
 			
 		}
 	}
@@ -9449,6 +9420,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		totalTranscriptCopy = ''
 
 		isspeaking = false
+		ispaused = true
 
 		recognitionerror = event.error
 		updaterecognitionui()
@@ -9529,14 +9501,20 @@ function updaterecognitionui(){
 				todorecognitionbutton.classList.add('display-none')
 
 				addtododictationpopup.classList.remove('hiddenpopup')
-				addtododictationtext2.classList.remove('display-none')
+
+				if(!recognitionerror && !permanentrecognitionerrors.includes(recognitionerror)){
+					addtododictationtext2.classList.remove('display-none')
+				}
 
 				addtododictationtext.innerHTML = ''
 			}else if(recognitionoutputtype == 'event'){
 				eventrecognitionbutton.classList.add('display-none')
 
 				addeventdictationpopup.classList.remove('hiddenpopup')
-				addeventdictationtext2.classList.remove('display-none')
+
+				if(!recognitionerror && !permanentrecognitionerrors.includes(recognitionerror)){
+					addeventdictationtext2.classList.remove('display-none')
+				}
 
 				addeventdictationtext.innerHTML = ''
 			}
@@ -9614,6 +9592,8 @@ function submitdictation(){
 		updaterecognitionui()
 	}
 }
+
+
 
 
 function typeaddtask(event, submit, index) {
