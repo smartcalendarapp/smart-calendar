@@ -12833,7 +12833,6 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		})
 
 
-
 		
 		//check for todos that are currently being done - don't reschedule first one
 		let doingtodos = sortstartdate(smartevents).filter(d => !d.iseventsuggestion && new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now() && !getconflictingevent(iteratedevents, d) && (!moveditem || d.id != moveditem.id))
@@ -12853,11 +12852,11 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 			rescheduletaskfunction = async function(complete){
 				let tempitem = calendar.events.find(d => d.id == overdueitem.id)
+				tempitem.autoschedulelocked = false
 
 				if(complete){
 					if(tempitem){
 						tempitem.completed = true
-						tempitem.autoschedulelocked = false
 
 						calendar.updateTodo()
 					}
@@ -12968,7 +12967,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 			//fix conflicts
 			let donesmartevents = []
-			smartevents = smartevents.sort((a, b) => getcalculatedpriority(b) - getcalculatedpriority(a)).sort((a, b) => b.autoschedulelocked - a.autoschedulelocked)
+			smartevents = smartevents.sort((a, b) => getcalculatedpriority(b) - getcalculatedpriority(a)).sort((a, b) => b.autoschedulelocked - a.autoschedulelocked).sort((a, b) => (moveditem && moveditem.id == b.id) - (moveditem && moveditem.id == a.id))
 
 			for (let item of smartevents) {
 				donesmartevents.push(item)
@@ -12988,12 +12987,20 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 					let conflictitem, spacing;
 					if(temp) [conflictitem, spacing] = temp
 					if (conflictitem) {
-						if(!item.autoschedulelocked || (conflictitem.type == 0 || conflictitem.autoschedulelocked || (moveditem && conflictitem.id == moveditem.id))){
-							fixconflict(item, conflictitem, spacing)
+						if(item.autoschedulelocked){
+							if(!moveditem || moveditem.id != item.id){
+								fixconflict(item, conflictitem, spacing)
+							}else if(conflictitem.type == 0){
+								fixconflict(item, conflictitem, spacing)
+							}else if(moveditem && conflictitem.id == moveditem.id){
+								fixconflict(item, conflictitem, spacing)
+							}else{
+								break
+							}
 						}else{
-							break
+							fixconflict(item, conflictitem, spacing)
 						}
-					}//here2
+					}
 
 					//exit
 					loopindex++
@@ -13398,7 +13405,8 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		calendar.updateAnimatedEvents()
 
 		//animate
-		for(let item of modifiedevents){
+		let sortedmodifiedevents =  sortstartdate(modifiedevents).reverse()
+		for(let item of sortedmodifiedevents){
 			await animateitem(item.id)
 			await sleep(400)
 		}
@@ -13631,7 +13639,7 @@ function openscheduleeditorpopup(id){
 				</div>
 
 				${availabletimeoutput.join('')}
-				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px">Custom</div>
+				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulepopupcustom('${item.id}')">Custom</div>
 			</div>
 		</div>`)
 
@@ -13754,6 +13762,85 @@ function editschedulemoveeventauto(id){
 	startAutoSchedule({})
 }
 
+//custom time
+function editschedulepopupcustom(id){
+	let item = calendar.events.find(d => d.id == id)
+	if(!item) return
+
+	let scheduleeditorpopupcustom = getElement('scheduleeditorpopupcustom')
+	scheduleeditorpopupcustom.classList.toggle('hiddenpopup')
+	scheduleeditorpopupcustom.style.top = fixtop(openschedulebutton.getBoundingClientRect().top + openschedulebutton.offsetHeight, scheduleeditorpopupcustom) + 'px'
+	scheduleeditorpopupcustom.style.left = fixleft(openschedulebutton.getBoundingClientRect().left, scheduleeditorpopupcustom) + 'px'
+
+	let output = []
+
+	output.push(`
+	<div class="display-flex flex-row gap-12px align-center">
+		<div class="infogroup">
+			<div class="inputgroup">
+				<div class="inputgroupitem flex-1">
+					<input onclick="this.select()" onblur="inputscheduleeditorcustom()" onkeydown="if(event.key == 'Enter'){ this.blur() }" class="infoinput inputtimepicker" placeholder="Custom date" type="text" id="scheduleeditorcustominputdate">
+						<span class="inputline"></span>
+					</input>
+				</div>
+			</div>
+		</div>
+
+		<div class="infogroup">
+			<div class="inputgroup">
+				<div class="inputgroupitem flex-1">
+					<input onclick="this.select()" onblur="inputscheduleeditorcustom()" onkeydown="if(event.key == 'Enter'){ this.blur() }" class="infoinput inputdatepicker" placeholder="Custom time" type="text" id="scheduleeditorcustominputtime">
+						<span class="inputline"></span>
+					</input>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="pointer-auto box-shadow text-16px bluebutton display-flex flex-row gap-6px align-center padding-8px-12px border-8px transition-duration-100 pointer" onclick="submitscheduleeditorcustom('${id}')">Submit</div>`)
+
+	let scheduleeditorpopupcustomcontent = getElement('scheduleeditorpopupcustomcontent')
+	scheduleeditorpopupcustomcontent.innerHTML = output.join('')
+}
+function closescheduleeditorpopupcustom(){
+	let scheduleeditorpopupcustom = getElement('scheduleeditorpopupcustom')
+	scheduleeditorpopupcustom.classList.add('hiddenpopup')
+}
+function inputscheduleeditorcustom(){
+	let scheduleeditorcustominputdate = getElement('scheduleeditorcustominputdate')
+	let scheduleeditorcustominputtime = getElement('scheduleeditorcustominputtime')
+
+	let string = scheduleeditorcustominputdate.value
+	let string2 = scheduleeditorcustominputtime.value
+
+	let [mystartyear, mystartmonth, mystartday] = getDate(string).value
+	let myminute = getMinute(string2, true).value
+
+	if(myminute == null){
+		scheduleeditorcustominputtime.value = ''
+	}
+
+	if(mystartyear == null || mystartmonth == null || mystartday == null){
+		scheduleeditorcustominputdate.value = ''
+	}
+}
+function submitscheduleeditorcustom(id){
+	let scheduleeditorcustominputdate = getElement('scheduleeditorcustominputdate')
+	let scheduleeditorcustominputtime = getElement('scheduleeditorcustominputtime')
+
+	let string = scheduleeditorcustominputdate.value
+	let string2 = scheduleeditorcustominputtime.value
+
+	let [mystartyear, mystartmonth, mystartday] = getDate(string).value
+	let myminute = getMinute(string2, true).value
+
+	let movedate = new Date(mystartyear, mystartmonth, mystartday, myminute)
+	
+	if(isNaN(movedate.getTime())){
+		editschedulemoveeventauto(id, movedate.getTime())
+	}
+}
+//here2
 
 let editscheduleeventsindex;
 async function nextscheduleeditorevent(){
