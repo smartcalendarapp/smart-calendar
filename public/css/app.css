@@ -3975,6 +3975,16 @@ body {
 		top: -99999px !important;
 	}
 
+	#scheduleeditorpopup{
+		top: revert !important;
+		left:0 !important;
+		right:0 !important;
+		bottom:0 !important;
+		max-width: revert !important;
+	}
+	#scheduleeditorpopup::before{
+		display:none !important;
+	}
 }
 
 

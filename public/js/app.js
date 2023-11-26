@@ -908,7 +908,7 @@ class Calendar {
 			if(tempstart - Date.now() > 86400000 * 7 && !Calendar.Event.isAllDay(this)){
 				this.reminder.push({ timebefore: 86400000 })
 				this.reminder.push({ timebefore: 3600000 })
-			}else if(floor(tempstart, 86400000) != floor(Date.now(), 86400000) && !Calendar.Event.isAllDay(this)){
+			}else if((tempstart.getFullYear() != new Date().getFullYear() || tempstart.getMonth() != new Date().getMonth() || tempstart.getDate() != new Date().getDate()) && !Calendar.Event.isAllDay(this)){
 				this.reminder.push({ timebefore: 900000 })
 			}else{
 				this.reminder.push({ timebefore: 0 })
@@ -7773,7 +7773,7 @@ function submitschedulemytasks() {
 
 
 
-function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], editscheduletimestamp, editscheduleitem}) {
+function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], moveditemtimestamp, moveditem}) {
 	if (isautoscheduling == true) return
 
 	let oldcalendartabs = [...calendartabs]
@@ -7824,7 +7824,7 @@ function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], edits
 	}
 
 	//start
-	autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos, eventsuggestiontodos: eventsuggestiontodos, editscheduletimestamp: editscheduletimestamp, editscheduleitem: editscheduleitem })
+	autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos, eventsuggestiontodos: eventsuggestiontodos, moveditemtimestamp: moveditemtimestamp, moveditem: moveditem })
 }
 
 
@@ -8419,6 +8419,7 @@ function resetcreatetodo() {
 	createtodosubtasks = []
 
 	createtodoaisuggestionsubtasks = []
+	createtodogotaisuggestionsubtasks = false
 
 	createtodoshowsubtask = false
 
@@ -8448,6 +8449,7 @@ let createtodorepeatvalue = {
 	until: null
 }
 let createtodoaisuggestionsubtasks = []
+let createtodogotaisuggestionsubtasks = false
 
 function updatecreatetodo() {
 	let createtododuration = getElement('createtododuration')
@@ -8673,6 +8675,8 @@ function clickcreatetodosubtasksuggestion(id){
 
 	createtodoaisuggestionsubtasks = createtodoaisuggestionsubtasks.filter(d => d.id != id)
 	createtodosubtasks.push(subtaskitem)
+	createtodogotaisuggestionsubtasks = true
+
 	updatecreatetodo()
 
 	clickaddsubtask()
@@ -9420,7 +9424,6 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		totalTranscriptCopy = ''
 
 		isspeaking = false
-		ispaused = true
 
 		recognitionerror = event.error
 		updaterecognitionui()
@@ -9468,6 +9471,20 @@ function updaterecognitionui(){
 
 	eventrecognitionbutton.classList.remove('display-none')
 	todorecognitionbutton.classList.remove('display-none')
+
+	//error
+	const permanentrecognitionerrors = ['service-not-allowed', 'not-allowed']
+	if(recognitionerror && permanentrecognitionerrors.includes(recognitionerror)){
+		ispaused = true
+		
+		let errorhtml = `<span class="text-red">No permission to use dictation, please check your browser/device settings.</span>`
+		if(recognitionoutputtype == 'task'){
+			addtododictationtext.innerHTML = errorhtml
+		}else if(recognitionoutputtype == 'event'){
+			addeventdictationtext.innerHTML = errorhtml
+		}
+	}
+
 
 	//display ui
 	if(isspeaking){
@@ -9518,17 +9535,6 @@ function updaterecognitionui(){
 
 				addeventdictationtext.innerHTML = ''
 			}
-		}
-	}
-
-	//error
-	const permanentrecognitionerrors = ['service-not-allowed', 'not-allowed']
-	if(recognitionerror && permanentrecognitionerrors.includes(recognitionerror)){
-		let errorhtml = `<span class="text-red">No permission to use dictation, please check your browser/device settings.</span>`
-		if(recognitionoutputtype == 'task'){
-			addtododictationtext.innerHTML = errorhtml
-		}else if(recognitionoutputtype == 'event'){
-			addeventdictationtext.innerHTML = errorhtml
 		}
 	}
 }
@@ -9795,6 +9801,10 @@ function submitcreatetodo(event) {
 					childitem.timewindow.time.endminute = item.timewindow.time.endminute
 
 					calendar.todos.push(childitem)
+				}
+
+				if(createtodogotaisuggestionsubtasks){
+					item.gotsubtasksuggestions = true
 				}
 			}
 		}
@@ -12641,7 +12651,7 @@ let animatenextitem;
 let isautoscheduling = false;
 let iseditingschedule = false;
 let rescheduletaskfunction;
-async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassedtodos = [], eventsuggestiontodos = [], editscheduletimestamp, editscheduleitem}) {
+async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassedtodos = [], eventsuggestiontodos = [], moveditemtimestamp, moveditem}) {
 	try{
 		//functions
 		function sleep(time) {
@@ -12784,7 +12794,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		//============================================================================
 
 
-		if (isautoscheduling == true && (resolvedpassedtodos || []).length == 0 && !editscheduletimestamp) return
+		if (isautoscheduling == true && (resolvedpassedtodos || []).length == 0 && !moveditemtimestamp) return
 		isautoscheduling = true
 
 
@@ -12811,14 +12821,14 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 		
 		//check for todos that are currently being done - don't reschedule first one
-		let doingtodos = sortstartdate(smartevents).filter(d => !d.iseventsuggestion && new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now() && !getconflictingevent(iteratedevents, d) && (!editscheduleitem || d.id != editscheduleitem.id))
+		let doingtodos = sortstartdate(smartevents).filter(d => !d.iseventsuggestion && new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now() && !getconflictingevent(iteratedevents, d) && (!moveditem || d.id != moveditem.id))
 		if(doingtodos[0]){
 			smartevents = smartevents.filter(d => d.id != doingtodos[0].id)
 		}
 
 
 		//check for todos that haven't been done - ask to reschedule them
-		let passedtodos = smartevents.filter(d => !d.iseventsuggestion && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() <= Date.now() && (!editscheduleitem || d.id != editscheduleitem.id))
+		let passedtodos = smartevents.filter(d => !d.iseventsuggestion && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() <= Date.now() && (!moveditem || d.id != moveditem.id))
 		if(resolvedpassedtodos){
 			passedtodos = passedtodos.filter(d => !resolvedpassedtodos.find(f => f == d.id))
 		}
@@ -12865,19 +12875,6 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			return
 		}
 
-		//unlock events with conflict
-		for(let item of smartevents){
-			if(editscheduleitem && item.id == editscheduleitem.id) continue
-
-			let temp = getconflictingevent(iteratedevents, item)
-			let conflictitem, spacing;
-			if(temp) [conflictitem, spacing] = temp
-			if(conflictitem && (conflictitem.type == 0 || conflictitem.type == 1 && conflictitem.autoschedulelocked)){
-				item.autoschedulelocked = false
-			}
-		}
-		smartevents = smartevents.filter(d => !d.autoschedulelocked || (editscheduleitem && d.id == editscheduleitem.id))
-
 
 		//start
 		if (true) {
@@ -12885,14 +12882,15 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 			//set to best time
 			for(let item of smartevents){
-
 				let startdate, enddate;
-				if(editscheduletimestamp && editscheduleitem && editscheduleitem.id == item.id){
+				if(moveditemtimestamp && moveditem && moveditem.id == item.id){
 					let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 
-					startdate = new Date(editscheduletimestamp)
+					startdate = new Date(moveditemtimestamp)
 					enddate = new Date(startdate.getTime() + duration)
 				}else{
+					if(item.autoschedulelocked) continue
+
 					let startafterdate = new Date()
 					startafterdate.setMinutes(ceil(startafterdate.getMinutes(), 5), 0, 0)
 
@@ -12955,10 +12953,9 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 			//fix conflicts
 			let donesmartevents = []
-			smartevents = smartevents.sort((a, b) => {
-				return getcalculatedpriority(b) - getcalculatedpriority(a)
-			})
-			for (let item of smartevents) {				
+			smartevents = smartevents.sort((a, b) => getcalculatedpriority(b) - getcalculatedpriority(a)).sort((a, b) => b.autoschedulelocked - a.autoschedulelocked)
+
+			for (let item of smartevents) {
 				donesmartevents.push(item)
 
 				let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !smartevents.find(g => g.id == d.id))
@@ -12972,15 +12969,18 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 						fixrange(item)
 					}
 
-
 					let temp = getconflictingevent(tempiteratedevents, item)
 					let conflictitem, spacing;
 					if(temp) [conflictitem, spacing] = temp
 					if (conflictitem) {
-						if(!editscheduleitem || conflictitem.type == 0 || conflictitem.autoschedulelocked){
+						if(item.autoschedulelocked){
+							if(conflictitem.type == 0 || conflictitem.autoschedulelocked || (moveditem && conflictitem.id == moveditem.id)){
+								fixconflict(item, conflictitem, spacing)
+							}
+						}else{
 							fixconflict(item, conflictitem, spacing)
 						}
-					}
+					}//here2
 
 					//exit
 					loopindex++
@@ -13589,12 +13589,9 @@ function openscheduleeditorpopup(id){
 			let availabletimetext = gettextfromavailabletime(tempavailabletime.start)
 			if(addedavailabletimes.includes(availabletimetext)) continue
 
-			let currenttimetext = gettextfromavailabletime(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))
-			if(availabletimetext == currenttimetext) continue
-
 			addedavailabletimes.push(availabletimetext)
 
-			availabletimeoutput.push(`<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulemoveevent('${item.id}', ${tempavailabletime.start})">${availabletimetext}</div>`)
+			availabletimeoutput.push(`<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulemoveevent('${item.id}', ${ceil(tempavailabletime.start, 60000*5)})">${availabletimetext}</div>`)
 			
 			if(availabletimeoutput.length == 5) break
 		}
@@ -13726,9 +13723,10 @@ function editschedulemoveevent(id, timestamp){
 	
 	closescheduleeditorpopup()
 
-	startAutoSchedule({editscheduletimestamp: timestamp, editscheduleitem: item})
+	startAutoSchedule({moveditemtimestamp: timestamp, moveditem: item})
 }
 
+//here3
 //set event to auto
 function editschedulemoveeventauto(id){
 	let item = calendar.events.find(d => d.id == id)
@@ -13797,7 +13795,7 @@ async function previousscheduleeditorevent(){
 		openscheduleeditorpopup(editscheduleevents[editscheduleeventsindex].id)
 	})
 }
-//here3
+
 
 
 //edit my schedule
