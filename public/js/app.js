@@ -904,8 +904,8 @@ class Calendar {
 			this.autoschedulelocked = false
 
 			this.reminder = []
-			let tempstart = new Date(this.start.year, this.start.month, this.start.day, 0, this.start.minute).getTime()
-			if(tempstart - Date.now() > 86400000 * 7 && !Calendar.Event.isAllDay(this)){
+			let tempstart = new Date(this.start.year, this.start.month, this.start.day, 0, this.start.minute)
+			if(tempstart.getTime() - Date.now() > 86400000 * 7 && !Calendar.Event.isAllDay(this)){
 				this.reminder.push({ timebefore: 86400000 })
 				this.reminder.push({ timebefore: 3600000 })
 			}else if((tempstart.getFullYear() != new Date().getFullYear() || tempstart.getMonth() != new Date().getMonth() || tempstart.getDate() != new Date().getDate()) && !Calendar.Event.isAllDay(this)){
@@ -12973,12 +12973,10 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 					let conflictitem, spacing;
 					if(temp) [conflictitem, spacing] = temp
 					if (conflictitem) {
-						if(item.autoschedulelocked){
-							if(conflictitem.type == 0 || conflictitem.autoschedulelocked || (moveditem && conflictitem.id == moveditem.id)){
-								fixconflict(item, conflictitem, spacing)
-							}
-						}else{
+						if(!item.autoschedulelocked || (conflictitem.type == 0 || conflictitem.autoschedulelocked || (moveditem && conflictitem.id == moveditem.id))){
 							fixconflict(item, conflictitem, spacing)
+						}else{
+							break
 						}
 					}//here2
 
