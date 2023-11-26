@@ -2061,17 +2061,8 @@ body {
 	background-color: var(--white-hover);
 }
 
-.calendarsplash {
-	max-height: 100%;
-	max-width: 700px;
-	width: 100%;
-	background: linear-gradient(to top right, #259AFE, #16c1f0);
-}
-
-.todolistsplash {
-	max-width: 700px;
-	width: 100%;
-	background: linear-gradient(to top right, #F27258, #FFA557);
+.socialmediagradient{
+	background: linear-gradient(to top right, #5126ff, #7626ff);
 }
 
 .modeoptionbutton:hover {
@@ -2098,11 +2089,21 @@ body {
 	border-radius: 8px;
 }
 
+.selectedbuttonactive{
+	background-color: var(--blue) !important;
+	color: var(--white) !important;
+}
+.selectedbuttonactive:hover{
+	background-color: var(--blue-hover) !important;
+}
+.selectedbuttonactive .buttonfillwhite{
+	fill:var(--white) !important;
+}
+
 .selectedbutton {
 	background-color: var(--blue) !important;
 	color: var(--white) !important;
 }
-
 
 
 

@@ -29,6 +29,7 @@
 	<link href="../base.css" rel="stylesheet" type="text/css" />
 	<link href="../base-hover.css" rel="stylesheet" type="text/css"/>
 	<link href="../base-media.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 
 	<!-- fonts -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -341,7 +342,7 @@
 		</div>
 	</div>
 
-	<div class="helpmenu border-box margin-12px background-primary hiddenpopup popup z-index-200 padding-12px gap-12px max-width-300px" id="scheduleeditorpopup">
+	<div class="helpmenu border-box small:margin-12px background-primary hiddenpopup popup z-index-200 padding-12px gap-12px max-width-300px" id="scheduleeditorpopup">
 		<div class="display-flex flex-column gap-12px" id="scheduleeditorpopupcontent"></div>
 	</div>
 
@@ -593,7 +594,7 @@
 			<div class="text-14px text-primary pointer-none">Take a tour</div>
 		</div>
 
-		<div class="helpitem align-center display-flex flex-row gap-12px" onclick="openfeedbackpopup(event)">
+		<div class="helpitem align-center popupbutton display-flex flex-row gap-12px" onclick="openfeedbackpopup(event)">
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite">
 				<g>
 				<path d="M52.2188 4.75C23.3798 4.75 0 28.1298 0 56.9688L0 149.469C0 178.308 23.3798 201.687 52.2188 201.688L133.344 201.688L184 248.594C190.422 254.536 200.83 249.937 200.781 241.188L200.594 201.656L203.719 201.688C232.633 201.688 256 178.308 256 149.469L256 56.9688C256 28.1298 232.62 4.75 203.781 4.75L52.2188 4.75ZM52.2188 24.75L203.781 24.75C221.574 24.75 236 39.1755 236 56.9688L236 149.469C236 167.262 221.575 181.687 203.781 181.688L190.594 181.594C185.02 181.552 180.5 186.082 180.531 191.656L180.688 218.25L144.031 184.344C142.183 182.633 139.768 181.687 137.25 181.688L52.2188 181.688C34.4255 181.688 20 167.262 20 149.469L20 56.9688C20 39.1755 34.4255 24.75 52.2188 24.75Z" fill-rule="nonzero" opacity="1" ></path>
@@ -2180,7 +2181,7 @@
 								<div class="horizontalbar"></div>
 
 								<div class="inputgroup border-8px">
-									<div class="absolute bottom-0 right-0 margin-right-12px text-secondary padding-12px text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">Feedback</div>
+									<div class="absolute popupbutton bottom-0 right-0 margin-right-12px text-secondary padding-12px text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">Feedback</div>
 
 									<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotes" maxlength="2000"></textarea>
 									<span class="inputline"></span>

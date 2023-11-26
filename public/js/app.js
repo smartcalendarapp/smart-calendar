@@ -2641,6 +2641,52 @@ class Calendar {
 		let output = []
 
 
+		//show social media
+		if(calendar.settings.closedsocialmediapopup == false && calendar.todos.length > 3 && new Date().getMinutes() % 3 == 0 && clientinfo.betatester){
+			output.push(`
+			<div class="relative display-flex gap-12px align-center socialmediagradient border-8px padding-24px flex-column">
+				<div class="absolute top-0 right-0 margin-12px infotoprightgroup">
+					<div class="infotopright pointer" onclick="closesocialmediapopup()">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+						<g>
+						<g opacity="1">
+						<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+						<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+						</g>
+						</g>
+						</svg>
+					</div>
+				</div>
+
+				<div class="text-18px text-bold text-white text-center">Follow us on social media!</div>
+				<div class="text-14px text-white text-center">Boost your daily <span class="text-bold">productivity</span> and <span class="text-bold">mental well-being</span> with our latest tips and tricks, just for you.</div>
+
+				<div class="display-flex flex-row gap-24px align-center">
+					<div class="display-flex flex-column gap-6px align-center">
+						<a href="https://twitter.com/SmartCalendarUS" target="_blank" rel="noopener noreferrer" class="text-14px text-bold text-white text-decoration-none">Twitter</a>
+						<a href="https://twitter.com/SmartCalendarUS" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+						<i class="text-24px fab fa-twitter" style="color:#ffffff;"></i>
+						</a>
+					</div>
+
+					<div class="display-flex flex-column gap-6px align-center">
+						<a href="https://www.facebook.com/profile.php?id=61553949300945" target="_blank" rel="noopener noreferrer" class="text-14px text-bold text-white text-decoration-none">Facebook</a>
+						<a href="https://www.facebook.com/profile.php?id=61553949300945" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+						<i class="text-24px fab fa-facebook" style="color:#ffffff;"></i>
+						</a>
+					</div>
+
+					<div class="display-flex flex-column gap-6px align-center">
+						<a href="https://www.instagram.com/smartcalendarus/" target="_blank" rel="noopener noreferrer" class="text-14px text-bold text-white text-decoration-none">Instagram</a>
+						<a href="https://www.instagram.com/smartcalendarus/" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+						<i class="text-24px fab fa-instagram" style="color:#ffffff;"></i>
+						</a>
+					</div>
+				</div>
+			</div>`)
+		}
+
+
 		if(true){
 			let mytodos = [...calendar.todos.filter(d => !d.completed && !Calendar.Todo.isSubtask(d)), ...calendar.events.filter(d => d.type == 1 && !d.completed && !Calendar.Todo.isSubtask(d))]
 
@@ -2706,6 +2752,10 @@ class Calendar {
 					tempoutput2 = []
 				}
 			}
+
+			if(output.length > 0){
+				output.push(`<div class="align-self-flex-end popupbutton text-secondary text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">We'd love your feedback</div>`)
+			}
 			
 		}
 
@@ -2767,8 +2817,6 @@ class Calendar {
 			output.push(`<div class="absolute top-0 left-0 right-0 bottom-0 flex-1 display-flex flex-column align-center justify-center">
 <div class="text-18px text-secondary">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span>.</div>
 </div>`)
-		}else {
-			output.push(`<div class="align-self-flex-end text-secondary text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">We'd love your feedback</div>`)
 		}
 
 		let alltodolist = getElement('alltodolist')
@@ -7544,6 +7592,11 @@ function clicksettingstimeformat(militarytime) {
 	updatecreatetodotimepickeronce()
 }
 
+
+function closesocialmediapopup(){
+	calendar.settings.closedsocialmediapopup = true
+	calendar.updateTodo()
+}
 
 //HELP
 
@@ -13587,9 +13640,11 @@ function openscheduleeditorpopup(id){
 			let availabletimetext = gettextfromavailabletime(tempavailabletime.start)
 			if(addedavailabletimes.includes(availabletimetext)) continue
 
+			let currenttimetext = gettextfromavailabletime(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
+
 			addedavailabletimes.push(availabletimetext)
 
-			availabletimeoutput.push(`<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulemoveevent('${item.id}', ${ceil(tempavailabletime.start, 60000*5)})">${availabletimetext}</div>`)
+			availabletimeoutput.push(`<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px ${currenttimetext == availabletimetext && item.autoschedulelocked ? `selectedbuttonactive` : ''}" onclick="editschedulemoveevent('${item.id}', ${ceil(tempavailabletime.start, 60000*5)})">${availabletimetext}</div>`)
 			
 			if(availabletimeoutput.length == 5) break
 		}
@@ -13601,7 +13656,7 @@ function openscheduleeditorpopup(id){
 			<div class="text-16px text-primary">Move to:</div>
 			<div class="display-flex flex-row flex-wrap-wrap gap-12px">
 
-				<div class="text-14px display-flex flex-row gap-6px align-center text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulemoveeventauto('${item.id}')">
+				<div class="text-14px display-flex flex-row gap-6px align-center text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px ${!item.autoschedulelocked ? `selectedbuttonactive` : ''}" onclick="editschedulemoveeventauto('${item.id}')">
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite">
 					<g>
 					<path d="M116.697 68.9269C111.629 69.2588 106.599 71.0688 102.28 74.4124C90.7618 83.3285 88.669 99.8408 97.5851 111.359C98.2562 112.226 200.877 244.813 201.548 245.68C210.464 257.198 227.011 259.317 238.529 250.401C250.047 241.485 252.162 224.907 243.246 213.389L139.288 79.0988C133.715 71.8999 125.144 68.3738 116.697 68.9269ZM150.93 119.849L230.775 223.006C233.039 225.93 233.221 234.599 228.942 237.926C224.213 241.603 216.316 239.012 214.053 236.089C213.538 235.423 162.596 169.648 134.177 132.935L150.93 119.849Z" fill-rule="nonzero" opacity="1" ></path>
@@ -13639,7 +13694,7 @@ function openscheduleeditorpopup(id){
 
 		</div>`)
 
-		output.push(`<div class="text-secondary text-14px align-self-flex-end width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">Feedback</div>`)
+		output.push(`<div class="text-secondary text-14px popupbutton align-self-flex-end width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">Feedback</div>`)
 
 
 		let scheduleeditorpopupcontent = getElement('scheduleeditorpopupcontent')
