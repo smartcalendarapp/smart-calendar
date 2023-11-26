@@ -347,7 +347,7 @@
 	</div>
 
 
-	<div class="helpmenu border-box small:width-full hiddenpopup background-primary popup z-index-10000 padding-12px gap-12px max-width-300px" id="feedbackpopup">
+	<div class="helpmenu border-box small:width-full hiddenpopup popup z-index-10000 padding-12px gap-12px max-width-300px" id="feedbackpopup">
 		<div class="display-flex flex-row justify-space-between align-center">
 
 			<div>
@@ -1805,57 +1805,6 @@
 					</div>
 				</div>
 				
-				
-				<div class="summarywrap display-none small:border-none small:border-0" id="feedbackwrap">
-					<div class="todobar small:background-transparent">Feedback</div>
-
-					<div class="overflow-y-auto">
-						<div class="display-flex flex-column align-center gap-12px padding-12px display-none" id="thankyoufeedback">
-							<div class="text-18px padding-12px text-white background-blue border-8px">Thank you! Your feedback helps improve Smart Calendar</div>
-							<div class="border-8px background-blue text-white padding-8px-12px pointer hover:background-blue-hover text-14px transition-duration-100" onclick="clickfeedbackdone()">Done</div>
-						</div>
-	
-						<div class="display-flex flex-column align-center width-full">
-							<div class="display-flex flex-column align-center gap-24px padding-12px feedbackgroup" id="feedbackgroup">
-								<div class="text-18px text-primary text-center">We want to hear from you! Please share with us your experience</div>
-
-								<div class="text-18px text-primary text-center">
-									You can also send feedback in our <a href="https://discord.gg/dHBFFNp7g7" target="_blank" rel="noopener noreferrer" class="text-primary text-underline">Discord Server</a>!
-								</div>
-			
-								<form class="form" id="feedbackform" onsubmit="submitfeedback(event)">
-									<div class="formgroup">
-										<div class="formtext">What features do you like? (optional)</div>
-										<div class="forminputwrap">
-											<textarea id="feedbackformquestion1" maxlength="2000" type="text" class="infoinput infonotes"></textarea>
-											<span class="inputline"></span>
-										</div>
-									</div>
-							
-									<div class="formgroup">
-										<div class="formtext">What can be improved? (optional)</div>
-										<div class="forminputwrap">
-											<textarea id="feedbackformquestion2" maxlength="2000" type="text" class="infoinput infonotes"></textarea>
-											<span class="inputline"></span>
-										</div>
-									</div>
-			
-									<div class="formgroup">
-										<div class="formtext">Any suggestions? (optional)</div>
-										<div class="forminputwrap">
-											<textarea id="feedbackformquestion3" maxlength="2000" type="text" class="infoinput infonotes"></textarea>
-											<span class="inputline"></span>
-										</div>
-									</div>
-									
-									<input type="submit" value="Submit" class="formsubmit"/>
-								</form>
-		
-							</div>
-						</div>
-					</div>
-				</div>
-
 				
 				<div class="summarywrap display-none small:border-none small:border-0" id="summarywrap">
 					<div class="summarycontainer">

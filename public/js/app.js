@@ -7942,44 +7942,6 @@ function openfeedbackpopup(event){
 }
 
 
-
-//legacy
-async function submitfeedback(event) {
-	event.preventDefault()
-
-	let feedbackform = getElement('feedbackform')
-	let feedbackformquestion1 = getElement('feedbackformquestion1')
-	let feedbackformquestion2 = getElement('feedbackformquestion2')
-	let feedbackformquestion3 = getElement('feedbackformquestion3')
-
-	let content = `Question 1: ${feedbackformquestion1.value}\nQuestion 2: ${feedbackformquestion2.value}\nQuestion 3: ${feedbackformquestion3.value}`
-
-	const response = await fetch(`/sendmessage`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ content: content })
-	})
-	if (response.status == 200) {
-		feedbackform.reset()
-
-		let thankyoufeedback = getElement('thankyoufeedback')
-		thankyoufeedback.classList.remove('display-none')
-
-		let feedbackgroup = getElement('feedbackgroup')
-		feedbackgroup.classList.add('display-none')
-	}
-}
-
-function clickfeedbackdone() {
-	let thankyoufeedback = getElement('thankyoufeedback')
-	thankyoufeedback.classList.add('display-none')
-
-	let feedbackgroup = getElement('feedbackgroup')
-	feedbackgroup.classList.remove('display-none')
-}
-
 //SUMMARY
 
 function getlineprogressbar(value, max) {
