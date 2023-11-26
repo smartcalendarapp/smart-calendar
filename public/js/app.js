@@ -13639,7 +13639,7 @@ function openscheduleeditorpopup(id){
 				</div>
 
 				${availabletimeoutput.join('')}
-				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulepopupcustom('${item.id}')">Custom</div>
+				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulepopupcustom(event, '${item.id}')">Custom</div>
 			</div>
 		</div>`)
 
@@ -13749,7 +13749,6 @@ function editschedulemoveevent(id, timestamp){
 	startAutoSchedule({moveditemtimestamp: timestamp, moveditem: item})
 }
 
-//here3
 //set event to auto
 function editschedulemoveeventauto(id){
 	let item = calendar.events.find(d => d.id == id)
@@ -13763,14 +13762,16 @@ function editschedulemoveeventauto(id){
 }
 
 //custom time
-function editschedulepopupcustom(id){
+function editschedulepopupcustom(event, id){
 	let item = calendar.events.find(d => d.id == id)
 	if(!item) return
 
+	let button = event.target
+
 	let scheduleeditorpopupcustom = getElement('scheduleeditorpopupcustom')
 	scheduleeditorpopupcustom.classList.toggle('hiddenpopup')
-	scheduleeditorpopupcustom.style.top = fixtop(openschedulebutton.getBoundingClientRect().top + openschedulebutton.offsetHeight, scheduleeditorpopupcustom) + 'px'
-	scheduleeditorpopupcustom.style.left = fixleft(openschedulebutton.getBoundingClientRect().left, scheduleeditorpopupcustom) + 'px'
+	scheduleeditorpopupcustom.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, scheduleeditorpopupcustom) + 'px'
+	scheduleeditorpopupcustom.style.left = fixleft(button.getBoundingClientRect().left, scheduleeditorpopupcustom) + 'px'
 
 	let output = []
 
@@ -13779,7 +13780,7 @@ function editschedulepopupcustom(id){
 		<div class="infogroup">
 			<div class="inputgroup">
 				<div class="inputgroupitem flex-1">
-					<input onclick="this.select()" onblur="inputscheduleeditorcustom()" onkeydown="if(event.key == 'Enter'){ this.blur() }" class="infoinput inputtimepicker" placeholder="Custom date" type="text" id="scheduleeditorcustominputdate">
+					<input onclick="this.select()" onblur="inputscheduleeditorcustom()" onkeydown="if(event.key == 'Enter'){ this.blur() }" class="infoinput inputdatepicker" placeholder="Custom date" type="text" id="scheduleeditorcustominputdate">
 						<span class="inputline"></span>
 					</input>
 				</div>
@@ -13789,7 +13790,7 @@ function editschedulepopupcustom(id){
 		<div class="infogroup">
 			<div class="inputgroup">
 				<div class="inputgroupitem flex-1">
-					<input onclick="this.select()" onblur="inputscheduleeditorcustom()" onkeydown="if(event.key == 'Enter'){ this.blur() }" class="infoinput inputdatepicker" placeholder="Custom time" type="text" id="scheduleeditorcustominputtime">
+					<input onclick="this.select()" onblur="inputscheduleeditorcustom()" onkeydown="if(event.key == 'Enter'){ this.blur() }" class="infoinput inputtimepicker" placeholder="Custom time" type="text" id="scheduleeditorcustominputtime">
 						<span class="inputline"></span>
 					</input>
 				</div>
@@ -13797,7 +13798,7 @@ function editschedulepopupcustom(id){
 		</div>
 	</div>
 	
-	<div class="pointer-auto box-shadow text-16px bluebutton display-flex flex-row gap-6px align-center padding-8px-12px border-8px transition-duration-100 pointer" onclick="submitscheduleeditorcustom('${id}')">Submit</div>`)
+	<div class="pointer-auto box-shadow align-self-flex-end text-16px bluebutton display-flex flex-row gap-6px align-center padding-8px-12px border-8px transition-duration-100 pointer" onclick="submitscheduleeditorcustom('${id}')">Submit</div>`)
 
 	let scheduleeditorpopupcustomcontent = getElement('scheduleeditorpopupcustomcontent')
 	scheduleeditorpopupcustomcontent.innerHTML = output.join('')
@@ -13818,10 +13819,14 @@ function inputscheduleeditorcustom(){
 
 	if(myminute == null){
 		scheduleeditorcustominputtime.value = ''
+	}else{
+		scheduleeditorcustominputtime.value = getHMText(myminute)
 	}
 
 	if(mystartyear == null || mystartmonth == null || mystartday == null){
 		scheduleeditorcustominputdate.value = ''
+	}else{
+		scheduleeditorcustominputdate.value = getDMDYText(new Date(mystartyear, mystartmonth, mystartday))
 	}
 }
 function submitscheduleeditorcustom(id){
@@ -13834,13 +13839,14 @@ function submitscheduleeditorcustom(id){
 	let [mystartyear, mystartmonth, mystartday] = getDate(string).value
 	let myminute = getMinute(string2, true).value
 
-	let movedate = new Date(mystartyear, mystartmonth, mystartday, myminute)
+	let movedate = new Date(mystartyear, mystartmonth, mystartday, 0, myminute)
 	
-	if(isNaN(movedate.getTime())){
+	if(myminute != null && mystartyear != null && mystartmonth != null && mystartday != null && isNaN(movedate.getTime())){
 		editschedulemoveeventauto(id, movedate.getTime())
+		closescheduleeditorpopupcustom()
 	}
 }
-//here2
+//here3
 
 let editscheduleeventsindex;
 async function nextscheduleeditorevent(){
