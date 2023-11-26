@@ -2640,12 +2640,11 @@ class Calendar {
 	updateTodoList() {
 		let output = []
 
-
 		//show social media
-		if(calendar.todos.length > 3 && clientinfo.betatester){
+		if(clientinfo.betatester && calendar.todos.length > 0 && clientinfo.createddate && Date.now() - clientinfo.createddate > 1000*3600){
 			showsocialmediapopup = true
 		}
-		if(calendar.settings.closedsocialmediapopup == false && showsocialmediapopup){
+		if(calendar.closedsocialmediapopup == false && showsocialmediapopup){
 			output.push(`
 			<div class="relative display-flex gap-12px align-center socialmediagradient border-8px padding-24px flex-column">
 				<div class="absolute top-0 right-0 margin-12px infotoprightgroup">
@@ -2666,22 +2665,22 @@ class Calendar {
 
 				<div class="display-flex flex-row gap-24px align-center">
 					<div class="display-flex flex-column gap-6px align-center">
-						<a href="https://twitter.com/SmartCalendarUS" target="_blank" rel="noopener noreferrer" class="text-14px text-bold text-white text-decoration-none">Twitter</a>
-						<a href="https://twitter.com/SmartCalendarUS" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+						<a href="https://twitter.com/SmartCalendarUS" target="_blank" rel="noopener noreferrer" class="text-16px text-bold text-white text-decoration-none">Twitter</a>
+						<a href="https://twitter.com/SmartCalendarUS" target="_blank" rel="noopener noreferrer" class="hoverscale text-decoration-none">
 						<i class="text-24px fab fa-twitter" style="color:#ffffff;"></i>
 						</a>
 					</div>
 
 					<div class="display-flex flex-column gap-6px align-center">
-						<a href="https://www.facebook.com/profile.php?id=61553949300945" target="_blank" rel="noopener noreferrer" class="text-14px text-bold text-white text-decoration-none">Facebook</a>
-						<a href="https://www.facebook.com/profile.php?id=61553949300945" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+						<a href="https://www.facebook.com/profile.php?id=61553949300945" target="_blank" rel="noopener noreferrer" class="text-16px text-bold text-white text-decoration-none">Facebook</a>
+						<a href="https://www.facebook.com/profile.php?id=61553949300945" target="_blank" rel="noopener noreferrer" class=" text-decoration-none">
 						<i class="text-24px fab fa-facebook" style="color:#ffffff;"></i>
 						</a>
 					</div>
 
 					<div class="display-flex flex-column gap-6px align-center">
-						<a href="https://www.instagram.com/smartcalendarus/" target="_blank" rel="noopener noreferrer" class="text-14px text-bold text-white text-decoration-none">Instagram</a>
-						<a href="https://www.instagram.com/smartcalendarus/" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
+						<a href="https://www.instagram.com/smartcalendarus/" target="_blank" rel="noopener noreferrer" class="text-16px text-bold text-white text-decoration-none">Instagram</a>
+						<a href="https://www.instagram.com/smartcalendarus/" target="_blank" rel="noopener noreferrer" class="hoverscale text-decoration-none">
 						<i class="text-24px fab fa-instagram" style="color:#ffffff;"></i>
 						</a>
 					</div>
@@ -7606,7 +7605,7 @@ function clicksettingstimeformat(militarytime) {
 
 
 function closesocialmediapopup(){
-	calendar.settings.closedsocialmediapopup = true
+	calendar.closedsocialmediapopup = true
 	calendar.updateTodo()
 }
 
