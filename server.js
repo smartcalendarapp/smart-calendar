@@ -3088,8 +3088,10 @@ async function getgptresponse(prompt) {
 	}
 }
 
-const MAX_GPT_PER_DAY = 12
-const MAX_GPT_PER_DAY_BETA_TESTER = 36
+const MAX_GPT_PER_DAY = 10
+const MAX_GPT_PER_DAY_BETA_TESTER = 30
+const MAX_GPT_PER_DAY_PREMIUM = 50
+
 app.post('/getsubtasksuggestions', async (req, res) => {
 	try{
 		if(!req.session.user){
@@ -3148,6 +3150,53 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 
 		if(!gptresponse){
 			return res.status(401).json({ error: 'Could not get response from AI.' })
+		}
+
+		return res.json({ data: gptresponse })
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
+app.post('/getgptresponse', async (req, res) => {
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		let user = await getUserById(userid)
+		if (!user) {
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+		if(!user.accountdata.betatester) return res.end()//here3
+
+		let appliedratelimit = MAX_GPT_PER_DAY
+		if(user.accountdata.betatester){
+			appliedratelimit = MAX_GPT_PER_DAY_BETA_TESTER
+		}
+
+
+		let currenttime = Date.now()
+
+		//check ratelimit
+		if(user.accountdata.gptusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
+			return res.status(401).json({ error: 'Daily AI limit reached.' })
+		}
+
+		//set ratelimit
+		user.accountdata.gptusedtimestamps.push(currenttime)
+		await setUser(user)
+		
+
+		//prompt
+		let gptresponse = await getgptresponse(`SOME PROMPT`)
+
+		if(!gptresponse){
+			return res.status(401).json({ error: 'Error in getting response, please try again or contact us.' })
 		}
 
 		return res.json({ data: gptresponse })

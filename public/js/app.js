@@ -1507,7 +1507,7 @@ class Calendar {
 						daydata.push(`
 						<div class="monthcontainer" onmousedown="clickmontharea(event)" ondblclick="dblclickmontharea(event, ${currentdate.getTime()})" data-timestamp="${currentdate.getTime()}">
 								<div class="display-flex flex-column small:width-full small:height-full">
-									<div class="padding-6px flex-1 border-8px display-flex flex-row align-center justify-center pointer monthdate ${today ? `small:background-blue` : ''} text-18px nowrap text-primary ${currentdate.getMonth() == calendardate.getMonth() && currentdate.getFullYear() == calendardate.getFullYear() ? '' : 'text-secondary'}" onclick="clickmonthdate(event, ${currentdate.getTime()})">
+									<div class="padding-6px flex-1 border-round small:border-8px small:width-full border-box display-flex flex-row align-center align-self-center justify-center pointer monthdate ${today ? `small:background-blue` : ''} text-18px nowrap text-primary ${currentdate.getMonth() == calendardate.getMonth() && currentdate.getFullYear() == calendardate.getFullYear() ? '' : 'text-secondary'}" onclick="clickmonthdate(event, ${currentdate.getTime()})">
 										${today ? '<span class="small:text-white">' : ''}${currentdate.getDate() == 1 ? `<span class="pre">${SHORTMONTHLIST[currentdate.getMonth()]} </span>` : ''}${today ? '</span>' : ''}${today ? '<span class="highlightdate small:background-transparent small:padding-0">' : ''}${currentdate.getDate()}${today ? '</span>' : ''}
 									</div>
 								</div>
@@ -2642,7 +2642,10 @@ class Calendar {
 
 
 		//show social media
-		if(calendar.settings.closedsocialmediapopup == false && calendar.todos.length > 3 && new Date().getMinutes() % 3 == 0 && clientinfo.betatester){
+		if(calendar.todos.length > 3 && clientinfo.betatester){
+			showsocialmediapopup = true
+		}
+		if(calendar.settings.closedsocialmediapopup == false && showsocialmediapopup){
 			output.push(`
 			<div class="relative display-flex gap-12px align-center socialmediagradient border-8px padding-24px flex-column">
 				<div class="absolute top-0 right-0 margin-12px infotoprightgroup">
@@ -3619,6 +3622,7 @@ let selectededittodoid;
 let autoscheduleeventslist = []
 let oldautoscheduleeventslist = []
 let newautoscheduleeventslist = []
+let showsocialmediapopup = false;
 
 //new calendar
 let calendarmode = 1
@@ -3719,6 +3723,14 @@ function scrollcalendarX(targetdate) {
 	function animateScroll() {
 		currentTime += increment;
 		let val = easeinoutquad(currentTime, start, change, duration);
+
+		function easeinoutquad(t, b, c, d) {
+			t /= d / 2
+			if (t < 1) return c / 2 * t * t + b
+			t--
+			return -c / 2 * (t * (t - 2) - 1) + b
+		}
+
 
 		barcolumngroup.style.scrollSnapType = 'none'
 		barcolumngroup.scrollTo(val, 0)
@@ -8782,7 +8794,7 @@ function resetcreatetodocreatesubtask(){
 	createtodosubtaskinput.value = ''
 
 	let createtodosubtaskduration = getElement('createtodosubtaskduration')
-	createtodosubtaskduration.value = '1h'
+	createtodosubtaskduration.value = getDHMText(60)
 }
 
 function deletecreatetodosubtask(id){
@@ -11014,11 +11026,11 @@ async function accepteventsuggestion(event, id){
 	})
 
 	await myconfetti({
-		particleCount: 20,
-		gravity: 0.75,
-		startVelocity: 15,
+		particleCount: 30,
+		gravity: 0.8,
+		startVelocity: 20,
 		decay: 0.94,
-		ticks: 100,
+		ticks: 150,
 		origin: {
 			x: (event.clientX) / (window.innerWidth || document.body.clientWidth),
 			y: (event.clientY) / (window.innerHeight || document.body.clientHeight)
@@ -11108,11 +11120,11 @@ async function todocompleted(event, id) {
 		})
 
 		await myconfetti({
-			particleCount: 20,
-			gravity: 0.75,
-			startVelocity: 15,
+			particleCount: 30,
+			gravity: 0.8,
+			startVelocity: 20,
 			decay: 0.94,
-			ticks: 100,
+			ticks: 150,
 			origin: {
 				x: (event.clientX) / (window.innerWidth || document.body.clientWidth),
 				y: (event.clientY) / (window.innerHeight || document.body.clientHeight)
@@ -13416,6 +13428,10 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		if(realaddedtodos.length > 0){
 			displayalert(`${realaddedtodos.length} task${realaddedtodos.length == 1 ? ' was' : 's were'} successfully scheduled.`)
 		}
+		
+		if(moveditem){
+			displayalert(`1 task was successfully moved.`)
+		}
 
 
 		//edit schedule UI
@@ -13478,11 +13494,11 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 			promises.push(myconfetti({
 				spread: 30,
-				particleCount: 20,
-				gravity: 0.75,
-				startVelocity: 15,
+				particleCount: 30,
+				gravity: 0.8,
+				startVelocity: 20,
 				decay: 0.94,
-				ticks: 100,
+				ticks: 150,
 				origin: {
 					x: (itemrect.x + itemrect.width / 2) / (window.innerWidth || document.body.clientWidth),
 					y: (itemrect.y + itemrect.height / 2) / (window.innerHeight || document.body.clientHeight)
@@ -13796,7 +13812,7 @@ function editschedulepopupcustom(event, id){
 	let scheduleeditorcustominputdate = getElement('scheduleeditorcustominputdate')
 
 	scheduleeditorcustominputdate.value = getDMDYText(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute))
-	scheduleeditorcustominputtime.value = getHMText(myminute)
+	scheduleeditorcustominputtime.value = getHMText(item.start.minute)
 }
 function closescheduleeditorpopupcustom(){
 	let scheduleeditorpopupcustom = getElement('scheduleeditorpopupcustom')
@@ -14710,11 +14726,11 @@ async function eventcompleted(event, id) {
 		})
 
 		await myconfetti({
-			particleCount: 20,
-			gravity: 0.75,
-			startVelocity: 15,
+			particleCount: 30,
+			gravity: 0.8,
+			startVelocity: 20,
 			decay: 0.94,
-			ticks: 100,
+			ticks: 150,
 			origin: {
 				x: (event.clientX) / (window.innerWidth || document.body.clientWidth),
 				y: (event.clientY) / (window.innerHeight || document.body.clientHeight)
