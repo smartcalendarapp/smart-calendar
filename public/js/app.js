@@ -2370,19 +2370,8 @@ class Calendar {
 						:
 						`${Calendar.Event.getFullStartEndText(item)}`}</div>
 
-						${!item.iseventsuggestion && item.type == 1 ? (item.autoschedulelocked ? 
-						`<div class="display-flex pointer padding-6px-12px border-round text-14px flex-row gap-6px text-white smartbuttonbackground align-center" onclick="synctoautoschedule('${item.id}')">Sync to auto-schedule</div>`
-						:
-						`<div class="display-flex flex-row gap-6px align-center">
-							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonorangesmall">
-							<g>
-							<path d="M93.2369 211.648L10 120.493" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-							<path d="M93.2369 211.648L246 44.3518" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-							</g>
-							</svg>
-							<div class="text-14px text-bold text-orange">Auto-scheduled</div>
-						</div>`)
-						: ``}
+						${!item.iseventsuggestion && item.type == 1 ?
+						`<div class="display-flex pointer padding-6px-12px border-round text-14px flex-row gap-6px text-white bluebutton align-center" onclick="clickeditschedulemytasks()">Reschedule</div>` : ``}
 					</div>`)
 
 					//type
