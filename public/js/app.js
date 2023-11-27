@@ -3951,7 +3951,7 @@ function updatetime() {
 	}
 
 	//show social media
-	if(calendar.todos.length > 0 && clientinfo.createddate && Date.now() - clientinfo.createddate > 1000*3600 && new Date().getMinutes() % 3 == 0){
+	if(calendar.todos.length > 0 && clientinfo.createddate && Date.now() - clientinfo.createddate > 1000*3600 && new Date().getMinutes() % 3 == 0 && Object.values(calendar.onboarding).every(d => d == true) && Object.values(calendar.interactivetour).every(d => d == true)){
 		showsocialmediapopup = true
 	}
 }
