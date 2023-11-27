@@ -2598,10 +2598,6 @@ class Calendar {
 	updateTodoList() {
 		let output = []
 
-		//show social media
-		if(clientinfo.betatester && calendar.todos.length > 0 && clientinfo.createddate && Date.now() - clientinfo.createddate > 1000*3600 && new Date().getMinutes() % 3 == 0){
-			showsocialmediapopup = true
-		}
 		if(calendar.closedsocialmediapopup == false && showsocialmediapopup){
 			output.push(`
 			<div class="relative display-flex gap-12px align-center socialmediagradient border-8px padding-24px flex-column">
@@ -3938,6 +3934,7 @@ function updatetime() {
 		lastupdatedate = currentdate.getDate()
 	}
 
+	//morning todo prompt
 	let createddate = new Date(clientinfo.createddate)
 	let lastprompttodotodaydate = new Date(calendar.lastprompttodotodaydate)
 	let sleependdate = new Date(currentdate)
@@ -3951,6 +3948,11 @@ function updatetime() {
 		}
 	}else{
 		closeprompttodotoday()
+	}
+
+	//show social media
+	if(calendar.todos.length > 0 && clientinfo.createddate && Date.now() - clientinfo.createddate > 1000*3600 && new Date().getMinutes() % 3 == 0){
+		showsocialmediapopup = true
 	}
 }
 
