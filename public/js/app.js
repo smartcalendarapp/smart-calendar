@@ -2371,30 +2371,9 @@ class Calendar {
 						`${Calendar.Event.getFullStartEndText(item)}`}</div>
 
 						${!item.iseventsuggestion && item.type == 1 ?
-						`<div class="display-flex pointer padding-6px-12px border-round text-14px flex-row gap-6px text-white bluebutton align-center" onclick="clickeditschedulemytasks()">Reschedule</div>` : ``}
+						`<div class="display-flex transition-duration-100 pointer padding-6px-12px border-round text-14px flex-row gap-6px text-white smartbuttonbackground align-center" onclick="clickeditschedulemytasks()">Reschedule</div>` : ``}
 					</div>`)
 
-					//type
-					if(!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item)){
-						output.push(`
-						<div class="infogroup">
-							<div class="inputgroup">
-								<div class="display-flex" id="eventinfoeventtype"></div>
-
-								<div class="tooltip popupbutton padding-6px bordertertiary border-round transition-duration-100 hover:background-tint-1 pointer pointer-auto">
-									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhitesmall">
-										<g>
-										<g opacity="1">
-										<path d="M121.533 186.571C130.867 186.571 135.134 180.171 135.134 171.637L135.134 163.103C135.401 145.501 141.668 138.167 163.003 123.5C185.938 108.032 200.473 90.1634 200.473 64.4279C200.473 24.4244 167.937 0.489134 127.4 0.489134C97.264 0.489134 70.8618 15.757 59.5275 41.4926C56.7272 47.7598 55.5271 53.8936 55.5271 58.9607C55.5271 66.5614 59.9275 71.8952 68.0615 71.8952C74.8621 71.8952 79.3958 67.8948 81.396 61.3609C88.1966 36.0254 104.998 28.4246 126.467 28.4246C152.469 28.4246 171.871 41.0925 171.871 64.2945C171.871 83.3628 161.003 93.0304 143.935 105.031C123 119.566 107.665 136.167 107.665 159.636L107.665 172.037C107.665 180.571 112.332 186.571 121.533 186.571ZM121.533 255.511C132.2 255.511 140.601 246.977 140.601 236.576C140.601 226.042 132.2 217.641 121.533 217.641C111.132 217.641 102.598 226.042 102.598 236.576C102.598 246.977 111.132 255.511 121.533 255.511Z" fill-rule="nonzero" opacity="1"></path>
-										</g>
-										</g>
-									</svg>	
-									<span class="tooltiptextcenter text-left">Event: a fixed-time commitment.<br>Task: auto-scheduled by our app<br>for the optimal time.</span>
-								</div>
-
-							</div>
-						</div>`)
-					}
 
 					//due and takes
 					if (item.type == 1) {
@@ -2480,16 +2459,6 @@ class Calendar {
 						}
 				}
 
-
-				if(!Calendar.Event.isReadOnly(item) && !Calendar.Event.isAllDay(item)){
-					//event type
-					let eventinfoeventtype = getElement('eventinfoeventtype')
-					eventinfoeventtype.innerHTML = `
-					<div class="display-flex flex-row background-tint-1 border-8px overflow-auto">
-						<div class="pointer text-center pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 0 ? `selectedbutton` : ``} transition-duration-100 width90px" onclick="eventtype(0)">Event</div>
-						<div class="pointer text-center pointer-auto border-8px hover:background-tint-2 text-14px text-primary padding-8px-12px   ${item.type == 1 ? `selectedbutton` : ``} transition-duration-100 width90px" onclick="eventtype(1)">Task</div>
-					</div>`
-				}
 
 
 				if (movingevent || iseditingschedule) {
@@ -13637,6 +13606,7 @@ function openscheduleeditorpopup(id){
 
 		</div>`)
 
+		/*
 		output.push(`
 		<div class="horizontalbar"></div>`)
 
@@ -13650,6 +13620,7 @@ function openscheduleeditorpopup(id){
 				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulepopuppostpone('${item.id}', 1440)">+1 day</div>
 			</div>
 		</div>`)
+		*/
 
 		output.push(`
 		<div class="horizontalbar"></div>`)
