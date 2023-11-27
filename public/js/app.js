@@ -13641,7 +13641,10 @@ function openscheduleeditorpopup(id){
 				Auto
 				</div>
 
+				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulemoveevent('${item.id}', ${ceil(Date.now(), 5*1000*60)})">Now</div>
+
 				${availabletimeoutput.join('')}
+				
 				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulepopupcustom(event, '${item.id}')">Custom</div>
 			</div>
 
