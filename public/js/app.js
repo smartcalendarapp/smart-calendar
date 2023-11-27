@@ -2641,7 +2641,7 @@ class Calendar {
 		let output = []
 
 		//show social media
-		if(clientinfo.betatester && calendar.todos.length > 0 && clientinfo.createddate && Date.now() - clientinfo.createddate > 1000*3600){
+		if(clientinfo.betatester && calendar.todos.length > 0 && clientinfo.createddate && Date.now() - clientinfo.createddate > 1000*3600 && new Date().getMinutes() % 3 == 0){
 			showsocialmediapopup = true
 		}
 		if(calendar.closedsocialmediapopup == false && showsocialmediapopup){
@@ -2673,7 +2673,7 @@ class Calendar {
 
 					<div class="display-flex flex-column gap-6px align-center">
 						<a href="https://www.facebook.com/profile.php?id=61553949300945" target="_blank" rel="noopener noreferrer" class="text-16px text-bold text-white text-decoration-none">Facebook</a>
-						<a href="https://www.facebook.com/profile.php?id=61553949300945" target="_blank" rel="noopener noreferrer" class=" text-decoration-none">
+						<a href="https://www.facebook.com/profile.php?id=61553949300945" target="_blank" rel="noopener noreferrer" class="hoverscale text-decoration-none">
 						<i class="text-24px fab fa-facebook" style="color:#ffffff;"></i>
 						</a>
 					</div>
@@ -13644,6 +13644,21 @@ function openscheduleeditorpopup(id){
 				${availabletimeoutput.join('')}
 				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulepopupcustom(event, '${item.id}')">Custom</div>
 			</div>
+
+		</div>`)
+
+		output.push(`
+		<div class="horizontalbar"></div>`)
+
+		output.push(`
+		<div class="flex-column display-flex gap-6px">
+			<div class="text-16px text-primary">Postpone:</div>
+
+			<div class="display-flex flex-row flex-wrap-wrap gap-12px">
+				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulepopuppostpone('${item.id}', 30)">+30 minutes</div>
+				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulepopuppostpone('${item.id}', 60)">+1 hour</div>
+				<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulepopuppostpone('${item.id}', 1440)">+1 day</div>
+			</div>
 		</div>`)
 
 		output.push(`
@@ -13762,6 +13777,21 @@ function editschedulemoveeventauto(id){
 	closescheduleeditorpopup()
 
 	startAutoSchedule({})
+}
+
+//postpone time
+function editschedulepopuppostpone(id, addedminutes){
+	let item = calendar.events.find(d => d.id == id)
+	if(!item) return
+
+	let newdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+	newdate.setMinutes(newdate.getMinutes() + addedminutes)
+
+	item.autoschedulelocked = true
+	
+	closescheduleeditorpopup()
+
+	startAutoSchedule({moveditemtimestamp: newdate.getTime(), moveditem: item})
 }
 
 //custom time
