@@ -12699,7 +12699,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				let spacing = getbreaktime(item2)
 
 				if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
-					return [item2, spacing]
+					return [item2, spacing, tempstartdate1.getTime() < tempenddate2.getTime() && tempenddate1.getTime() > tempstartdate2.getTime()]
 				}
 			}
 
@@ -12953,15 +12953,15 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 					}
 
 					let temp = getconflictingevent(tempiteratedevents, item)
-					let conflictitem, spacing;
-					if(temp) [conflictitem, spacing] = temp
+					let conflictitem, spacing, isoverlap;
+					if(temp) [conflictitem, spacing, isoverlap] = temp
 					if (conflictitem) {
 						if(item.autoschedulelocked){
-							if(!moveditem || moveditem.id != item.id){
+							if((!moveditem || moveditem.id != item.id) && isoverlap){
 								fixconflict(item, conflictitem, spacing)
-							}else if(conflictitem.type == 0){
+							}else if(conflictitem.type == 0 && isoverlap){
 								fixconflict(item, conflictitem, spacing)
-							}else if(moveditem && conflictitem.id == moveditem.id){
+							}else if(moveditem && conflictitem.id == moveditem.id && isoverlap){
 								fixconflict(item, conflictitem, spacing)
 							}else{
 								break
