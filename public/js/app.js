@@ -1398,6 +1398,7 @@ class Calendar {
 
 	updateTopBarInfoDate() {
 		let str = `${MONTHLIST[this.getDate().getMonth()]} ${this.getDate().getFullYear()}`
+		let shortstr = `${SHORTMONTHLIST[this.getDate().getMonth()]} ${this.getDate().getFullYear()}`
 		let topbarinfodate2 = getElement('topbarinfodate2')
 		topbarinfodate2.innerHTML = calendarmode != 2 ? `
 		<div class="transition-duration-100 border-8px flex-row gap-6px align-center padding-top-6px padding-bottom-6px pointer pointer-auto" onclick="setcalendarmode(2)">
@@ -1407,8 +1408,8 @@ class Calendar {
 			<path d="M186 246L70 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
 			</g>
 			</svg>
-			${str}
-		</div>` : str
+			${shortstr}
+		</div>` : shortstr
 		let topbarinfodate = getElement('topbarinfodate')
 		topbarinfodate.innerHTML = str
 	}
@@ -2371,7 +2372,15 @@ class Calendar {
 						`${Calendar.Event.getFullStartEndText(item)}`}</div>
 
 						${!item.iseventsuggestion && item.type == 1 ?
-						`<div class="display-flex transition-duration-100 pointer padding-6px-12px border-round text-14px flex-row gap-6px text-white smartbuttonbackground align-center" onclick="clickeditschedulemytasks()">Reschedule</div>` : ``}
+						`<div class="small:display-none absolute popuptransition z-index-100 top-0 left-0 margin-24px pointer-auto padding-6px-12px box-shadow pointer popupbutton transition-duration-100 width-fit smartbuttonbackground display-flex gap-6px flex-row align-center border-round" onclick="clickeditschedulemytasks(event)" >
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+							<g>
+							<path d="M178.389 21.6002L31.105 168.884M234.4 77.6109L87.1156 224.895M178.389 21.6002C193.856 6.13327 218.933 6.13327 234.4 21.6002C249.867 37.0671 249.867 62.1439 234.4 77.6109M10 245.998L31.105 168.884M10.0017 246L87.1156 224.895" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							</g>
+						</svg>
+							
+						<div class="text-14px text-white pointer-none nowrap transition-none">Reschedule</div>
+					</div>` : ``}
 					</div>`)
 
 
@@ -12520,12 +12529,9 @@ function getavailabletime(item, startrange, endrange, isschedulebuilder) {
 
 	
 	//exclude events
-	let filteredevents = []
-	if(!isschedulebuilder){
-		filteredevents = getevents(startrange, endrange).filter(d => d.id != item.id && d.type != 1 && !Calendar.Event.isAllDay(d)).sort((a, b) => {
-			return new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime() - new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime()
-		})
-	}
+	let filteredevents = getevents(startrange, endrange).filter(d => d.id != item.id && d.type != 1 && !Calendar.Event.isAllDay(d)).sort((a, b) => {
+		return new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime() - new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime()
+	})
 
 	let lastendtime = startrange.getTime()
 	for (let tempevent of filteredevents) {
@@ -13853,7 +13859,6 @@ function submitscheduleeditorcustom(id){
 		closescheduleeditorpopupcustom()
 	}
 }
-//here3
 
 
 //edit my schedule
