@@ -2372,7 +2372,7 @@ class Calendar {
 						`${Calendar.Event.getFullStartEndText(item)}`}</div>
 
 						${!item.iseventsuggestion && item.type == 1 ?
-						`<div class="small:display-none absolute popuptransition z-index-100 top-0 left-0 margin-24px pointer-auto padding-6px-12px box-shadow pointer popupbutton transition-duration-100 width-fit smartbuttonbackground display-flex gap-6px flex-row align-center border-round" onclick="clickeditschedulemytasks(event)" >
+						`<div class="small:display-none popuptransition z-index-100 pointer-auto padding-6px-12px box-shadow pointer popupbutton transition-duration-100 width-fit smartbuttonbackground display-flex gap-6px flex-row align-center border-round" onclick="clickeditschedulemytasks(event)" >
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 							<g>
 							<path d="M178.389 21.6002L31.105 168.884M234.4 77.6109L87.1156 224.895M178.389 21.6002C193.856 6.13327 218.933 6.13327 234.4 21.6002C249.867 37.0671 249.867 62.1439 234.4 77.6109M10 245.998L31.105 168.884M10.0017 246L87.1156 224.895" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -4252,7 +4252,7 @@ function run() {
 	//tick
 	setInterval(async function(){
 		if (document.visibilityState === 'visible') {
-			if (needtoautoschedule) {
+			if (needtoautoschedule && !movingevent) {
 				needtoautoschedule = false
 				startAutoSchedule({})
 			}
@@ -12695,6 +12695,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				return new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime() - new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime()
 			})
 
+			let tempoutput = []
 			
 			for (let item2 of sortdata) {
 				if (item1.id == item2.id || Calendar.Event.isAllDay(item2)) continue
@@ -12707,10 +12708,13 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				let spacing = getbreaktime(item2)
 
 				if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
-					return [item2, spacing, tempstartdate1.getTime() < tempenddate2.getTime() && tempenddate1.getTime() > tempstartdate2.getTime()]
+					tempoutput.push([item2, spacing, tempstartdate1.getTime() < tempenddate2.getTime() && tempenddate1.getTime() > tempstartdate2.getTime()])
 				}
 			}
 
+			if(tempoutput.length > 0){
+				return tempoutput.sort((a, b) => (b[0].type == 1) - (a[0].type == 1))[0]
+			}
 			return null
 		}
 
@@ -12949,7 +12953,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			for (let item of smartevents) {
 				donesmartevents.push(item)
 
-				let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !smartevents.find(g => g.id == d.id))
+				let tempiteratedevents = iteratedevents.filter(d => donesmartevents.find(f => f.id == d.id) || !smartevents.find(g => g.id == d.id) || (moveditem && moveditem.id == d.id))
 
 
 				//fix conflict
@@ -13664,7 +13668,7 @@ function openscheduleeditorpopup(id){
 			<div class="text-16px text-primary">This is a fixed-time event.</div>
 			
 			<div class="align-self-flex-end width-fit text-14px display-flex flex-row align-center gap-6px padding-8px-12px infotopright bluebutton text-primary pointer-auto transition-duration-100 border-round pointer popupbutton" onclick="closescheduleeditorpopup();eventtype(1)">
-				<div class="pointer-none nowrap text-primary text-14px">Convert to task</div>
+				<div class="pointer-none nowrap text-white text-14px">Convert to task</div>
 			</div>
 		</div>`)
 
