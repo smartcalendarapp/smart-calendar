@@ -76,5 +76,5 @@ html, body{
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s !important
 }
 .hoverscale:hover{
-	transform:scale(1.2)
+	transform:scale(1.05)
 }
