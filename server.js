@@ -1724,6 +1724,7 @@ app.get('/:page', (req, res, next) => {
 	const blogfilepath = path.join(__dirname, 'public', 'blog', 'html', `${page}`)
 	const htmlblogfilepath = path.join(__dirname, 'public', 'blog', 'html', `${page}.html`)
 	
+	console.warn(page)
 	if (fs.existsSync(htmlfilepath)) {
 		res.sendFile(htmlfilepath)
 	}else if(fs.existsSync(filepath)){
