@@ -63,3 +63,11 @@ html, body{
 	background-color:var(--background-primary-home-transparent);
 	border-bottom:1px solid var(--text-tertiary);
 }
+
+
+.blogcard{
+    max-width:300px;
+	max-height:400px;
+	overflow:hidden;
+	text-overflow: ellipsis;
+}
