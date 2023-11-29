@@ -1052,9 +1052,9 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'public', 'css')))
 app.use(express.static(path.join(__dirname, 'public', 'js')))
 app.use(express.static(path.join(__dirname, 'public', 'images')))
-app.use('/blog', express.static(path.join(__dirname, 'public', 'blog')))
-app.use('/blog', express.static(path.join(__dirname, 'public', 'blog', 'css')))
-app.use('/blog', express.static(path.join(__dirname, 'public', 'blog', 'js')))
+app.use(express.static(path.join(__dirname, 'public', 'blog')))
+app.use(express.static(path.join(__dirname, 'public', 'blog', 'css')))
+app.use(express.static(path.join(__dirname, 'public', 'blog', 'js')))
 
 app.use((req, res, next) => {
   if (req.path.endsWith('.html')) {
@@ -1716,23 +1716,32 @@ app.get('/login', async (req, res, next) => {
 	}
 })
 
+app.get('/blog/:page', (req, res, next) => {
+	let page = req.params.page
+	
+	  const filepath = path.join(__dirname, 'public', 'blog', page)
+	  const htmlfilepath = path.join(__dirname, 'public', 'blog', 'html', `${page}.html`)
+	  
+	  if (fs.existsSync(htmlfilepath)) {
+		  res.sendFile(htmlfilepath)
+	  }else if(fs.existsSync(filepath)){
+		  res.sendFile(filepath)
+	  }else{
+		  next()
+	  }
+  })
+  
+
 app.get('/:page', (req, res, next) => {
   let page = req.params.page
   
 	const filepath = path.join(__dirname, 'public', page)
 	const htmlfilepath = path.join(__dirname, 'public', 'html', `${page}.html`)
-	const blogfilepath = path.join(__dirname, 'public', 'blog', 'html', `${page}`)
-	const htmlblogfilepath = path.join(__dirname, 'public', 'blog', 'html', `${page}.html`)
 	
-	console.warn(page)
 	if (fs.existsSync(htmlfilepath)) {
 		res.sendFile(htmlfilepath)
 	}else if(fs.existsSync(filepath)){
 		res.sendFile(filepath)
-	}else if (fs.existsSync(blogfilepath)) {
-		res.sendFile(blogfilepath)
-	}else if(fs.existsSync(htmlblogfilepath)){
-		res.sendFile(htmlblogfilepath)
 	}else{
 		next()
 	}
