@@ -2372,7 +2372,7 @@ class Calendar {
 						`${Calendar.Event.getFullStartEndText(item)}`}</div>
 
 						${!item.iseventsuggestion && item.type == 1 ?
-						`<div class="small:display-none popuptransition z-index-100 pointer-auto padding-6px-12px box-shadow pointer popupbutton transition-duration-100 width-fit smartbuttonbackground display-flex gap-6px flex-row align-center border-round" onclick="clickeditschedulemytasks(event)" >
+						`<div class="popuptransition pointer-auto padding-6px-12px pointer popupbutton transition-duration-100 width-fit smartbuttonbackground display-flex gap-6px flex-row align-center border-round" onclick="clickeditschedulemytasks(event)" >
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 							<g>
 							<path d="M178.389 21.6002L31.105 168.884M234.4 77.6109L87.1156 224.895M178.389 21.6002C193.856 6.13327 218.933 6.13327 234.4 21.6002C249.867 37.0671 249.867 62.1439 234.4 77.6109M10 245.998L31.105 168.884M10.0017 246L87.1156 224.895" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -12093,6 +12093,8 @@ function eventtype(type) {
 	if (!item) return
 	if (item.type == type) return
 
+	if(Calendar.Event.isReadOnly(item)) return
+
 	item.type = type
 	if (item.type == 1) {
 		let endbeforedate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
@@ -13667,9 +13669,9 @@ function openscheduleeditorpopup(id){
 		<div class="flex-column display-flex gap-12px">
 			<div class="text-16px text-primary">This is a fixed-time event.</div>
 			
-			<div class="align-self-flex-end width-fit text-14px display-flex flex-row align-center gap-6px padding-8px-12px infotopright bluebutton text-primary pointer-auto transition-duration-100 border-round pointer popupbutton" onclick="closescheduleeditorpopup();eventtype(1)">
-				<div class="pointer-none nowrap text-white text-14px">Convert to task</div>
-			</div>
+			${!Calendar.Event.isReadOnly(item) ? `<div class="align-self-flex-end width-fit text-14px display-flex flex-row align-center gap-6px padding-8px-12px infotopright bluebutton text-primary pointer-auto transition-duration-100 border-round pointer popupbutton" onclick="closescheduleeditorpopup();eventtype(1)">
+			<div class="pointer-none nowrap text-white text-14px">Convert to task</div>
+			</div>` : ''}
 		</div>`)
 
 		let scheduleeditorpopupcontent = getElement('scheduleeditorpopupcontent')
