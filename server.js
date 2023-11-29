@@ -1052,9 +1052,6 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.static(path.join(__dirname, 'public', 'css')))
 app.use(express.static(path.join(__dirname, 'public', 'js')))
 app.use(express.static(path.join(__dirname, 'public', 'images')))
-app.use('/blog', express.static(path.join(__dirname, 'public', 'blog')))
-app.use('/blog', express.static(path.join(__dirname, 'public', 'blog', 'css')))
-app.use('/blog', express.static(path.join(__dirname, 'public', 'blog', 'js')))
 
 
 app.use((req, res, next) => {
@@ -1066,6 +1063,10 @@ app.use((req, res, next) => {
   }
 })
 
+
+app.use('/blog', express.static(path.join(__dirname, 'public', 'blog', 'html')))
+app.use('/blog', express.static(path.join(__dirname, 'public', 'blog', 'css')))
+app.use('/blog', express.static(path.join(__dirname, 'public', 'blog', 'js')))
 
 //GOOGLE ROUTES
 

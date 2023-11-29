@@ -12,7 +12,7 @@ div{
 }
 
 body{
-	background-color: var(--background-primary);
+	background-color: var(--background-primary-home);
 	margin:0;
 }
 
@@ -130,7 +130,7 @@ html, body{
 	display:flex;
 	overflow:hidden;
 	border-radius:8px;
-	background-color:var(--background-tint-1);
+	background-color:var(--background-tint-2);
 }
 
 .formtext{
@@ -210,5 +210,5 @@ html, body{
 	border-radius:8px;
 }
 .infoinput:hover{
-	background-color:var(--background-tint-1);
+	background-color:var(--background-tint-2);
 }

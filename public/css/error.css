@@ -12,7 +12,7 @@ div{
 }
 
 body{
-	background-color: var(--background-primary);
+	background-color: var(--background-primary-home);
 	margin:0;
 }
 
