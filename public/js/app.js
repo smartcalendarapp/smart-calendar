@@ -4807,6 +4807,12 @@ function updateonboardingscreen(){
 
 			onboardingaddtasktodolist = []
 		}
+		let onboardingaddtasksubmit = getElement('onboardingaddtasksubmit')
+		if(onboardingaddtasktodolist.length == 0){
+			onboardingaddtasksubmit.classList.add('greyedoutevent')
+		}else{
+			onboardingaddtasksubmit.classList.remove('greyedoutevent')
+		}
 	}else{
 		isonboardingaddtask = false
 	}
@@ -4882,6 +4888,10 @@ function updateonboardingscreen(){
 
 
 function continueonboarding(key){
+	if(key == 'addtask'){
+		if(onboardingaddtasktodolist.length == 0) return
+	}
+	
 	if(calendar.onboarding[key] != null) calendar.onboarding[key] = true
 	updateonboardingscreen()
 }
