@@ -2359,12 +2359,12 @@ class Calendar {
 					<div class="display-flex flex-row align-center gap-12px">
 						<div class="infotext selecttext nowrap">${calendar.settings.gettasksuggestions == true && item.iseventsuggestion ?
 						`<span class="align-center pointer-auto display-inline-flex flex-row column-gap-6px">
-							<span class="tooltip transition-duration-100 text-12px suggestionborder hover:background-tint-1 pointer-auto gap-6px text-purple todoeventsuggestiondate pointer transition-duration-100 padding-6px-12px border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">Pending time</span>
-							<span class="tooltiptextcenter">Click to accept time</span>
+							<span class="tooltip transition-duration-100 text-12px suggestionborder hover:background-tint-1 pointer-auto gap-6px text-purple  pointer transition-duration-100 padding-6px-12px border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">Pending time: <span class="text-bold">${Calendar.Event.getStartText(item)}</span>
+								<span class="tooltiptextcenter">Click to accept time</span>
 							</span>
 							<div class="align-center display-flex flex-row gap-6px">
-								<div class="text-white transition-duration-100 nowrap pointer width-fit background-green hover:background-green-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
-								<div class="text-white transition-duration-100 nowrap pointer width-fit background-red hover:background-red-hover border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
+								<div class="text-white transition-duration-100 nowrap pointer width-fit background-green hover:background-green-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
+								<div class="text-white transition-duration-100 nowrap pointer width-fit background-red hover:background-red-hover border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
 								<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="turnoffaisuggestions()">Turn off</div>
 							</div>
 						</span>`
@@ -8520,23 +8520,6 @@ function updatecreatetodo() {
 	createtodorepeatprompttodotoday.innerHTML = temprepeatvalue
 	createtodorepeatonboarding.innerHTML = temprepeatvalue
 
-	//add button # of tasks
-	let finalstring = todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
-	finalstring = finalstring.split('\n').filter(d => d != '')
-	let length = Math.max(finalstring.length, 1)
-
-	let string = `Add ${length == 1 ? `` : `<span class="text-black whitebackgroundbutton text-14px border-round circlehighlight">${length}</span>`}`
-
-	let submitcreatetodoaddnumber = getElement('submitcreatetodoaddnumber')
-	submitcreatetodoaddnumber.innerHTML = string
-
-	let submitcreatetodoaddnumberonboarding = getElement('submitcreatetodoaddnumberonboarding')
-	submitcreatetodoaddnumberonboarding.innerHTML = string
-
-	let submitcreatetodoaddnumberprompttodotoday = getElement('submitcreatetodoaddnumberprompttodotoday')
-	submitcreatetodoaddnumberprompttodotoday.innerHTML = string
-
-
 	//create todo tab
 	let createtodoprojectwrap = getElement('createtodoprojectwrap')
 	let clickaddsubtaskbutton = getElement('clickaddsubtaskbutton')
@@ -9598,7 +9581,7 @@ function submitdictation(){
 
 
 
-function typeaddtask(event, submit, index) {
+function typeaddtask(event, submit) {
 	let todoinputtitle = getElement('todoinputtitle')
 	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
 	let todoinputtitleprompttodotoday = getElement('todoinputtitleprompttodotoday')
@@ -9610,8 +9593,6 @@ function typeaddtask(event, submit, index) {
 	}else{
 		clickcreatetodoaisuggestionsubtaskswrap.classList.remove('display-none')
 	}
-
-	finalstring = finalstring.split('\n').filter(d => d != '')[index || 0] || ''
 
 
 	let currentdate = new Date()
@@ -9728,109 +9709,96 @@ function submitcreatetodo(event) {
 	let addtodooptionspopup = getElement('addtodooptionspopup')
 	addtodooptionspopup.classList.add('hiddenpopup')
 
-	let todoinputtitle = getElement('todoinputtitle')
-	let todoinputtitleonboarding = getElement('todoinputtitleonboarding')
-	let todoinputtitleprompttodotoday = getElement('todoinputtitleprompttodotoday')
-	let finalstring = todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
-	finalstring = finalstring.split('\n').filter(d => d != '')
 
-	let length = Math.max(finalstring.length, 1)
+	let title = typeaddtask(event, true)
+
+	let todoinputnotes = getElement('todoinputnotes')
+	let todoinputnotesonboarding = getElement('todoinputnotesonboarding')
+	let todoinputnotesprompttodotoday = getElement('todoinputnotesprompttodotoday')
+
+	let duedate = new Date(createtododuedatevalue.year, createtododuedatevalue.month, createtododuedatevalue.day, 0, createtododuedatevalue.minute)
+
+	let myduration = createtododurationvalue
+
+	let notes = todoinputnotes.value || todoinputnotesonboarding.value || todoinputnotesprompttodotoday.value
+
 	
-	for(let i = 0; i < length; i++){
-		let title = typeaddtask(event, true, i)
+	//CREATE ITEM
+	let item = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), myduration, title, notes)
+	if (createtododuedatevalue.year == null || createtododuedatevalue.month == null || createtododuedatevalue.day == null || createtododuedatevalue.minute == null) {
+		item.endbefore.year = null
+		item.endbefore.month = null
+		item.endbefore.day = null
+		item.endbefore.minute = null
+	}
+	item.priority = createtodopriorityvalue
 
-		let todoinputnotes = getElement('todoinputnotes')
-		let todoinputnotesonboarding = getElement('todoinputnotesonboarding')
-		let todoinputnotesprompttodotoday = getElement('todoinputnotesprompttodotoday')
-
-		let duedate = new Date(createtododuedatevalue.year, createtododuedatevalue.month, createtododuedatevalue.day, 0, createtododuedatevalue.minute)
-
-		let myduration = createtododurationvalue
-
-		let notes = todoinputnotes.value || todoinputnotesonboarding.value || todoinputnotesprompttodotoday.value
-
-		
-		//CREATE ITEM
-		let item = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), myduration, title, notes)
-		if (createtododuedatevalue.year == null || createtododuedatevalue.month == null || createtododuedatevalue.day == null || createtododuedatevalue.minute == null) {
-			item.endbefore.year = null
-			item.endbefore.month = null
-			item.endbefore.day = null
-			item.endbefore.minute = null
-		}
-		item.priority = createtodopriorityvalue
-
-		//time slot
-		if(createtodoavailabilityvalue != null){
-			let timeslotitem = TIMEWINDOW_PRESETS[createtodoavailabilityvalue]
-			if(timeslotitem){
-				item.timewindow.day = timeslotitem.day
-				item.timewindow.time.startminute = timeslotitem.time.startminute
-				item.timewindow.time.endminute = timeslotitem.time.endminute
-			}
-		}
-
-		//repeat
-		if(createtodorepeatvalue.interval != null && createtodorepeatvalue.frequency != null){
-			item.repeat.frequency = createtodorepeatvalue.frequency
-			item.repeat.interval = createtodorepeatvalue.interval
-			item.repeat.byday = deepCopy(createtodorepeatvalue.byday)
-			item.repeat.until = createtodorepeatvalue.until
-			item.repeat.count = createtodorepeatvalue.count
-			fixrepeat(item)
-		}
-
-		
-		calendar.todos.push(item)
-	
-
-		if(createtodorepeatvalue.interval == null && createtodorepeatvalue.frequency == null){
-			//sub tasks
-			if(createtodosubtasks.length > 0){
-				for(let subtaskitem of createtodosubtasks){
-					let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), subtaskitem.duration, `${subtaskitem.title}`)
-
-					childitem.parentid = item.id
-
-					childitem.timewindow.day = item.timewindow.day
-					childitem.timewindow.time.startminute = item.timewindow.time.startminute
-					childitem.timewindow.time.endminute = item.timewindow.time.endminute
-
-					calendar.todos.push(childitem)
-				}
-
-				if(createtodogotaisuggestionsubtasks){
-					item.gotsubtasksuggestions = true
-				}
-			}
-		}
-
-
-		//fix sub task
-		fixsubandparenttask(item)
-
-
-		if(isprompttodotoday){
-			prompttodotodayadded.push(item.id)
-		}
-		if(isonboardingaddtask){
-			onboardingaddtasktodolist.push(item.id)
-		}
-
-		if(calendar.settings.geteventsuggestions){
-			if(Calendar.Todo.getSubtasks(item).length > 0){
-				startAutoSchedule({eventsuggestiontodos: [Calendar.Todo.getSubtasks(item)]})
-			}else{
-				startAutoSchedule({eventsuggestiontodos: [item]})
-			}
-		}
-
-		if(i == length - 1){
-			setTimeout(function(){
-				scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
-			}, 300)
+	//time slot
+	if(createtodoavailabilityvalue != null){
+		let timeslotitem = TIMEWINDOW_PRESETS[createtodoavailabilityvalue]
+		if(timeslotitem){
+			item.timewindow.day = timeslotitem.day
+			item.timewindow.time.startminute = timeslotitem.time.startminute
+			item.timewindow.time.endminute = timeslotitem.time.endminute
 		}
 	}
+
+	//repeat
+	if(createtodorepeatvalue.interval != null && createtodorepeatvalue.frequency != null){
+		item.repeat.frequency = createtodorepeatvalue.frequency
+		item.repeat.interval = createtodorepeatvalue.interval
+		item.repeat.byday = deepCopy(createtodorepeatvalue.byday)
+		item.repeat.until = createtodorepeatvalue.until
+		item.repeat.count = createtodorepeatvalue.count
+		fixrepeat(item)
+	}
+
+	
+	calendar.todos.push(item)
+
+
+	if(createtodorepeatvalue.interval == null && createtodorepeatvalue.frequency == null){
+		//sub tasks
+		if(createtodosubtasks.length > 0){
+			for(let subtaskitem of createtodosubtasks){
+				let childitem = new Calendar.Todo(duedate.getFullYear(), duedate.getMonth(), duedate.getDate(), duedate.getHours() * 60 + duedate.getMinutes(), subtaskitem.duration, `${subtaskitem.title}`)
+
+				childitem.parentid = item.id
+
+				childitem.timewindow.day = item.timewindow.day
+				childitem.timewindow.time.startminute = item.timewindow.time.startminute
+				childitem.timewindow.time.endminute = item.timewindow.time.endminute
+
+				calendar.todos.push(childitem)
+			}
+
+			if(createtodogotaisuggestionsubtasks){
+				item.gotsubtasksuggestions = true
+			}
+		}
+	}
+
+
+	//fix sub task
+	fixsubandparenttask(item)
+
+
+	if(isprompttodotoday){
+		prompttodotodayadded.push(item.id)
+	}
+	if(isonboardingaddtask){
+		onboardingaddtasktodolist.push(item.id)
+	}
+
+
+	if(calendar.settings.geteventsuggestions){
+		if(Calendar.Todo.getSubtasks(item).length > 0){
+			startAutoSchedule({eventsuggestiontodos: [Calendar.Todo.getSubtasks(item)]})
+		}else{
+			startAutoSchedule({eventsuggestiontodos: [item]})
+		}
+	}
+
 
 	calendar.updateTodo()
 	calendar.updateHistory()
@@ -9838,6 +9806,10 @@ function submitcreatetodo(event) {
 	resetcreatetodo()
 
 	resizeaddtask()
+
+	setTimeout(function(){
+		scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
+	}, 300)
 }
 
 
@@ -9920,12 +9892,12 @@ function gettododata(item) {
 		eventsuggestionoutput = `
 		<span class="margin-left-6px"></span>
 		<span class="flex-wrap-wrap align-center pointer-auto display-inline-flex flex-row gap-6px">
-			<span class="pointer-auto tooltip hover:background-tint-1 text-12px suggestionborder gap-6px text-purple todoeventsuggestiondate padding-6px-12px pointer border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="accepteventsuggestion(event, '${item.id}')">Pending time: <span class="text-bold">${Calendar.Event.getStartText(item)}</span>
+			<span class="pointer-auto tooltip hover:background-tint-1 text-12px suggestionborder gap-6px text-purple  padding-6px-12px pointer border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="accepteventsuggestion(event, '${item.id}')">Pending time: <span class="text-bold">${Calendar.Event.getStartText(item)}</span>
 			<span class="tooltiptextcenter">Click to accept time</span>
 			</span>
-			<div class="display-flex flex-row gap-6px small:visibility-visible visibility-hidden todoeventsuggestiongroup">
-				<div class="text-white transition-duration-100 nowrap pointer width-fit background-green hover:background-green-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
-				<div class="text-white transition-duration-100 nowrap pointer width-fit background-red hover:background-red-hover border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
+			<div class="display-flex flex-row gap-6px">
+				<div class="text-white transition-duration-100 nowrap pointer width-fit background-green hover:background-green-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
+				<div class="text-white transition-duration-100 nowrap pointer width-fit background-red hover:background-red-hover border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
 			</div>
 		</span>`
 	}
@@ -11077,6 +11049,12 @@ async function todocompleted(event, id) {
 	}
 	*/
 
+	if(item.completed){
+		if(Calendar.Event.isEvent(item)){
+			unscheduleevent(item)
+		}
+	}
+
 
 	fixrecurringtodo(item)
 	
@@ -11134,9 +11112,9 @@ function unscheduleevent(id){
 	calendar.updateHistory()
 	
 	setTimeout(function(){
-		scrolltodoY(getElement(`todo-${todoitem.id}`).getBoundingClientRect().top)
+		scrolltodoY(getElement(`todo-${todoitem.id}`).offsetTop)
 	}, 300)
-}
+}//here2
 
 
 //start task now - adds task to calendar at current time, becomes fixed event
@@ -11906,9 +11884,9 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 	<span class="margin-left-6px"></span>
 	<span class="flex-wrap-wrap align-center pointer-auto 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-auto gap-6px text-white background-purple todoeventsuggestiondate hover:background-purple-hover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: <span class="text-bold">${Calendar.Event.getShortStartEndText(item)}</span></span>
-		<div class="transition-duration-100 text-white background-green hover:background-green-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
-		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
+		<span class="transition-duration-100 text-12px pointer-auto gap-6px text-white background-purple  hover:background-purple-hover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: <span class="text-bold">${Calendar.Event.getShortStartEndText(item)}</span></span>
+		<div class="transition-duration-100 text-white background-blue hover:background-blue-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
+		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
 	</span>` : ''
 	*/
 
@@ -11916,9 +11894,9 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 	<span class="margin-left-6px"></span>
 	<span class="flex-wrap-wrap align-center pointer-auto 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-auto gap-6px text-white background-purple todoeventsuggestiondate hover:background-purple-hover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">Pending</span>
-		<div class="transition-duration-100 text-white background-green hover:background-green-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
-		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
+		<span class="transition-duration-100 text-12px pointer-auto text-purple text-bold  pointer transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
+		<div class="transition-duration-100 text-white background-blue hover:background-blue-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
+		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
 	</span>` : ''
 
 
@@ -12055,9 +12033,9 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	<span class="margin-left-6px"></span>
 	<span class="flex-wrap-wrap align-center pointer-auto 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-auto gap-6px text-white background-purple todoeventsuggestiondate hover:background-purple-hover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: <span class="text-bold">${Calendar.Event.getShortStartEndText(item)}</span></span>
-		<div class="transition-duration-100 text-white background-green hover:background-green-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
-		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
+		<span class="transition-duration-100 text-12px pointer-auto gap-6px text-white background-purple  hover:background-purple-hover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">AI suggestion: <span class="text-bold">${Calendar.Event.getShortStartEndText(item)}</span></span>
+		<div class="transition-duration-100 text-white background-blue hover:background-blue-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
+		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
 	</span>` : ''
 	*/
 
@@ -12065,9 +12043,9 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	<span class="margin-left-6px"></span>
 	<span class="flex-wrap-wrap align-center pointer-auto 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-auto gap-6px text-white background-purple todoeventsuggestiondate hover:background-purple-hover pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">Pending</span>
-		<div class="transition-duration-100 text-white background-green hover:background-green-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Accept</div>
-		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">Reject</div>
+		<span class="transition-duration-100 text-12px pointer-auto text-purple text-bold pointer transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
+		<div class="transition-duration-100 text-white background-blue hover:background-blue-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
+		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
 	</span>` : ''
 
 	let output = ''
@@ -12833,10 +12811,6 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 
 		//initialize
-		if((eventsuggestiontodos || []).length > 0){
-			smartevents = [...eventsuggestiontodos]
-		}
-
 		let iteratedevents = getiteratedevents()
 		let oldsmartevents = deepCopy(smartevents)
 		let oldcalendarevents = deepCopy(calendar.events)
