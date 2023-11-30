@@ -2175,7 +2175,7 @@ body {
 	color: var(--text-primary);
 	font-size: 14px;
 	padding: 8px;
-	border-radius: 100px;
+	border-radius: 8px;
 	cursor: pointer;
 	height: fit-content;
 	display: flex;
@@ -2201,7 +2201,7 @@ body {
 	padding-right: 12px;
 	padding-top: 6px;
 	padding-bottom: 6px;
-	border-radius: 100px;
+	border-radius: 8px;
 	cursor: pointer;
 	white-space: nowrap;
 	height: fit-content;
@@ -2520,7 +2520,7 @@ body {
 	color: var(--text-primary);
 	font-size: 14px;
 	padding: 8px;
-	border-radius: 100px;
+	border-radius: 8px;
 }
 
 .infotopright:hover {
@@ -3581,6 +3581,10 @@ body {
 	border-style:solid;
 }
 
+.eventborderdashed{
+	border-width:1.5px;
+	border-style:dashed;
+}
 
 .eventwrap {
 	position:absolute;

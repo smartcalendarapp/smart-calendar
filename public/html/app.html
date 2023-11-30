@@ -785,8 +785,8 @@
 
 		<div class="infogroup">
 			<div class="display-flex flex-row gap-12px justify-flex-end">
-				<div class="border-round background-tint-1 hover:background-tint-2 padding-8px-12px text-primary text-14px transition-duration-100 pointer" onclick="cancelcustomrepeat()">Cancel</div>
-				<div class="border-round background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="submitcustomrepeat()">Submit</div>
+				<div class="border-8px background-tint-1 hover:background-tint-2 padding-8px-12px text-primary text-14px transition-duration-100 pointer" onclick="cancelcustomrepeat()">Cancel</div>
+				<div class="border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="submitcustomrepeat()">Submit</div>
 			</div>
 
 		</div>
@@ -1017,9 +1017,6 @@
 						</textarea>
 						<span class="inputline"></span>
 					</div>
-					<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodo()">					
-						<div class="text-16px text-white display-flex flex-row gap-6px pointer-none nowrap transition-none"  id="submitcreatetodoaddnumberprompttodotoday">Add</div>
-					</div>
 
 					<!-- popup -->
 					<div class="width-full popuptransition overflow-hidden background-primary box-shadow addtodosuggestions z-index-1 border-8px display-flex popup flex-column hiddenpopup" id="addtodooptionspopupprompttodotoday">
@@ -1046,6 +1043,10 @@
 						<div class="inputgroup border-8px">
 							<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotesprompttodotoday" maxlength="2000"></textarea>
 							<span class="inputline"></span>
+						</div>
+
+						<div class="align-self-flex-end margin-12px padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-round height-fit" onclick="submitcreatetodo()">					
+							<div class="text-16px text-white display-flex flex-row gap-6px pointer-none nowrap transition-none"  id="submitcreatetodoaddnumberprompttodotoday">Create</div>
 						</div>
 					</div>
 				</div>
@@ -1323,9 +1324,6 @@
 								</textarea>
 								<span class="inputline"></span>
 							</div>
-							<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px height-fit" onclick="submitcreatetodo()">					
-								<div class="text-16px text-white display-flex flex-row gap-6px pointer-none nowrap transition-none"  id="submitcreatetodoaddnumberonboarding">Add</div>
-							</div>
 
 							<!-- popup -->
 							<div class="width-full popuptransition overflow-hidden background-primary box-shadow addtodosuggestions z-index-1 border-8px display-flex popup flex-column hiddenpopup" id="addtodooptionspopuponboarding">
@@ -1352,6 +1350,10 @@
 								<div class="inputgroup border-8px">
 									<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotesonboarding" maxlength="2000"></textarea>
 									<span class="inputline"></span>
+								</div>
+
+								<div class="margin-12px align-self-flex-end padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-round height-fit" onclick="submitcreatetodo()">					
+									<div class="text-16px text-white display-flex flex-row gap-6px pointer-none nowrap transition-none"  id="submitcreatetodoaddnumberonboarding">Create</div>
 								</div>
 							</div>
 						</div>
@@ -2009,10 +2011,7 @@
 
 
 							</div>
-							
-							<div class="padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-round height-fit" onclick="submitcreatetodo()">					
-								<div class="text-16px text-white display-flex flex-row gap-6px  pointer-none nowrap transition-none" id="submitcreatetodoaddnumber">Add</div>
-							</div>
+						
 
 							<!-- dictation popup -->
 							<div class="border-box width-full popuptransition overflow-hidden background-primary box-shadow padding-12px gap-24px addtodosuggestions z-index-100 border-8px display-flex flex-column hiddenpopup" id="addtododictationpopup">
@@ -2121,7 +2120,7 @@
 												<span class="inputline"></span>
 											</div>
 
-											<div class="relative overflow-hidden pointer-none width-fit display-flex flex-row align-center border-round height-fit">					
+											<div class="relative overflow-hidden pointer-none width-fit display-flex flex-row align-center border-8px height-fit">					
 												<div class="height-full transition-duration-100 padding-8px-12px bluebutton text-14px text-white display-flex  flex-row gap-6px pointer-auto pointer nowrap transition-none" onclick="submitcreatetodosubtask()">Add</div>
 
 												<div class="height-full pointer pointer-auto popupbutton padding-left-6px padding-right-6px padding-top-8px padding-bottom-8px transition-duration-100 bluebutton display-none" onclick="togglecreatetodosubtaskpopup(event)">
@@ -2161,11 +2160,15 @@
 								<div class="horizontalbar"></div>
 
 								<div class="inputgroup border-8px">
-									<div class="absolute popupbutton bottom-0 right-0 margin-right-12px text-secondary padding-12px text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">Feedback</div>
-
 									<textarea class="infonotes infoinput text-14px padding-12px transparentinput" placeholder="Add notes" autocomplete="off" id="todoinputnotes" maxlength="2000"></textarea>
 									<span class="inputline"></span>
 								</div>
+
+								<div class="margin-12px align-self-flex-end padding-8px-12px pointer transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-round height-fit" onclick="submitcreatetodo()">					
+									<div class="text-16px text-white display-flex flex-row gap-6px  pointer-none nowrap transition-none" id="submitcreatetodoaddnumber">Create</div>
+								</div>
+
+								<div class="popupbutton absolute left-0 bottom-0 margin-right-12px text-secondary padding-12px text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">Feedback</div>
 
 							</div>
 						</div>
@@ -2239,7 +2242,7 @@
 									</div>
 
 									<div class="display-none small:display-flex">
-										<div class="padding-8px-12px z-index-100 pointer popupbutton transition-duration-100 width-fit box-shadow align-self-center bluebutton gap-6px flex-row align-center border-round display-flex" onclick="opencreateevent(event)">
+										<div class="padding-8px-12px z-index-100 pointer popupbutton transition-duration-100 width-fit box-shadow align-self-center bluebutton gap-6px flex-row align-center border-8px display-flex" onclick="opencreateevent(event)">
 											<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 											<g>
 											<g opacity="1">
@@ -2281,7 +2284,7 @@
 
 								<!-- middle -->
 								<div class="display-flex flex-row align-center justify-center flex-1 small:display-none">
-									<div class="padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-round" onclick="opencreateevent(event)">
+									<div class="padding-8px-12px box-shadow pointer popupbutton transition-duration-100 width-fit bluebutton display-flex gap-6px flex-row align-center border-8px" onclick="opencreateevent(event)">
 										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 										<g>
 										<g opacity="1">
@@ -2661,13 +2664,13 @@
 
 										<div class="infogroup">
 											<div class="display-flex justify-space-between flex-row gap-12px align-center">
-												<div class="infotext text-16px text-bold">AI Event Suggestions</div>
+												<div class="infotext text-16px text-bold">Auto-schedule Tasks</div>
 												<label class="switch">
 													<input type="checkbox" oninput="toggleeventsuggestions(event)" id="eventsuggestionscheckbox">
 													<span class="slider"></span>
 												</label>
 											</div>
-											<div class="text-14px text-quaternary">Get suggestions for good times to work on your tasks in your calendar schedule with our AI productivity algorithm.</div>
+											<div class="text-14px text-quaternary">Automatically schedule tasks in your calendar when you create them.</div>
 										</div>
 									</div>
 						
