@@ -946,7 +946,7 @@ class Calendar {
 		}
 
 		static isEvent(item){
-			return calendar.events.find(d => d.id == item.id)
+			return !!calendar.events.find(d => d.id == item.id)
 		}
 
 		static getCalendar(item) {
@@ -1126,7 +1126,7 @@ class Calendar {
 		}
 
 		static isTodo(item){
-			return calendar.todos.find(d => d.id == item.id)
+			return !!calendar.todos.find(d => d.id == item.id)
 		}
 
 		static isReadOnly(item){
@@ -2363,7 +2363,7 @@ class Calendar {
 								<span class="tooltiptextcenter">Click to accept time</span>
 							</span>
 							<div class="align-center display-flex flex-row gap-6px">
-								<div class="text-white transition-duration-100 nowrap pointer width-fit background-green hover:background-green-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
+								<div class="text-white transition-duration-100 nowrap pointer width-fit background-blue hover:background-blue-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
 								<div class="text-white transition-duration-100 nowrap pointer width-fit background-red hover:background-red-hover border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
 								<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="turnoffaisuggestions()">Turn off</div>
 							</div>
@@ -9896,7 +9896,7 @@ function gettododata(item) {
 			<span class="tooltiptextcenter">Click to accept time</span>
 			</span>
 			<div class="display-flex flex-row gap-6px">
-				<div class="text-white transition-duration-100 nowrap pointer width-fit background-green hover:background-green-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
+				<div class="text-white transition-duration-100 nowrap pointer width-fit background-blue hover:background-blue-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
 				<div class="text-white transition-duration-100 nowrap pointer width-fit background-red hover:background-red-hover border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
 			</div>
 		</span>`
@@ -14724,6 +14724,12 @@ async function eventcompleted(event, id) {
 		}
 	}
 	*/
+
+	if(item.completed){
+		if(Calendar.Event.isEvent(item)){
+			unscheduleevent(item)
+		}
+	}
 
 
 	fixrecurringtodo(item)
