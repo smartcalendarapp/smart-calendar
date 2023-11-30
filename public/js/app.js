@@ -4874,10 +4874,6 @@ function updateonboardingscreen(){
 		getElement('todoitemduedate').classList.add('z-index-10001')
 		getElement('todoitemduration').classList.add('z-index-10001')
 	}else if(currentonboarding == 'eventreminders'){
-		calendar.emailreminderenabled = true
-		calendar.pushSubscriptionEnabled = true
-		calendar.discordreminderenabled = true
-		calendar.iosnotificationenabled = true
 		calendar.updateSettings()
 	}
 
@@ -8078,7 +8074,12 @@ function fixrecurringtodo(item){
 				return
 			}
 
-			let newitem = deepCopy(lasttodo)
+			let newitem;
+			if(Calendar.Event.isEvent(lasttodo)){
+				newitem = gettodofromevent(lasttodo)
+			}else{
+				newitem = deepCopy(lasttodo)
+			}
 
 			newitem.endbefore.year = newtododuedate.getFullYear()
 			newitem.endbefore.month = newtododuedate.getMonth()
@@ -12840,6 +12841,8 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				if(complete){
 					if(tempitem){
 						tempitem.completed = true
+						fixrecurringtodo(tempitem)
+						fixsubandparenttask(tempitem)
 
 						calendar.updateTodo()
 					}

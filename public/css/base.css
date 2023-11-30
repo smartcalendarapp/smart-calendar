@@ -1049,3 +1049,7 @@
 .all-small-caps{
 	font-variant:all-small-caps
 }
+
+.italics{
+	font-style:italic
+}

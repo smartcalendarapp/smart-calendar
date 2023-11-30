@@ -1729,7 +1729,7 @@ app.get('/blog/:page', (req, res, next) => {
 	  }else{
 		  next()
 	  }
-  })
+})
   
 
 app.get('/:page', (req, res, next) => {

@@ -63,3 +63,12 @@ html, body{
 	background-color:var(--background-secondary-transparent);
 	border-bottom:1px solid var(--text-tertiary);
 }
+
+.buttonblue{
+	height: 18px;
+	width: 18px;
+	stroke: var(--blue);
+	fill: none;
+	display: block;
+	pointer-events: none;
+}

@@ -92,6 +92,34 @@ img{
 	background-image: linear-gradient(to bottom, #ff960d, #ff4d00);
 }
 
+
+.gradienttext1{
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-image: linear-gradient(to right, #2b56ff, #2b79ff);
+}
+.gradienttext2{
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-image: linear-gradient(to right, #ff2b75, #ff2b40);
+}
+.gradienttext3{
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-image: linear-gradient(to right, #10e33e, #0ccf37);
+}
+.gradienttext3{
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-image: linear-gradient(to right, #faac2f, #fca519);
+}
+
+
+
 .buttonlogo{
 	height:32px;
 	width:32px;
