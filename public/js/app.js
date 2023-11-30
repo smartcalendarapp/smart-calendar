@@ -4807,12 +4807,6 @@ function updateonboardingscreen(){
 
 			onboardingaddtasktodolist = []
 		}
-		let onboardingaddtasksubmit = getElement('onboardingaddtasksubmit')
-		if(onboardingaddtasktodolist.length == 0){
-			onboardingaddtasksubmit.classList.add('greyedoutevent')
-		}else{
-			onboardingaddtasksubmit.classList.remove('greyedoutevent')
-		}
 	}else{
 		isonboardingaddtask = false
 	}
@@ -4882,16 +4876,10 @@ function updateonboardingscreen(){
 	}else if(currentonboarding == 'eventreminders'){
 		calendar.updateSettings()
 	}
-
-
 }
 
 
-function continueonboarding(key){
-	if(key == 'addtask'){
-		if(onboardingaddtasktodolist.length == 0) return
-	}
-	
+function continueonboarding(key){	
 	if(calendar.onboarding[key] != null) calendar.onboarding[key] = true
 	updateonboardingscreen()
 }
@@ -10041,7 +10029,7 @@ function gettododata(item) {
 					</div>
 				</div>
 				 
-				<div class="todoitembuttongroupstay justify-flex-end">
+				<div class="todoitembuttongroupstay justify-flex-end border-round">
 					<div class="todoitembutton bluebutton" onclick="closeedittodo()">Done</div>
 				</div>
 			</div>
