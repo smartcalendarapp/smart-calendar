@@ -684,31 +684,31 @@ async function processReminders(){
 	//engagement alerts
 	let sendengagementalerts = []
 	for(let [key, value] of Object.entries(engagementcache)){
-		if(!value.finishedonboarding && currentdate.getTime() - value.createddate > 86400*1000*2){
+		if(!value.finishedonboarding && currentdate - value.createddate > 86400*1000*2){
 			//unfinished onboarding
 			//send email on day 2, 6, 18
 
-			if(currentdate.getTime() - value.engagementalerts.lastsentdate > 86400*1000*2 * (Math.pow(3, value.engagementalerts.onboardingtries || 0) - 1)){
+			if(currentdate - value.engagementalerts.lastsentdate > 86400*1000*2 * (Math.pow(3, value.engagementalerts.onboardingtries || 0) - 1)){
 				if(value.engagementalerts.onboardingtries <= 2){ //stop after 3
 					sendengagementalerts.push(value)
 
 					/*let tempuser = await getUserById(key)
 					tempuser.accountdata.engagementalerts.onboardingtries++
-					tempuser.accountdata.engagementalerts.lastsentdate = currentdate.getTime()
+					tempuser.accountdata.engagementalerts.lastsentdate = currentdate
 					await setUser(tempuser)*/
 				}
 			}
-		}else if(currentdate.getTime() - value.lastmodified > 86400*1000*7){
+		}else if(currentdate - value.lastmodified > 86400*1000*7){
 			//inactive for 7 days
 			//send email on day 7, 14, 28, 56...
 
-			if(currentdate.getTime() - value.engagementalerts.lastsentdate > 86400*1000*7 * (Math.pow(2, value.engagementalerts.activitytries || 0) - 1)){
+			if(currentdate - value.engagementalerts.lastsentdate > 86400*1000*7 * (Math.pow(2, value.engagementalerts.activitytries || 0) - 1)){
 				if(value.engagementalerts.activitytries <= 3){ //stop after 4
 					sendengagementalerts.push(value)
 
 					/*let tempuser = await getUserById(key)
 					tempuser.accountdata.engagementalerts.activitytries++
-					tempuser.accountdata.engagementalerts.lastsentdate = currentdate.getTime()
+					tempuser.accountdata.engagementalerts.lastsentdate = currentdate
 					await setUser(tempuser)*/
 				}
 			}
