@@ -2776,7 +2776,7 @@ class Calendar {
 			}
 			
 		}else{
-			tempoutput.push(`
+			output.push(`
 			<div class="display-flex flex-row justify-space-between align-center">
 				<div class="text-16px pointer hover:text-quaternary transition-duration-100 text-bold text-primary display-flex flex-row align-center gap-6px" onclick="toggleshowcompleted()">Completed
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge ${showcompleted ? `rotate90` : ``}">
