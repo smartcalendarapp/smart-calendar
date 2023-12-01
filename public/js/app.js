@@ -2372,12 +2372,15 @@ class Calendar {
 						`${Calendar.Event.getFullStartEndText(item)}`}</div>
 
 						${!item.iseventsuggestion && item.type == 1 ?
-						`<div class="popuptransition pointer-auto padding-6px-12px pointer popupbutton transition-duration-100 width-fit smartbuttonbackground display-flex gap-6px flex-row align-center border-round" onclick="clickeditschedulemytasks(event)" >
+						`<div class="popuptransition pointer-auto padding-6px-12px pointer popupbutton transition-duration-100 width-fit background-blue hover:background-blue-hover display-flex gap-6px flex-row align-center border-round" onclick="clickreschedule('${item.id}')" id="reschedulebutton" >
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
-							<g>
-							<path d="M178.389 21.6002L31.105 168.884M234.4 77.6109L87.1156 224.895M178.389 21.6002C193.856 6.13327 218.933 6.13327 234.4 21.6002C249.867 37.0671 249.867 62.1439 234.4 77.6109M10 245.998L31.105 168.884M10.0017 246L87.1156 224.895" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							</g>
+						<g>
+						<path d="M10 128C10 62.8304 62.8304 10 128 10C193.17 10 246 62.8304 246 128C246 193.17 193.17 246 128 246C62.8304 246 10 193.17 10 128Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M128 54.8461L128 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M179.728 179.728L128 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						</g>
 						</svg>
+
 							
 						<div class="text-14px text-white pointer-none nowrap transition-none">Reschedule</div>
 					</div>` : ``}
@@ -2445,7 +2448,9 @@ class Calendar {
 								</svg>
 								<div class="pointer-none nowrap text-white text-14px">Start now</div>
 							</div>
-							
+							` : ''}
+
+
 							<div class="text-14px display-flex flex-row align-center gap-6px padding-8px-12px tooltip infotopright background-blue hover:background-blue-hover text-white pointer-auto transition-duration-100 border-round pointer popupbutton" id="remindmebutton" onclick="clickeventremindme('${item.id}')">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 246 256" width="100%" class="buttonwhite">
 									<g>
@@ -2458,7 +2463,7 @@ class Calendar {
 
 
 								<div class="pointer-none nowrap text-white text-14px">${item.reminder.length == 0 ? 'Remind me' : `Remind me (${item.reminder.length})`}</div>
-							</div>` : ''}
+							</div>
 							
 
 						</div>
@@ -2739,7 +2744,7 @@ class Calendar {
 					tempoutput.push(`
 					<div class="display-flex flex-row justify-space-between align-center">
 						<div class="text-16px pointer hover:text-quaternary showcompletedwrap transition-duration-100 text-bold text-primary display-flex flex-row align-center gap-6px" onclick="toggleshowcompleted()">Completed
-							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge ${showcompleted ? `rotate90` : ``}">
+							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmall ${showcompleted ? `rotate90` : ``}">
 							<g>
 							<path d="M70 10L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
 							<path d="M70 246L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -2787,7 +2792,7 @@ class Calendar {
 			output.push(`
 			<div class="display-flex flex-row justify-space-between align-center">
 				<div class="text-16px pointer hover:text-quaternary showcompletedwrap transition-duration-100 text-bold text-primary display-flex flex-row align-center gap-6px" onclick="toggleshowcompleted()">Completed
-					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge ${showcompleted ? `rotate90` : ``}">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmall ${showcompleted ? `rotate90` : ``}">
 					<g>
 					<path d="M70 10L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
 					<path d="M70 246L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -5934,7 +5939,7 @@ function getalldayeventdata(item, currentdate, timestamp) {
 		}
 	}
 
-	if (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() < Date.now()) {
+	if (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() < Date.now() || (item.type == 1 && item.completed)) {
 		itemclasses.push('greyedoutevent')
 	}
 
@@ -6102,7 +6107,7 @@ function getmontheventdata(item, currentdate, timestamp) {
 		}
 	}
 
-	if (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() < Date.now()) {
+	if (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() < Date.now() || (item.type == 1 && item.completed)) {
 		itemclasses.push('greyedoutevent')
 	}
 
@@ -11036,14 +11041,6 @@ async function todocompleted(event, id) {
 	item.completed = !item.completed
 
 
-	let itemrect;
-	if (item.completed) {
-		let itemelement = getElement(`todo-${item.id}`)
-		if (!itemelement) return
-
-		itemrect = itemelement.getBoundingClientRect()
-	}
-
 	fixrecurringtodo(item)
 	
 	fixsubandparenttask(item)
@@ -11056,23 +11053,17 @@ async function todocompleted(event, id) {
 	calendar.updateInfo()
 
 
-	setTimeout(function(){
-		if(item.completed){
-			if(Calendar.Event.isEvent(item)){
-				if(new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() > Date.now()){
-					unscheduleevent(item.id)
-				}
-			}
-		}
-	}, 3000)
-
-
-	if(item.completed && itemrect){
+	if(item.completed){
 		let confetticanvas = getElement('confetticanvas')
 		let myconfetti = confetti.create(confetticanvas, {
 			resize: true,
 			useWorker: true
 		})
+
+		let itemelement = getElement(`todo-${item.id}`)
+		if (!itemelement) return
+
+		let itemrect = itemelement.getBoundingClientRect()
 		
 		await myconfetti({
 			spread: 30,
@@ -12021,7 +12012,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 		}
 	}
 
-	if (tempenddate.getTime() < Date.now()) {
+	if (tempenddate.getTime() < Date.now() || (item.type == 1 && item.completed)) {
 		itemclasses.push('greyedoutevent')
 	}
 
@@ -12816,7 +12807,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 
 		//initialize
-		let iteratedevents = getiteratedevents()
+		let iteratedevents = getiteratedevents().filter(d => d.type != 1 || !d.completed)
 		let oldsmartevents = deepCopy(smartevents)
 		let oldcalendarevents = deepCopy(calendar.events)
 
@@ -13772,6 +13763,8 @@ function editschedulemoveeventauto(id){
 	startAutoSchedule({})
 }
 
+
+
 //postpone time
 function editschedulepopuppostpone(id, addedminutes){
 	let item = calendar.events.find(d => d.id == id)
@@ -13920,6 +13913,152 @@ function clickeditschedulemytasks(){
 		}
 	}, 5000)
 }
+
+
+
+//here3
+
+//click reschedule
+function clickreschedule(id){
+	let item = calendar.events.find(d => d.id == id)
+	if(!item) return
+
+	openreschedulepopup(id)
+}
+function openreschedulepopup(id){
+	let item = calendar.events.find(d => d.id == id)
+	if(!item) return
+
+	if(item.type != 1) return
+
+	let scheduleeditorpopup = getElement('scheduleeditorpopup')
+	scheduleeditorpopup.classList.remove('hiddenpopup')
+
+
+	scheduleeditorpopup.classList.remove('scheduleeditorpopupbottom')
+	scheduleeditorpopup.classList.remove('scheduleeditorpopuptop')
+
+
+	//content
+	let currentdate = new Date()
+	let endrangedate = new Date(currentdate)
+	endrangedate.setDate(endrangedate.getDate() + 30)
+
+	//get available time
+	let availabletime = getavailabletime(item, currentdate, endrangedate, true)
+
+	function gettextfromavailabletime(timestamp){
+		const now = new Date()
+		const date = new Date(timestamp)
+
+		const nowday = new Date(now)
+		nowday.setHours(0,0,0,0)
+		const dateday = new Date(date)
+		dateday.setHours(0,0,0,0)
+
+		function timeOfDay(hour) {
+			if (hour < 12) return 'morning'
+			if (hour < 18) return 'afternoon'
+			return 'evening'
+		}
+
+		const today = nowday.getTime() == dateday.getTime()
+
+		const tomorrowday = new Date(nowday)
+		tomorrowday.setDate(tomorrowday.getDate() + 1)
+		const isTomorrow = tomorrowday.getTime() == dateday.getTime()
+
+		if (today) {
+			return `Later today`
+		} else if (isTomorrow) {
+			return `Tomorrow`
+		} else {
+			return `${DAYLIST[date.getDay()]}`
+		}
+	}
+
+	let availabletimeoutput = []
+	let addedavailabletimes = []
+	for(let tempavailabletime of availabletime){
+		
+		let availabletimetext = gettextfromavailabletime(tempavailabletime.start)
+		if(addedavailabletimes.includes(availabletimetext)) continue
+
+		let currenttimetext = gettextfromavailabletime(new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
+
+		addedavailabletimes.push(availabletimetext)
+
+		availabletimeoutput.push(`<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px ${currenttimetext == availabletimetext && item.autoschedulelocked ? `selectedbuttonactive` : ''}" onclick="editschedulemoveevent('${item.id}', ${ceil(tempavailabletime.start, 60000*5)})">${availabletimetext}</div>`)
+		
+		if(availabletimeoutput.length == 5) break
+	}
+	
+
+	let output = []
+	output.push(`
+	<div class="flex-column display-flex gap-6px">
+		<div class="text-16px text-primary">Move to:</div>
+		<div class="display-flex flex-row flex-wrap-wrap gap-12px">
+
+			<div class="text-14px display-flex flex-row gap-6px align-center text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px ${!item.autoschedulelocked ? `selectedbuttonactive` : ''}" onclick="editschedulemoveeventauto('${item.id}')">
+				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite">
+				<g>
+				<path d="M116.697 68.9269C111.629 69.2588 106.599 71.0688 102.28 74.4124C90.7618 83.3285 88.669 99.8408 97.5851 111.359C98.2562 112.226 200.877 244.813 201.548 245.68C210.464 257.198 227.011 259.317 238.529 250.401C250.047 241.485 252.162 224.907 243.246 213.389L139.288 79.0988C133.715 71.8999 125.144 68.3738 116.697 68.9269ZM150.93 119.849L230.775 223.006C233.039 225.93 233.221 234.599 228.942 237.926C224.213 241.603 216.316 239.012 214.053 236.089C213.538 235.423 162.596 169.648 134.177 132.935L150.93 119.849Z" fill-rule="nonzero" opacity="1" ></path>
+				<path d="M46.0296 117.475C48.1906 117.475 49.4872 116.286 49.9194 113.909C51.3241 106.13 52.6207 99.9978 53.8093 95.5137C54.9978 91.0296 56.7266 87.599 58.9957 85.2219C61.2648 82.8448 64.6954 80.9809 69.2875 79.6302C73.8797 78.2796 80.2277 76.902 88.3315 75.4973C90.8166 75.0651 92.0592 73.7145 92.0592 71.4454C92.0592 69.1763 90.8166 67.8257 88.3315 67.3935C80.2277 65.9888 73.8797 64.6382 69.2875 63.3416C64.6954 62.045 61.2648 60.1811 58.9957 57.75C56.7266 55.3188 54.9978 51.8612 53.8093 47.3771C52.6207 42.893 51.3241 36.8152 49.9194 29.1436C49.4872 26.6584 48.1906 25.4158 46.0296 25.4158C43.7605 25.4158 42.4099 26.6584 41.9777 29.1436C40.573 36.8152 39.2764 42.893 38.0879 47.3771C36.8993 51.8612 35.1705 55.3188 32.9014 57.75C30.6324 60.1811 27.2288 62.045 22.6906 63.3416C18.1525 64.6382 11.8316 65.9888 3.72775 67.3935C2.64724 67.6096 1.75582 68.0688 1.05349 68.7711C0.351165 69.4735-8.88178e-16 70.3649-8.88178e-16 71.4454C-8.88178e-16 73.7145 1.24258 75.0651 3.72775 75.4973C11.8316 76.902 18.1525 78.2796 22.6906 79.6302C27.2288 80.9809 30.6324 82.8448 32.9014 85.2219C35.1705 87.599 36.8993 91.0296 38.0879 95.5137C39.2764 99.9978 40.573 106.13 41.9777 113.909C42.4099 116.286 43.7605 117.475 46.0296 117.475Z" fill-rule="nonzero" opacity="1" ></path>
+				<path d="M71.5465 225.528C73.742 225.528 75.0593 224.321 75.4984 221.906C76.9255 214.002 78.2428 207.772 79.4503 203.217C80.6579 198.661 82.4143 195.176 84.7195 192.761C87.0248 190.345 90.5102 188.452 95.1756 187.08C99.8411 185.707 106.29 184.308 114.523 182.881C117.048 182.442 118.311 181.069 118.311 178.764C118.311 176.459 117.048 175.087 114.523 174.648C106.29 173.221 99.8411 171.848 95.1756 170.531C90.5102 169.214 87.0248 167.32 84.7195 164.85C82.4143 162.38 80.6579 158.867 79.4503 154.312C78.2428 149.756 76.9255 143.581 75.4984 135.787C75.0593 133.262 73.742 132 71.5465 132C69.2412 132 67.8691 133.262 67.43 135.787C66.0029 143.581 64.6856 149.756 63.4781 154.312C62.2705 158.867 60.5141 162.38 58.2088 164.85C55.9036 167.32 52.4457 169.214 47.8351 170.531C43.2245 171.848 36.8027 173.221 28.5696 174.648C27.4718 174.867 26.5662 175.334 25.8526 176.047C25.1391 176.761 24.7823 177.666 24.7823 178.764C24.7823 181.069 26.0447 182.442 28.5696 182.881C36.8027 184.308 43.2245 185.707 47.8351 187.08C52.4457 188.452 55.9036 190.345 58.2088 192.761C60.5141 195.176 62.2705 198.661 63.4781 203.217C64.6856 207.772 66.0029 214.002 67.43 221.906C67.8691 224.321 69.2412 225.528 71.5465 225.528Z" fill-rule="nonzero" opacity="1" ></path>
+				<path d="M169.411 95.851C171.661 95.851 173.011 94.6135 173.461 92.1385C174.924 84.0384 176.274 77.6539 177.512 72.9851C178.749 68.3163 180.549 64.7444 182.912 62.2694C185.274 59.7944 188.846 57.8537 193.627 56.4475C198.409 55.0412 205.018 53.6068 213.456 52.1443C216.043 51.6943 217.337 50.288 217.337 47.9255C217.337 45.563 216.043 44.1567 213.456 43.7067C205.018 42.2442 198.409 40.8379 193.627 39.4879C188.846 38.1379 185.274 36.1973 182.912 33.666C180.549 31.1347 178.749 27.5347 177.512 22.8659C176.274 18.1971 174.924 11.8689 173.461 3.88129C173.011 1.29376 171.661 0 169.411 0C167.049 0 165.643 1.29376 165.193 3.88129C163.73 11.8689 162.38 18.1971 161.143 22.8659C159.905 27.5347 158.105 31.1347 155.743 33.666C153.38 36.1973 149.836 38.1379 145.111 39.4879C140.386 40.8379 133.805 42.2442 125.367 43.7067C124.242 43.9317 123.314 44.4098 122.583 45.1411C121.852 45.8724 121.486 46.8005 121.486 47.9255C121.486 50.288 122.78 51.6943 125.367 52.1443C133.805 53.6068 140.386 55.0412 145.111 56.4475C149.836 57.8537 153.38 59.7944 155.743 62.2694C158.105 64.7444 159.905 68.3163 161.143 72.9851C162.38 77.6539 163.73 84.0384 165.193 92.1385C165.643 94.6135 167.049 95.851 169.411 95.851Z" fill-rule="nonzero" opacity="1" ></path>
+				</g>
+				</svg>
+			Auto
+			</div>
+
+			${availabletimeoutput.join('')}
+			
+			<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px" onclick="editschedulepopupcustom(event, '${item.id}')">Custom</div>
+		</div>
+
+	</div>`)
+
+	output.push(`
+	<div class="horizontalbar"></div>`)
+
+	output.push(`
+	<div class="display-flex flex-row gap-12px">
+		<div class="width-fit text-14px display-flex flex-row align-center gap-6px padding-8px-12px  infotopright background-tint-1 tooltip hover:background-tint-2 text-primary pointer-auto transition-duration-100 border-round pointer popupbutton" onclick="closescheduleeditorpopup();unscheduleevent('${id}')">
+								
+	<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite">
+	<g>
+			<g opacity="1">
+			<path d="M116.007 236.883C120.045 236.883 123.369 235.577 125.981 232.965C128.594 230.353 129.9 227.028 129.9 222.991L129.9 177.633L133.343 177.633C148.7 177.633 162.276 179.137 174.071 182.145C185.865 185.153 196.275 190.318 205.299 197.64C214.323 204.962 222.278 215.114 229.165 228.096C231.223 231.896 233.539 234.31 236.111 235.34C238.684 236.369 241.237 236.883 243.77 236.883C246.936 236.883 249.766 235.518 252.26 232.787C254.753 230.056 256 226.118 256 220.972C256 199.045 253.605 179.315 248.816 161.781C244.027 144.247 236.665 129.267 226.731 116.839C216.797 104.411 204.092 94.9116 188.616 88.3414C173.14 81.7712 154.716 78.4861 133.343 78.4861L129.9 78.4861L129.9 33.603C129.9 29.645 128.594 26.2412 125.981 23.3915C123.369 20.5417 119.965 19.1169 115.77 19.1169C112.841 19.1169 110.229 19.7699 107.933 21.0761C105.638 22.3822 102.907 24.5393 99.7403 27.5473L6.05566 115.176C3.76005 117.314 2.17687 119.49 1.30612 121.707C0.435374 123.923 0 126.021 0 128C0 129.9 0.435374 131.958 1.30612 134.174C2.17687 136.391 3.76005 138.568 6.05566 140.705L99.7403 229.165C102.59 231.857 105.281 233.816 107.814 235.043C110.348 236.27 113.079 236.883 116.007 236.883ZM109.239 211.354C108.527 211.354 107.854 210.998 107.221 210.286L22.5603 130.256C22.0853 129.781 21.7489 129.365 21.551 129.009C21.3531 128.653 21.2542 128.317 21.2542 128C21.2542 127.288 21.6895 126.536 22.5603 125.744L107.102 44.6456C107.419 44.4082 107.735 44.1905 108.052 43.9926C108.369 43.7947 108.725 43.6957 109.121 43.6957C110.229 43.6957 110.783 44.2498 110.783 45.3581L110.783 92.4972C110.783 95.1095 112.129 96.4156 114.82 96.4156L130.731 96.4156C147.038 96.4156 161.168 98.4935 173.121 102.649C185.074 106.805 195.166 112.544 203.399 119.866C211.631 127.189 218.281 135.639 223.347 145.217C228.413 154.795 232.193 165.027 234.686 175.911C237.18 186.795 238.664 197.818 239.139 208.98C239.139 209.85 238.823 210.286 238.189 210.286C237.952 210.286 237.754 210.187 237.596 209.989C237.437 209.791 237.279 209.494 237.121 209.098C232.45 199.203 225.365 190.536 215.866 183.095C206.367 175.654 194.513 169.895 180.304 165.818C166.095 161.741 149.571 159.703 130.731 159.703L114.82 159.703C112.129 159.703 110.783 161.009 110.783 163.622L110.783 209.573C110.783 210.761 110.268 211.354 109.239 211.354Z" fill-rule="nonzero" opacity="1"></path>
+			</g>
+			</g>
+			</svg>
+
+
+			<div class="pointer-none nowrap text-primary text-14px">Undo schedule</div>
+		</div>
+
+	</div>`)
+
+	output.push(`<div class="text-secondary text-14px popupbutton align-self-flex-end width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">Feedback</div>`)
+
+
+	let scheduleeditorpopupcontent = getElement('scheduleeditorpopupcontent')
+	scheduleeditorpopupcontent.innerHTML = output.join('')
+
+
+	let reschedulebutton = getElement('reschedulebutton')
+
+	scheduleeditorpopup.style.top = fixtop(reschedulebutton.getBoundingClientRect().top + reschedulebutton.offsetHeight, scheduleeditorpopup) + 'px'
+
+	scheduleeditorpopup.classList.add('scheduleeditorpopupbottom')
+	scheduleeditorpopup.classList.remove('scheduleeditorpopuptop')
+
+	scheduleeditorpopup.style.left = fixleft(reschedulebutton.getBoundingClientRect().left + reschedulebutton.offsetWidth/2 - scheduleeditorpopup.offsetWidth/2, scheduleeditorpopup) + 'px'
+}
+
+
+
 
 
 
@@ -14708,16 +14847,6 @@ async function eventcompleted(event, id) {
 	calendar.updateInfo()
 	calendar.updateHistory()
 
-
-	setTimeout(function(){
-		if(item.completed){
-			if(Calendar.Event.isEvent(item)){
-				if(new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() > Date.now()){
-					unscheduleevent(item.id)
-				}
-			}
-		}
-	}, 3000)
 
 	if (item.completed) {
 		let confetticanvas = getElement('confetticanvas')
