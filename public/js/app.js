@@ -2736,8 +2736,16 @@ class Calendar {
 			for (let i = 0; i < mytodos.length; i++) {
 				let item = mytodos[i]
 				if (i == 0) {
-					tempoutput.push(`<div class="display-flex flex-row justify-space-between align-center">
-						<div class="text-16px text-bold text-primary">Completed</div>
+					tempoutput.push(`
+					<div class="display-flex flex-row justify-space-between align-center">
+						<div class="text-16px pointer hover:text-quaternary showcompletedwrap transition-duration-100 text-bold text-primary display-flex flex-row align-center gap-6px" onclick="toggleshowcompleted()">Completed
+							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge ${showcompleted ? `rotate90` : ``}">
+							<g>
+							<path d="M70 10L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							<path d="M70 246L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+							</g>
+							</svg>
+						</div>
 
 						<div class="popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="deletecompletedtodos()">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -2778,7 +2786,7 @@ class Calendar {
 		}else{
 			output.push(`
 			<div class="display-flex flex-row justify-space-between align-center">
-				<div class="text-16px pointer hover:text-quaternary transition-duration-100 text-bold text-primary display-flex flex-row align-center gap-6px" onclick="toggleshowcompleted()">Completed
+				<div class="text-16px pointer hover:text-quaternary showcompletedwrap transition-duration-100 text-bold text-primary display-flex flex-row align-center gap-6px" onclick="toggleshowcompleted()">Completed
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge ${showcompleted ? `rotate90` : ``}">
 					<g>
 					<path d="M70 10L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -9855,7 +9863,7 @@ function gettododata(item) {
 
 
 	let childrenoutput = ''
-	let children = sortstartdate(Calendar.Todo.getSubtasks(item))
+	let children = Calendar.Todo.getSubtasks(item)
 	if(children.length > 0){
 		childrenoutput = `
 		<div class="border-8px subtaskgroup bordertertiary display-flex flex-column border-box">
@@ -11027,41 +11035,14 @@ async function todocompleted(event, id) {
 	if (!item) return
 	item.completed = !item.completed
 
-	/*
-	if(item.completed){
-		if(Calendar.Event.isEvent(item)){
-			//cancel suggestion
-			item.iseventsuggestion = false
 
-			let currentdate = new Date()
+	let itemrect;
+	if (item.completed) {
+		let itemelement = getElement(`todo-${item.id}`)
+		if (!itemelement) return
 
-			if(new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() > currentdate.getTime()){
-				let oldstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-				let oldenddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
-				let duration = oldenddate.getTime() - oldstartdate.getTime()
-
-
-				//set event to end at now
-				let enddate = new Date(currentdate)
-				enddate.setMinutes(floor(enddate.getMinutes(), 5))
-
-				let startdate = new Date(enddate)
-				startdate.setTime(startdate.getTime() - duration)
-			
-				item.start.year = startdate.getFullYear()
-				item.start.month = startdate.getMonth()
-				item.start.day = startdate.getDate()
-				item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
-			
-				item.end.year = enddate.getFullYear()
-				item.end.month = enddate.getMonth()
-				item.end.day = enddate.getDate()
-				item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
-			}
-		}
+		itemrect = itemelement.getBoundingClientRect()
 	}
-	*/
-
 
 	fixrecurringtodo(item)
 	
@@ -11074,17 +11055,25 @@ async function todocompleted(event, id) {
 	calendar.updateHistory()
 	calendar.updateInfo()
 
-	if (item.completed) {
+
+	setTimeout(function(){
+		if(item.completed){
+			if(Calendar.Event.isEvent(item)){
+				if(new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() > Date.now()){
+					unscheduleevent(item.id)
+				}
+			}
+		}
+	}, 3000)
+
+
+	if(item.completed && itemrect){
 		let confetticanvas = getElement('confetticanvas')
 		let myconfetti = confetti.create(confetticanvas, {
 			resize: true,
 			useWorker: true
 		})
-
-		let itemelement = getElement(`todo-${item.id}`)
-		if (!itemelement) return
-		let itemrect = itemelement.getBoundingClientRect()
-
+		
 		await myconfetti({
 			spread: 30,
 			particleCount: 30,
@@ -11101,18 +11090,7 @@ async function todocompleted(event, id) {
 		try{
 			myconfetti.reset()
 		}catch(e){}
-
 	}
-
-	setTimeout(function(){
-		if(item.completed){
-			if(Calendar.Event.isEvent(item)){
-				if(new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() > Date.now()){
-					unscheduleevent(item.id)
-				}
-			}
-		}
-	}, 3000)
 }
 
 
@@ -14719,38 +14697,6 @@ async function eventcompleted(event, id) {
 	if (!item) return
 	item.completed = !item.completed
 
-	/*
-	if(item.completed){
-		if(Calendar.Event.isEvent(item)){
-			let currentdate = new Date()
-
-			if(new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() > currentdate.getTime()){
-				let oldstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-				let oldenddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
-				let duration = oldenddate.getTime() - oldstartdate.getTime()
-
-
-				//set event to end at now
-				let enddate = new Date(currentdate)
-				enddate.setMinutes(floor(enddate.getMinutes(), 5))
-
-				let startdate = new Date(enddate)
-				startdate.setTime(startdate.getTime() - duration)
-			
-				item.start.year = startdate.getFullYear()
-				item.start.month = startdate.getMonth()
-				item.start.day = startdate.getDate()
-				item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
-			
-				item.end.year = enddate.getFullYear()
-				item.end.month = enddate.getMonth()
-				item.end.day = enddate.getDate()
-				item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
-			}
-		}
-	}
-	*/
-
 
 	fixrecurringtodo(item)
 	fixsubandparenttask(item)
@@ -14761,6 +14707,17 @@ async function eventcompleted(event, id) {
 	calendar.updateEvents()
 	calendar.updateInfo()
 	calendar.updateHistory()
+
+
+	setTimeout(function(){
+		if(item.completed){
+			if(Calendar.Event.isEvent(item)){
+				if(new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() > Date.now()){
+					unscheduleevent(item.id)
+				}
+			}
+		}
+	}, 3000)
 
 	if (item.completed) {
 		let confetticanvas = getElement('confetticanvas')
@@ -14792,16 +14749,6 @@ async function eventcompleted(event, id) {
 
 	}
 
-
-	setTimeout(function(){
-		if(item.completed){
-			if(Calendar.Event.isEvent(item)){
-				if(new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() > Date.now()){
-					unscheduleevent(item.id)
-				}
-			}
-		}
-	}, 3000)
 }
 
 //double click column

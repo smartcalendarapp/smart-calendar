@@ -1178,6 +1178,10 @@ body {
 	visibility: visible;
 }
 
+.showcompletedwrap:hover svg{
+	stroke:var(--text-quaternary) !important
+}
+
 .repeatbutton{
 	height: 18px;
 	width: 18px;
