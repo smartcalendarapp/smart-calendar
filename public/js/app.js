@@ -2444,9 +2444,8 @@ class Calendar {
 									</g>
 								</svg>
 								<div class="pointer-none nowrap text-white text-14px">Start now</div>
-							</div>` : ''}
+							</div>
 							
-						
 							<div class="text-14px display-flex flex-row align-center gap-6px padding-8px-12px tooltip infotopright background-blue hover:background-blue-hover text-white pointer-auto transition-duration-100 border-round pointer popupbutton" id="remindmebutton" onclick="clickeventremindme('${item.id}')">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 246 256" width="100%" class="buttonwhite">
 									<g>
@@ -2459,7 +2458,9 @@ class Calendar {
 
 
 								<div class="pointer-none nowrap text-white text-14px">${item.reminder.length == 0 ? 'Remind me' : `Remind me (${item.reminder.length})`}</div>
-							</div>
+							</div>` : ''}
+							
+
 						</div>
 						`)
 
@@ -2725,7 +2726,7 @@ class Calendar {
 		}
 
 
-		if(true){
+		if(showcompleted){
 			let mytodos = [ ...calendar.events.filter(d => d.type == 1 && d.completed && !Calendar.Todo.isSubtask(d)), ...calendar.todos.filter(d => d.completed && !Calendar.Todo.isSubtask(d))]
 
 
@@ -2774,6 +2775,18 @@ class Calendar {
 				}
 			}
 			
+		}else{
+			tempoutput.push(`
+			<div class="display-flex flex-row justify-space-between align-center">
+				<div class="text-16px pointer hover:text-quaternary transition-duration-100 text-bold text-primary display-flex flex-row align-center gap-6px" onclick="toggleshowcompleted()">Completed
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge ${showcompleted ? `rotate90` : ``}">
+					<g>
+					<path d="M70 10L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					<path d="M70 246L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+					</g>
+					</svg>
+				</div>
+			</div>`)
 		}
 
 		
@@ -9793,7 +9806,7 @@ function submitcreatetodo(event) {
 
 	if(calendar.settings.geteventsuggestions){
 		if(Calendar.Todo.getSubtasks(item).length > 0){
-			startAutoSchedule({eventsuggestiontodos: [Calendar.Todo.getSubtasks(item)]})
+			startAutoSchedule({eventsuggestiontodos: [...Calendar.Todo.getSubtasks(item)]})
 		}else{
 			startAutoSchedule({eventsuggestiontodos: [item]})
 		}
@@ -9842,7 +9855,7 @@ function gettododata(item) {
 
 
 	let childrenoutput = ''
-	let children = Calendar.Todo.getSubtasks(item)
+	let children = sortstartdate(Calendar.Todo.getSubtasks(item))
 	if(children.length > 0){
 		childrenoutput = `
 		<div class="border-8px subtaskgroup bordertertiary display-flex flex-column border-box">
@@ -11049,12 +11062,6 @@ async function todocompleted(event, id) {
 	}
 	*/
 
-	if(item.completed){
-		if(Calendar.Event.isEvent(item)){
-			unscheduleevent(item)
-		}
-	}
-
 
 	fixrecurringtodo(item)
 	
@@ -11074,15 +11081,20 @@ async function todocompleted(event, id) {
 			useWorker: true
 		})
 
+		let itemelement = getElement(`todo-${item.id}`)
+		if (!itemelement) return
+		let itemrect = itemelement.getBoundingClientRect()
+
 		await myconfetti({
+			spread: 30,
 			particleCount: 30,
 			gravity: 0.8,
 			startVelocity: 20,
 			decay: 0.94,
 			ticks: 150,
 			origin: {
-				x: (event.clientX) / (window.innerWidth || document.body.clientWidth),
-				y: (event.clientY) / (window.innerHeight || document.body.clientHeight)
+				x: (itemrect.x + itemrect.width / 2) / (window.innerWidth || document.body.clientWidth),
+				y: (itemrect.y + itemrect.height / 2) / (window.innerHeight || document.body.clientHeight)
 			}
 		})
 
@@ -11091,9 +11103,24 @@ async function todocompleted(event, id) {
 		}catch(e){}
 
 	}
+
+	setTimeout(function(){
+		if(item.completed){
+			if(Calendar.Event.isEvent(item)){
+				if(new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() > Date.now()){
+					unscheduleevent(item.id)
+				}
+			}
+		}
+	}, 3000)
 }
 
 
+let showcompleted = false
+function toggleshowcompleted(){
+	showcompleted = !showcompleted
+	calendar.updateTodo()
+}
 
 function unscheduleevent(id){
 	let item = calendar.events.find(d => d.id == id)
@@ -11111,9 +11138,11 @@ function unscheduleevent(id){
 	calendar.updateEvents()
 	calendar.updateHistory()
 	
-	setTimeout(function(){
-		scrolltodoY(getElement(`todo-${todoitem.id}`).offsetTop)
-	}, 300)
+	if(!item.completed){
+		setTimeout(function(){
+			scrolltodoY(getElement(`todo-${todoitem.id}`).offsetTop)
+		}, 300)
+	}
 }//here2
 
 
@@ -11891,10 +11920,9 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 	*/
 
 	let aisuggestiontext = item.iseventsuggestion ? `
-	<span class="margin-left-6px"></span>
 	<span class="flex-wrap-wrap align-center pointer-auto 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-auto text-purple text-bold  pointer transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
+		<span class="transition-duration-100 text-12px pointer-auto text-purple text-bold   transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
 		<div class="transition-duration-100 text-white background-blue hover:background-blue-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
 		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
 	</span>` : ''
@@ -12040,10 +12068,9 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	*/
 
 	let aisuggestiontext = item.iseventsuggestion ? `
-	<span class="margin-left-6px"></span>
 	<span class="flex-wrap-wrap align-center pointer-auto 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-auto text-purple text-bold pointer transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
+		<span class="transition-duration-100 text-12px pointer-auto text-purple text-bold  transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
 		<div class="transition-duration-100 text-white background-blue hover:background-blue-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
 		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
 	</span>` : ''
@@ -13402,13 +13429,12 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		}
 
 		//post animate
-		let realaddedtodos = addedtodos.filter(d => !d.iseventsuggestion)
-		if(realaddedtodos.length > 0){
-			if(realaddedtodos.length == 1){
-				let temptodo = realaddedtodos[0]
-				displayalert(`Scheduled ${Calendar.Event.getTitle(temptodo)} for ${Calendar.Event.getStartText(temptodo)}. <span class="padding-6px-12px border-8px pointer pointer-auto hover:background-tint-1 text-blue text-14px" onclick="gototaskincalendar(${sortstartdate(realaddedtodos)[0].id})">Jump to task</span>`)
+		if(addedtodos.length > 0){
+			if(addedtodos.length == 1){
+				let temptodo = addedtodos[0]
+				displayalert(`Scheduled "${Calendar.Event.getTitle(temptodo).slice(0, 10)}${Calendar.Event.getTitle(temptodo).length > 10 ? '...' : ''}" for ${Calendar.Event.getStartText(temptodo)} <span class="margin-left-6px padding-6px-12px border-8px pointer pointer-auto text-white background-blue hover:background-blue-hover text-14px" onclick="gototaskincalendar('${sortstartdate(addedtodos)[0].id}')">Jump to task</span>`)
 			}else{
-				displayalert(`Scheduled ${realaddedtodos.length} task${realaddedtodos.length == 1 ? '' : 's'}. <span class="padding-6px-12px border-8px pointer pointer-auto hover:background-tint-1 text-blue text-14px" onclick="gototaskincalendar(${sortstartdate(realaddedtodos)[0].id})">Jump to first task</span>`)
+				displayalert(`Scheduled ${addedtodos.length} task${addedtodos.length == 1 ? '' : 's'} <span class="margin-left-6px padding-6px-12px border-8px pointer pointer-auto text-white background-blue hover:background-blue-hover text-14px" onclick="gototaskincalendar('${sortstartdate(addedtodos)[0].id}')">Jump to first task</span>`)
 			}
 		}
 		
@@ -13419,7 +13445,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 		//edit schedule UI
 		/*
-		if(realaddedtodos.length > 0){
+		if(addedtodos.length > 0){
 			iseditingschedule = true
 
 			hasopenedscheduleeditorpopup = false
@@ -13470,7 +13496,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			useWorker: true
 		})
 
-		let confettievents = modifiedevents.filter(d => !d.iseventsuggestion)
+		let confettievents = modifiedevents.filter(d => !eventsuggestiontodos.find(g => g.id == d.id))
 		let promises = []
 		for (let item of confettievents) {
 			let itemelement = getElement(item.id)
@@ -14725,12 +14751,6 @@ async function eventcompleted(event, id) {
 	}
 	*/
 
-	if(item.completed){
-		if(Calendar.Event.isEvent(item)){
-			unscheduleevent(item)
-		}
-	}
-
 
 	fixrecurringtodo(item)
 	fixsubandparenttask(item)
@@ -14749,15 +14769,20 @@ async function eventcompleted(event, id) {
 			useWorker: true
 		})
 
+		let itemelement = getElement(item.id)
+		if (!itemelement) return
+		let itemrect = itemelement.getBoundingClientRect()
+
 		await myconfetti({
+			spread: 30,
 			particleCount: 30,
 			gravity: 0.8,
 			startVelocity: 20,
 			decay: 0.94,
 			ticks: 150,
 			origin: {
-				x: (event.clientX) / (window.innerWidth || document.body.clientWidth),
-				y: (event.clientY) / (window.innerHeight || document.body.clientHeight)
+				x: (itemrect.x + itemrect.width / 2) / (window.innerWidth || document.body.clientWidth),
+				y: (itemrect.y + itemrect.height / 2) / (window.innerHeight || document.body.clientHeight)
 			}
 		})
 
@@ -14766,6 +14791,17 @@ async function eventcompleted(event, id) {
 		}catch(e){}
 
 	}
+
+
+	setTimeout(function(){
+		if(item.completed){
+			if(Calendar.Event.isEvent(item)){
+				if(new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() > Date.now()){
+					unscheduleevent(item.id)
+				}
+			}
+		}
+	}, 3000)
 }
 
 //double click column
