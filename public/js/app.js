@@ -13932,12 +13932,7 @@ function openreschedulepopup(id){
 	if(item.type != 1) return
 
 	let scheduleeditorpopup = getElement('scheduleeditorpopup')
-	scheduleeditorpopup.classList.remove('hiddenpopup')
-
-
-	scheduleeditorpopup.classList.remove('scheduleeditorpopupbottom')
-	scheduleeditorpopup.classList.remove('scheduleeditorpopuptop')
-
+	scheduleeditorpopup.classList.toggle('hiddenpopup')
 
 	//content
 	let currentdate = new Date()
@@ -14019,27 +14014,6 @@ function openreschedulepopup(id){
 
 	</div>`)
 
-	output.push(`
-	<div class="horizontalbar"></div>`)
-
-	output.push(`
-	<div class="display-flex flex-row gap-12px">
-		<div class="width-fit text-14px display-flex flex-row align-center gap-6px padding-8px-12px  infotopright background-tint-1 tooltip hover:background-tint-2 text-primary pointer-auto transition-duration-100 border-round pointer popupbutton" onclick="closescheduleeditorpopup();unscheduleevent('${id}')">
-								
-	<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite">
-	<g>
-			<g opacity="1">
-			<path d="M116.007 236.883C120.045 236.883 123.369 235.577 125.981 232.965C128.594 230.353 129.9 227.028 129.9 222.991L129.9 177.633L133.343 177.633C148.7 177.633 162.276 179.137 174.071 182.145C185.865 185.153 196.275 190.318 205.299 197.64C214.323 204.962 222.278 215.114 229.165 228.096C231.223 231.896 233.539 234.31 236.111 235.34C238.684 236.369 241.237 236.883 243.77 236.883C246.936 236.883 249.766 235.518 252.26 232.787C254.753 230.056 256 226.118 256 220.972C256 199.045 253.605 179.315 248.816 161.781C244.027 144.247 236.665 129.267 226.731 116.839C216.797 104.411 204.092 94.9116 188.616 88.3414C173.14 81.7712 154.716 78.4861 133.343 78.4861L129.9 78.4861L129.9 33.603C129.9 29.645 128.594 26.2412 125.981 23.3915C123.369 20.5417 119.965 19.1169 115.77 19.1169C112.841 19.1169 110.229 19.7699 107.933 21.0761C105.638 22.3822 102.907 24.5393 99.7403 27.5473L6.05566 115.176C3.76005 117.314 2.17687 119.49 1.30612 121.707C0.435374 123.923 0 126.021 0 128C0 129.9 0.435374 131.958 1.30612 134.174C2.17687 136.391 3.76005 138.568 6.05566 140.705L99.7403 229.165C102.59 231.857 105.281 233.816 107.814 235.043C110.348 236.27 113.079 236.883 116.007 236.883ZM109.239 211.354C108.527 211.354 107.854 210.998 107.221 210.286L22.5603 130.256C22.0853 129.781 21.7489 129.365 21.551 129.009C21.3531 128.653 21.2542 128.317 21.2542 128C21.2542 127.288 21.6895 126.536 22.5603 125.744L107.102 44.6456C107.419 44.4082 107.735 44.1905 108.052 43.9926C108.369 43.7947 108.725 43.6957 109.121 43.6957C110.229 43.6957 110.783 44.2498 110.783 45.3581L110.783 92.4972C110.783 95.1095 112.129 96.4156 114.82 96.4156L130.731 96.4156C147.038 96.4156 161.168 98.4935 173.121 102.649C185.074 106.805 195.166 112.544 203.399 119.866C211.631 127.189 218.281 135.639 223.347 145.217C228.413 154.795 232.193 165.027 234.686 175.911C237.18 186.795 238.664 197.818 239.139 208.98C239.139 209.85 238.823 210.286 238.189 210.286C237.952 210.286 237.754 210.187 237.596 209.989C237.437 209.791 237.279 209.494 237.121 209.098C232.45 199.203 225.365 190.536 215.866 183.095C206.367 175.654 194.513 169.895 180.304 165.818C166.095 161.741 149.571 159.703 130.731 159.703L114.82 159.703C112.129 159.703 110.783 161.009 110.783 163.622L110.783 209.573C110.783 210.761 110.268 211.354 109.239 211.354Z" fill-rule="nonzero" opacity="1"></path>
-			</g>
-			</g>
-			</svg>
-
-
-			<div class="pointer-none nowrap text-primary text-14px">Undo schedule</div>
-		</div>
-
-	</div>`)
-
 	output.push(`<div class="text-secondary text-14px popupbutton align-self-flex-end width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">Feedback</div>`)
 
 
@@ -14056,8 +14030,6 @@ function openreschedulepopup(id){
 
 	scheduleeditorpopup.style.left = fixleft(reschedulebutton.getBoundingClientRect().left + reschedulebutton.offsetWidth/2 - scheduleeditorpopup.offsetWidth/2, scheduleeditorpopup) + 'px'
 }
-
-
 
 
 
