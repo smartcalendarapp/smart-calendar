@@ -2476,7 +2476,7 @@ class Calendar {
 
 
 
-				if (movingevent || iseditingschedule) {
+				if (movingevent || iseditingschedule || isautoscheduling) {
 					eventinfo.classList.add('hiddenpopup')
 					return
 				}
@@ -3642,12 +3642,16 @@ getclient()
 
 
 //timing functions
-function beziercurve(t){
-	return t * t * (3 - 2 * t)
+function slideeventcurve(t){
+	//ease in out cubic
+	return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1
 }
 
-function easeoutcubic(t) {
-	return 1 - Math.pow(1 - t, 3)
+function groweventcurve(t) {
+	const c1 = 1.1
+    const c3 = c1 + 1
+
+    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2)
 }
 
 
@@ -9613,6 +9617,10 @@ function typeaddtask(event, submit) {
 	let todoinputtitleprompttodotoday = getElement('todoinputtitleprompttodotoday')
 	let finalstring = todoinputtitle.value || todoinputtitleonboarding.value || todoinputtitleprompttodotoday.value
 
+	if(finalstring.length > 0){
+		clicktypeaddtask()
+	}
+
 	let clickcreatetodoaisuggestionsubtaskswrap = getElement('clickcreatetodoaisuggestionsubtaskswrap')
 	if(finalstring.length < 5){
 		clickcreatetodoaisuggestionsubtaskswrap.classList.add('display-none')
@@ -9732,11 +9740,14 @@ function typeaddtask(event, submit) {
 function submitcreatetodo(event) {
 	stoprecognition()
 
+	let title = typeaddtask(event, true)
+
 	let addtodooptionspopup = getElement('addtodooptionspopup')
 	addtodooptionspopup.classList.add('hiddenpopup')
-
-
-	let title = typeaddtask(event, true)
+	let addtodooptionspopuponboarding = getElement('addtodooptionspopuponboarding')
+	addtodooptionspopuponboarding.classList.add('hiddenpopup')
+	let addtodooptionspopupprompttodotoday = getElement('addtodooptionspopupprompttodotoday')
+	addtodooptionspopupprompttodotoday.classList.add('hiddenpopup')
 
 	let todoinputnotes = getElement('todoinputnotes')
 	let todoinputnotesonboarding = getElement('todoinputnotesonboarding')
@@ -10953,6 +10964,19 @@ function addsubtask(event, id){
 
 	calendar.todos.push(newtask)
 
+	if(Calendar.Event.isEvent(item)){
+		//unschedule
+		let todoitem = gettodofromevent(item)
+
+		calendar.todos.push(todoitem)
+		calendar.events = calendar.events.filter(d => d.id != item.id)
+
+		selectedeventid = null
+
+		calendar.updateTodo()
+		calendar.updateEvents()
+	}
+
 	
 	fixsubandparenttask(newtask)
 
@@ -11045,6 +11069,14 @@ async function todocompleted(event, id) {
 	
 	fixsubandparenttask(item)
 
+	let itemrect;
+	if(item.completed){
+		let itemelement = getElement(`todo-${item.id}`)
+		if (!itemelement) return
+
+		itemrect = itemelement.getBoundingClientRect()
+	}
+
 	calendar.updateTodo()
 	if(Calendar.Event.isEvent(item)){
 		calendar.updateEvents()
@@ -11059,11 +11091,6 @@ async function todocompleted(event, id) {
 			resize: true,
 			useWorker: true
 		})
-
-		let itemelement = getElement(`todo-${item.id}`)
-		if (!itemelement) return
-
-		let itemrect = itemelement.getBoundingClientRect()
 		
 		await myconfetti({
 			spread: 30,
@@ -11889,11 +11916,11 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 	*/
 
 	let aisuggestiontext = item.iseventsuggestion ? `
-	<span class="flex-wrap-wrap align-center pointer-auto 
+	<span class="flex-wrap-wrap align-center pointer-none 
 	display-inline-flex flex-row column-gap-6px">
 		<span class="transition-duration-100 text-12px pointer-none text-quaternary text-bold   transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
-		<div class="transition-duration-100 text-white background-blue hover:background-blue-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
-		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
+		<div class="transition-duration-100 text-white pointer-auto background-blue hover:background-blue-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
+		<div class="transition-duration-100 text-white pointer-auto background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
 	</span>` : ''
 
 
@@ -12037,11 +12064,11 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	*/
 
 	let aisuggestiontext = item.iseventsuggestion ? `
-	<span class="flex-wrap-wrap align-center pointer-auto 
+	<span class="flex-wrap-wrap align-center pointer-none 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-none text-quaternary text-bold  transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
-		<div class="transition-duration-100 text-white background-blue hover:background-blue-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
-		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
+		<span class="transition-duration-100 text-12px pointer-none text-quaternary text-bold   transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
+		<div class="transition-duration-100 text-white pointer-auto background-blue hover:background-blue-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
+		<div class="transition-duration-100 text-white pointer-auto background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
 	</span>` : ''
 
 	let output = ''
@@ -13209,7 +13236,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				const frames = 30
 				function nextframe(){
 					if(todoitem){
-						let percentage = easeoutcubic(tick/frames)
+						let percentage = groweventcurve(tick/frames)
 						
 						let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
 						if(autoscheduleitem){
@@ -13217,7 +13244,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 							calendar.updateAnimatedEvents()
 						}
 					}else{
-						let percentage = beziercurve(tick/frames)
+						let percentage = slideeventcurve(tick/frames)
 
 						let newstartdate = new Date(oldstartdate.getTime() + difference * percentage)
 						let newenddate = new Date(newstartdate.getTime() + duration)
@@ -13313,7 +13340,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 						let difference = finalstartdate.getTime() - oldstartdate.getTime()
 
 
-						let newstartdate = new Date(oldstartdate.getTime() + difference * beziercurve(tick / frames))
+						let newstartdate = new Date(oldstartdate.getTime() + difference * slideeventcurve(tick / frames))
 						let newenddate = new Date(newstartdate.getTime() + duration)
 
 						item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()
@@ -13328,7 +13355,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 						let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
 						if (autoscheduleitem) {
-							autoscheduleitem.percentage = beziercurve(tick / frames)
+							autoscheduleitem.percentage = slideeventcurve(tick / frames)
 						}
 
 						if (tick >= frames) {
@@ -13378,8 +13405,6 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			calendar.updateTodo()
 
 			isautoscheduling = false
-
-			calendar.updateTodoButtons()
 		}
 
 		//pre animate
@@ -13408,7 +13433,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		}
 		
 		if(moveditem){
-			displayalert(`1 task was successfully moved.`)
+			displayalert(`Task "${Calendar.Event.getTitle(moveditem).slice(0, 10)}${Calendar.Event.getTitle(moveditem).length > 10 ? '...' : ''}" rescheduled for ${Calendar.Event.getStartText(moveditem)}`)
 		}
 
 
@@ -13985,14 +14010,14 @@ function openreschedulepopup(id){
 
 		availabletimeoutput.push(`<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px ${currenttimetext == availabletimetext && item.autoschedulelocked ? `selectedbuttonactive` : ''}" onclick="editschedulemoveevent('${item.id}', ${ceil(tempavailabletime.start, 60000*5)})">${availabletimetext}</div>`)
 		
-		if(availabletimeoutput.length == 5) break
+		if(availabletimeoutput.length == 3) break
 	}
 	
 
 	let output = []
 	output.push(`
-	<div class="flex-column display-flex gap-6px">
-		<div class="text-16px text-primary">Move to:</div>
+	<div class="flex-column display-flex gap-12px">
+		<div class="text-18px text-primary">Move to:</div>
 		<div class="display-flex flex-row flex-wrap-wrap gap-12px">
 
 			<div class="text-14px display-flex flex-row gap-6px align-center text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px ${!item.autoschedulelocked ? `selectedbuttonactive` : ''}" onclick="editschedulemoveeventauto('${item.id}')">
@@ -14280,7 +14305,7 @@ async function autoScheduleV1(currentevents, showsummary) {
 			let finalstartdate = new Date(newitem.start.year, newitem.start.month, newitem.start.day, 0, newitem.start.minute)
 			let difference = finalstartdate.getTime() - oldstartdate.getTime()
 
-			let newstartdate = new Date(oldstartdate.getTime() + difference * beziercurve(tick / frames))
+			let newstartdate = new Date(oldstartdate.getTime() + difference * slideeventcurve(tick / frames))
 			let newenddate = new Date(newstartdate.getTime() + duration)
 
 			item.start.minute = newstartdate.getHours() * 60 + newstartdate.getMinutes()

@@ -101,7 +101,7 @@ async function getclientinfo() {
 
 		//close one tap popup
 		setInterval(() => {
-			if(google) google.accounts.id.cancel()
+			if(window.google) google.accounts.id.cancel()
 		}, 100)
 	} else if (response2.status == 401) {
 	} else {
