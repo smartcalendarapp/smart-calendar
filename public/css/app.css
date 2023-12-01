@@ -1155,13 +1155,12 @@ body {
 	animation-duration: 4s;
 	animation-iteration-count: infinite;
 	animation-timing-function: ease-in-out;
-	opacity: 1;
 	border:1px solid var(--purple-transparent);
 	box-shadow: var(--purple-transparent) 0px 2px 12px -7px;
 }
 
 
-@keyframes eventeuggestionborder {
+@keyframes eventsuggestionborder {
 	0% {
 		box-shadow: var(--blue-transparent) 0px 2px 12px -7px;
 	}
@@ -1176,6 +1175,10 @@ body {
 }
 
 .eventsuggestionborder{
+	animation-name: eventsuggestionborder;
+	animation-duration: 4s;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
 	border:1px solid var(--blue);
 	box-shadow: var(--blue-transparent) 0px 2px 12px -7px;
 }

@@ -11891,7 +11891,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 	let aisuggestiontext = item.iseventsuggestion ? `
 	<span class="flex-wrap-wrap align-center pointer-auto 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-none text-purple text-bold   transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
+		<span class="transition-duration-100 text-12px pointer-none text-quaternary text-bold   transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
 		<div class="transition-duration-100 text-white background-blue hover:background-blue-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
 		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
 	</span>` : ''
@@ -12039,7 +12039,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	let aisuggestiontext = item.iseventsuggestion ? `
 	<span class="flex-wrap-wrap align-center pointer-auto 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-none text-purple text-bold  transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
+		<span class="transition-duration-100 text-12px pointer-none text-quaternary text-bold  transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
 		<div class="transition-duration-100 text-white background-blue hover:background-blue-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
 		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
 	</span>` : ''
@@ -13401,9 +13401,9 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		if(addedtodos.length > 0){
 			if(addedtodos.length == 1){
 				let temptodo = addedtodos[0]
-				displayalert(`Scheduled "${Calendar.Event.getTitle(temptodo).slice(0, 10)}${Calendar.Event.getTitle(temptodo).length > 10 ? '...' : ''}" for ${Calendar.Event.getStartText(temptodo)} <span class="margin-left-6px padding-6px-12px border-8px pointer pointer-auto text-white background-blue hover:background-blue-hover text-14px" onclick="gototaskincalendar('${sortstartdate(addedtodos)[0].id}')">Jump to task</span>`)
+				displayalert(`Task "${Calendar.Event.getTitle(temptodo).slice(0, 10)}${Calendar.Event.getTitle(temptodo).length > 10 ? '...' : ''}" scheduled for ${Calendar.Event.getStartText(temptodo)} <span class="margin-left-6px padding-6px-12px border-8px pointer pointer-auto text-white background-blue hover:background-blue-hover text-14px" onclick="gototaskincalendar('${sortstartdate(addedtodos)[0].id}')">Jump to task</span>`)
 			}else{
-				displayalert(`Scheduled ${addedtodos.length} task${addedtodos.length == 1 ? '' : 's'} <span class="margin-left-6px padding-6px-12px border-8px pointer pointer-auto text-white background-blue hover:background-blue-hover text-14px" onclick="gototaskincalendar('${sortstartdate(addedtodos)[0].id}')">Jump to first task</span>`)
+				displayalert(`${addedtodos.length} task${addedtodos.length == 1 ? '' : 's'} scheduled <span class="margin-left-6px padding-6px-12px border-8px pointer pointer-auto text-white background-blue hover:background-blue-hover text-14px" onclick="gototaskincalendar('${sortstartdate(addedtodos)[0].id}')">Jump to first task</span>`)
 			}
 		}
 		
