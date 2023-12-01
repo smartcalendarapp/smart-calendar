@@ -3392,6 +3392,15 @@ class Calendar {
 		connectdiscordstatus2.innerHTML = discordtext
 
 
+		//email newsletter
+		let enableemailnewsletter = getElement('enableemailnewsletter')
+		enableemailnewsletter.checked = calendar.settings.emailpreferences.newsletter
+
+		//email planning reminders
+		let enableemailplanning = getElement('enableemailplanning')
+		enableemailplanning.checked = calendar.settings.emailpreferences.engagementalerts
+
+
 		//apple 
 		let connectapple = getElement('connectapple')
 		let disconnectapple = getElement('disconnectapple')
@@ -3644,7 +3653,9 @@ getclient()
 //timing functions
 function slideeventcurve(t){
 	//ease in out cubic
-	return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1
+	return t < 0.5
+        ? 4 * t * t * t
+        : 1 - Math.pow(-2 * t + 2, 3) / 2
 }
 
 function groweventcurve(t) {
@@ -4275,6 +4286,20 @@ function run() {
 	let currentdate = new Date()
 	scrollcalendarY(currentdate.getHours() * 60 + currentdate.getMinutes())
 
+	//query
+	function checkquery(){
+		const queryParams = new URLSearchParams(window.location.search)
+	
+		if (queryParams.get('managenotifications') === 'true') {
+			calendartabs = [3]
+			settingstab = 4
+			calendar.updateTabs()
+		}
+
+		let newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname
+    	history.pushState({ path: newUrl }, '', newUrl)
+	}
+	checkquery()
 
 	//LOOP
 
@@ -6615,6 +6640,15 @@ function toggleiosappnotifs(event){
 
 function togglediscordnotifs(event){
 	calendar.discordreminderenabled = event.target.checked
+	calendar.updateSettings()
+}
+
+function toggleemailnewsletter(event){
+	calendar.emailpreferences.newsletter = event.target.checked
+	calendar.updateSettings()
+}
+function toggleemailplanning(event){
+	calendar.emailpreferences.engagementalerts = event.target.checked
 	calendar.updateSettings()
 }
 
@@ -13414,6 +13448,8 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 		calendar.updateEvents()
 		calendar.updateAnimatedEvents()
+
+		calendar.updateInfo()
 
 		//animate
 		let sortedmodifiedevents =  sortstartdate(modifiedevents).reverse()

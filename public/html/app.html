@@ -2438,7 +2438,15 @@
 											<path d="M78.4636 192.42C78.4636 192.42 81.2653 246 123.554 246C165.843 246 170.823 192.42 170.823 192.42" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
 											</g>
 										</svg>
-										Notifications
+										Reminders
+									</div>
+									<div class="leftwrapitem display-flex flex-row gap-6px align-center" onclick="clicksettingstab(4)">
+										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 246 256" width="100%" class="buttonlarge">
+											<g opacity="1" vectornator:layerName="Group 1">
+												<path d="M36.4058 227.884L223.072 227.884C233.507 227.884 241.604 224.889 247.362 218.899C253.121 212.908 256 203.923 256 191.942L256 63.942C256 52.0386 252.966 43.0918 246.899 37.1014C240.831 31.1111 231.729 28.1159 219.594 28.1159L32.9275 28.1159C22.4928 28.1159 14.3961 31.1111 8.63768 37.1014C2.87923 43.0918 0 52.0386 0 63.942L0 191.942C0 203.923 3.03382 212.908 9.10145 218.899C15.1691 224.889 24.2705 227.884 36.4058 227.884ZM35.7101 210.145C29.913 210.145 25.4686 208.618 22.3768 205.565C19.285 202.512 17.7391 197.971 17.7391 191.942L17.7391 63.942C17.7391 57.9903 19.285 53.4879 22.3768 50.4348C25.4686 47.3816 29.913 45.8551 35.7101 45.8551L220.29 45.8551C226.01 45.8551 230.435 47.3816 233.565 50.4348C236.696 53.4879 238.261 58.029 238.261 64.058L238.261 192.058C238.261 198.01 236.696 202.512 233.565 205.565C230.435 208.618 226.01 210.145 220.29 210.145L35.7101 210.145ZM128.232 158.899C132.329 158.899 136.348 158.01 140.29 156.232C144.232 154.454 148.251 151.556 152.348 147.536L246.493 55.0145L234.435 42.8406L142.261 133.855C139.71 136.329 137.295 138.145 135.014 139.304C132.734 140.464 130.473 141.043 128.232 141.043C125.913 141.043 123.614 140.444 121.333 139.246C119.053 138.048 116.676 136.251 114.203 133.855L21.5652 42.3768L9.3913 54.5507L104.116 147.536C108.135 151.556 112.135 154.454 116.116 156.232C120.097 158.01 124.135 158.899 128.232 158.899ZM233.275 212.696L245.333 200.522L170.319 126.435L158.261 138.493L233.275 212.696ZM11.0145 200.638L23.0725 212.812L98.2029 138.493L86.029 126.435L11.0145 200.638Z" fill-rule="nonzero" opacity="1" ></path>
+											</g>
+										</svg>
+										Email notifications
 									</div>
 								</div>
 			
@@ -2731,8 +2739,9 @@
 										
 									</div>
 			
-									<!-- notifs -->
+									<!-- reminders -->
 									<div class="display-flex flex-column gap-24px">
+
 										<div class="infogroup" id="iosnotificaitonswrap">
 											<div class="display-flex justify-space-between flex-row gap-12px align-center">
 												<div class="infotext text-16px text-bold">iOS App Notifications</div>
@@ -2785,6 +2794,32 @@
 										</div>
 
 									</div>
+
+									<!-- emails -->
+									<div class="display-flex flex-column gap-24px">
+										<div class="infogroup">
+											<div class="display-flex justify-space-between flex-row gap-12px align-center">
+												<div class="infotext text-16px text-bold">Email Newsletter</div>
+												<label class="switch">
+													<input type="checkbox" oninput="toggleemailnewsletter(event)" id="enableemailnewsletter">
+													<span class="slider"></span>
+												</label>
+											</div>
+											<div class="infotext text-14px text-quaternary">We only send you high-quality content, infrequently.</div>
+										</div>
+
+										<div class="infogroup">
+											<div class="display-flex justify-space-between flex-row gap-12px align-center">
+												<div class="infotext text-16px text-bold">Engagement Alerts</div>
+												<label class="switch">
+													<input type="checkbox" oninput="toggleemailplanning(event)" id="enableemailplanning">
+													<span class="slider"></span>
+												</label>
+											</div>
+											<div class="infotext text-14px text-quaternary">We'll remind you after some inactivity to get back on track, or to complete your setup.</div>
+										</div>
+
+									</div>
 						
 			
 									</div>
@@ -2797,7 +2832,8 @@
 									<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(0)">Account</div>
 									<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(1)">General</div>
 									<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(2)">My calendars</div>
-									<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(3)">Notifications</div>
+									<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(3)">Reminders</div>
+									<div class="border-8px pointer transition-duration-100 padding-8px-12px background-tint-1 hover:background-tint-2 nowrap flex-1 text-14px text-center text-primary text-center" onclick="clicksettingstab(4)">Emails</div>
 								</div>
 								
 							</div>

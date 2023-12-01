@@ -195,9 +195,6 @@ function addmissingpropertiestouser(user){
 	for(let item of user.calendardata.calendars){
 		addmissingproperties(MODELCALENDAR, item)
 	}
-	for(let item of user.calendardata.notifications){
-		addmissingproperties(MODELNOTIFICATION, item)
-	}
 	return user
 }
 
@@ -305,12 +302,11 @@ class User{
 }
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
-const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true }, lastnotificationdate: 0, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, quickguide: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false  }
-const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptusedtimestamps: [], betatester: false }
+const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, quickguide: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, emailpreferences: { newsletter: true, engagementalerts: true }  }
+const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptusedtimestamps: [], betatester: false, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null } }
 const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0, parentid: null, subtasksuggestions: [], gotsubtasksuggestions: false, iseventsuggestion: false, goteventsuggestion: false, autoschedulelocked: false }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#18a4f5', isprimary: false, subscriptionurl: null, lastmodified: 0  }
-const MODELNOTIFICATION = { id: null, read: false, timestamp: null }
 
 
 //WEBPUSH NOTIFICATIONS
@@ -555,7 +551,7 @@ async function processReminders(){
 
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-										<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+										<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
 									<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 									</div>
 
@@ -624,7 +620,7 @@ async function processReminders(){
 
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-										<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+										<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
 									<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 									</div>
 
@@ -683,7 +679,51 @@ async function processReminders(){
 		}
 
 	}
+
+
+	//engagement alerts
+	let sendengagementalerts = []
+	for(let [key, value] of Object.entries(engagementcache)){
+		if(!value.finishedonboarding && currentdate.getTime() - value.createddate > 86400*1000*2){
+			//unfinished onboarding
+			//send email on day 2, 6, 18
+
+			if(currentdate.getTime() - value.engagementalerts.lastsentdate > 86400*1000*2 * (Math.pow(3, value.engagementalerts.onboardingtries || 0) - 1)){
+				if(value.engagementalerts.onboardingtries <= 2){ //stop after 3
+					sendengagementalerts.push(value)
+
+					/*let tempuser = await getUserById(key)
+					tempuser.accountdata.engagementalerts.onboardingtries++
+					tempuser.accountdata.engagementalerts.lastsentdate = currentdate.getTime()
+					await setUser(tempuser)*/
+				}
+			}
+		}else if(currentdate.getTime() - value.lastmodified > 86400*1000*7){
+			//inactive for 7 days
+			//send email on day 7, 14, 28, 56...
+
+			if(currentdate.getTime() - value.engagementalerts.lastsentdate > 86400*1000*7 * (Math.pow(2, value.engagementalerts.activitytries || 0) - 1)){
+				if(value.engagementalerts.activitytries <= 3){ //stop after 4
+					sendengagementalerts.push(value)
+
+					/*let tempuser = await getUserById(key)
+					tempuser.accountdata.engagementalerts.activitytries++
+					tempuser.accountdata.engagementalerts.lastsentdate = currentdate.getTime()
+					await setUser(tempuser)*/
+				}
+			}
+		}
+		
+	}
+
+	for(let item of sendengagementalerts){
+		//send
+		//here2
+	}
+	x = sendengagementalerts
+	console.warn(sendengagementalerts.length, sendengagementalerts[0])
 }
+let x;
 
 
 function isEmail(str) {
@@ -879,12 +919,28 @@ function cacheReminders(user){
 	}
 	
 	reminderscache[user.userid] = tempreminders
+
+
+	//engagement cache
+	engagementcache[user.userid] = {
+		user: {
+			name: name,
+			email: email,
+			discordid: discordid,
+		},
+		createddate: user.accountdata.createddate,
+		lastmodified: user.calendardata.lastmodified,
+		finishedonboarding: user.calendardata.onboarding.addtask == true,
+		engagementalerts: user.accountdata.engagementalerts,
+	}
 }
 
 
 //email notifications
 let reminderscache = {}
 let lastreminderdate = Date.now()
+
+let engagementcache = {}
 
 async function initializeReminders(){
 	try {
@@ -2705,7 +2761,7 @@ async function sendwelcomeemail(user){
 
 		<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-					<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+					<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
 				<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 				</div>
 
