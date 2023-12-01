@@ -5944,7 +5944,7 @@ function getalldayeventdata(item, currentdate, timestamp) {
 	}
 
 	if(item.iseventsuggestion){
-		itemclasses.push('suggestionborder')
+		itemclasses.push('eventsuggestionborder')
 		itemclasses.push('eventsuggestionglow')
 	}
 
@@ -6112,7 +6112,7 @@ function getmontheventdata(item, currentdate, timestamp) {
 	}
 
 	if(item.iseventsuggestion){
-		itemclasses.push('suggestionborder')
+		itemclasses.push('eventsuggestionborder')
 		itemclasses.push('eventsuggestionglow')
 	}
 
@@ -11873,7 +11873,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 	}
 
 	if(item.iseventsuggestion){
-		itemclasses.push('suggestionborder')
+		itemclasses.push('eventsuggestionborder')
 		itemclasses.push('eventsuggestionglow')
 	}
 
@@ -11891,7 +11891,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 	let aisuggestiontext = item.iseventsuggestion ? `
 	<span class="flex-wrap-wrap align-center pointer-auto 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-auto text-purple text-bold   transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
+		<span class="transition-duration-100 text-12px pointer-none text-purple text-bold   transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
 		<div class="transition-duration-100 text-white background-blue hover:background-blue-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
 		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
 	</span>` : ''
@@ -12021,7 +12021,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	}
 
 	if(item.iseventsuggestion){
-		itemclasses.push('suggestionborder')
+		itemclasses.push('eventsuggestionborder')
 		itemclasses.push('eventsuggestionglow')
 	}
 
@@ -12039,7 +12039,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	let aisuggestiontext = item.iseventsuggestion ? `
 	<span class="flex-wrap-wrap align-center pointer-auto 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-auto text-purple text-bold  transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
+		<span class="transition-duration-100 text-12px pointer-none text-purple text-bold  transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
 		<div class="transition-duration-100 text-white background-blue hover:background-blue-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
 		<div class="transition-duration-100 text-white background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
 	</span>` : ''
