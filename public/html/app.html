@@ -947,7 +947,7 @@
 			<div class="text-16px text-primary">Connect to Google Calendar to sync your events here.</div>
 
 			<div class="display-flex flex-row align-center gap-12px justify-space-between">
-				<div class="border-8px flex-1 text-center background-tint-1 hover:background-tint-2 padding-8px-12px text-primary nowrap text-14px transition-duration-100 pointer" onclick="disablesyncgooglecalendar();closeloginwithgooglepopup()">Turn off sync</div>
+				<div class="border-8px flex-1 text-center background-tint-1 hover:background-tint-2 padding-8px-12px text-primary nowrap text-14px transition-duration-100 pointer" onclick="disablesyncgooglecalendar();closeloginwithgooglepopup()">Turn off</div>
 
 				<div class="border-8px nowrap flex-1 display-flex flex-row gap-6px align-center googlebutton justify-center text-center text-14px padding-8px-16px pointer transition-duration-100" onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })">
 					<img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png">
@@ -959,7 +959,7 @@
 	</div>
 
 
-	<div class="absolute fadetransition hiddenfade top-0 z-index-2000 left-0 width-full height-full display-flex flex-column align-flex-end pointer-none justify-flex-end padding-24px border-box" id="loginwithgoogleclassroomscreen">
+	<div class="absolute fadetransition hiddenfade top-0 z-index-2000 left-0 width-full height-full display-flex flex-column pointer-none justify-flex-end padding-24px border-box" id="loginwithgoogleclassroomscreen">
 		<div class="pointer-auto box-shadow padding-12px display-flex flex-column gap-12px border-8px background-primary-transparent backdrop-blur max-width-400px width-full border-box">
 			<div class="display-flex gap-12px flex-row align-center justify-space-between">
 				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -980,7 +980,7 @@
 			<div class="text-16px text-primary">Connect to Google Classroom to sync your to-do list here.</div>
 
 			<div class="display-flex flex-row align-center gap-12px justify-space-between">
-				<div class="border-8px flex-1 text-center background-tint-1 hover:background-tint-2 padding-8px-12px text-primary nowrap text-14px transition-duration-100 pointer" onclick="disablesyncgoogleclassroom();closeloginwithgoogleclassroompopup()">Turn off sync</div>
+				<div class="border-8px flex-1 text-center background-tint-1 hover:background-tint-2 padding-8px-12px text-primary nowrap text-14px transition-duration-100 pointer" onclick="disablesyncgoogleclassroom();closeloginwithgoogleclassroompopup()">Turn off</div>
 
 				<div class="border-8px nowrap flex-1 display-flex flex-row gap-6px align-center googlebutton justify-center text-center text-14px padding-8px-16px pointer transition-duration-100" onclick="logingoogle({ scope: ['calendar', 'classroom'], enable: ['classroom'] })">
 					<img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png">
@@ -1110,29 +1110,6 @@
 				</div>
 			</div>
 
-			<div class="absolute top-0 left-0 width-full height-full display-flex flex-column align-center " id="onboardingquickguide">
-				
-				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
-					<div class="display-flex flex-column gap-12px">
-						<div class="text-24px text-primary text-bold">A quick guide</div>
-						<div class="text-18px text-quaternary">Prepare to experience the future of productivity! Smart Calendar is unlike any app out there—it helps build your schedule for optimal productivity.</div>
-					</div>
-
-					<div class="display-flex align-self-center flex-column gap-24px">
-						<div class="display-flex flex-column gap-12px">
-							<div class="text-primary text-center text-18px text-bold">Quick Guide</div>
-							<div class="text-primary text-18px"><span class="text-bold">Task</span>: An item on your to do list. The app will automatically schedule it using an intelligent research-backed algorithm.<br><span class="text-quaternary">Examples: work on project, walk dog.</span></div>
-							<div class="text-primary text-18px"><span class="text-bold">Event</span>: A fixed-time commitment. Our app will not modify it.<br><span class="text-quaternary">Examples: school, meeting.</span></div>
-						</div>
-					</div>
-
-					<div class="display-flex flex-row gap-24px justify-center align-center">
-						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="backonboarding('start')">Back</div>
-						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('quickguide')">Continue</div>
-					</div>
-
-				</div>
-			</div>
 
 			<div class="absolute top-0 left-0 width-full height-full display-flex flex-column align-center " id="onboardingconnectcalendars">
 				
@@ -1179,26 +1156,12 @@
 				
 				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
 					<div class="display-flex flex-column gap-12px">
-						<div class="text-24px text-primary text-bold">Connect your to-do lists</div>
-						<div class="text-18px text-quaternary">If you use Google Classroom, connect it to our app to manage your to-do list in one place.</div>
+						<div class="text-24px text-primary text-bold">Pick your calendars</div>
+						<div class="text-18px text-quaternary">Pick which calendars you want Smart Calendar to show, and plan your day around.</div>
 					</div>
 
-					<div class="display-flex align-self-center flex-column gap-24px">
-						<div class="display-flex flex-column gap-6px">
-							<div class="text-bold text-16px text-primary display-flex flex-row align-center gap-6px"><img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png"></img> Google Classroom</div>
+					<div id="pickyourcalendarslist" class="display-flex flex-column gap-12px"></div>
 
-							<div class="display-flex flex-row gap-12px align-center flex-wrap-wrap">
-								<div class="display-flex flex-row gap-6px align-center border-8px width300px googlebutton justify-center text-center text-14px padding-8px-16px pointer transition-duration-100" onclick="logingoogle({ scope: ['calendar', 'classroom'], enable: ['classroom'] })">
-									<img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png"></img> Connect to Google Classroom
-								</div>
-
-								<div class="display-flex flex-row gap-6px align-center" id="onboardingconnecttodolistsgoogleclassroom"></div>
-							</div>
-						</div>
-
-						<div class="text-primary text-16px">More apps coming soon!</div>
-
-					</div>
 
 					<div class="display-flex flex-row gap-24px justify-center align-center">
 						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="backonboarding('connectcalendars')">Back</div>
@@ -2220,7 +2183,7 @@
 						</div>
 						
 	
-						<div class="marginbottom50vh flex-column display-flex gap-24px" id="alltodolist"></div>
+						<div class="flex-column display-flex gap-24px" id="alltodolist"></div>
 			
 						
 					</div>

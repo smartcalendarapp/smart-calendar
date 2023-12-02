@@ -302,7 +302,7 @@ class User{
 }
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
-const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, quickguide: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, emailpreferences: { newsletter: true, engagementalerts: true }  }
+const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { newsletter: true, engagementalerts: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false }
 const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptusedtimestamps: [], betatester: false, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null } }
 const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0, parentid: null, subtasksuggestions: [], gotsubtasksuggestions: false, iseventsuggestion: false, goteventsuggestion: false, autoschedulelocked: false }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false }
@@ -569,7 +569,7 @@ async function processReminders(){
 					Stay Productive,
 					Smart Calendar | Your Personal Time Management Assistant
 
-					If you wish to stop receiving these notifications, you can update your preferences in the app.
+					If you wish to stop receiving these notifications, you can update your preferences in the app at https://smartcalendar.us/app?managenotifications=true.
 					(c) 2023 James Tsaggaris. All rights reserved.`
 				})
 
@@ -638,7 +638,7 @@ async function processReminders(){
 					Stay Productive,
 					Smart Calendar | Your Personal Time Management Assistant
 
-					If you wish to stop receiving these notifications, you can update your preferences in the app.
+					If you wish to stop receiving these notifications, you can update your preferences in the app at https://smartcalendar.us/app?managenotifications=true.
 					(c) 2023 James Tsaggaris. All rights reserved.`
 				})
 				
@@ -679,9 +679,10 @@ async function processReminders(){
 		}
 
 	}
+}
 
-
-	//engagement alerts
+async function processengagementalerts(){
+	return
 	let sendengagementalerts = []
 	for(let [key, value] of Object.entries(engagementcache)){
 		if(!value.finishedonboarding && currentdate - value.createddate > 86400*1000*2){
@@ -690,7 +691,7 @@ async function processReminders(){
 
 			if(currentdate - value.engagementalerts.lastsentdate > 86400*1000*2 * (Math.pow(3, value.engagementalerts.onboardingtries || 0) - 1)){
 				if(value.engagementalerts.onboardingtries <= 2){ //stop after 3
-					sendengagementalerts.push(value)
+					sendengagementalerts.push({ value: value, type: 0 })
 
 					/*let tempuser = await getUserById(key)
 					tempuser.accountdata.engagementalerts.onboardingtries++
@@ -704,7 +705,7 @@ async function processReminders(){
 
 			if(currentdate - value.engagementalerts.lastsentdate > 86400*1000*7 * (Math.pow(2, value.engagementalerts.activitytries || 0) - 1)){
 				if(value.engagementalerts.activitytries <= 3){ //stop after 4
-					sendengagementalerts.push(value)
+					sendengagementalerts.push({ value: value, type: 1 })
 
 					/*let tempuser = await getUserById(key)
 					tempuser.accountdata.engagementalerts.activitytries++
@@ -716,15 +717,139 @@ async function processReminders(){
 		
 	}
 
-	for(let item of sendengagementalerts){
-		//send
-		//here2
-	}
-	x = sendengagementalerts
-	console.warn(sendengagementalerts.length, sendengagementalerts[0])
-}
-let x;
+	for(let { value, type } of sendengagementalerts){
+		let email = value.user.email
+		let name = value.user.name
 
+		if(type == 0){
+
+			await sendEmail({
+				from: 'Smart Calendar <reminders@smartcalendar.us>',
+				to: email,
+				subject: `Let's complete your setup for Smart Calendar`,
+				htmlbody: `
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<title>Let's complete your setup for Smart Calendar</title>
+					<style>
+							@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
+					</style>
+				</head>
+				<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
+					<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 6px;">
+							<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
+							<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
+									Hello ${name},
+							</p>
+							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+							<p style="font-size: 18px; color: #333;">
+								We noticed you started setting up your Smart Calendar but didn't quite finish. Let's get you across the finish line!
+							</p>
+							<p style="font-size: 18px; color: #333;">
+								We would really like to show you the power of Smart Calendar. By completing your setup, you'll unlock the full potential of turning to-dos into a well-organized schedule. We think you'll like that a lot.
+							</p>
+							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+							<p style="font-size: 18px; color: #333;">
+								If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;">contact us</a>. We're here for you.
+							</p>
+							<p style="text-align: center;font-size: 18px; color: #333;">
+								<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
+							</p>
+							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+							<p style="text-align: center; font-size: 18px; color: #333;">
+									Stay Productive,<br>
+									Smart Calendar | Your Smart Time Management Assistant
+							</p>
+			
+					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+							<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
+								<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+							<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
+							</div>
+			
+					</div>
+				</body>
+				</html>`,
+						textbody: `Hello ${name},
+			
+				We noticed you started setting up your Smart Calendar but didn't quite finish. Let's get you across the finish line!
+
+				We would really like to show you the power of Smart Calendar. By completing your setup, you'll unlock the full potential of turning to-dos into a well-organized schedule. We think you'll like that a lot.
+	
+				If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you.
+	
+				Stay Productive,
+				Smart Calendar | Your Personal Time Management Assistant
+			
+				If you wish to stop receiving these notifications, you can update your preferences in the app at https://smartcalendar.us/app?managenotifications=true.
+				(c) 2023 James Tsaggaris. All rights reserved.`
+			})
+
+
+		}else if(type == 1){
+			await sendEmail({
+				from: 'Smart Calendar <reminders@smartcalendar.us>',
+				to: email,
+				subject: `Let's get back on track for your Smart Calendar`,
+				htmlbody: `
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<title>Let's complete your setup for Smart Calendar</title>
+					<style>
+							@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
+					</style>
+				</head>
+				<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
+					<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 6px;">
+							<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
+							<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
+								Hello ${name},
+							</p>
+							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+							<p style="font-size: 18px; color: #333;">
+								It's been a while since we last saw you on Smart Calendar. We have a lot of new things to share with you, and we think you'll like them a lot. Try planning your schedule for this week. You'll unlock the full potential of Smart Calendar's AI planning.
+							</p>
+							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+							<p style="font-size: 18px; color: #333;">
+								If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;">contact us</a>. We're here for you.
+							</p>
+							<p style="text-align: center;font-size: 18px; color: #333;">
+								<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
+							</p>
+							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+							<p style="text-align: center; font-size: 18px; color: #333;">
+									Stay Productive,<br>
+									Smart Calendar | Your Smart Time Management Assistant
+							</p>
+			
+					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+							<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
+								<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+							<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
+							</div>
+			
+					</div>
+				</body>
+				</html>`,
+						textbody: `Hello ${name},
+			
+				It's been a while since we last saw you on Smart Calendar. We have a lot of new things to share with you, and we think you'll like them a lot. Try planning your schedule for this week. You'll unlock the full potential of Smart Calendar's AI planning.
+	
+				If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you.
+	
+				Stay Productive,
+				Smart Calendar | Your Personal Time Management Assistant
+			
+				If you wish to stop receiving these notifications, you can update your preferences in the app at https://smartcalendar.us/app?managenotifications=true.
+				(c) 2023 James Tsaggaris. All rights reserved.`
+			})
+
+		}
+	}
+}
+//here2
 
 function isEmail(str) {
 	let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -922,16 +1047,18 @@ function cacheReminders(user){
 
 
 	//engagement cache
-	engagementcache[user.userid] = {
-		user: {
-			name: name,
-			email: email,
-			discordid: discordid,
-		},
-		createddate: user.accountdata.createddate,
-		lastmodified: user.calendardata.lastmodified,
-		finishedonboarding: user.calendardata.onboarding.addtask == true,
-		engagementalerts: user.accountdata.engagementalerts,
+	if(user.calendardata.settings.emailpreferences.engagementalerts == true){
+		engagementcache[user.userid] = {
+			user: {
+				name: name,
+				email: email,
+				discordid: discordid,
+			},
+			createddate: user.accountdata.createddate,
+			lastmodified: user.calendardata.lastmodified,
+			finishedonboarding: user.calendardata.onboarding.addtask == true,
+			engagementalerts: user.accountdata.engagementalerts,
+		}
 	}
 }
 
@@ -941,6 +1068,7 @@ let reminderscache = {}
 let lastreminderdate = Date.now()
 
 let engagementcache = {}
+let lastengagementalertdate = Date.now()
 
 async function initializeReminders(){
 	try {
@@ -964,6 +1092,7 @@ async function initializeReminders(){
 		console.error(error)
 	}
 
+
 	processReminders()
 	setInterval(tickreminders, 1000)
 	function tickreminders(){
@@ -971,6 +1100,15 @@ async function initializeReminders(){
   		let lastreminderminutes = Math.floor(lastreminderdate / 60000)
 		if(currentminutes > lastreminderminutes){
 			processReminders()
+		}
+	}
+
+	setInterval(tickengagementalerts, 60000)
+	function tickengagementalerts(){
+		let currentminutes = floor(Date.now() / 60000, 60000*5)
+  		let lastengagementalertminutes = floor(lastengagementalertdate / 60000, 60000*5)
+		if(currentminutes > lastengagementalertminutes){
+			processengagementalerts()
 		}
 	}
 }
@@ -2748,7 +2886,7 @@ async function sendwelcomeemail(user){
 				</p>
 				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<p style="font-size: 18px; color: #333;">
-						We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;">contact us</a>. We're here for you!
+						We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;">contact us</a>. We're here for you.
 				</p>
 				<p style="text-align: center;font-size: 18px; color: #333;">
 					<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
@@ -2772,12 +2910,12 @@ async function sendwelcomeemail(user){
 
 	You are now a part of a group of hundreds people who use Smart Calendar to find productivity and peace in life. That's special!
 
-	We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you!
+	We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you.
 
 	Stay Productive,
 	Smart Calendar | Your Personal Time Management Assistant
 
-	If you wish to stop receiving these notifications, you can update your preferences in the app.
+	If you wish to stop receiving these notifications, you can update your preferences in the app at https://smartcalendar.us/app?managenotifications=true.
 	(c) 2023 James Tsaggaris. All rights reserved.`
 		})
 	}

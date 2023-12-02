@@ -2560,7 +2560,7 @@ class Calendar {
 
 		//schedule button
 		let scheduleoncalendar = getElement('scheduleoncalendar')
-		if (calendar.todos.filter(d => !d.completed).length > 0 && !schedulemytasksenabled && !isautoscheduling) {
+		if (calendar.todos.filter(d => !d.completed).length > 0 && !schedulemytasksenabled) {
 			scheduleoncalendar.classList.remove('hiddenpopupstatic')
 		} else {
 			scheduleoncalendar.classList.add('hiddenpopupstatic')
@@ -2568,7 +2568,7 @@ class Calendar {
 
 		let editscheduleoncalendar = getElement('editscheduleoncalendar')
 		let editscheduleoncalendar2 = getElement('editscheduleoncalendar2')
-		if(calendar.events.filter(d => Calendar.Event.isSchedulable(d)).length > 0 && !iseditingschedule && !isautoscheduling && !schedulemytasksenabled){
+		if(calendar.events.filter(d => Calendar.Event.isSchedulable(d)).length > 0 && !schedulemytasksenabled){
 			editscheduleoncalendar.classList.remove('hiddenpopupstatic')
 			editscheduleoncalendar2.classList.remove('hiddenpopupstatic')
 		}else{
@@ -2615,7 +2615,7 @@ class Calendar {
 
 		if(calendar.closedsocialmediapopup == false && showsocialmediapopup){
 			output.push(`
-			<div class="relative display-flex gap-12px align-center socialmediagradient border-8px padding-24px flex-column">
+			<div class="relative display-flex gap-12px align-center socialmediagradient border-16px padding-24px flex-column">
 				<div class="absolute top-0 right-0 margin-12px infotoprightgroup">
 					<div class="infotopright pointer" onclick="closesocialmediapopup()">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
@@ -2727,7 +2727,7 @@ class Calendar {
 			if(output.length > 0){
 				output.push(`<div class="align-self-flex-end popupbutton text-secondary text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">We'd love your feedback</div>`)
 			}
-			
+
 		}
 
 
@@ -2802,13 +2802,41 @@ class Calendar {
 			</div>`)
 		}
 
-		
+		let notasks = output.length == 0
 
-		if(output.length == 0){
-			output.push(`<div class="absolute top-0 left-0 right-0 bottom-0 flex-1 display-flex flex-column align-center justify-center">
-<div class="text-18px text-secondary">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span>.</div>
-</div>`)
+		if(notasks){
+			output.push(`<div class="flex-1 display-flex flex-column align-center justify-center">
+				<div class="text-18px text-secondary">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span>.</div>
+			</div>`)
 		}
+
+	
+		output.push(`
+		<div class="padding-top-96px"></div>`)
+
+		output.push(`<div class="gap-12px display-flex flex-column bordertertiary border-16px padding-12px border-box">
+			<div class="text-primary text-bold text-16px">Integrations</div>
+		
+			<div class="display-flex justify-space-between flex-row align-center">
+				<div class="text-primary text-14px display-flex flex-row align-center gap-6px">
+					<img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png">
+					</img>
+					Google Classroom
+				</div>
+
+				<label class="switch">
+					<input type="checkbox" oninput="togglesyncgoogleclassroom(event)" ${calendar.settings.issyncingtogoogleclassroom ? 'checked' : ''}>
+					<span class="slider"></span>
+				</label>
+			</div>
+
+			<div class="text-quaternary text-14px">More apps coming soon!</div>
+		</div>`)
+
+		if(!notasks){
+			output.push(`<div class="padding-top-192px"></div>`)
+		}
+		//here4
 
 		let alltodolist = getElement('alltodolist')
 		if(alltodolist.innerHTML != output.join('')){
@@ -3024,6 +3052,7 @@ class Calendar {
 		updatecalendarlist()
 		updateAvatar()
 		updateuserinfo()
+		updateonboardingscreen()
 
 		//mode
 		let autoschedulemodes2 = getElement('autoschedulemodes2')
@@ -3204,7 +3233,6 @@ class Calendar {
 		syncgoogleclassroomtoggle.checked = calendar.settings.issyncingtogoogleclassroom
 
 		let lastsyncedgoogleclassroom = getElement('lastsyncedgoogleclassroom')
-
 		lastsyncedgoogleclassroom.classList.add('display-none')
 
 		if(calendar.settings.issyncingtogoogleclassroom){
@@ -4001,7 +4029,7 @@ function updatetime() {
 	}
 
 	//show social media
-	if(calendar.todos.length > 0 && clientinfo.createddate && Date.now() - clientinfo.createddate > 1000*3600 && new Date().getMinutes() % 3 == 0 && Object.values(calendar.onboarding).every(d => d == true) && Object.values(calendar.interactivetour).every(d => d == true)){
+	if(calendar.todos.length > 2 && clientinfo.createddate && Date.now() - clientinfo.createddate > 1000*3600 && new Date().getMinutes() % 3 == 0 && Object.values(calendar.onboarding).every(d => d == true) && Object.values(calendar.interactivetour).every(d => d == true)){
 		showsocialmediapopup = true
 	}
 }
@@ -4783,8 +4811,6 @@ function updateonboardingscreen(){
 	let currentonboarding;
 	if(!calendar.onboarding.start){
 		currentonboarding = 'start'
-	}else if(!calendar.onboarding.quickguide){
-		currentonboarding = 'quickguide'
 	}else if(!calendar.onboarding.connectcalendars){
 		currentonboarding = 'connectcalendars'
 	}else if(!calendar.onboarding.connecttodolists){
@@ -4892,21 +4918,10 @@ function updateonboardingscreen(){
 		let onboardingconnectcalendarsoutlookcalendar = getElement('onboardingconnectcalendarsoutlookcalendar')
 		onboardingconnectcalendarsoutlookcalendar.innerHTML = ``
 	}else if(currentonboarding == 'connecttodolists'){
-		let onboardingconnecttodolistsgoogleclassroom = getElement('onboardingconnecttodolistsgoogleclassroom')
-
-		let currentdate = new Date()
-		let issynced = calendar.settings.issyncingtogoogleclassroom && calendar.lastsyncedgoogleclassroomdate && Math.floor((currentdate.getTime() - calendar.lastsyncedgoogleclassroomdate) / 60000) <= 1
-
-		onboardingconnecttodolistsgoogleclassroom.innerHTML = issynced ? 
-			`
-			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttoninline checkboxfilledgreen">
-				<g>
-				<path d="M128 7.19484C61.2812 7.19484 7.19484 61.2812 7.19484 128C7.19484 194.719 61.2812 248.805 128 248.805C194.719 248.805 248.805 194.719 248.805 128C248.805 61.2812 194.719 7.19484 128 7.19484ZM190.851 66.0048C194.206 65.7071 197.649 66.7098 200.436 69.0426C206.01 73.7082 206.753 81.9906 202.088 87.5645L115.524 190.969C110.264 197.253 100.582 197.253 95.3213 190.969L52.0249 139.266C47.3593 133.693 48.1026 125.41 53.6765 120.745C59.2504 116.079 67.5623 116.822 72.2279 122.396L105.408 162.035L181.885 70.6942C184.217 67.9073 187.495 66.3024 190.851 66.0048Z" fill-rule="nonzero" opacity="1"></path>
-				<path d="M128 0C57.3076 0 0 57.3076 0 128C0 198.692 57.3076 256 128 256C198.692 256 256 198.692 256 128C256 57.3076 198.692 0 128 0ZM128 7.75758C194.408 7.75758 248.242 61.5919 248.242 128C248.242 194.408 194.408 248.242 128 248.242C61.5919 248.242 7.75758 194.408 7.75758 128C7.75758 61.5919 61.5919 7.75758 128 7.75758Z" fill-rule="nonzero" opacity="1"></path>
-				</g>
-			</svg>
-			<div class="text-14px text-green">Connected</div>` 
-			: `<div class="text-14px text-quaternary">Not connected</div>`
+		let settingscalendarlist = getElement('settingscalendarlist')
+		
+		let pickyourcalendarslist = getElement('pickyourcalendarslist')
+		pickyourcalendarslist.innerHTML = settingscalendarlist.innerHTML
 	}else if(currentonboarding == 'sleeptime'){
 		getElement('timepicker').classList.add('z-index-10001')
 
@@ -4938,10 +4953,18 @@ function updateonboardingscreen(){
 
 function continueonboarding(key){	
 	if(calendar.onboarding[key] != null) calendar.onboarding[key] = true
+
+	if(key == 'connectcalendars'){
+		if(!calendar.settings.issyncingtogooglecalendar || calendar.calendars.length == 1){
+			calendar.onboarding['connecttodolists'] = true
+		}
+	}
+
 	updateonboardingscreen()
 }
 function backonboarding(key){
 	if(calendar.onboarding[key] != null) calendar.onboarding[key] = false
+
 	updateonboardingscreen()
 }
 
@@ -6811,7 +6834,6 @@ async function getclientgoogleclassroom(){
 			calendar.updateHistory()
 
 			calendar.updateSettings()
-			updateonboardingscreen()
 		}
 	}catch(err){
 		console.log(err)
@@ -7208,7 +7230,6 @@ async function getclientgooglecalendar() {
 
 			calendar.updateSettings()
 			updatecalendarlist()
-			updateonboardingscreen()
 
 		}
 	} catch (err) {
@@ -14025,11 +14046,11 @@ function openreschedulepopup(id){
 		const isTomorrow = tomorrowday.getTime() == dateday.getTime()
 
 		if (today) {
-			return `Later today`
+			return `This ${timeOfDay(date.getHours())}`
 		} else if (isTomorrow) {
-			return `Tomorrow`
+			return `Tomorrow ${timeOfDay(date.getHours())}`
 		} else {
-			return `${DAYLIST[date.getDay()]}`
+			return `${DAYLIST[date.getDay()]} ${timeOfDay(date.getHours())}`
 		}
 	}
 
@@ -14046,7 +14067,7 @@ function openreschedulepopup(id){
 
 		availabletimeoutput.push(`<div class="text-14px text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px ${currenttimetext == availabletimetext && item.autoschedulelocked ? `selectedbuttonactive` : ''}" onclick="editschedulemoveevent('${item.id}', ${ceil(tempavailabletime.start, 60000*5)})">${availabletimetext}</div>`)
 		
-		if(availabletimeoutput.length == 3) break
+		if(availabletimeoutput.length == 5) break
 	}
 	
 
