@@ -2731,15 +2731,14 @@ class Calendar {
 		}
 
 
+		let completedtodos = [ ...calendar.events.filter(d => d.type == 1 && d.completed && !Calendar.Todo.isSubtask(d)), ...calendar.todos.filter(d => d.completed && !Calendar.Todo.isSubtask(d))]
+
 		if(showcompleted){
-			let mytodos = [ ...calendar.events.filter(d => d.type == 1 && d.completed && !Calendar.Todo.isSubtask(d)), ...calendar.todos.filter(d => d.completed && !Calendar.Todo.isSubtask(d))]
-
-
 			let tempoutput = []
 			let tempoutput2 = []
 
-			for (let i = 0; i < mytodos.length; i++) {
-				let item = mytodos[i]
+			for (let i = 0; i < completedtodos.length; i++) {
+				let item = completedtodos[i]
 				if (i == 0) {
 					tempoutput.push(`
 					<div class="display-flex flex-row justify-space-between align-center">
@@ -2777,7 +2776,7 @@ class Calendar {
 					</div>`)
 				}
 				tempoutput2.push(gettododata(item))
-				if (i == mytodos.length - 1) {
+				if (i == completedtodos.length - 1) {
 					output.push(`
 					<div class="display-flex flex-column gap-12px">
 						${tempoutput.join('')}
@@ -2788,19 +2787,24 @@ class Calendar {
 				}
 			}
 			
-		}else{
-			output.push(`
-			<div class="display-flex flex-row justify-space-between align-center">
-				<div class="text-16px pointer hover:text-quaternary showcompletedwrap transition-duration-100 text-bold text-primary display-flex flex-row align-center gap-6px" onclick="toggleshowcompleted()">Completed
-					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmall ${showcompleted ? `rotate90` : ``}">
-					<g>
-					<path d="M70 10L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-					<path d="M70 246L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-					</g>
-					</svg>
-				</div>
-			</div>`)
+		}else {
+			if(completedtodos.length > 0){
+				output.push(`
+				<div class="display-flex flex-row justify-space-between align-center">
+					<div class="text-16px pointer hover:text-quaternary showcompletedwrap transition-duration-100 text-bold text-primary display-flex flex-row align-center gap-6px" onclick="toggleshowcompleted()">Completed
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmall ${showcompleted ? `rotate90` : ``}">
+						<g>
+						<path d="M70 10L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M70 246L186 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						</g>
+						</svg>
+					</div>
+				</div>`)
+			}
 		}
+
+		//here3
+		
 
 		let notasks = output.length == 0
 
@@ -2836,7 +2840,6 @@ class Calendar {
 		if(!notasks){
 			output.push(`<div class="padding-top-192px"></div>`)
 		}
-		//here4
 
 		let alltodolist = getElement('alltodolist')
 		if(alltodolist.innerHTML != output.join('')){
@@ -3052,7 +3055,6 @@ class Calendar {
 		updatecalendarlist()
 		updateAvatar()
 		updateuserinfo()
-		updateonboardingscreen()
 
 		//mode
 		let autoschedulemodes2 = getElement('autoschedulemodes2')
@@ -7232,6 +7234,7 @@ async function getclientgooglecalendar() {
 
 			calendar.updateSettings()
 			updatecalendarlist()
+			updateonboardingscreen()
 
 		}
 	} catch (err) {
@@ -7523,6 +7526,7 @@ function renamecalendar(event, id) {
 
 	calendar.updateSettings()
 	calendar.updateHistory()
+	updateonboardingscreen()
 }
 
 function editdescriptioncalendar(event, id) {
@@ -7560,6 +7564,7 @@ function calendarcolor(event, index, id) {
 	calendar.updateEvents()
 	calendar.updateHistory()
 	updatecalendaritempopup(id)
+	updateonboardingscreen()
 }
 
 function toggleshowcalendar(event, id) {
@@ -7574,6 +7579,7 @@ function toggleshowcalendar(event, id) {
 	calendar.updateInfo(true)
 	calendar.updateSettings()
 	calendar.updateHistory()
+	updateonboardingscreen()
 }
 
 function createcalendar() {
@@ -7594,6 +7600,7 @@ function deletecalendar(id) {
 	calendar.updateHistory()
 	calendar.updateSettings()
 	hidecalendaritempopup()
+	updateonboardingscreen()
 }
 
 
@@ -10164,7 +10171,7 @@ function gettododata(item) {
 										
 									</div>
 
-									${item.googleclassroomid ? `<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none text-14px hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open Google Classroom assignment</a>` : ``}
+									${item.googleclassroomid ? `<a href="${item.googleclassroomlink}" class="text-blue text-decoration-none text-14px hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">Open in Classroom</a>` : ``}
 
 									${item.notes && !item.completed ?
 									`<div class="pointer-auto pre-wrap break-word todoitemtext text-quaternary text-14px overflow-hidden ${itemclasses.join(' ')}">${formatURL(cleanInput(item.notes))}</div>` : ''}
