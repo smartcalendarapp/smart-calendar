@@ -500,7 +500,7 @@ async function processReminders(){
 				}
 			}
 		}
-			
+
 
 		//email
 		if(item.emailreminderenabled){
@@ -681,6 +681,7 @@ async function processReminders(){
 	}
 }
 
+//here2
 async function processengagementalerts(){
 	return
 	let sendengagementalerts = []
@@ -722,7 +723,7 @@ async function processengagementalerts(){
 		let name = value.user.name
 
 		if(type == 0){
-
+			//email
 			await sendEmail({
 				from: 'Smart Calendar <reminders@smartcalendar.us>',
 				to: email,
@@ -787,7 +788,24 @@ async function processengagementalerts(){
 			})
 
 
+			//ios notification
+			if(value.iosdevicetoken){
+				let note = new apn.Notification({
+					alert: `Complete your setup to start planning with our powerful AI scheduling.`,
+					title: `Let's complete your setup`,
+					topic: APPLE_BUNDLE_ID,
+					sound: 'default',
+					badge: 1,
+				})
+				
+				let result = await apnProvider.send(note, value.iosdevicetoken)
+				if (result.failed.length > 0) {
+					console.error("iOS notification failed:", result.failed)
+				}
+			}
+
 		}else if(type == 1){
+			//email
 			await sendEmail({
 				from: 'Smart Calendar <reminders@smartcalendar.us>',
 				to: email,
@@ -846,10 +864,28 @@ async function processengagementalerts(){
 				(c) 2023 James Tsaggaris. All rights reserved.`
 			})
 
+
+			//ios notification
+			if(value.iosdevicetoken){
+				let note = new apn.Notification({
+					alert: `Try planning your schedule for this week with our AI.`,
+					title: `Let's get back on track`,
+					topic: APPLE_BUNDLE_ID,
+					sound: 'default',
+					badge: 1,
+				})
+				
+				let result = await apnProvider.send(note, value.iosdevicetoken)
+				if (result.failed.length > 0) {
+					console.error("iOS notification failed:", result.failed)
+				}
+			}
+
+
 		}
 	}
 }
-//here2
+
 
 function isEmail(str) {
 	let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -1058,6 +1094,7 @@ function cacheReminders(user){
 			lastmodified: user.calendardata.lastmodified,
 			finishedonboarding: user.calendardata.onboarding.addtask == true,
 			engagementalerts: user.accountdata.engagementalerts,
+			iosdevicetoken: user.accountdata.iosdevicetoken
 		}
 	}
 }

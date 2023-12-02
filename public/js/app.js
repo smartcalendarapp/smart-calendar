@@ -4242,7 +4242,7 @@ function geteventsuggestiontodos(){
 }
 
 function geteventsuggestion(){
-	return //here3
+	return 
 	function getcalculatedweight(tempitem){
 		let currentdate = new Date()
 		let timedifference = new Date(tempitem.endbefore.year, tempitem.endbefore.month, tempitem.endbefore.day, 0, tempitem.endbefore.minute).getTime() - currentdate.getTime()
@@ -4877,6 +4877,8 @@ function updateonboardingscreen(){
 
 	//individual pages
 
+	getElement('calendaritempopup').classList.remove('z-index-10001')
+
 	getElement('createtodoitemduedate').classList.remove('z-index-10001')
 	getElement('createtodoitemduration').classList.remove('z-index-10001')
 	getElement('createtodoitempriority').classList.remove('z-index-10001')
@@ -4926,6 +4928,8 @@ function updateonboardingscreen(){
 		
 		let pickyourcalendarslist = getElement('pickyourcalendarslist')
 		pickyourcalendarslist.innerHTML = settingscalendarlist.innerHTML
+
+		getElement('calendaritempopup').classList.add('z-index-10001')
 	}else if(currentonboarding == 'sleeptime'){
 		getElement('timepicker').classList.add('z-index-10001')
 
@@ -4939,7 +4943,6 @@ function updateonboardingscreen(){
 
 		let onboardingaddtasktodolistdiv = getElement('onboardingaddtasktodolist')
 		onboardingaddtasktodolistdiv.innerHTML = output.join('')
-
 
 		getElement('createtodoitemduedate').classList.add('z-index-10001')
 		getElement('createtodoitemduration').classList.add('z-index-10001')
@@ -4958,13 +4961,13 @@ function updateonboardingscreen(){
 function continueonboarding(key){	
 	if(calendar.onboarding[key] != null) calendar.onboarding[key] = true
 
+	updateonboardingscreen()
+
 	if(key == 'connectcalendars'){
 		if(!calendar.settings.issyncingtogooglecalendar || calendar.calendars.length == 1){
-			calendar.onboarding['connecttodolists'] = true
+			continueonboarding('connecttodolists')
 		}
 	}
-
-	updateonboardingscreen()
 }
 function backonboarding(key){
 	if(calendar.onboarding[key] != null) calendar.onboarding[key] = false
@@ -9891,12 +9894,15 @@ function submitcreatetodo(event) {
 		onboardingaddtasktodolist.push(item.id)
 	}
 
-
-	if(calendar.settings.geteventsuggestions){
-		if(Calendar.Todo.getSubtasks(item).length > 0){
-			startAutoSchedule({eventsuggestiontodos: [...Calendar.Todo.getSubtasks(item)]})
-		}else{
-			startAutoSchedule({eventsuggestiontodos: [item]})
+	
+	//auto schedule
+	if(!calendar.onboarding.addtask && !isprompttodotoday){
+		if(calendar.settings.geteventsuggestions){
+			if(Calendar.Todo.getSubtasks(item).length > 0){
+				startAutoSchedule({eventsuggestiontodos: [...Calendar.Todo.getSubtasks(item)]})
+			}else{
+				startAutoSchedule({eventsuggestiontodos: [item]})
+			}
 		}
 	}
 
@@ -11203,7 +11209,7 @@ function unscheduleevent(id){
 			scrolltodoY(getElement(`todo-${todoitem.id}`).offsetTop)
 		}, 300)
 	}
-}//here2
+}
 
 
 //start task now - adds task to calendar at current time, becomes fixed event
@@ -14007,7 +14013,6 @@ function clickeditschedulemytasks(){
 
 
 
-//here3
 
 //click reschedule
 function clickreschedule(id){
