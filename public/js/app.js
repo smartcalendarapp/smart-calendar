@@ -2816,7 +2816,7 @@ class Calendar {
 
 	
 		output.push(`
-		<div class="padding-top-96px"></div>`)
+		<div class="padding-top-192px"></div>`)
 
 		output.push(`<div class="gap-12px display-flex flex-column bordertertiary border-16px padding-12px border-box">
 			<div class="text-primary text-bold text-16px">Integrations</div>
@@ -2838,7 +2838,7 @@ class Calendar {
 		</div>`)
 
 		if(!notasks){
-			output.push(`<div class="padding-top-192px"></div>`)
+			output.push(`<div class="padding-top-48px"></div>`)
 		}
 
 		let alltodolist = getElement('alltodolist')
@@ -9896,7 +9896,7 @@ function submitcreatetodo(event) {
 
 	
 	//auto schedule
-	if(!calendar.onboarding.addtask && !isprompttodotoday){
+	if(calendar.onboarding.addtask && !isprompttodotoday){
 		if(calendar.settings.geteventsuggestions){
 			if(Calendar.Todo.getSubtasks(item).length > 0){
 				startAutoSchedule({eventsuggestiontodos: [...Calendar.Todo.getSubtasks(item)]})
