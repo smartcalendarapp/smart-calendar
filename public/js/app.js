@@ -4845,6 +4845,8 @@ function updateonboardingscreen(){
 		let tempindex = childrenArray.findIndex(d => d.id === `onboarding${key}`)
 		let tempdiv = getElement(`onboarding${key}`)
 
+		if(!tempdiv) continue
+
 		if(key == currentonboarding){
 			tempdiv.classList.add('slidetransform')
 
