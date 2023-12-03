@@ -270,6 +270,18 @@ function generateID() {
 }
 
 
+function ceil(number, increment) {
+	return Math.ceil(number / increment) * increment;
+}
+
+function floor(number, increment) {
+	return Math.floor(number / increment) * increment;
+}
+
+function round(number, increment) {
+	return Math.round(number / increment) * increment;
+}
+
 class Message{
 	constructor({ content, userid, email }){
 		this.id = generateID()
@@ -2815,12 +2827,12 @@ app.post('/login', async (req, res, next) => {
 		let password = fields.password
 		
 		if(!username){
-			return res.status(401).json({ error: 'Email does not exist.' })
+			return res.status(401).json({ error: 'Email or password are incorrect.' })
 		}
 
 		const user = await getUserByAttribute(username)
 		if(!user){
-			return res.status(401).json({ error: 'Email does not exist.' })
+			return res.status(401).json({ error: 'Email or password are incorrect.' })
 		}
 
 		if(!user.password){
@@ -2828,7 +2840,7 @@ app.post('/login', async (req, res, next) => {
 		}
 		
 		if(password !== user.password){
-			return res.status(401).json({ error: 'Incorrect password.' })
+			return res.status(401).json({ error: 'Email or password are incorrect.' })
 		}
 		
 		req.session.user = { userid: user.userid }

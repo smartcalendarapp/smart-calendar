@@ -2809,7 +2809,7 @@ class Calendar {
 		let notasks = output.length == 0
 
 		if(notasks){
-			output.push(`<div class="flex-1 display-flex flex-column align-center justify-center">
+			output.push(`<div class="padding-top-192px display-flex flex-column align-center justify-center">
 				<div class="text-18px text-secondary">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span>.</div>
 			</div>`)
 		}
@@ -2837,9 +2837,7 @@ class Calendar {
 			<div class="text-quaternary text-14px">More apps coming soon!</div>
 		</div>`)
 
-		if(!notasks){
-			output.push(`<div class="padding-top-48px"></div>`)
-		}
+		output.push(`<div class="padding-top-48px"></div>`)
 
 		let alltodolist = getElement('alltodolist')
 		if(alltodolist.innerHTML != output.join('')){
