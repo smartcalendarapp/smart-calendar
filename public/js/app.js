@@ -13486,7 +13486,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		calendar.updateInfo()
 
 		//animate
-		let sortedmodifiedevents =  sortstartdate(modifiedevents).reverse()
+		let sortedmodifiedevents =  sortstartdate(modifiedevents)
 		for(let item of sortedmodifiedevents){
 			await animateitem(item.id)
 			await sleep(400)
