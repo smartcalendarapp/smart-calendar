@@ -3560,6 +3560,10 @@ function getStorage(key) {
 	return JSON.parse(localStorage.getItem(key))
 }
 
+function deleteStorage(key){
+	localStorage.removeItem(key)
+}
+
 //history
 function undohistory() {
 	if (historyindex > 0) {
@@ -4281,6 +4285,19 @@ function geteventsuggestion(){
 
 
 
+function checkquery(){
+	const queryParams = new URLSearchParams(window.location.search)
+
+	if (queryParams.get('managenotifications') === 'true') {
+		setStorage('querystate', 'managenotifications')
+	}
+
+	let newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname
+	history.pushState({ path: newUrl }, '', newUrl)
+}
+checkquery()
+
+
 function run() {
 	//ONCE
 
@@ -4290,6 +4307,16 @@ function run() {
 	//calendar
 	calendar.updateTabs()
 	calendar.updateHistory()
+
+	//manage notifications
+	let querystate = getStorage('querystate')
+	if(querystate && querystate == 'managenotifications'){
+		deleteStorage('querystate')
+		
+		calendartabs = [3]
+		settingstab = 4
+		calendar.updateTabs()
+	}
 
 	//input pickers
 	updatetimepicker()
@@ -4314,20 +4341,6 @@ function run() {
 	let currentdate = new Date()
 	scrollcalendarY(currentdate.getHours() * 60 + currentdate.getMinutes())
 
-	//query
-	function checkquery(){
-		const queryParams = new URLSearchParams(window.location.search)
-	
-		if (queryParams.get('managenotifications') === 'true') {
-			calendartabs = [3]
-			settingstab = 4
-			calendar.updateTabs()
-		}
-
-		let newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname
-    	history.pushState({ path: newUrl }, '', newUrl)
-	}
-	checkquery()
 
 	//LOOP
 
@@ -4365,6 +4378,7 @@ function run() {
 			geteventsuggestion()
 		}
 	}, 1000)
+
 
 
 	//tick
@@ -6671,12 +6685,18 @@ function togglediscordnotifs(event){
 	calendar.updateSettings()
 }
 
+//email toggles
 function toggleemailnewsletter(event){
 	calendar.emailpreferences.newsletter = event.target.checked
 	calendar.updateSettings()
 }
 function toggleemailplanning(event){
 	calendar.emailpreferences.engagementalerts = event.target.checked
+	calendar.updateSettings()
+}
+function unsubscribeall(){
+	calendar.emailpreferences.newsletter = false
+	calendar.emailpreferences.engagementalerts = false
 	calendar.updateSettings()
 }
 
