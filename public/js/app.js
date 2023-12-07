@@ -6686,17 +6686,12 @@ function togglediscordnotifs(event){
 }
 
 //email toggles
-function toggleemailnewsletter(event){
-	calendar.settings.emailpreferences.newsletter = event.target.checked
-	calendar.updateSettings()
-}
 function toggleemailplanning(event){
 	calendar.settings.emailpreferences.engagementalerts = event.target.checked
 	calendar.updateSettings()
 }
 
 function unsubscribeall(){
-	calendar.settings.emailpreferences.newsletter = false
 	calendar.settings.emailpreferences.engagementalerts = false
 
 	calendar.updateSettings()
