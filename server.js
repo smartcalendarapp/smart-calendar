@@ -379,7 +379,6 @@ async function sendEmail({ from, to, subject, htmlbody, textbody }){
 //send reminders
 
 async function processReminders(){
-	console.warn('ahaha')
 	function getFullRelativeDHMText(input){
 	  let temp = Math.abs(input)
 	  let days = Math.floor(temp / 1440)
@@ -441,7 +440,6 @@ async function processReminders(){
 		sendreminders.push(...tempreminders.filter(d => d.reminder.timestamp <= currentdate && lastreminderdate < d.reminder.timestamp))
 	}
 	lastreminderdate = currentdate
-	console.warn(sendreminders.length)
 
 
 	//send reminders
@@ -516,6 +514,7 @@ async function processReminders(){
 		}
 
 
+		console.warn(item)
 		//email
 		if(item.emailreminderenabled){
 			if(item.type == 'event'){
