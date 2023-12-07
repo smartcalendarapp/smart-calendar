@@ -379,6 +379,7 @@ async function sendEmail({ from, to, subject, htmlbody, textbody }){
 //send reminders
 
 async function processReminders(){
+	console.warn('ahaha')
 	function getFullRelativeDHMText(input){
 	  let temp = Math.abs(input)
 	  let days = Math.floor(temp / 1440)
@@ -440,6 +441,7 @@ async function processReminders(){
 		sendreminders.push(...tempreminders.filter(d => d.reminder.timestamp <= currentdate && lastreminderdate < d.reminder.timestamp))
 	}
 	lastreminderdate = currentdate
+	console.warn(sendreminders.length)
 
 
 	//send reminders
@@ -558,12 +560,12 @@ async function processReminders(){
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="text-align: center; font-size: 18px; color: #333;">
 											Stay Productive,<br>
-											Smart Calendar | Your Smart Time Management Assistant
+											Smart Calendar | Where AI Meets Agenda
 									</p>
 
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-										<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 									<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 									</div>
 
@@ -579,9 +581,9 @@ async function processReminders(){
 					If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
 
 					Stay Productive,
-					Smart Calendar | Your Personal Time Management Assistant
+					Smart Calendar | Where AI Meets Agenda
 
-					If you wish to stop receiving these notifications, you can update your preferences in the app at https://smartcalendar.us/app?managenotifications=true.
+					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?managenotifications=true.
 					(c) 2023 James Tsaggaris. All rights reserved.`
 				})
 
@@ -627,12 +629,12 @@ async function processReminders(){
 									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<p style="text-align: center; font-size: 18px; color: #333;">
 											Stay Productive,<br>
-											Smart Calendar | Your Smart Time Management Assistant
+											Smart Calendar | Where AI Meets Agenda
 									</p>
 
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-										<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 									<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 									</div>
 
@@ -648,9 +650,9 @@ async function processReminders(){
 					If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
 
 					Stay Productive,
-					Smart Calendar | Your Personal Time Management Assistant
+					Smart Calendar | Where AI Meets Agenda
 
-					If you wish to stop receiving these notifications, you can update your preferences in the app at https://smartcalendar.us/app?managenotifications=true.
+					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?managenotifications=true.
 					(c) 2023 James Tsaggaris. All rights reserved.`
 				})
 				
@@ -772,12 +774,12 @@ async function processengagementalerts(){
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<p style="text-align: center; font-size: 18px; color: #333;">
 									Stay Productive,<br>
-									Smart Calendar | Your Smart Time Management Assistant
+									Smart Calendar | Where AI Meets Agenda
 							</p>
 			
 					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-								<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+								<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 							<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 							</div>
 			
@@ -793,9 +795,9 @@ async function processengagementalerts(){
 				If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you.
 	
 				Stay Productive,
-				Smart Calendar | Your Personal Time Management Assistant
+				Smart Calendar | Where AI Meets Agenda
 			
-				If you wish to stop receiving these notifications, you can update your preferences in the app at https://smartcalendar.us/app?managenotifications=true.
+				You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?managenotifications=true.
 				(c) 2023 James Tsaggaris. All rights reserved.`
 			})
 
@@ -851,12 +853,12 @@ async function processengagementalerts(){
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<p style="text-align: center; font-size: 18px; color: #333;">
 									Stay Productive,<br>
-									Smart Calendar | Your Smart Time Management Assistant
+									Smart Calendar | Where AI Meets Agenda
 							</p>
 			
 					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-								<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+								<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 							<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 							</div>
 			
@@ -870,9 +872,9 @@ async function processengagementalerts(){
 				If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you.
 	
 				Stay Productive,
-				Smart Calendar | Your Personal Time Management Assistant
+				Smart Calendar | Where AI Meets Agenda
 			
-				If you wish to stop receiving these notifications, you can update your preferences in the app at https://smartcalendar.us/app?managenotifications=true.
+				You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?managenotifications=true.
 				(c) 2023 James Tsaggaris. All rights reserved.`
 			})
 
@@ -2943,12 +2945,12 @@ async function sendwelcomeemail(user){
 				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<p style="text-align: center; font-size: 18px; color: #333;">
 						Stay Productive,<br>
-						Smart Calendar | Your Smart Time Management Assistant
+						Smart Calendar | Where AI Meets Agenda
 				</p>
 
 		<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-					<p>If you wish to stop receiving these notifications, you can update your preferences in the app.<br><a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">Click here</a> to open Smart Calendar.</p>
+					<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 				<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 				</div>
 
@@ -2962,9 +2964,9 @@ async function sendwelcomeemail(user){
 	We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you.
 
 	Stay Productive,
-	Smart Calendar | Your Personal Time Management Assistant
+	Smart Calendar | Where AI Meets Agenda
 
-	If you wish to stop receiving these notifications, you can update your preferences in the app at https://smartcalendar.us/app?managenotifications=true.
+	You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?managenotifications=true.
 	(c) 2023 James Tsaggaris. All rights reserved.`
 		})
 	}

@@ -6687,19 +6687,22 @@ function togglediscordnotifs(event){
 
 //email toggles
 function toggleemailnewsletter(event){
-	calendar.emailpreferences.newsletter = event.target.checked
+	calendar.settings.emailpreferences.newsletter = event.target.checked
 	calendar.updateSettings()
 }
 function toggleemailplanning(event){
-	calendar.emailpreferences.engagementalerts = event.target.checked
-	calendar.updateSettings()
-}
-function unsubscribeall(){
-	calendar.emailpreferences.newsletter = false
-	calendar.emailpreferences.engagementalerts = false
+	calendar.settings.emailpreferences.engagementalerts = event.target.checked
 	calendar.updateSettings()
 }
 
+function unsubscribeall(){
+	calendar.settings.emailpreferences.newsletter = false
+	calendar.settings.emailpreferences.engagementalerts = false
+
+	calendar.updateSettings()
+
+	displayalert('Preferences saved')
+}
 
 //break per hour
 function inputsettingseventspacing(event){
