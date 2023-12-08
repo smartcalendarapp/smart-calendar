@@ -13090,6 +13090,8 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 					if (outofrange) {
 						if(!item.autoschedulelocked){
 							fixrange(item)
+						}else{
+							break
 						}
 					}
 
