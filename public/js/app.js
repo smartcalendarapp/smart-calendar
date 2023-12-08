@@ -13088,7 +13088,9 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				while (true) {
 					let outofrange = isoutofrange(item)
 					if (outofrange) {
-						fixrange(item)
+						if(!item.autoschedulelocked){
+							fixrange(item)
+						}
 					}
 
 					let temp = getconflictingevent(tempiteratedevents, item)
@@ -13099,7 +13101,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 							if(moveditem && conflictitem.id == moveditem.id && isoverlap){
 								fixconflict(item, conflictitem, spacing)
 							}else{
-								continue
+								break
 							}
 						}else{
 							fixconflict(item, conflictitem, spacing)
@@ -13613,6 +13615,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		console.log(err)
 	}
 }
+
 
 
 //edit schedule ui
