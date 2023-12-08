@@ -10319,6 +10319,19 @@ function clicksubtasksuggestion(id, suggestionid){
 
 	calendar.todos.push(subtaskitem)
 
+	if(Calendar.Event.isEvent(item)){
+		//unschedule
+		let todoitem = gettodofromevent(item)
+
+		calendar.todos.push(todoitem)
+		calendar.events = calendar.events.filter(d => d.id != item.id)
+
+		selectedeventid = null
+
+		calendar.updateTodo()
+		calendar.updateEvents()
+	}
+
 	fixsubandparenttask(subtaskitem)
 
 	calendar.updateTodo()
@@ -13083,14 +13096,10 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 					if(temp) [conflictitem, spacing, isoverlap] = temp
 					if (conflictitem) {
 						if(item.autoschedulelocked){
-							if((!moveditem || moveditem.id != item.id) && isoverlap){
-								fixconflict(item, conflictitem, spacing)
-							}else if(conflictitem.type == 0 && isoverlap){
-								fixconflict(item, conflictitem, spacing)
-							}else if(moveditem && conflictitem.id == moveditem.id && isoverlap){
+							if(moveditem && conflictitem.id == moveditem.id && isoverlap){
 								fixconflict(item, conflictitem, spacing)
 							}else{
-								break
+								continue
 							}
 						}else{
 							fixconflict(item, conflictitem, spacing)
