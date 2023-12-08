@@ -3420,10 +3420,6 @@ class Calendar {
 		connectdiscordstatus2.innerHTML = discordtext
 
 
-		//email newsletter
-		let enableemailnewsletter = getElement('enableemailnewsletter')
-		enableemailnewsletter.checked = calendar.settings.emailpreferences.newsletter
-
 		//email planning reminders
 		let enableemailplanning = getElement('enableemailplanning')
 		enableemailplanning.checked = calendar.settings.emailpreferences.engagementalerts
@@ -7712,7 +7708,7 @@ function opendemo(){
 	let videoframe = getElement('videoframe')
 	let videopopup = getElement('videopopup')
 
-	videoframe.src = "https://www.youtube.com/embed/d35YefScCwk"
+	videoframe.src = "https://www.youtube.com/embed/NdeHBoaOUjI"
     videopopup.classList.remove('display-none')
 }
 function closedemovideo(){
