@@ -315,7 +315,7 @@ class User{
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false }
-const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptusedtimestamps: [], betatester: false, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null } }
+const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], betatester: false, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null } }
 const MODELEVENT = { start: null, end: null, endbefore: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0, parentid: null, subtasksuggestions: [], gotsubtasksuggestions: false, iseventsuggestion: false, goteventsuggestion: false, autoschedulelocked: false }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#18a4f5', isprimary: false, subscriptionurl: null, lastmodified: 0  }
@@ -3329,32 +3329,32 @@ app.post('/subscribecalendar', async (req, res) => {
 })
 
 
-async function getgptresponse(prompt) {
-
-	try {
-		const res = await openai.chat.completions.create({
-			model: 'gpt-3.5-turbo',
-			messages: [{
-				role: 'user',
-				content: prompt
-			}],
-			max_tokens: 150,
-			top_p: 0.7,
-			temperature: 0.2
-		})
-
-		return res.choices[0].message.content
-	} catch (error) {
-		console.error(error)
-		return null
-	}
-}
-
-const MAX_GPT_PER_DAY = 10
-const MAX_GPT_PER_DAY_BETA_TESTER = 30
-const MAX_GPT_PER_DAY_PREMIUM = 50
 
 app.post('/getsubtasksuggestions', async (req, res) => {
+	async function getgptresponse(prompt) {
+
+		try {
+			const res = await openai.chat.completions.create({
+				model: 'gpt-3.5-turbo',
+				messages: [{
+					role: 'user',
+					content: prompt
+				}],
+				max_tokens: 150,
+			})
+
+			return res.choices[0].message.content
+		} catch (error) {
+			console.error(error)
+			return null
+		}
+	}
+
+
+	const MAX_GPT_PER_DAY = 10
+	const MAX_GPT_PER_DAY_BETA_TESTER = 30
+	const MAX_GPT_PER_DAY_PREMIUM = 50
+
 	try{
 		if(!req.session.user){
 			return res.status(401).json({ error: 'User is not signed in.' })
@@ -3377,12 +3377,12 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 		let currenttime = Date.now()
 
 		//check ratelimit
-		if(user.accountdata.gptusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
+		if(user.accountdata.gptsuggestionusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
 			return res.status(401).json({ error: 'Daily AI limit reached.' })
 		}
 
 		//set ratelimit
-		user.accountdata.gptusedtimestamps.push(currenttime)
+		user.accountdata.gptsuggestionusedtimestamps.push(currenttime)
 		await setUser(user)
 		
 		let item = req.body.item
@@ -3408,7 +3408,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 		}
 
 		//`Task: ${item.title} - takes ${getDHMText(item.duration)}. Provide: 1-2 SPECIFIC, CONCISE, SHORT steps with links and resources.`
-		let gptresponse = await getgptresponse(`Task: ${item.title.slice(0, 50)}. Takes: ${getDHMText(item.duration)}. Provide: ONLY 2-4 names of subtasks, separated by comma in ONLY 1 line, with time needed for each. Example: Research 30m. No formatting.`)
+		let gptresponse = await getgptresponse(`Task: """${item.title.slice(0, 50)}""". Takes: ${getDHMText(item.duration)}. Provide: ONLY 3-4 names of subtasks, separated by comma in ONLY 1 line, with time needed for each. Example: Research 30m. No formatting.`)
 
 		if(!gptresponse){
 			return res.status(401).json({ error: 'Could not get response from AI.' })
@@ -3421,7 +3421,11 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 	}
 })
 
-app.post('/getgptresponse', async (req, res) => {
+app.post('/getgptchatinteraction', async (req, res) => {
+	const MAX_GPT_PER_DAY = 10
+	const MAX_GPT_PER_DAY_BETA_TESTER = 30
+	const MAX_GPT_PER_DAY_PREMIUM = 50
+
 	try{
 		if(!req.session.user){
 			return res.status(401).json({ error: 'User is not signed in.' })
@@ -3434,7 +3438,7 @@ app.post('/getgptresponse', async (req, res) => {
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
 
-		if(!user.accountdata.google_email != 'smartcalendartester@gmail.com') return res.end()//here3
+		if(user.accountdata.betatester != true) return res.end()//here3
 
 		let appliedratelimit = MAX_GPT_PER_DAY
 		if(user.accountdata.betatester){
@@ -3445,19 +3449,260 @@ app.post('/getgptresponse', async (req, res) => {
 		let currenttime = Date.now()
 
 		//check ratelimit
-		if(user.accountdata.gptusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
-			return res.status(401).json({ error: 'Daily AI limit reached.' })
+		if(user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
+			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
+		}
+
+		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 5000){
+			return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
 		}
 
 		//set ratelimit
-		user.accountdata.gptusedtimestamps.push(currenttime)
+		user.accountdata.gptchatusedtimestamps.push(currenttime)
 		await setUser(user)
 		
 
-		//prompt
-		
+		//PROMPT AND CONTEXT
 
-		return res.json({ data: gptresponse })
+		async function queryGptWithFunction(userinput, calendarcontext, timezoneoffset) {
+			const allfunctions = [
+				{
+					name: 'get_event',
+				},
+				{
+					name: 'create_event',
+					description: 'Create a new event in the calendar',
+					parameters: {
+						type: 'object',
+						properties: {
+							startDate: { type: 'string', description: 'Event start date in YYYY-MM-DD HH:MM' },
+							title: { type: 'string', description: 'Event title' },
+							endDate: { type: 'string', descrption: 'Event end date in YYYY-MM-DD HH:MM' },
+							duration: { type: 'string', description: 'Event duration' }
+						},
+						required: ['startDate', 'title']
+					}
+				},
+				{
+					name: 'delete_event',
+					description: 'Check for the existence of event to delete. Returns an error if the event does not exist.',
+					parameters: {
+						type: 'object',
+						properties: {
+							id: { type: 'string', description: 'Specific UUID of event.' },
+							errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
+						},
+						required: []
+					}
+				},
+				{
+					name: 'modify_event',
+					description: 'Check for the existence of event to modify. Returns an error if the event does not exist.',
+					parameters: {
+						type: 'object',
+						properties: {
+							id: { type: 'string', description: 'Specific UUID of event.' },
+							newTitle: { type: 'string', description: 'New event title' },
+							newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
+							newEndDate: { type: 'string', description: 'New event end date in YYYY-MM-DD HH:MM' },
+							newDuration: { type: 'string', description: 'New event duration in HH:MM' },
+							errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
+						},
+						required: []
+					}
+				},
+				/*{
+					name: 'create_task',
+					description: 'Create a new task in the to do list',
+					parameters: {
+						type: 'object',
+						properties: {
+							dueDate: { type: 'string', description: 'Task due date in YYYY-MM-DD HH:MM' },
+							title: { type: 'string', description: 'Task title' },
+							duration: { type: 'string', description: 'Task duration in HH:MM' },
+							priority: { type: 'string', description: 'Task priority in high/medium/low' }
+						},
+						required: ['dueDate', 'title']
+					}
+				},
+				{
+					name: 'delete_task',
+					description: 'Delete a task from the to do list',
+					parameters: {
+						type: 'object',
+						properties: {
+							id: { type: 'string', description: 'Unique ID of task in JSON knowledge base' },
+							title: { type: 'string', description: 'Task title' },
+						},
+						required: ['id']
+					}
+				},
+				{
+					name: 'modify_task',
+					description: 'Modify a task in the calendar',
+					parameters: {
+						type: 'object',
+						properties: {
+							id: { type: 'string', description: 'Unique ID of task in JSON knowledge base, can be obtained by finding item with provided title or due date of task' },
+							newTitle: { type: 'string', description: 'New task title' },
+							newDueDate: { type: 'string', description: 'New task due date in YYYY-MM-DD HH:MM' },
+							newDuration: { type: 'string', description: 'New taks duration in HH:MM' },
+							newDuration: { type: 'string', description: 'New task priority in high/medium/low' }
+						},
+						required: ['id']
+					}
+				},*/
+			]
+		
+			const customfunctions = ['create_event', 'delete_event', 'modify_event'] //a subset of all functions, the functions that invoke custom function
+			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_event'] //a subset of all functions, the functions that need calendar data under all circumstances
+		
+			
+			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
+			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
+		
+		
+			let totaltokens = 0
+
+			try {
+				const response = await openai.chat.completions.create({
+					model: 'gpt-3.5-turbo',
+					messages: [
+						{
+							role: 'user',
+							 content: userinput,
+						},
+						{ 
+							role: 'system', 
+							content: `A useful and resourceful productivity and scheduling assistant. Respond in natural language and not in calendar data format. The current time is ${localdatestring} in user's timezone.`
+						}
+					],
+					functions: [
+						{
+							name: "get_command",
+							description: "Get an implicitly called calendar command and return it",
+							parameters: {
+								type: "object",
+								properties: {
+									commands: {
+										type: "array",
+										description: `One of these commands: ${allfunctions.map(d => d.name).join(', ')}`,
+										items: {
+											type: "string",
+										}
+									},
+									calendarDataNeeded: {
+										type: "boolean",
+										description: "Determine the need for user's calendar data based on the command's context. Set to 'true' for commands where calendar context is crucial, like finding the next available slot or rescheduling based on current appointments. For commands with explicit dates or times that don't rely on existing calendar events, set it to 'false'."
+									},
+								},
+								required: ["commands", "calendarDataNeeded"]
+							}
+						},
+					],
+					max_tokens: 200
+				})
+				totaltokens += response.usage.total_tokens
+				
+				if (response.choices[0].finish_reason !== 'function_call') {
+					//no function call, return plain response
+					return { message: response.choices[0].message.content, totaltokens: totaltokens }
+				}
+		
+		
+				if (response.choices[0].message.function_call?.name === 'get_command') {
+					const command = JSON.parse(response.choices[0].message.function_call?.arguments)?.commands[0]
+					if (command) {
+						const requirescalendardata = calendardataneededfunctions.includes(command) || JSON.parse(response.choices[0].message.function_call?.arguments)?.calendarDataNeeded
+						const requirescustomfunction = customfunctions.includes(command)
+		
+						let request2options = {
+							model: 'gpt-3.5-turbo',
+							max_tokens: 200,
+						}
+						let request2input = `"""${userinput}"""`
+						
+						if(requirescalendardata){
+							//yes calendar data
+		
+							request2input = `"""Calendar data: ${calendarcontext}""" """${userinput}"""`
+						}
+		
+						if(requirescustomfunction){
+							//yes custom function
+		
+							request2options.functions = [allfunctions.find(d => d.name == command)]
+						}
+		
+						request2options.messages = [
+							{
+								role: 'user',
+								content: request2input
+							},
+							{ 
+								role: 'system', 
+								content: `A useful and resourceful productivity and scheduling assistant. Respond in natural language and not in calendar data format. The current time is ${localdatestring} in user's timezone.`
+							}
+						]
+						
+		
+						//make request
+						const response2 = await openai.chat.completions.create(request2options)
+						totaltokens += response2.usage.total_tokens
+		
+						
+						if (response2.choices[0].finish_reason !== 'function_call') { //return plain response if no function detected
+							return { message: response2.choices[0].message.content, totaltokens: totaltokens }
+						}else{
+							const command2 = response2.choices[0].message.function_call?.name
+							if (command2) {								
+								const arguments = JSON.parse(response2.choices[0].message.function_call?.arguments)
+		
+								if(arguments){
+									return { command: command2, arguments: arguments, totaltokens: totaltokens }
+								}
+								
+							}
+						}
+								
+		
+					}
+				}
+
+				return { error: 'Encountered an unexpected error, please try again or contact us', totaltokens: totaltokens }
+		
+			} catch (err) {
+				console.error(err)
+
+				return { error: `Encountered an unexpected error: ${err.message}, please try again or contact us`, totaltokens: totaltokens }
+			}
+
+		}
+
+
+		function generatecalendarcontext(tempevents){
+			let tempoutput = ''
+			for(let d of tempevents){
+				let newstring = `Event title: ${d.title}, UUID: ${d.id}, start date: ${formatLocalDateTime(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)).formattedDate} ${formatLocalDateTime(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)).formattedTime}, end date: ${formatLocalDateTime(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute)).formattedDate} ${formatLocalDateTime(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute)).formattedTime}.`
+
+				if(tempoutput.length + newstring.length > 2000) break
+
+				tempoutput += newstring
+			}
+			return tempoutput
+		}
+
+		
+		let userinput = req.body.userinput.slice(0, 300)
+		let calendarevents = req.body.calendarevents
+		let timezoneoffset = req.body.timezoneoffset
+
+		let calendarcontext = generatecalendarcontext(calendarevents)
+
+		//REQUEST
+		let output = await queryGptWithFunction(userinput, calendarcontext, timezoneoffset)
+
+		return res.json({ data: output })
 	}catch(err){
 		console.error(err)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })

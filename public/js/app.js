@@ -11923,8 +11923,11 @@ function resizeaichat(){
 	element.style.height = Math.min(element.scrollHeight, parseInt(getComputedStyle(element).maxHeight)) + 'px'
 }
 function updateaichatinput(){
+	let aichatinput = getElement('aichatinput')
+	let userinput = aichatinput.value.trim()
+
 	let submitaichatbutton = getElement('submitaichatbutton')
-	if(isgenerating){
+	if(isgenerating || userinput.length == 0){
 		submitaichatbutton.classList.add('greyedoutevent')
 	}else{
 		submitaichatbutton.classList.remove('greyedoutevent')
@@ -11932,7 +11935,7 @@ function updateaichatinput(){
 }
 
 let isgenerating = false
-function submitaimessage(){
+async function submitaimessage(){
 	if(isgenerating) return
 	
 	let aichatinput = getElement('aichatinput')
@@ -11950,15 +11953,66 @@ function submitaimessage(){
 	chathistory.push(chatinteraction)
 
 	//update
-	updateaichat()
 	aichatinput.value = ''
+	updateaichat()
+	resizeaichat()
 
-	scrollaichatY()
+	requestAnimationFrame(function(){
+		scrollaichatY()
+	})
 
 
 	//request
-	//here3
+	let now = new Date()
+	let oneWeekFromNow = new Date(Date.now() + 86400*1000*7)
+	let calendarevents = getevents(now, oneWeekFromNow).filter(d => !Calendar.Event.isHidden(d))
+
+	try{
+		const response = await fetch('/getgptchatinteraction', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				calendarevents: calendarevents,
+				userinput: userinput,
+				timezoneoffset: new Date().getTimezoneOffset()
+			})
+		})
+		if(response.status == 200){
+			let data = await response.json()
+	
+			console.log(data.data)
+
+			chatinteraction.push({
+				role: 'system',
+				message: data.data?.message + `\n\nTokens: ${data.data?.totaltokens}\n${data.data?.command || ''}\n${data.data?.error || ''}`
+			})
+		}else if(response.status == 401){
+			let data = await response.json()
+
+			chatinteraction.push({
+				role: 'system',
+				message: `Error: ${data.error}`
+			})
+		}
+	}catch(err){
+		chatinteraction.push({
+			role: 'system',
+			message: `Error: ${err.message}`
+		})
+
+		console.error(err)
+	}
+
+	updateaichat()
+	requestAnimationFrame(function(){
+		scrollaichatY()
+	})
+
 }
+
+//here3
 
 
 let aichatscrollYAnimationFrameId;
@@ -11993,7 +12047,16 @@ let aichatscrollYAnimationFrameId;
 	aichatscrollYAnimationFrameId = requestAnimationFrame(animateScroll, increment)
 }
 
-setTimeout(function(){if(clientinfo.betatester == true&&clientinfo.google_email.includes('tester')){openaichat()}},2000)
+setTimeout(function(){if(clientinfo.betatester == true){
+	function tempfx(event){
+		if(event.key == 't'){
+			openaichat()
+		}
+	}
+	document.addEventListener("keydown", tempfx, false)
+}},2000)
+
+
 
 //EVENTS
 
