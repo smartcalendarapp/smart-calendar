@@ -11911,7 +11911,10 @@ function updateaichat(){
 
 	aichatcontent.innerHTML = output.join('')
 
+
+	//input
 	resizeaichat()
+	updateaichatinput()
 }
 
 function resizeaichat(){
@@ -11919,9 +11922,75 @@ function resizeaichat(){
 	element.style.height = '0'
 	element.style.height = Math.min(element.scrollHeight, parseInt(getComputedStyle(element).maxHeight)) + 'px'
 }
+function updateaichatinput(){
+	let submitaichatbutton = getElement('submitaichatbutton')
+	if(isgenerating){
+		submitaichatbutton.classList.add('greyedoutevent')
+	}else{
+		submitaichatbutton.classList.remove('greyedoutevent')
+	}
+}
 
-function submitaichat(){
-	//here3 is where the fun starts
+let isgenerating = false
+function submitaimessage(){
+	if(isgenerating) return
+	
+	let aichatinput = getElement('aichatinput')
+	let userinput = aichatinput.value.trim()
+
+	if(userinput.length == 0) return
+
+	//chat history
+	let chatinteraction = []
+	chatinteraction.push({
+		role: 'user',
+		content: userinput
+	})
+
+	chathistory.push(chatinteraction)
+
+	//update
+	updateaichat()
+	aichatinput.value = ''
+
+	scrollaichatY()
+
+
+	//request
+	//here3
+}
+
+
+let aichatscrollYAnimationFrameId;
+	function scrollaichatY() {
+	cancelAnimationFrame(aichatscrollYAnimationFrameId)
+
+	let aichatcontent = getElement('aichatcontent')
+	let target = aichatcontent.scrollHeight - aichatcontent.offsetHeight
+
+	let duration = 100
+	let start = aichatcontent.scrollTop
+	let end = target
+	let change = end - start
+	let increment = 20
+	let currentTime = 0
+
+	function animateScroll() {
+		function easeinoutquad(t, b, c, d) {
+			t /= d / 2
+			if (t < 1) return c / 2 * t * t + b
+			t--
+			return -c / 2 * (t * (t - 2) - 1) + b
+		}
+
+		currentTime += increment
+		const val = easeinoutquad(currentTime, start, change, duration)
+		aichatcontent.scrollTo(0, val)
+		if (currentTime < duration) {
+			aichatscrollYAnimationFrameId = requestAnimationFrame(animateScroll, increment)
+		}
+	}
+	aichatscrollYAnimationFrameId = requestAnimationFrame(animateScroll, increment)
 }
 
 setTimeout(function(){if(clientinfo.betatester == true&&clientinfo.google_email.includes('tester')){openaichat()}},2000)
