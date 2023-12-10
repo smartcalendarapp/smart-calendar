@@ -440,7 +440,7 @@ function getchecksmall(boolean) {
 
 
 //REGEX functions
-function getDuration(string) {
+function getDuration(string = '') {
 	string = string.toLowerCase()
 	let myduration;
 	let match;
@@ -537,7 +537,7 @@ function getDuration(string) {
 	return { value: myduration, match: match }
 }
 
-function getMinute(string, lax, fullstring) { //lax is for when getting time from input that is solely for time, e.g. event start, where AM/PM or :MM is not mandatory
+function getMinute(string = '', lax, fullstring) { //lax is for when getting time from input that is solely for time, e.g. event start, where AM/PM or :MM is not mandatory
 	string = string.toLowerCase()
 	fullstring = fullstring && fullstring.toLowerCase()
 	let myminute;
@@ -678,7 +678,7 @@ function getMinute(string, lax, fullstring) { //lax is for when getting time fro
 	return { value: myminute, match: match }
 }
 
-function getDate(string) {
+function getDate(string = '') {
 	string = string.toLowerCase()
 	let myyear, mymonth, myday;
 	let match;
@@ -5364,7 +5364,7 @@ function updateAvatar(){
 		return DEFAULTCOLORS[sum % DEFAULTCOLORS.length]
 	}
 
-	const avataricon = `<div style="background-color: ${nameToColor(getUserName())}" class="border-round avatarimage pointer display-flex flex-row align-center justify-center"><div class="text-20px text-primary text-bold">${getUserName().slice(0, 1)}</div>`
+	const avataricon = `<div style="background-color: ${nameToColor(getUserName())}" class="border-round avatarimage pointer display-flex flex-row align-center justify-center"><div class="text-20px text-white text-bold">${getUserName().slice(0, 1)}</div>`
 	
 	let avatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : avataricon}` : avataricon
 	
@@ -11816,6 +11816,7 @@ function updatedatepicker() {
 }
 
 
+
 //AI CHAT
 function closeaichat(){
 	let aichatwrap = getElement('aichatwrap')
@@ -11839,6 +11840,8 @@ function openaichat(){
 			role: 'system',
 			message: 'Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, give you advice, and more! Ask me any time.'
 		})
+
+		updateaichat()
 	}
 }
 
@@ -11857,7 +11860,7 @@ function updateaichat(){
 		return DEFAULTCOLORS[sum % DEFAULTCOLORS.length]
 	}
 
-	const avataricon = `<div style="background-color: ${nameToColor(getUserName())}" class="border-round avatarimage pointer display-flex flex-row align-center justify-center"><div class="text-20px text-primary text-bold">${getUserName().slice(0, 1)}</div>`
+	const avataricon = `<div style="background-color: ${nameToColor(getUserName())}" class="border-round avatarimage pointer display-flex flex-row align-center justify-center"><div class="text-20px text-white text-bold">${getUserName().slice(0, 1)}</div></div>`
 	const useravatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : avataricon}` : avataricon
 	const username = getUserName()
 
@@ -11865,19 +11868,19 @@ function updateaichat(){
 	const aiavatar = `<img class="border-round avatarimage" src="athena.png" alt="Profile picture"></img>`
 
 
+	
 	let aichatcontent = getElement('aichatcontent')
 	
 	let output = []
 	for(let chatinteraction of chathistory){
-		for(let { role, message } of chatinteraction){
+		for(let { role, message, actions } of chatinteraction){
 			output.push(`
 			<div class="display-flex flex-row gap-12px">
 				${role == 'user' ? useravatar : aiavatar}
 				<div class="display-flex flex-column gap-6px">
 					<div class="text-primary text-14px text-bold">${role == 'user' ? username : ainame}</div>
-					<div class="white-space-normal text-quaternary text-14px">
-						${message}
-					</div>
+					<div class="pre-wrap text-primary text-14px">${cleanInput(message)}</div>
+					${actions ? `<div class="display-flex flex-row gap-12px flex-wrap-wrap">${actions.join('')}</div>` : ''}
 				</div>
 			</div>`)
 		}
@@ -11955,26 +11958,187 @@ async function submitaimessage(){
 		})
 		if(response.status == 200){
 			let data = await response.json()
-	
-			console.log(data.data)
+			let output = data.data
 
-			chatinteraction.push({
-				role: 'system',
-				message: data.data?.message + `\n\nTokens: ${data.data?.totaltokens}\n${data.data?.command || ''}\n${data.data?.error || ''}`
-			})
+			if(output.command){
+				if(output.command == 'create_event'){
+					let arguments = output.arguments
+
+					let title = arguments?.title || ''
+					let startminute = getMinute(arguments?.startDate)
+					let [startyear, startmonth, startday] = getDate(arguments?.startDate)
+					let endminute = getMinute(arguments?.endDate)
+					let [endyear, endmonth, endday] = getDate(arguments?.endDate)
+					let duration = getDuration(arguments?.duration)
+
+					let startdate, enddate;
+					if(startminute != null && startyear != null && startmonth != null && startday != null){
+						startdate = new Date(startyear, startmonth, startday, 0, startminute)
+					}
+					if(endminute != null && endyear != null && endmonth != null && endday != null){
+						enddate = new Date(endyear, endmonth, endday, 0, endminute)
+					}
+					if(duration != null){
+						enddate = new Date(startdate)
+						enddate.setMinutes(enddate.getMinutes() + duration)
+					}
+					if(!enddate || isNaN(enddate.getTime())){
+						enddate = new Date(startdate)
+						enddate.setMinutes(enddate.getMinutes() + 60)
+					}
+
+
+					if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
+						let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title)
+						calendar.events.push(item)
+
+						selectedeventid = null
+						calendar.updateInfo()
+						calendar.updateEvents()
+
+
+						chatinteraction.push({
+							role: 'system',
+							message: `Done! I have created your event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`,
+							actions: [`<div class="background-blue hover:background-blue-hover border-8px transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar(${item.id})">Show me</div>`]
+						})
+					}else{
+						chatinteraction.push({
+							role: 'system',
+							message: `I don't have enough information to create this event for you, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`,
+						})
+					}
+
+				}else if(output.command == 'edit_event'){
+					let arguments = output.arguments
+
+					let id = arguments?.id || ''
+					let error = arguments?.errorMessage || ''
+					let newtitle = arguments?.newTitle
+					let newstartdate = arguments?.newStartDate
+					let newenddate = arguments?.newEndDate
+
+					if(error){
+						chatinteraction.push({
+							role: 'system',
+							message: `${error}` + `\n\nTokens: ${data.data?.totaltokens}`,
+						})
+					}else{
+						let item = id && calendar.events.find(d => d.id == id)
+						if(item){
+							let oldduration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
+
+							let startminute = getMinute(newstartdate)
+							let [startyear, startmonth, startday] = getDate(newstartdate)
+							let endminute = getMinute(newenddate)
+							let [endyear, endmonth, endday] = getDate(newenddate)
+
+							let startdate, enddate;
+							if(startminute != null && startyear != null && startmonth != null && startday != null){
+								startdate = new Date(startyear, startmonth, startday, 0, startminute)
+							}
+							if(endminute != null && endyear != null && endmonth != null && endday != null){
+								enddate = new Date(endyear, endmonth, endday, 0, endminute)
+							}
+							if(!enddate || isNaN(enddate.getTime())){
+								enddate = new Date(startdate)
+								enddate.setTime(enddate.getTime() + oldduration)
+							}
+
+
+							if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
+								item.start.year = startdate.getFullYear()
+								item.start.month = startdate.getMonth()
+								item.start.day = startdate.getDate()
+								item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+
+								item.end.year = enddate.getFullYear()
+								item.end.month = enddate.getMonth()
+								item.end.day = enddate.getDate()
+								item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+
+								selectedeventid = null
+								calendar.updateInfo()
+								calendar.updateEvents()
+
+								chatinteraction.push({
+									role: 'system',
+									message: `Done! I have moved your event ${Calendar.Event.getTitle(item)} to ${Calendar.Event.getStartText(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`,
+									actions: [`<div class="background-blue hover:background-blue-hover border-8px transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar(${item.id})">Show me</div>`]
+								})
+							}
+						}else{
+							chatinteraction.push({
+								role: 'system',
+								message: `I could not find that event, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`,
+							})
+						}
+					}
+				}else if(output.command == 'delete_event'){
+					let arguments = output.arguments
+
+					let id = arguments?.id || ''
+					let error = arguments?.errorMessage || ''
+
+					if(error){
+						chatinteraction.push({
+							role: 'system',
+							message: `${error}` + `\n\nTokens: ${data.data?.totaltokens}`,
+						})
+					}else{
+						let item = id && calendar.events.find(d => d.id == id)
+						if(item){
+							calendar.events = calendar.events.filter(d => d.id != id)
+
+							selectedeventid = null
+							calendar.updateInfo()
+							calendar.updateEvents()
+
+
+							chatinteraction.push({
+								role: 'system',
+								message: `Done! I have deleted your event ${Calendar.Event.getTitle(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`,
+							})
+						}else{
+							chatinteraction.push({
+								role: 'system',
+								message: `I could not find that event, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`,
+							})
+						}
+					}
+				}
+
+			}else if(output.error){
+				chatinteraction.push({
+					role: 'system',
+					message: `${output.error}` + `\n\nTokens: ${data.data?.totaltokens}`
+				})
+			}else{
+				chatinteraction.push({
+					role: 'system',
+					message: `${data.data?.message}` + `\n\nTokens: ${data.data?.totaltokens}`
+				})
+			}
 		}else if(response.status == 401){
 			let data = await response.json()
 
 			chatinteraction.push({
 				role: 'system',
-				message: `Error: ${data.error}`
+				message: `${data.error}`
 			})
 		}
 	}catch(err){
-		chatinteraction.push({
-			role: 'system',
-			message: `Error: ${err.message}`
-		})
+		if(!navigator.onLine){
+			chatinteraction.push({
+				role: 'system',
+				message: `Your internet connection is offline, please reconnect.`
+			})
+		}else{
+			chatinteraction.push({
+				role: 'system',
+				message: `An unexpected error occurred: ${err.message}, please try again or contact us.`
+			})
+		}
 
 		console.error(err)
 	}
@@ -11990,11 +12154,11 @@ async function submitaimessage(){
 
 
 let aichatscrollYAnimationFrameId;
-	function scrollaichatY() {
+function scrollaichatY() {
 	cancelAnimationFrame(aichatscrollYAnimationFrameId)
 
 	let aichatcontent = getElement('aichatcontent')
-	let target = aichatcontent.scrollHeight - aichatcontent.offsetHeight
+	let target = aichatcontent.scrollHeight - aichatcontent.offsetHeight - 24
 
 	let duration = 100
 	let start = aichatcontent.scrollTop
@@ -12023,7 +12187,7 @@ let aichatscrollYAnimationFrameId;
 
 setTimeout(function(){if(clientinfo.betatester == true){
 	function tempfx(event){
-		if(event.key == 't'){
+		if(event.key == 't' && event.shiftKey){
 			openaichat()
 		}
 	}

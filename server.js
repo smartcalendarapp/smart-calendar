@@ -3485,7 +3485,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				},
 				{
 					name: 'delete_event',
-					description: 'Check for the existence of event to delete. Returns an error if the event does not exist.',
+					description: 'Check for the existence of event to delete by referenced title or time. Returns an error if the event does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -3497,7 +3497,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				},
 				{
 					name: 'modify_event',
-					description: 'Check for the existence of event to modify. Returns an error if the event does not exist.',
+					description: 'Check for the existence of event to modify by referenced title or time. Returns an error if the event does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -3505,7 +3505,6 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							newTitle: { type: 'string', description: 'New event title' },
 							newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
 							newEndDate: { type: 'string', description: 'New event end date in YYYY-MM-DD HH:MM' },
-							newDuration: { type: 'string', description: 'New event duration in HH:MM' },
 							errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
 						},
 						required: []
@@ -3574,7 +3573,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						{ 
 							role: 'system', 
-							content: `A useful and resourceful productivity and scheduling assistant. Respond in natural language and not in calendar data format. The current time is ${localdatestring} in user's timezone.`
+							content: `A useful and resourceful productivity and scheduling assistant. Respond in natural language like an assistant. Do not directly reference the calendar data. The current time is ${localdatestring} in user's timezone.`
 						}
 					],
 					functions: [
@@ -3593,7 +3592,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 									},
 									calendarDataNeeded: {
 										type: "boolean",
-										description: "Determine the need for user's calendar data based on the command's context. Set to 'true' for commands where calendar context is crucial, like finding the next available slot or rescheduling based on current appointments. For commands with explicit dates or times that don't rely on existing calendar events, set it to 'false'."
+										description: "Set to 'true' for commands where calendar context is crucial, such as creating event at an available time, rescheduling, deleting event, or modifying event. Set to 'false' for commands that don't rely on existing calendar events, such as create event for a specific time."
 									},
 								},
 								required: ["commands", "calendarDataNeeded"]
@@ -3641,7 +3640,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							},
 							{ 
 								role: 'system', 
-								content: `A useful and resourceful productivity and scheduling assistant. Respond in natural language and not in calendar data format. The current time is ${localdatestring} in user's timezone.`
+								content: `A useful and resourceful productivity and scheduling assistant. Respond in natural language like an assistant. Do not directly reference the calendar data. The current time is ${localdatestring} in user's timezone.`
 							}
 						]
 						
@@ -3669,12 +3668,12 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					}
 				}
 
-				return { error: 'An unexpected error occurred, please try again or contact us', totaltokens: totaltokens }
+				return { error: 'An unexpected error occurred, please try again or contact us.', totaltokens: totaltokens }
 		
 			} catch (err) {
 				console.error(err)
 
-				return { error: `An unexpected error occurred: ${err.message}, please try again or contact us`, totaltokens: totaltokens }
+				return { error: `An unexpected error occurred: ${err.message}, please try again or contact us.`, totaltokens: totaltokens }
 			}
 
 		}
