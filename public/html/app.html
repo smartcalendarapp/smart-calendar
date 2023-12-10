@@ -1064,7 +1064,7 @@
 			<div class="display-flex flex-column gap-12px flex-1">
 				<div class="width-full relative display-flex align-center flex-row gap-12px">
 					<div class="display-flex flex-row border-8px background-primary backdrop-blur box-shadow overflow-hidden flex-1 relative">
-						<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea padding-right-0 infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px padding-right-48pxtransparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleprompttodotoday">
+						<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea padding-right-0 infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px padding-right-48px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleprompttodotoday">
 						</textarea>
 						<span class="inputline"></span>
 					</div>
@@ -1336,7 +1336,7 @@
 
 						<div class="width-full relative display-flex align-center flex-row gap-12px">
 							<div class="display-flex flex-row border-8px background-primary backdrop-blur box-shadow overflow-hidden flex-1 relative">
-								<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea padding-right-0 infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px padding-right-48pxtransparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleonboarding">
+								<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea padding-right-0 infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px padding-right-48px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleonboarding">
 								</textarea>
 								<span class="inputline"></span>
 							</div>
@@ -1478,7 +1478,7 @@
 					</div>
 
 					<!-- record button -->
-					<div class="padding-right-12px padding-top-6px absolute top-0 right-0 display-flex flex-column justify-center" id="eventrecognitionwrap">
+					<div class="padding-6px display-flex flex-column justify-center" id="eventrecognitionwrap">
 						<div class="tooltip pointer hover:background-tint-2 transition-duration-100 border-round padding-6px display-flex" onclick="togglerecognition('event')"  id="eventrecognitionbutton">
 							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="fillbutton">
 								<g>
@@ -2006,14 +2006,14 @@
 
 
 								<!-- input -->
-								<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea padding-right-0 infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px padding-right-48pxtransparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle">
+								<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea padding-right-0 infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px padding-right-48px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle">
 								</textarea>
 								<span class="inputlinewrap">
 									<span class="inputline"></span>
 								</span>
 
 								<!-- record button -->
-								<div class="padding-right-12px display-flex flex-column justify-center" id="todorecognitionwrap">
+								<div class="padding-right-12px padding-top-6px absolute top-0 right-0 display-flex flex-column justify-center" id="todorecognitionwrap">
 									<div class="tooltip pointer hover:background-tint-2 transition-duration-100 border-round padding-6px display-flex" onclick="togglerecognition('task')" id="todorecognitionbutton">
 										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="fillbutton">
 											<g>
