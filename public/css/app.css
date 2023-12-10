@@ -2535,6 +2535,25 @@ body {
 	pointer-events: none;
 }
 
+.avatarimage {
+	height: 36px;
+	width: 36px;
+}
+
+.smallavatarimage {
+	height: 24px;
+	width: 24px;
+}
+.smallavatarsvg {
+	height: 24px;
+	width: 24px;
+	stroke: var(--text-primary);
+	fill: none;
+	display: block;
+	pointer-events: none;
+}
+
+
 .infotoprightgroup {
 	display: flex;
 	flex-direction: row;

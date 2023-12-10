@@ -3434,7 +3434,7 @@ app.post('/getgptresponse', async (req, res) => {
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
 
-		if(!user.accountdata.betatester) return res.end()//here3
+		if(!user.accountdata.google_email != 'smartcalendartester@gmail.com') return res.end()//here3
 
 		let appliedratelimit = MAX_GPT_PER_DAY
 		if(user.accountdata.betatester){
@@ -3455,11 +3455,7 @@ app.post('/getgptresponse', async (req, res) => {
 		
 
 		//prompt
-		let gptresponse = await getgptresponse(`SOME PROMPT`)
-
-		if(!gptresponse){
-			return res.status(401).json({ error: 'Error in getting response, please try again or contact us.' })
-		}
+		
 
 		return res.json({ data: gptresponse })
 	}catch(err){

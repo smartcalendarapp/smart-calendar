@@ -105,6 +105,36 @@
 	<div class="z-index-1000 popup box-shadow backdrop-blur padding-12px border-8px absolute gap-4px display-flex flex-column hiddenpopup picker" onmousedown="event.preventDefault()" id="datepicker"></div>
 
 
+	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px background-secondary border-16px box-shadow margin-12px border-box" id="aichatwrap">
+		<div class="display-flex flex-row gap-12px justify-space-between align-center">
+			<div>
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					</g>
+					</svg>
+				</div>
+			
+			<div class="text-primary text-bold text-18px">AI Assistant (beta)</div>
+
+			<div class="infotoprightgroup">
+				<div class="infotopright pointer" onclick="closeiachat(event)">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+			</div>
+		</div>
+
+		<div class="horizontalbar"></div>
+
+		<div id="aichatcontent" class="display-flex flex-column-reverse gap-24px"></div>
+	</div>
+
 	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="todoitempriority">
 		<div class="display-flex flex-row gap-12px justify-space-between align-center">
 			<div>

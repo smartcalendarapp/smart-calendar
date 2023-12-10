@@ -5356,12 +5356,15 @@ function updateuserinfo(){
 	<div class="text-14px text-primary">${getUserEmail() && isEmail(getUserEmail()) && getUserEmail()  != getUserName() ? getUserEmail() : ''}</div>`
 }
 function updateAvatar(){
-	const avataricon = `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="avatarsvg">
-		<g>
-		<path d="M64.352 74.7305C64.352 39.5787 92.8482 11.0825 128 11.0825C163.152 11.0825 191.648 39.5787 191.648 74.7305C191.648 109.882 163.152 138.378 128 138.378C92.8482 138.378 64.352 109.882 64.352 74.7305Z" opacity="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-width="20"></path>
-		<path d="M13.0743 245.846C20.1727 188.688 68.9202 144.451 128 144.451C187.063 144.451 235.8 188.664 242.92 245.798" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-		</g>
-	</svg>`
+	function nameToColor(name) {
+		let sum = 0;
+		for (let i = 0; i < name.length; i++) {
+			sum += name.charCodeAt(i);
+		}
+		return DEFAULTCOLORS[sum % DEFAULTCOLORS.length]
+	}
+
+	const avataricon = `<div style="background-color: ${nameToColor(getUserName())}" class="border-round avatarimage pointer display-flex flex-row align-center justify-center"><div class="text-20px text-primary text-bold">${getUserName().slice(0, 1)}</div>`
 	
 	let avatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : avataricon}` : avataricon
 	
@@ -11813,6 +11816,101 @@ function updatedatepicker() {
 }
 
 
+//AI CHAT
+function closeaichat(){
+	let aichatwrap = getElement('aichatwrap')
+	aichatwrap.classList.add('hiddenpopup')
+}
+function openaichat(){
+	let todowrap = getElement('todowrap')
+
+	let aichatwrap = getElement('aichatwrap')
+	aichatwrap.classList.remove('hiddenpopup')
+
+	aichatwrap.height = todowrap.offsetHeight + 'px'
+	aichatwrap.width = todowrap.offsetWidth + 'px'
+	aichatwrap.top = todowrap.getBoundingClientRect().top
+	aichatwrap.left = todowrap.getBoundingClientRect().left
+}
+
+let chathistory = [
+	[
+		{
+			role: 'system',
+			content: 'Hello, I am Athena, your assistant for everything productivty! I can schedule meetings for you, give you advice, and more! Ask me any time.'
+		}
+	],
+	[
+		{
+			role: 'user',
+			content: 'Schedule a meeting with john on monday 3pm'
+		},
+		{
+			role: 'system',
+			content: 'Done! Your meeting with John has been scheduled in your calendar for Monday, Dec 11 at 3pm.'
+		}
+	],
+	[
+		{
+			role: 'user',
+			content: 'How to calculate the rms velocity?'
+		},
+		{
+			role: 'system',
+			content: `To calculate the root-mean-square (RMS) velocity of particles in a gas, you can use the following formula:
+
+			RMS Velocity (vrms) = √(3 * k * T / m)
+			
+			Where:
+			
+			vrms is the root-mean-square velocity.
+			k is the Boltzmann constant (approximately 1.38 x 10^-23 J/K).
+			T is the absolute temperature in Kelvin (K).
+			m is the mass of a gas particle.
+			Here's a quick summary: RMS velocity is determined by the temperature (T) and the mass (m) of gas particles, with the Boltzmann constant (k) and a factor of 3 involved in the calculation to represent the kinetic energy distribution of gas molecules.`
+		}
+	],
+]
+
+function updateaichat(){
+	function nameToColor(name) {
+		let sum = 0;
+		for (let i = 0; i < name.length; i++) {
+			sum += name.charCodeAt(i);
+		}
+		return DEFAULTCOLORS[sum % DEFAULTCOLORS.length]
+	}
+
+	const avataricon = `<div style="background-color: ${nameToColor(getUserName())}" class="border-round avatarimage pointer display-flex flex-row align-center justify-center"><div class="text-20px text-primary text-bold">${getUserName().slice(0, 1)}</div>`
+	const useravatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : avataricon}` : avataricon
+	const username = getUserName()
+
+	const ainame = 'Athena'
+	const aiavatar = `<img class="border-round avatarimage" src="athena.png" alt="Profile picture"></img>`
+
+
+	let aichatcontent = getElement('aichatcontent')
+	
+	let output = []
+	for(let chatinteraction of chathistory.reverse()){
+		for(let { role, content } of chatinteraction.reverse()){
+			output.push(`
+			<div class="white-space-normal display-flex flex-row gap-12px">
+				${role == 'user' ? useravatar : aiavatar}
+				<div class="display-flex flex-column gap-12px">
+					<div class="text-primary text-16px text-bold">${role == 'user' ? username : ainame}</div>
+					<div class="white-space-normal text-primary text-16px">
+						${content}
+					</div>
+				</div>
+			</div>`)
+		}
+	}
+
+	aichatcontent.innerHTML = output
+}
+
+setTimeout(function(){if(clientinfo.betatester == true){openaichat()}},5000)
 
 //EVENTS
 
