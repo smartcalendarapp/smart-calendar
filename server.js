@@ -3669,18 +3669,24 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					}
 				}
 
-				return { error: 'Encountered an unexpected error, please try again or contact us', totaltokens: totaltokens }
+				return { error: 'An unexpected error occurred, please try again or contact us', totaltokens: totaltokens }
 		
 			} catch (err) {
 				console.error(err)
 
-				return { error: `Encountered an unexpected error: ${err.message}, please try again or contact us`, totaltokens: totaltokens }
+				return { error: `An unexpected error occurred: ${err.message}, please try again or contact us`, totaltokens: totaltokens }
 			}
 
 		}
 
 
 		function generatecalendarcontext(tempevents){
+			function formatLocalDateTime(currentDatetime) {
+				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
+				const formattedTime = `${currentDatetime.getHours().toString().padStart(2, '0')}:${currentDatetime.getMinutes().toString().padStart(2, '0')}`
+				return { formattedDate, formattedTime }
+			}
+
 			let tempoutput = ''
 			for(let d of tempevents){
 				let newstring = `Event title: ${d.title}, UUID: ${d.id}, start date: ${formatLocalDateTime(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)).formattedDate} ${formatLocalDateTime(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)).formattedTime}, end date: ${formatLocalDateTime(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute)).formattedDate} ${formatLocalDateTime(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute)).formattedTime}.`

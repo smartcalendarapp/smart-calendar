@@ -11833,46 +11833,20 @@ function openaichat(){
 	aichatwrap.style.left = todowrap.getBoundingClientRect().left + 'px'
 
 	updateaichat()
+
+	if(chathistory.length == 0){
+		addaichatmessage({
+			role: 'system',
+			content: 'Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, give you advice, and more! Ask me any time.'
+		})
+	}
 }
 
-let chathistory = [
-	[
-		{
-			role: 'system',
-			content: 'Hello, I am Athena, your assistant for everything productivty! I can schedule meetings for you, give you advice, and more! Ask me any time.'
-		}
-	],
-	[
-		{
-			role: 'user',
-			content: 'Schedule a meeting with john on monday 3pm'
-		},
-		{
-			role: 'system',
-			content: 'Done! Your meeting with John has been scheduled in your calendar for Monday, Dec 11 at 3pm.'
-		}
-	],
-	[
-		{
-			role: 'user',
-			content: 'How to calculate the rms velocity?'
-		},
-		{
-			role: 'system',
-			content: `To calculate the root-mean-square (RMS) velocity of particles in a gas, you can use the following formula:
+let chathistory = []
 
-			RMS Velocity (vrms) = √(3 * k * T / m)
-			
-			Where:
-			
-			vrms is the root-mean-square velocity.
-			k is the Boltzmann constant (approximately 1.38 x 10^-23 J/K).
-			T is the absolute temperature in Kelvin (K).
-			m is the mass of a gas particle.
-			Here's a quick summary: RMS velocity is determined by the temperature (T) and the mass (m) of gas particles, with the Boltzmann constant (k) and a factor of 3 involved in the calculation to represent the kinetic energy distribution of gas molecules.`
-		}
-	],
-]
+function addaichatmessage({ role, content }){
+	chathistory.push([{ role, content }])
+}
 
 function updateaichat(){
 	function nameToColor(name) {
