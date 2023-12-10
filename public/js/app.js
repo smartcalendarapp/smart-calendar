@@ -11837,15 +11837,15 @@ function openaichat(){
 	if(chathistory.length == 0){
 		addaichatmessage({
 			role: 'system',
-			content: 'Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, give you advice, and more! Ask me any time.'
+			message: 'Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, give you advice, and more! Ask me any time.'
 		})
 	}
 }
 
 let chathistory = []
 
-function addaichatmessage({ role, content }){
-	chathistory.push([{ role, content }])
+function addaichatmessage({ role, message }){
+	chathistory.push([{ role, message }])
 }
 
 function updateaichat(){
@@ -11869,14 +11869,14 @@ function updateaichat(){
 	
 	let output = []
 	for(let chatinteraction of chathistory){
-		for(let { role, content } of chatinteraction){
+		for(let { role, message } of chatinteraction){
 			output.push(`
 			<div class="display-flex flex-row gap-12px">
 				${role == 'user' ? useravatar : aiavatar}
 				<div class="display-flex flex-column gap-6px">
 					<div class="text-primary text-14px text-bold">${role == 'user' ? username : ainame}</div>
 					<div class="white-space-normal text-quaternary text-14px">
-						${content}
+						${message}
 					</div>
 				</div>
 			</div>`)
@@ -11921,7 +11921,7 @@ async function submitaimessage(){
 	let chatinteraction = []
 	chatinteraction.push({
 		role: 'user',
-		content: userinput
+		message: userinput
 	})
 
 	chathistory.push(chatinteraction)
