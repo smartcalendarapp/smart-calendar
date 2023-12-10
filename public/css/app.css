@@ -753,6 +753,21 @@ body {
 
 
 
+.menuwrapoutside{
+	overflow-y: auto;
+	min-width: 1px;
+	min-height: 1px;
+	left: 0;
+	top: 0;
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s, opacity 0.2s;
+	position: absolute;
+	z-index: 300;
+	border-radius: 8px;
+	display: flex;
+	flex-direction: column;
+}
+
+
 .welcomepopupbuttonrow {
 	display: flex;
 	flex-direction: row;
@@ -2526,14 +2541,6 @@ body {
 	height: 36px;
 	width: 36px;
 }
-.avatarsvg {
-	height: 24px;
-	width: 24px;
-	stroke: var(--text-primary);
-	fill: none;
-	display: block;
-	pointer-events: none;
-}
 
 .avatarimage {
 	height: 36px;
@@ -2541,16 +2548,22 @@ body {
 }
 
 .smallavatarimage {
-	height: 24px;
-	width: 24px;
+	height: 18px;
+	width: 18px;
 }
-.smallavatarsvg {
-	height: 24px;
-	width: 24px;
-	stroke: var(--text-primary);
-	fill: none;
-	display: block;
-	pointer-events: none;
+
+
+.aichatsend{
+	border:1px solid var(--blue)
+}
+.sendbuttonsvg{
+	pointer-events:none;
+	height:24px;
+	width:24px;
+	fill:var(--blue);
+}
+.aichatsend:hover .sendbuttonsvg{
+	fill:var(--blue-hover);
 }
 
 

@@ -11827,10 +11827,12 @@ function openaichat(){
 	let aichatwrap = getElement('aichatwrap')
 	aichatwrap.classList.remove('hiddenpopup')
 
-	aichatwrap.height = todowrap.offsetHeight + 'px'
-	aichatwrap.width = todowrap.offsetWidth + 'px'
-	aichatwrap.top = todowrap.getBoundingClientRect().top
-	aichatwrap.left = todowrap.getBoundingClientRect().left
+	aichatwrap.style.height = todowrap.offsetHeight + 'px'
+	aichatwrap.style.width = todowrap.offsetWidth + 'px'
+	aichatwrap.style.top = todowrap.getBoundingClientRect().top + 'px'
+	aichatwrap.style.left = todowrap.getBoundingClientRect().left + 'px'
+
+	updateaichat()
 }
 
 let chathistory = [
@@ -11892,14 +11894,14 @@ function updateaichat(){
 	let aichatcontent = getElement('aichatcontent')
 	
 	let output = []
-	for(let chatinteraction of chathistory.reverse()){
-		for(let { role, content } of chatinteraction.reverse()){
+	for(let chatinteraction of chathistory){
+		for(let { role, content } of chatinteraction){
 			output.push(`
-			<div class="white-space-normal display-flex flex-row gap-12px">
+			<div class="display-flex flex-row gap-12px">
 				${role == 'user' ? useravatar : aiavatar}
-				<div class="display-flex flex-column gap-12px">
-					<div class="text-primary text-16px text-bold">${role == 'user' ? username : ainame}</div>
-					<div class="white-space-normal text-primary text-16px">
+				<div class="display-flex flex-column gap-6px">
+					<div class="text-primary text-14px text-bold">${role == 'user' ? username : ainame}</div>
+					<div class="white-space-normal text-quaternary text-14px">
 						${content}
 					</div>
 				</div>
@@ -11907,10 +11909,22 @@ function updateaichat(){
 		}
 	}
 
-	aichatcontent.innerHTML = output
+	aichatcontent.innerHTML = output.join('')
+
+	resizeaichat()
 }
 
-setTimeout(function(){if(clientinfo.betatester == true){openaichat()}},5000)
+function resizeaichat(){
+	let element = getElement('aichatinput')
+	element.style.height = '0'
+	element.style.height = Math.min(element.scrollHeight, parseInt(getComputedStyle(element).maxHeight)) + 'px'
+}
+
+function submitaichat(){
+	//here3 is where the fun starts
+}
+
+setTimeout(function(){if(clientinfo.betatester == true&&clientinfo.google_email.includes('ris')){openaichat()}},5000)
 
 //EVENTS
 

@@ -105,34 +105,50 @@
 	<div class="z-index-1000 popup box-shadow backdrop-blur padding-12px border-8px absolute gap-4px display-flex flex-column hiddenpopup picker" onmousedown="event.preventDefault()" id="datepicker"></div>
 
 
-	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px background-secondary border-16px box-shadow margin-12px border-box" id="aichatwrap">
-		<div class="display-flex flex-row gap-12px justify-space-between align-center">
-			<div>
-					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-					<g>
-					</g>
-					</svg>
-				</div>
-			
-			<div class="text-primary text-bold text-18px">AI Assistant (beta)</div>
+	<div class="menuwrapoutside hiddenpopup z-index-2000 overflow-visible padding-12px border-box" id="aichatwrap">
+		<div class="background-primary-transparent height-full flex-1 backdrop-blur border-16px box-shadow display-flex flex-column">
+			<div class="display-flex flex-row gap-12px padding-12px borderbottom justify-space-between align-center">
+				<div>
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+						<g>
+						</g>
+						</svg>
+					</div>
+				
+				<div class="text-primary text-bold text-18px">AI Assistant <span class="text-12px badgepadding background-purple border-round">beta</span></div>
 
-			<div class="infotoprightgroup">
-				<div class="infotopright pointer" onclick="closeiachat(event)">
-					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-					<g>
-					<g opacity="1">
-					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-					</g>
-					</g>
+				<div class="infotoprightgroup">
+					<div class="infotopright pointer" onclick="closeaichat(event)">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+						<g>
+						<g opacity="1">
+						<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+						<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+						</g>
+						</g>
+						</svg>
+					</div>
+				</div>
+			</div>
+
+			<div id="aichatcontent" class="overflow-y-auto padding-12px display-flex flex-column gap-24px"></div>
+
+			<!-- input -->
+			<div class="border-16px flex-1 bordertertiary display-flex flex-row relative">
+				<textarea rows="1" oninput="resizeaichat()" class="createtodotextarea infoinput text-16px padding-top-12px padding-bottom-12px padding-left-12px transparentinput" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" placeholder="Message Athena..." maxlength="300" id="aichatinput">
+					<span class="inputline"></span>
+				</textarea>
+				
+				<div class="padding-6px pointer aichatsend border-8px transition-duration-100" onclick="submitaimessage(event)">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="sendbuttonsvg transition-duration-100">
+						<g opacity="1">
+						<path d="M239.675 239.393C232.45 246.618 223.865 251.191 213.92 253.115C203.974 255.038 192.997 256 180.987 256L74.7312 256C62.9093 256 52.0491 255.038 42.1506 253.115C32.2522 251.191 23.6907 246.618 16.4662 239.393C9.33553 232.262 4.8085 223.771 2.8851 213.92C0.961701 204.068 0 193.231 0 181.41L0 75.0126C0 63.0031 0.938244 52.0491 2.81473 42.1506C4.69122 32.2522 9.24171 23.7376 16.4662 16.6069C23.6907 9.38244 32.2522 4.8085 42.1506 2.8851C52.0491 0.961701 63.0031 0 75.0126 0L180.987 0C192.997 0 203.974 0.961701 213.92 2.8851C223.865 4.8085 232.45 9.38244 239.675 16.6069C246.805 23.7376 251.332 32.2522 253.256 42.1506C255.179 52.0491 256.141 63.0031 256.141 75.0126L256.141 180.987C256.141 192.997 255.179 203.951 253.256 213.849C251.332 223.748 246.805 232.262 239.675 239.393ZM128.352 201.957C131.542 201.957 134.146 200.925 136.163 198.861C138.18 196.797 139.189 194.17 139.189 190.98L139.189 118.782L138.063 87.8197L152.699 105.412L169.728 122.722C171.699 124.88 174.279 125.959 177.469 125.959C180.471 125.959 183.005 124.951 185.069 122.933C187.133 120.916 188.165 118.406 188.165 115.404C188.165 112.308 187.18 109.775 185.209 107.804L136.796 59.5316C134.075 56.8107 131.26 55.4502 128.352 55.4502C125.443 55.4502 122.629 56.8107 119.908 59.5316L71.4942 107.804C69.5239 109.681 68.5388 112.214 68.5388 115.404C68.5388 118.406 69.5474 120.916 71.5646 122.933C73.5818 124.951 76.0916 125.959 79.094 125.959C80.5952 125.959 82.026 125.654 83.3865 125.045C84.7469 124.435 85.8963 123.661 86.8345 122.722L104.004 105.412L118.5 87.9604L117.374 118.782L117.374 190.98C117.374 194.17 118.406 196.797 120.471 198.861C122.535 200.925 125.162 201.957 128.352 201.957Z" fill-rule="nonzero" opacity="1"></path>
+						</g>
 					</svg>
+						
 				</div>
 			</div>
 		</div>
-
-		<div class="horizontalbar"></div>
-
-		<div id="aichatcontent" class="display-flex flex-column-reverse gap-24px"></div>
 	</div>
 
 	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="todoitempriority">
@@ -1044,7 +1060,7 @@
 			<div class="display-flex flex-column gap-12px flex-1">
 				<div class="width-full relative display-flex align-center flex-row gap-12px">
 					<div class="display-flex flex-row border-8px background-primary backdrop-blur box-shadow overflow-hidden flex-1 relative">
-						<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleprompttodotoday">
+						<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleprompttodotoday">
 						</textarea>
 						<span class="inputline"></span>
 					</div>
@@ -1316,7 +1332,7 @@
 
 						<div class="width-full relative display-flex align-center flex-row gap-12px">
 							<div class="display-flex flex-row border-8px background-primary backdrop-blur box-shadow overflow-hidden flex-1 relative">
-								<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleonboarding">
+								<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleonboarding">
 								</textarea>
 								<span class="inputline"></span>
 							</div>
@@ -1408,7 +1424,7 @@
 			
 			<div class="flex-shrink-0 transition-duration-100">
 				<div class="border-8px flex-1 bordertertiary display-flex flex-row relative">
-					<input oninput="typeaddevent(event)" onclick="if(gtag){gtag('event', 'button_click', { useraction: 'Focus title - add event' })}" class="infoinput text-16px padding-12px transparentinput" onkeydown="stoprecognition();if(event.key == 'Enter'){ submitcreateevent(event) }" placeholder="Meeting with Cathy tomorrow 9:00 1 hour" autocomplete="off" maxlength="2000" id="createeventtitle"></input>
+					<input oninput="typeaddevent(event)" onclick="if(gtag){gtag('event', 'button_click', { useraction: 'Focus title - add event' })}" class="infoinput text-16px padding-left-12px padding-top-12px padding-bottom-12px transparentinput" onkeydown="stoprecognition();if(event.key == 'Enter'){ submitcreateevent(event) }" placeholder="Meeting with Cathy tomorrow 9:00 1 hour" autocomplete="off" maxlength="2000" id="createeventtitle"></input>
 					<span class="inputlinewrap">
 						<span class="inputline"></span>
 					</span>
@@ -1986,7 +2002,7 @@
 
 
 								<!-- input -->
-								<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle">
+								<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle">
 								</textarea>
 								<span class="inputlinewrap">
 									<span class="inputline"></span>
