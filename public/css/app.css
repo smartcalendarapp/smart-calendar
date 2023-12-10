@@ -2558,8 +2558,8 @@ body {
 }
 .sendbuttonsvg{
 	pointer-events:none;
-	height:24px;
-	width:24px;
+	height:30px;
+	width:30px;
 	fill:var(--blue);
 }
 .aichatsend:hover .sendbuttonsvg{

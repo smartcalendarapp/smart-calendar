@@ -11924,7 +11924,7 @@ function submitaichat(){
 	//here3 is where the fun starts
 }
 
-setTimeout(function(){if(clientinfo.betatester == true&&clientinfo.google_email.includes('ris')){openaichat()}},5000)
+setTimeout(function(){if(clientinfo.betatester == true&&clientinfo.google_email.includes('tester')){openaichat()}},2000)
 
 //EVENTS
 
