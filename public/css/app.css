@@ -346,7 +346,9 @@ body {
 	overflow:auto;
 	resize:none;
 	max-height:200px;
+
 }
+
 
 .formgroup {
 	gap: 6px;
@@ -2553,9 +2555,7 @@ body {
 }
 
 
-.aichatsend{
-	border:1px solid var(--blue)
-}
+
 .sendbuttonsvg{
 	pointer-events:none;
 	height:30px;

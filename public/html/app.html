@@ -134,9 +134,9 @@
 			<div id="aichatcontent" class="flex-1 overflow-y-auto padding-12px display-flex flex-column gap-24px"></div>
 
 			<!-- input -->
-			<div class="relative align-center margin-12px border-box flex-1 bordertertiary display-flex flex-row relative">
-				<div class="display-flex flex-row border-16px backdrop-blur bordertertiary overflow-hidden flex-1 relative">
-					<textarea rows="1" oninput="resizeaichat()" class="createtodotextarea infoinput text-16px padding-top-12px padding-bottom-12px padding-left-12px transparentinput" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" placeholder="Message Athena..." maxlength="300" id="aichatinput">
+			<div class="relative align-center margin-12px overflow-hidden border-12px border-box bordertertiary display-flex flex-row relative">
+				<div class="display-flex flex-row backdrop-blur flex-1">
+					<textarea rows="1" oninput="resizeaichat()" class="createtodotextarea padding-right-0 infoinput text-14px padding-top-12px padding-bottom-12px padding-left-12px transparentinput" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" placeholder="Message Athena..." maxlength="300" id="aichatinput">
 					</textarea>
 					<span class="inputline"></span>
 				</div>
@@ -1061,8 +1061,8 @@
 			<!-- add task -->
 			<div class="display-flex flex-column gap-12px flex-1">
 				<div class="width-full relative display-flex align-center flex-row gap-12px">
-					<div class="display-flex flex-row border-8px background-primary backdrop-blur box-shadow overflow-hidden flex-1 relative">
-						<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleprompttodotoday">
+					<div class="display-flex overflow-hidden flex-row border-12px background-primary backdrop-blur box-shadow overflow-hidden flex-1 relative">
+						<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea padding-right-0 infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleprompttodotoday">
 						</textarea>
 						<span class="inputline"></span>
 					</div>
@@ -1333,8 +1333,8 @@
 					<div class="display-flex flex-column gap-12px flex-1">
 
 						<div class="width-full relative display-flex align-center flex-row gap-12px">
-							<div class="display-flex flex-row border-8px background-primary backdrop-blur box-shadow overflow-hidden flex-1 relative">
-								<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleonboarding">
+							<div class="display-flex overflow-hidden flex-row border-12px background-primary backdrop-blur box-shadow overflow-hidden flex-1 relative">
+								<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea padding-right-0 infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleonboarding">
 								</textarea>
 								<span class="inputline"></span>
 							</div>
@@ -1425,8 +1425,8 @@
 
 			
 			<div class="flex-shrink-0 transition-duration-100">
-				<div class="border-8px flex-1 bordertertiary display-flex flex-row relative">
-					<input oninput="typeaddevent(event)" onclick="if(gtag){gtag('event', 'button_click', { useraction: 'Focus title - add event' })}" class="infoinput text-16px padding-left-12px padding-top-12px padding-bottom-12px transparentinput" onkeydown="stoprecognition();if(event.key == 'Enter'){ submitcreateevent(event) }" placeholder="Meeting with Cathy tomorrow 9:00 1 hour" autocomplete="off" maxlength="2000" id="createeventtitle"></input>
+				<div class="border-12px flex-1 bordertertiary display-flex flex-row relative">
+					<input oninput="typeaddevent(event)" onclick="if(gtag){gtag('event', 'button_click', { useraction: 'Focus title - add event' })}" class="infoinput text-16px padding-left-12px padding-top-12px padding-bottom-12px padding-right-0 transparentinput" onkeydown="stoprecognition();if(event.key == 'Enter'){ submitcreateevent(event) }" placeholder="Meeting with Cathy tomorrow 9:00 1 hour" autocomplete="off" maxlength="2000" id="createeventtitle"></input>
 					<span class="inputlinewrap">
 						<span class="inputline"></span>
 					</span>
@@ -1985,7 +1985,7 @@
 
 						<!-- add task -->
 						<div class="z-index-100 width-full relative display-flex align-center flex-row gap-12px">
-							<div class="display-flex flex-row border-8px background-primary backdrop-blur box-shadow flex-1 relative">
+							<div class="overflow-hidden display-flex flex-row border-12px background-primary backdrop-blur box-shadow flex-1 relative">
 
 								<!-- upload button -->
 								<div class="padding-left-12px display-flex flex-column justify-center display-none">
@@ -2004,7 +2004,7 @@
 
 
 								<!-- input -->
-								<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle">
+								<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea padding-right-0 infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle">
 								</textarea>
 								<span class="inputlinewrap">
 									<span class="inputline"></span>
