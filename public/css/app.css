@@ -1910,9 +1910,7 @@ body {
 
 .aiassistantcontent{
 	max-width: 600px;
-	width: 100%;
-	display: flex;
-	flex-direction: column;
+	width:100%
 }
 
 .summarywrap {

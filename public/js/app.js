@@ -11936,7 +11936,7 @@ class ChatMessage {
 			async function waitforload() {
 				return new Promise((resolve) => {
 					const interval = setInterval(() => {
-						if (this.messaage) {
+						if (!!this.message) {
 							clearInterval(interval)
 							resolve()
 						}
@@ -11946,7 +11946,7 @@ class ChatMessage {
 
 			this.displaycontent = `<span class="aichatcursorloading"></span>`
 			let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-			chatmessagebody.innerHTML = this.displaycontent
+			chatmessagebody.innerHTML = '<span class="aichatcursorloading"></span>'
 
 			await waitforload()
 		}
@@ -11983,25 +11983,7 @@ class ChatMessage {
 }
 //here3
 
-function getsmallcircleprogressbar(value, max, color) {
-	let degrees = value / max * 360
-	if (max == 0) {
-		degrees = 0
-	}
-	let rotation1 = Math.min(-135 + degrees, 45)
-	let rotation2 = Math.max(-135 + degrees, 45)
 
-	return `
-		<div class="smallcircleprogressbarwrap">
-			<div class="smallcircleprogressbarbackground"></div>
-			<div class="smallcircleprogressbarright">
-				<div class="smallcircleprogressbarfillright" style="border-color: ${color} ${color} transparent transparent; transform: rotate(${rotation1}deg);"></div>
-			</div>
-			<div class="smallcircleprogressbarleft">
-				<div class="smallcircleprogressbarfillleft" style="border-color: ${color} ${color} transparent transparent; transform: rotate(${rotation2}deg);"></div>
-			</div>
-		</div>`
-}
 
 let chathistory = new ChatInterface()
 
@@ -12037,7 +12019,7 @@ function updateaichat(){
 				<div class="overflow-hidden display-flex flex-column gap-12px">
 					<div class="display-flex flex-column gap-6px">
 						<div class="text-primary text-14px text-bold">${role == 'user' ? username : ainame}</div>
-						<div class="selecttext pre-wrap break-word text-primary text-14px" id="chatmessage-body-${id}">${loaded ? `${formatURL(cleanInput(displaycontent))}` : ''}</div>
+						<div class="selecttext pre-wrap break-word text-primary text-14px" id="chatmessage-body-${id}">${formatURL(cleanInput(displaycontent))}</div>
 					</div>
 					${actions ? `<div class="display-flex flex-row gap-12px flex-wrap-wrap"  id="chatmessage-actions-${id}">${actions.join('')}</div>` : ''}
 				</div>
@@ -12127,8 +12109,9 @@ async function submitaimessage(){
 	let responsechatmessage = new ChatMessage({
 		role: 'system',
 		message: null,
-		loading:true
 	})
+
+	chatinteraction.addMessage(responsechatmessage)
 
 	chathistory.addInteraction(chatinteraction)
 
