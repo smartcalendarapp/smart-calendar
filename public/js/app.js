@@ -11916,16 +11916,24 @@ class ChatMessage {
 			let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
 			chatmessagebody.innerHTML = `${cleanInput(this.displaycontent)} <span class="aichatcursor"></span>`
 
-			const calculateDelay = (i, x) => 125 + 75 * Math.sin(Math.PI * i / x)
+			//delay
+			let currentword = this.message.split(' ')[i]
+			let delay = 100 + Math.random() * 50 * (currentword.length/5) + (currentword.endsWith('.') ? 100 : 0) + (currentword.endsWith(',') ? 50 : 0)
 
+			await sleep(delay)
 
-			let sleeptime = calculateDelay(i, totalwords)
-			await sleep(sleeptime)
+			requestAnimationFrame(function(){
+				scrollaichatY()
+			})
 		}
 
 		this.displaycontent = this.message
 		let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
 		chatmessagebody.innerHTML = `${cleanInput(this.displaycontent)}`
+
+		requestAnimationFrame(function(){
+			scrollaichatY()
+		})
 	}
 }
 

@@ -74,7 +74,11 @@ body {
 	}
 
 	50% {
-		opacity:0.3
+		opacity:0.8
+	}
+
+	70% {
+		opacity:0
 	}
 
 	100% {
@@ -90,7 +94,7 @@ body {
 	display:inline-block;
 	vertical-align:middle;
 	margin-top:-3px;
-	animation-name: bounce;
+	animation-name: blink;
 	animation-duration: 1.5s;
 	animation-iteration-count: infinite;
 	animation-timing-function: ease-in-out;
