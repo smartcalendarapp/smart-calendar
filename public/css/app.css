@@ -1859,6 +1859,13 @@ body {
 	background-color: var(--background-primary-home)
 }
 
+.aiassistantcontent{
+	max-width: 600px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
 .summarywrap {
 	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
 	flex: 1;
@@ -1883,6 +1890,7 @@ body {
 	display: flex;
 	flex-direction: column;
 }
+
 
 .summarycontentgroup {
 	display: flex;

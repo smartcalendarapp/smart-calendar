@@ -3558,11 +3558,13 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const customfunctions = ['create_event', 'delete_event', 'modify_event'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_event'] //a subset of all functions, the functions that need calendar data under all circumstances
 
-			const systeminstructions = `A useful and resourceful productivity and scheduling assistant called Athena. Respond in natural language like an assistant. Do not mention the calendar data or UUID. The current time is ${localdatestring} in user's timezone.`
-		
 			
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
+
+
+			const systeminstructions = `A useful and resourceful productivity and scheduling assistant called Athena. Respond in natural language like an assistant. Do not mention the calendar data or UUID. The current time is ${localdatestring} in user's timezone.`
+	
 		
 		
 			let totaltokens = 0

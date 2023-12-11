@@ -1238,7 +1238,7 @@ class Calendar {
 			this.updateAIAssistant()
 			aiassistantwrap.classList.remove('display-none')
 
-			aiassistanttab.classList.add('selectedbuttonunderline2')
+			aiassistanttab.classList.add('selectedbuttonunderline')
 			aiassistanttab2.classList.add('selectedbutton2')
 		}
 	}
@@ -1348,7 +1348,7 @@ class Calendar {
 
 	//ai assistant
 	updateAIAssistant() {
-		//here3
+		openaichat()
 	}
 
 	//calendar
@@ -11841,13 +11841,15 @@ function closeaichat(){
 function openaichat(){
 	let todowrap = getElement('todowrap')
 
-	let aichatwrap = getElement('aichatwrap')
-	aichatwrap.classList.remove('hiddenpopup')
+	if(!calendartabs.includes(4)){
+		let aichatwrap = getElement('aichatwrap')
+		aichatwrap.classList.remove('hiddenpopup')
 
-	aichatwrap.style.height = todowrap.offsetHeight + 'px'
-	aichatwrap.style.width = todowrap.offsetWidth + 'px'
-	aichatwrap.style.top = todowrap.getBoundingClientRect().top + 'px'
-	aichatwrap.style.left = todowrap.getBoundingClientRect().left + 'px'
+		aichatwrap.style.height = todowrap.offsetHeight + 'px'
+		aichatwrap.style.width = todowrap.offsetWidth + 'px'
+		aichatwrap.style.top = todowrap.getBoundingClientRect().top + 'px'
+		aichatwrap.style.left = todowrap.getBoundingClientRect().left + 'px'
+	}
 
 	updateaichat()
 
@@ -12041,21 +12043,17 @@ function updateaichatinput(){
 	}
 	let userinput = aichatinput.value.trim()
 
-	
+
+	let submitaichatbutton;
 	if(calendartabs.includes(4)){
-		let submitaichatbutton = getElement('submitaichatbutton2')
-		if(isgenerating || userinput.length == 0){
-			submitaichatbutton.classList.add('greyedoutevent')
-		}else{
-			submitaichatbutton.classList.remove('greyedoutevent')
-		}
+		submitaichatbutton = getElement('submitaichatbutton2')
 	}else{
-		let submitaichatbutton = getElement('submitaichatbutton')
-		if(isgenerating || userinput.length == 0){
-			submitaichatbutton.classList.add('greyedoutevent')
-		}else{
-			submitaichatbutton.classList.remove('greyedoutevent')
-		}
+		submitaichatbutton = getElement('submitaichatbutton')
+	}
+	if(isgenerating || userinput.length == 0){
+		submitaichatbutton.classList.add('greyedoutevent')
+	}else{
+		submitaichatbutton.classList.remove('greyedoutevent')
 	}
 }
 
