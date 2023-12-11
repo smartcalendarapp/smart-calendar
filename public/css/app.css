@@ -69,6 +69,13 @@ body {
 
 
 
+.aichatcursor{
+	width:3px;
+	height:14px;
+	background-color: var(--text-primary);
+	border-radius:100px;
+}
+
 .beaconsymbol {
 	position: absolute;
 	height: 32px;
