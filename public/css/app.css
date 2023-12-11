@@ -90,7 +90,7 @@ body {
 	width:2px;
 	height:18px;
 	background-color: var(--blue);
-	border-radius:100px;
+	border-radius:4px;
 	display:inline-block;
 	vertical-align:middle;
 	margin-top:-3px;
@@ -99,6 +99,55 @@ body {
 	animation-iteration-count: infinite;
 	animation-timing-function: ease-in-out;
 }
+
+@keyframes aichatcursorloading {
+	0% {
+		width:2px;
+		height:18px;
+	}
+
+	25% {
+		width:18px;
+		height:18px;
+	}
+
+	50% {
+		width:18px;
+		height:2px;
+	}
+
+	99% {
+		transform:rotate(90deg);
+	}
+	100%{
+		transform:rotate(0deg);
+		width:2px;
+		height:18px;
+	}
+}
+
+.aichatcursorloading{
+	width:2px;
+	height:18px;
+	background-color: var(--blue);
+	border-radius:4px;
+	animation-name: aichatcursorloading;
+	animation-duration: 1.5s;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+}
+
+.aichatcursorloadingwrap{
+	display:inline-flex;
+	margin-top:-3px;
+	height:18px;
+	width:18px;
+	align-items:center;
+	justify-content: center;
+	vertical-align:middle;
+}
+
+
 
 .beaconsymbol {
 	position: absolute;
@@ -2084,73 +2133,6 @@ body {
 	position: absolute;
 	top: 0px;
 	border-width: 6px;
-	border-style: solid;
-	width: 200%;
-	height: 100%;
-	border-top-left-radius: 50%;
-	border-top-right-radius: 50%;
-	border-bottom-right-radius: 50%;
-	border-bottom-left-radius: 50%;
-	left: 0px;
-}
-
-
-.smallcircleprogressbarwrap {
-	position: relative;
-	width: 24px;
-	height: 24px;
-	display: inline-block;
-}
-
-.smallcircleprogressbarbackground {
-	box-sizing: border-box;
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	width: 24px;
-	height: 24px;
-	border: 2px solid var(--background-tint-1);
-	border-radius: 12px;
-}
-
-.smallcircleprogressbarright {
-	position: absolute;
-	top: 0px;
-	right: 0px;
-	width: 12px;
-	height: 24px;
-	overflow: hidden;
-}
-
-.smallcircleprogressbarleft {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	width: 12px;
-	height: 24px;
-	overflow: hidden;
-}
-
-.smallcircleprogressbarfillright {
-	box-sizing: border-box;
-	position: absolute;
-	top: 0px;
-	border-width: 2px;
-	border-style: solid;
-	width: 200%;
-	height: 100%;
-	border-top-left-radius: 50%;
-	border-top-right-radius: 50%;
-	border-bottom-right-radius: 50%;
-	border-bottom-left-radius: 50%;
-	left: -100%;
-}
-
-.smallcircleprogressbarfillleft {
-	box-sizing: border-box;
-	position: absolute;
-	top: 0px;
-	border-width: 2px;
 	border-style: solid;
 	width: 200%;
 	height: 100%;

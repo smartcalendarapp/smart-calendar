@@ -11859,6 +11859,8 @@ function openaichat(){
 			role: 'system',
 			message: 'Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, give you advice, and more! Ask me any time.'
 		})
+
+		chatinteraction.addMessage(responsechatmessage)
 		
 		chathistory.addInteraction(chatinteraction)
 
@@ -11916,9 +11918,6 @@ class ChatMessage {
 		if(this.role != 'system'){
 			this.animated = true
 		}
-
-		this.loaded = false
-		this.loading = false
 	}
 	
 	async animateTyping(){
@@ -11931,7 +11930,28 @@ class ChatMessage {
 				setTimeout(resolve, time)
 			})
 		}
+
+		//waiting
+		if(!this.message){
+			async function waitforload() {
+				return new Promise((resolve) => {
+					const interval = setInterval(() => {
+						if (this.messaage) {
+							clearInterval(interval)
+							resolve()
+						}
+					}, 100)
+				})
+			}
+
+			this.displaycontent = `<span class="aichatcursorloading"></span>`
+			let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
+			chatmessagebody.innerHTML = this.displaycontent
+
+			await waitforload()
+		}
 		
+		//typing
 		let splitmessage = this.message.split(/(\s+)/g)
 		let totalwords = splitmessage.length
 
@@ -11960,45 +11980,6 @@ class ChatMessage {
 		})
 	}
 
-	async animateLoading(){
-		if(this.role != 'system') return
-		if(this.loaded || this.loading) return
-		this.loading = true
-
-		function sleep(time) {
-			return new Promise(resolve => {
-				setTimeout(resolve, time)
-			})
-		}
-		
-
-		const animate = (timestamp, lastTimestamp) => {
-            if (!lastTimestamp) lastTimestamp = timestamp;
-            const deltaTime = timestamp - lastTimestamp;
-
-            if (this.progress < 80) {
-                this.progress += deltaTime * 0.05
-            } else if (!this.message) {
-                this.progress += deltaTime * 0.005
-            }
-
-            this.progress = Math.min(progress, 100)
-
-			let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-			chatmessagebody.innerHTML = getsmallcircleprogressbar(progress, 100, 'var(--purple)')
-
-
-            if (progress < 100 || !this.message) {
-                requestAnimationFrame((newTimestamp) => animate(newTimestamp, timestamp))
-            }else{
-				this.loaded = true
-				updateaichat()
-			}
-        }
-
-		let progress = 0
-        requestAnimationFrame(animate)
-	}
 }
 //here3
 
@@ -12074,9 +12055,7 @@ function updateaichat(){
 	//animate
 	for(let chatinteraction of chathistory.getInteractions()){
 		for(let chatmessage of chatinteraction.getMessages()){
-			if(!chatmessage.loaded){
-				chatmessage.animateLoading()
-			}else if(!chatmessage.animated){
+			if(!chatmessage.animated){
 				chatmessage.animateTyping()
 			}
 		}
@@ -12342,7 +12321,6 @@ async function submitaimessage(){
 		console.error(err)
 	}
 
-	responsechatmessage.loading = false
 
 	//update
 	
