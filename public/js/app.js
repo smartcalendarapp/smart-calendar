@@ -11933,16 +11933,19 @@ class ChatMessage {
 
 		//waiting
 		if(!this.message){
-			async function waitforload() {
+			function getthismessage(){
+				return this.message
+			}
+			const waitforload = () => {
 				return new Promise((resolve) => {
 					const interval = setInterval(() => {
-						if (!!this.message) {
+						if (getthismessage()) {
 							clearInterval(interval)
 							resolve()
 						}
 					}, 100)
 				})
-			}
+			}	
 
 			this.displaycontent = `<span class="aichatcursorloading"></span>`
 			let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
