@@ -3464,6 +3464,7 @@ body {
 	width: 14px;
 	display: block;
 	transition-duration:0.1s;
+	cursor:pointer;
 }
 .aimessagebutton:hover{
 	fill:var(--text-primary)
