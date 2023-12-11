@@ -68,12 +68,32 @@ body {
 }
 
 
+@keyframes blink {
+	0% {
+		opacity:1
+	}
+
+	50% {
+		opacity:0.3
+	}
+
+	100% {
+		opacity:1
+	}
+}
 
 .aichatcursor{
-	width:3px;
-	height:14px;
-	background-color: var(--text-primary);
+	width:2px;
+	height:18px;
+	background-color: var(--blue);
 	border-radius:100px;
+	display:inline-block;
+	vertical-align:middle;
+	margin-top:-3px;
+	animation-name: bounce;
+	animation-duration: 1.5s;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
 }
 
 .beaconsymbol {

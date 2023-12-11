@@ -11880,7 +11880,7 @@ class ChatInteraction {
 }
 
 class ChatMessage {
-	constructor(role, message, actions){
+	constructor({role, message, actions}){
 		this.role = role
 		this.message = message
 		this.actions = actions
@@ -11891,12 +11891,17 @@ class ChatMessage {
 		if(this.role == 'system'){
 			this.displaycontent = ''
 		}
-		this.startedtyping = false
+
+		this.animated = false
+		if(this.role != 'system'){
+			this.animated = true
+		}
 	}
 	
 	async animateTyping(){
-		if(this.startedtyping) return
-		this.startedtyping = true
+		if(this.role != 'system') return
+		if(this.animated) return
+		this.animated = true
 
 		function sleep(time) {
 			return new Promise(resolve => {
@@ -11907,16 +11912,20 @@ class ChatMessage {
 		let totalwords = this.message.split(' ').length
 
 		for(let i = 0; i < totalwords; i++){
-			this.displaycontent = this.message.split(' ').slice(0, i + 1)
-
+			this.displaycontent = this.message.split(' ').slice(0, i + 1).join(' ')
 			let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
 			chatmessagebody.innerHTML = `${cleanInput(this.displaycontent)} <span class="aichatcursor"></span>`
 
-			let sleeptime = Math.random() * 40 + 20
+			const calculateDelay = (i, x) => 125 + 75 * Math.sin(Math.PI * i / x)
+
+
+			let sleeptime = calculateDelay(i, totalwords)
 			await sleep(sleeptime)
 		}
 
 		this.displaycontent = this.message
+		let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
+		chatmessagebody.innerHTML = `${cleanInput(this.displaycontent)}`
 	}
 }
 
@@ -11967,7 +11976,7 @@ function updateaichat(){
 	//animate
 	for(let chatinteraction of chathistory.getInteractions()){
 		for(let chatmessage of chatinteraction.getMessages()){
-			if(!chatmessage.startedtyping){
+			if(!chatmessage.animated){
 				chatmessage.animateTyping()
 			}
 		}
@@ -12011,7 +12020,7 @@ async function submitaimessage(){
 		role: 'user',
 		message: userinput
 	}))
-	
+
 	chathistory.addInteraction(chatinteraction)
 
 	//update
