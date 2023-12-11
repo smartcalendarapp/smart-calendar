@@ -3423,7 +3423,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 
 app.post('/getgptchatinteraction', async (req, res) => {
 	const MAX_GPT_PER_DAY = 10
-	const MAX_GPT_PER_DAY_BETA_TESTER = 30
+	const MAX_GPT_PER_DAY_BETA_TESTER = 100//30
 	const MAX_GPT_PER_DAY_PREMIUM = 50
 
 	try{
@@ -3690,12 +3690,15 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			for(let d of tempevents){
 				let newstring = `Event title: ${d.title}, UUID: ${d.id}, start date: ${formatLocalDateTime(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)).formattedDate} ${formatLocalDateTime(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)).formattedTime}, end date: ${formatLocalDateTime(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute)).formattedDate} ${formatLocalDateTime(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute)).formattedTime}.`
 
-				if(tempoutput.length + newstring.length > 2000) break
+				if(tempoutput.length + newstring.length > MAX_CALENDAR_CONTEXT_LENGTH) break
 
 				tempoutput += newstring
 			}
 			return tempoutput
 		}
+
+
+		const MAX_CALENDAR_CONTEXT_LENGTH = 3000
 
 		
 		let userinput = req.body.userinput.slice(0, 300)

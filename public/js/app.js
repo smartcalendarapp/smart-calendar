@@ -2802,8 +2802,6 @@ class Calendar {
 				</div>`)
 			}
 		}
-
-		//here3
 		
 
 		let notasks = output.length == 0
@@ -11868,7 +11866,7 @@ function updateaichat(){
 	const aiavatar = `<img class="border-round avatarimage" src="athena.png" alt="Profile picture"></img>`
 
 
-	
+
 	let aichatcontent = getElement('aichatcontent')
 	
 	let output = []
@@ -11877,9 +11875,11 @@ function updateaichat(){
 			output.push(`
 			<div class="display-flex flex-row gap-12px">
 				${role == 'user' ? useravatar : aiavatar}
-				<div class="display-flex flex-column gap-6px">
-					<div class="text-primary text-14px text-bold">${role == 'user' ? username : ainame}</div>
-					<div class="pre-wrap text-primary text-14px">${cleanInput(message)}</div>
+				<div class="display-flex flex-column gap-12px">
+					<div class="display-flex flex-column gap-6px">
+						<div class="text-primary text-14px text-bold">${role == 'user' ? username : ainame}</div>
+						<div class="pre-wrap text-primary text-14px">${cleanInput(message)}</div>
+					</div>
 					${actions ? `<div class="display-flex flex-row gap-12px flex-wrap-wrap">${actions.join('')}</div>` : ''}
 				</div>
 			</div>`)
@@ -11940,9 +11940,11 @@ async function submitaimessage(){
 
 
 	//request
+	const CALENDAR_CONTEXT_RANGE_DAYS = 7
+
 	let now = new Date()
-	let oneWeekFromNow = new Date(Date.now() + 86400*1000*7)
-	let calendarevents = getevents(now, oneWeekFromNow).filter(d => !Calendar.Event.isHidden(d))
+	let endrange = new Date(Date.now() + 86400*1000*CALENDAR_CONTEXT_RANGE_DAYS)
+	let calendarevents = getevents(now, endrange).filter(d => !Calendar.Event.isHidden(d))
 
 	try{
 		const response = await fetch('/getgptchatinteraction', {
@@ -11965,11 +11967,11 @@ async function submitaimessage(){
 					let arguments = output.arguments
 
 					let title = arguments?.title || ''
-					let startminute = getMinute(arguments?.startDate)
-					let [startyear, startmonth, startday] = getDate(arguments?.startDate)
+					let startminute = getMinute(arguments?.startDate).value
+					let [startyear, startmonth, startday] = getDate(arguments?.startDate).value
 					let endminute = getMinute(arguments?.endDate)
-					let [endyear, endmonth, endday] = getDate(arguments?.endDate)
-					let duration = getDuration(arguments?.duration)
+					let [endyear, endmonth, endday] = getDate(arguments?.endDate).value
+					let duration = getDuration(arguments?.duration).value
 
 					let startdate, enddate;
 					if(startminute != null && startyear != null && startmonth != null && startday != null){
@@ -11999,8 +12001,8 @@ async function submitaimessage(){
 
 						chatinteraction.push({
 							role: 'system',
-							message: `Done! I have created your event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`,
-							actions: [`<div class="background-blue hover:background-blue-hover border-8px transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar(${item.id})">Show me</div>`]
+							message: `Done! I have created an event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`,
+							actions: [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 						})
 					}else{
 						chatinteraction.push({
@@ -12028,10 +12030,10 @@ async function submitaimessage(){
 						if(item){
 							let oldduration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 
-							let startminute = getMinute(newstartdate)
-							let [startyear, startmonth, startday] = getDate(newstartdate)
-							let endminute = getMinute(newenddate)
-							let [endyear, endmonth, endday] = getDate(newenddate)
+							let startminute = getMinute(newstartdate).value
+							let [startyear, startmonth, startday] = getDate(newstartdate).value
+							let endminute = getMinute(newenddate).value
+							let [endyear, endmonth, endday] = getDate(newenddate).value
 
 							let startdate, enddate;
 							if(startminute != null && startyear != null && startmonth != null && startday != null){
@@ -12047,6 +12049,8 @@ async function submitaimessage(){
 
 
 							if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
+								item.title = newtitle || item.title
+
 								item.start.year = startdate.getFullYear()
 								item.start.month = startdate.getMonth()
 								item.start.day = startdate.getDate()
@@ -12061,10 +12065,11 @@ async function submitaimessage(){
 								calendar.updateInfo()
 								calendar.updateEvents()
 
+								
 								chatinteraction.push({
 									role: 'system',
 									message: `Done! I have moved your event ${Calendar.Event.getTitle(item)} to ${Calendar.Event.getStartText(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`,
-									actions: [`<div class="background-blue hover:background-blue-hover border-8px transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar(${item.id})">Show me</div>`]
+									actions: [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 								})
 							}
 						}else{
@@ -12187,7 +12192,7 @@ function scrollaichatY() {
 
 setTimeout(function(){if(clientinfo.betatester == true){
 	function tempfx(event){
-		if(event.key == 't' && event.shiftKey){
+		if(event.key == 'T'){
 			openaichat()
 		}
 	}
@@ -13905,9 +13910,9 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		if(addedtodos.length > 0){
 			if(addedtodos.length == 1){
 				let temptodo = addedtodos[0]
-				displayalert(`Task "${Calendar.Event.getTitle(temptodo).slice(0, 10)}${Calendar.Event.getTitle(temptodo).length > 10 ? '...' : ''}" scheduled for ${Calendar.Event.getStartText(temptodo)} <span class="margin-left-6px padding-6px-12px border-8px pointer pointer-auto text-white background-blue hover:background-blue-hover text-14px" onclick="gototaskincalendar('${sortstartdate(addedtodos)[0].id}')">Jump to task</span>`)
+				displayalert(`Task "${Calendar.Event.getTitle(temptodo).slice(0, 10)}${Calendar.Event.getTitle(temptodo).length > 10 ? '...' : ''}" scheduled for ${Calendar.Event.getStartText(temptodo)} <span class="margin-left-6px padding-6px-12px border-8px pointer pointer-auto text-white background-blue hover:background-blue-hover text-14px" onclick="gototaskincalendar('${sortstartdate(addedtodos)[0].id}')">Show me</span>`)
 			}else{
-				displayalert(`${addedtodos.length} task${addedtodos.length == 1 ? '' : 's'} scheduled <span class="margin-left-6px padding-6px-12px border-8px pointer pointer-auto text-white background-blue hover:background-blue-hover text-14px" onclick="gototaskincalendar('${sortstartdate(addedtodos)[0].id}')">Jump to first task</span>`)
+				displayalert(`${addedtodos.length} task${addedtodos.length == 1 ? '' : 's'} scheduled <span class="margin-left-6px padding-6px-12px border-8px pointer pointer-auto text-white background-blue hover:background-blue-hover text-14px" onclick="gototaskincalendar('${sortstartdate(addedtodos)[0].id}')">Show me first task</span>`)
 			}
 		}
 		
