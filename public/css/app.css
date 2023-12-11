@@ -3457,6 +3457,19 @@ body {
 	pointer-events: none;
 }
 
+
+.aimessagebutton{
+	fill: var(--text-quaternary);
+	height: 14px;
+	width: 14px;
+	display: block;
+	transition-duration:0.1s;
+}
+.aimessagebutton:hover{
+	fill:var(--text-primary)
+}
+
+
 .selectedbutton2 .buttonfillwhite {
 	fill: var(--blue) !important
 }
