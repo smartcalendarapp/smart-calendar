@@ -11925,6 +11925,10 @@ class ChatMessage {
 		if(this.animated) return
 		this.animated = true
 
+		const getthismessage = () => {
+			return this.message
+		}
+
 		function sleep(time) {
 			return new Promise(resolve => {
 				setTimeout(resolve, time)
@@ -11933,9 +11937,6 @@ class ChatMessage {
 
 		//waiting
 		if(!this.message){
-			function getthismessage(){
-				return this.message
-			}
 			const waitforload = () => {
 				return new Promise((resolve) => {
 					const interval = setInterval(() => {
@@ -11947,9 +11948,9 @@ class ChatMessage {
 				})
 			}	
 
-			this.displaycontent = `<span class="aichatcursorloading"></span>`
+			this.displaycontent = `<div class="aichatcursorloading"></div>`
 			let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-			chatmessagebody.innerHTML = '<span class="aichatcursorloading"></span>'
+			chatmessagebody.innerHTML = this.displaycontent
 
 			await waitforload()
 		}
