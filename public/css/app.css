@@ -2095,6 +2095,73 @@ body {
 }
 
 
+.smallcircleprogressbarwrap {
+	position: relative;
+	width: 24px;
+	height: 24px;
+	display: inline-block;
+}
+
+.smallcircleprogressbarbackground {
+	box-sizing: border-box;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 24px;
+	height: 24px;
+	border: 2px solid var(--background-tint-1);
+	border-radius: 12px;
+}
+
+.smallcircleprogressbarright {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 12px;
+	height: 24px;
+	overflow: hidden;
+}
+
+.smallcircleprogressbarleft {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 12px;
+	height: 24px;
+	overflow: hidden;
+}
+
+.smallcircleprogressbarfillright {
+	box-sizing: border-box;
+	position: absolute;
+	top: 0px;
+	border-width: 2px;
+	border-style: solid;
+	width: 200%;
+	height: 100%;
+	border-top-left-radius: 50%;
+	border-top-right-radius: 50%;
+	border-bottom-right-radius: 50%;
+	border-bottom-left-radius: 50%;
+	left: -100%;
+}
+
+.smallcircleprogressbarfillleft {
+	box-sizing: border-box;
+	position: absolute;
+	top: 0px;
+	border-width: 2px;
+	border-style: solid;
+	width: 200%;
+	height: 100%;
+	border-top-left-radius: 50%;
+	border-top-right-radius: 50%;
+	border-bottom-right-radius: 50%;
+	border-bottom-left-radius: 50%;
+	left: 0px;
+}
+
+
 .dragtododiv {
 	transition:background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.5s;
 }

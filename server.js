@@ -3558,14 +3558,13 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const customfunctions = ['create_event', 'delete_event', 'modify_event'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_event'] //a subset of all functions, the functions that need calendar data under all circumstances
 
-			
+
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-
 			const systeminstructions = `A useful and resourceful productivity and scheduling assistant called Athena. Respond in natural language like an assistant. Do not mention the calendar data or UUID. The current time is ${localdatestring} in user's timezone.`
 	
-		
+
 		
 			let totaltokens = 0
 
@@ -3598,7 +3597,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 									},
 									calendarDataNeeded: {
 										type: "boolean",
-										description: "Set to 'true' for commands where calendar context is crucial, such as creating event at an available time, rescheduling, deleting event, or modifying event. Set to 'false' for commands that don't rely on existing calendar events, such as create event for a specific time."
+										description: "Set to 'true' for commands where calendar context is crucial, such as creating event at a variable time, rescheduling, deleting event, or modifying event. Set to 'false' for commands that don't rely on existing calendar events, such as create event for a specific user defined time."
 									},
 								},
 								required: ["commands", "calendarDataNeeded"]
@@ -3687,15 +3686,24 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 
 		function generatecalendarcontext(tempevents){
-			function formatLocalDateTime(currentDatetime) {
+			function getDateTimeText(currentDatetime) {
 				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
 				const formattedTime = `${currentDatetime.getHours().toString().padStart(2, '0')}:${currentDatetime.getMinutes().toString().padStart(2, '0')}`
-				return { formattedDate, formattedTime }
+				return `${formattedDate} ${formattedTime}`
+			}
+
+			function getDateText(currentDatetime) {
+				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
+				return `${formattedDate} (all day)`
+			}
+
+			function isAllDay(item){
+				return !item.start.minute && !item.end.minute
 			}
 
 			let tempoutput = ''
 			for(let d of tempevents){
-				let newstring = `Event title: ${d.title}, UUID: ${d.id}, start date: ${formatLocalDateTime(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)).formattedDate} ${formatLocalDateTime(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)).formattedTime}, end date: ${formatLocalDateTime(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute)).formattedDate} ${formatLocalDateTime(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute)).formattedTime}.`
+				let newstring = `Event title: ${d.title}, UUID: ${d.id}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)).formattedDate}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}.`
 
 				if(tempoutput.length + newstring.length > MAX_CALENDAR_CONTEXT_LENGTH) break
 

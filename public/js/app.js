@@ -11855,7 +11855,7 @@ function openaichat(){
 
 	if(chathistory.getInteractions() == 0){
 		let chatinteraction = new ChatInteraction()
-		chatinteraction.addMessage(new ChatMessage({
+		responsechatmessage = {
 			role: 'system',
 			message: 'Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, give you advice, and more! Ask me any time.'
 		}))
@@ -11916,6 +11916,9 @@ class ChatMessage {
 		if(this.role != 'system'){
 			this.animated = true
 		}
+
+		this.loaded = false
+		this.loading = false
 	}
 	
 	async animateTyping(){
@@ -11930,7 +11933,7 @@ class ChatMessage {
 		}
 		
 		let splitmessage = this.message.split(/(\s+)/g)
-		let totalwords =splitmessage .length
+		let totalwords = splitmessage.length
 
 		for(let i = 0; i < totalwords; i++){
 			this.displaycontent = splitmessage.slice(0, i + 1).join('')
@@ -11956,8 +11959,68 @@ class ChatMessage {
 			scrollaichatY()
 		})
 	}
+
+	async animateLoading(){
+		if(this.role != 'system') return
+		if(this.loaded || this.loading) return
+		this.loading = true
+
+		function sleep(time) {
+			return new Promise(resolve => {
+				setTimeout(resolve, time)
+			})
+		}
+		
+
+		const animate = (timestamp, lastTimestamp) => {
+            if (!lastTimestamp) lastTimestamp = timestamp;
+            const deltaTime = timestamp - lastTimestamp;
+
+            if (this.progress < 80) {
+                this.progress += deltaTime * 0.05
+            } else if (!this.message) {
+                this.progress += deltaTime * 0.005
+            }
+
+            this.progress = Math.min(progress, 100)
+
+			let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
+			chatmessagebody.innerHTML = getsmallcircleprogressbar(progress, 100, 'var(--purple)')
+
+
+            if (progress < 100 || !this.message) {
+                requestAnimationFrame((newTimestamp) => animate(newTimestamp, timestamp))
+            }else{
+				this.loaded = true
+				updateaichat()
+			}
+        }
+
+		let progress = 0
+        requestAnimationFrame(animate)
+	}
 }
 //here3
+
+function getsmallcircleprogressbar(value, max, color) {
+	let degrees = value / max * 360
+	if (max == 0) {
+		degrees = 0
+	}
+	let rotation1 = Math.min(-135 + degrees, 45)
+	let rotation2 = Math.max(-135 + degrees, 45)
+
+	return `
+		<div class="smallcircleprogressbarwrap">
+			<div class="smallcircleprogressbarbackground"></div>
+			<div class="smallcircleprogressbarright">
+				<div class="smallcircleprogressbarfillright" style="border-color: ${color} ${color} transparent transparent; transform: rotate(${rotation1}deg);"></div>
+			</div>
+			<div class="smallcircleprogressbarleft">
+				<div class="smallcircleprogressbarfillleft" style="border-color: ${color} ${color} transparent transparent; transform: rotate(${rotation2}deg);"></div>
+			</div>
+		</div>`
+}
 
 let chathistory = new ChatInterface()
 
@@ -11986,14 +12049,14 @@ function updateaichat(){
 	let output = []
 
 	for(let chatinteraction of chathistory.getInteractions()){
-		for(let { role, displaycontent, actions, id } of chatinteraction.getMessages()){
+		for(let { role, displaycontent, actions, id, loaded } of chatinteraction.getMessages()){
 			output.push(`
 			<div class="display-flex flex-row gap-12px">
 				${role == 'user' ? useravatar : aiavatar}
 				<div class="overflow-hidden display-flex flex-column gap-12px">
 					<div class="display-flex flex-column gap-6px">
 						<div class="text-primary text-14px text-bold">${role == 'user' ? username : ainame}</div>
-						<div class="selecttext pre-wrap break-word text-primary text-14px" id="chatmessage-body-${id}">${cleanInput(displaycontent)}</div>
+						<div class="selecttext pre-wrap break-word text-primary text-14px" id="chatmessage-body-${id}">${loaded ? `${formatURL(cleanInput(displaycontent))}` : ''}</div>
 					</div>
 					${actions ? `<div class="display-flex flex-row gap-12px flex-wrap-wrap"  id="chatmessage-actions-${id}">${actions.join('')}</div>` : ''}
 				</div>
@@ -12011,7 +12074,9 @@ function updateaichat(){
 	//animate
 	for(let chatinteraction of chathistory.getInteractions()){
 		for(let chatmessage of chatinteraction.getMessages()){
-			if(!chatmessage.animated){
+			if(!chatmessage.loaded){
+				chatmessage.animateLoading()
+			}else if(!chatmessage.animated){
 				chatmessage.animateTyping()
 			}
 		}
@@ -12019,21 +12084,24 @@ function updateaichat(){
 
 
 	//input
-	resizeaichat()
 	updateaichatinput()
+	resizeaichatinput()
 }
 
-function resizeaichat(){
-	if(calendartabs.includes(4)){
-		let element = getElement('aichatinput2')
-		element.style.height = '0'
-		element.style.height = Math.min(element.scrollHeight, parseInt(getComputedStyle(element).maxHeight)) + 'px'
-	}else{
-		let element = getElement('aichatinput')
-		element.style.height = '0'
-		element.style.height = Math.min(element.scrollHeight, parseInt(getComputedStyle(element).maxHeight)) + 'px'
-	}
+function resizeaichatinput(){
+	requestAnimationFrame(function(){
+		if(calendartabs.includes(4)){
+			let element = getElement('aichatinput2')
+			element.style.height = '0'
+			element.style.height = Math.min(element.scrollHeight, parseInt(getComputedStyle(element).maxHeight)) + 'px'
+		}else{
+			let element = getElement('aichatinput')
+			element.style.height = '0'
+			element.style.height = Math.min(element.scrollHeight, parseInt(getComputedStyle(element).maxHeight)) + 'px'
+		}
+	})
 }
+
 function updateaichatinput(){
 	let aichatinput;
 	if(calendartabs.includes(4)){
@@ -12077,13 +12145,18 @@ async function submitaimessage(){
 		role: 'user',
 		message: userinput
 	}))
+	let responsechatmessage = new ChatMessage({
+		role: 'system',
+		message: null,
+		loading:true
+	})
 
 	chathistory.addInteraction(chatinteraction)
 
 	//update
 	aichatinput.value = ''
 	updateaichat()
-	resizeaichat()
+	resizeaichatinput()
 
 	requestAnimationFrame(function(){
 		scrollaichatY()
@@ -12150,16 +12223,10 @@ async function submitaimessage(){
 						calendar.updateEvents()
 
 
-						chatinteraction.addMessage(new ChatMessage({
-							role: 'system',
-							message: `Done! I have created an event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`,
-							actions: [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
-						}))
+						responsechatmessage.message = `Done! I have created an event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`
+						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
-						chatinteraction.addMessage(new ChatMessage({
-							role: 'system',
-							message: `I don't have enough information to create this event for you, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`,
-						}))
+						responsechatmessage.message = `I don't have enough information to create this event for you, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`
 					}
 
 				}else if(output.command == 'edit_event'){
@@ -12172,62 +12239,58 @@ async function submitaimessage(){
 					let newenddate = arguments?.newEndDate
 
 					if(error){
-						chatinteraction.addMessage(new ChatMessage({
-							role: 'system',
-							message: `${error}` + `\n\nTokens: ${data.data?.totaltokens}`,
-						}))
+						responsechatmessage.message = `${error}` + `\n\nTokens: ${data.data?.totaltokens}`
 					}else{
 						let item = id && calendar.events.find(d => d.id == id)
 						if(item){
-							let oldduration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
+							if(Calendar.Event.isReadOnly(item)){
+								responsechatmessage.message = `I could not edit that event as it is read-only (it may be part of a calendar you cannot edit).` + `\n\nTokens: ${data.data?.totaltokens}`
+							}else{
 
-							let startminute = getMinute(newstartdate).value
-							let [startyear, startmonth, startday] = getDate(newstartdate).value
-							let endminute = getMinute(newenddate).value
-							let [endyear, endmonth, endday] = getDate(newenddate).value
+								let oldduration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 
-							let startdate, enddate;
-							if(startminute != null && startyear != null && startmonth != null && startday != null){
-								startdate = new Date(startyear, startmonth, startday, 0, startminute)
-							}
-							if(endminute != null && endyear != null && endmonth != null && endday != null){
-								enddate = new Date(endyear, endmonth, endday, 0, endminute)
-							}
-							if(!enddate || isNaN(enddate.getTime())){
-								enddate = new Date(startdate)
-								enddate.setTime(enddate.getTime() + oldduration)
-							}
+								let startminute = getMinute(newstartdate).value
+								let [startyear, startmonth, startday] = getDate(newstartdate).value
+								let endminute = getMinute(newenddate).value
+								let [endyear, endmonth, endday] = getDate(newenddate).value
+
+								let startdate, enddate;
+								if(startminute != null && startyear != null && startmonth != null && startday != null){
+									startdate = new Date(startyear, startmonth, startday, 0, startminute)
+								}
+								if(endminute != null && endyear != null && endmonth != null && endday != null){
+									enddate = new Date(endyear, endmonth, endday, 0, endminute)
+								}
+								if(!enddate || isNaN(enddate.getTime())){
+									enddate = new Date(startdate)
+									enddate.setTime(enddate.getTime() + oldduration)
+								}
 
 
-							if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
-								item.title = newtitle || item.title
+								if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
+									item.title = newtitle || item.title
 
-								item.start.year = startdate.getFullYear()
-								item.start.month = startdate.getMonth()
-								item.start.day = startdate.getDate()
-								item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+									item.start.year = startdate.getFullYear()
+									item.start.month = startdate.getMonth()
+									item.start.day = startdate.getDate()
+									item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
 
-								item.end.year = enddate.getFullYear()
-								item.end.month = enddate.getMonth()
-								item.end.day = enddate.getDate()
-								item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+									item.end.year = enddate.getFullYear()
+									item.end.month = enddate.getMonth()
+									item.end.day = enddate.getDate()
+									item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
 
-								selectedeventid = null
-								calendar.updateInfo()
-								calendar.updateEvents()
+									selectedeventid = null
+									calendar.updateInfo()
+									calendar.updateEvents()
 
-								
-								chatinteraction.addMessage(new ChatMessage({
-									role: 'system',
-									message: `Done! I have moved your event ${Calendar.Event.getTitle(item)} to ${Calendar.Event.getStartText(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`,
-									actions: [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
-								}))
+									
+									responsechatmessage.message = `Done! I have moved your event ${Calendar.Event.getTitle(item)} to ${Calendar.Event.getStartText(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`,
+									responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
+								}
 							}
 						}else{
-							chatinteraction.addMessage(new ChatMessage({
-								role: 'system',
-								message: `I could not find that event, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`,
-							}))
+							responsechatmessage.message = `I could not find that event, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`
 						}
 					}
 				}else if(output.command == 'delete_event'){
@@ -12237,68 +12300,52 @@ async function submitaimessage(){
 					let error = arguments?.errorMessage || ''
 
 					if(error){
-						chatinteraction.addMessage(new ChatMessage({
-							role: 'system',
-							message: `${error}` + `\n\nTokens: ${data.data?.totaltokens}`,
-						}))
+						responsechatmessage.message = `${error}` + `\n\nTokens: ${data.data?.totaltokens}`
 					}else{
 						let item = id && calendar.events.find(d => d.id == id)
 						if(item){
-							calendar.events = calendar.events.filter(d => d.id != id)
+							if(Calendar.Event.isReadOnly(item)){
+								responsechatmessage.message = `I could not delete that event as it is read-only (it may be part of a calendar you cannot edit).` + `\n\nTokens: ${data.data?.totaltokens}`
+							}else{
+								calendar.events = calendar.events.filter(d => d.id != id)
 
-							selectedeventid = null
-							calendar.updateInfo()
-							calendar.updateEvents()
+								selectedeventid = null
+								calendar.updateInfo()
+								calendar.updateEvents()
 
 
-							chatinteraction.addMessage(new ChatMessage({
-								role: 'system',
-								message: `Done! I have deleted your event ${Calendar.Event.getTitle(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`,
-							}))
+								responsechatmessage.message = `\n\nTokens: ${data.data?.totaltokens}`
+							}
 						}else{
-							chatinteraction.addMessage(new ChatMessage({
-								role: 'system',
-								message: `I could not find that event, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`,
-							}))
+							responsechatmessage.message = `I could not find that event, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`
 						}
 					}
 				}
 
 			}else if(output.error){
-				chatinteraction.addMessage(new ChatMessage({
-					role: 'system',
-					message: `${output.error}` + `\n\nTokens: ${data.data?.totaltokens}`
-				}))
+				responsechatmessage.message = `${output.error}` + `\n\nTokens: ${data.data?.totaltokens}`
 			}else{
-				chatinteraction.addMessage(new ChatMessage({
-					role: 'system',
-					message: `${data.data?.message}` + `\n\nTokens: ${data.data?.totaltokens}`
-				}))
+				responsechatmessage.message = `${data.data?.message}` + `\n\nTokens: ${data.data?.totaltokens}`
 			}
 		}else if(response.status == 401){
 			let data = await response.json()
 
-			chatinteraction.addMessage(new ChatMessage({
-				role: 'system',
-				message: `${data.error}`
-			}))
+			responsechatmessage.message = `${data.error}`
 		}
 	}catch(err){
 		if(!navigator.onLine){
-			chatinteraction.addMessage(new ChatMessage({
-				role: 'system',
-				message: `Your internet connection is offline, please reconnect.`
-			}))
+			responsechatmessage.message = `Your internet connection is offline, please reconnect.`
 		}else{
-			chatinteraction.addMessage(new ChatMessage({
-				role: 'system',
-				message: `An unexpected error occurred: ${err.message}, please try again or contact us.`
-			}))
+			responsechatmessage.message = `An unexpected error occurred: ${err.message}, please try again or contact us.`
 		}
 
 		console.error(err)
 	}
 
+	responsechatmessage.loading = false
+
+	//update
+	
 	updateaichat()
 	requestAnimationFrame(function(){
 		scrollaichatY()
@@ -12313,7 +12360,12 @@ let aichatscrollYAnimationFrameId;
 function scrollaichatY() {
 	cancelAnimationFrame(aichatscrollYAnimationFrameId)
 
-	let aichatcontent = getElement('aichatcontent')
+	let aichatcontent;
+	if(calendartabs.includes(4)){
+		aichatcontent = getElement('aichatcontent2')
+	}else{
+		aichatcontent = getElement('aichatcontent')
+	}
 	let target = aichatcontent.scrollHeight - aichatcontent.offsetHeight - 24
 
 	let duration = 100
