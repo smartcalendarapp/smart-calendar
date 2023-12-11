@@ -11855,10 +11855,10 @@ function openaichat(){
 
 	if(chathistory.getInteractions() == 0){
 		let chatinteraction = new ChatInteraction()
-		responsechatmessage = {
+		let responsechatmessage = new ChatMessage({
 			role: 'system',
 			message: 'Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, give you advice, and more! Ask me any time.'
-		}))
+		})
 		
 		chathistory.addInteraction(chatinteraction)
 
