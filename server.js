@@ -3421,6 +3421,8 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 	}
 })
 
+
+
 app.post('/getgptchatinteraction', async (req, res) => {
 	const MAX_GPT_PER_DAY = 10
 	const MAX_GPT_PER_DAY_BETA_TESTER = 100//30
@@ -3573,7 +3575,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						{ 
 							role: 'system', 
-							content: `A useful and resourceful productivity and scheduling assistant. Respond in natural language like an assistant. Do not directly reference the calendar data. The current time is ${localdatestring} in user's timezone.`
+							content: `A useful and resourceful productivity and scheduling assistant. Respond in natural language like an assistant. Do not mention the calendar data or UUID. The current time is ${localdatestring} in user's timezone.`
 						}
 					],
 					functions: [
@@ -3640,7 +3642,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							},
 							{ 
 								role: 'system', 
-								content: `A useful and resourceful productivity and scheduling assistant. Respond in natural language like an assistant. Do not directly reference the calendar data. The current time is ${localdatestring} in user's timezone.`
+								content: `A useful and resourceful productivity and scheduling assistant. Respond in natural language like an assistant. Do not mention the calendar data or UUID. The current time is ${localdatestring} in user's timezone.`
 							}
 						]
 						

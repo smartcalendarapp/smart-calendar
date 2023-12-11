@@ -11834,13 +11834,11 @@ function openaichat(){
 	updateaichat()
 
 	if(chathistory.length == 0){
-		let chatinteraction = new ChatInterface.ChatInteraction()
-		chatinteraction.addMessage(new ChatInterface.ChatMessage({
+		let chatinteraction = new chathistory.ChatInteraction()
+		chatinteraction.addMessage(new chatinteraction.ChatMessage({
 			role: 'system',
 			message: 'Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, give you advice, and more! Ask me any time.'
 		}))
-
-		chathistory.addInteraction(chatinteraction)
 
 		updateaichat()
 	}
@@ -11853,70 +11851,74 @@ class ChatInterface{
 		this.interactions = interactions
 	}
 
-	static addInteraction(chatinteraction){
+	addInteraction(chatinteraction){
 		this.interactions.push(chatinteraction)
 	}
 
-	static getInteractions(){
+	getInteractions(){
 		return this.interactions
 	}
 
 
-	static ChatInteraction = class {
+	ChatInteraction = class {
 		constructor(messages = []){
 			this.messages = messages
 
 			this.id = generateID()
+
+			super.addInteraction(this)
 		}
 
-		static addMessage(chatmessage){
+		addMessage(chatmessage){
 			this.messages.push(chatmessage)
 		}
 
-		static getMessages(){
+		getMessages(){
 			return this.messages
 		}
-	}
 
 
-	static ChatMessage = class {
-		constructor(role, message, actions){
-			this.role = role
-			this.message = message
-			this.actions = actions
-			
-			this.id = generateID()
+		ChatMessage = class {
+			constructor(role, message, actions){
+				this.role = role
+				this.message = message
+				this.actions = actions
+				
+				this.id = generateID()
+	
+				this.displaycontent = this.message
+				if(this.role == 'system'){
+					this.displaycontent = ''
+				}
+				this.startedtyping = false
 
-			this.displaycontent = this.message
-			if(this.role == 'system'){
-				this.displaycontent = ''
-			}
-			this.startedtyping = false
-		}
-		
-		static async animateTyping(){
-			if(this.startedtyping) return
-			this.startedtyping = true
-
-			function sleep(time) {
-				return new Promise(resolve => {
-					setTimeout(resolve, time)
-				})
+				super.addMessage(this)
 			}
 			
-			let totalwords = this.message.split(' ').length
-
-			for(let i = 0; i < totalwords; i++){
-				this.displaycontent = this.message.split(' ').slice(0, i + 1)
-
-				let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-				chatmessagebody.innerHTML = `${cleanInput(this.displaycontent)} <span class="aichatcursor"></span>`
-
-				let sleeptime = Math.random() * 40 + 20
-				await sleep(sleeptime)
+			async animateTyping(){
+				if(this.startedtyping) return
+				this.startedtyping = true
+	
+				function sleep(time) {
+					return new Promise(resolve => {
+						setTimeout(resolve, time)
+					})
+				}
+				
+				let totalwords = this.message.split(' ').length
+	
+				for(let i = 0; i < totalwords; i++){
+					this.displaycontent = this.message.split(' ').slice(0, i + 1)
+	
+					let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
+					chatmessagebody.innerHTML = `${cleanInput(this.displaycontent)} <span class="aichatcursor"></span>`
+	
+					let sleeptime = Math.random() * 40 + 20
+					await sleep(sleeptime)
+				}
+	
+				this.displaycontent = this.message
 			}
-
-			this.displaycontent = this.message
 		}
 
 	}
@@ -12008,13 +12010,11 @@ async function submitaimessage(){
 	if(userinput.length == 0) return
 
 	//chat history
-	let chatinteraction = new ChatInterface.ChatInteraction()
-	chatinteraction.addMessage(new ChatInterface.ChatMessage({
+	let chatinteraction = new chathistory.ChatInteraction()
+	chatinteraction.addMessage(new chatinteraction.ChatMessage({
 		role: 'user',
 		message: userinput
 	}))
-
-	chathistory.addInteraction(chatinteraction)
 
 	//update
 	aichatinput.value = ''
@@ -12086,13 +12086,13 @@ async function submitaimessage(){
 						calendar.updateEvents()
 
 
-						chatinteraction.addMessage(new ChatInterface.ChatMessage({
+						chatinteraction.addMessage(new chatinteraction.ChatMessage({
 							role: 'system',
 							message: `Done! I have created an event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`,
 							actions: [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 						}))
 					}else{
-						chatinteraction.addMessage(new ChatInterface.ChatMessage({
+						chatinteraction.addMessage(new chatinteraction.ChatMessage({
 							role: 'system',
 							message: `I don't have enough information to create this event for you, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`,
 						}))
@@ -12108,7 +12108,7 @@ async function submitaimessage(){
 					let newenddate = arguments?.newEndDate
 
 					if(error){
-						chatinteraction.addMessage(new ChatInterface.ChatMessage({
+						chatinteraction.addMessage(new chatinteraction.ChatMessage({
 							role: 'system',
 							message: `${error}` + `\n\nTokens: ${data.data?.totaltokens}`,
 						}))
@@ -12153,14 +12153,14 @@ async function submitaimessage(){
 								calendar.updateEvents()
 
 								
-								chatinteraction.addMessage(new ChatInterface.ChatMessage({
+								chatinteraction.addMessage(new chatinteraction.ChatMessage({
 									role: 'system',
 									message: `Done! I have moved your event ${Calendar.Event.getTitle(item)} to ${Calendar.Event.getStartText(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`,
 									actions: [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 								}))
 							}
 						}else{
-							chatinteraction.addMessage(new ChatInterface.ChatMessage({
+							chatinteraction.addMessage(new chatinteraction.ChatMessage({
 								role: 'system',
 								message: `I could not find that event, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`,
 							}))
@@ -12173,7 +12173,7 @@ async function submitaimessage(){
 					let error = arguments?.errorMessage || ''
 
 					if(error){
-						chatinteraction.addMessage(new ChatInterface.ChatMessage({
+						chatinteraction.addMessage(new chatinteraction.ChatMessage({
 							role: 'system',
 							message: `${error}` + `\n\nTokens: ${data.data?.totaltokens}`,
 						}))
@@ -12187,12 +12187,12 @@ async function submitaimessage(){
 							calendar.updateEvents()
 
 
-							chatinteraction.addMessage(new ChatInterface.ChatMessage({
+							chatinteraction.addMessage(new chatinteraction.ChatMessage({
 								role: 'system',
 								message: `Done! I have deleted your event ${Calendar.Event.getTitle(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`,
 							}))
 						}else{
-							chatinteraction.addMessage(new ChatInterface.ChatMessage({
+							chatinteraction.addMessage(new chatinteraction.ChatMessage({
 								role: 'system',
 								message: `I could not find that event, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`,
 							}))
@@ -12201,12 +12201,12 @@ async function submitaimessage(){
 				}
 
 			}else if(output.error){
-				chatinteraction.addMessage(new ChatInterface.ChatMessage({
+				chatinteraction.addMessage(new chatinteraction.ChatMessage({
 					role: 'system',
 					message: `${output.error}` + `\n\nTokens: ${data.data?.totaltokens}`
 				}))
 			}else{
-				chatinteraction.addMessage(new ChatInterface.ChatMessage({
+				chatinteraction.addMessage(new chatinteraction.ChatMessage({
 					role: 'system',
 					message: `${data.data?.message}` + `\n\nTokens: ${data.data?.totaltokens}`
 				}))
@@ -12214,19 +12214,19 @@ async function submitaimessage(){
 		}else if(response.status == 401){
 			let data = await response.json()
 
-			chatinteraction.addMessage(new ChatInterface.ChatMessage({
+			chatinteraction.addMessage(new chatinteraction.ChatMessage({
 				role: 'system',
 				message: `${data.error}`
 			}))
 		}
 	}catch(err){
 		if(!navigator.onLine){
-			chatinteraction.addMessage(new ChatInterface.ChatMessage({
+			chatinteraction.addMessage(new chatinteraction.ChatMessage({
 				role: 'system',
 				message: `Your internet connection is offline, please reconnect.`
 			}))
 		}else{
-			chatinteraction.addMessage(new ChatInterface.ChatMessage({
+			chatinteraction.addMessage(new chatinteraction.ChatMessage({
 				role: 'system',
 				message: `An unexpected error occurred: ${err.message}, please try again or contact us.`
 			}))
