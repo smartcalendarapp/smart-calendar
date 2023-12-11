@@ -3557,6 +3557,8 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		
 			const customfunctions = ['create_event', 'delete_event', 'modify_event'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_event'] //a subset of all functions, the functions that need calendar data under all circumstances
+
+			const systeminstructions = `A useful and resourceful productivity and scheduling assistant called Athena. Respond in natural language like an assistant. Do not mention the calendar data or UUID. The current time is ${localdatestring} in user's timezone.`
 		
 			
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
@@ -3575,7 +3577,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						{ 
 							role: 'system', 
-							content: `A useful and resourceful productivity and scheduling assistant. Respond in natural language like an assistant. Do not mention the calendar data or UUID. The current time is ${localdatestring} in user's timezone.`
+							content: systeminstructions
 						}
 					],
 					functions: [
@@ -3642,7 +3644,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							},
 							{ 
 								role: 'system', 
-								content: `A useful and resourceful productivity and scheduling assistant. Respond in natural language like an assistant. Do not mention the calendar data or UUID. The current time is ${localdatestring} in user's timezone.`
+								content: systeminstructions
 							}
 						]
 						
@@ -3670,6 +3672,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					}
 				}
 
+				console.error(response.choices[0].message)
 				return { error: 'An unexpected error occurred, please try again or contact us.', totaltokens: totaltokens }
 		
 			} catch (err) {

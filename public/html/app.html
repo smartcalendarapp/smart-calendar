@@ -150,7 +150,7 @@
 
 			</div>
 
-			<div class="text-quaternary text-12px text-center margin-bottom-6px">10 message per day limit. Upgrade to get more power.</div>
+			<div class="text-quaternary text-12px text-center margin-bottom-6px">This is a free preview of our AI assistant.</div>
 
 		</div>
 	</div>
@@ -1781,7 +1781,7 @@
 					<span class="tooltiptextright">Hide sidebar</span>
 				</div>
 				
-				<a href="/" class="navtitle z-index-10000">
+				<a href="/" class="navtitle">
 					<img src="logo.png" class="buttonlogo"></img>
 		
 					<div class="text-18px pointer-none nowrap text-bold">Smart Calendar</div>
@@ -1792,6 +1792,10 @@
 
 			<!-- middle -->
 			<div class="display-flex flex-row align-center flex-1 justify-center gap-24px">
+				<div class="padding-top-6px nowrap padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([4]);if(gtag){gtag('event', 'button_click', { useraction: 'AI Assistant - nav bar' })} " id="aiassistanttab">
+					AI Assistant
+					<span class="buttonunderline"></span>
+				</div>
 				<div class="padding-top-6px nowrap padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);if(gtag){gtag('event', 'button_click', { useraction: 'Calendar - nav bar' })} " id="hometab">
 					Calendar
 					<span class="buttonunderline"></span>
@@ -1859,6 +1863,36 @@
 					</div>
 				</div>
 				
+
+				<div class="summarywrap display-none small:border-none small:border-0" id="aiassistantwrap">
+					<div class="summarycontainer border-box height-full">
+						<div class="summarycontent border-box height-full">
+
+							<div class="text-primary text-bold text-18px">AI Assistant <span class="text-12px badgepadding background-purple border-round">beta</span></div>
+
+							<div id="aichatcontent2" class="flex-1 overflow-y-auto padding-left-12px padding-right-12px padding-top-48px padding-bottom-48px display-flex flex-column gap-24px"></div>
+
+							<!-- input -->
+							<div class="relative align-center margin-left-12px margin-right-12px margin-bottom-12px overflow-hidden border-12px border-box bordertertiary display-flex flex-row relative">
+								<div class="display-flex flex-row flex-1">
+									<textarea rows="1" oninput="updateaichatinput();resizeaichat()" class="createtodotextarea padding-right-0 infoinput text-14px padding-top-16px padding-bottom-16px padding-left-16px padding-right-48px transparentinput" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitaimessage(event) }" placeholder="Message Athena..." maxlength="300" id="aichatinput2"></textarea>
+									<span class="inputline"></span>
+								</div>
+								
+								<div class="absolute bottom-0 right-0 margin-bottom-12px margin-right-12px display-flex height-fit overflow-hidden pointer aichatsend border-8px transition-duration-100" onclick="submitaimessage(event)" id="submitaichatbutton2">
+									<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="sendbuttonsvg transition-duration-100">
+										<g opacity="1">
+										<path d="M239.675 239.393C232.45 246.618 223.865 251.191 213.92 253.115C203.974 255.038 192.997 256 180.987 256L74.7312 256C62.9093 256 52.0491 255.038 42.1506 253.115C32.2522 251.191 23.6907 246.618 16.4662 239.393C9.33553 232.262 4.8085 223.771 2.8851 213.92C0.961701 204.068 0 193.231 0 181.41L0 75.0126C0 63.0031 0.938244 52.0491 2.81473 42.1506C4.69122 32.2522 9.24171 23.7376 16.4662 16.6069C23.6907 9.38244 32.2522 4.8085 42.1506 2.8851C52.0491 0.961701 63.0031 0 75.0126 0L180.987 0C192.997 0 203.974 0.961701 213.92 2.8851C223.865 4.8085 232.45 9.38244 239.675 16.6069C246.805 23.7376 251.332 32.2522 253.256 42.1506C255.179 52.0491 256.141 63.0031 256.141 75.0126L256.141 180.987C256.141 192.997 255.179 203.951 253.256 213.849C251.332 223.748 246.805 232.262 239.675 239.393ZM128.352 201.957C131.542 201.957 134.146 200.925 136.163 198.861C138.18 196.797 139.189 194.17 139.189 190.98L139.189 118.782L138.063 87.8197L152.699 105.412L169.728 122.722C171.699 124.88 174.279 125.959 177.469 125.959C180.471 125.959 183.005 124.951 185.069 122.933C187.133 120.916 188.165 118.406 188.165 115.404C188.165 112.308 187.18 109.775 185.209 107.804L136.796 59.5316C134.075 56.8107 131.26 55.4502 128.352 55.4502C125.443 55.4502 122.629 56.8107 119.908 59.5316L71.4942 107.804C69.5239 109.681 68.5388 112.214 68.5388 115.404C68.5388 118.406 69.5474 120.916 71.5646 122.933C73.5818 124.951 76.0916 125.959 79.094 125.959C80.5952 125.959 82.026 125.654 83.3865 125.045C84.7469 124.435 85.8963 123.661 86.8345 122.722L104.004 105.412L118.5 87.9604L117.374 118.782L117.374 190.98C117.374 194.17 118.406 196.797 120.471 198.861C122.535 200.925 125.162 201.957 128.352 201.957Z" fill-rule="nonzero" opacity="1"></path>
+										</g>
+									</svg>
+								</div>
+
+							</div>
+
+							<div class="text-quaternary text-12px text-center margin-bottom-6px">This is a free preview of our AI assistant.</div>
+						</div>
+					</div>
+				</div>
 				
 				<div class="summarywrap display-none small:border-none small:border-0" id="summarywrap">
 					<div class="summarycontainer">
@@ -2858,6 +2892,15 @@
 
 				<!-- mobile only bottom bar -->
 				<div class="align-center display-none small:display-flex flex-row gap-12px padding-12px bordertop">	
+
+					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([4]);if(gtag){gtag('event', 'button_click', { useraction: 'AI Assistant - nav bar' })} " id="aiassistanttab2">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonfillwhite">
+							
+						</svg>
+							
+						
+						<div class="text-14px text-primary pointer-none nowrap mobilepagetext transition-none">AI Assistant</div>
+					</div>
 
 											
 					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([1]);if(gtag){gtag('event', 'button_click', { useraction: 'To do list - nav bar' })} " id="todolisttab2">

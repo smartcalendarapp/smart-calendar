@@ -1157,11 +1157,13 @@ class Calendar {
 		let calendarwrap = getElement('calendarwrap')
 		let todowrap = getElement('todowrap')
 		let settingswrap = getElement('settingswrap')
+		let aiassistantwrap = getElement('aiassistantwrap')
 
 		summarywrap.classList.add('display-none')
 		todowrap.classList.add('display-none')
 		calendarwrap.classList.add('display-none')
 		settingswrap.classList.add('display-none')
+		aiassistantwrap.classList.add('display-none')
 
 		let paneldivider = getElement('paneldivider')
 
@@ -1169,20 +1171,24 @@ class Calendar {
 		let hometab = getElement('hometab')
 		let summarytab = getElement('summarytab')
 		let settingstab = getElement('settingstab')
+		let aiassistanttab = getElement('aiassistanttab')
 
 		let calendartab2 = getElement('calendartab2')
 		let todolisttab2 = getElement('todolisttab2')
 		let summarytab2 = getElement('summarytab2')
 		let settingstab2 = getElement('settingstab2')
+		let aiassistanttab2 = getElement('aiassistanttab2')
 
 		hometab.classList.remove('selectedbuttonunderline')
 		summarytab.classList.remove('selectedbuttonunderline')
 		settingstab.classList.remove('selectedbuttonunderline')
+		aiassistanttab.classList.remove('selectedbuttonunderline')
 
 		calendartab2.classList.remove('selectedbutton2')
 		todolisttab2.classList.remove('selectedbutton2')
 		summarytab2.classList.remove('selectedbutton2')
 		settingstab2.classList.remove('selectedbutton2')
+		aiassistanttab2.classList.remove('selectedbutton2')
 
 		paneldivider.classList.add('display-none')
 
@@ -1228,6 +1234,13 @@ class Calendar {
 			settingstab2.classList.add('selectedbutton2')
 		}
 
+		if(calendartabs.includes(4)){
+			this.updateAIAssistant()
+			aiassistantwrap.classList.remove('display-none')
+
+			aiassistanttab.classList.add('selectedbuttonunderline2')
+			aiassistanttab2.classList.add('selectedbutton2')
+		}
 	}
 
 
@@ -1331,6 +1344,11 @@ class Calendar {
 
 			setHistory(newjson)
 		}
+	}
+
+	//ai assistant
+	updateAIAssistant() {
+		//here3
 	}
 
 	//calendar
@@ -5541,20 +5559,20 @@ function keydowndocument(event) {
 			calendar.updateEvents()
 			calendar.updateHistory()
 		} else if (event.key.toLowerCase() == 'c' && (event.ctrlKey || event.metaKey) && calendartabs.includes(0)) { //ctrl C
-			event.stopPropagation()
-			event.preventDefault()
-
 			let item = calendar.events.find(d => d.id == selectedeventid)
 			if (!item) return
+
+			event.stopPropagation()
+			event.preventDefault()
 
 			if (Calendar.Event.isReadOnly(item)) return
 
 			copiedevent = JSON.stringify(item)
 		} else if (event.key.toLowerCase() == 'v' && (event.ctrlKey || event.metaKey) && calendartabs.includes(0)) { //ctrl V
-			event.stopPropagation()
-			event.preventDefault()
-
 			if (copiedevent) {
+				event.stopPropagation()
+				event.preventDefault()
+
 				let item = JSON.parse(copiedevent)
 
 				if (Calendar.Event.isReadOnly(item)) return
@@ -11909,15 +11927,16 @@ class ChatMessage {
 			})
 		}
 		
-		let totalwords = this.message.split(' ').length
+		let splitmessage = this.message.split(/(\s+)/g)
+		let totalwords =splitmessage .length
 
 		for(let i = 0; i < totalwords; i++){
-			this.displaycontent = this.message.split(' ').slice(0, i + 1).join(' ')
+			this.displaycontent = splitmessage.slice(0, i + 1).join('')
 			let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
 			chatmessagebody.innerHTML = `${cleanInput(this.displaycontent)} <span class="aichatcursor"></span>`
 
 			//delay
-			let currentword = this.message.split(' ')[i]
+			let currentword = splitmessage[i]
 			let delay = 100 + Math.random() * 50 * (currentword.length/5) + (currentword.endsWith('.') ? 100 : 0) + (currentword.endsWith(',') ? 50 : 0)
 
 			await sleep(delay)
@@ -11936,6 +11955,7 @@ class ChatMessage {
 		})
 	}
 }
+//here3
 
 let chathistory = new ChatInterface()
 
@@ -11959,6 +11979,7 @@ function updateaichat(){
 
 
 	let aichatcontent = getElement('aichatcontent')
+	let aichatcontent2 = getElement('aichatcontent2')
 	
 	let output = []
 
@@ -11967,10 +11988,10 @@ function updateaichat(){
 			output.push(`
 			<div class="display-flex flex-row gap-12px">
 				${role == 'user' ? useravatar : aiavatar}
-				<div class="display-flex flex-column gap-12px">
+				<div class="overflow-hidden display-flex flex-column gap-12px">
 					<div class="display-flex flex-column gap-6px">
 						<div class="text-primary text-14px text-bold">${role == 'user' ? username : ainame}</div>
-						<div class="pre-wrap text-primary text-14px" id="chatmessage-body-${id}">${cleanInput(displaycontent)}</div>
+						<div class="selecttext pre-wrap break-word text-primary text-14px" id="chatmessage-body-${id}">${cleanInput(displaycontent)}</div>
 					</div>
 					${actions ? `<div class="display-flex flex-row gap-12px flex-wrap-wrap"  id="chatmessage-actions-${id}">${actions.join('')}</div>` : ''}
 				</div>
@@ -11978,7 +11999,11 @@ function updateaichat(){
 		}
 	}
 
-	aichatcontent.innerHTML = output.join('')
+	if(calendartabs.includes(4)){
+		aichatcontent2.innerHTML = output.join('')
+	}else{
+		aichatcontent.innerHTML = output.join('')
+	}
 
 
 	//animate
@@ -11997,19 +12022,40 @@ function updateaichat(){
 }
 
 function resizeaichat(){
-	let element = getElement('aichatinput')
-	element.style.height = '0'
-	element.style.height = Math.min(element.scrollHeight, parseInt(getComputedStyle(element).maxHeight)) + 'px'
+	if(calendartabs.includes(4)){
+		let element = getElement('aichatinput2')
+		element.style.height = '0'
+		element.style.height = Math.min(element.scrollHeight, parseInt(getComputedStyle(element).maxHeight)) + 'px'
+	}else{
+		let element = getElement('aichatinput')
+		element.style.height = '0'
+		element.style.height = Math.min(element.scrollHeight, parseInt(getComputedStyle(element).maxHeight)) + 'px'
+	}
 }
 function updateaichatinput(){
-	let aichatinput = getElement('aichatinput')
+	let aichatinput;
+	if(calendartabs.includes(4)){
+		aichatinput = getElement('aichatinput2')
+	}else{
+		aichatinput = getElement('aichatinput')
+	}
 	let userinput = aichatinput.value.trim()
 
-	let submitaichatbutton = getElement('submitaichatbutton')
-	if(isgenerating || userinput.length == 0){
-		submitaichatbutton.classList.add('greyedoutevent')
+	
+	if(calendartabs.includes(4)){
+		let submitaichatbutton = getElement('submitaichatbutton2')
+		if(isgenerating || userinput.length == 0){
+			submitaichatbutton.classList.add('greyedoutevent')
+		}else{
+			submitaichatbutton.classList.remove('greyedoutevent')
+		}
 	}else{
-		submitaichatbutton.classList.remove('greyedoutevent')
+		let submitaichatbutton = getElement('submitaichatbutton')
+		if(isgenerating || userinput.length == 0){
+			submitaichatbutton.classList.add('greyedoutevent')
+		}else{
+			submitaichatbutton.classList.remove('greyedoutevent')
+		}
 	}
 }
 
@@ -12017,7 +12063,12 @@ let isgenerating = false
 async function submitaimessage(){
 	if(isgenerating) return
 	
-	let aichatinput = getElement('aichatinput')
+	let aichatinput;
+	if(calendartabs.includes(4)){
+		aichatinput = getElement('aichatinput2')
+	}else{
+		aichatinput = getElement('aichatinput')
+	}
 	let userinput = aichatinput.value.trim()
 
 	if(userinput.length == 0) return
@@ -12257,7 +12308,7 @@ async function submitaimessage(){
 
 }
 
-//here3
+
 
 
 let aichatscrollYAnimationFrameId;
