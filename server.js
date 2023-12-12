@@ -3596,7 +3596,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								properties: {
 									commands: {
 										type: "array",
-										description: `One of these commands: ${allfunctions.map(d => d.name).join(', ')}. If calendar data is an absolute requirement, add 'calendar_data'. If to-do list data is an absolute requirement, add 'todo_data'.`,
+										description: `One of these commands: ${allfunctions.map(d => d.name).join(', ')}. If request cannot be completed without calendar data or to-do list data, return 'data_needed'`,
 										items: {
 											type: "string",
 										}
