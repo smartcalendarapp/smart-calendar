@@ -33,6 +33,54 @@ body {
 }
 
 
+h1{
+	font-weight:bold;
+	font-size:32px;
+}
+h2{
+	font-weight:bold;
+	font-size:24px;
+}
+h3{
+	font-weight:bold;
+	font-size:18.72px;
+}
+blockquote{
+	border-color: var(--text-quaternary);
+	border-left-width: 2px;
+	margin: 0;
+	line-height:1.5rem;
+	padding-bottom: 8px;
+	padding-left: 16px;
+	padding-top: 8px;
+}
+ul{
+	list-style-type:disc;
+	padding:0;
+	margin:0;
+	padding-inline-start:20px;
+}
+ol{
+	padding:0;
+	margin:0;
+	padding-inline-start:20px;
+}
+.codeblock{
+	background-color: var(--background-primary-home);
+	border-radius:8px;
+	padding:12px;
+	box-sizing:border-box;
+	display:block;
+	width:100%;
+}
+.inlinecode{
+	background-color: var(--background-primary-home);
+	border-radius:8px;
+	padding:3px 6px;
+	box-sizing:border-box;
+	display:inline-block;
+}
+
 
 
 .todowidth {
@@ -86,8 +134,8 @@ body {
 	}
 
 	50% {
-		width:9px;
-		height:9px;
+		width:12px;
+		height:12px;
 	}
 
 	100% {
@@ -103,7 +151,7 @@ body {
 	background-color: var(--blue);
 	border-radius:100px;
 	animation-name: aichatcursorloading;
-	animation-duration: 1.5s;
+	animation-duration: 2s;
 	animation-iteration-count: infinite;
 	animation-timing-function: ease-in-out;
 	display:block;
@@ -119,9 +167,6 @@ body {
 	vertical-align:middle;
 }
 
-.hoverchatmessagebuttons:hover{
-	visibility:visible !important;
-}
 
 
 .beaconsymbol {
@@ -3465,6 +3510,9 @@ body {
 	pointer-events: none;
 }
 
+.aichatmessagewrap:hover .hoverchatmessagebuttons{
+	visibility:visible !important
+}
 
 .aimessagebutton{
 	fill: var(--text-quaternary);

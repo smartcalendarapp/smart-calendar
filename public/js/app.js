@@ -12021,14 +12021,18 @@ class ChatMessage {
 		let splitmessage = this.message.split(/(\s+)/g)
 		let totalwords = splitmessage.length
 
+		let random;
 		for(let i = 0; i < totalwords; i++){
 			this.displaycontent = splitmessage.slice(0, i + 1).join('')
 			let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-			chatmessagebody.innerHTML = `${cleanInput(this.displaycontent)} <span class="aichatcursor"></span>`
+			chatmessagebody.innerHTML = `${markdowntoHTML(formatURL(cleanInput(this.displaycontent)), role)} <span class="aichatcursor"></span>`
 
 			//delay
+			if(i % 5 == 0){
+				random = Math.random()
+			}
 			let currentword = splitmessage[i]
-			let delay = 60 + Math.random() * 50 * (currentword.length/5) + (currentword.endsWith('.') ? 100 : 0) + (currentword.endsWith(',') ? 50 : 0)
+			let delay = 20 + random * 30 * (currentword.length/10) + (currentword.endsWith('.') ? 100 : 0) + (currentword.endsWith(',') ? 50 : 0)
 
 			await sleep(delay)
 
@@ -12039,7 +12043,7 @@ class ChatMessage {
 
 		this.displaycontent = this.message
 		let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-		chatmessagebody.innerHTML = `${cleanInput(this.displaycontent)}`
+		chatmessagebody.innerHTML = `${markdowntoHTML(formatURL(cleanInput(this.displaycontent)), role)}`
 
 		requestAnimationFrame(function(){
 			scrollaichatY()
@@ -12117,7 +12121,48 @@ async function dislikeaichatmessage(event, id){
 	openfeedbackpopup(event)
 }
 
+
+function markdowntoHTML(markdown, role) {
+    if (role != 'system') return markdown
+
+    let placeholders = []
+	let placeholders2 = []
+    
+    markdown = markdown.replace(/```([\s\S]+?)```/g, function(match) {
+        let placeholder = `CODEBLOCK_${placeholders.length}`
+        placeholders.push(match)
+        return placeholder
+    })
+
+	markdown = markdown.replace(/`([\s\S]+?)`/g, function(match) {
+        let placeholder = `INLINECODE_${placeholders2.length}`
+        placeholders2.push(match)
+        return placeholder
+    })
+
+    markdown = markdown
+        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+        .replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>')
+        .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+        .replace(/\*(.*)\*/gim, '<i>$1</i>')
+        .replace(/\[(.*?)\]\((.*?)\)/gim, `<a href='$2' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$1</a>`)
+
+    placeholders.forEach((codeBlock, index) => {
+        markdown = markdown.replace(`CODEBLOCK_${index}`, `${codeBlock}`).replace(/```([\s\S]+?)```/g, '<span class="codeblock">$1</span>')
+    })
+
+	placeholders2.forEach((codeBlock, index) => {
+        markdown = markdown.replace(`INLINECODE_${index}`, `${codeBlock}`).replace(/`([\s\S]+?)`/g, '<span class="inlinecode">$1</span>')
+    })
+
+    return markdown
+}
+
+
 function updateaichat(){
+
 	function nameToColor(name) {
 		let sum = 0;
 		for (let i = 0; i < name.length; i++) {
@@ -12145,12 +12190,12 @@ function updateaichat(){
 	for(let chatinteraction of chathistory.getInteractions()){
 		for(let { role, message, displaycontent, actions, id, liked, disliked, finishedanimating } of chatinteraction.getMessages()){
 			output.push(`
-			<div class="display-flex flex-row gap-12px">
+			<div class="aichatmessagewrap display-flex flex-row gap-12px">
 				${role == 'user' ? useravatar : aiavatar}
-				<div class="overflow-hidden display-flex flex-column gap-6px">
+				<div class="flex-1 overflow-hidden display-flex flex-column gap-6px">
 					<div class="display-flex flex-column gap-6px">
 						<div class="text-primary text-14px text-bold">${role == 'user' ? username : ainame}</div>
-						<div class="selecttext pre-wrap break-word text-primary text-14px" id="chatmessage-body-${id}">${message ? `${formatURL(cleanInput(displaycontent))}` : `<span class="aichatcursorloadingwrap"><span class="aichatcursorloading"></span></span>`}</div>
+						<div class="selecttext pre-wrap break-word text-primary text-14px" id="chatmessage-body-${id}">${message ? `${markdowntoHTML(formatURL(cleanInput(displaycontent)), role)}` : `<span class="aichatcursorloadingwrap"><span class="aichatcursorloading"></span></span>`}</div>
 					</div>
 
 					${role == 'system' ? `
