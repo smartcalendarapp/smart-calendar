@@ -12025,7 +12025,7 @@ class ChatMessage {
 		for(let i = 0; i < totalwords; i++){
 			this.displaycontent = splitmessage.slice(0, i + 1).join('')
 			let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-			chatmessagebody.innerHTML = `${markdowntoHTML(formatURL(cleanInput(this.displaycontent)), role)} <span class="aichatcursor"></span>`
+			chatmessagebody.innerHTML = `${markdowntoHTML(formatURL(cleanInput(this.displaycontent)), this.role)} <span class="aichatcursor"></span>`
 
 			//delay
 			if(i % 5 == 0){
@@ -12043,7 +12043,7 @@ class ChatMessage {
 
 		this.displaycontent = this.message
 		let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-		chatmessagebody.innerHTML = `${markdowntoHTML(formatURL(cleanInput(this.displaycontent)), role)}`
+		chatmessagebody.innerHTML = `${markdowntoHTML(formatURL(cleanInput(this.displaycontent)), this.role)}`
 
 		requestAnimationFrame(function(){
 			scrollaichatY()
