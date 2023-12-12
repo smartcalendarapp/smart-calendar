@@ -3617,7 +3617,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		
 		
 				if (response.choices[0].message.function_call?.name === 'app_command') {
-					console.warn(response.choices[0].message.function_call?.arguments)?.commands.join(', '))
+					console.warn(JSON.parse(response.choices[0].message.function_call?.arguments)?.commands.join(', '))
 					const command = JSON.parse(response.choices[0].message.function_call?.arguments)?.commands[0]
 					if (command) {
 						const requirescalendardata = calendardataneededfunctions.includes(command)
