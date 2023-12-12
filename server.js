@@ -3567,23 +3567,14 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A useful and resourceful productivity and scheduling assistant called Athena for the app Smart Calendar. Respond in natural language like an assistant. Do not mention the raw data or UUID. The current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A resourceful productivity and scheduling assistant called Athena for Smart Calendar app. Give mental wellness and motivational support messages. Respond in person-like language. Do not mention raw data or UUID. Current time is ${localdatestring} in user's timezone.`
 	
 
 		
 			let totaltokens = 0
-console.warn({messages: [
-						{ 
-							role: 'system', 
-							content: systeminstructions
-						},
-						...conversationhistory,
-						{
-							role: 'user',
-							content: userinput,
-						}
-					]})
+
 			try {
+				let modifiedinput = `Conversation history: """${conversationhistory}""" ${userinput}`
 				const response = await openai.chat.completions.create({
 					model: 'gpt-3.5-turbo',
 					messages: [
@@ -3591,10 +3582,9 @@ console.warn({messages: [
 							role: 'system', 
 							content: systeminstructions
 						},
-						...conversationhistory,
 						{
 							role: 'user',
-							content: userinput,
+							content: modifiedinput,
 						}
 					],
 					functions: [
@@ -3642,13 +3632,13 @@ console.warn({messages: [
 						if(requirescalendardata){
 							//yes calendar data
 		
-							request2input = `Calendar data: """${calendarcontext}""" """${userinput}"""`
+							request2input = `Conversation history: """${conversationhistory}""" Calendar data: """${calendarcontext}""" """${userinput}"""`
 						}
 
 						if(requirestododata){
 							//yes todo data
 		
-							request2input = `Todo data: """${todocontext}""" """${userinput}"""`
+							request2input = `Conversation history: """${conversationhistory}""" Todo data: """${todocontext}""" """${userinput}"""`
 						}
 		
 						if(requirescustomfunction){
@@ -3662,7 +3652,6 @@ console.warn({messages: [
 								role: 'system', 
 								content: systeminstructions
 							},
-							...conversationhistory,
 							{
 								role: 'user',
 								content: request2input
@@ -3783,7 +3772,7 @@ console.warn({messages: [
 				tempoutput.push(...interactionmessages)
 				counter++
 			}
-			return tempoutput.reverse()
+			return tempoutput.reverse().map(d => `Role: ${d.role}, content: ${d.content}`).join('\n')
 			//something smarter?
 		}
 

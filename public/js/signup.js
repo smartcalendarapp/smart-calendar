@@ -137,4 +137,6 @@ if(window.AppleID){
 		scope: 'email name',
 		redirectURI: 'https://smartcalendar.us/auth/apple/callback',
 	})
+}else{
+	getElement('appleidwrap').classList.add('display-none')
 }

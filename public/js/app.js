@@ -12336,7 +12336,7 @@ async function submitaimessage(optionalinput){
 	let endrange = new Date(Date.now() + 86400*1000*CALENDAR_CONTEXT_RANGE_DAYS)
 	let calendarevents = sortstartdate(getevents(now, endrange).filter(d => !Calendar.Event.isHidden(d)))
 	let calendartodos = sortduedate(gettodos(now, endrange).filter(d => !d.completed))
-	let sendchathistory = chathistory.getInteractions().filter(d => d.message != null).map(d => d.getMessages().map(f => { return { role: f.role, content: f.message } }))
+	let sendchathistory = chathistory.getInteractions().filter(d => !d.getMessages().find(g => g.message == null)).map(d => d.getMessages().map(f => { return { role: f.role, content: f.message } }))
 
 	try{
 		const response = await fetch('/getgptchatinteraction', {

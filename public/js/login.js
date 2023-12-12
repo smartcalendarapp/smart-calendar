@@ -138,6 +138,8 @@ if(window.AppleID){
 	AppleID.auth.init({
 		clientId: 'us.smartcalendar.web',
 		scope: 'email name',
-		redirectURI: 'https://smartcalendar.us/auth/apple/callback'
+		redirectURI: 'https://smartcalendar.us/auth/apple/callback',
 	})
+}else{
+	getElement('appleidwrap').classList.add('display-none')
 }
