@@ -3567,7 +3567,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A resourceful productivity and scheduling assistant called Athena for Smart Calendar app. Give mental wellness and motivational support messages. Respond in person-like language. Do not mention raw data or UUID. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A resourceful productivity and scheduling assistant called Athena for Smart Calendar app. Incorporate mental health and motivational tips in responses. Respond in person-like language. Do not mention raw data or UUID. Current time is ${localdatestring} in user's timezone.`
 
 
 		
@@ -3589,14 +3589,14 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					],
 					functions: [
 						{
-							name: "app_command",
-							description: "Determine if a calendar or to-do list command is implicitly called and return it",
+							name: "access_app_data",
+							description: "Determine if a calendar or to-do list command is called and return it",
 							parameters: {
 								type: "object",
 								properties: {
 									commands: {
 										type: "array",
-										description: `One of these commands: ${allfunctions.map(d => d.name).join(', ')}. If request cannot be completed without calendar data or to-do list data, return 'data_needed'`,
+										description: `One of these commands: ${allfunctions.map(d => d.name).join(', ')}.`,
 										items: {
 											type: "string",
 										}
@@ -3610,14 +3610,13 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				})
 				totaltokens += response.usage.total_tokens
 				
-				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'app_command') {
+				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'access_app_data') {
 					//no function call, return plain response
 					return { message: response.choices[0].message.content, totaltokens: totaltokens }
 				}
 		
 		
-				if (response.choices[0].message.function_call?.name === 'app_command') {
-					console.warn(JSON.parse(response.choices[0].message.function_call?.arguments)?.commands.join(', '))
+				if (response.choices[0].message.function_call?.name === 'access_app_data') {
 					const command = JSON.parse(response.choices[0].message.function_call?.arguments)?.commands[0]
 					if (command) {
 						const requirescalendardata = calendardataneededfunctions.includes(command)
@@ -3633,13 +3632,13 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						if(requirescalendardata){
 							//yes calendar data
 		
-							request2input = `Past chat: """${conversationhistory}""" Calendar data: """${calendarcontext}""" Current prompt: """${userinput}"""`
+							request2input = `Conversation history: """${conversationhistory}""" Calendar data: """${calendarcontext}""" Current prompt: """${userinput}"""`
 						}
 
 						if(requirestododata){
 							//yes todo data
 		
-							request2input = `Past chat: """${conversationhistory}""" Todo data: """${todocontext}""" Current prompt: """${userinput}"""`
+							request2input = `Conversation history: """${conversationhistory}""" Todo data: """${todocontext}""" Current prompt: """${userinput}"""`
 						}
 		
 						if(requirescustomfunction){
@@ -3763,6 +3762,8 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		}
 
 		function getconversationhistory(temphistory){ //cheap way for history, just send latest X messages
+			if(temphistory.length == 0) return 'No history'
+
 			let tempoutput = []
 			let counter = 0
 			for(let interactionmessages of temphistory.reverse()){
@@ -3770,10 +3771,10 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 				if(counter > 5) break //max X messages
 
-				tempoutput.push(...interactionmessages)
+				tempoutput.push(...interactionmessages.reverse())
 				counter++
 			}
-			return tempoutput.reverse().map(d => `Role: ${d.role}, content: ${d.content}`).join('\n')
+			return tempoutput.reverse().map(d => `${d.role}: ${d.content}`).join('\n')
 			//something smarter?
 		}
 
