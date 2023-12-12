@@ -12105,11 +12105,11 @@ function updateaichat(){
 
 
 	const avataricon = `<div style="background-color: ${nameToColor(getUserName())}" class="border-round avatarimage pointer display-flex flex-row align-center justify-center"><div class="text-20px text-white text-bold">${getUserName().slice(0, 1)}</div></div>`
-	const useravatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : avataricon}` : avataricon
+	const useravatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" height="36" width="36" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : avataricon}` : avataricon
 	const username = getUserName()
 
 	const ainame = 'Athena'
-	const aiavatar = `<img class="border-round avatarimage" src="athena.png" alt="Profile picture"></img>`
+	const aiavatar = `<img class="border-round avatarimage" height="36" width="36" src="athena.png" alt="Profile picture"></img>`
 
 
 	let aichatcontent = getElement('aichatcontent')

@@ -3425,7 +3425,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 
 app.post('/getgptchatinteraction', async (req, res) => {
 	const MAX_GPT_PER_DAY = 50//TEMPORARY
-	const MAX_GPT_PER_DAY_BETA_TESTER = 100//30
+	const MAX_GPT_PER_DAY_BETA_TESTER = 200//30
 	const MAX_GPT_PER_DAY_PREMIUM = 50
 
 	try{
@@ -3445,8 +3445,6 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		if(user.accountdata.betatester){
 			appliedratelimit = MAX_GPT_PER_DAY_BETA_TESTER
 		}
-
-		if(user.accountdata.google_email == 'smartcalendartester@gmail.com'){appliedratelimit = 200}//REMOVE
 
 
 		let currenttime = Date.now()
