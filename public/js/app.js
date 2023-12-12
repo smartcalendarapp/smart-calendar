@@ -11152,10 +11152,33 @@ function gototaskincalendar(id){
 		calendar.updateTabs()
 	}else{
 		selectedeventid = item.id
-		calendar.updateCalendar()
+		if(!calendartabs.includes(0)){
+			calendartabs = [0, 1]
+			calendar.updateTabs()
+		}else{
+			calendar.updateCalendar()
+		}
 	}
 
 	scrollcalendarY(item.start.minute)
+}
+
+//go to task in todo list
+function gototaskintodolist(id){
+	let item = [...calendar.todos, ...calendar.events].find(x => x.id == id)
+	if (!item) return
+
+	if(mobilescreen){
+		calendartabs = [1]
+		calendar.updateTabs()
+	}else{
+		if(!calendartabs.includes(0)){
+			calendartabs = [0, 1]
+			calendar.updateTabs()
+		}
+	}
+
+	scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
 }
 
 
@@ -12124,7 +12147,7 @@ function updateaichat(){
 			output.push(`
 			<div class="display-flex flex-row gap-12px">
 				${role == 'user' ? useravatar : aiavatar}
-				<div class="overflow-hidden display-flex flex-column gap-12px">
+				<div class="overflow-hidden display-flex flex-column gap-6px">
 					<div class="display-flex flex-column gap-6px">
 						<div class="text-primary text-14px text-bold">${role == 'user' ? username : ainame}</div>
 						<div class="selecttext pre-wrap break-word text-primary text-14px" id="chatmessage-body-${id}">${message ? `${formatURL(cleanInput(displaycontent))}` : `<span class="aichatcursorloadingwrap"><span class="aichatcursorloading"></span></span>`}</div>
@@ -12274,6 +12297,8 @@ async function submitaimessage(){
 			let data = await response.json()
 			let output = data.data
 
+			console.log(output)
+
 			if(output.command){
 				if(output.command == 'create_event'){
 					let arguments = output.arguments
@@ -12356,8 +12381,6 @@ async function submitaimessage(){
 
 
 								if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
-									item.title = newtitle || item.title
-
 									item.start.year = startdate.getFullYear()
 									item.start.month = startdate.getMonth()
 									item.start.day = startdate.getDate()
@@ -12367,15 +12390,17 @@ async function submitaimessage(){
 									item.end.month = enddate.getMonth()
 									item.end.day = enddate.getDate()
 									item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+								}
 
-									selectedeventid = null
-									calendar.updateInfo()
-									calendar.updateEvents()
+								item.title = newtitle || item.title
+
+								selectedeventid = null
+								calendar.updateInfo()
+								calendar.updateEvents()
 
 									
-									responsechatmessage.message = `Done! I have moved your event "${cleanInput(Calendar.Event.getTitle(item))}" to ${Calendar.Event.getStartText(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`,
-									responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
-								}
+								responsechatmessage.message = `Done! I have modified your event "${cleanInput(Calendar.Event.getTitle(item))}". It starts ${Calendar.Event.getStartText(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`,
+								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 							}
 						}else{
 							responsechatmessage.message = `I could not find that event, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`
@@ -12408,7 +12433,7 @@ async function submitaimessage(){
 							responsechatmessage.message = `I could not find that event, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`
 						}
 					}
-				}else if(output.command == 'create_task'){//here6
+				}else if(output.command == 'create_task'){
 					let arguments = output.arguments
 
 					let title = arguments?.title || ''
@@ -12439,6 +12464,7 @@ async function submitaimessage(){
 
 
 						responsechatmessage.message = `Done! I have added a task "${cleanInput(Calendar.Todo.getTitle(item))}" to your to-do list that is due ${Calendar.Event.getDueText(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`
+						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
 					}else{
 						responsechatmessage.message = `I don't have enough information to create this task for you, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`
 					}
@@ -12471,30 +12497,31 @@ async function submitaimessage(){
 							let priority = getPriority(newpriority, true).value
 
 							if(endbeforedate && !isNaN(endbeforedate.getTime())){
-								item.title = newtitle || item.title
-
-								if(duration != null){
-									item.duration = duration
-								}
-
-								if(priority != null){
-									item.priority = priority
-								}
-
-								if(newcompleted !== null){
-									item.completed = !!newcompleted
-								}
-
 								item.endbefore.year = endbeforedate.getFullYear()
 								item.endbefore.month = endbeforedate.getMonth()
 								item.endbefore.day = endbeforedate.getDate()
 								item.endbefore.minute = endbeforedate.getHours() * 60 + endbeforedate.getMinutes()
-
-								calendar.updateTodo()
-
-								
-								responsechatmessage.message = `Done! I have modified your task "${cleanInput(Calendar.Todo.getTitle(item))}" to be due ${Calendar.Event.getDueText(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`
 							}
+
+							item.title = newtitle || item.title
+
+							if(duration != null){
+								item.duration = duration
+							}
+
+							if(priority != null){
+								item.priority = priority
+							}
+
+							if(newcompleted !== null){
+								item.completed = !!newcompleted
+							}
+
+							calendar.updateTodo()
+
+							
+							responsechatmessage.message = `Done! I have modified your task "${cleanInput(Calendar.Todo.getTitle(item))}". It is due ${Calendar.Event.getDueText(item)}.` + `\n\nTokens: ${data.data?.totaltokens}`
+							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
 
 						}else{
 							responsechatmessage.message = `I could not find that task, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`
@@ -12520,7 +12547,7 @@ async function submitaimessage(){
 							responsechatmessage.message = `I could not find that task, could you please tell me more?` + `\n\nTokens: ${data.data?.totaltokens}`
 						}
 					}
-				}else{
+				}else{//here3
 					responsechatmessage.message = `An unexpected error occured in determining your command. Please try again or contact us.`
 				}
 

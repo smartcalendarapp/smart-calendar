@@ -3567,7 +3567,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A useful and resourceful productivity and scheduling assistant called Athena. Respond in natural language like an assistant. Do not mention the calendar data or UUID. The current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A useful and resourceful productivity and scheduling assistant called Athena. Respond in natural language like an assistant. Do not mention the raw data or UUID. The current time is ${localdatestring} in user's timezone.`
 	
 
 		
@@ -3589,7 +3589,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					functions: [
 						{
 							name: "get_command",
-							description: "Get an implicitly called calendar command and return it",
+							description: "Get an implicitly called calendar or to-do list command and return it",
 							parameters: {
 								type: "object",
 								properties: {
@@ -3694,6 +3694,8 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 
 		function generatecalendarcontext(tempevents){
+			if(tempevents.length == 0) return 'No events'
+
 			function getDateTimeText(currentDatetime) {
 				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
 				const formattedTime = `${currentDatetime.getHours().toString().padStart(2, '0')}:${currentDatetime.getMinutes().toString().padStart(2, '0')}`
@@ -3721,6 +3723,8 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		}
 
 		function generatetodocontext(temptodos){
+			if(tempevents.length == 0) return 'No tasks'
+
 			function getDateTimeText(currentDatetime) {
 				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
 				const formattedTime = `${currentDatetime.getHours().toString().padStart(2, '0')}:${currentDatetime.getMinutes().toString().padStart(2, '0')}`
