@@ -3589,14 +3589,14 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					],
 					functions: [
 						{
-							name: "get_command",
-							description: "Get an implicitly called calendar or to-do list command and return it",
+							name: "app_command",
+							description: "Determine if a calendar or to-do list command is implicitly called and return it",
 							parameters: {
 								type: "object",
 								properties: {
 									commands: {
 										type: "array",
-										description: `One of these commands: ${allfunctions.map(d => d.name).join(', ')}`,
+										description: `One of these commands: ${allfunctions.map(d => d.name).join(', ')}. If calendar data is an absolute requirement, add 'calendar_data'. If to-do list data is an absolute requirement, add 'todo_data'.`,
 										items: {
 											type: "string",
 										}
@@ -3610,13 +3610,14 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				})
 				totaltokens += response.usage.total_tokens
 				
-				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'get_command') {
+				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'app_command') {
 					//no function call, return plain response
 					return { message: response.choices[0].message.content, totaltokens: totaltokens }
 				}
 		
 		
-				if (response.choices[0].message.function_call?.name === 'get_command') {
+				if (response.choices[0].message.function_call?.name === 'app_command') {
+					console.warn(response.choices[0].message.function_call?.arguments)?.commands.join(', '))
 					const command = JSON.parse(response.choices[0].message.function_call?.arguments)?.commands[0]
 					if (command) {
 						const requirescalendardata = calendardataneededfunctions.includes(command)
