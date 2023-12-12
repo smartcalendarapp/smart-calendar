@@ -3581,7 +3581,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							role: 'system', 
 							content: systeminstructions
 						},
-						...historycontext,
+						...conversationhistory,
 						{
 							role: 'user',
 							content: userinput,
