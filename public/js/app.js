@@ -11923,7 +11923,7 @@ function openaichat(){
 				message: `Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, give you advice on your tasks, and more! Ask me any time.`
 			})
 
-			responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-white text-14px padding-8px-12px" onclick='promptaiassistantwithnextaction("What's on my agenda for today?")'>What's on my agenda today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-white text-14px padding-8px-12px" onclick='promptaiassistantwithnextaction("Book a meeting for me")'>Book a meeting for me</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-white text-14px padding-8px-12px" onclick='promptaiassistantwithnextaction("What are some tips on completing my tasks?")'>What are some tips on completing my tasks?</div>`]
+			responsechatmessage.nextactions = [`<div class="actionglide background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-white text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What\'s on my agenda for today?')">What's on my agenda today</div>`, `<div class="actionglide background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-white text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, `<div class="actionglide background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-white text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Which task should I work on?')">Which task should I work on?</div>`]
 	
 			chatinteraction.addMessage(responsechatmessage)
 			
@@ -12181,7 +12181,6 @@ function markdowntoHTML(markdown, role) {
 
 
 function updateaichat(){
-
 	function nameToColor(name) {
 		let sum = 0;
 		for (let i = 0; i < name.length; i++) {
@@ -12235,7 +12234,7 @@ function updateaichat(){
 						
 					</div>
 
-					${nextactions ? `<div class="hoverchatmessagebuttons display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${nextactions.join('')}</div>` : ''}
+					${nextactions && chathistory.getInteractions().findIndex(d => d.id == chatinteraction.id) == chathistory.getInteractions().length - 1 ? `<div class="hoverchatmessagebuttons display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${nextactions.join('')}</div>` : ''}
 
 				</div>
 			</div>`)

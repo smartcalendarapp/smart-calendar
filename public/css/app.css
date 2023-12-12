@@ -131,6 +131,35 @@ ol{
 	margin-top:-3px;
 }
 
+@keyframes actionglide {
+	0% {
+		transform:translate(0,0)
+	}
+
+	25% {
+		transform:translate(-2px,-2px)
+	}
+
+	50%{
+		transform:translate(2px,2px)
+	}
+
+	75%{
+		transform:translate(-2px,2px)
+	}
+
+	100% {
+		transform:translate(0,0)
+	}
+
+}
+.actionglide{
+	animation-name: actionglide;
+	animation-duration: 5s;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+}
+
 @keyframes aichatcursorloading {
 	0% {
 		width:18px;
@@ -148,7 +177,6 @@ ol{
 	}
 
 }
-
 .aichatcursorloading{
 	width:18px;
 	height:18px;
@@ -1933,7 +1961,7 @@ ol{
 }
 
 .aiassistantcontent{
-	max-width: 800px;
+	max-width: 600px;
 	width:100%
 }
 
