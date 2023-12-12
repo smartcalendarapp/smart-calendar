@@ -12348,7 +12348,7 @@ async function submitaimessage(optionalinput){
 				calendartodos: calendartodos,
 				userinput: userinput,
 				timezoneoffset: new Date().getTimezoneOffset(),
-				chathistory: chathistory.getInteractions().filter(d => d.id != chatinteraction.id).map(d => d.getMessages().map(f => { return { role: f.role, content: f.message } }).map(d => { return { messages: d.messages }}))
+				chathistory: chathistory.getInteractions().filter(d => d.message != null).map(d => d.getMessages().map(f => { return { role: f.role, content: f.message } }))
 			})
 		})
 		if(response.status == 200){
