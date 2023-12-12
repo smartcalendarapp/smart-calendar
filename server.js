@@ -3568,13 +3568,13 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
 			const systeminstructions = `A resourceful productivity and scheduling assistant called Athena for Smart Calendar app. Give mental wellness and motivational support messages. Respond in person-like language. Do not mention raw data or UUID. Current time is ${localdatestring} in user's timezone.`
-	
+
 
 		
 			let totaltokens = 0
 
 			try {
-				let modifiedinput = `Conversation history: """${conversationhistory}""" ${userinput}`
+				let modifiedinput = `Conversation history: """${conversationhistory}""" Current prompt: """${userinput}"""`
 				const response = await openai.chat.completions.create({
 					model: 'gpt-3.5-turbo',
 					messages: [
@@ -3632,13 +3632,13 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						if(requirescalendardata){
 							//yes calendar data
 		
-							request2input = `Conversation history: """${conversationhistory}""" Calendar data: """${calendarcontext}""" """${userinput}"""`
+							request2input = `Past chat: """${conversationhistory}""" Calendar data: """${calendarcontext}""" Current prompt: """${userinput}"""`
 						}
 
 						if(requirestododata){
 							//yes todo data
 		
-							request2input = `Conversation history: """${conversationhistory}""" Todo data: """${todocontext}""" """${userinput}"""`
+							request2input = `Past chat: """${conversationhistory}""" Todo data: """${todocontext}""" Current prompt: """${userinput}"""`
 						}
 		
 						if(requirescustomfunction){

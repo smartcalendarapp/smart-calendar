@@ -3524,12 +3524,11 @@ ol{
 	height: 14px;
 	width: 14px;
 	display: block;
+	transition-duration:0.1s;
 	cursor:pointer;
-	transition: background-color 0.1s, color 0.1s, border-color 0.1s, transform 0.2s !important
 }
 .aimessagebutton:hover{
-	fill:var(--text-primary);
-	transform:scale(1.2)
+	fill:var(--text-primary)
 }
 
 
