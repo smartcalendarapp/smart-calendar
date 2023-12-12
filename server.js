@@ -3785,7 +3785,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		let calendarevents = req.body.calendarevents
 		let calendartodos = req.body.calendartodos
 		let timezoneoffset = req.body.timezoneoffset
-		let rawconversationhistory = req.body.history
+		let rawconversationhistory = req.body.chathistory
 
 		let calendarcontext = getcalendarcontext(calendarevents)
 		let todocontext = gettodocontext(calendartodos)
