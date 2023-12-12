@@ -3572,17 +3572,8 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 		
 			let totaltokens = 0
-console.warn({messages: [
-	{ 
-		role: 'system', 
-		content: systeminstructions
-	},
-	...conversationhistory,
-	{
-		role: 'user',
-		content: userinput,
-	}
-]})
+
+			console.warn(conversationhistory)
 			try {
 				const response = await openai.chat.completions.create({
 					model: 'gpt-3.5-turbo',
