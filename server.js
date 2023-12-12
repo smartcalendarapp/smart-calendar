@@ -3572,7 +3572,17 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 		
 			let totaltokens = 0
-
+console.warn({messages: [
+						{ 
+							role: 'system', 
+							content: systeminstructions
+						},
+						...conversationhistory,
+						{
+							role: 'user',
+							content: userinput,
+						}
+					]})
 			try {
 				const response = await openai.chat.completions.create({
 					model: 'gpt-3.5-turbo',
@@ -3768,7 +3778,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			for(let interactionmessages of temphistory.reverse()){
 				if(JSON.stringify(interactionmessages).length + JSON.stringify(tempoutput).length > MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH) break //max X characters
 
-				if(counter > 10) break //max 10 messages
+				if(counter > 5) break //max X messages
 
 				tempoutput.push(...interactionmessages)
 				counter++

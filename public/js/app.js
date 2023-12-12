@@ -11923,7 +11923,7 @@ function openaichat(){
 				message: `Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, give you advice on your tasks, and more! Ask me any time.`
 			})
 
-			responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-white text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What\'s on my agenda for today?')">What's on my agenda today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-white text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-white text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Which task should I work on?')">Which task should I work on?</div>`]
+			responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What\'s on my agenda for today?')">What's on my agenda today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Which task should I work on?')">Which task should I work on?</div>`]
 	
 			chatinteraction.addMessage(responsechatmessage)
 			
@@ -12336,6 +12336,7 @@ async function submitaimessage(optionalinput){
 	let endrange = new Date(Date.now() + 86400*1000*CALENDAR_CONTEXT_RANGE_DAYS)
 	let calendarevents = sortstartdate(getevents(now, endrange).filter(d => !Calendar.Event.isHidden(d)))
 	let calendartodos = sortduedate(gettodos(now, endrange).filter(d => !d.completed))
+	let sendchathistory = chathistory.getInteractions().filter(d => d.message != null).map(d => d.getMessages().map(f => { return { role: f.role, content: f.message } }))
 
 	try{
 		const response = await fetch('/getgptchatinteraction', {
@@ -12348,7 +12349,7 @@ async function submitaimessage(optionalinput){
 				calendartodos: calendartodos,
 				userinput: userinput,
 				timezoneoffset: new Date().getTimezoneOffset(),
-				chathistory: chathistory.getInteractions().filter(d => d.message != null).map(d => d.getMessages().map(f => { return { role: f.role, content: f.message } }))
+				chathistory: sendchathistory
 			})
 		})
 		if(response.status == 200){
