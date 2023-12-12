@@ -3723,7 +3723,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		}
 
 		function generatetodocontext(temptodos){
-			if(tempevents.length == 0) return 'No tasks'
+			if(temptodos.length == 0) return 'No tasks'
 
 			function getDateTimeText(currentDatetime) {
 				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
