@@ -3468,7 +3468,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		async function queryGptWithFunction(userinput, calendarcontext, todocontext, timezoneoffset) {
 			const allfunctions = [
 				{
-					name: 'get_event',
+					name: 'access_event',
 				},
 				{
 					name: 'create_event',
@@ -3512,7 +3512,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					}
 				},
 				{
-					name: 'get_task',
+					name: 'access_task',
 				},
 				{
 					name: 'create_task',
@@ -3560,14 +3560,14 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			]
 		
 			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task'] //a subset of all functions, the functions that invoke custom function
-			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_event', 'create_event'] //a subset of all functions, the functions that need calendar data under some circumstances
-			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_task', 'create_task'] //a subset of all functions, the functions that need todo data under some circumstances
+			const calendardataneededfunctions = ['delete_event', 'modify_event', 'access_event', 'create_event'] //a subset of all functions, the functions that need calendar data under some circumstances
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'access_task', 'create_task'] //a subset of all functions, the functions that need todo data under some circumstances
 
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A useful and resourceful productivity and scheduling assistant called Athena. Respond in natural language like an assistant. Do not mention the raw data or UUID. The current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A useful and resourceful productivity and scheduling assistant called Athena for the app Smart Calendar. Respond in natural language like an assistant. Do not mention the raw data or UUID. The current time is ${localdatestring} in user's timezone.`
 	
 
 		
@@ -3609,7 +3609,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				})
 				totaltokens += response.usage.total_tokens
 				
-				if (response.choices[0].finish_reason !== 'function_call') {
+				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'get_command') {
 					//no function call, return plain response
 					return { message: response.choices[0].message.content, totaltokens: totaltokens }
 				}

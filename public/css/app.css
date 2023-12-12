@@ -58,27 +58,31 @@ ul{
 	list-style-type:disc;
 	padding:0;
 	margin:0;
-	padding-inline-start:20px;
+	padding-inline-start:24px;
 }
 ol{
 	padding:0;
 	margin:0;
-	padding-inline-start:20px;
+	padding-inline-start:24px;
 }
 .codeblock{
-	background-color: var(--background-primary-home);
+	background-color: var(--black);
 	border-radius:8px;
 	padding:12px;
 	box-sizing:border-box;
 	display:block;
 	width:100%;
+	font-family: monospace;
+	color:var(--white);
 }
 .inlinecode{
-	background-color: var(--background-primary-home);
+	background-color: var(--black);
 	border-radius:8px;
-	padding:3px 6px;
+	padding:2px 7px;
 	box-sizing:border-box;
 	display:inline-block;
+	font-family: monospace;
+	color:var(--white);
 }
 
 
@@ -1929,7 +1933,7 @@ ol{
 }
 
 .aiassistantcontent{
-	max-width: 600px;
+	max-width: 800px;
 	width:100%
 }
 
