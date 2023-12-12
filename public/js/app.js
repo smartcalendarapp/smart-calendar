@@ -11919,11 +11919,11 @@ function openaichat(){
 		setTimeout(function(){
 			let chatinteraction = new ChatInteraction()
 			let responsechatmessage = new ChatMessage({
-				role: 'system',
+				role: 'assistant',
 				message: `Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, give you advice on your tasks, and more! Ask me any time.`
 			})
 
-			responsechatmessage.nextactions = [`<div class="actionglide background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-white text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What\'s on my agenda for today?')">What's on my agenda today</div>`, `<div class="actionglide background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-white text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, `<div class="actionglide background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-white text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Which task should I work on?')">Which task should I work on?</div>`]
+			responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-white text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What\'s on my agenda for today?')">What's on my agenda today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-white text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-white text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Which task should I work on?')">Which task should I work on?</div>`]
 	
 			chatinteraction.addMessage(responsechatmessage)
 			
@@ -11935,18 +11935,7 @@ function openaichat(){
 }
 
 function promptaiassistantwithnextaction(prompt){
-	if(!isgenerating){
-		submitaimessage(prompt)
-	}else{
-		let aichatinput;
-		if(calendartabs.includes(4)){
-			aichatinput = getElement('aichatinput2')
-		}else{
-			aichatinput = getElement('aichatinput')
-		}
-
-		aichatinput.value = prompt
-	}
+	submitaimessage(prompt)
 }
 
 
@@ -11991,12 +11980,12 @@ class ChatMessage {
 		this.id = generateID()
 
 		this.displaycontent = this.message
-		if(this.role == 'system'){
+		if(this.role == 'assistant'){
 			this.displaycontent = ''
 		}
 
 		this.startedanimating = false
-		if(this.role != 'system'){
+		if(this.role != 'assistant'){
 			this.startedanimating = true
 		}
 		this.finishedanimating = false
@@ -12006,7 +11995,7 @@ class ChatMessage {
 	}
 	
 	async animateTyping(){
-		if(this.role != 'system') return
+		if(this.role != 'assistant') return
 		if(this.startedanimating) return
 		this.startedanimating = true
 
@@ -12051,7 +12040,7 @@ class ChatMessage {
 				random = Math.random()
 			}
 			let currentword = splitmessage[i]
-			let delay = 20 + random * 30 * (currentword.length/10) + (currentword.endsWith('.') ? 100 : 0) + (currentword.endsWith(',') ? 50 : 0)
+			let delay = 20 + random * 30 * (currentword.length/10) + (['.', '!', '?', ','].find(d => currentword.endsWith(d)) ? 100 : 0)
 
 			await sleep(delay)
 
@@ -12142,7 +12131,7 @@ async function dislikeaichatmessage(event, id){
 
 
 function markdowntoHTML(markdown, role) {
-    if (role != 'system') return markdown
+    if (role != 'assistant') return markdown
 
     let placeholders = []
 	let placeholders2 = []
@@ -12217,7 +12206,7 @@ function updateaichat(){
 
 						${actions ? `<div class="hoverchatmessagebuttons display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${actions.join('')}</div>` : ''}
 
-						${role == 'system' ? `
+						${role == 'assistant' ? `
 						<div class="display-flex flex-row gap-6px ${chathistory.getInteractions().findIndex(d => d.id == chatinteraction.id) == chathistory.getInteractions().length - 1 ? '' : 'visibility-hidden small:visibility-visible hoverchatmessagebuttons'} ${!finishedanimating ? 'display-none' : ''}">
 							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="aimessagebutton padding-6px ${liked ? 'background-tint-1 border-8px' : ''}" onclick="likeaichatmessage(event, '${id}')">
 							<g>
@@ -12322,7 +12311,7 @@ async function submitaimessage(optionalinput){
 		message: userinput
 	}))
 	let responsechatmessage = new ChatMessage({
-		role: 'system',
+		role: 'assistant',
 		message: null,
 	})
 
@@ -12358,7 +12347,8 @@ async function submitaimessage(optionalinput){
 				calendarevents: calendarevents,
 				calendartodos: calendartodos,
 				userinput: userinput,
-				timezoneoffset: new Date().getTimezoneOffset()
+				timezoneoffset: new Date().getTimezoneOffset(),
+				chathistory: chathistory.getInteractions().filter(d => d.id != chatinteraction.id).map(d => d.getMessages().map(f => { return { role: f.role, content: f.message } }).map(d => { return { messages: d.messages }}))
 			})
 		})
 		if(response.status == 200){

@@ -3465,7 +3465,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 		//PROMPT AND CONTEXT
 
-		async function queryGptWithFunction(userinput, calendarcontext, todocontext, timezoneoffset) {
+		async function queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset) {
 			const allfunctions = [
 				{
 					name: 'access_event',
@@ -3577,13 +3577,14 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				const response = await openai.chat.completions.create({
 					model: 'gpt-3.5-turbo',
 					messages: [
-						{
-							role: 'user',
-							 content: userinput,
-						},
 						{ 
 							role: 'system', 
 							content: systeminstructions
+						},
+						...historycontext,
+						{
+							role: 'user',
+							content: userinput,
 						}
 					],
 					functions: [
@@ -3631,13 +3632,13 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						if(requirescalendardata){
 							//yes calendar data
 		
-							request2input = `"""Calendar data: ${calendarcontext}""" """${userinput}"""`
+							request2input = `Calendar data: """${calendarcontext}""" """${userinput}"""`
 						}
 
 						if(requirestododata){
 							//yes todo data
 		
-							request2input = `"""Todo data: ${todocontext}""" """${userinput}"""`
+							request2input = `Todo data: """${todocontext}""" """${userinput}"""`
 						}
 		
 						if(requirescustomfunction){
@@ -3647,13 +3648,14 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						}
 		
 						request2options.messages = [
-							{
-								role: 'user',
-								content: request2input
-							},
 							{ 
 								role: 'system', 
 								content: systeminstructions
+							},
+							...conversationhistory,
+							{
+								role: 'user',
+								content: request2input
 							}
 						]
 						
@@ -3693,7 +3695,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		}
 
 
-		function generatecalendarcontext(tempevents){
+		function getcalendarcontext(tempevents){
 			if(tempevents.length == 0) return 'No events'
 
 			function getDateTimeText(currentDatetime) {
@@ -3722,7 +3724,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			return tempoutput
 		}
 
-		function generatetodocontext(temptodos){
+		function gettodocontext(temptodos){
 			if(temptodos.length == 0) return 'No tasks'
 
 			function getDateTimeText(currentDatetime) {
@@ -3760,21 +3762,37 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			return tempoutput
 		}
 
+		function getconversationhistory(temphistory){ //cheap way for history, just send latest X messages
+			let tempoutput = []
+			for(let i = temphistory.length - 1; i >= 0; i--){
+				let interactionmessages = temphistory[i].reverse()
+
+				if(JSON.stringify(newinteraction).length + JSON.stringify(tempoutput).length > MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH) break
+
+				tempoutput.push(...interactionmessages)
+			}
+			return tempoutput.reverse()
+			//something smarter?
+		}
+
 
 		const MAX_CALENDAR_CONTEXT_LENGTH = 2000
 		const MAX_TODO_CONTEXT_LENGTH = 2000
+		const MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH = 2000
 
 		
 		let userinput = req.body.userinput.slice(0, 300)
 		let calendarevents = req.body.calendarevents
 		let calendartodos = req.body.calendartodos
 		let timezoneoffset = req.body.timezoneoffset
+		let rawconversationhistory = req.body.history
 
-		let calendarcontext = generatecalendarcontext(calendarevents)
-		let todocontext = generatetodocontext(calendartodos)
+		let calendarcontext = getcalendarcontext(calendarevents)
+		let todocontext = gettodocontext(calendartodos)
+		let conversationhistory = getconversationhistory(rawconversationhistory)
 
 		//REQUEST
-		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, timezoneoffset)
+		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset)
 
 		return res.json({ data: output })
 	}catch(err){
