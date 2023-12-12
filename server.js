@@ -3764,12 +3764,14 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 		function getconversationhistory(temphistory){ //cheap way for history, just send latest X messages
 			let tempoutput = []
-			for(let i = temphistory.length - 1; i >= 0; i--){
-				let interactionmessages = temphistory[i].reverse()
+			let counter = 0
+			for(let interactionmessages of temphistory.reverse()){
+				if(JSON.stringify(interactionmessages).length + JSON.stringify(tempoutput).length > MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH) break //max X characters
 
-				if(JSON.stringify(interactionmessages).length + JSON.stringify(tempoutput).length > MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH) break
+				if(counter > 10) break //max 10 messages
 
 				tempoutput.push(...interactionmessages)
+				counter++
 			}
 			return tempoutput.reverse()
 			//something smarter?
