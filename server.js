@@ -3424,7 +3424,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 
 
 app.post('/getgptchatinteraction', async (req, res) => {
-	const MAX_GPT_PER_DAY = 10
+	const MAX_GPT_PER_DAY = 50//TEMPORARY
 	const MAX_GPT_PER_DAY_BETA_TESTER = 100//30
 	const MAX_GPT_PER_DAY_PREMIUM = 50
 
@@ -3440,12 +3440,13 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
 
-		if(user.accountdata.betatester != true) return res.end()//here3
 
 		let appliedratelimit = MAX_GPT_PER_DAY
 		if(user.accountdata.betatester){
 			appliedratelimit = MAX_GPT_PER_DAY_BETA_TESTER
 		}
+
+		if(user.accountdata.google_email == 'smartcalendartester@gmail.com'){appliedratelimit = 200}//REMOVE
 
 
 		let currenttime = Date.now()
@@ -3466,7 +3467,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 		//PROMPT AND CONTEXT
 
-		async function queryGptWithFunction(userinput, calendarcontext, timezoneoffset) {
+		async function queryGptWithFunction(userinput, calendarcontext, todocontext, timezoneoffset) {
 			const allfunctions = [
 				{
 					name: 'get_event',
@@ -3512,7 +3513,10 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						required: []
 					}
 				},
-				/*{
+				{
+					name: 'get_task',
+				},
+				{
 					name: 'create_task',
 					description: 'Create a new task in the to do list',
 					parameters: {
@@ -3532,10 +3536,10 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Unique ID of task in JSON knowledge base' },
-							title: { type: 'string', description: 'Task title' },
+							id: { type: 'string', description: 'Specific UUID of task.' },
+							errorMessage: { type: 'string', description: 'An error message if task is not found or other error.' },
 						},
-						required: ['id']
+						required: []
 					}
 				},
 				{
@@ -3544,19 +3548,22 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Unique ID of task in JSON knowledge base, can be obtained by finding item with provided title or due date of task' },
+							id: { type: 'string', description: 'Specific UUID of task.' },
 							newTitle: { type: 'string', description: 'New task title' },
 							newDueDate: { type: 'string', description: 'New task due date in YYYY-MM-DD HH:MM' },
-							newDuration: { type: 'string', description: 'New taks duration in HH:MM' },
-							newDuration: { type: 'string', description: 'New task priority in high/medium/low' }
+							newDuration: { type: 'string', description: 'New task duration in HH:MM' },
+							newPriority: { type: 'string', description: 'New task priority in high/medium/low' },
+							newCompleted: { type: 'boolean', description: 'New task completed status' },
+							errorMessage: { type: 'string', description: 'An error message if task is not found or other error.' },
 						},
-						required: ['id']
+						required: []
 					}
-				},*/
+				}
 			]
 		
-			const customfunctions = ['create_event', 'delete_event', 'modify_event'] //a subset of all functions, the functions that invoke custom function
-			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_event'] //a subset of all functions, the functions that need calendar data under all circumstances
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task'] //a subset of all functions, the functions that invoke custom function
+			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_event', 'create_event'] //a subset of all functions, the functions that need calendar data under some circumstances
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_task', 'create_task'] //a subset of all functions, the functions that need todo data under some circumstances
 
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
@@ -3595,12 +3602,8 @@ app.post('/getgptchatinteraction', async (req, res) => {
 											type: "string",
 										}
 									},
-									calendarDataNeeded: {
-										type: "boolean",
-										description: "Set to 'true' for commands where calendar context is crucial, such as creating event at a variable time, rescheduling, deleting event, or modifying event. Set to 'false' for commands that don't rely on existing calendar events, such as create event for a specific user defined time."
-									},
 								},
-								required: ["commands", "calendarDataNeeded"]
+								required: ["commands"]
 							}
 						},
 					],
@@ -3617,7 +3620,8 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				if (response.choices[0].message.function_call?.name === 'get_command') {
 					const command = JSON.parse(response.choices[0].message.function_call?.arguments)?.commands[0]
 					if (command) {
-						const requirescalendardata = calendardataneededfunctions.includes(command) || JSON.parse(response.choices[0].message.function_call?.arguments)?.calendarDataNeeded
+						const requirescalendardata = calendardataneededfunctions.includes(command)
+						const requirestododata = tododataneededfunctions.includes(command)
 						const requirescustomfunction = customfunctions.includes(command)
 		
 						let request2options = {
@@ -3630,6 +3634,12 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							//yes calendar data
 		
 							request2input = `"""Calendar data: ${calendarcontext}""" """${userinput}"""`
+						}
+
+						if(requirestododata){
+							//yes todo data
+		
+							request2input = `"""Todo data: ${todocontext}""" """${userinput}"""`
 						}
 		
 						if(requirescustomfunction){
@@ -3703,27 +3713,66 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 			let tempoutput = ''
 			for(let d of tempevents){
-				let newstring = `Event title: ${d.title}, UUID: ${d.id}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)).formattedDate}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}.`
+				let newstring = `Event title: ${d.title || 'New Event'}, UUID: ${d.id}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}.`
 
 				if(tempoutput.length + newstring.length > MAX_CALENDAR_CONTEXT_LENGTH) break
 
-				tempoutput += newstring
+				tempoutput += '\n' + newstring
+			}
+			return tempoutput
+		}
+
+		function generatetodocontext(temptodos){
+			function getDateTimeText(currentDatetime) {
+				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
+				const formattedTime = `${currentDatetime.getHours().toString().padStart(2, '0')}:${currentDatetime.getMinutes().toString().padStart(2, '0')}`
+				return `${formattedDate} ${formattedTime}`
+			}
+
+			function getDHMText(input) {
+				let temp = input
+				let days = Math.floor(temp / 1440)
+				temp -= days * 1440
+			
+				let hours = Math.floor(temp / 60)
+				temp -= hours * 60
+			
+				let minutes = temp
+			
+				if (days) days += 'd'
+				if (hours) hours += 'h'
+				if (minutes || (hours == 0 && days == 0)) minutes += 'm'
+			
+				return [days, hours, minutes].filter(f => f).join(' ')
+			}
+
+
+			let tempoutput = ''
+			for(let d of temptodos){
+				let newstring = `Task title: ${d.title || 'New Task'}, UUID: ${d.id}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration)}, priority: ${['low', 'medium', 'high'][d.priority]}, completed: ${d.completed}.`
+
+				if(tempoutput.length + newstring.length > MAX_TODO_CONTEXT_LENGTH) break
+
+				tempoutput += '\n' + newstring
 			}
 			return tempoutput
 		}
 
 
-		const MAX_CALENDAR_CONTEXT_LENGTH = 3000
+		const MAX_CALENDAR_CONTEXT_LENGTH = 2000
+		const MAX_TODO_CONTEXT_LENGTH = 2000
 
 		
 		let userinput = req.body.userinput.slice(0, 300)
 		let calendarevents = req.body.calendarevents
+		let calendartodos = req.body.calendartodos
 		let timezoneoffset = req.body.timezoneoffset
 
 		let calendarcontext = generatecalendarcontext(calendarevents)
+		let todocontext = generatetodocontext(calendartodos)
 
 		//REQUEST
-		let output = await queryGptWithFunction(userinput, calendarcontext, timezoneoffset)
+		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, timezoneoffset)
 
 		return res.json({ data: output })
 	}catch(err){
