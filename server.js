@@ -3767,7 +3767,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			for(let i = temphistory.length - 1; i >= 0; i--){
 				let interactionmessages = temphistory[i].reverse()
 
-				if(JSON.stringify(newinteraction).length + JSON.stringify(tempoutput).length > MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH) break
+				if(JSON.stringify(interactionmessages).length + JSON.stringify(tempoutput).length > MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH) break
 
 				tempoutput.push(...interactionmessages)
 			}
