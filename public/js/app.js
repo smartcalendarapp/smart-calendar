@@ -12408,8 +12408,13 @@ async function submitaimessage(optionalinput){
 				return idmap[tempid]
 			}
 
-			console.log(data.data?.totaltokens, output, idmap)
+			//logging
+			if(clientinfo.betatester){
+				console.log(data.data?.totaltokens, output, idmap)
+			}
 
+
+			//process
 			if(output.command){
 				if(output.command == 'create_event'){
 					let arguments = output.arguments
