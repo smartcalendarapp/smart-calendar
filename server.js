@@ -3591,7 +3591,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A productivity and scheduling assistant called Athena for Smart Calendar app. Be intuitive and make user experience as easy as possible by making assumptions. Incorporate mental health and motivational tips in responses. Do not mention raw data or UUID. Kindly deny requests that are not for calendar, productivity, or mental health. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A productivity and scheduling assistant called Athena for Smart Calendar app. Be intuitive and make user experience as easy as possible by making assumptions. Incorporate mental health and motivational tips in responses. Do not mention raw data or UUID. Kindly deny ANY requests that are not for calendar, productivity, or mental health. Current time is ${localdatestring} in user's timezone.`
 
 
 		
@@ -3614,7 +3614,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					functions: [
 						{
 							name: "app_command",
-							description: "Evaluates user input to determine if actions related to calendar management, event creation, or to-do list tasks are required. If action is needed, it returns the appropriate command. Analyze the context and specific keywords or phrases in the user's request to make an informed decision",
+							description: "Evaluate user input to determine if actions related to calendar, events, to-do list, or tasks are present. If data is needed, it returns the appropriate command.",
 							parameters: {
 								type: "object",
 								properties: {

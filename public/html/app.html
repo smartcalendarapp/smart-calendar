@@ -105,7 +105,7 @@
 	<div class="z-index-1000 popup box-shadow backdrop-blur padding-12px border-8px absolute gap-4px display-flex flex-column hiddenpopup picker" onmousedown="event.preventDefault()" id="datepicker"></div>
 
 
-	<div class="small:padding-0 small:width-full small:height-full small:top-0 small:left-0 menuwrapoutside hiddenpopup z-index-999 overflow-visible border-box" style="top:72px;bottom:12px;left:12px;width:400px;" id="aichatwrap">
+	<div class="small:padding-0 minwidthheight small:width-full small:height-full small:top-0 small:left-0 menuwrapoutside hiddenpopup z-index-999 overflow-visible border-box" style="top:72px;height:90vh;left:12px;width:500px;" id="aichatwrap">
 		<div class="small:border-0 background-primary-transparent height-full flex-1 backdrop-blur border-16px box-shadow display-flex flex-column">
 			<div class="dragtodoarea relative display-flex flex-row padding-12px borderbottom justify-space-between align-center cursormove" mousedown="clickaichatwrap(event)" id="dragaichatwrap">
 				<div class="dragdots">
@@ -169,7 +169,7 @@
 
 			</div>
 
-			<div class="text-quaternary text-12px text-center margin-bottom-6px">This is a free preview of our AI assistant in development. We appreciate your honest <span class="popupbutton display-inline-block text-blue width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">feedback</span> :)</div>
+			<div class="text-quaternary padding-left-12px border-box padding-right-12px text-12px text-center margin-bottom-6px">This is a free preview of our AI assistant in development. We appreciate your honest <span class="popupbutton display-inline-block text-blue width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">feedback</span> :)</div>
 
 		</div>
 	</div>
@@ -1570,7 +1570,13 @@
 
 	
 	<div class="eventinfowidth eventinfo popup eventinfomaxheight hiddenpopup small:max-height-revert small:width-full small:top-0 small:left-0" id="eventinfo">
-		<div class="infotop dragtodoarea justify-space-between cursormove" onmousedown="clickeventinfo(event)" id="drageventinfo">
+		<div class="infotop relative dragtodoarea justify-space-between cursormove" onmousedown="clickeventinfo(event)" id="drageventinfo">
+			<div class="dragdots">
+				<div class="dragdot"></div>
+				<div class="dragdot"></div>
+				<div class="dragdot"></div>
+			</div>
+
 			<div></div>
 			
 			<div class="infotoprightgroup">
@@ -1812,7 +1818,7 @@
 			<!-- middle -->
 			<div class="display-flex flex-row align-center flex-1 justify-center gap-24px">
 				<div class="padding-top-6px nowrap padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="if(event.shiftKey){ openaichat(); return };clicktab([4]);if(gtag){gtag('event', 'button_click', { useraction: 'AI Assistant - nav bar' })} " id="aiassistanttab">
-					AI Assistant
+					AI Assistant <span class="text-12px badgepadding text-white background-purple border-round">beta</span>
 					<span class="buttonunderline"></span>
 				</div>
 				<div class="padding-top-6px nowrap padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);if(gtag){gtag('event', 'button_click', { useraction: 'Calendar - nav bar' })} " id="hometab">
@@ -1949,7 +1955,7 @@
 
 							</div>
 
-							<div class="text-quaternary text-12px text-center">This is a free preview of our AI assistant in development. We appreciate your honest <span class="popupbutton display-inline-block text-blue width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">feedback</span> :)</div>
+							<div class="text-quaternary padding-left-12px border-box padding-right-12px text-12px text-center margin-bottom-6px">This is a free preview of our AI assistant in development. We appreciate your honest <span class="popupbutton display-inline-block text-blue width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">feedback</span> :)</div>
 						</div>
 
 					</div>

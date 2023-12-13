@@ -11919,6 +11919,13 @@ function newaichat(){
 }
 
 function openaichat(){
+	let aichatwrap = getElement('aichatwrap')
+	if(!calendartabs.includes(4)){
+		aichatwrap.classList.remove('hiddenpopup')
+	}else{
+		aichatwrap.classList.add('hiddenpopup')
+	}
+
 	updateaichat()
 
 	setTimeout(function(){
@@ -12191,7 +12198,7 @@ function markdowntoHTML(markdown, role) {
 
 
 	placeholders.forEach((placeholder, index) => {
-		let codeWithHeader = placeholder.lang ? `<span class="codeblock"><span class="code-header">${placeholder.lang}</span><span class="display-block padding-12px border-box">${placeholder.code}</span></span>` : `<span class="codeblock"><span class="display-block padding-12px border-box">${placeholder.code}</span></span>`;
+		let codeWithHeader = placeholder.lang ? `<span class="codeblock"><span class="codeblock-header">${placeholder.lang}</span><span class="display-block padding-12px border-box">${placeholder.code}</span></span>` : `<span class="codeblock"><span class="display-block padding-12px border-box">${placeholder.code}</span></span>`;
 		markdown = markdown.replace(`CODEBLOCK_${index}`, codeWithHeader);
 	})
 
@@ -12453,6 +12460,10 @@ async function submitaimessage(optionalinput){
 							if(Calendar.Event.isReadOnly(item)){
 								responsechatmessage.message = `I could not edit that event as it is read-only (it may be part of a calendar you cannot edit).` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
 							}else{
+								let oldstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+								let oldenddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
+								let oldtitle = item.title
+
 
 								let oldduration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 
@@ -12492,8 +12503,22 @@ async function submitaimessage(optionalinput){
 								calendar.updateInfo()
 								calendar.updateEvents()
 
-									
-								responsechatmessage.message = `Done! I have modified your event "${Calendar.Event.getTitle(item)}". It starts ${Calendar.Event.getStartText(item)}.` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:''),
+
+								let tempmsg;
+								if(newtitle != oldtitle){
+									if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
+										tempmsg = `Done! I renamed your event to "${Calendar.Event.getTitle(item)}", and moved it to ${Calendar.Event.getStartText(item)}`
+									}else{
+										tempmsg = `Done! I renamed your event to "${Calendar.Event.getTitle(item)}".`
+									}
+								}else{
+									if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
+										tempmsg = `Done! I moved your event "${Calendar.Event.getTitle(item)}" to ${Calendar.Event.getStartText(item)}`
+									}else{
+										tempmsg = `Done! I modified your event "${Calendar.Event.getTitle(item)}" to be on ${Calendar.Event.getFullStartEndText(item)}`
+									}
+								}
+								responsechatmessage.message = tempmsg + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:''),
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 							}
 						}else{
@@ -12579,6 +12604,10 @@ async function submitaimessage(optionalinput){
 					}else{
 						let item = id && calendar.todos.find(d => d.id == id)
 						if(item){
+							let oldpriority = item.priority
+							let oldcompleted = item.completed
+							let oldduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
+							
 							let endbeforeminute = getMinute(newduedate).value
 							let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(newduedate).value
 							
@@ -12613,8 +12642,29 @@ async function submitaimessage(optionalinput){
 
 							calendar.updateTodo()
 
-							
-							responsechatmessage.message = `Done! I have modified your task "${Calendar.Todo.getTitle(item)}". It is due ${Calendar.Event.getDueText(item)}.` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+
+							let tempmsg;
+							if(newtitle != oldtitle){
+								if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
+									tempmsg = `Done! I renamed your task to "${Calendar.Event.getTitle(item)}", and set it to be due ${Calendar.Event.getDueText(item)}`
+								}else{
+									tempmsg = `Done! I renamed your task to "${Calendar.Event.getTitle(item)}".`
+								}
+							}else{
+								if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
+									tempmsg = `Done! I set your task "${Calendar.Event.getTitle(item)}" to be due ${Calendar.Event.getDueText(item)}`
+								}else{
+									tempmsg = `Done! I modified your event "${Calendar.Event.getTitle(item)}" to be on ${Calendar.Event.getFullStartEndText(item)}`
+								}
+							}
+							if(newcompleted != oldcompleted){
+								tempmsg = `Done! I marked your task "${Calendar.Event.getTitle(item)}" as complete. Good job.`
+							}
+							if(priority != oldpriority){
+								tempmsg = `Done! I set your task "${Calendar.Event.getTitle(item)}" to be ${['low', 'medium', 'high'][item.priority]} priority.`
+							}
+
+							responsechatmessage.message = tempmsg + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
 							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
 
 						}else{
@@ -15998,10 +16048,13 @@ function moveboxcolumn(event) {
 }
 
 //click event
+let showeventinfolater;
 function clickevent(event, timestamp) {
 	event.stopPropagation()
 	if(event.button !== 0) return
 	let barcolumncontainer = getElement('barcolumncontainer')
+
+	showeventinfolater = true
 
 	selectedeventid = event.target.id
 
@@ -16050,6 +16103,10 @@ function clickevent(event, timestamp) {
 		//open edit schedule popup
 		if(iseditingschedule){
 			clickeventopeneditschedulepopup(item.id)
+		}
+
+		if(!showeventinfolater){
+			selectedeventid = null
 		}
 
 		movingevent = false
@@ -16152,6 +16209,8 @@ function moveevent(event) {
 	//accept suggestion
 	item.iseventsuggestion = false
 
+	showeventinfolater = false
+
 
 	item.start.minute = tempdate1.getHours() * 60 + tempdate1.getMinutes()
 	item.start.day = tempdate1.getDate()
@@ -16232,6 +16291,7 @@ function moveborder(event) {
 function clickeventbottom(event, timestamp) {
 	event.stopPropagation()
 	if(event.button !== 0) return
+	showeventinfolater = true
 	selectedeventid = event.target.parentNode.id
 
 	let item = calendar.events.find(d => d.id == selectedeventid)
@@ -16270,6 +16330,10 @@ function clickeventbottom(event, timestamp) {
 			clickeventopeneditschedulepopup(item.id)
 		}
 
+		if(!showeventinfolater){
+			selectedeventid = null
+		}
+
 		editeventid = null
 		calendar.updateEvents()
 	}
@@ -16280,6 +16344,8 @@ function clickeventbottom(event, timestamp) {
 function clickeventtop(event, timestamp) {
 	event.stopPropagation()
 	if(event.button !== 0) return
+	showeventinfolater = true
+
 	selectedeventid = event.target.parentNode.id
 
 	let item = calendar.events.find(d => d.id == selectedeventid)
@@ -16310,9 +16376,13 @@ function clickeventtop(event, timestamp) {
 		movingevent = false
 		calendar.updateInfo(false, true)
 
-		//open schedule popup
+		//open edit schedule popup
 		if(iseditingschedule){
 			clickeventopeneditschedulepopup(item.id)
+		}
+
+		if(!showeventinfolater){
+			selectedeventid = null
 		}
 
 		editeventid = null
@@ -16370,6 +16440,8 @@ function moveeventbottom(event) {
 
 	//accept suggestion
 	item.iseventsuggestion = false
+
+	showeventinfolater = false
 
 
 	if (tempdate1.getTime() - tempdate2.getTime() < 15 * 60000 && tempdate1.getTime() - tempdate2.getTime() >= 0) {
@@ -16452,6 +16524,8 @@ function moveeventtop(event) {
 
 	//accept suggestion
 	item.iseventsuggestion = false
+
+	showeventinfolater = false
 
 
 	if (tempdate1.getTime() - tempdate2.getTime() > -15 * 60000 && tempdate1.getTime() - tempdate2.getTime() <= 0) {
