@@ -12209,8 +12209,8 @@ function updateaichat(){
 				${role == 'user' ? useravatar : aiavatar}
 				<div class="flex-1 overflow-hidden display-flex flex-column gap-12px">
 					<div class="display-flex flex-column gap-6px">
-						<div class="text-primary text-14px text-bold">${role == 'user' ? username : ainame}</div>
-						<div class="selecttext pre-wrap break-word text-primary text-14px" id="chatmessage-body-${id}">${message ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : `<span class="aichatcursorloadingwrap"><span class="aichatcursorloading"></span></span>`}</div>
+						<div class="text-primary text-15px text-bold">${role == 'user' ? username : ainame}</div>
+						<div class="selecttext pre-wrap break-word text-primary text-15px" id="chatmessage-body-${id}">${message ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : `<span class="aichatcursorloadingwrap"><span class="aichatcursorloading"></span></span>`}</div>
 
 						${actions ? `<div class="hoverchatmessagebuttons display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${actions.join('')}</div>` : ''}
 

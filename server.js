@@ -3468,7 +3468,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		async function queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset) {
 			const allfunctions = [
 				{
-					name: 'access_event',
+					name: 'get_events',
 				},
 				{
 					name: 'create_event',
@@ -3486,7 +3486,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				},
 				{
 					name: 'delete_event',
-					description: 'Check for the existence of event to delete by referenced title or time. Returns an error if the event does not exist.',
+					description: 'Check for event to delete by title or direct reference. Need high confidence. Returns an error if the event does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -3498,7 +3498,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				},
 				{
 					name: 'modify_event',
-					description: 'Check for the existence of event to modify by referenced title or time. Returns an error if the event does not exist.',
+					description: 'Check for event to modify by title or direct reference. Need high confidence. Returns an error if the event does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -3512,7 +3512,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					}
 				},
 				{
-					name: 'access_task',
+					name: 'get_tasks',
 				},
 				{
 					name: 'create_task',
@@ -3530,7 +3530,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				},
 				{
 					name: 'delete_task',
-					description: 'Delete a task from the to do list',
+					description: 'Check for task to delete by title or direct reference. Need high confidence. Returns an error if the task does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -3542,7 +3542,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				},
 				{
 					name: 'modify_task',
-					description: 'Modify a task in the calendar',
+					description: 'Check for task to modify by title or direct reference. Returns an error if the task does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -3560,8 +3560,8 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			]
 		
 			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task'] //a subset of all functions, the functions that invoke custom function
-			const calendardataneededfunctions = ['delete_event', 'modify_event', 'access_event', 'create_event'] //a subset of all functions, the functions that need calendar data under some circumstances
-			const tododataneededfunctions = ['delete_task', 'modify_task', 'access_task', 'create_task'] //a subset of all functions, the functions that need todo data under some circumstances
+			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_events'] //a subset of all functions, the functions that need calendar data
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_tasks'] //a subset of all functions, the functions that need todo data
 
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
@@ -3574,7 +3574,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			let totaltokens = 0
 
 			try {
-				let modifiedinput = `Conversation history: """${conversationhistory}""" Current prompt: """${userinput}"""`
+				let modifiedinput = `Current prompt: """${userinput}""" Conversation history: """${conversationhistory}"""`
 				const response = await openai.chat.completions.create({
 					model: 'gpt-3.5-turbo',
 					messages: [
@@ -3590,7 +3590,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					functions: [
 						{
 							name: "user_command",
-							description: "Detect if a user indirectly or directly triggers one of the following commands relating to their calendar or to-do list.",
+							description: "Detect if a user indirectly or directly triggers one of the following commands relating to their calendar/events or to-do list/tasks.",
 							parameters: {
 								type: "object",
 								properties: {
@@ -3632,13 +3632,13 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						if(requirescalendardata){
 							//yes calendar data
 		
-							request2input = `Conversation history: """${conversationhistory}""" Calendar data: """${calendarcontext}""" Current prompt: """${userinput}"""`
+							request2input = `Current prompt: """${userinput}""" Conversation history: """${conversationhistory}""" Calendar data: """${calendarcontext}"""`
 						}
 
 						if(requirestododata){
 							//yes todo data
 		
-							request2input = `Conversation history: """${conversationhistory}""" Todo data: """${todocontext}""" Current prompt: """${userinput}"""`
+							request2input = `Current prompt: """${userinput}""" Conversation history: """${conversationhistory}""" Todo data: """${todocontext}"""`
 						}
 		
 						if(requirescustomfunction){
