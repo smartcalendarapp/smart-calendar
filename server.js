@@ -3500,7 +3500,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							startDate: { type: 'string', description: 'Event start date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Event title' },
 							endDate: { type: 'string', descrption: 'Event end date in YYYY-MM-DD HH:MM' },
-							duration: { type: 'string', description: 'Event duration' }
+							duration: { type: 'string', description: 'Event duration in HH:MM' }
 						},
 						required: ['startDate', 'title']
 					}
@@ -3598,7 +3598,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			let totaltokens = 0
 
 			try {
-				let modifiedinput = `Conversation history: """${conversationhistory}""" Current prompt: """${userinput}""" `
+				let modifiedinput = `Prompt: """${userinput}""" `
 				const response = await openai.chat.completions.create({
 					model: 'gpt-3.5-turbo',
 					messages: [
@@ -3657,13 +3657,13 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						if(requirescalendardata){
 							//yes calendar data
 		
-							request2input = `Conversation history: """${conversationhistory}""" Calendar data: """${calendarcontext}""" Current prompt: """${userinput}""" `
+							request2input = `Calendar data: """${calendarcontext}""" Prompt: """${userinput}""" `
 						}
 
 						if(requirestododata){
 							//yes todo data
 		
-							request2input = `Conversation history: """${conversationhistory}""" Todo data: """${todocontext}""" Current prompt: """${userinput}""" `
+							request2input = `Todo data: """${todocontext}""" Prompt: """${userinput}""" `
 						}
 		
 						if(requirescustomfunction){
@@ -3720,6 +3720,19 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		}
 
 
+		const idmap = {}
+		let idmapeventcounter = 1
+		let idmaptaskcounter = 1
+		function gettempid(currentid, type){
+			if(type == 'event'){
+				idmap[`E${idmapeventcounter}`] = currentid
+				idmapeventcounter++
+			}else if(type == 'task'){
+				idmap[`T${idmaptaskcounter}`] = currentid
+				idmaptaskcounter++
+			}
+		}
+
 		function getcalendarcontext(tempevents){
 			if(tempevents.length == 0) return 'No events'
 
@@ -3740,7 +3753,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 			let tempoutput = ''
 			for(let d of tempevents){
-				let newstring = `Event title: ${d.title || 'New Event'}, UUID: ${d.id}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}.`
+				let newstring = `Event title: ${d.title || 'New Event'}, UUID: ${gettempid(d.id, 'event')}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}.`
 
 				if(tempoutput.length + newstring.length > MAX_CALENDAR_CONTEXT_LENGTH) break
 
@@ -3778,7 +3791,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 			let tempoutput = ''
 			for(let d of temptodos){
-				let newstring = `Task title: ${d.title || 'New Task'}, UUID: ${d.id}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration)}, priority: ${['low', 'medium', 'high'][d.priority]}, completed: ${d.completed}.`
+				let newstring = `Task title: ${d.title || 'New Task'}, UUID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration)}, priority: ${['low', 'medium', 'high'][d.priority]}, completed: ${d.completed}.`
 
 				if(tempoutput.length + newstring.length > MAX_TODO_CONTEXT_LENGTH) break
 
@@ -3820,7 +3833,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		//REQUEST
 		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset)
 
-		return res.json({ data: output })
+		return res.json({ data: output, idmap: idmap })
 	}catch(err){
 		console.error(err)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })

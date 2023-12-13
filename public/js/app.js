@@ -11949,7 +11949,7 @@ function openaichat(){
 			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is my most important task?')">What is my most important task?</div>`,
 			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan my day for success')">Help me plan my day for success</div>`,
 			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my to do list for today?')">What is on my to do list for today?</div>`,
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me break down my tasks into manageable pieces.')">Help me break down my tasks into manageable pieces.</div>`]
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me break down my tasks into manageable pieces')">Help me break down my tasks into manageable pieces</div>`]
 
 			responsechatmessage.nextactions = getRandomItems(tempoptions, 3)
 	
@@ -12396,9 +12396,19 @@ async function submitaimessage(optionalinput){
 		})
 		if(response.status == 200){
 			let data = await response.json()
+			
 			let output = data.data
 
-			console.log(data.data?.totaltokens, output)
+			let idmap = data.idmap
+			function getrealid(tempid){
+				if(!tempid) return null
+				if(!Object.values(idmap).includes(tempid)){
+					return null
+				}
+				return idmap[tempid]
+			}
+
+			console.log(data.data?.totaltokens, output, idmap)
 
 			if(output.command){
 				if(output.command == 'create_event'){
@@ -12446,7 +12456,7 @@ async function submitaimessage(optionalinput){
 				}else if(output.command == 'modify_event'){
 					let arguments = output.arguments
 
-					let id = arguments?.id || ''
+					let id = getrealid(arguments?.id)
 					let error = arguments?.errorMessage || ''
 					let newtitle = arguments?.newTitle
 					let newstartdate = arguments?.newStartDate
@@ -12528,7 +12538,7 @@ async function submitaimessage(optionalinput){
 				}else if(output.command == 'delete_event'){
 					let arguments = output.arguments
 
-					let id = arguments?.id || ''
+					let id = getrealid(arguments?.id)
 					let error = arguments?.errorMessage || ''
 
 					if(error){
@@ -12591,7 +12601,7 @@ async function submitaimessage(optionalinput){
 				}else if(output.command == 'modify_task'){
 					let arguments = output.arguments
 
-					let id = arguments?.id || ''
+					let id = getrealid(arguments?.id)
 					let error = arguments?.errorMessage || ''
 					let newtitle = arguments?.newTitle
 					let newduedate = arguments?.newDueDate
@@ -12675,7 +12685,7 @@ async function submitaimessage(optionalinput){
 				}else if(output.command == 'delete_task'){
 					let arguments = output.arguments
 
-					let id = arguments?.id || ''
+					let id = getrealid(arguments?.id)
 					let error = arguments?.errorMessage || ''
 
 					if(error){
@@ -12695,7 +12705,7 @@ async function submitaimessage(optionalinput){
 				}else if(output.command == 'auto_schedule_tasks'){
 					let arguments = output.arguments
 
-					let idList = arguments?.idList || ''
+					let idList = (arguments?.idList || []).map(d => getrealid(d))
 					let error = arguments?.errorMessage || ''
 
 					if(error){
