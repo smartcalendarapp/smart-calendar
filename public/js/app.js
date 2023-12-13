@@ -7966,8 +7966,6 @@ function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], moved
 		}
 		addedtodos.push(newitem)
 	}
-
-	let actualaddedtodoslength = addedtodos.filter(d => !(eventsuggestiontodos || []).find(f => f.id == d.id)).length
 	
 	if (addedtodos.length > 0) {
 		calendar.todos = calendar.todos.filter(d => !addedtodos.find(f => f.id == d.id))
@@ -7975,13 +7973,13 @@ function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], moved
 		calendar.events.push(...addedtodos)
 	}
 
-	if(actualaddedtodoslength.length > 0){
-		if(calendartabs.includes(4)){
+	if(calendartabs.includes(4)){
+		if(scheduletodos.length > 0){
 			calendartabs = [0, 1]
 		}
 	}
 
-	if(actualaddedtodoslength > 0){
+	if(scheduletodos.length > 0){
 		if(mobilescreen){
 			calendartabs = [0]
 		}
@@ -7999,7 +7997,7 @@ function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], moved
 		calendar.updateEvents()
 	}
 
-	if(actualaddedtodoslength > 0){
+	if(addedtodos.length > 0){
 		calendar.updateTodo()
 	}
 
