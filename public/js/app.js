@@ -12153,13 +12153,13 @@ function markdowntoHTML(markdown, role) {
         .replace(/\[(.*?)\]\((.*?)\)/gim, `<a href='$2' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$1</a>`)
 
 
-	markdown = markdown.replace(/^\d+\.\s+(.+)(\n\d+\.\s+.+)*/gm, (match) => {
-		const listItems = match.split('\n').map(item => `<li>${item.slice(item.indexOf(' ') + 1)}</li>`).join('');
+	markdown = markdown.replace(/^\d+\.\s+(.+)(\n+\d+\.\s+.+)*/gm, (match) => {
+		const listItems = match.split(/\n+/gm).map(item => `<li>${item.slice(item.indexOf(' ') + 1)}</li>`).join('');
 		return `<ol>${listItems}</ol>`
 	})
 
-	markdown = markdown.replace(/^[-*+]\s+(.+)(\n[-*+]\s+.+)*/gm, (match) => {
-		const listItems = match.split('\n').map(item => `<li>${item.slice(item.indexOf(' ') + 1)}</li>`).join('');
+	markdown = markdown.replace(/^[-*+]\s+(.+)(\n+[-*+]\s+.+)*/gm, (match) => {
+		const listItems = match.split(/\n+/gm).map(item => `<li>${item.slice(item.indexOf(' ') + 1)}</li>`).join('');
 		return `<ul>${listItems}</ul>`
 	})
 
