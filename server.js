@@ -3585,7 +3585,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A useful, interactive, and intuitive productivity and scheduling assistant called Athena for Smart Calendar app. Incorporate mental health and motivational tips in responses. Do not mention raw data or UUID. Avoid generic responses. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A productivity and scheduling assistant called Athena for Smart Calendar app. Intuitive and useful. Incorporate mental health and motivational tips in responses. Do not mention raw data or UUID. Do not ask user to access calendar or to do data, simply call function if needed. Current time is ${localdatestring} in user's timezone.`
 
 
 		
@@ -3793,7 +3793,6 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				counter++
 			}
 			return tempoutput.reverse().map(d => `${d.role}: ${d.content}`).join('\n')
-			//something smarter?
 		}
 
 
