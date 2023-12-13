@@ -5691,7 +5691,7 @@ function mousedowndocument(event) {
 	if(!aichatwrap.contains(event.target)){
 		let dragaichatwrap = getElement('dragaichatwrap')
 
-		aichatwrap.style.maxHeight = dragaichatwrap.scrollHeight + 'px'
+		aichatwrap.style.maxHeight = dragaichatwrap.offsetHeight + 'px'
 	}
 
 	//unselect event
@@ -7980,8 +7980,10 @@ function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], moved
 		calendar.events.push(...addedtodos)
 	}
 
+	let openaichatboolean;
 	if(calendartabs.includes(4)){
 		if(scheduletodos.length > 0){
+			openaichatboolean = true
 			calendartabs = [0, 1]
 		}
 	}
@@ -8010,6 +8012,18 @@ function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], moved
 
 	//start
 	autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos, eventsuggestiontodos: eventsuggestiontodos, moveditemtimestamp: moveditemtimestamp, moveditem: moveditem })
+
+	if(openaichatboolean){
+		requestAnimationFrame(function(){
+			let calendarwrap = getElement('calendarwrap')
+	
+			let aichatwrap = getElement('aichatwrap')
+			aichatwrap.style.left = '12px'
+			aichatwrap.style.top = '72px'
+
+			openaichat()
+		})
+	}
 }
 
 
@@ -11136,6 +11150,11 @@ function gototaskincalendar(id){
 	calendarmonth = item.start.month
 	calendarday = item.start.day
 
+	let openaichatboolean;
+	if(calendartabs.includes(4)){
+		openaichatboolean = true
+	}
+
 	if(mobilescreen){
 		calendartabs = [0]
 		calendar.updateTabs()
@@ -11150,6 +11169,18 @@ function gototaskincalendar(id){
 	}
 
 	scrollcalendarY(item.start.minute)
+
+	if(openaichatboolean){
+		requestAnimationFrame(function(){
+			let calendarwrap = getElement('calendarwrap')
+	
+			let aichatwrap = getElement('aichatwrap')
+			aichatwrap.style.left = calendarwrap.getBoundingClientRect().left
+			aichatwrap.style.top = '72px'
+
+			openaichat()
+		})
+	}
 }
 
 //go to task in todo list
