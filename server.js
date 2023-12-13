@@ -3585,7 +3585,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A productivity and scheduling assistant called Athena for Smart Calendar app. Intuitive and useful. Incorporate mental health and motivational tips in responses. Do not mention raw data or UUID. Do not ask user to access calendar or to do data, simply call function if needed. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A productivity and scheduling assistant called Athena for Smart Calendar app. Intuitive and useful. Incorporate mental health and motivational tips in responses. Do not mention raw data or UUID. If user asks question that may need calendar or to do list data, trigger app_command function. Current time is ${localdatestring} in user's timezone.`
 
 
 		
@@ -3607,7 +3607,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					],
 					functions: [
 						{
-							name: "user_command",
+							name: "app_command",
 							description: "Determine if prompt implicitly or explicitly triggers or requires one of the following commands for user's calendar/events or to-do list/tasks.",
 							parameters: {
 								type: "object",
@@ -3628,13 +3628,13 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				})
 				totaltokens += response.usage.total_tokens
 				
-				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'user_command') {
+				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'app_command') {
 					//no function call, return plain response
 					return { message: response.choices[0].message.content, totaltokens: totaltokens }
 				}
 		
 		
-				if (response.choices[0].message.function_call?.name === 'user_command') {
+				if (response.choices[0].message.function_call?.name === 'app_command') {
 					const command = JSON.parse(response.choices[0].message.function_call?.arguments)?.commands[0]
 					if (command) {
 						const requirescalendardata = calendardataneededfunctions.includes(command)
