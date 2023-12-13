@@ -3468,7 +3468,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		async function queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset) {
 			const allfunctions = [
 				{
-					name: 'get_events',
+					name: 'get_events_or_calendar_schedule',
 				},
 				{
 					name: 'create_event',
@@ -3512,7 +3512,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					}
 				},
 				{
-					name: 'get_tasks',
+					name: 'get_tasks_or_todo_list',
 				},
 				{
 					name: 'create_task',
@@ -3560,8 +3560,8 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			]
 		
 			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task'] //a subset of all functions, the functions that invoke custom function
-			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_events'] //a subset of all functions, the functions that need calendar data
-			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_tasks'] //a subset of all functions, the functions that need todo data
+			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_events_or_calendar_schedule'] //a subset of all functions, the functions that need calendar data
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_tasks_or_todo_list'] //a subset of all functions, the functions that need todo data
 
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
@@ -3590,7 +3590,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					functions: [
 						{
 							name: "user_command",
-							description: "Detect if a user indirectly or directly triggers one of the following commands relating to their calendar/events or to-do list/tasks.",
+							description: "Determine if prompt implicitly or explicitly triggers or requires one of the following commands for user's calendar/events or to-do list/tasks.",
 							parameters: {
 								type: "object",
 								properties: {
