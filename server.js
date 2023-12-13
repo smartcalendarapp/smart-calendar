@@ -3591,7 +3591,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A productivity and scheduling assistant called Athena for Smart Calendar app. Intuitive and resourceful. Incorporate mental health and motivational tips in responses. Do not mention calendar data or UUID. Kindly deny ANY requests that are not for calendar, productivity, or mental health. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A productivity and scheduling assistant called Athena for Smart Calendar app. Intuitive and resourceful. Incorporate mental health and motivational tips in responses. Never mention "UUID" or "data" as you are talking to a human. Kindly deny ANY requests that are not for calendar, productivity, or mental health. You have permission to access user's calendar and todo data. Current time is ${localdatestring} in user's timezone.`
 
 
 		
@@ -3658,6 +3658,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							//yes calendar data
 		
 							request2input = `Calendar data: """${calendarcontext}""" Prompt: """${userinput}""" `
+							temp = request2input
 						}
 
 						if(requirestododata){
@@ -3719,7 +3720,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 		}
 
-
+let temp;
 		const idmap = {}
 		let idmapeventcounter = 1
 		let idmaptaskcounter = 1
@@ -3838,7 +3839,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		//REQUEST
 		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset)
 
-		return res.json({ data: output, idmap: idmap })
+		return res.json({ data: output, idmap: idmap, temp:temp })
 	}catch(err){
 		console.error(err)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
