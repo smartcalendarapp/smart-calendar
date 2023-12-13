@@ -11878,6 +11878,36 @@ function updatedatepicker() {
 
 
 //AI CHAT
+
+
+function clickaichatwrap(event) {
+	let dragaichatwrap = getElement('dragaichatwrap')
+	if (event.target === dragaichatwrap) {
+		let aichatwrap = getElement('aichatwrap')
+
+		infooffsetx = event.clientX - aichatwrap.offsetLeft
+		infooffsety = event.clientY - aichatwrap.offsetTop
+
+		document.addEventListener("mousemove", moveaichatwrap, false)
+		document.addEventListener("mouseup", finishfunction, false)
+		function finishfunction() {
+			document.removeEventListener("mousemove", moveaichatwrap, false);
+			document.removeEventListener("mouseup", finishfunction, false);
+		}
+	}
+}
+
+function moveaichatwrap(event) {
+	let aichatwrap = getElement('aichatwrap')
+
+	let newx = event.clientX - infooffsetx
+	let newy = event.clientY - infooffsety
+
+	aichatwrap.style.left = fixleft(newx, aichatwrap) + 'px'
+	aichatwrap.style.top = fixtop(newy, aichatwrap) + 'px'
+}
+
+
 function closeaichat(){
 	let aichatwrap = getElement('aichatwrap')
 	aichatwrap.classList.add('hiddenpopup')
@@ -11889,22 +11919,10 @@ function newaichat(){
 }
 
 function openaichat(){
-	let todowrap = getElement('todowrap')
-
-	if(!calendartabs.includes(4)){
-		let aichatwrap = getElement('aichatwrap')
-		aichatwrap.classList.remove('hiddenpopup')
-
-		aichatwrap.style.height = todowrap.offsetHeight + 'px'
-		aichatwrap.style.width = todowrap.offsetWidth + 'px'
-		aichatwrap.style.top = todowrap.getBoundingClientRect().top + 'px'
-		aichatwrap.style.left = todowrap.getBoundingClientRect().left + 'px'
-	}
-
 	updateaichat()
 
-	if(chathistory.getInteractions() == 0){
-		setTimeout(function(){
+	setTimeout(function(){
+		if(chathistory.getInteractions() == 0){
 			let chatinteraction = new ChatInteraction()
 			let responsechatmessage = new ChatMessage({
 				role: 'assistant',
@@ -11919,7 +11937,12 @@ function openaichat(){
 					.slice(0, num)
 			}
 			
-			const tempoptions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What\'s on my agenda for today?')">What's on my agenda today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Which task should I work on?')">Which task should I work on?</div>`,`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Give me tips on staying focused and calm')">Give me tips on staying focused and calm</div>`,`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan my day for success')">Help me plan my day for success</div>`]
+			const tempoptions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What\'s on my agenda for today?')">What's on my agenda today</div>`,
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, 
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is my most important task?')">What is my most important task?</div>`,
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan my day for success')">Help me plan my day for success</div>`,
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my to do list for today?')">What is on my to do list for today?</div>`,
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me break down my tasks into manageable pieces.')">Help me break down my tasks into manageable pieces.</div>`]
 
 			responsechatmessage.nextactions = getRandomItems(tempoptions, 3)
 	
@@ -11928,8 +11951,8 @@ function openaichat(){
 			chathistory.addInteraction(chatinteraction)
 	
 			updateaichat()
-		}, 1000)
-	}
+		}
+	}, 1000)
 }
 
 function promptaiassistantwithnextaction(prompt){
@@ -12618,7 +12641,7 @@ async function submitaimessage(optionalinput){
 							responsechatmessage.message = `I could not find that task, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
 						}
 					}
-				}else if(output.command == 'schedule_tasks'){
+				}else if(output.command == 'auto_schedule_tasks'){
 					let arguments = output.arguments
 
 					let idList = arguments?.idList || ''
@@ -12630,6 +12653,7 @@ async function submitaimessage(optionalinput){
 						let items = idList && calendar.todos.filter(d => idList.find(g => g == d.id))
 						if(items.length > 0){
 							aichattemporarydata = items
+							
 							responsechatmessage.message = `Just a confirmation: do you want to schedule these tasks?\n${items.map(d => `- ${d.title}`).join('\n')}` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
 							responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('No')">No</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({scheduletodos: aichattemporarydata}))">Yes</div>`]
 						}else{
@@ -12708,15 +12732,6 @@ function scrollaichatY() {
 	}
 	aichatscrollYAnimationFrameId = requestAnimationFrame(animateScroll, increment)
 }
-
-setTimeout(function(){if(clientinfo.betatester == true){
-	function tempfx(event){
-		if(event.key == 'T'){
-			openaichat()
-		}
-	}
-	document.addEventListener("keydown", tempfx, false)
-}},2000)
 
 
 

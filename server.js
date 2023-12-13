@@ -3468,7 +3468,28 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		async function queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset) {
 			const allfunctions = [
 				{
-					name: 'get_events_or_calendar_schedule',
+					name: 'auto_schedule_tasks',
+					description: `Auto-schedule one or multiple tasks in user's calendar. Not to be confused with create a task or create an event.`,
+					parameters: {
+						type: 'object',
+						properties: {
+							idList: {
+								type: 'array',
+								description: 'List of UUIDs of tasks.',
+								items: {
+									type: "string",
+								}
+							},
+							errorMessage: { type: 'string', description: 'An error message if tasks are not found or other error.' },
+						},
+						required: []
+					}
+				},
+				{
+					name: 'get_event',
+				},
+				{
+					name: 'get_calendar_schedule',
 				},
 				{
 					name: 'create_event',
@@ -3512,7 +3533,10 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					}
 				},
 				{
-					name: 'get_tasks_or_todo_list',
+					name: 'get_todo_list',
+				},
+				{
+					name: 'get_task',
 				},
 				{
 					name: 'create_task',
@@ -3556,36 +3580,18 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: []
 					}
-				},
-				{
-					name: 'schedule_tasks',
-					description: `Auto-schedule one or multiple tasks in user's calendar. Ask for confirmation first before triggering this.`,
-					parameters: {
-						type: 'object',
-						properties: {
-							idList: {
-								type: 'array',
-								description: 'List of UUIDs of tasks.',
-								items: {
-									type: "string",
-								}
-							},
-							errorMessage: { type: 'string', description: 'An error message if tasks are not found or other error.' },
-						},
-						required: []
-					}
 				}
 			]
 		
-			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'schedule_tasks'] //a subset of all functions, the functions that invoke custom function
-			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_events_or_calendar_schedule'] //a subset of all functions, the functions that need calendar data
-			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_tasks_or_todo_list', 'schedule_tasks'] //a subset of all functions, the functions that need todo data
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
+			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_schedule', 'get_event'] //a subset of all functions, the functions that need calendar data
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list', 'get_task'] //a subset of all functions, the functions that need todo data
 
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A productivity and scheduling assistant called Athena for Smart Calendar app. Be intuitive and resourceful. Incorporate mental health and motivational tips in responses. Do not mention raw data or UUID. If you need access to calendar or to do list data, return app_command function. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A productivity and scheduling assistant called Athena for Smart Calendar app. Be intuitive and make user experience as easy as possible by making assumptions. Incorporate mental health and motivational tips in responses. Do not mention raw data or UUID. Kindly deny requests that are not for calendar, productivity, or mental health. Current time is ${localdatestring} in user's timezone.`
 
 
 		
@@ -3608,7 +3614,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					functions: [
 						{
 							name: "app_command",
-							description: "Determine if prompt implicitly or explicitly triggers or requires one of the following commands for user's calendar/events or to-do list/tasks.",
+							description: "Evaluates user input to determine if actions related to calendar management, event creation, or to-do list tasks are required. If action is needed, it returns the appropriate command. Analyze the context and specific keywords or phrases in the user's request to make an informed decision",
 							parameters: {
 								type: "object",
 								properties: {
