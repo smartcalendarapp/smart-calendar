@@ -46,13 +46,14 @@ h3{
 	font-size:18.72px;
 }
 blockquote{
-	border-color: var(--text-quaternary);
-	border-left-width: 2px;
+	border-color: var(--text-tertiary);
+	border-left-width: 3px;
 	margin: 0;
 	line-height:1.5rem;
 	padding-bottom: 8px;
 	padding-left: 16px;
 	padding-top: 8px;
+	border-left-style:solid;
 }
 ul{
 	list-style-type:disc;
@@ -68,17 +69,23 @@ ol{
 .codeblock{
 	background-color: var(--black);
 	border-radius:8px;
-	padding:12px;
 	box-sizing:border-box;
 	display:block;
 	width:100%;
 	font-family: monospace;
 	color:var(--white);
+	overflow:hidden;
+}
+.codeblock-header{
+	display:block;
+	padding:6px 12px;
+	background-color:var(--dark-grey);
+	font-size:12px;
 }
 .inlinecode{
 	background-color: var(--black);
 	border-radius:8px;
-	padding:2px 7px;
+	padding:2px 5px;
 	box-sizing:border-box;
 	display:inline-block;
 	font-family: monospace;

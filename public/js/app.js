@@ -2808,28 +2808,7 @@ class Calendar {
 							</svg>
 						</div>
 
-						<div class="popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="deletecompletedtodos()">
-								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-								<g>
-								<path d="M207.414 223.445L207.414 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M71.3433 246L184.657 246" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M207.414 223.445C207.414 235.902 197.226 246 184.657 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M238 57.6433L18 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M48.5864 223.445L48.5864 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M48.5864 223.445C48.5864 235.902 58.775 246 71.3433 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M96.1228 10L159.881 10" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M173.737 23.7283C173.737 16.1464 167.534 10 159.881 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M82.2668 23.7283C82.2668 16.1464 88.4703 10 96.1228 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M82.2668 23.7283L82.2668 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M173.737 23.7283L173.737 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M165.379 101.49L165.379 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
-								<path d="M90.6212 101.49L90.6212 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
-								<path d="M128 101.49L128 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
-								</g>
-								</svg>
-		
-								<span class="tooltiptextleft">Delete completed tasks</span>
-							</div>
+						<div class="text-14px hover:text-red transition-duration-100 text-quaternary pointer-auto transition-duration-100 border-8px pointer" onclick="deletecompletedtodos()">Delete all</div>
 					</div>`)
 				}
 				tempoutput2.push(gettododata(item))
@@ -11900,6 +11879,12 @@ function closeaichat(){
 	let aichatwrap = getElement('aichatwrap')
 	aichatwrap.classList.add('hiddenpopup')
 }
+
+function newaichat(){
+	chathistory = new ChatInterface()
+	openaichat()
+}
+
 function openaichat(){
 	let todowrap = getElement('todowrap')
 
@@ -11923,7 +11908,9 @@ function openaichat(){
 				message: `Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, give you advice on your tasks, and more! Ask me any time.`
 			})
 
-			responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my agenda for today?')">What's on my agenda today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Which task should I work on?')">Which task should I work on?</div>`]
+			const tempoptions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What\'s on my agenda for today?')">What's on my agenda today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Which task should I work on?')">Which task should I work on?</div>`,`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Give me tips on staying focused and calm')">Give me tips on staying focused and calm</div>`,`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('How ')">Give me tips on staying focused and calm</div>`]
+
+			responsechatmessage.nextactions = []
 	
 			chatinteraction.addMessage(responsechatmessage)
 			
@@ -12136,11 +12123,11 @@ function markdowntoHTML(markdown, role) {
     let placeholders = []
 	let placeholders2 = []
     
-    markdown = markdown.replace(/```([\s\S]+?)```/g, function(match) {
-        let placeholder = `CODEBLOCK_${placeholders.length}`
-        placeholders.push(match)
-        return placeholder
-    })
+	markdown = markdown.replace(/```(\w+)?\n?([\s\S]+?)```/g, function(match, lang, code) {
+		let placeholder = `CODEBLOCK_${placeholders.length}`;
+		placeholders.push({ lang, code });
+		return placeholder;
+	});
 
 	markdown = markdown.replace(/`([\s\S]+?)`/g, function(match) {
         let placeholder = `INLINECODE_${placeholders2.length}`
@@ -12152,14 +12139,27 @@ function markdowntoHTML(markdown, role) {
         .replace(/^### (.*$)/gim, '<h3>$1</h3>')
         .replace(/^## (.*$)/gim, '<h2>$1</h2>')
         .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-        .replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>')
+        .replace(/^(\>|&gt;) (.*$)/gim, '<blockquote>$2</blockquote>')
         .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
         .replace(/\*(.*?)\*/gim, '<i>$1</i>')
         .replace(/\[(.*?)\]\((.*?)\)/gim, `<a href='$2' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$1</a>`)
 
-    placeholders.forEach((codeBlock, index) => {
-        markdown = markdown.replace(`CODEBLOCK_${index}`, `${codeBlock}`).replace(/```([\s\S]+?)```/g, '<span class="codeblock">$1</span>')
-    })
+
+	markdown = markdown.replace(/^\d+\.\s+(.+)(\n\d+\.\s+.+)*/gm, (match) => {
+		const listItems = match.split('\n').map(item => `<li>${item.slice(item.indexOf(' ') + 1)}</li>`).join('');
+		return `<ol>${listItems}</ol>`
+	})
+
+	markdown = markdown.replace(/^[-*+]\s+(.+)(\n[-*+]\s+.+)*/gm, (match) => {
+		const listItems = match.split('\n').map(item => `<li>${item.slice(item.indexOf(' ') + 1)}</li>`).join('');
+		return `<ul>${listItems}</ul>`
+	})
+
+
+	placeholders.forEach((placeholder, index) => {
+		let codeWithHeader = placeholder.lang ? `<span class="codeblock"><span class="code-header">${placeholder.lang}</span><span class="display-block padding-12px border-box">${placeholder.code}</span></span>` : `<span class="codeblock"><span class="display-block padding-12px border-box">${placeholder.code}</span></span>`;
+		markdown = markdown.replace(`CODEBLOCK_${index}`, codeWithHeader);
+	})
 
 	placeholders2.forEach((codeBlock, index) => {
         markdown = markdown.replace(`INLINECODE_${index}`, `${codeBlock}`).replace(/`([\s\S]+?)`/g, '<span class="inlinecode">$1</span>')
