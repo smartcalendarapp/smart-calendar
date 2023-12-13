@@ -8014,12 +8014,13 @@ function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], moved
 	autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos, eventsuggestiontodos: eventsuggestiontodos, moveditemtimestamp: moveditemtimestamp, moveditem: moveditem })
 
 	if(openaichatboolean){
-		requestAnimationFrame(function(){
-			let calendarwrap = getElement('calendarwrap')
-	
+		requestAnimationFrame(function(){	
+			let todowrap = getElement('todowrap')
+
 			let aichatwrap = getElement('aichatwrap')
 			aichatwrap.style.left = '12px'
 			aichatwrap.style.top = '72px'
+			aichatwrap.style.width = (todowrap.offsetWidth - 24) + 'px'
 
 			openaichat()
 		})
@@ -11171,12 +11172,13 @@ function gototaskincalendar(id){
 	scrollcalendarY(item.start.minute)
 
 	if(openaichatboolean){
-		requestAnimationFrame(function(){
-			let calendarwrap = getElement('calendarwrap')
-	
+		requestAnimationFrame(function(){	
+			let todowrap = getElement('todowrap')
+
 			let aichatwrap = getElement('aichatwrap')
-			aichatwrap.style.left = calendarwrap.getBoundingClientRect().left
+			aichatwrap.style.left = '12px'
 			aichatwrap.style.top = '72px'
+			aichatwrap.style.width = (todowrap.offsetWidth - 24) + 'px'
 
 			openaichat()
 		})
@@ -11187,6 +11189,11 @@ function gototaskincalendar(id){
 function gototaskintodolist(id){
 	let item = [...calendar.todos, ...calendar.events].find(x => x.id == id)
 	if (!item) return
+
+	let openaichatboolean;
+	if(calendartabs.includes(4)){
+		openaichatboolean = true
+	}
 
 	if(mobilescreen){
 		calendartabs = [1]
@@ -11199,6 +11206,19 @@ function gototaskintodolist(id){
 	}
 
 	scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
+
+	if(openaichatboolean){
+		requestAnimationFrame(function(){
+			let calendarwrap = getElement('calendarwrap')
+	
+			let aichatwrap = getElement('aichatwrap')
+			aichatwrap.style.left = calendarwrap.getBoundingClientRect().left + 'px'
+			aichatwrap.style.top = '72px'
+			aichatwrap.style.width = '500px'
+
+			openaichat()
+		})
+	}
 }
 
 
