@@ -3559,7 +3559,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				},
 				{
 					name: 'schedule_tasks',
-					description: `Schedule a list of tasks in user's calendar. Ask for confirmation first before triggering this.`,
+					description: `Auto-schedule one or multiple tasks in user's calendar. Ask for confirmation first before triggering this.`,
 					parameters: {
 						type: 'object',
 						properties: {
@@ -3585,7 +3585,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A productivity and scheduling assistant called Athena for Smart Calendar app. Intuitive and useful. Incorporate mental health and motivational tips in responses. Do not mention raw data or UUID. If user asks question that may need calendar or to do list data, trigger app_command function. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A productivity and scheduling assistant called Athena for Smart Calendar app. Be intuitive and resourceful. Incorporate mental health and motivational tips in responses. Do not mention raw data or UUID. If you need access to calendar or to do list data, return app_command function. Current time is ${localdatestring} in user's timezone.`
 
 
 		

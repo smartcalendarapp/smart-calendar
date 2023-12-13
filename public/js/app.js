@@ -7975,6 +7975,11 @@ function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], moved
 		calendar.events.push(...addedtodos)
 	}
 
+	if(actualaddedtodoslength.length > 0){
+		if(calendartabs.includes(4)){
+			calendartabs = [0, 1]
+		}
+	}
 
 	if(actualaddedtodoslength > 0){
 		if(mobilescreen){
@@ -12297,6 +12302,7 @@ function updateaichatinput(){
 	}
 }
 
+let aichattemporarydata;
 let isgenerating = false
 async function submitaimessage(optionalinput){
 	if(isgenerating) return
@@ -12364,7 +12370,7 @@ async function submitaimessage(optionalinput){
 			let data = await response.json()
 			let output = data.data
 
-			console.log(output)
+			console.log(data.data?.totaltokens, output)
 
 			if(output.command){
 				if(output.command == 'create_event'){
@@ -12623,10 +12629,11 @@ async function submitaimessage(optionalinput){
 					if(error){
 						responsechatmessage.message = `${error}` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
 					}else{
-						let items = id && calendar.todos.filter(d => idList.find(g => g == d.id))
+						let items = idList && calendar.todos.filter(d => idList.find(g => g == d.id))
 						if(items.length > 0){
+							aichattemporarydata = items
 							responsechatmessage.message = `Just a confirmation: do you want to schedule these tasks?\n${items.map(d => `- ${d.title}`).join('\n')}` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
-							responsechatmessage.nextactions = `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('No')">No</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({scheduletodos: items}))">Yes</div>`
+							responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('No')">No</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({scheduletodos: aichattemporarydata}))">Yes</div>`]
 						}else{
 							responsechatmessage.message = `I could not find that task, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
 						}
