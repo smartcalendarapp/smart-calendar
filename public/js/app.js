@@ -12541,7 +12541,7 @@ async function submitaimessage(optionalinput){
 						endbeforedate = new Date(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute)
 					}
 					if(duration == null){
-						duration = 60
+						duration = 30
 					}
 					if(priority == null){
 						priority = 0

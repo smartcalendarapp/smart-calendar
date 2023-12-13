@@ -107,7 +107,12 @@
 
 	<div class="small:padding-0 small:width-full small:height-full small:top-0 small:left-0 menuwrapoutside hiddenpopup z-index-999 overflow-visible border-box" style="top:72px;bottom:12px;left:12px;width:400px;" id="aichatwrap">
 		<div class="small:border-0 background-primary-transparent height-full flex-1 backdrop-blur border-16px box-shadow display-flex flex-column">
-			<div class="display-flex flex-row padding-12px borderbottom justify-space-between align-center cursormove" mousedown="clickaichatwrap(event)" id="dragaichatwrap">
+			<div class="dragtodoarea relative display-flex flex-row padding-12px borderbottom justify-space-between align-center cursormove" mousedown="clickaichatwrap(event)" id="dragaichatwrap">
+				<div class="dragdots">
+					<div class="dragdot"></div>
+					<div class="dragdot"></div>
+					<div class="dragdot"></div>
+				</div>
 
 				<div class="visibility-hidden display-flex flex-row gap-12px align-center">
 					<div class="infotopright">
@@ -164,7 +169,7 @@
 
 			</div>
 
-			<div class="text-quaternary text-12px text-center margin-bottom-6px">This is a free preview of our AI assistant in development. We appreciate your honest <span class="popupbutton display-inline-block text-blue width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">feedback</span> here</div>
+			<div class="text-quaternary text-12px text-center margin-bottom-6px">This is a free preview of our AI assistant in development. We appreciate your honest <span class="popupbutton display-inline-block text-blue width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">feedback</span> :)</div>
 
 		</div>
 	</div>
@@ -1565,7 +1570,7 @@
 
 	
 	<div class="eventinfowidth eventinfo popup eventinfomaxheight hiddenpopup small:max-height-revert small:width-full small:top-0 small:left-0" id="eventinfo">
-		<div class="infotop justify-space-between cursormove" onmousedown="clickeventinfo(event)" id="drageventinfo">
+		<div class="infotop dragtodoarea justify-space-between cursormove" onmousedown="clickeventinfo(event)" id="drageventinfo">
 			<div></div>
 			
 			<div class="infotoprightgroup">
@@ -1944,7 +1949,7 @@
 
 							</div>
 
-							<div class="text-quaternary text-12px text-center">This is a free preview of our AI assistant in development. We appreciate your honest <span class="popupbutton display-inline-block text-blue width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">feedback</span> here</div>
+							<div class="text-quaternary text-12px text-center">This is a free preview of our AI assistant in development. We appreciate your honest <span class="popupbutton display-inline-block text-blue width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">feedback</span> :)</div>
 						</div>
 
 					</div>

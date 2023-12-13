@@ -3561,6 +3561,28 @@ ol{
 }
 
 
+.dragdots{
+	pointer-events:none;
+	display:flex;
+	flex-direction:row;
+	gap:4px;
+	position:absolute;
+	top:0;
+	left:50%;
+	transform:translateX(-50%);
+	padding:6px;
+	transition-duration:0.1s;
+}
+.dragdot{
+	width:6px;
+	height:6px;
+	background-color:var(--background-tint-2);
+	border-radius:100px;
+}
+.dragtodoarea:hover .dragdot{
+	background-color:var(--background-tint-4) !important;
+}
+
 
 .width60px {
 	width: 60px;
