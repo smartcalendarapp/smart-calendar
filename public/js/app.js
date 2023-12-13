@@ -12604,6 +12604,7 @@ async function submitaimessage(optionalinput){
 					}else{
 						let item = id && calendar.todos.find(d => d.id == id)
 						if(item){
+							let oldtitle = item.title
 							let oldpriority = item.priority
 							let oldcompleted = item.completed
 							let oldduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
@@ -12657,10 +12658,10 @@ async function submitaimessage(optionalinput){
 									tempmsg = `Done! I modified your event "${Calendar.Event.getTitle(item)}" to be on ${Calendar.Event.getFullStartEndText(item)}`
 								}
 							}
-							if(newcompleted != oldcompleted){
-								tempmsg = `Done! I marked your task "${Calendar.Event.getTitle(item)}" as complete. Good job.`
+							if(newcompleted != null && newcompleted != oldcompleted){
+								tempmsg = `Done! I marked your task "${Calendar.Event.getTitle(item)}" as complete. Good job!`
 							}
-							if(priority != oldpriority){
+							if(priority != null && priority != oldpriority){
 								tempmsg = `Done! I set your task "${Calendar.Event.getTitle(item)}" to be ${['low', 'medium', 'high'][item.priority]} priority.`
 							}
 

@@ -3606,6 +3606,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							role: 'system', 
 							content: systeminstructions
 						},
+						...conversationhistory,
 						{
 							role: 'user',
 							content: modifiedinput,
@@ -3676,6 +3677,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								role: 'system', 
 								content: systeminstructions
 							},
+							...conversationhistory,
 							{
 								role: 'user',
 								content: request2input
@@ -3786,8 +3788,6 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		}
 
 		function getconversationhistory(temphistory){ //cheap way for history, just send latest X messages
-			if(temphistory.length == 0) return 'No history'
-
 			let tempoutput = []
 			let counter = 0
 			for(let interactionmessages of temphistory.reverse()){
@@ -3798,7 +3798,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				tempoutput.push(...interactionmessages.reverse())
 				counter++
 			}
-			return tempoutput.reverse().map(d => `${d.role}: ${d.content}`).join('\n')
+			return tempoutput.reverse()
 		}
 
 
