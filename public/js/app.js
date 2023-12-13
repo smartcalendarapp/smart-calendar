@@ -12597,7 +12597,7 @@ async function submitaimessage(optionalinput){
 						calendar.updateTodo()
 
 
-						responsechatmessage.message = `Done! I have added a task "${Calendar.Todo.getTitle(item)}" to your to-do list that is due ${Calendar.Event.getDueText(item)}.` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						responsechatmessage.message = `Done! I have added the task "${Calendar.Todo.getTitle(item)}" to your to-do list that is due ${Calendar.Event.getDueText(item)}.` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
 					}else{
 						responsechatmessage.message = `I don't have enough information to create this task for you, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')

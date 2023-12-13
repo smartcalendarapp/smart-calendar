@@ -3591,7 +3591,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A productivity and scheduling assistant called Athena for Smart Calendar app. Be intuitive and make user experience as easy as possible by making assumptions. Incorporate mental health and motivational tips in responses. Never mention calendar data or UUID. Kindly deny ANY requests that are not for calendar, productivity, or mental health. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A productivity and scheduling assistant called Athena for Smart Calendar app. Intuitive and resourceful. Incorporate mental health and motivational tips in responses. Do not mention calendar data or UUID. Kindly deny ANY requests that are not for calendar, productivity, or mental health. Current time is ${localdatestring} in user's timezone.`
 
 
 		
@@ -3615,7 +3615,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					functions: [
 						{
 							name: "app_command",
-							description: "Evaluate user input to determine if actions related to calendar, events, to-do list, or tasks are present. If data is needed, it returns the appropriate command.",
+							description: "Evaluate user input to determine if actions related to calendar, events, to-do list, or tasks are present, and return appropriate command. If user asks about calendar or events, return 'get_calendar_schedule'. If user asks about to do list or tasks, return 'get_todo_list'",
 							parameters: {
 								type: "object",
 								properties: {
@@ -3659,7 +3659,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		
 							request2input = `Calendar data: """${calendarcontext}""" Prompt: """${userinput}""" `
 						}
-console.warn(request2input)
+
 						if(requirestododata){
 							//yes todo data
 		
@@ -3724,13 +3724,18 @@ console.warn(request2input)
 		let idmapeventcounter = 1
 		let idmaptaskcounter = 1
 		function gettempid(currentid, type){
+			let newid;
 			if(type == 'event'){
-				idmap[`E${idmapeventcounter}`] = currentid
+				newid = `E${idmapeventcounter}`
+				idmap[newid] = currentid
 				idmapeventcounter++
 			}else if(type == 'task'){
-				idmap[`T${idmaptaskcounter}`] = currentid
+				newid = `T${idmaptaskcounter}`
+				idmap[newid] = currentid
 				idmaptaskcounter++
 			}
+
+			return newid
 		}
 
 		function getcalendarcontext(tempevents){
