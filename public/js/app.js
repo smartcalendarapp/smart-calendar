@@ -5658,10 +5658,8 @@ window.addEventListener('mousedown', mousedowndocument, false)
 window.addEventListener('touchstart', mousedowndocument, false)
 function mousedowndocument(event) {
 	let eventinfo = getElement('eventinfo')
-	let eventinfoshown = !eventinfo.classList.contains('hiddenpopup')
 	
 	let scheduleeditorpopup = getElement('scheduleeditorpopup')
-	let editschedulepopupshown = !scheduleeditorpopup.classList.contains('hiddenpopup')
 
 	let popuplist = Array.from(document.getElementsByClassName('popup'))
 	let popupbuttonlist = [...Array.from(document.getElementsByClassName('popupbutton')), ...Array.from(document.getElementsByClassName('inputtimepicker')), ...Array.from(document.getElementsByClassName('inputdatepicker')), ...Array.from(document.getElementsByClassName('inputdurationpicker'))]
@@ -5685,6 +5683,15 @@ function mousedowndocument(event) {
 				popup.classList.add('hiddenpopup')
 			}
 		}
+	}
+
+
+	//minimize ai chat popup
+	let aichatwrap = getElement('aichatwrap')
+	if(!aichatwrap.contains(event.target)){
+		let dragaichatwrap = getElement('dragaichatwrap')
+
+		aichatwrap.style.maxHeight = dragaichatwrap.scrollHeight + 'px'
 	}
 
 	//unselect event
@@ -11918,10 +11925,16 @@ function newaichat(){
 	openaichat()
 }
 
+function refreshaichatpopup(){
+	let aichatwrap = getElement('aichatwrap')
+	aichatwrap.style.maxHeight = '90vh'
+}
+
 function openaichat(){
 	let aichatwrap = getElement('aichatwrap')
 	if(!calendartabs.includes(4)){
 		aichatwrap.classList.remove('hiddenpopup')
+		aichatwrap.style.maxHeight = '90vh'
 	}else{
 		aichatwrap.classList.add('hiddenpopup')
 	}
@@ -12068,7 +12081,7 @@ class ChatMessage {
 				random = Math.random()
 			}
 			let currentword = splitmessage[i]
-			let delay = 20 + random * 30 * (currentword.length/10) + (['.', '!', '?', ','].find(d => currentword.endsWith(d)) ? 50 : 0)
+			let delay = 10 + random * 30 * (currentword.length/10)
 
 			await sleep(delay)
 
@@ -12377,7 +12390,7 @@ async function submitaimessage(optionalinput){
 	let now = new Date()
 	let endrange = new Date(Date.now() + 86400*1000*CALENDAR_CONTEXT_RANGE_DAYS)
 	let calendarevents = sortstartdate(getevents(now, endrange).filter(d => !Calendar.Event.isHidden(d)))
-	let calendartodos = sortduedate(gettodos(now, endrange).filter(d => !d.completed))
+	let calendartodos = sortduedate(gettodos(null, endrange).filter(d => !d.completed))
 	let sendchathistory = chathistory.getInteractions().filter(d => !d.getMessages().find(g => g.message == null)).map(d => d.getMessages().map(f => { return { role: f.role, content: f.message } }))
 
 	try{
@@ -12398,11 +12411,11 @@ async function submitaimessage(optionalinput){
 			let data = await response.json()
 			
 			let output = data.data
-console.log(data.temp)
+
 			let idmap = data.idmap
 			function getrealid(tempid){
 				if(!tempid) return null
-				if(!Object.values(idmap).includes(tempid)){
+				if(!Object.keys(idmap).includes(tempid)){
 					return null
 				}
 				return idmap[tempid]
@@ -12520,7 +12533,7 @@ console.log(data.temp)
 
 
 								let tempmsg;
-								if(newtitle != oldtitle){
+								if(newtitle != null && newtitle != oldtitle){
 									if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
 										tempmsg = `Done! I renamed your event to "${Calendar.Event.getTitle(item)}", and moved it to ${Calendar.Event.getStartText(item)}`
 									}else{
@@ -12660,7 +12673,7 @@ console.log(data.temp)
 
 
 							let tempmsg;
-							if(newtitle != oldtitle){
+							if(newtitle != null && newtitle != oldtitle){
 								if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
 									tempmsg = `Done! I renamed your task to "${Calendar.Event.getTitle(item)}", and set it to be due ${Calendar.Event.getDueText(item)}`
 								}else{

@@ -3658,7 +3658,6 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							//yes calendar data
 		
 							request2input = `Calendar data: """${calendarcontext}""" Prompt: """${userinput}""" `
-							temp = request2input
 						}
 
 						if(requirestododata){
@@ -3720,7 +3719,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 		}
 
-let temp;
+
 		const idmap = {}
 		let idmapeventcounter = 1
 		let idmaptaskcounter = 1
@@ -3839,7 +3838,7 @@ let temp;
 		//REQUEST
 		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset)
 
-		return res.json({ data: output, idmap: idmap, temp:temp })
+		return res.json({ data: output, idmap: idmap })
 	}catch(err){
 		console.error(err)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })

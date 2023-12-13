@@ -92,7 +92,13 @@ ol{
 	color:var(--white);
 }
 
+.aichatwrap{
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, max-height 0.2s;
+}
 
+.hoverbuttonfill:hover svg{
+	fill:var(--blue) !important
+}
 
 .todowidth {
 	width: 100%;
