@@ -3556,12 +3556,30 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: []
 					}
+				},
+				{
+					name: 'schedule_tasks',
+					description: `Schedule a list of tasks in user's calendar. Ask for confirmation first before triggering this.`,
+					parameters: {
+						type: 'object',
+						properties: {
+							idList: {
+								type: 'array',
+								description: 'List of UUIDs of tasks.',
+								items: {
+									type: "string",
+								}
+							},
+							errorMessage: { type: 'string', description: 'An error message if tasks are not found or other error.' },
+						},
+						required: []
+					}
 				}
 			]
 		
-			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'schedule_tasks'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_events_or_calendar_schedule'] //a subset of all functions, the functions that need calendar data
-			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_tasks_or_todo_list'] //a subset of all functions, the functions that need todo data
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_tasks_or_todo_list', 'schedule_tasks'] //a subset of all functions, the functions that need todo data
 
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
@@ -3574,7 +3592,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			let totaltokens = 0
 
 			try {
-				let modifiedinput = `Current prompt: """${userinput}""" Conversation history: """${conversationhistory}"""`
+				let modifiedinput = `Conversation history: """${conversationhistory}""" Current prompt: """${userinput}""" `
 				const response = await openai.chat.completions.create({
 					model: 'gpt-3.5-turbo',
 					messages: [
@@ -3632,13 +3650,13 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						if(requirescalendardata){
 							//yes calendar data
 		
-							request2input = `Current prompt: """${userinput}""" Conversation history: """${conversationhistory}""" Calendar data: """${calendarcontext}"""`
+							request2input = `Conversation history: """${conversationhistory}""" Calendar data: """${calendarcontext}""" Current prompt: """${userinput}""" `
 						}
 
 						if(requirestododata){
 							//yes todo data
 		
-							request2input = `Current prompt: """${userinput}""" Conversation history: """${conversationhistory}""" Todo data: """${todocontext}"""`
+							request2input = `Conversation history: """${conversationhistory}""" Todo data: """${todocontext}""" Current prompt: """${userinput}""" `
 						}
 		
 						if(requirescustomfunction){

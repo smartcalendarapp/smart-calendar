@@ -12035,7 +12035,7 @@ class ChatMessage {
 				random = Math.random()
 			}
 			let currentword = splitmessage[i]
-			let delay = 20 + random * 30 * (currentword.length/10) + (['.', '!', '?', ','].find(d => currentword.endsWith(d)) ? 100 : 0)
+			let delay = 20 + random * 30 * (currentword.length/10) + (['.', '!', '?', ','].find(d => currentword.endsWith(d)) ? 50 : 0)
 
 			await sleep(delay)
 
@@ -12614,7 +12614,25 @@ async function submitaimessage(optionalinput){
 							responsechatmessage.message = `I could not find that task, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
 						}
 					}
-				}else{//here3
+				}else if(output.command == 'schedule_tasks'){
+					let arguments = output.arguments
+
+					let idList = arguments?.idList || ''
+					let error = arguments?.errorMessage || ''
+
+					if(error){
+						responsechatmessage.message = `${error}` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+					}else{
+						let items = id && calendar.todos.filter(d => idList.find(g => g == d.id))
+						if(items.length > 0){
+							responsechatmessage.message = `Just a confirmation: do you want to schedule these tasks?\n${items.map(d => `- ${d.title}`).join('\n')}` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+							responsechatmessage.nextactions = `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('No')">No</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({scheduletodos: items}))">Yes</div>`
+						}else{
+							responsechatmessage.message = `I could not find that task, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						}
+					}
+					
+				}else{
 					responsechatmessage.message = `An unexpected error occured in determining your command. Please try again or contact us.`
 				}
 
