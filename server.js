@@ -3502,9 +3502,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								items: {
 									type: 'object',
 									properties: {
-										startDate: { type: 'string', description: 'Event start date in YYYY-MM-DD, HH:MM' },
+										startDate: { type: 'string', description: 'Event start date in YYYY-MM-DDTHH:MM' },
 										title: { type: 'string', description: 'Event title' },
-										endDate: { type: 'string', descrption: 'Event end date in YYYY-MM-DD, HH:MM' },
+										endDate: { type: 'string', descrption: 'Event end date in YYYY-MM-DDTHH:MM' },
 										duration: { type: 'string', description: 'Event duration in HH:MM' }
 									},
 									required: ['startDate', 'title']
