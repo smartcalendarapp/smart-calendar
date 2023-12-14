@@ -3491,7 +3491,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						required: []
 					}
 				},*/
-				{
+				/*{
 					name: 'create_event',
 					description: 'Create a new event in the calendar',
 					parameters: {
@@ -3503,7 +3503,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: ['title']
 					}
-				},
+				},*/
 				/*{
 					name: 'create_events',
 					description: 'Create new events in the calendar',
@@ -3553,7 +3553,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						required: []
 					}
 				},
-				{
+				/*{
 					name: 'create_task',
 					description: 'Create a new task in the to do list',
 					parameters: {
@@ -3565,7 +3565,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: ['title']
 					}
-				},
+				},*/
 				/*{
 					name: 'create_tasks',
 					description: 'Create new tasks in the to do list',
@@ -3618,7 +3618,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				}*/
 			]
 
-			const customfunctions = ['create_events', 'create_event', 'delete_event', 'modify_event', 'create_tasks','create_task', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = [/*'create_events', 'create_event',*/ 'delete_event', 'modify_event', /*'create_tasks','create_task',*/ 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'auto_schedule_tasks'] //a subset of all functions, the functions that need todo data
 
@@ -3649,8 +3649,34 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					],
 					functions: [
 						{
+							name: 'create_task',
+							description: 'Create a new task in the to do list',
+							parameters: {
+								type: 'object',
+								properties: {
+									dueDate: { type: 'string', description: 'Task due date in YYYY-MM-DD HH:MM' },
+									title: { type: 'string', description: 'Task title' },
+									duration: { type: 'string', description: 'Task duration in HH:MM' },
+								},
+								required: ['title']
+							}
+						},
+						{
+							name: 'create_event',
+							description: 'Create a new event in the calendar',
+							parameters: {
+								type: 'object',
+								properties: {
+									startDate: { type: 'string', description: 'Event start date in YYYY-MM-DD HH:MM' },
+									title: { type: 'string', description: 'Event title' },
+									endDate: { type: 'string', descrption: 'Event end date in YYYY-MM-DD HH:MM' },
+								},
+								required: ['title']
+							}
+						},
+						{
 							name: "app_command",
-							description: "Determine if actions related to calendar, events, to-do list, or tasks are present, and return appropriate command. If you need calendar or event data, return 'get_calendar_events'. If you need to do list or task data, return 'get_todo_list_tasks'",
+							description: "Return command related to calendar, events, to-do list, or tasks. If you need calendar or event data, return 'get_calendar_events'. If you need to do list or task data, return 'get_todo_list_tasks'",
 							parameters: {
 								type: "object",
 								properties: {
@@ -3673,6 +3699,14 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'app_command') {
 					//no function call, return plain response
 					return { message: response.choices[0].message.content, totaltokens: totaltokens }
+				}
+
+				if(['create_task', 'create_event'].includes(response.choices[0].message.function_call?.name)){
+					const arguments = JSON.parse(response.choices[0].message.function_call?.arguments)
+		
+					if(arguments){
+						return { command: response.choices[0].message.function_call?.name, arguments: arguments, totaltokens: totaltokens }
+					}
 				}
 		
 		
