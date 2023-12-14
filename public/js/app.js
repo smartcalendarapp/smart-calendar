@@ -12648,12 +12648,12 @@ async function submitaimessage(optionalinput){
 					}
 				}else if(output.command == 'create_tasks'){
 					let arguments = output.arguments
-					if(arguments.items && typeof arguments.items == 'array'){
+					if(arguments.tasks && Array.isArray(arguments.tasks)){
 						let fails = []
 						let succeeds = []
-						for(let tempitem of arguments.items){
+						for(let tempitem of arguments.tasks){
 							let title = tempitem?.title
-							let endbeforeminute = getMinute(tempitem?.dueDate).value
+							let endbeforeminute = getMinute(tempitem?.dueDate).value || 0
 							let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(tempitem?.dueDate).value
 							let duration = getDuration(tempitem?.duration).value
 							let priority = getPriority(tempitem?.priority, true).value
@@ -12678,7 +12678,7 @@ async function submitaimessage(optionalinput){
 
 								succeeds.push(item)
 							}else{
-								errors.push(title)
+								fails.push(title)
 							}
 						}
 
