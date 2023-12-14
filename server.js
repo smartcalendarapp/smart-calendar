@@ -3618,7 +3618,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					functions: [
 						{
 							name: "app_command",
-							description: "Determine if actions related to calendar, events, to-do list, or tasks are present, and return appropriate command. If user mentions 'calendar' or 'events', return 'get_calendar_events'. If user mentions 'to do list' or 'tasks', return 'get_todo_list_tasks'",
+							description: "Determine if actions related to calendar, events, to-do list, or tasks are present, and return appropriate command. If you need calendar or event data, return 'get_calendar_events'. If you need to do list or task data, return 'get_todo_list_tasks'",
 							parameters: {
 								type: "object",
 								properties: {
@@ -3637,8 +3637,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					max_tokens: 200
 				})
 				totaltokens += response.usage.total_tokens
-				
-				console.warn(response.choices[0].message)
+
 				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'app_command') {
 					//no function call, return plain response
 					return { message: response.choices[0].message.content, totaltokens: totaltokens }
@@ -3688,11 +3687,11 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							}
 						]
 						
-		
+		console.warn(request2options)
 						//make request
 						const response2 = await openai.chat.completions.create(request2options)
 						totaltokens += response2.usage.total_tokens
-		
+		console.warn(response2)
 						
 						if (response2.choices[0].finish_reason !== 'function_call') { //return plain response if no function detected
 							return { message: response2.choices[0].message.content, totaltokens: totaltokens }
