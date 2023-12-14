@@ -12028,7 +12028,7 @@ function openaichat(){
 			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Which task should I work on?')">Which task should I work on?</div>`,
 			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan my day for success')">Help me plan my day for success</div>`,
 			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my to do list for today?')">What's on my to do list for today?</div>`,
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me break down my tasks into manageable pieces')">Help me break down my tasks into manageable pieces</div>`]
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Break down my tasks into manageable pieces')">Break down my to-do list tasks into manageable pieces</div>`]
 
 			responsechatmessage.nextactions = getRandomItems(tempoptions, 3)
 	
@@ -12487,7 +12487,7 @@ async function submitaimessage(optionalinput){
 				return idmap[tempid]
 			}
 
-			//logging
+
 			if(clientinfo.betatester){
 				console.log(data.data?.totaltokens, output, idmap)
 			}
@@ -12648,9 +12648,8 @@ async function submitaimessage(optionalinput){
 					}
 				}else if(output.command == 'create_tasks'){
 					let arguments = output.arguments
-					if(arguments.tasks && Array.isArray(arguments.tasks)){
-						let fails = []
-						let succeeds = []
+					if(arguments.tasks && Array.isArray(arguments.tasks) && arguments.tasks.length > 0){
+						let tempoutput = []
 						for(let tempitem of arguments.tasks){
 							let title = tempitem?.title
 							let endbeforeminute = getMinute(tempitem?.dueDate).value || 0
@@ -12676,33 +12675,19 @@ async function submitaimessage(optionalinput){
 								item.duration = duration
 								calendar.todos.push(item)
 
-								succeeds.push(item)
+								tempoutput.push(`Done! I added the task "${Calendar.Todo.getTitle(item)}" to your to-do list, due ${Calendar.Event.getDueText(item)}`)
+								if(tempoutput.length == 1){
+									responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
+								}
 							}else{
-								fails.push(title)
+								tempoutput.push(`I don't have enough information to create the task "${title}" for you, could you please tell me more?`)
 							}
 						}
 
 
-						let tempmsg = ''
-						if(succeeds.length > 0){
-							if(succeeds.length == 1){
-								tempmsg += `Done! I added the task "${Calendar.Todo.getTitle(succeeds[0])}" to your to-do list, due ${Calendar.Event.getDueText(succeeds[0])}`
-							}else{
-								tempmsg += `Done! I added ${succeeds.length} tasks to your to-do list:\n${succeeds.map(d => `- ${Calendar.Todo.getTitle(d)}, due ${Calendar.Event.getDueText(d)}`).join('\n')}`
-							}
-						}
-						if(fails.length > 0){
-							if(fails.length == 1){
-								tempmsg += `${succeeds.length > 0 ? `However, ` : ''}I was unable to create the task "${fails[0]}" for you. I don't have enough information, could you please tell me more?`
-							}else{
-								tempmsg += `${succeeds.length > 0 ? `However, ` : ''}I was unable to create ${fails.length} tasks for you:\n${fails.map(d => `- ${d}`).join('\n')}\nI don't have enough information, could you please tell me more?`
-							}
-						}
+						//here2
 
-						responsechatmessage.message = tempmsg + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
-						if(succeeds.length > 0){
-							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${succeeds[0].id}')">Show me</div>`]
-						}
+						responsechatmessage.message = tempoutput.join('\n') + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
 
 						calendar.updateTodo()
 					}else{
@@ -12840,6 +12825,8 @@ async function submitaimessage(optionalinput){
 
 			}else if(output.error){
 				responsechatmessage.message = `${output.error}` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+			}else if(!data.data?.message){
+				responsechatmessage.message = `I could not generate a response, please try again.` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
 			}else{
 				responsechatmessage.message = `${data.data?.message}` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
 			}
