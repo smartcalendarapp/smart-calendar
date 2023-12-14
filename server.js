@@ -3491,7 +3491,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						required: []
 					}
 				},
-				{
+				/*{
 					name: 'create_events',
 					description: 'Create new events in the calendar',
 					parameters: {
@@ -3502,9 +3502,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								items: {
 									type: 'object',
 									properties: {
-										startDate: { type: 'string', description: 'Event start date in YYYY-MM-DDTHH:MM' },
+										startDate: { type: 'string', description: 'Event start date in YYYY-MM-DD HH:MM' },
 										title: { type: 'string', description: 'Event title' },
-										endDate: { type: 'string', descrption: 'Event end date in YYYY-MM-DDTHH:MM' },
+										endDate: { type: 'string', descrption: 'Event end date in YYYY-MM-DD HH:MM' },
 										duration: { type: 'string', description: 'Event duration in HH:MM' }
 									},
 									required: ['startDate', 'title']
@@ -3513,7 +3513,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: ["events"]
 					}
-				},
+				},*/
 				{
 					name: 'delete_event',
 					description: 'Check for event to delete by title or direct reference. Need high confidence. Returns an error if the event does not exist.',
@@ -3541,7 +3541,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						required: []
 					}
 				},
-				{
+				/*{
 					name: 'create_tasks',
 					description: 'Create new tasks in the to do list',
 					parameters: {
@@ -3563,7 +3563,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: ["tasks"]
 					}
-				},
+				},*/
 				{
 					name: 'delete_tasks',
 					description: 'Check for task to delete by title or direct reference. Need high confidence. Returns an error if the task does not exist.',
@@ -3595,7 +3595,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				}
 			]
 
-			const customfunctions = ['create_events', 'delete_event', 'modify_event', 'create_tasks', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_events', 'create_event', 'delete_event', 'modify_event', 'create_tasks','create_task', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
 

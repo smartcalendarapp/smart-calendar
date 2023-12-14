@@ -12495,7 +12495,48 @@ async function submitaimessage(optionalinput){
 
 			//process
 			if(output.command){
-				if(output.command == 'create_events'){
+				if(output.command == 'create_event'){
+					let arguments = output.arguments
+
+					let title = arguments?.title || ''
+					let startminute = getMinute(arguments?.startDate).value
+					let [startyear, startmonth, startday] = getDate(arguments?.startDate).value
+					let endminute = getMinute(arguments?.endDate)
+					let [endyear, endmonth, endday] = getDate(arguments?.endDate).value
+					let duration = getDuration(arguments?.duration).value
+
+					let startdate, enddate;
+					if(startminute != null && startyear != null && startmonth != null && startday != null){
+						startdate = new Date(startyear, startmonth, startday, 0, startminute)
+					}
+					if(endminute != null && endyear != null && endmonth != null && endday != null){
+						enddate = new Date(endyear, endmonth, endday, 0, endminute)
+					}
+					if(duration != null){
+						enddate = new Date(startdate)
+						enddate.setMinutes(enddate.getMinutes() + duration)
+					}
+					if(!enddate || isNaN(enddate.getTime())){
+						enddate = new Date(startdate)
+						enddate.setMinutes(enddate.getMinutes() + 60)
+					}
+
+
+					if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
+						let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title)
+						calendar.events.push(item)
+
+						selectedeventid = null
+						calendar.updateInfo()
+						calendar.updateEvents()
+
+
+						responsechatmessage.message = `Done! I have created an event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
+					}else{
+						responsechatmessage.message = `I don't have enough information to create this event for you, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+					}
+				}else if(output.command == 'create_events'){
 					let arguments = output.arguments
 					if(arguments.events && Array.isArray(arguments.events) && arguments.events.length > 0){
 
@@ -12503,8 +12544,8 @@ async function submitaimessage(optionalinput){
 						let firstitem;
 
 						for(let tempitem of arguments.events){
-							if(tempitem.startDate) tempitem.startDate = tempitem.startDate.replace('T', '')
-							if(tempitem.endDate) tempitem.endDate = tempitem.endDate.replace('T', '')
+							if(tempitem.startDate) tempitem.startDate = tempitem.startDate.replace('T', ' ')
+							if(tempitem.endDate) tempitem.endDate = tempitem.endDate.replace('T', ' ')
 
 							let title = tempitem?.title
 							let startminute = getMinute(tempitem?.startDate).value
@@ -12521,7 +12562,7 @@ async function submitaimessage(optionalinput){
 								enddate = new Date(endyear, endmonth, endday, 0, endminute)
 							}
 							if(duration != null){
-								enddate = new Date(startdate)
+								enddate = new Date(startdate.getTime())
 								enddate.setMinutes(enddate.getMinutes() + duration)
 							}
 							if(!enddate || isNaN(enddate.getTime())){
@@ -12673,6 +12714,41 @@ async function submitaimessage(optionalinput){
 							responsechatmessage.message = `I could not find that event, could you please tell me more?`
 						}
 					}
+				}else if(output.command == 'create_task'){
+					let arguments = output.arguments
+
+					let title = arguments?.title || ''
+					let endbeforeminute = getMinute(arguments?.dueDate).value
+					let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(arguments?.dueDate).value
+					let duration = getDuration(arguments?.duration).value
+					let priority = getPriority(arguments?.priority, true).value
+
+					let endbeforedate;
+					if(endbeforeminute != null && endbeforeyear != null && endbeforemonth != null && endbeforeday != null){
+						endbeforedate = new Date(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute)
+					}
+					if(duration == null){
+						duration = 30
+					}
+					if(priority == null){
+						priority = 0
+					}
+
+
+					if(endbeforedate && !isNaN(endbeforedate.getTime())){
+						let item = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), duration, title)
+						item.priority = priority
+						item.duration = duration
+						calendar.todos.push(item)
+
+						calendar.updateTodo()
+
+
+						responsechatmessage.message = `Done! I have added a task "${Calendar.Todo.getTitle(item)}" to your to-do list that is due ${Calendar.Event.getDueText(item)}.` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
+					}else{
+						responsechatmessage.message = `I don't have enough information to create this task for you, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+					}
 				}else if(output.command == 'create_tasks'){
 					let arguments = output.arguments
 					if(arguments.tasks && Array.isArray(arguments.tasks) && arguments.tasks.length > 0){
@@ -12681,7 +12757,7 @@ async function submitaimessage(optionalinput){
 						let firstitem;
 
 						for(let tempitem of arguments.tasks){
-							if(tempitem.dueDate) tempitem.dueDate = tempitem.dueDate.replace('T', '')
+							if(tempitem.dueDate) tempitem.dueDate = tempitem.dueDate.replace('T', ' ')
 
 							let title = tempitem?.title
 							let endbeforeminute = getMinute(tempitem?.dueDate).value || 0
