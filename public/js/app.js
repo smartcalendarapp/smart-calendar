@@ -12717,17 +12717,22 @@ async function submitaimessage(optionalinput){
 						duration = 30
 					}
 
+					if(!endbeforedate || isNaN(endbeforedate.getTime())){
+						endbeforedate = new Date()
+						endbeforedate.setHours(0,1440-1,0,0)
+					}
+
 
 					if(endbeforedate && !isNaN(endbeforedate.getTime())){
 						let item = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), duration, title)
 						item.duration = duration
 						calendar.todos.push(item)
 
-						calendar.updateTodo()
+						startAutoSchedule({eventsuggestiontodos: [item]})
 
 
-						responsechatmessage.message = `Done! I have added a task "${Calendar.Todo.getTitle(item)}" to your to-do list that is due ${Calendar.Event.getDueText(item)}.` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
-						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
+						responsechatmessage.message = `Done! I added your task "${Calendar.Todo.getTitle(item)}" to your calendar that is due ${Calendar.Event.getDueText(item)}.` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						//responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
 					}else{
 						responsechatmessage.message = `I don't have enough information to create this task for you, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
 					}

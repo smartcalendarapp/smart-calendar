@@ -3553,7 +3553,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						required: []
 					}
 				},
-				/*{
+				{
 					name: 'create_task',
 					description: 'Create a new task in the to do list',
 					parameters: {
@@ -3563,9 +3563,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							title: { type: 'string', description: 'Task title' },
 							duration: { type: 'string', description: 'Task duration in HH:MM' },
 						},
-						required: ['dueDate', 'title']
+						required: ['title']
 					}
-				},*/
+				},
 				/*{
 					name: 'create_tasks',
 					description: 'Create new tasks in the to do list',
@@ -3650,7 +3650,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					functions: [
 						{
 							name: "app_command",
-							description: "Determine if user wants to interact with calendar. If user mentions 'I need to do [something]', trigger the command to create an event. If you need calendar data to fulfill the prompt, return 'get_calendar_events'"/*"Determine if actions related to calendar, events, to-do list, or tasks are present, and return appropriate command. If you need calendar or event data, return 'get_calendar_events'. If you need to do list or task data, return 'get_todo_list_tasks'"*/,
+							description: "Determine if actions related to calendar, events, to-do list, or tasks are present, and return appropriate command. If you need calendar or event data, return 'get_calendar_events'. If you need to do list or task data, return 'get_todo_list_tasks'",
 							parameters: {
 								type: "object",
 								properties: {
