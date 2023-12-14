@@ -12495,46 +12495,73 @@ async function submitaimessage(optionalinput){
 
 			//process
 			if(output.command){
-				if(output.command == 'create_event'){
+				if(output.command == 'create_events'){
 					let arguments = output.arguments
+					if(arguments.events && Array.isArray(arguments.events) && arguments.events.length > 0){
 
-					let title = arguments?.title
-					let startminute = getMinute(arguments?.startDate).value
-					let [startyear, startmonth, startday] = getDate(arguments?.startDate).value
-					let endminute = getMinute(arguments?.endDate)
-					let [endyear, endmonth, endday] = getDate(arguments?.endDate).value
-					let duration = getDuration(arguments?.duration).value
+						let tempoutput = []
+						let firstitem;
 
-					let startdate, enddate;
-					if(startminute != null && startyear != null && startmonth != null && startday != null){
-						startdate = new Date(startyear, startmonth, startday, 0, startminute)
-					}
-					if(endminute != null && endyear != null && endmonth != null && endday != null){
-						enddate = new Date(endyear, endmonth, endday, 0, endminute)
-					}
-					if(duration != null){
-						enddate = new Date(startdate)
-						enddate.setMinutes(enddate.getMinutes() + duration)
-					}
-					if(!enddate || isNaN(enddate.getTime())){
-						enddate = new Date(startdate)
-						enddate.setMinutes(enddate.getMinutes() + 60)
-					}
+						for(let tempitem of arguments.events){
+							if(tempitem.startDate) tempitem.startDate = tempitem.startDate.replace('T', '')
+							if(tempitem.endDate) tempitem.endDate = tempitem.endDate.replace('T', '')
+
+							let title = tempitem?.title
+							let startminute = getMinute(tempitem?.startDate).value
+							let [startyear, startmonth, startday] = getDate(tempitem?.startDate).value
+							let endminute = getMinute(tempitem?.endDate)
+							let [endyear, endmonth, endday] = getDate(tempitem?.endDate).value
+							let duration = getDuration(tempitem?.duration).value
+
+							let startdate, enddate;
+							if(startminute != null && startyear != null && startmonth != null && startday != null){
+								startdate = new Date(startyear, startmonth, startday, 0, startminute)
+							}
+							if(endminute != null && endyear != null && endmonth != null && endday != null){
+								enddate = new Date(endyear, endmonth, endday, 0, endminute)
+							}
+							if(duration != null){
+								enddate = new Date(startdate)
+								enddate.setMinutes(enddate.getMinutes() + duration)
+							}
+							if(!enddate || isNaN(enddate.getTime())){
+								enddate = new Date(startdate)
+								enddate.setMinutes(enddate.getMinutes() + 60)
+							}
 
 
-					if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
-						let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title)
-						calendar.events.push(item)
+							if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
+								let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title)
+								calendar.events.push(item)
+
+								selectedeventid = null
+								calendar.updateInfo()
+								calendar.updateEvents()
+
+
+								tempoutput.push(`Done! I created the event "${Calendar.Todo.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`)
+
+								if(!firstitem){
+									firstitem = item
+								}
+
+							}else{
+								tempoutput.push(`I don't have enough information to add the event "${title}", please try again.`)
+
+							}
+						}
+
+
+						responsechatmessage.message = tempoutput.join('\n')
+						if(firstitem){
+							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${firstitem.id}')">Show me</div>`]
+						}
 
 						selectedeventid = null
 						calendar.updateInfo()
 						calendar.updateEvents()
-
-
-						responsechatmessage.message = `Done! I have created an event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
-						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
-						responsechatmessage.message = `I don't have enough information to create this event for you, could you please tell me more?`
+						responsechatmessage.message = `I could not create an event for you, please try again.`
 					}
 
 				}else if(output.command == 'modify_event'){
@@ -12649,10 +12676,13 @@ async function submitaimessage(optionalinput){
 				}else if(output.command == 'create_tasks'){
 					let arguments = output.arguments
 					if(arguments.tasks && Array.isArray(arguments.tasks) && arguments.tasks.length > 0){
+
 						let tempoutput = []
-						let fails = 0
-						let succeeds = 0
+						let firstitem;
+
 						for(let tempitem of arguments.tasks){
+							if(tempitem.dueDate) tempitem.dueDate = tempitem.dueDate.replace('T', '')
+
 							let title = tempitem?.title
 							let endbeforeminute = getMinute(tempitem?.dueDate).value || 0
 							let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(tempitem?.dueDate).value
@@ -12677,32 +12707,23 @@ async function submitaimessage(optionalinput){
 								item.duration = duration
 								calendar.todos.push(item)
 
-								tempoutput.push(`<div class="overflow-hidden display-flex width-fit flex-row justify-space-between gap-12px background-tint-1 border-8px align-center padding-8px-12px">
-									<div class="display-flex flex-column gap-6px">
-										<div class="text-bold text-primary text-14px">Task created: ${Calendar.Todo.getTitle(item)}</div>
-										<div class="text-14px text-primary">Due ${Calendar.Event.getDueText(item)}.</div>
-									</div>
-									<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer nowrap text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>
-								</div>`)
+								tempoutput.push(`Done! I added the task "${Calendar.Todo.getTitle(item)}" to your to-do list, due ${Calendar.Event.getDueText(item)}.`)
 
-								succeeds++
+								if(!firstitem){
+									firstitem = item
+								}
+
 							}else{
-								tempoutput.push(`<div class="overflow-hidden display-flex width-fit flex-row justify-space-between gap-12px background-tint-1 border-8px align-center padding-8px-12px">
-									<div class="display-flex flex-column gap-6px">
-										<div class="text-bold text-primary text-14px">Could not create task: ${title}</div>
-										<div class="text-14px text-primary">I don't have enough information to create this task, please try again.</div>
-									</div>
-								</div>`)
+								tempoutput.push(`I don't have enough information to add the task "${title}", please try again.`)
 
-								fails++
 							}
 						}
 
 
-						//here2
-
-						responsechatmessage.actions = tempoutput
-						responsechatmessage.message = ' '//`${succeeds > 0 ? `Done! I added ${succeeds} tasks to your to-do list.${fails > 0 ? ` However,` : ''}` : ''}${fails > 0 ? ` I did not have enough information to create ${fails} of the tasks, please try those again.` : ''}`
+						responsechatmessage.message = tempoutput.join('\n')
+						if(firstitem){
+							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`]
+						}
 
 						calendar.updateTodo()
 					}else{

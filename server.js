@@ -3492,17 +3492,26 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					}
 				},
 				{
-					name: 'create_event',
-					description: 'Create a new event in the calendar',
+					name: 'create_events',
+					description: 'Create new events in the calendar',
 					parameters: {
-						type: 'object',
+						type: "object",
 						properties: {
-							startDate: { type: 'string', description: 'Event start date in YYYY-MM-DD HH:MM' },
-							title: { type: 'string', description: 'Event title' },
-							endDate: { type: 'string', descrption: 'Event end date in YYYY-MM-DD HH:MM' },
-							duration: { type: 'string', description: 'Event duration in HH:MM' }
+							events: {
+								type: "array",
+								items: {
+									type: 'object',
+									properties: {
+										startDate: { type: 'string', description: 'Event start date in YYYY-MM-DD HH:MM' },
+										title: { type: 'string', description: 'Event title' },
+										endDate: { type: 'string', descrption: 'Event end date in YYYY-MM-DD HH:MM' },
+										duration: { type: 'string', description: 'Event duration in HH:MM' }
+									},
+									required: ['startDate', 'title']
+								}
+							},
 						},
-						required: ['startDate', 'title']
+						required: ["events"]
 					}
 				},
 				{
@@ -3543,7 +3552,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								items: {
 									type: 'object',
 									properties: {
-										dueDate: { type: 'string', description: 'Task due date in format YYYY-MM-DD HH:MM' },
+										dueDate: { type: 'string', description: 'Task due date in YYYY-MM-DD HH:MM' },
 										title: { type: 'string', description: 'Task title' },
 										duration: { type: 'string', description: 'Task duration in HH:MM' },
 										priority: { type: 'string', description: 'Task priority in high/medium/low' }
@@ -3586,7 +3595,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				}
 			]
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_tasks', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_events', 'delete_event', 'modify_event', 'create_tasks', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
 
@@ -3653,7 +3662,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		
 						let request2options = {
 							model: 'gpt-3.5-turbo',
-							max_tokens: 200,
+							max_tokens: 400,
 						}
 						let request2input = `"""${userinput}"""`
 						
@@ -3687,11 +3696,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							}
 						]
 						
-		console.warn(request2options)
 						//make request
 						const response2 = await openai.chat.completions.create(request2options)
 						totaltokens += response2.usage.total_tokens
-		console.warn(response2.choices[0].message)
 						
 						if (response2.choices[0].finish_reason !== 'function_call') { //return plain response if no function detected
 							return { message: response2.choices[0].message.content, totaltokens: totaltokens }
