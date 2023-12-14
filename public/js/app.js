@@ -12526,10 +12526,10 @@ async function submitaimessage(optionalinput){
 						calendar.updateEvents()
 
 
-						responsechatmessage.message = `Done! I have created an event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						responsechatmessage.message = `Done! I have created an event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
-						responsechatmessage.message = `I don't have enough information to create this event for you, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						responsechatmessage.message = `I don't have enough information to create this event for you, could you please tell me more?`
 					}
 				}else if(output.command == 'create_events'){
 					let arguments = output.arguments
@@ -12731,10 +12731,10 @@ async function submitaimessage(optionalinput){
 						startAutoSchedule({eventsuggestiontodos: [item]})
 
 
-						responsechatmessage.message = `Done! I added your task "${Calendar.Todo.getTitle(item)}" to your calendar, due ${Calendar.Event.getDueText(item)}.` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
-						//responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
+						responsechatmessage.message = `Done! I added your task "${Calendar.Todo.getTitle(item)}" to your calendar, due ${Calendar.Event.getDueText(item)}.`
+						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
-						responsechatmessage.message = `I don't have enough information to create this task for you, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						responsechatmessage.message = `I don't have enough information to create this task for you, could you please tell me more?`
 					}
 				}else if(output.command == 'create_tasks'){
 					let arguments = output.arguments

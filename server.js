@@ -3633,7 +3633,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			let totaltokens = 0
 
 			try {
-				let modifiedinput = `Prompt: """${userinput}"""`
+				let modifiedinput = `Calendar data: """${calendarcontext}""" Prompt: """${userinput}"""`
 				const response = await openai.chat.completions.create({
 					model: 'gpt-3.5-turbo',
 					messages: [
@@ -3675,6 +3675,33 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							}
 						},
 						{
+							name: 'modify_event',
+							description: 'Check for event to modify by title or direct reference. Need high confidence. Returns an error if the event does not exist.',
+							parameters: {
+								type: 'object',
+								properties: {
+									id: { type: 'string', description: 'Specific UUID of event.' },
+									newTitle: { type: 'string', description: 'New event title' },
+									newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
+									newEndDate: { type: 'string', description: 'New event end date in YYYY-MM-DD HH:MM' },
+									errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
+								},
+								required: []
+							}
+						},
+						{
+							name: 'delete_event',
+							description: 'Check for event to delete by title or direct reference. Need high confidence. Returns an error if the event does not exist.',
+							parameters: {
+								type: 'object',
+								properties: {
+									id: { type: 'string', description: 'Specific UUID of event.' },
+									errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
+								},
+								required: []
+							}
+						},
+						/*{
 							name: "app_command",
 							description: "Return command related to calendar, events, to-do list, or tasks. If you need calendar or event data, return 'get_calendar_events'. If you need to do list or task data, return 'get_todo_list_tasks'",
 							parameters: {
@@ -3690,7 +3717,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								},
 								required: ["commands"]
 							}
-						},
+						},*/
 					],
 					max_tokens: 200
 				})
@@ -3702,6 +3729,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				}
 
 				if(response.choices[0].finish_reason == 'function_call' && ['create_task', 'create_event'].includes(response.choices[0].message.function_call?.name)){
+					//call create task or event
 					const arguments = JSON.parse(response.choices[0].message.function_call?.arguments)
 		
 					if(arguments){
