@@ -12498,7 +12498,7 @@ async function submitaimessage(optionalinput){
 				if(output.command == 'create_event'){
 					let arguments = output.arguments
 
-					let title = arguments?.title || ''
+					let title = arguments?.title
 					let startminute = getMinute(arguments?.startDate).value
 					let [startyear, startmonth, startday] = getDate(arguments?.startDate).value
 					let endminute = getMinute(arguments?.endDate)
@@ -12648,40 +12648,67 @@ async function submitaimessage(optionalinput){
 					}
 				}else if(output.command == 'create_tasks'){
 					let arguments = output.arguments
-					console.log(arguments);return
+					if(arguments.items && typeof arguments.items == 'array'){
+						let fails = []
+						let succeeds = []
+						for(let tempitem of arguments.items){
+							let title = tempitem?.title
+							let endbeforeminute = getMinute(tempitem?.dueDate).value
+							let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(tempitem?.dueDate).value
+							let duration = getDuration(tempitem?.duration).value
+							let priority = getPriority(tempitem?.priority, true).value
+		
+							let endbeforedate;
+							if(endbeforeminute != null && endbeforeyear != null && endbeforemonth != null && endbeforeday != null){
+								endbeforedate = new Date(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute)
+							}
+							if(duration == null){
+								duration = 30
+							}
+							if(priority == null){
+								priority = 0
+							}
+		
+		
+							if(endbeforedate && !isNaN(endbeforedate.getTime())){
+								let item = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), duration, title)
+								item.priority = priority
+								item.duration = duration
+								calendar.todos.push(item)
 
-					let title = arguments?.title || ''
-					let endbeforeminute = getMinute(arguments?.dueDate).value
-					let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(arguments?.dueDate).value
-					let duration = getDuration(arguments?.duration).value
-					let priority = getPriority(arguments?.priority, true).value
-
-					let endbeforedate;
-					if(endbeforeminute != null && endbeforeyear != null && endbeforemonth != null && endbeforeday != null){
-						endbeforedate = new Date(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute)
-					}
-					if(duration == null){
-						duration = 30
-					}
-					if(priority == null){
-						priority = 0
-					}
+								succeeds.push(item)
+							}else{
+								errors.push(title)
+							}
+						}
 
 
-					if(endbeforedate && !isNaN(endbeforedate.getTime())){
-						let item = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), duration, title)
-						item.priority = priority
-						item.duration = duration
-						calendar.todos.push(item)
+						let tempmsg = ''
+						if(succeeds.length > 0){
+							if(succeeds.length == 1){
+								tempmsg += `Done! I added the task "${Calendar.Todo.getTitle(succeeds[0])}" to your to-do list, due ${Calendar.Event.getDueText(succeeds[0])}`
+							}else{
+								tempmsg += `Done! I added ${succeeds.length} tasks to your to-do list:\n${succeeds.map(d => `- ${Calendar.Todo.getTitle(d)}, due ${Calendar.Event.getDueText(d)}`).join('\n')}`
+							}
+						}
+						if(fails.length > 0){
+							if(fails.length == 1){
+								tempmsg += `${succeeds.length > 0 ? `However, ` : ''}I was unable to create the task "${fails[0]}" for you. I don't have enough information, could you please tell me more?`
+							}else{
+								tempmsg += `${succeeds.length > 0 ? `However, ` : ''}I was unable to create ${fails.length} tasks for you:\n${fails.map(d => `- ${d}`).join('\n')}\nI don't have enough information, could you please tell me more?`
+							}
+						}
+
+						responsechatmessage.message = tempmsg + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						if(succeeds.length > 0){
+							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${succeeds[0].id}')">Show me</div>`]
+						}
 
 						calendar.updateTodo()
-
-
-						responsechatmessage.message = `Done! I have added the task "${Calendar.Todo.getTitle(item)}" to your to-do list that is due ${Calendar.Event.getDueText(item)}.` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
-						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
 					}else{
-						responsechatmessage.message = `I don't have enough information to create this task for you, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						responsechatmessage.message = `I could not create a task for you, please try again.` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
 					}
+
 
 				}else if(output.command == 'modify_task'){
 					let arguments = output.arguments

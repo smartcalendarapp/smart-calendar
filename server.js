@@ -3536,18 +3536,24 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					name: 'create_tasks',
 					description: 'Create new tasks in the to do list',
 					parameters: {
-						type: 'array',
-						items: {
-						  type: 'object',
-						  properties: {
-							dueDate: { type: 'string', description: 'Task due date in YYYY-MM-DD HH:MM' },
-							title: { type: 'string', description: 'Task title' },
-							duration: { type: 'string', description: 'Task duration in HH:MM' },
-							priority: { type: 'string', description: 'Task priority in high/medium/low' }
-						  },
-						  required: ['dueDate', 'title']
-						}
-					  }
+						type: "object",
+						properties: {
+							items: {
+								type: "array",
+								items: {
+									type: 'object',
+									properties: {
+										dueDate: { type: 'string', description: 'Task due date in YYYY-MM-DD HH:MM' },
+										title: { type: 'string', description: 'Task title' },
+										duration: { type: 'string', description: 'Task duration in HH:MM' },
+										priority: { type: 'string', description: 'Task priority in high/medium/low' }
+									},
+									required: ['dueDate', 'title']
+								}
+							},
+						},
+						required: ["tasks"]
+					}
 				},
 				{
 					name: 'delete_task',
