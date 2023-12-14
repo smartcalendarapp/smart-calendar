@@ -3491,6 +3491,19 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						required: []
 					}
 				},
+				{
+					name: 'create_event',
+					description: 'Create a new event in the calendar',
+					parameters: {
+						type: 'object',
+						properties: {
+							startDate: { type: 'string', description: 'Event start date in YYYY-MM-DD HH:MM' },
+							title: { type: 'string', description: 'Event title' },
+							endDate: { type: 'string', descrption: 'Event end date in YYYY-MM-DD HH:MM' },
+						},
+						required: ['startDate', 'title']
+					}
+				},
 				/*{
 					name: 'create_events',
 					description: 'Create new events in the calendar',
@@ -3505,7 +3518,6 @@ app.post('/getgptchatinteraction', async (req, res) => {
 										startDate: { type: 'string', description: 'Event start date in YYYY-MM-DD HH:MM' },
 										title: { type: 'string', description: 'Event title' },
 										endDate: { type: 'string', descrption: 'Event end date in YYYY-MM-DD HH:MM' },
-										duration: { type: 'string', description: 'Event duration in HH:MM' }
 									},
 									required: ['startDate', 'title']
 								}
@@ -3541,6 +3553,19 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						required: []
 					}
 				},
+				{
+					name: 'create_task',
+					description: 'Create a new task in the to do list',
+					parameters: {
+						type: 'object',
+						properties: {
+							dueDate: { type: 'string', description: 'Task due date in YYYY-MM-DD HH:MM' },
+							title: { type: 'string', description: 'Task title' },
+							duration: { type: 'string', description: 'Task duration in HH:MM' },
+						},
+						required: ['dueDate', 'title']
+					}
+				},
 				/*{
 					name: 'create_tasks',
 					description: 'Create new tasks in the to do list',
@@ -3555,7 +3580,6 @@ app.post('/getgptchatinteraction', async (req, res) => {
 										dueDate: { type: 'string', description: 'Task due date in YYYY-MM-DD HH:MM' },
 										title: { type: 'string', description: 'Task title' },
 										duration: { type: 'string', description: 'Task duration in HH:MM' },
-										priority: { type: 'string', description: 'Task priority in high/medium/low' }
 									},
 									required: ['dueDate', 'title']
 								}
@@ -3586,7 +3610,6 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							newTitle: { type: 'string', description: 'New task title' },
 							newDueDate: { type: 'string', description: 'New task due date in YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: 'New task duration in HH:MM' },
-							newPriority: { type: 'string', description: 'New task priority in high/medium/low' },
 							newCompleted: { type: 'boolean', description: 'New task completed status' },
 							errorMessage: { type: 'string', description: 'An error message if task is not found or other error.' },
 						},
@@ -3597,7 +3620,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 			const customfunctions = ['create_events', 'create_event', 'delete_event', 'modify_event', 'create_tasks','create_task', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
-			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'auto_schedule_tasks'] //a subset of all functions, the functions that need todo data
 
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
@@ -3662,7 +3685,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		
 						let request2options = {
 							model: 'gpt-3.5-turbo',
-							max_tokens: 400,
+							max_tokens: 200,
 						}
 						let request2input = `"""${userinput}"""`
 						
@@ -3806,7 +3829,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 			let tempoutput = ''
 			for(let d of temptodos){
-				let newstring = `Task title: ${d.title || 'New Task'}, UUID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration)}, priority: ${['low', 'medium', 'high'][d.priority]}, completed: ${d.completed}.`
+				let newstring = `Task title: ${d.title || 'New Task'}, UUID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration)}, completed: ${d.completed}.`
 
 				if(tempoutput.length + newstring.length > MAX_TODO_CONTEXT_LENGTH) break
 

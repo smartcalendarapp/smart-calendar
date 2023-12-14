@@ -12503,7 +12503,6 @@ async function submitaimessage(optionalinput){
 					let [startyear, startmonth, startday] = getDate(arguments?.startDate).value
 					let endminute = getMinute(arguments?.endDate)
 					let [endyear, endmonth, endday] = getDate(arguments?.endDate).value
-					let duration = getDuration(arguments?.duration).value
 
 					let startdate, enddate;
 					if(startminute != null && startyear != null && startmonth != null && startday != null){
@@ -12511,10 +12510,6 @@ async function submitaimessage(optionalinput){
 					}
 					if(endminute != null && endyear != null && endmonth != null && endday != null){
 						enddate = new Date(endyear, endmonth, endday, 0, endminute)
-					}
-					if(duration != null){
-						enddate = new Date(startdate)
-						enddate.setMinutes(enddate.getMinutes() + duration)
 					}
 					if(!enddate || isNaN(enddate.getTime())){
 						enddate = new Date(startdate)
@@ -12552,7 +12547,6 @@ async function submitaimessage(optionalinput){
 							let [startyear, startmonth, startday] = getDate(tempitem?.startDate).value
 							let endminute = getMinute(tempitem?.endDate)
 							let [endyear, endmonth, endday] = getDate(tempitem?.endDate).value
-							let duration = getDuration(tempitem?.duration).value
 
 							let startdate, enddate;
 							if(startminute != null && startyear != null && startmonth != null && startday != null){
@@ -12560,10 +12554,6 @@ async function submitaimessage(optionalinput){
 							}
 							if(endminute != null && endyear != null && endmonth != null && endday != null){
 								enddate = new Date(endyear, endmonth, endday, 0, endminute)
-							}
-							if(duration != null){
-								enddate = new Date(startdate.getTime())
-								enddate.setMinutes(enddate.getMinutes() + duration)
 							}
 							if(!enddate || isNaN(enddate.getTime())){
 								enddate = new Date(startdate)
@@ -12721,7 +12711,6 @@ async function submitaimessage(optionalinput){
 					let endbeforeminute = getMinute(arguments?.dueDate).value
 					let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(arguments?.dueDate).value
 					let duration = getDuration(arguments?.duration).value
-					let priority = getPriority(arguments?.priority, true).value
 
 					let endbeforedate;
 					if(endbeforeminute != null && endbeforeyear != null && endbeforemonth != null && endbeforeday != null){
@@ -12730,14 +12719,10 @@ async function submitaimessage(optionalinput){
 					if(duration == null){
 						duration = 30
 					}
-					if(priority == null){
-						priority = 0
-					}
 
 
 					if(endbeforedate && !isNaN(endbeforedate.getTime())){
 						let item = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), duration, title)
-						item.priority = priority
 						item.duration = duration
 						calendar.todos.push(item)
 
@@ -12763,7 +12748,6 @@ async function submitaimessage(optionalinput){
 							let endbeforeminute = getMinute(tempitem?.dueDate).value || 0
 							let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(tempitem?.dueDate).value
 							let duration = getDuration(tempitem?.duration).value
-							let priority = getPriority(tempitem?.priority, true).value
 		
 							let endbeforedate;
 							if(endbeforeminute != null && endbeforeyear != null && endbeforemonth != null && endbeforeday != null){
@@ -12772,14 +12756,10 @@ async function submitaimessage(optionalinput){
 							if(duration == null){
 								duration = 30
 							}
-							if(priority == null){
-								priority = 0
-							}
 		
 		
 							if(endbeforedate && !isNaN(endbeforedate.getTime())){
 								let item = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), duration, title)
-								item.priority = priority
 								item.duration = duration
 								calendar.todos.push(item)
 
@@ -12814,7 +12794,6 @@ async function submitaimessage(optionalinput){
 					let error = arguments?.errorMessage || ''
 					let newtitle = arguments?.newTitle
 					let newduedate = arguments?.newDueDate
-					let newpriority = arguments?.newPriority
 					let newduration = arguments?.newDuration
 					let newcompleted = arguments?.newCompleted
 
@@ -12824,7 +12803,6 @@ async function submitaimessage(optionalinput){
 						let item = id && calendar.todos.find(d => d.id == id)
 						if(item){
 							let oldtitle = item.title
-							let oldpriority = item.priority
 							let oldcompleted = item.completed
 							let oldduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 							
@@ -12837,7 +12815,6 @@ async function submitaimessage(optionalinput){
 							}
 
 							let duration = getDuration(newduration).value
-							let priority = getPriority(newpriority, true).value
 
 							if(endbeforedate && !isNaN(endbeforedate.getTime())){
 								item.endbefore.year = endbeforedate.getFullYear()
@@ -12850,10 +12827,6 @@ async function submitaimessage(optionalinput){
 
 							if(duration != null){
 								item.duration = duration
-							}
-
-							if(priority != null){
-								item.priority = priority
 							}
 
 							if(newcompleted !== null){
@@ -12879,9 +12852,6 @@ async function submitaimessage(optionalinput){
 							}
 							if(newcompleted != null && newcompleted != oldcompleted){
 								tempmsg = `Done! I marked your task "${Calendar.Event.getTitle(item)}" as complete. Good job!`
-							}
-							if(priority != null && priority != oldpriority){
-								tempmsg = `Done! I set your task "${Calendar.Event.getTitle(item)}" to be ${['low', 'medium', 'high'][item.priority]} priority.`
 							}
 
 							responsechatmessage.message = tempmsg
