@@ -3635,7 +3635,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			try {
 				let modifiedinput = `Calendar data: """${calendarcontext}""" Prompt: """${userinput}"""`
 				const response = await openai.chat.completions.create({
-					model: 'gpt-3.5-turbo',
+					model: 'gpt-3.5-turbo-instruct',
 					messages: [
 						{ 
 							role: 'system', 
@@ -3746,7 +3746,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						const requirescustomfunction = customfunctions.includes(command)
 		
 						let request2options = {
-							model: 'gpt-3.5-turbo',
+							model: 'gpt-3.5-turbo-instruct',
 							max_tokens: 200,
 						}
 						let request2input = `"""${userinput}"""`
