@@ -3691,7 +3691,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						//make request
 						const response2 = await openai.chat.completions.create(request2options)
 						totaltokens += response2.usage.total_tokens
-		console.warn(response2)
+		console.warn(response2.choices[0].message)
 						
 						if (response2.choices[0].finish_reason !== 'function_call') { //return plain response if no function detected
 							return { message: response2.choices[0].message.content, totaltokens: totaltokens }
