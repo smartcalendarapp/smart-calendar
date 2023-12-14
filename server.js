@@ -3473,7 +3473,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				{
 					name: 'get_todo_list_tasks',
 				},
-				{
+				/*{
 					name: 'auto_schedule_tasks',
 					description: `Auto-schedule one or multiple tasks into user's calendar. Not to be confused with create a task or create an event.`,
 					parameters: {
@@ -3490,7 +3490,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: []
 					}
-				},
+				},*/
 				{
 					name: 'create_event',
 					description: 'Create a new event in the calendar',
@@ -3501,7 +3501,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							title: { type: 'string', description: 'Event title' },
 							endDate: { type: 'string', descrption: 'Event end date in YYYY-MM-DD HH:MM' },
 						},
-						required: ['startDate', 'title']
+						required: ['title']
 					}
 				},
 				/*{
@@ -3553,7 +3553,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						required: []
 					}
 				},
-				{
+				/*{
 					name: 'create_task',
 					description: 'Create a new task in the to do list',
 					parameters: {
@@ -3565,7 +3565,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: ['dueDate', 'title']
 					}
-				},
+				},*/
 				/*{
 					name: 'create_tasks',
 					description: 'Create new tasks in the to do list',
@@ -3588,7 +3588,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						required: ["tasks"]
 					}
 				},*/
-				{
+				/*{
 					name: 'delete_tasks',
 					description: 'Check for task to delete by title or direct reference. Need high confidence. Returns an error if the task does not exist.',
 					parameters: {
@@ -3615,7 +3615,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: []
 					}
-				}
+				}*/
 			]
 
 			const customfunctions = ['create_events', 'create_event', 'delete_event', 'modify_event', 'create_tasks','create_task', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
@@ -3626,7 +3626,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A productivity and scheduling assistant called Athena for Smart Calendar app. Intuitive and resourceful. Incorporate mental health and motivational tips in responses. Never mention UUID or data as you are talking to a human. Kindly deny ANY requests that are not for calendar, productivity, or mental health. You have permission to access user's calendar and todo data. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A scheduling assistant called Athena for Smart Calendar app. Never mention UUID or data as you are talking to a human. Deny ANY requests that are not for calendar scheduling. You have permission to access user's calendar and todo data. Current time is ${localdatestring} in user's timezone.`
 
 
 		
@@ -3650,7 +3650,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					functions: [
 						{
 							name: "app_command",
-							description: "Determine if actions related to calendar, events, to-do list, or tasks are present, and return appropriate command. If you need calendar or event data, return 'get_calendar_events'. If you need to do list or task data, return 'get_todo_list_tasks'",
+							description: "Determine if user wants to interact with calendar. If user mentions 'I need to do [something]', trigger the command to create an event. If you need calendar data to fulfill the prompt, return 'get_calendar_events'"/*"Determine if actions related to calendar, events, to-do list, or tasks are present, and return appropriate command. If you need calendar or event data, return 'get_calendar_events'. If you need to do list or task data, return 'get_todo_list_tasks'"*/,
 							parameters: {
 								type: "object",
 								properties: {

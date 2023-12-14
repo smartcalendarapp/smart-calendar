@@ -12539,9 +12539,6 @@ async function submitaimessage(optionalinput){
 						let firstitem;
 
 						for(let tempitem of arguments.events){
-							if(tempitem.startDate) tempitem.startDate = tempitem.startDate.replace('T', ' ')
-							if(tempitem.endDate) tempitem.endDate = tempitem.endDate.replace('T', ' ')
-
 							let title = tempitem?.title
 							let startminute = getMinute(tempitem?.startDate).value
 							let [startyear, startmonth, startday] = getDate(tempitem?.startDate).value
@@ -12708,7 +12705,7 @@ async function submitaimessage(optionalinput){
 					let arguments = output.arguments
 
 					let title = arguments?.title || ''
-					let endbeforeminute = getMinute(arguments?.dueDate).value
+					let endbeforeminute = getMinute(arguments?.dueDate).value || 0
 					let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(arguments?.dueDate).value
 					let duration = getDuration(arguments?.duration).value
 
@@ -12742,8 +12739,6 @@ async function submitaimessage(optionalinput){
 						let firstitem;
 
 						for(let tempitem of arguments.tasks){
-							if(tempitem.dueDate) tempitem.dueDate = tempitem.dueDate.replace('T', ' ')
-
 							let title = tempitem?.title
 							let endbeforeminute = getMinute(tempitem?.dueDate).value || 0
 							let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(tempitem?.dueDate).value
