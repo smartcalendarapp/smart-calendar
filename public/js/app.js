@@ -12531,10 +12531,10 @@ async function submitaimessage(optionalinput){
 						calendar.updateEvents()
 
 
-						responsechatmessage.message = `Done! I have created an event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						responsechatmessage.message = `Done! I have created an event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
-						responsechatmessage.message = `I don't have enough information to create this event for you, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						responsechatmessage.message = `I don't have enough information to create this event for you, could you please tell me more?`
 					}
 
 				}else if(output.command == 'modify_event'){
@@ -12547,12 +12547,12 @@ async function submitaimessage(optionalinput){
 					let newenddate = arguments?.newEndDate
 
 					if(error){
-						responsechatmessage.message = `${error}` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						responsechatmessage.message = `${error}`
 					}else{
 						let item = id && calendar.events.find(d => d.id == id)
 						if(item){
 							if(Calendar.Event.isReadOnly(item)){
-								responsechatmessage.message = `I could not edit that event as it is read-only (it may be part of a calendar you cannot edit).` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+								responsechatmessage.message = `I could not edit that event as it is read-only (it may be part of a calendar you cannot edit).`
 							}else{
 								let oldstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 								let oldenddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
@@ -12612,11 +12612,11 @@ async function submitaimessage(optionalinput){
 										tempmsg = `Done! I modified your event "${Calendar.Event.getTitle(item)}" to be on ${Calendar.Event.getFullStartEndText(item)}`
 									}
 								}
-								responsechatmessage.message = tempmsg + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:''),
+								responsechatmessage.message = tempmsg,
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 							}
 						}else{
-							responsechatmessage.message = `I could not find that event, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+							responsechatmessage.message = `I could not find that event, could you please tell me more?`
 						}
 					}
 				}else if(output.command == 'delete_event'){
@@ -12626,12 +12626,12 @@ async function submitaimessage(optionalinput){
 					let error = arguments?.errorMessage || ''
 
 					if(error){
-						responsechatmessage.message = `${error}` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						responsechatmessage.message = `${error}`
 					}else{
 						let item = id && calendar.events.find(d => d.id == id)
 						if(item){
 							if(Calendar.Event.isReadOnly(item)){
-								responsechatmessage.message = `I could not delete that event as it is read-only (it may be part of a calendar you cannot edit).` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+								responsechatmessage.message = `I could not delete that event as it is read-only (it may be part of a calendar you cannot edit).`
 							}else{
 								calendar.events = calendar.events.filter(d => d.id != id)
 
@@ -12640,16 +12640,18 @@ async function submitaimessage(optionalinput){
 								calendar.updateEvents()
 
 
-								responsechatmessage.message = `Done! I have deleted your event "${Calendar.Event.getTitle(item)}."` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+								responsechatmessage.message = `Done! I have deleted your event "${Calendar.Event.getTitle(item)}."`
 							}
 						}else{
-							responsechatmessage.message = `I could not find that event, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+							responsechatmessage.message = `I could not find that event, could you please tell me more?`
 						}
 					}
 				}else if(output.command == 'create_tasks'){
 					let arguments = output.arguments
 					if(arguments.tasks && Array.isArray(arguments.tasks) && arguments.tasks.length > 0){
 						let tempoutput = []
+						let fails = 0
+						let succeeds = 0
 						for(let tempitem of arguments.tasks){
 							let title = tempitem?.title
 							let endbeforeminute = getMinute(tempitem?.dueDate).value || 0
@@ -12675,23 +12677,36 @@ async function submitaimessage(optionalinput){
 								item.duration = duration
 								calendar.todos.push(item)
 
-								tempoutput.push(`Done! I added the task "${Calendar.Todo.getTitle(item)}" to your to-do list, due ${Calendar.Event.getDueText(item)}`)
-								if(tempoutput.length == 1){
-									responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
-								}
+								tempoutput.push(`<div class="overflow-hidden display-flex width-fit flex-row justify-space-between gap-12px background-tint-1 border-8px align-center padding-8px-12px">
+									<div class="display-flex flex-column gap-6px">
+										<div class="text-bold text-primary text-14px">Task created: ${Calendar.Todo.getTitle(item)}</div>
+										<div class="text-14px text-primary">Due ${Calendar.Event.getDueText(item)}.</div>
+									</div>
+									<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>
+								</div>`)
+
+								succeeds++
 							}else{
-								tempoutput.push(`I don't have enough information to create the task "${title}" for you, could you please tell me more?`)
+								tempoutput.push(`<div class="overflow-hidden display-flex width-fit flex-row justify-space-between gap-12px background-tint-1 border-8px align-center padding-8px-12px">
+									<div class="display-flex flex-column gap-6px">
+										<div class="text-bold text-primary text-14px">Could not create task: ${title}</div>
+										<div class="text-14px text-primary">I don't have enough information to create this task, please try again.</div>
+									</div>
+								</div>`)
+
+								fails++
 							}
 						}
 
 
 						//here2
 
-						responsechatmessage.message = tempoutput.join('\n') + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						responsechatmessage.actions = tempoutput
+						responsechatmessage.message = 'Done!'//`${succeeds > 0 ? `Done! I added ${succeeds} tasks to your to-do list.${fails > 0 ? ` However,` : ''}` : ''}${fails > 0 ? ` I did not have enough information to create ${fails} of the tasks, please try those again.` : ''}`
 
 						calendar.updateTodo()
 					}else{
-						responsechatmessage.message = `I could not create a task for you, please try again.` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						responsechatmessage.message = `I could not create a task for you, please try again.`
 					}
 
 
@@ -12707,7 +12722,7 @@ async function submitaimessage(optionalinput){
 					let newcompleted = arguments?.newCompleted
 
 					if(error){
-						responsechatmessage.message = `${error}` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						responsechatmessage.message = `${error}`
 					}else{
 						let item = id && calendar.todos.find(d => d.id == id)
 						if(item){
@@ -12772,11 +12787,11 @@ async function submitaimessage(optionalinput){
 								tempmsg = `Done! I set your task "${Calendar.Event.getTitle(item)}" to be ${['low', 'medium', 'high'][item.priority]} priority.`
 							}
 
-							responsechatmessage.message = tempmsg + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+							responsechatmessage.message = tempmsg
 							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
 
 						}else{
-							responsechatmessage.message = `I could not find that task, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+							responsechatmessage.message = `I could not find that task, could you please tell me more?`
 						}
 					}
 				}else if(output.command == 'delete_task'){
@@ -12786,7 +12801,7 @@ async function submitaimessage(optionalinput){
 					let error = arguments?.errorMessage || ''
 
 					if(error){
-						responsechatmessage.message = `${error}` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						responsechatmessage.message = `${error}`
 					}else{
 						let item = id && calendar.todos.find(d => d.id == id)
 						if(item){
@@ -12794,9 +12809,9 @@ async function submitaimessage(optionalinput){
 
 							calendar.updateTodo()
 
-							responsechatmessage.message = `Done! I have deleted your task "${Calendar.Event.getTitle(item)}."` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+							responsechatmessage.message = `Done! I have deleted your task "${Calendar.Event.getTitle(item)}."`
 						}else{
-							responsechatmessage.message = `I could not find that task, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+							responsechatmessage.message = `I could not find that task, could you please tell me more?`
 						}
 					}
 				}else if(output.command == 'auto_schedule_tasks'){
@@ -12806,16 +12821,16 @@ async function submitaimessage(optionalinput){
 					let error = arguments?.errorMessage || ''
 
 					if(error){
-						responsechatmessage.message = `${error}` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+						responsechatmessage.message = `${error}`
 					}else{
 						let items = idList && calendar.todos.filter(d => idList.find(g => g == d.id))
 						if(items.length > 0){
 							aichattemporarydata = items
 							
-							responsechatmessage.message = `Just a confirmation: do you want to schedule these tasks?\n${items.map(d => `- ${d.title}`).join('\n')}` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+							responsechatmessage.message = `Just a confirmation: do you want to schedule these tasks?\n${items.map(d => `- ${d.title}`).join('\n')}`
 							responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('No')">No</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({scheduletodos: aichattemporarydata}))">Yes</div>`]
 						}else{
-							responsechatmessage.message = `I could not find that task, could you please tell me more?` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+							responsechatmessage.message = `I could not find that task, could you please tell me more?`
 						}
 					}
 					
@@ -12824,11 +12839,11 @@ async function submitaimessage(optionalinput){
 				}
 
 			}else if(output.error){
-				responsechatmessage.message = `${output.error}` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+				responsechatmessage.message = `${output.error}`
 			}else if(!data.data?.message){
-				responsechatmessage.message = `I could not generate a response, please try again.` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+				responsechatmessage.message = `I could not generate a response, please try again.`
 			}else{
-				responsechatmessage.message = `${data.data?.message}` + (clientinfo.betatester?`\n\nTokens: ${data.data?.totaltokens}`:'')
+				responsechatmessage.message = `${data.data?.message}`
 			}
 		}else if(response.status == 401){
 			let data = await response.json()
