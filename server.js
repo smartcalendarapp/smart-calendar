@@ -3696,12 +3696,12 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				})
 				totaltokens += response.usage.total_tokens
 
-				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'app_command') {
+				if (response.choices[0].finish_reason !== 'function_call' && !['create_task', 'create_event', 'app_command'].includes(response.choices[0].message.function_call?.name)) {
 					//no function call, return plain response
 					return { message: response.choices[0].message.content, totaltokens: totaltokens }
 				}
 
-				if(['create_task', 'create_event'].includes(response.choices[0].message.function_call?.name)){
+				if(response.choices[0].finish_reason == 'function_call' && ['create_task', 'create_event'].includes(response.choices[0].message.function_call?.name)){
 					const arguments = JSON.parse(response.choices[0].message.function_call?.arguments)
 		
 					if(arguments){
