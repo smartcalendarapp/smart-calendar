@@ -12546,7 +12546,7 @@ async function submitaimessage(optionalinput){
 								}
 
 							}else{
-								tempoutput.push(`I don't have enough information to add the event "${title}", please try again.`)
+								tempoutput.push(`I don't have enough information to create the event "${title}", please try again.`)
 
 							}
 						}
