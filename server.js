@@ -3468,10 +3468,10 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		async function queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset) {
 			const allfunctions = [
 				{
-					name: 'get_calendar',
+					name: 'get_calendar_events',
 				},
 				{
-					name: 'get_todo_list',
+					name: 'get_todo_list_tasks',
 				},
 				{
 					name: 'auto_schedule_tasks',
@@ -3533,18 +3533,21 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					}
 				},
 				{
-					name: 'create_task',
-					description: 'Create a new task in the to do list',
+					name: 'create_tasks',
+					description: 'Create new tasks in the to do list',
 					parameters: {
-						type: 'object',
-						properties: {
+						type: 'array',
+						items: {
+						  type: 'object',
+						  properties: {
 							dueDate: { type: 'string', description: 'Task due date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Task title' },
 							duration: { type: 'string', description: 'Task duration in HH:MM' },
 							priority: { type: 'string', description: 'Task priority in high/medium/low' }
-						},
-						required: ['dueDate', 'title']
-					}
+						  },
+						  required: ['dueDate', 'title']
+						}
+					  }
 				},
 				{
 					name: 'delete_task',
@@ -3578,8 +3581,8 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			]
 
 			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
-			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar'] //a subset of all functions, the functions that need calendar data
-			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list'] //a subset of all functions, the functions that need todo data
+			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
 
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
@@ -3592,7 +3595,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			let totaltokens = 0
 
 			try {
-				let modifiedinput = `Prompt: """${userinput}""" `
+				let modifiedinput = `Prompt: """${userinput}"""`
 				const response = await openai.chat.completions.create({
 					model: 'gpt-3.5-turbo',
 					messages: [
@@ -3609,7 +3612,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					functions: [
 						{
 							name: "app_command",
-							description: "Determine if actions related to calendar, events, to-do list, or tasks are present, and return appropriate command. If user mentions 'calendar' or 'events', return 'get_calendar_schedule'. If user mentions 'to do list' or 'tasks', return 'get_todo_list'",
+							description: "Determine if actions related to calendar, events, to-do list, or tasks are present, and return appropriate command. If user mentions 'calendar' or 'events', return 'get_calendar_events'. If user mentions 'to do list' or 'tasks', return 'get_todo_list_tasks'",
 							parameters: {
 								type: "object",
 								properties: {

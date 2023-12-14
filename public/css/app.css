@@ -92,12 +92,8 @@ ol{
 	color:var(--white);
 }
 
-.aichatwrap{
-	transition: background-color 0.5s, color 0.5s, border-color 0.5s, max-height 0.2s, transform 0.2s, opacity 0.2s !important;
-}
-.aichatopacity{
-	opacity:0.5
-}
+
+
 
 .hoverbuttonfill:hover svg{
 	fill:var(--blue) !important
@@ -661,6 +657,7 @@ ol{
 }
 
 
+
 .schedulemenu {
 	height: auto;
 	width: 300px;
@@ -717,6 +714,11 @@ ol{
 
 .schedulebutton:hover {
 	background-color: var(--blue-hover);
+}
+
+
+.aichatwrap{
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, max-height 0.2s, transform 0.2s, opacity 0.2s;
 }
 
 
@@ -882,7 +884,6 @@ ol{
 	min-height: 1px;
 	left: 0;
 	top: 0;
-	transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s, opacity 0.2s;
 	position: absolute;
 	z-index: 300;
 	border-radius: 8px;
