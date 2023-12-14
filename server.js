@@ -3543,7 +3543,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								items: {
 									type: 'object',
 									properties: {
-										dueDate: { type: 'string', description: 'Task due date in exact format YYYY-MM-DD HH:MM' },
+										dueDate: { type: 'string', description: 'Task due date in format YYYY-MM-DD HH:MM' },
 										title: { type: 'string', description: 'Task title' },
 										duration: { type: 'string', description: 'Task duration in HH:MM' },
 										priority: { type: 'string', description: 'Task priority in high/medium/low' }
@@ -3556,7 +3556,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					}
 				},
 				{
-					name: 'delete_task',
+					name: 'delete_tasks',
 					description: 'Check for task to delete by title or direct reference. Need high confidence. Returns an error if the task does not exist.',
 					parameters: {
 						type: 'object',
@@ -3638,6 +3638,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				})
 				totaltokens += response.usage.total_tokens
 				
+				console.warn(response.choices[0].message)
 				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'app_command') {
 					//no function call, return plain response
 					return { message: response.choices[0].message.content, totaltokens: totaltokens }

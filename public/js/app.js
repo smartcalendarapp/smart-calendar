@@ -12682,7 +12682,7 @@ async function submitaimessage(optionalinput){
 										<div class="text-bold text-primary text-14px">Task created: ${Calendar.Todo.getTitle(item)}</div>
 										<div class="text-14px text-primary">Due ${Calendar.Event.getDueText(item)}.</div>
 									</div>
-									<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>
+									<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer nowrap text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>
 								</div>`)
 
 								succeeds++
@@ -12702,7 +12702,7 @@ async function submitaimessage(optionalinput){
 						//here2
 
 						responsechatmessage.actions = tempoutput
-						responsechatmessage.message = 'Done!'//`${succeeds > 0 ? `Done! I added ${succeeds} tasks to your to-do list.${fails > 0 ? ` However,` : ''}` : ''}${fails > 0 ? ` I did not have enough information to create ${fails} of the tasks, please try those again.` : ''}`
+						responsechatmessage.message = ' '//`${succeeds > 0 ? `Done! I added ${succeeds} tasks to your to-do list.${fails > 0 ? ` However,` : ''}` : ''}${fails > 0 ? ` I did not have enough information to create ${fails} of the tasks, please try those again.` : ''}`
 
 						calendar.updateTodo()
 					}else{
