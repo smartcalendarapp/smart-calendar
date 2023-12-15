@@ -12029,7 +12029,7 @@ function openaichat(){
 			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan my day for success')">Help me plan my day for success</div>`,
 			/*`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my to do list for today?')">What's on my to do list for today?</div>`,
 			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Break down my tasks into manageable pieces')">Break down my to-do list tasks into manageable pieces</div>`*/
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('I have a task to work on...')">I have a task to work on...`]
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('I have a task to work on...')">I have a task to work on...</div>`]
 
 			responsechatmessage.nextactions = getRandomItems(tempoptions, 3)
 	

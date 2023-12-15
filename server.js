@@ -3496,9 +3496,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							startDate: { type: 'string', description: 'Event start date in YYYY-MM-DD HH:MM' },
+							startDate: { type: 'string', description: '(optional) Event start date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Event title' },
-							endDate: { type: 'string', descrption: 'Event end date in YYYY-MM-DD HH:MM' },
+							endDate: { type: 'string', descrption: '(optional) Event end date in YYYY-MM-DD HH:MM' },
 						},
 						required: ['title']
 					}
@@ -3544,7 +3544,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						type: 'object',
 						properties: {
 							id: { type: 'string', description: 'Specific UUID of event.' },
-							newTitle: { type: 'string', description: 'New event title' },
+							newTitle: { type: 'string', description: '(optional) New event title' },
 							newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
 							newEndDate: { type: 'string', description: '(optional) New event end date in YYYY-MM-DD HH:MM' },
 							errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
@@ -3558,7 +3558,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							dueDate: { type: 'string', description: 'Task due date in YYYY-MM-DD HH:MM' },
+							dueDate: { type: 'string', description: '(optional) Task due date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Task title' },
 							duration: { type: 'string', description: 'Task duration in HH:MM' },
 						},
