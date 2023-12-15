@@ -3470,9 +3470,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				{
 					name: 'get_calendar_events',
 				},
-				{
+				/*{
 					name: 'get_todo_list_tasks',
-				},
+				},*/
 				/*{
 					name: 'auto_schedule_tasks',
 					description: `Auto-schedule one or multiple tasks into user's calendar. Not to be confused with create a task or create an event.`,
@@ -3491,7 +3491,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						required: []
 					}
 				},*/
-				/*{
+				{
 					name: 'create_event',
 					description: 'Create a new event in the calendar',
 					parameters: {
@@ -3503,7 +3503,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: ['title']
 					}
-				},*/
+				},
 				/*{
 					name: 'create_events',
 					description: 'Create new events in the calendar',
@@ -3553,7 +3553,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						required: []
 					}
 				},
-				/*{
+				{
 					name: 'create_task',
 					description: 'Create a new task in the to do list',
 					parameters: {
@@ -3565,7 +3565,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: ['title']
 					}
-				},*/
+				},
 				/*{
 					name: 'create_tasks',
 					description: 'Create new tasks in the to do list',
@@ -3618,7 +3618,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				}*/
 			]
 
-			const customfunctions = [/*'create_events', 'create_event',*/ 'delete_event', 'modify_event', /*'create_tasks','create_task',*/ 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_events', 'create_event', 'delete_event', 'modify_event', 'create_tasks','create_task', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'auto_schedule_tasks'] //a subset of all functions, the functions that need todo data
 
@@ -3626,21 +3626,51 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A scheduling assistant called Athena for Smart Calendar app. Never mention UUID or data as you are talking to a human. Deny ANY requests that are not for calendar scheduling. You have permission to access user's calendar and todo data. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A scheduling assistant called Athena for Smart Calendar app. Never mention UUID or data. Be concise and precise. Deny ALL requests that are not for calendar scheduling. Current time is ${localdatestring} in user's timezone.`
 
 
 		
 			let totaltokens = 0
 
 			try {
-				let modifiedinput = `Calendar data: """${calendarcontext}""" Prompt: """${userinput}"""`
+				let modifiedinput = `Prompt: """${userinput}"""`
 				const response = await openai.chat.completions.create({
-					model: 'gpt-3.5-turbo-instruct',
+					model: 'gpt-3.5-turbo',
 					messages: [
 						{ 
 							role: 'system', 
 							content: systeminstructions
 						},
+						...[
+							{
+								role: "user",
+								content: "I need to get a project done by tomorrow"
+							},
+							{
+								role: "assistant",
+								content: null,
+								function_call: {
+									name: "app_action",
+									arguments: {
+										command: 'create_task'
+									}
+								}
+							},
+							{
+								role: "user",
+								content: "Move it to 4pm"
+							},
+							{
+								role: "assistant",
+								content: null,
+								function_call: {
+									name: "app_action",
+									arguments: {
+										command: 'modify_event'
+									}
+								}
+							}
+						],
 						...conversationhistory,
 						{
 							role: 'user',
@@ -3649,105 +3679,45 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					],
 					functions: [
 						{
-							name: 'create_task',
-							description: 'Create a new task in the to do list',
-							parameters: {
-								type: 'object',
-								properties: {
-									dueDate: { type: 'string', description: 'Task due date in YYYY-MM-DD HH:MM (optional)' },
-									title: { type: 'string', description: 'Task title' },
-									duration: { type: 'string', description: 'Task duration in HH:MM (optional)' },
-								},
-								required: ['title']
-							}
-						},
-						{
-							name: 'create_event',
-							description: 'Create a new event in the calendar',
-							parameters: {
-								type: 'object',
-								properties: {
-									startDate: { type: 'string', description: 'Event start date in YYYY-MM-DD HH:MM' },
-									title: { type: 'string', description: 'Event title' },
-									endDate: { type: 'string', descrption: 'Event end date in YYYY-MM-DD HH:MM (optional)' },
-								},
-								required: ['title']
-							}
-						},
-						{
-							name: 'modify_event',
-							description: 'Check for event to modify by title or direct reference. Need high confidence. Returns an error if the event does not exist.',
-							parameters: {
-								type: 'object',
-								properties: {
-									id: { type: 'string', description: 'Specific UUID of event.' },
-									newTitle: { type: 'string', description: 'New event title' },
-									newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
-									newEndDate: { type: 'string', description: 'New event end date in YYYY-MM-DD HH:MM' },
-									errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
-								},
-								required: []
-							}
-						},
-						{
-							name: 'delete_event',
-							description: 'Check for event to delete by title or direct reference. Need high confidence. Returns an error if the event does not exist.',
-							parameters: {
-								type: 'object',
-								properties: {
-									id: { type: 'string', description: 'Specific UUID of event.' },
-									errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
-								},
-								required: []
-							}
-						},
-						/*{
-							name: "app_command",
-							description: "Return command related to calendar, events, to-do list, or tasks. If you need calendar or event data, return 'get_calendar_events'. If you need to do list or task data, return 'get_todo_list_tasks'",
+							name: "app_action",
+							description: "Return app command if detected in prompt. If none, but you need calendar or event data, return 'get_calendar_events'"/*"Return app command if detected in prompt. If none, but you need calendar or event data, return 'get_calendar_events', and if you need to do list or task data, return 'get_todo_list_tasks'"*/,
 							parameters: {
 								type: "object",
 								properties: {
-									commands: {
-										type: "array",
-										description: `One of these commands: ${allfunctions.map(d => d.name).join(', ')}.`,
-										items: {
-											type: "string",
-										}
+									command: {
+										type: "string",
+										description: `One of these commands: ${allfunctions.map(d => d.name).join(', ')}.`
 									},
 								},
-								required: ["commands"]
+								required: ["command"]
 							}
-						},*/
+						},
 					],
-					max_tokens: 200
+					max_tokens: 200,
+					temperature: 0.1,
+					top_p: 0.1,
+					
 				})
 				totaltokens += response.usage.total_tokens
 
-				if (response.choices[0].finish_reason !== 'function_call' && !['create_task', 'create_event', 'app_command'].includes(response.choices[0].message.function_call?.name)) {
+				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'app_action') {
 					//no function call, return plain response
 					return { message: response.choices[0].message.content, totaltokens: totaltokens }
 				}
-
-				if(response.choices[0].finish_reason == 'function_call' && ['create_task', 'create_event'].includes(response.choices[0].message.function_call?.name)){
-					//call create task or event
-					const arguments = JSON.parse(response.choices[0].message.function_call?.arguments)
-		
-					if(arguments){
-						return { command: response.choices[0].message.function_call?.name, arguments: arguments, totaltokens: totaltokens }
-					}
-				}
 		
 		
-				if (response.choices[0].message.function_call?.name === 'app_command') {
-					const command = JSON.parse(response.choices[0].message.function_call?.arguments)?.commands[0]
+				if (response.choices[0].message.function_call?.name === 'app_action') {
+					const command = JSON.parse(response.choices[0].message.function_call?.arguments)?.command
 					if (command) {
 						const requirescalendardata = calendardataneededfunctions.includes(command)
 						const requirestododata = tododataneededfunctions.includes(command)
 						const requirescustomfunction = customfunctions.includes(command)
 		
 						let request2options = {
-							model: 'gpt-3.5-turbo-instruct',
+							model: 'gpt-3.5-turbo',
 							max_tokens: 200,
+							temperature: 0.1,
+							top_p: 0.1,
 						}
 						let request2input = `"""${userinput}"""`
 						
