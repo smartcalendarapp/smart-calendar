@@ -12648,6 +12648,8 @@ async function submitaimessage(optionalinput){
 
 								item.title = newtitle || item.title
 
+								item.autoschedulelocked = true
+
 								selectedeventid = null
 								calendar.updateInfo()
 								calendar.updateEvents()
@@ -12669,6 +12671,8 @@ async function submitaimessage(optionalinput){
 								}
 								responsechatmessage.message = tempmsg,
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
+
+								startAutoSchedule({ moveditem: item, moveditemtimestamp: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute) })
 							}
 						}else{
 							responsechatmessage.message = `I could not find that event, could you please tell me more?`
@@ -13931,6 +13935,35 @@ function getavailabletime(item, startrange, endrange, isschedulebuilder) {
 
 
 //auto schedule V2
+
+function getconflictingevent(data, item1) {
+	let sortdata = data.sort((a, b) => {
+		return new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime() - new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime()
+	})
+
+	let tempoutput = []
+	
+	for (let item2 of sortdata) {
+		if (item1.id == item2.id || Calendar.Event.isAllDay(item2)) continue
+		let tempstartdate1 = new Date(item1.start.year, item1.start.month, item1.start.day, 0, item1.start.minute)
+		let tempenddate1 = new Date(item1.end.year, item1.end.month, item1.end.day, 0, item1.end.minute)
+
+		let tempstartdate2 = new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute)
+		let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
+
+		let spacing = getbreaktime(item2)
+
+		if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
+			tempoutput.push([item2, spacing, tempstartdate1.getTime() < tempenddate2.getTime() && tempenddate1.getTime() > tempstartdate2.getTime()])
+		}
+	}
+
+	if(tempoutput.length > 0){
+		return tempoutput.sort((a, b) => (b[0].type == 1) - (a[0].type == 1))[0]
+	}
+	return null
+}
+
 let animatenextitem;
 let isautoscheduling = false;
 let iseditingschedule = false;
@@ -13981,34 +14014,6 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			
 		}
 		
-
-		function getconflictingevent(data, item1) {
-			let sortdata = data.sort((a, b) => {
-				return new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime() - new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime()
-			})
-
-			let tempoutput = []
-			
-			for (let item2 of sortdata) {
-				if (item1.id == item2.id || Calendar.Event.isAllDay(item2)) continue
-				let tempstartdate1 = new Date(item1.start.year, item1.start.month, item1.start.day, 0, item1.start.minute)
-				let tempenddate1 = new Date(item1.end.year, item1.end.month, item1.end.day, 0, item1.end.minute)
-
-				let tempstartdate2 = new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute)
-				let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
-
-				let spacing = getbreaktime(item2)
-
-				if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
-					tempoutput.push([item2, spacing, tempstartdate1.getTime() < tempenddate2.getTime() && tempenddate1.getTime() > tempstartdate2.getTime()])
-				}
-			}
-
-			if(tempoutput.length > 0){
-				return tempoutput.sort((a, b) => (b[0].type == 1) - (a[0].type == 1))[0]
-			}
-			return null
-		}
 
 
 		function isoutofrange(item) {

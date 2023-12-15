@@ -3547,7 +3547,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							id: { type: 'string', description: 'Specific UUID of event.' },
 							newTitle: { type: 'string', description: 'New event title' },
 							newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
-							newEndDate: { type: 'string', description: 'New event end date in YYYY-MM-DD HH:MM' },
+							newEndDate: { type: 'string', description: '(optional) New event end date in YYYY-MM-DD HH:MM' },
 							errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
 						},
 						required: []
