@@ -12012,7 +12012,7 @@ function openaichat(){
 			let chatinteraction = new ChatInteraction()
 			let responsechatmessage = new ChatMessage({
 				role: 'assistant',
-				message: `Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, give you advice on your tasks, and more! Ask me any time.`
+				message: `Hello, I am Athena, your assistant for productivity! I can schedule meetings for you,  plan your tasks, rearrange your schedule, and more! Ask me any time.`
 			})
 
 			function getRandomItems(arr, num) {
@@ -12029,7 +12029,7 @@ function openaichat(){
 			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan my day for success')">Help me plan my day for success</div>`,
 			/*`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my to do list for today?')">What's on my to do list for today?</div>`,
 			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Break down my tasks into manageable pieces')">Break down my to-do list tasks into manageable pieces</div>`*/
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('I have a task to work on')">I have a task to work on`]
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('I have a task to work on...')">I have a task to work on...`]
 
 			responsechatmessage.nextactions = getRandomItems(tempoptions, 3)
 	
@@ -12530,7 +12530,8 @@ async function submitaimessage(optionalinput){
 						responsechatmessage.message = `Done! I have created an event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
-						responsechatmessage.message = `I don't have enough information to create this event for you, could you please tell me more?`
+						responsechatmessage.message = `What time do you want "${Calendar.Event.getTitle(item)}" take place?`
+						responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Pick for me')">Pick for me</div>`]
 					}
 				}else if(output.command == 'create_events'){
 					let arguments = output.arguments
@@ -12670,8 +12671,9 @@ async function submitaimessage(optionalinput){
 										tempmsg = `Done! I modified your event "${Calendar.Event.getTitle(item)}" to be on ${Calendar.Event.getFullStartEndText(item)}`
 									}
 								}
-								responsechatmessage.message = tempmsg,
+								responsechatmessage.message = tempmsg
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
+								responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Pick for me')">Pick for me</div>`]
 
 								startAutoSchedule({ moveditem: item, moveditemtimestamp: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute) })
 							}
@@ -12739,7 +12741,8 @@ async function submitaimessage(optionalinput){
 						responsechatmessage.message = `Done! I added your task "${Calendar.Todo.getTitle(item)}" to your calendar, due ${Calendar.Event.getDueText(item)}.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
-						responsechatmessage.message = `I don't have enough information to create this task for you, could you please tell me more?`
+						responsechatmessage.message = `What time do you want ${Calendar.Todo.getTitle(item)} to be due?`
+						responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Pick for me')">Pick for me</div>`]
 					}
 				}else if(output.command == 'create_tasks'){
 					let arguments = output.arguments

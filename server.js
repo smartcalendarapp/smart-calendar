@@ -3407,7 +3407,6 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 			return [days, hours, minutes].filter(f => f).join(' ')
 		}
 
-		//`Task: ${item.title} - takes ${getDHMText(item.duration)}. Provide: 1-2 SPECIFIC, CONCISE, SHORT steps with links and resources.`
 		let gptresponse = await getgptresponse(`Task: """${item.title.slice(0, 50)}""". Takes: ${getDHMText(item.duration)}. Provide: ONLY 3-4 names of subtasks, separated by comma in ONLY 1 line, with time needed for each. Example: Research 30m. No formatting.`)
 
 		if(!gptresponse){
@@ -3425,7 +3424,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 
 app.post('/getgptchatinteraction', async (req, res) => {
 	const MAX_GPT_PER_DAY = 50//TEMPORARY
-	const MAX_GPT_PER_DAY_BETA_TESTER = 200//30
+	const MAX_GPT_PER_DAY_BETA_TESTER = 100//30
 	const MAX_GPT_PER_DAY_PREMIUM = 50
 
 	try{
@@ -3626,7 +3625,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A scheduling assistant called Athena for Smart Calendar app. Never mention UUID or data. Be concise and precise. Deny ALL requests that are not for calendar scheduling. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A calendar and scheduling assistant called Athena for Smart Calendar app. Never mention UUID or data. Be concise and precise. Deny ALL requests that are not for calendar scheduling or productivity. Current time is ${localdatestring} in user's timezone.`
 
 
 		
@@ -3669,7 +3668,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 										command: 'modify_event'
 									})
 								}
-							}
+							},
 						],
 						...conversationhistory,
 						{
@@ -3694,8 +3693,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 					],
 					max_tokens: 200,
-					temperature: 0.1,
-					top_p: 0.1,
+					temperature: 0.5,
 					
 				})
 				totaltokens += response.usage.total_tokens
@@ -3716,8 +3714,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						let request2options = {
 							model: 'gpt-3.5-turbo',
 							max_tokens: 200,
-							temperature: 0.1,
-							top_p: 0.1,
+							temperature: 0.5,
 						}
 						let request2input = `"""${userinput}"""`
 						
