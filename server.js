@@ -3651,9 +3651,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								content: null,
 								function_call: {
 									name: "app_action",
-									arguments: {
+									arguments: JSON.stringify({
 										command: 'create_task'
-									}
+									})
 								}
 							},
 							{
@@ -3665,9 +3665,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								content: null,
 								function_call: {
 									name: "app_action",
-									arguments: {
+									arguments: JSON.stringify({
 										command: 'modify_event'
-									}
+									})
 								}
 							}
 						],
@@ -3687,7 +3687,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 									command: {
 										type: "string",
 										description: `One of these commands: ${allfunctions.map(d => d.name).join(', ')}.`
-									},
+									}
 								},
 								required: ["command"]
 							}
