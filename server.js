@@ -3472,7 +3472,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				/*{
 					name: 'get_todo_list_tasks',
 				},*/
-				{
+				/*{
 					name: 'auto_schedule_tasks',
 					description: `Auto-schedule one or multiple tasks into user's calendar. Not to be confused with create a task or create an event.`,
 					parameters: {
@@ -3489,7 +3489,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: []
 					}
-				},
+				},*/
 				{
 					name: 'create_event',
 					description: 'Create a new event in the calendar',
@@ -3671,7 +3671,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							},
 							{
 								role: "user",
-								content: "Schedule all my tasks"
+								content: "Schedule my task"
 							},
 							{
 								role: "assistant",
