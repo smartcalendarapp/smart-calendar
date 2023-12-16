@@ -13943,9 +13943,11 @@ function getavailabletime(item, startrange, endrange, isschedulebuilder) {
 }
 
 
+
+
 //auto schedule V2
 
-function getconflictingevent(data, item1) {
+function getconflictingevent(data, item1, allresults) {
 	let sortdata = data.sort((a, b) => {
 		return new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime() - new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime()
 	})
@@ -13963,8 +13965,15 @@ function getconflictingevent(data, item1) {
 		let spacing = getbreaktime(item2)
 
 		if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
-			tempoutput.push([item2, spacing, tempstartdate1.getTime() < tempenddate2.getTime() && tempenddate1.getTime() > tempstartdate2.getTime()])
+			tempoutput.push([item2, spacing])
 		}
+	}
+
+	if(allresults){
+		if(tempoutput.length > 0){
+			return tempoutput
+		}
+		return []
 	}
 
 	if(tempoutput.length > 0){
@@ -14116,28 +14125,39 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		})
 
 
+		//unlock tasks that are locked but no conflict
+		let lockedtasks = smartevents.filter(d => d.autoschedulelocked)
+		for(let tempitem of lockedtasks){
+			let conflictitem = getconflictingevent(iteratedevents, tempitem)
+			if(!conflictitem){
+				tempitem.autoschedulelocked = false
+			}
+		}
 
+		//last moved event business
 		if(lastmovedeventid){
 			let lastmoveditem = calendar.events.find(d => d.id == lastmovedeventid)
 			if(lastmoveditem){
 				//unlock tasks that conflict with moved event
-				let conflicts = getconflictingevent(iteratedevents, lastmoveditem)
-				for(let tempitem of conflicts){
-					if(tempitem.type != 1) continue
-					tempitem.autoschedulelocked = false
+				let conflicts = getconflictingevent(iteratedevents, lastmoveditem, true)
+				for(let tempdata of conflicts){
+					if(tempdata[0].type == 1){
+						tempdata[0].autoschedulelocked = false
+					}
 				}
 
 				//lock tasks that are moved to conflict
 				if(lastmoveditem.type == 1){
-					if(conflicts.find(d => d.type == 0)){
+					if(conflicts.length > 0){
 						lastmoveditem.autoschedulelocked = true
+					}else{
+						lastmoveditem.autoschedulelocked = false
 					}
 				}
 			}
 
 			lastmovedeventid = null
 		}
-
 
 		
 		//check for todos that are currently being done - don't reschedule first one
@@ -14227,10 +14247,16 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 						}
 					}
 
-
 					//start after date - when dragged
 					if(item.startafter.year != null && item.startafter.month != null && item.startafter.day != null && item.startafter.minute != null){
 						startafterdate = new Date(item.startafter.year, item.startafter.month, item.startafter.day, 0, item.startafter.minute)
+					}
+
+					//fix start after date - can't be before NOW
+					let tempstartafterdate = new Date()
+					tempstartafterdate.setMinutes(ceil(tempstartafterdate.getMinutes(), 5), 0, 0)
+					if(startafterdate.getTime() < tempstartafterdate.getTime()){
+						startafterdate.setTime(tempstartafterdate)
 					}
 
 
@@ -14251,6 +14277,12 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 						if(childindex != -1){
 							percentrange = (1 + childindex)/Calendar.Event.getSubtasks(Calendar.Event.getMainTask(item)).length * 0.9 //evenly space out sub tasks, finish by 90% of range
 						}
+					}
+
+
+					//move to asap for manually moved tasks
+					if(item.startafter.year != null && item.startafter.month != null && item.startafter.day != null && item.startafter.minute != null){
+						percentrange = 0
 					}
 
 					//calc day index
@@ -14281,7 +14313,13 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 			//fix conflicts
 			let donesmartevents = []
-			smartevents = smartevents.sort((a, b) => getcalculatedpriority(b) - getcalculatedpriority(a)).sort((a, b) => b.autoschedulelocked - a.autoschedulelocked).sort((a, b) => (moveditem && moveditem.id == b.id) - (moveditem && moveditem.id == a.id))
+			smartevents = smartevents.sort((a, b) => getcalculatedpriority(b) - getcalculatedpriority(a)).sort((a, b) => {
+				let nowdate = new Date()
+				let effectivestartafterdateA = a.startafter.year != null && a.startafter.month != null && a.startafter.day != null && a.startafter.minute != null ? new Date(a.startafter.year, a.startafter.month, a.startafter.day, 0, a.startafter.minute) : nowdate
+				let effectivestartafterdateB = b.startafter.year != null && b.startafter.month != null && b.startafter.day != null && b.startafter.minute != null ? new Date(b.startafter.year, b.startafter.month, b.startafter.day, 0, b.startafter.minute) : nowdate
+
+				return effectivestartafterdateA.getTime() - effectivestartafterdateB.getTime()
+			}).sort((a, b) => b.autoschedulelocked - a.autoschedulelocked).sort((a, b) => (moveditem && moveditem.id == b.id) - (moveditem && moveditem.id == a.id))
 
 			for (let item of smartevents) {
 				donesmartevents.push(item)
@@ -14302,15 +14340,11 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 					}
 
 					let temp = getconflictingevent(tempiteratedevents, item)
-					let conflictitem, spacing, isoverlap;
-					if(temp) [conflictitem, spacing, isoverlap] = temp
+					let conflictitem, spacing;
+					if(temp) [conflictitem, spacing] = temp
 					if (conflictitem) {
 						if(item.autoschedulelocked){
-							if(moveditem && conflictitem.id == moveditem.id && isoverlap){
-								fixconflict(item, conflictitem, spacing)
-							}else{
-								break
-							}
+							break
 						}else{
 							fixconflict(item, conflictitem, spacing)
 						}
@@ -16355,6 +16389,8 @@ function clickevent(event, timestamp) {
 
 		editeventid = null
 		calendar.updateEvents()
+
+		calendar.updateHistory()
 	}
 }
 
