@@ -12538,8 +12538,59 @@ async function submitaimessage(optionalinput){
 						responsechatmessage.message = `Done! I have created an event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
+
+						function gettimeoptions(amount){
+							function gettextfromavailabletime(timestamp){
+								const now = new Date()
+								const date = new Date(timestamp)
+						
+								const nowday = new Date(now)
+								nowday.setHours(0,0,0,0)
+								const dateday = new Date(date)
+								dateday.setHours(0,0,0,0)
+						
+								function timeOfDay(hour) {
+									if (hour < 12) return 'morning'
+									if (hour < 18) return 'afternoon'
+									return 'evening'
+								}
+						
+								const today = nowday.getTime() == dateday.getTime()
+						
+								const tomorrowday = new Date(nowday)
+								tomorrowday.setDate(tomorrowday.getDate() + 1)
+								const isTomorrow = tomorrowday.getTime() == dateday.getTime()
+						
+								if (today) {
+									return `This ${timeOfDay(date.getHours())}`
+								} else if (isTomorrow) {
+									return `Tomorrow ${timeOfDay(date.getHours())}`
+								} else {
+									return `${DAYLIST[date.getDay()]} ${timeOfDay(date.getHours())}`
+								}
+							}
+
+							let output = []
+							
+							let tempdate = new Date()
+							tempdate.setMinutes(0,0,0)
+
+							while(output.length < amount){
+								let tempoutput = gettextfromavailabletime(tempdate)
+								if(!output.includes(tempoutput)){
+									output.push(tempoutput)
+								}
+
+								tempdate.setHours(tempdate.getHours() + 1)
+							}
+
+							return output
+						}
+
+						let timeoptions = gettimeoptions(3)
+
 						responsechatmessage.message = `What time do you want "${title}" to take place?`
-						responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Auto schedule')">Auto schedule</div>`]
+						responsechatmessage.nextactions = [...timeoptions.map(d => `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('${d}')">${d}</div>`), `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Auto schedule')">Auto schedule</div>`]
 					}
 				}else if(output.command == 'create_events'){
 					let arguments = output.arguments
@@ -12744,7 +12795,56 @@ async function submitaimessage(optionalinput){
 
 						startAutoSchedule({eventsuggestiontodos: [item]})
 
-						responsechatmessage.message = `Done! I added your task "${Calendar.Event.getTitle(item)}" to your calendar. It will be auto-scheduled by the app's AI.`
+						
+						function gettimeoptions(){
+							function gettextfromavailabletime(timestamp){
+								const now = new Date()
+								const date = new Date(timestamp)
+						
+								const nowday = new Date(now)
+								nowday.setHours(0,0,0,0)
+								const dateday = new Date(date)
+								dateday.setHours(0,0,0,0)
+						
+								function timeOfDay(hour) {
+									if (hour < 12) return 'morning'
+									if (hour < 18) return 'afternoon'
+									return 'evening'
+								}
+						
+								const today = nowday.getTime() == dateday.getTime()
+						
+								const tomorrowday = new Date(nowday)
+								tomorrowday.setDate(tomorrowday.getDate() + 1)
+								const isTomorrow = tomorrowday.getTime() == dateday.getTime()
+						
+								if (today) {
+									return `This ${timeOfDay(date.getHours())}`
+								} else if (isTomorrow) {
+									return `Tomorrow ${timeOfDay(date.getHours())}`
+								} else {
+									return `${DAYLIST[date.getDay()]} ${timeOfDay(date.getHours())}`
+								}
+							}
+
+							let output = []
+							
+							let tempdate = new Date()
+							tempdate.setMinutes(0,0,0)
+
+							while(output.length < 3){
+								let tempoutput = gettextfromavailabletime(tempdate)
+								if(!output.includes(tempoutput)){
+									output.push(tempoutput)
+								}
+
+								tempdate.setHours(tempdate.getHours() + 1)
+							}
+
+							return output
+						}
+
+						responsechatmessage.message = `Done! I added your task "${Calendar.Event.getTitle(item)}" to your calendar. It will be auto-scheduled for the optimal time.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
 						responsechatmessage.message = `What time do you want ${title} to be due?`
@@ -14151,6 +14251,9 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				if(lastmoveditem.type == 1){
 					if(conflicts.length > 0){
 						lastmoveditem.autoschedulelocked = true
+
+						let newdate = new Date()
+						[lastmoveditem.startafter.year, lastmoveditem.startafter.month, lastmoveditem.startafter.day, lastmoveditem.startafter.minute] = [newdate.getFullYear(), newdate.getMonth(), newdate.getDate(), newdate.getHours() * 60 + newdate.getMinutes()];
 					}else{
 						lastmoveditem.autoschedulelocked = false
 					}
@@ -14828,7 +14931,15 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			useWorker: true
 		})
 
-		let confettievents = modifiedevents.filter(d => !eventsuggestiontodos.find(g => g.id == d.id))
+		let confettievents = modifiedevents.filter(d => !eventsuggestiontodos.find(g => g.id == d.id)).filter(d => {
+			let newitem = newcalendarevents.find(f => f.id == d.id)
+			let olditem = oldcalendarevents.find(f => f.id == d.id)
+
+			let oldstartdate = new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute)
+			let newstartdate = new Date(newitem.start.year, newitem.start.month, newitem.start.day, 0, newitem.start.minute)
+
+			return Math.abs(newstartdate.getTime() - oldstartdate.getTime()) > 30*1000*60
+		})
 		let promises = []
 		for (let item of confettievents) {
 			let itemelement = getElement(item.id)
@@ -16583,6 +16694,7 @@ function clickeventbottom(event, timestamp) {
 	if (item.end.minute == 0) {
 		selectedeventdate.setDate(selectedeventdate.getDate() - 1)
 	}
+	selectedeventdatetime = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 
 	selectedeventinitialy = event.clientY
 
@@ -16603,8 +16715,23 @@ function clickeventbottom(event, timestamp) {
 	function finishfunction() {
 		document.removeEventListener("mousemove", moveeventbottom, false)
 		document.removeEventListener("mouseup", finishfunction, false)
-		movingevent = false
-		calendar.updateInfo(false, true)
+	
+
+		//set startafter date for auto schedule
+		if (item.type == 1) {
+			let currentdatemodified = new Date()
+			currentdatemodified.setSeconds(0,0)
+
+			let newstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+			if (newstartdate.getTime() != selectedeventdatetime.getTime() && selectedeventdatetime.getTime() >= currentdatemodified) {
+				lastmovedeventid = item.id;
+				[item.startafter.year, item.startafter.month, item.startafter.day, item.startafter.minute] = [item.start.year, item.start.month, item.start.day, item.start.minute];
+
+				calendar.updateInfo(true)
+			}
+			
+		}
+
 
 		//open edit schedule popup
 		if(iseditingschedule){
@@ -16615,8 +16742,14 @@ function clickeventbottom(event, timestamp) {
 			selectedeventid = null
 		}
 
+
+		movingevent = false
+		calendar.updateInfo(false, true)
+
 		editeventid = null
 		calendar.updateEvents()
+
+		calendar.updateHistory()
 	}
 }
 
@@ -16634,6 +16767,7 @@ function clickeventtop(event, timestamp) {
 
 	selectedeventfromdate = new Date(timestamp)
 	selectedeventdate = new Date(item.start.year, item.start.month, item.start.day)
+	selectedeventdatetime = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 
 	selectedeventinitialy = event.clientY
 
@@ -16654,8 +16788,22 @@ function clickeventtop(event, timestamp) {
 	function finishfunction() {
 		document.removeEventListener("mousemove", moveeventtop, false);
 		document.removeEventListener("mouseup", finishfunction, false);
-		movingevent = false
-		calendar.updateInfo(false, true)
+
+		//set startafter date for auto schedule
+		if (item.type == 1) {
+			let currentdatemodified = new Date()
+			currentdatemodified.setSeconds(0,0)
+
+			let newstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+			if (newstartdate.getTime() != selectedeventdatetime.getTime() && selectedeventdatetime.getTime() >= currentdatemodified) {
+				lastmovedeventid = item.id;
+				[item.startafter.year, item.startafter.month, item.startafter.day, item.startafter.minute] = [item.start.year, item.start.month, item.start.day, item.start.minute];
+
+				calendar.updateInfo(true)
+			}
+			
+		}
+
 
 		//open edit schedule popup
 		if(iseditingschedule){
@@ -16666,8 +16814,13 @@ function clickeventtop(event, timestamp) {
 			selectedeventid = null
 		}
 
+		movingevent = false
+		calendar.updateInfo(false, true)
+
 		editeventid = null
 		calendar.updateEvents()
+
+		calendar.updateHistory()
 	}
 }
 
