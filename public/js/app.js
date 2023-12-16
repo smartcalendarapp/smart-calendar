@@ -908,6 +908,13 @@ class Calendar {
 				minute: endminute,
 			}
 
+			this.startafter = {
+				year: null,
+				month: null,
+				day: null,
+				minute: null,
+			}
+
 			this.id = generateID()
 			this.calendarid = null
 			this.googleeventid = null
@@ -7955,7 +7962,7 @@ function submitschedulemytasks() {
 
 
 
-function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], moveditemtimestamp, moveditem}) {
+async function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], moveditemtimestamp, moveditem}) {
 	if (isautoscheduling == true) return
 
 	let oldcalendartabs = [...calendartabs]
@@ -8011,7 +8018,7 @@ function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], moved
 	}
 
 	//start
-	autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos, eventsuggestiontodos: eventsuggestiontodos, moveditemtimestamp: moveditemtimestamp, moveditem: moveditem })
+	await autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos, eventsuggestiontodos: eventsuggestiontodos, moveditemtimestamp: moveditemtimestamp, moveditem: moveditem })
 
 	if(openaichatboolean){
 		requestAnimationFrame(function(){	
@@ -12012,7 +12019,7 @@ function openaichat(){
 			let chatinteraction = new ChatInteraction()
 			let responsechatmessage = new ChatMessage({
 				role: 'assistant',
-				message: `Hello, I am Athena, your assistant for productivity! I can schedule meetings for you,  plan your tasks, rearrange your schedule, and more! Ask me any time.`
+				message: `Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, plan your tasks, rearrange your schedule, and more! Ask me any time.`
 			})
 
 			function getRandomItems(arr, num) {
@@ -12027,9 +12034,8 @@ function openaichat(){
 			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, 
 			/*`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Which task should I work on?')">Which task should I work on?</div>`,*/
 			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan my day for success')">Help me plan my day for success</div>`,
-			/*`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my to do list for today?')">What's on my to do list for today?</div>`,
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Break down my tasks into manageable pieces')">Break down my to-do list tasks into manageable pieces</div>`*/
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('I have a task to work on...')">I have a task to work on...</div>`]
+			/*`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my to do list for today?')">What's on my to do list for today?</div>`,*/
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`]
 
 			responsechatmessage.nextactions = getRandomItems(tempoptions, 3)
 	
@@ -12530,7 +12536,7 @@ async function submitaimessage(optionalinput){
 						responsechatmessage.message = `Done! I have created an event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
-						responsechatmessage.message = `What time do you want "${Calendar.Event.getTitle(item)}" take place?`
+						responsechatmessage.message = `What time do you want "${title}" take place?`
 						responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Pick for me')">Pick for me</div>`]
 					}
 				}else if(output.command == 'create_events'){
@@ -12650,7 +12656,9 @@ async function submitaimessage(optionalinput){
 
 								item.title = newtitle || item.title
 
-								item.autoschedulelocked = true
+								lastmovedeventid = item.id
+								[item.startafter.year, item.startafter.month, item.startafter.day, item.startafter.minute] = [item.start.year, item.start.month, item.start.day, item.start.minute]
+
 
 								selectedeventid = null
 								calendar.updateInfo()
@@ -12673,9 +12681,6 @@ async function submitaimessage(optionalinput){
 								}
 								responsechatmessage.message = tempmsg
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
-								responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Pick for me')">Pick for me</div>`]
-
-								startAutoSchedule({ moveditem: item, moveditemtimestamp: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute) })
 							}
 						}else{
 							responsechatmessage.message = `I could not find that event, could you please tell me more?`
@@ -12735,13 +12740,13 @@ async function submitaimessage(optionalinput){
 						item.duration = duration
 						calendar.todos.push(item)
 
-						startAutoSchedule({eventsuggestiontodos: [item]})
+						await startAutoSchedule({eventsuggestiontodos: [item]})
 
 
-						responsechatmessage.message = `Done! I added your task "${Calendar.Todo.getTitle(item)}" to your calendar, due ${Calendar.Event.getDueText(item)}.`
+						responsechatmessage.message = `Done! I added your task "${Calendar.Todo.getTitle(item)}" to your calendar at ${Calendar.Event.getStartText(item)}.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
-						responsechatmessage.message = `What time do you want ${Calendar.Todo.getTitle(item)} to be due?`
+						responsechatmessage.message = `What time do you want ${title} to be due?`
 						responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Pick for me')">Pick for me</div>`]
 					}
 				}else if(output.command == 'create_tasks'){
@@ -14111,6 +14116,29 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		})
 
 
+
+		if(lastmovedeventid){
+			let lastmoveditem = calendar.events.find(d => d.id == lastmovedeventid)
+			if(lastmoveditem){
+				//unlock tasks that conflict with moved event
+				let conflicts = getconflictingevent(iteratedevents, lastmoveditem)
+				for(let tempitem of conflicts){
+					if(tempitem.type != 1) continue
+					tempitem.autoschedulelocked = false
+				}
+
+				//lock tasks that are moved to conflict
+				if(lastmoveditem.type == 1){
+					if(conflicts.filter(d => d.type == 0)){
+						lastmoveditem.autoschedulelocked = true
+					}
+				}
+			}
+
+			lastmovedeventid = null
+		}
+
+
 		
 		//check for todos that are currently being done - don't reschedule first one
 		let doingtodos = sortstartdate(smartevents).filter(d => !d.iseventsuggestion && new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now() && !getconflictingevent(iteratedevents, d) && (!moveditem || d.id != moveditem.id))
@@ -14197,6 +14225,12 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 							let previoustodo = relatedtodos[currentindex - 1]
 							startafterdate.setTime(Math.max(startafterdate.getTime(), new Date(previoustodo.endbefore.year, previoustodo.endbefore.month, previoustodo.endbefore.day, 0, previoustodo.endbefore.minute).getTime()))
 						}
+					}
+
+
+					//start after date - when dragged
+					if(item.startafter.year != null && item.startafter.month != null && item.startafter.day != null && item.startafter.minute != null){
+						startafterdate = new Date(item.startafter.year, item.startafter.month, item.startafter.day, 0, item.startafter.minute)
 					}
 
 
@@ -15039,7 +15073,10 @@ function editschedulemoveevent(id, timestamp){
 	let item = calendar.events.find(d => d.id == id)
 	if(!item) return
 
-	item.autoschedulelocked = true
+	let movedate = new Date(timestamp)
+
+	lastmovedeventid = item.id
+	[item.startafter.year, item.startafter.month, item.startafter.day, item.startafter.minute] = [movedate.getFullYear(), movedate.getMonth(), movedate.getDate(), movedate.getHours() * 60 + movedate.getMinutes()]
 	
 	closescheduleeditorpopup()
 
@@ -15068,7 +15105,8 @@ function editschedulepopuppostpone(id, addedminutes){
 	let newdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 	newdate.setMinutes(newdate.getMinutes() + addedminutes)
 
-	item.autoschedulelocked = true
+	lastmovedeventid = item.id
+	[item.startafter.year, item.startafter.month, item.startafter.day, item.startafter.minute] = [newdate.getFullYear(), newdate.getMonth(), newdate.getDate(), newdate.getHours() * 60 + newdate.getMinutes()]
 	
 	closescheduleeditorpopup()
 
@@ -16288,14 +16326,16 @@ function clickevent(event, timestamp) {
 		document.removeEventListener("mousemove", moveevent, false)
 		document.removeEventListener("mouseup", finishfunction, false)
 
-		//lock auto schedule
+		//set startafter date for auto schedule
 		if (item.type == 1) {
 			let currentdatemodified = new Date()
 			currentdatemodified.setSeconds(0,0)
 
 			let newstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 			if (newstartdate.getTime() != selectedeventdatetime.getTime() && selectedeventdatetime.getTime() >= currentdatemodified) {
-				item.autoschedulelocked = true
+				lastmovedeventid = item.id
+				[item.startafter.year, item.startafter.month, item.startafter.day, item.startafter.minute] = [item.start.year, item.start.month, item.start.day, item.start.minute]
+
 				calendar.updateInfo(true)
 			}
 			
@@ -16350,6 +16390,7 @@ function clickborder(event, id, timestamp) {
 
 //move event
 let updatedeventsaftermove = false
+let lastmovedeventid;
 function moveevent(event) {
 	editeventid = selectedeventid
 	movingevent = true
@@ -16411,6 +16452,8 @@ function moveevent(event) {
 	item.iseventsuggestion = false
 
 	showeventinfolater = false
+
+	lastmovedeventid = item.id
 
 
 	item.start.minute = tempdate1.getHours() * 60 + tempdate1.getMinutes()
@@ -16644,6 +16687,8 @@ function moveeventbottom(event) {
 
 	showeventinfolater = false
 
+	lastmovedeventid = item.id
+
 
 	if (tempdate1.getTime() - tempdate2.getTime() < 15 * 60000 && tempdate1.getTime() - tempdate2.getTime() >= 0) {
 		tempdate1.setTime(tempdate2.getTime() + 15 * 60000)
@@ -16727,6 +16772,8 @@ function moveeventtop(event) {
 	item.iseventsuggestion = false
 
 	showeventinfolater = false
+
+	lastmovedeventid = item.id
 
 
 	if (tempdate1.getTime() - tempdate2.getTime() > -15 * 60000 && tempdate1.getTime() - tempdate2.getTime() <= 0) {
