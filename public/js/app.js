@@ -12032,10 +12032,12 @@ function openaichat(){
 			
 			const tempoptions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my agenda for today?')">What's on my agenda today?</div>`,
 			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, 
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`,
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Reschedule an event for me')">Reschedule an event for me</div>`]
+
 			/*`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Which task should I work on?')">Which task should I work on?</div>`,*/
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan my day for success')">Help me plan my day for success</div>`,
+			/*`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan my day for success')">Help me plan my day for success</div>`,*/
 			/*`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my to do list for today?')">What's on my to do list for today?</div>`,*/
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`]
 
 			responsechatmessage.nextactions = getRandomItems(tempoptions, 3)
 	
@@ -14974,7 +14976,7 @@ function openscheduleeditorpopup(id){
 		let output = []
 		output.push(`
 		<div class="flex-column display-flex gap-6px">
-			<div class="text-16px text-primary">Move to:</div>
+			<div class="text-16px text-primary">Reschedule to:</div>
 			<div class="display-flex flex-row flex-wrap-wrap gap-12px">
 
 				<div class="text-14px display-flex flex-row gap-6px align-center text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px ${!item.autoschedulelocked ? `selectedbuttonactive` : ''}" onclick="editschedulemoveeventauto('${item.id}')">
@@ -15362,7 +15364,7 @@ function openreschedulepopup(id){
 	let output = []
 	output.push(`
 	<div class="flex-column display-flex gap-12px">
-		<div class="text-18px text-primary">Move to:</div>
+		<div class="text-18px text-primary">Reschedule to:</div>
 		<div class="display-flex flex-row flex-wrap-wrap gap-12px">
 
 			<div class="text-14px display-flex flex-row gap-6px align-center text-primary background-tint-1 hover:background-tint-2 transition-duration-100 pointer border-round padding-6px-12px ${!item.autoschedulelocked ? `selectedbuttonactive` : ''}" onclick="editschedulemoveeventauto('${item.id}')">

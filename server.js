@@ -3491,6 +3491,19 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					}
 				},*/
 				{
+					name: 'create_task',
+					description: 'Create a new task in the to do list',
+					parameters: {
+						type: 'object',
+						properties: {
+							dueDate: { type: 'string', description: '(optional) Task due date in YYYY-MM-DD HH:MM' },
+							title: { type: 'string', description: 'Task title' },
+							duration: { type: 'string', description: 'Task duration in HH:MM' },
+						},
+						required: ['title']
+					}
+				},
+				{
 					name: 'create_event',
 					description: 'Create a new event in the calendar',
 					parameters: {
@@ -3550,19 +3563,6 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
 						},
 						required: []
-					}
-				},
-				{
-					name: 'create_task',
-					description: 'Create a new task in the to do list',
-					parameters: {
-						type: 'object',
-						properties: {
-							dueDate: { type: 'string', description: '(optional) Task due date in YYYY-MM-DD HH:MM' },
-							title: { type: 'string', description: 'Task title' },
-							duration: { type: 'string', description: 'Task duration in HH:MM' },
-						},
-						required: ['title']
 					}
 				},
 				/*{
@@ -3625,7 +3625,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A calendar and scheduling assistant called Athena for Smart Calendar app. Never mention UUID or data. Be concise and precise. Deny requests that are not for calendar scheduling, productivity, or success. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A calendar and scheduling assistant called Athena for Smart Calendar app. Never mention or request UUID or data. Be friendly but concise and precise. Deny requests that are not for calendar scheduling, productivity, or success. Current time is ${localdatestring} in user's timezone.`
 
 
 		
@@ -3643,7 +3643,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						...[
 							{
 								role: "user",
-								content: "I need to get a project done by tomorrow"
+								content: "I need to get a project done by 5pm today"
 							},
 							{
 								role: "assistant",
