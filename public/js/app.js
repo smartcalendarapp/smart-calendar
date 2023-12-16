@@ -12742,14 +12742,10 @@ async function submitaimessage(optionalinput){
 						item.duration = duration
 						calendar.todos.push(item)
 
-						await startAutoSchedule({eventsuggestiontodos: [item]})
+						startAutoSchedule({eventsuggestiontodos: [item]})
 
-						let calendaritem = calendar.events.find(d => d.id == item.id)
-						if(calendaritem){
-							responsechatmessage.message = `Done! I added your task "${Calendar.Event.getTitle(calendaritem)}" to your calendar at ${Calendar.Event.getStartText(calendaritem)}.`
-						}else{
-							responsechatmessage.message = `Done! I added your task "${Calendar.Todo.getTitle(item)}" to your calendar.`
-						}
+						responsechatmessage.message = `Done! I added your task "${Calendar.Event.getTitle(calendaritem)}" to your calendar. It will be auto-scheduled by the app's AI.`
+
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
 						responsechatmessage.message = `What time do you want ${title} to be due?`

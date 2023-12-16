@@ -3643,7 +3643,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						...[
 							{
 								role: "user",
-								content: "I need to get a task done by tomorrow"
+								content: "I need to [get task done, work on task, etc] by [time or date]"
 							},
 							{
 								role: "assistant",
@@ -3679,7 +3679,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					functions: [
 						{
 							name: "app_action",
-							description: "Return app command if detected in prompt. If none, but you need calendar or event data, return 'get_calendar_events'"/*"Return app command if detected in prompt. If none, but you need calendar or event data, return 'get_calendar_events', and if you need to do list or task data, return 'get_todo_list_tasks'"*/,
+							description: "Return app command if detected in prompt. If none, but you need calendar or event data, return 'get_calendar_events'."/*"Return app command if detected in prompt. If none, but you need calendar or event data, return 'get_calendar_events', and if you need to do list or task data, return 'get_todo_list_tasks'"*/,
 							parameters: {
 								type: "object",
 								properties: {
