@@ -2024,7 +2024,7 @@ class Calendar {
 											</g>
 											</g>
 										</svg>	
-										<span class="tooltiptextleft text-left">Event: a fixed-time commitment.<br>Task: auto-scheduled by our app<br>for the optimal time.</span>
+										<span class="tooltiptextleft text-left">Event: fixed-time commitment.<br>Task: flexible time, auto-scheduled by<br>the app for the optimal time.</span>
 									</div>
 								</div>
 							</div>
@@ -12539,7 +12539,7 @@ async function submitaimessage(optionalinput){
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
 						responsechatmessage.message = `What time do you want "${title}" to take place?`
-						responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`]
+						responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Auto schedule')">Auto schedule</div>`]
 					}
 				}else if(output.command == 'create_events'){
 					let arguments = output.arguments
@@ -12715,7 +12715,7 @@ async function submitaimessage(optionalinput){
 							responsechatmessage.message = `I could not find that event, could you please tell me more?`
 						}
 					}
-				}else if(output.command == 'create_flexible_event'){
+				}else if(output.command == 'create_auto_scheduled_event'){
 					let arguments = output.arguments
 
 					let title = arguments?.title || ''
@@ -12744,8 +12744,7 @@ async function submitaimessage(optionalinput){
 
 						startAutoSchedule({eventsuggestiontodos: [item]})
 
-						responsechatmessage.message = `Done! I added your task "${Calendar.Event.getTitle(calendaritem)}" to your calendar. It will be auto-scheduled by the app's AI.`
-
+						responsechatmessage.message = `Done! I added your task "${Calendar.Event.getTitle(item)}" to your calendar. It will be auto-scheduled by the app's AI.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
 						responsechatmessage.message = `What time do you want ${title} to be due?`
