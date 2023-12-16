@@ -3491,7 +3491,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					}
 				},*/
 				{
-					name: 'create_task',
+					name: 'create_task_in_calendar',
 					description: 'Create a new task in the to do list',
 					parameters: {
 						type: 'object',
@@ -3617,7 +3617,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				}*/
 			]
 
-			const customfunctions = ['create_events', 'create_event', 'delete_event', 'modify_event', 'create_tasks','create_task', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_events', 'create_event', 'delete_event', 'modify_event', 'create_tasks','create_task_in_calendar', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'auto_schedule_tasks'] //a subset of all functions, the functions that need todo data
 
@@ -3651,7 +3651,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								function_call: {
 									name: "app_action",
 									arguments: JSON.stringify({
-										command: 'create_task'
+										command: 'create_task_in_calendar'
 									})
 								}
 							},
@@ -3666,20 +3666,6 @@ app.post('/getgptchatinteraction', async (req, res) => {
 									name: "app_action",
 									arguments: JSON.stringify({
 										command: 'modify_event'
-									})
-								}
-							},
-							{
-								role: "user",
-								content: "Schedule my task"
-							},
-							{
-								role: "assistant",
-								content: null,
-								function_call: {
-									name: "app_action",
-									arguments: JSON.stringify({
-										command: 'auto_schedule_tasks'
 									})
 								}
 							},

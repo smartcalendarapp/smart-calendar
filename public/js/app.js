@@ -12715,7 +12715,7 @@ async function submitaimessage(optionalinput){
 							responsechatmessage.message = `I could not find that event, could you please tell me more?`
 						}
 					}
-				}else if(output.command == 'create_task'){
+				}else if(output.command == 'create_task_in_calendar'){
 					let arguments = output.arguments
 
 					let title = arguments?.title || ''
