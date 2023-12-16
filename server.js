@@ -3625,7 +3625,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A calendar and scheduling assistant called Athena for Smart Calendar app. Never mention UUID or data. Be concise and precise. Deny requests that are not for calendar scheduling or productivity. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A calendar and scheduling assistant called Athena for Smart Calendar app. Never mention UUID or data. Be concise and precise. Deny requests that are not for calendar scheduling, productivity, or success. Current time is ${localdatestring} in user's timezone.`
 
 
 		

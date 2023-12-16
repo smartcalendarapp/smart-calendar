@@ -12506,7 +12506,7 @@ async function submitaimessage(optionalinput){
 					let arguments = output.arguments
 
 					let title = arguments?.title || ''
-					let startminute = getMinute(arguments?.startDate).value
+					let startminute = getMinute(arguments?.startDate).value || 9*60
 					let [startyear, startmonth, startday] = getDate(arguments?.startDate).value
 					let endminute = getMinute(arguments?.endDate)
 					let [endyear, endmonth, endday] = getDate(arguments?.endDate).value
@@ -12536,7 +12536,7 @@ async function submitaimessage(optionalinput){
 						responsechatmessage.message = `Done! I have created an event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
-						responsechatmessage.message = `What time do you want "${title}" take place?`
+						responsechatmessage.message = `What time do you want "${title}" to take place?`
 						responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Pick for me')">Pick for me</div>`]
 					}
 				}else if(output.command == 'create_events'){
@@ -12548,7 +12548,7 @@ async function submitaimessage(optionalinput){
 
 						for(let tempitem of arguments.events){
 							let title = tempitem?.title
-							let startminute = getMinute(tempitem?.startDate).value
+							let startminute = getMinute(tempitem?.startDate).value || 9*60
 							let [startyear, startmonth, startday] = getDate(tempitem?.startDate).value
 							let endminute = getMinute(tempitem?.endDate)
 							let [endyear, endmonth, endday] = getDate(tempitem?.endDate).value
@@ -12742,8 +12742,12 @@ async function submitaimessage(optionalinput){
 
 						await startAutoSchedule({eventsuggestiontodos: [item]})
 
-
-						responsechatmessage.message = `Done! I added your task "${Calendar.Todo.getTitle(item)}" to your calendar at ${Calendar.Event.getStartText(item)}.`
+						let calendaritem = calendar.events.find(d => d.id == item.id)
+						if(calendaritem){
+							responsechatmessage.message = `Done! I added your task "${Calendar.Event.getTitle(calendaritem)}" to your calendar at ${Calendar.Event.getStartText(calendaritem)}.`
+						}else{
+							responsechatmessage.message = `Done! I added your task "${Calendar.Todo.getTitle(item)}" to your calendar.`
+						}
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
 						responsechatmessage.message = `What time do you want ${title} to be due?`
