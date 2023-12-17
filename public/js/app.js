@@ -7755,10 +7755,6 @@ function inputsettingssleepstart(event) {
 		calendar.settings.sleep.startminute = mystartminute
 	}
 
-	let sleepduration = (calendar.settings.sleep.endminute - calendar.settings.sleep.startminute + 1440) % 1440
-	if(sleepduration > 720){
-		[calendar.settings.sleep.endminute, calendar.settings.sleep.startminute] = [calendar.settings.sleep.startminute, calendar.settings.sleep.endminute];
-	}
 	
 	calendar.updateSettings()
 	calendar.updateHistory()
@@ -7771,10 +7767,6 @@ function inputsettingssleepend(event) {
 	if (myendminute != null) {
 		calendar.settings.sleep.endminute = myendminute
 	}
-	let sleepduration = (calendar.settings.sleep.endminute - calendar.settings.sleep.startminute + 1440) % 1440
-	if(sleepduration > 720){
-		[calendar.settings.sleep.endminute, calendar.settings.sleep.startminute] = [calendar.settings.sleep.startminute, calendar.settings.sleep.endminute];
-	}//here2
 
 	calendar.updateSettings()
 	calendar.updateHistory()
@@ -12780,7 +12772,10 @@ async function submitaimessage(optionalinput){
 								item.title = newtitle || item.title
 
 								lastmovedeventid = item.id;
-								[item.startafter.year, item.startafter.month, item.startafter.day, item.startafter.minute] = [item.start.year, item.start.month, item.start.day, item.start.minute];
+								item.startafter.year = item.start.year;
+								item.startafter.month = item.start.month;
+								item.startafter.day = item.start.day;
+								item.startafter.minute = item.start.minute;
 
 
 								selectedeventid = null
@@ -14324,8 +14319,11 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 					if(conflicts.length > 0){
 						lastmoveditem.autoschedulelocked = true
 
-						let newdate = new Date()
-						[lastmoveditem.startafter.year, lastmoveditem.startafter.month, lastmoveditem.startafter.day, lastmoveditem.startafter.minute] = [newdate.getFullYear(), newdate.getMonth(), newdate.getDate(), newdate.getHours() * 60 + newdate.getMinutes()];
+						let newdate = new Date();
+						lastmoveditem.startafter.year = newdate.getFullYear()
+						lastmoveditem.startafter.month = newdate.getMonth()
+						lastmoveditem.startafter.day = newdate.getDate()
+						lastmoveditem.startafter.minute = newdate.getHours() * 60 + newdate.getMinutes()
 					}else{
 						lastmoveditem.autoschedulelocked = false
 					}
@@ -15294,7 +15292,11 @@ function editschedulemoveevent(id, timestamp){
 	let movedate = new Date(timestamp)
 
 	lastmovedeventid = item.id;
-	[item.startafter.year, item.startafter.month, item.startafter.day, item.startafter.minute] = [movedate.getFullYear(), movedate.getMonth(), movedate.getDate(), movedate.getHours() * 60 + movedate.getMinutes()];
+	item.startafter.year = movedate.getFullYear();
+	item.startafter.month = movedate.getMonth();
+	item.startafter.day = movedate.getDate();
+	item.startafter.minute = movedate.getHours() * 60 + movedate.getMinutes()
+
 	
 	closescheduleeditorpopup()
 
@@ -15328,7 +15330,11 @@ function editschedulepopuppostpone(id, addedminutes){
 	newdate.setMinutes(newdate.getMinutes() + addedminutes)
 
 	lastmovedeventid = item.id;
-	[item.startafter.year, item.startafter.month, item.startafter.day, item.startafter.minute] = [newdate.getFullYear(), newdate.getMonth(), newdate.getDate(), newdate.getHours() * 60 + newdate.getMinutes()];
+	item.startafter.year = newdate.getFullYear();
+	item.startafter.month = newdate.getMonth();
+	item.startafter.day = newdate.getDate();
+	item.startafter.minute = newdate.getHours() * 60 + newdate.getMinutes();
+
 	
 	closescheduleeditorpopup()
 
@@ -16556,7 +16562,11 @@ function clickevent(event, timestamp) {
 			let newstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 			if (newstartdate.getTime() != selectedeventdatetime.getTime() && selectedeventdatetime.getTime() >= currentdatemodified) {
 				lastmovedeventid = item.id;
-				[item.startafter.year, item.startafter.month, item.startafter.day, item.startafter.minute] = [item.start.year, item.start.month, item.start.day, item.start.minute];
+				item.startafter.year = item.start.year;
+				item.startafter.month = item.start.month;
+				item.startafter.day = item.start.day;
+				item.startafter.minute = item.start.minute;
+
 
 				calendar.updateInfo(true)
 			}
@@ -16801,7 +16811,11 @@ function clickeventbottom(event, timestamp) {
 			let newstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 			if (newstartdate.getTime() != selectedeventdatetime.getTime() && selectedeventdatetime.getTime() >= currentdatemodified) {
 				lastmovedeventid = item.id;
-				[item.startafter.year, item.startafter.month, item.startafter.day, item.startafter.minute] = [item.start.year, item.start.month, item.start.day, item.start.minute];
+				item.startafter.year = item.start.year;
+				item.startafter.month = item.start.month;
+				item.startafter.day = item.start.day;
+				item.startafter.minute = item.start.minute;
+
 
 				calendar.updateInfo(true)
 			}
@@ -16873,7 +16887,11 @@ function clickeventtop(event, timestamp) {
 			let newstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 			if (newstartdate.getTime() != selectedeventdatetime.getTime() && selectedeventdatetime.getTime() >= currentdatemodified) {
 				lastmovedeventid = item.id;
-				[item.startafter.year, item.startafter.month, item.startafter.day, item.startafter.minute] = [item.start.year, item.start.month, item.start.day, item.start.minute];
+				item.startafter.year = item.start.year;
+				item.startafter.month = item.start.month;
+				item.startafter.day = item.start.day;
+				item.startafter.minute = item.start.minute;
+
 
 				calendar.updateInfo(true)
 			}
