@@ -1304,6 +1304,7 @@ class Calendar {
 				if (smartschedule != false) {
 					if (JSON.stringify(neweventsdata) != JSON.stringify(oldeventsdata)) {
 						needtoautoschedule = true
+						needtoupdateeventstatus = true
 					}
 				}
 
@@ -1741,36 +1742,8 @@ class Calendar {
 	}
 
 
-	updateEventStatus(){
-		let eventstatus = getElement('eventstatus')
-		
-		let startrange = new Date()
-		let endrange = new Date()
-		endrange.setHours(0,0,0,0)
-		endrange.setDate(endrange.getDate() + 1)
-
-		let sortedevents = sortstartdate(getevents(startrange, endrange))
-		
-		let nowevents = sortedevents.filter(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now())
-
-		if(nowevents[0]){
-			let nowitem = nowevents[0]
-
-			let difference = Math.floor((Date.now() - new Date(nowitem.start.year, nowitem.start.month, nowitem.start.day, 0, nowitem.start.minute).getTime()) / 60000)
-			eventstatus.innerHTML = `<div class="text-12px text-quaternary">Now: <span class="text-primary">${Calendar.Event.getTitle(nowitem)}</span> • ${getDHMText(Math.abs(difference))} left</div>`
-		}else if(sortedevents[0]){
-			let nextitem = sortedevents[0]
-			let difference = Math.floor((Date.now() - new Date(nextitem.start.year, nextitem.start.month, nextitem.start.day, 0, nextitem.start.minute).getTime()) / 60000)
-
-			eventstatus.innerHTML = `<div class="text-12px text-quaternary">Coming up: <span class="text-primary">${Calendar.Event.getTitle(nextitem)}</span> • ${getDHMText(Math.abs(difference))}</div>`
-		}else{
-			eventstatus.innerHTML = `<div class="text-12px text-quaternary">No more events today</div>`
-		}
-	}
-
 	updateEvents() {
 		this.updateAnimatedEvents()
-		this.updateEventStatus()
 
 		if (calendarmode == 0 || calendarmode == 1) {
 			function getConflictingData(temp1, data, strict) {
@@ -4048,6 +4021,7 @@ async function setclientdata() {
 let lastupdateminute = new Date().getMinutes()
 let lastupdatedate = new Date().getDate()
 let needtoautoschedule = false
+let needtoupdateeventstatus = false
 function updatetime() {
 	let currentdate = new Date()
 
@@ -4099,7 +4073,7 @@ function updatetime() {
 	}
 
 	//show social media
-	if(calendar.todos.length > 2 && clientinfo.createddate && Date.now() - clientinfo.createddate > 1000*3600 && new Date().getMinutes() % 3 == 0 && Object.values(calendar.onboarding).every(d => d == true) && Object.values(calendar.interactivetour).every(d => d == true)){
+	if(calendar.todos.length > 2 && Date.now() - clientinfo.createddate > 1000*3600 && new Date().getMinutes() % 3 == 0 && Object.values(calendar.onboarding).every(d => d == true) && Object.values(calendar.interactivetour).every(d => d == true)){
 		//showsocialmediapopup = true
 		//here3
 	}
@@ -4442,9 +4416,58 @@ function run() {
 
 	setInterval(async function(){
 		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && !isautoscheduling && selectededittodoid == null){
-			geteventsuggestion()
+			//geteventsuggestion()
 		}
 	}, 1000)
+
+
+	setInterval(async function(){
+		if(document.visibilityState === 'visible' && needtoupdateeventstatus){
+			let eventstatus = getElement('eventstatus')
+
+			if(Date.now() - clientinfo.createddate > 1000*60*15){
+				eventstatus.classList.remove('display-none')
+			}else{
+				eventstatus.classList.add('display-none')
+			}
+			
+			let startrange = new Date()
+			let endrange = new Date()
+			endrange.setHours(0,0,0,0)
+			endrange.setDate(endrange.getDate() + 1)
+
+			let sortedevents = sortstartdate(getevents(startrange, endrange))
+			
+			let nowevents = sortedevents.filter(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now())
+
+			eventstatus.classList.remove('eventstatusblue')
+			eventstatus.classList.remove('eventstatusgreen')
+
+			if(nowevents[0]){
+				eventstatus.classList.add('eventstatusgreen')
+
+				let nowitem = nowevents[0]
+
+				let difference = Math.floor((Date.now() - new Date(nowitem.start.year, nowitem.start.month, nowitem.start.day, 0, nowitem.start.minute).getTime()) / 60000)
+				eventstatus.innerHTML = `<div class="text-12px text-quaternary">Now:</div><div class="text-primary pointer pointer-auto text-12px overflowtextelipses hover:text-quaternary transition-duration-100" onclick="gototaskincalendar('${nowitem.id}')">${Calendar.Event.getTitle(nowitem)}</div><div class="text-12px text-quaternary">• ${getDHMText(Math.abs(difference))} left</div>`
+			}else if(sortedevents[0]){
+				let nextitem = sortedevents[0]
+				let difference = Math.floor((Date.now() - new Date(nextitem.start.year, nextitem.start.month, nextitem.start.day, 0, nextitem.start.minute).getTime()) / 60000)
+	
+				if(Math.abs(difference) < 60){
+					eventstatus.classList.add('eventstatusblue')
+
+					eventstatus.innerHTML = `<div class="text-12px text-quaternary">Up next:</div><div class="text-primary pointer text-12px pointer-auto overflowtextelipses hover:text-quaternary transition-duration-100" onclick="gototaskincalendar('${nextitem.id}')"> ${Calendar.Event.getTitle(nextitem)}</div><div class="text-12px text-quaternary">• in ${getDHMText(Math.abs(difference))}</div>`
+				}else{
+					eventstatus.innerHTML = `<div class="text-12px text-quaternary">No events for a while`
+				}
+			}else{
+				eventstatus.innerHTML = `<div class="text-12px text-quaternary">No more events today!</div>`
+			}
+
+			needtoupdateeventstatus = false
+		}
+	}, 3000)
 
 
 
@@ -4482,6 +4505,7 @@ function run() {
 
 	setTimeout(function(){
 		needtoautoschedule = true
+		needtoupdateeventstatus = true
 	}, 3000)
 
 
@@ -7725,6 +7749,12 @@ function inputsettingssleepstart(event) {
 	if (mystartminute != null) {
 		calendar.settings.sleep.startminute = mystartminute
 	}
+
+	let sleepduration = (calendar.settings.sleep.endminute - calendar.settings.sleep.startminute + 1440) % 1440
+	if(sleepduration > 720){
+		[calendar.settings.sleep.endminute, calendar.settings.sleep.startminute] = [calendar.settings.sleep.startminute, calendar.settings.sleep.endminute];
+	}
+	
 	calendar.updateSettings()
 	calendar.updateHistory()
 }
@@ -7736,6 +7766,11 @@ function inputsettingssleepend(event) {
 	if (myendminute != null) {
 		calendar.settings.sleep.endminute = myendminute
 	}
+	let sleepduration = (calendar.settings.sleep.endminute - calendar.settings.sleep.startminute + 1440) % 1440
+	if(sleepduration > 720){
+		[calendar.settings.sleep.endminute, calendar.settings.sleep.startminute] = [calendar.settings.sleep.startminute, calendar.settings.sleep.endminute];
+	}//here2
+
 	calendar.updateSettings()
 	calendar.updateHistory()
 }
