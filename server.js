@@ -3491,7 +3491,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					}
 				},*/
 				{
-					name: 'create_auto_scheduled_event',
+					name: 'create_task',
 					description: 'Create an event in the calendar, auto-scheduled by the app',
 					parameters: {
 						type: 'object',
@@ -3617,7 +3617,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				}*/
 			]
 
-			const customfunctions = ['create_events', 'create_event', 'delete_event', 'modify_event', 'create_tasks','create_auto_scheduled_event', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_events', 'create_event', 'delete_event', 'modify_event', 'create_tasks','create_task', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'auto_schedule_tasks'] //a subset of all functions, the functions that need todo data
 
@@ -3643,7 +3643,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						...[
 							{
 								role: "user",
-								content: "I need to work on project by 6pm tomorrow"
+								content: "I need to finish project by 6pm tomorrow"
 							},
 							{
 								role: "assistant",
@@ -3651,7 +3651,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								function_call: {
 									name: "app_action",
 									arguments: JSON.stringify({
-										command: 'create_auto_scheduled_event'
+										command: 'create_task'
 									})
 								}
 							},

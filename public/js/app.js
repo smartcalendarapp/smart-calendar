@@ -4442,13 +4442,14 @@ function run() {
 
 			eventstatus.classList.remove('eventstatusblue')
 			eventstatus.classList.remove('eventstatusgreen')
+			eventstatus.classList.remove('bordertertiary')
 
 			if(nowevents[0]){
 				eventstatus.classList.add('eventstatusgreen')
 
 				let nowitem = nowevents[0]
 
-				let difference = Math.floor((Date.now() - new Date(nowitem.start.year, nowitem.start.month, nowitem.start.day, 0, nowitem.start.minute).getTime()) / 60000)
+				let difference = Math.floor((Date.now() - new Date(nowitem.end.year, nowitem.end.month, nowitem.end.day, 0, nowitem.end.minute).getTime()) / 60000)
 				eventstatus.innerHTML = `<div class="text-12px text-quaternary">Now:</div><div class="text-primary pointer pointer-auto text-12px overflowtextelipses hover:text-quaternary transition-duration-100" onclick="gototaskincalendar('${nowitem.id}')">${Calendar.Event.getTitle(nowitem)}</div><div class="text-12px text-quaternary">• ${getDHMText(Math.abs(difference))} left</div>`
 			}else if(sortedevents[0]){
 				let nextitem = sortedevents[0]
@@ -4459,9 +4460,13 @@ function run() {
 
 					eventstatus.innerHTML = `<div class="text-12px text-quaternary">Up next:</div><div class="text-primary pointer text-12px pointer-auto overflowtextelipses hover:text-quaternary transition-duration-100" onclick="gototaskincalendar('${nextitem.id}')"> ${Calendar.Event.getTitle(nextitem)}</div><div class="text-12px text-quaternary">• in ${getDHMText(Math.abs(difference))}</div>`
 				}else{
+					eventstatus.classList.add('bordertertiary')
+
 					eventstatus.innerHTML = `<div class="text-12px text-quaternary">No events for a while`
 				}
 			}else{
+				eventstatus.classList.add('bordertertiary')
+
 				eventstatus.innerHTML = `<div class="text-12px text-quaternary">No more events today!</div>`
 			}
 
@@ -12831,7 +12836,7 @@ async function submitaimessage(optionalinput){
 							responsechatmessage.message = `I could not find that event, could you please tell me more?`
 						}
 					}
-				}else if(output.command == 'create_auto_scheduled_event'){
+				}else if(output.command == 'create_task'){
 					let arguments = output.arguments
 
 					let title = arguments?.title || ''
