@@ -1741,8 +1741,36 @@ class Calendar {
 	}
 
 
+	updateEventStatus(){
+		let eventstatus = getElement('eventstatus')
+		
+		let startrange = new Date()
+		let endrange = new Date()
+		endrange.setHours(0,0,0,0)
+		endrange.setDate(endrange.getDate() + 1)
+
+		let sortedevents = sortstartdate(getevents(startrange, endrange))
+		
+		let nowevents = sortedevents.filter(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now())
+
+		if(nowevents[0]){
+			let nowitem = nowevents[0]
+
+			let difference = Math.floor((Date.now() - new Date(nowitem.start.year, nowitem.start.month, nowitem.start.day, 0, nowitem.start.minute).getTime()) / 60000)
+			eventstatus.innerHTML = `<div class="text-12px text-quaternary">Now: <span class="text-primary">${Calendar.Event.getTitle(nowitem)}</span> • ${getDHMText(Math.abs(difference))} left</div>`
+		}else if(sortedevents[0]){
+			let nextitem = sortedevents[0]
+			let difference = Math.floor((Date.now() - new Date(nextitem.start.year, nextitem.start.month, nextitem.start.day, 0, nextitem.start.minute).getTime()) / 60000)
+
+			eventstatus.innerHTML = `<div class="text-12px text-quaternary">Coming up: <span class="text-primary">${Calendar.Event.getTitle(nextitem)}</span> • ${getDHMText(Math.abs(difference))}</div>`
+		}else{
+			eventstatus.innerHTML = `<div class="text-12px text-quaternary">No more events today</div>`
+		}
+	}
+
 	updateEvents() {
 		this.updateAnimatedEvents()
+		this.updateEventStatus()
 
 		if (calendarmode == 0 || calendarmode == 1) {
 			function getConflictingData(temp1, data, strict) {
@@ -2769,6 +2797,10 @@ class Calendar {
 				}
 
 				lastduedate = tempduedate
+
+				if(i == 0){
+					output.push(`<div class="align-self-flex-end popupbutton text-secondary text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">We'd love your feedback</div>`)
+				}
 			}
 
 			for (let i = 0; i < notduetodos.length; i++) {
@@ -2788,9 +2820,6 @@ class Calendar {
 				}
 			}
 
-			if(output.length > 0){
-				output.push(`<div class="align-self-flex-end popupbutton text-secondary text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">We'd love your feedback</div>`)
-			}
 
 		}
 
@@ -4071,7 +4100,8 @@ function updatetime() {
 
 	//show social media
 	if(calendar.todos.length > 2 && clientinfo.createddate && Date.now() - clientinfo.createddate > 1000*3600 && new Date().getMinutes() % 3 == 0 && Object.values(calendar.onboarding).every(d => d == true) && Object.values(calendar.interactivetour).every(d => d == true)){
-		showsocialmediapopup = true
+		//showsocialmediapopup = true
+		//here3
 	}
 }
 
@@ -12179,7 +12209,7 @@ class ChatMessage {
 
 }
 
-//here3
+
 
 
 let chathistory = new ChatInterface()
@@ -13705,6 +13735,9 @@ function getevents(startrange, endrange, filterevents) {
 				}
 			}
 
+			let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
+
+
 			for (let repeatindex of byday) {
 				let repeatstartdate = new Date(itemstartdate.getTime())
 				if (item.repeat.frequency == 1) {
@@ -13717,21 +13750,20 @@ function getevents(startrange, endrange, filterevents) {
 				while (repeatstartdate.getTime() < maxdate.getTime()) {
 					//create
 					if (counter % item.repeat.interval == 0) {
-						let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 						let repeatenddate = new Date(repeatstartdate.getTime() + duration)
 
-						let repeatitem = deepCopy(item)
-						repeatitem.start.year = repeatstartdate.getFullYear()
-						repeatitem.start.month = repeatstartdate.getMonth()
-						repeatitem.start.day = repeatstartdate.getDate()
-						repeatitem.start.minute = repeatstartdate.getHours() * 60 + repeatstartdate.getMinutes()
-
-						repeatitem.end.year = repeatenddate.getFullYear()
-						repeatitem.end.month = repeatenddate.getMonth()
-						repeatitem.end.day = repeatenddate.getDate()
-						repeatitem.end.minute = repeatenddate.getHours() * 60 + repeatenddate.getMinutes()
-
 						if (!startrange || !endrange || (repeatenddate.getTime() > startrange.getTime() && repeatstartdate.getTime() < endrange.getTime())) {
+							let repeatitem = deepCopy(item)
+							repeatitem.start.year = repeatstartdate.getFullYear()
+							repeatitem.start.month = repeatstartdate.getMonth()
+							repeatitem.start.day = repeatstartdate.getDate()
+							repeatitem.start.minute = repeatstartdate.getHours() * 60 + repeatstartdate.getMinutes()
+
+							repeatitem.end.year = repeatenddate.getFullYear()
+							repeatitem.end.month = repeatenddate.getMonth()
+							repeatitem.end.day = repeatenddate.getDate()
+							repeatitem.end.minute = repeatenddate.getHours() * 60 + repeatenddate.getMinutes()
+
 							output.push(repeatitem)
 						}
 					}
@@ -15235,6 +15267,10 @@ function editschedulemoveeventauto(id){
 	if(!item) return
 
 	item.autoschedulelocked = false
+	item.startafter.year = null
+	item.startafter.month = null
+	item.startafter.day = null
+	item.startafter.minute = null
 
 	closescheduleeditorpopup()
 
