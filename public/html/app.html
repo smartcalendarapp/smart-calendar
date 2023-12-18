@@ -449,95 +449,94 @@
 	</div>
 
 
-	
-	<div class="helpmenu border-box feedbackpopupheight small:width-full hiddenpopup popup z-index-10000 padding-12px gap-12px max-width-400px" id="feedbackpopup">
-		<div class="display-flex flex-row justify-space-between align-center">
-
-			<div>
-				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-				<g>
-				</g>
-				</svg>
-			</div>
-			
-			<div class="infotitle text-center">Help us revolutionize AI scheduling!<br><span class="text-14px text-quaternary">(and maybe win 1 month of premium!)</span></div>
-
-			<div class="infotoprightgroup">
-				<div class="infotopright pointer" onclick="closefeedbackpopup(event)">
+	<div class="backdrop-blur fadetransition hiddenfade top-0 left-0 display-flex border-box z-index-10000 align-center justify-center width-full height-full" id="feedbackpopupcontainer">
+		<div class="borderbottom helpmenu border-box small:border-0 feedbackpopupheight gap-12px max-width-500px height-full width-full">
+			<div class="display-flex flex-row justify-space-between padding-12px align-center">
+				<div>
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 					<g>
-					<g opacity="1">
-					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-					</g>
 					</g>
 					</svg>
 				</div>
+				
+				<div class="infotitle text-center">Please tell us your candid feedback<br><span class="text-14px text-quaternary">(with a chance at winning 1 month of premium)</span></div>
+
+				<div class="infotoprightgroup">
+					<div class="infotopright pointer" onclick="closefeedbackpopup(event)">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+						<g>
+						<g opacity="1">
+						<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+						<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+						</g>
+						</g>
+						</svg>
+					</div>
+				</div>
 			</div>
+
+			<div class="padding-left-12px padding-bottom-12px padding-right-12px display-flex flex-column gap-24px overflow-y-auto" id="feedbackpopupinputwrap">
+				<div class="text-primary text-14px white-space-normal break-word">As an early adopter, your honest feedback is VERY valuable to us. Please take only <span class="text-bold">2 min</span> to fill this out. We promise to read it ASAP.</div>
+
+				<div class="infogroup">
+					<div class="text-primary text-16px white-space-normal break-word">How useful and intuitive is our AI scheduling?</div>
+					<div class="display-flex flex-row gap-6px justify-center gap-24px" id="feedbackpopuprating">
+						<div class="hoverscale text-32px text-primary pointer transition-duration-100" onclick="clickfeedbackautoschedulerating(0)">😢</div>
+						<div class="hoverscale text-32px text-primary pointer transition-duration-100" onclick="clickfeedbackautoschedulerating(1)">😕</div>
+						<div class="hoverscale text-32px text-primary pointer transition-duration-100" onclick="clickfeedbackautoschedulerating(2)">😐</div>
+						<div class="hoverscale text-32px text-primary pointer transition-duration-100" onclick="clickfeedbackautoschedulerating(3)">🙂</div>
+						<div class="hoverscale text-32px text-primary pointer transition-duration-100" onclick="clickfeedbackautoschedulerating(4)">😄</div>
+					</div>
+					<div class="errorwrap display-none" id="feedbackpopuperrorwrap0"></div>
+				</div>
+
+				<div class="infogroup">
+					<div class="text-primary text-16px white-space-normal break-word"><span class="text-secondary">(1 of 3)</span> How could the auto-scheduling be improved, for you?</div>
+
+					<div class="inputgroupitem flex-1">
+						<textarea id="feedbackpopupmessage1" onblur="updatefeedbackpopup()" class="infoinput infonotes" placeholder="Be as descriptive or brief as you would like..." maxlength="20000"></textarea>
+						<span class="inputlinewrap">
+							<span class="inputline"></span>
+						</span>
+					</div>
+					<div class="errorwrap display-none" id="feedbackpopuperrorwrap1"></div>
+				</div>
+
+				<div class="infogroup">
+					<div class="text-primary text-16px white-space-normal break-word"><span class="text-secondary">(2 of 3)</span> Any challenges or annoyances while you use the app?</div>
+					<div class="inputgroupitem flex-1">
+						<textarea id="feedbackpopupmessage2" onblur="updatefeedbackpopup()" class="infoinput infonotes" placeholder="Any moments when something didn't meet your expectations? Tell us more..." maxlength="20000"></textarea>
+						<span class="inputlinewrap">
+							<span class="inputline"></span>
+						</span>
+					</div>
+					<div class="errorwrap display-none" id="feedbackpopuperrorwrap2"></div>
+				</div>
+
+				<div class="infogroup">
+					<div class="text-primary text-16px white-space-normal break-word"><span class="text-secondary">(3 of 3)</span> Any suggestions or other thoughts?</div>
+					<div class="inputgroupitem flex-1">
+						<textarea id="feedbackpopupmessage3" onblur="updatefeedbackpopup()" class="infoinput infonotes" placeholder="Please be specific, we'd love to understand what you're thinking..." maxlength="20000"></textarea>
+						<span class="inputlinewrap">
+							<span class="inputline"></span>
+						</span>
+					</div>
+					<div class="errorwrap display-none" id="feedbackpopuperrorwrap3"></div>
+				</div>
+				
+				
+				<div class="errorwrap display-none" id="feedbackpopuperrorwrap"></div>
+				<div class="align-self-flex-end border-round background-blue text-white padding-8px-12px pointer hover:background-blue-hover text-14px transition-duration-100" id="feedbackpopupsubmit" onclick="submitfeedbackpopup()">Submit</div>
+			</div>
+
+			<div class="display-flex flex-column gap-12px display-none" id="feedbackpopupdonewrap">
+				<div class="text-quaternary text-16px white-space-normal break-word">Thank you so much for the feedback! We'll definitely read it, and get back to you if we have any questions.<br><br>You've also been registered for the lottery for 1 month of Smart Calendar Premium! (there will be many winners!)</div>
+
+				<div class="text-center width-full border-8px background-blue text-white padding-8px-12px pointer hover:background-blue-hover text-14px transition-duration-100" onclick="closefeedbackpopup()">Done</div>
+			</div>
+
 		</div>
-
-		<div class="display-flex flex-column gap-24px overflow-y-auto" id="feedbackpopupinputwrap">
-			<div class="text-primary text-14px text-center white-space-normal break-word">As an early adopter, your honest feedback is soooo valuable to us. Please take only <span class="text-bold">2 min</span> to fill this out. We promise we'll give you back these minutes with our improved AI scheduling, thanks to your feedback!</div>
-
-			<div class="infogroup">
-				<div class="errorwrap display-none" id="feedbackpopuperrorwrap0"></div>
-				<div class="text-primary text-center text-14px white-space-normal break-word">How useful and intuitive is our AI scheduling?</div>
-				<div class="display-flex flex-row gap-6px justify-center gap-24px" id="feedbackpopuprating">
-					<div class="hoverscale text-32px text-primary pointer transition-duration-100" onclick="clickfeedbackautoschedulerating(0)">😢</div>
-					<div class="hoverscale text-32px text-primary pointer transition-duration-100" onclick="clickfeedbackautoschedulerating(1)">😕</div>
-					<div class="hoverscale text-32px text-primary pointer transition-duration-100" onclick="clickfeedbackautoschedulerating(2)">😐</div>
-					<div class="hoverscale text-32px text-primary pointer transition-duration-100" onclick="clickfeedbackautoschedulerating(3)">🙂</div>
-					<div class="hoverscale text-32px text-primary pointer transition-duration-100" onclick="clickfeedbackautoschedulerating(4)">😄</div>
-				</div>
-			</div>
-
-			<div class="infogroup">
-				<div class="text-primary text-center text-14px white-space-normal break-word">How could the auto-scheduling be improved for you?</div>
-
-				<div class="errorwrap display-none" id="feedbackpopuperrorwrap1"></div>
-				<div class="inputgroupitem flex-1">
-					<textarea id="feedbackpopupmessage1" class="infoinput infonotes" placeholder="How would you like it to work?" maxlength="20000"></textarea>
-					<span class="inputlinewrap">
-						<span class="inputline"></span>
-					</span>
-				</div>
-			</div>
-
-			<div class="infogroup">
-				<div class="text-primary text-center text-14px white-space-normal break-word">Any challenges or annoyances while you use the app?</div>
-				<div class="errorwrap display-none" id="feedbackpopuperrorwrap2"></div>
-				<div class="inputgroupitem flex-1">
-					<textarea id="feedbackpopupmessage2" class="infoinput infonotes" placeholder="Have you ever said 'ugh!' or 'umm' when using the app? Tell us more!" maxlength="20000"></textarea>
-					<span class="inputlinewrap">
-						<span class="inputline"></span>
-					</span>
-				</div>
-			</div>
-
-			<div class="infogroup">
-				<div class="text-primary text-center text-14px white-space-normal break-word">Any suggestions or other thoughts?</div>
-				<div class="errorwrap display-none" id="feedbackpopuperrorwrap3"></div>
-				<div class="inputgroupitem flex-1">
-					<textarea id="feedbackpopupmessage3" class="infoinput infonotes" placeholder="Please be specific, we'd love to understand what you're thinking" maxlength="20000"></textarea>
-					<span class="inputlinewrap">
-						<span class="inputline"></span>
-					</span>
-				</div>
-			</div>
-			
-			
-			<div class="errorwrap display-none" id="feedbackpopuperrorwrap"></div>
-			<div class="align-self-flex-end border-round background-blue text-white padding-8px-12px pointer hover:background-blue-hover text-14px transition-duration-100" onclick="submitfeedbackpopup()">Submit</div>
-		</div>
-
-		<div class="display-flex flex-column gap-12px display-none" id="feedbackpopupdonewrap">
-			<div class="text-quaternary text-14px white-space-normal break-word">Thank you so much for the feedback! We'll definitely read it, and get back to you if we have any questions.<br><br>You've also been registered for the lottery for 1 month of Smart Calendar Premium! (there will be many winners!)</div>
-
-			<div class="text-center width-full border-8px background-blue text-white padding-8px-12px pointer hover:background-blue-hover text-14px transition-duration-100" onclick="closefeedbackpopup()">Done</div>
-		</div>
-
 	</div>
-
 
 	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px max-width-400px" id="todoitemduedate">
 		<div class="display-flex flex-row justify-space-between align-center">

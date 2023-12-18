@@ -2680,9 +2680,9 @@ class Calendar {
 
 		if(calendar.closedfeedbackpopup == false && showfeedbackpopup){
 			output.push`
-			<div class="relative display-flex gap-12px align-center socialmediagradient border-16px padding-24px flex-column">
+			<div class="relative display-flex gap-12px align-center feedbackgradient border-16px padding-24px flex-column">
 				<div class="absolute top-0 right-0 margin-12px infotoprightgroup">
-					<div class="infotopright pointer" onclick="closefeedbackpopup()">
+					<div class="infotopright pointer" onclick="closefeedbackbanner()">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 						<g>
 						<g opacity="1">
@@ -2694,8 +2694,10 @@ class Calendar {
 					</div>
 				</div>
 
-				<div class="text-18px text-bold text-white text-center">Please share us your feedback! (only 2 min)</div>
-				<div class="text-14px text-white text-center">Tell us what you really think of Smart Calendar. For your valuable insights, you could win <span class="text-bold">1 month Premium access</span>!</div>
+				<div class="text-18px text-bold text-white text-center">We <span class="italics">really need</span> your feedback! (only 2 min)</div>
+				<div class="text-16px text-white text-center">Tell us what you think of Smart Calendar. You could win <span class="text-bold">1 month Premium access</span>!</div>
+
+				<div class="transition-duration-100 text-bold text-14px border-round regularwhitebutton padding-8px-16px pointer" onclick="openfeedbackpopup(event)">Share my feedback</div>
 			</div>`
 		}
 
@@ -4102,7 +4104,7 @@ function updatetime() {
 	}
 
 	//show feedback
-	if(Date.now() - clientinfo.createddate > 1000*86400 && calendar.onboarding.addtask.every(d => d == true) && calendar.todos.length > 0){
+	if(Date.now() - clientinfo.createddate > 1000*86400 && calendar.onboarding.addtask == true && calendar.todos.length > 0){
 		showfeedbackpopup = true
 	}
 }
@@ -7824,10 +7826,6 @@ function closesocialmediapopup(){
 	calendar.updateTodo()
 }
 
-function closefeedbackpopup(){
-	calendar.closedfeedbackpopup = true
-	calendar.updateTodo()
-}
 
 //HELP
 
@@ -8132,16 +8130,24 @@ async function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [],
 
 
 //FEEDBACK
+
 function closefeedbackpopup(){
-	let feedbackpopup = getElement('feedbackpopup')
-	feedbackpopup.classList.add('hiddenpopup')
+	let feedbackpopupcontainer = getElement('feedbackpopupcontainer')
+	feedbackpopupcontainer.classList.add('hiddenfade')
 }
+
+function closefeedbackbanner(){
+	calendar.closedfeedbackpopup = true
+	calendar.updateTodo()
+}
+
 let feedbackautoschedulerating;
 function clickfeedbackautoschedulerating(index){
 	feedbackautoschedulerating = index
-	updatefeedbackautoschedulerating()
+	updatefeedbackpopup()
 }
-function updatefeedbackautoschedulerating(){
+
+function updatefeedbackpopup(){
 	let feedbackpopuprating = getElement('feedbackpopuprating')
 	for(let [index, div] of Object.entries(feedbackpopuprating.children)){
 		if(feedbackautoschedulerating != null && index == feedbackautoschedulerating){
@@ -8150,10 +8156,9 @@ function updatefeedbackautoschedulerating(){
 			div.classList.remove('selectedfeedbackemoji')
 		}
 	}
-}
+	
+	let feedbackpopupsubmit = getElement('feedbackpopupsubmit')
 
-async function submitfeedbackpopup(){
-	//validate
 	let feedbackpopuperrorwrap = getElement('feedbackpopuperrorwrap')
 	let feedbackpopuperrorwrap3 = getElement('feedbackpopuperrorwrap3')
 	let feedbackpopuperrorwrap2 = getElement('feedbackpopuperrorwrap2')
@@ -8174,11 +8179,18 @@ async function submitfeedbackpopup(){
 	feedbackpopupmessage2.classList.remove('display-none')
 	feedbackpopupmessage3.classList.remove('display-none')
 
+	feedbackpopupsubmit.classList.add('display-none')
+
+
+	if(feedbackpopupmessage3.value.length > 0 && feedbackpopupmessage2.value.length > 0 && feedbackpopupmessage1.value.length > 0 && feedbackautoschedulerating){
+		feedbackpopupsubmit.classList.remove('display-none')
+	}
+
 	if(!feedbackautoschedulerating){
 		feedbackpopuperrorwrap.classList.remove('display-none')
 		feedbackpopuperrorwrap0.classList.remove('display-none')
 
-		feedbackpopuperrorwrap.innerHTML = `Please select a rating emotji above`
+		feedbackpopuperrorwrap.innerHTML = `Please select a rating emoji above`
 		feedbackpopuperrorwrap0.innerHTML = `Please select a rating`
 
 		feedbackpopupmessage1.classList.add('display-none')
@@ -8218,7 +8230,11 @@ async function submitfeedbackpopup(){
 		feedbackpopuperrorwrap3.innerHTML = `Please write a little more`
 		return
 	}
+}
 
+async function submitfeedbackpopup(){
+	//validate
+	updatefeedbackpopup()
 
 	//request
 
@@ -8239,7 +8255,7 @@ async function submitfeedbackpopup(){
 			feedbackpopupmessage3.value = ''
 
 			feedbackautoschedulerating = null
-			updatefeedbackautoschedulerating()
+			updatefeedbackpopup()
 
 
 			let feedbackpopupinputwrap = getElement('feedbackpopupinputwrap')
@@ -8270,10 +8286,8 @@ function openfeedbackpopup(event){
 	let feedbackpopuperrorwrap = getElement('feedbackpopuperrorwrap')
 	feedbackpopuperrorwrap.classList.add('display-none')
 
-	let feedbackpopup = getElement('feedbackpopup')
-	feedbackpopup.classList.toggle('hiddenpopup')
-	feedbackpopup.style.top = fixtop(button.getBoundingClientRect().top + button.getBoundingClientRect().height, feedbackpopup) + 'px'
-	feedbackpopup.style.left = fixleft(button.getBoundingClientRect().left - feedbackpopup.offsetWidth * 0.5 + button.getBoundingClientRect().width * 0.5, feedbackpopup) + 'px'
+	let feedbackpopupcontainer = getElement('feedbackpopupcontainer')
+	feedbackpopupcontainer.classList.remove('hiddenfade')
 }
 
 
