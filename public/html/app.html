@@ -450,8 +450,8 @@
 
 
 	<div class="absolute backdrop-blur fadetransition hiddenfade top-0 left-0 display-flex border-box z-index-10000 align-center justify-center width-full height-full" id="feedbackpopupcontainer">
-		<div class="borderbottom background-primary-transparent border-8px border-box small:border-0 feedbackpopupheight gap-12px max-width-500px height-full width-full">
-			<div class="display-flex flex-row justify-space-between padding-12px align-center">
+		<div class="background-primary-transparent border-16px border-box small:border-0 feedbackpopupheight gap-12px max-width-500px height-full width-full">
+			<div class="borderbottom display-flex flex-row justify-space-between padding-12px align-center">
 				<div>
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 					<g>
@@ -475,7 +475,7 @@
 				</div>
 			</div>
 
-			<div class="padding-left-12px padding-bottom-12px padding-right-12px display-flex flex-column gap-24px overflow-y-auto" id="feedbackpopupinputwrap">
+			<div class="padding-12px display-flex flex-column gap-24px overflow-y-auto" id="feedbackpopupinputwrap">
 				<div class="text-primary text-14px white-space-normal break-word">As an early adopter, your honest feedback is VERY valuable to us. Please take only <span class="text-bold">2 min</span> to fill this out. We promise to read it ASAP.</div>
 
 				<div class="infogroup">
@@ -490,7 +490,7 @@
 					<div class="errorwrap display-none" id="feedbackpopuperrorwrap0"></div>
 				</div>
 
-				<div class="infogroup">
+				<div class="infogroup" id="feedbackgroup1">
 					<div class="text-primary text-16px white-space-normal break-word"><span class="text-secondary">(1 of 3)</span> How could the auto-scheduling be improved, for you?</div>
 
 					<div class="inputgroupitem flex-1">
@@ -502,7 +502,7 @@
 					<div class="errorwrap display-none" id="feedbackpopuperrorwrap1"></div>
 				</div>
 
-				<div class="infogroup">
+				<div class="infogroup" id="feedbackgroup2">
 					<div class="text-primary text-16px white-space-normal break-word"><span class="text-secondary">(2 of 3)</span> Any challenges or annoyances while you use the app?</div>
 					<div class="inputgroupitem flex-1">
 						<textarea id="feedbackpopupmessage2" onblur="updatefeedbackpopup()" class="infoinput infonotes" placeholder="Any moments when something didn't meet your expectations? Tell us more..." maxlength="20000"></textarea>
@@ -513,7 +513,7 @@
 					<div class="errorwrap display-none" id="feedbackpopuperrorwrap2"></div>
 				</div>
 
-				<div class="infogroup">
+				<div class="infogroup" id="feedbackgroup3">
 					<div class="text-primary text-16px white-space-normal break-word"><span class="text-secondary">(3 of 3)</span> Any suggestions or other thoughts?</div>
 					<div class="inputgroupitem flex-1">
 						<textarea id="feedbackpopupmessage3" onblur="updatefeedbackpopup()" class="infoinput infonotes" placeholder="Please be specific, we'd love to understand what you're thinking..." maxlength="20000"></textarea>

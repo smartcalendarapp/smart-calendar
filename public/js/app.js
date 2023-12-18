@@ -8183,6 +8183,10 @@ function updatefeedbackpopup(){
 
 	feedbackpopupsubmit.classList.add('display-none')
 
+	let feedbackgroup1 = getElement('feedbackgroup1')
+	let feedbackgroup2 = getElement('feedbackgroup2')
+	let feedbackgroup3 = getElement('feedbackgroup3')
+
 
 	if(feedbackpopupmessage3.value.length > 0 && feedbackpopupmessage2.value.length > 0 && feedbackpopupmessage1.value.length > 0 && feedbackautoschedulerating){
 		feedbackpopupsubmit.classList.remove('display-none')
@@ -8195,9 +8199,9 @@ function updatefeedbackpopup(){
 		feedbackpopuperrorwrap.innerHTML = `Please select a rating emoji above`
 		feedbackpopuperrorwrap0.innerHTML = `Please select a rating`
 
-		feedbackpopupmessage1.classList.add('display-none')
-		feedbackpopupmessage2.classList.add('display-none')
-		feedbackpopupmessage3.classList.add('display-none')
+		feedbackgroup1.classList.add('display-none')
+		feedbackgroup2.classList.add('display-none')
+		feedbackgroup3.classList.add('display-none')
 		return
 	}
 
@@ -8208,8 +8212,8 @@ function updatefeedbackpopup(){
 		feedbackpopuperrorwrap.innerHTML = `Please write more above`
 		feedbackpopuperrorwrap1.innerHTML = `Please write a little more`
 
-		feedbackpopupmessage2.classList.add('display-none')
-		feedbackpopupmessage3.classList.add('display-none')
+		feedbackgroup2.classList.add('display-none')
+		feedbackgroup3.classList.add('display-none')
 		return
 	}
 
@@ -8220,7 +8224,7 @@ function updatefeedbackpopup(){
 		feedbackpopuperrorwrap.innerHTML = `Please write more above`
 		feedbackpopuperrorwrap2.innerHTML = `Please write a little more`
 
-		feedbackpopupmessage3.classList.add('display-none')
+		feedbackgroup3.classList.add('display-none')
 		return
 	}
 
@@ -8265,6 +8269,9 @@ async function submitfeedbackpopup(){
 
 			feedbackpopupinputwrap.classList.add('display-none')
 			feedbackpopupdonewrap.classList.remove('display-none')
+
+			calendar.closedfeedbackpopup = true
+			calendar.updateTodo()
 		}else{
 			let data = await response.json()
 
