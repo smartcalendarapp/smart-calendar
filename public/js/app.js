@@ -4105,7 +4105,9 @@ function updatetime() {
 
 	//show feedback
 	if(Date.now() - clientinfo.createddate > 1000*86400 && calendar.onboarding.addtask == true && calendar.todos.length > 0){
-		showfeedbackpopup = true
+		if(clientinfo.google_email.includes('james.ts')){
+			showfeedbackpopup = true
+		}
 	}
 }
 
