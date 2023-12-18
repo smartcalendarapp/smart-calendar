@@ -449,7 +449,8 @@
 	</div>
 
 
-	<div class="helpmenu border-box small:width-full hiddenpopup popup z-index-10000 padding-12px gap-12px max-width-300px" id="feedbackpopup">
+	
+	<div class="helpmenu border-box feedbackpopupheight small:width-full hiddenpopup popup z-index-10000 padding-12px gap-12px max-width-400px" id="feedbackpopup">
 		<div class="display-flex flex-row justify-space-between align-center">
 
 			<div>
@@ -459,7 +460,7 @@
 				</svg>
 			</div>
 			
-			<div class="infotitle">Feedback</div>
+			<div class="infotitle text-center">Help us revolutionize AI scheduling!<br><span class="text-14px text-quaternary">(and maybe win 1 month of premium!)</span></div>
 
 			<div class="infotoprightgroup">
 				<div class="infotopright pointer" onclick="closefeedbackpopup(event)">
@@ -475,25 +476,62 @@
 			</div>
 		</div>
 
-		<div class="display-flex flex-column gap-12px" id="feedbackpopupinputwrap">
-			<div class="text-primary text-14px white-space-normal break-word">We're counting on your honest feedback to improve Smart Calendar. Please let us know what you think.</div>
+		<div class="display-flex flex-column gap-24px overflow-y-auto" id="feedbackpopupinputwrap">
+			<div class="text-primary text-14px text-center white-space-normal break-word">As an early adopter, your honest feedback is soooo valuable to us. Please take only <span class="text-bold">2 min</span> to fill this out. We promise we'll give you back these minutes with our improved AI scheduling, thanks to your feedback!</div>
 
-			<div class="display-flex flex-column gap-6px">
-				<div class="errorwrap display-none" id="feedbackpopuperrorwrap"></div>
+			<div class="infogroup">
+				<div class="errorwrap display-none" id="feedbackpopuperrorwrap0"></div>
+				<div class="text-primary text-center text-14px white-space-normal break-word">How useful and intuitive is our AI scheduling?</div>
+				<div class="display-flex flex-row gap-6px justify-center gap-24px" id="feedbackpopuprating">
+					<div class="hoverscale text-32px text-primary pointer transition-duration-100" onclick="clickfeedbackautoschedulerating(0)">😢</div>
+					<div class="hoverscale text-32px text-primary pointer transition-duration-100" onclick="clickfeedbackautoschedulerating(1)">😕</div>
+					<div class="hoverscale text-32px text-primary pointer transition-duration-100" onclick="clickfeedbackautoschedulerating(2)">😐</div>
+					<div class="hoverscale text-32px text-primary pointer transition-duration-100" onclick="clickfeedbackautoschedulerating(3)">🙂</div>
+					<div class="hoverscale text-32px text-primary pointer transition-duration-100" onclick="clickfeedbackautoschedulerating(4)">😄</div>
+				</div>
+			</div>
 
+			<div class="infogroup">
+				<div class="text-primary text-center text-14px white-space-normal break-word">How could the auto-scheduling be improved for you?</div>
+
+				<div class="errorwrap display-none" id="feedbackpopuperrorwrap1"></div>
 				<div class="inputgroupitem flex-1">
-					<textarea id="feedbackpopupmessage" class="infoinput infonotes" placeholder="Add your feedback, suggestions, or comments"  maxlength="2000"></textarea>
+					<textarea id="feedbackpopupmessage1" class="infoinput infonotes" placeholder="How would you like it to work?" maxlength="20000"></textarea>
 					<span class="inputlinewrap">
 						<span class="inputline"></span>
 					</span>
 				</div>
 			</div>
 
+			<div class="infogroup">
+				<div class="text-primary text-center text-14px white-space-normal break-word">Any challenges or annoyances while you use the app?</div>
+				<div class="errorwrap display-none" id="feedbackpopuperrorwrap2"></div>
+				<div class="inputgroupitem flex-1">
+					<textarea id="feedbackpopupmessage2" class="infoinput infonotes" placeholder="Have you ever said 'ugh!' or 'umm' when using the app? Tell us more!" maxlength="20000"></textarea>
+					<span class="inputlinewrap">
+						<span class="inputline"></span>
+					</span>
+				</div>
+			</div>
+
+			<div class="infogroup">
+				<div class="text-primary text-center text-14px white-space-normal break-word">Any suggestions or other thoughts?</div>
+				<div class="errorwrap display-none" id="feedbackpopuperrorwrap3"></div>
+				<div class="inputgroupitem flex-1">
+					<textarea id="feedbackpopupmessage3" class="infoinput infonotes" placeholder="Please be specific, we'd love to understand what you're thinking" maxlength="20000"></textarea>
+					<span class="inputlinewrap">
+						<span class="inputline"></span>
+					</span>
+				</div>
+			</div>
+			
+			
+			<div class="errorwrap display-none" id="feedbackpopuperrorwrap"></div>
 			<div class="align-self-flex-end border-round background-blue text-white padding-8px-12px pointer hover:background-blue-hover text-14px transition-duration-100" onclick="submitfeedbackpopup()">Submit</div>
 		</div>
 
 		<div class="display-flex flex-column gap-12px display-none" id="feedbackpopupdonewrap">
-			<div class="text-quaternary text-14px white-space-normal break-word">Thank you for the feedback! We'll get back to you if we have any questions.</div>
+			<div class="text-quaternary text-14px white-space-normal break-word">Thank you so much for the feedback! We'll definitely read it, and get back to you if we have any questions.<br><br>You've also been registered for the lottery for 1 month of Smart Calendar Premium! (there will be many winners!)</div>
 
 			<div class="text-center width-full border-8px background-blue text-white padding-8px-12px pointer hover:background-blue-hover text-14px transition-duration-100" onclick="closefeedbackpopup()">Done</div>
 		</div>
@@ -819,13 +857,13 @@
 		<div class="infogroup display-none" id="repeatweek">
 			<div class="text-primary text-14px">Repeat on</div>
 			<div class="display-flex flex-row gap-6px" id="repeatweekchildren">
-				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(0)">S</div>
-				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(1)">M</div>
-				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(2)">T</div>
-				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(3)">W</div>
-				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(4)">T</div>
-				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(5)">F</div>
-				<div class="padding-8px-12px background-tint-1 border-round hover:background-tint-2 text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(6)">S</div>
+				<div class="padding-8px-12px text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(0)">S</div>
+				<div class="padding-8px-12px text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(1)">M</div>
+				<div class="padding-8px-12px text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(2)">T</div>
+				<div class="padding-8px-12px text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(3)">W</div>
+				<div class="padding-8px-12px text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(4)">T</div>
+				<div class="padding-8px-12px text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(5)">F</div>
+				<div class="padding-8px-12px text-14px text-primary pointer transition-duration-100" onclick="clickrepeatdayofweek(6)">S</div>
 			</div>
 		</div>
 

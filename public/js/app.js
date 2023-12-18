@@ -2678,6 +2678,27 @@ class Calendar {
 	updateTodoList() {
 		let output = []
 
+		if(calendar.closedfeedbackpopup == false && showfeedbackpopup){
+			output.push`
+			<div class="relative display-flex gap-12px align-center socialmediagradient border-16px padding-24px flex-column">
+				<div class="absolute top-0 right-0 margin-12px infotoprightgroup">
+					<div class="infotopright pointer" onclick="closefeedbackpopup()">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+						<g>
+						<g opacity="1">
+						<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+						<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+						</g>
+						</g>
+						</svg>
+					</div>
+				</div>
+
+				<div class="text-18px text-bold text-white text-center">Please share us your feedback! (only 2 min)</div>
+				<div class="text-14px text-white text-center">Tell us what you really think of Smart Calendar. For your valuable insights, you could win <span class="text-bold">1 month Premium access</span>!</div>
+			</div>`
+		}
+
 		if(calendar.closedsocialmediapopup == false && showsocialmediapopup){
 			output.push(`
 			<div class="relative display-flex gap-12px align-center socialmediagradient border-16px padding-24px flex-column">
@@ -2723,6 +2744,7 @@ class Calendar {
 		}
 
 
+		let showedfeedback = false
 		if(true){
 			let mytodos = [...calendar.todos.filter(d => !d.completed && !Calendar.Todo.isSubtask(d)), ...calendar.events.filter(d => d.type == 1 && !d.completed && !Calendar.Todo.isSubtask(d))]
 
@@ -2767,13 +2789,14 @@ class Calendar {
 					</div>`)
 					tempoutput = []
 					tempoutput2 = []
+
+					if(!showedfeedback){
+						output.push(`<div class="align-self-flex-end popupbutton text-secondary text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">We'd love your feedback</div>`)
+						showedfeedback = true
+					}
 				}
 
 				lastduedate = tempduedate
-
-				if(i == 0){
-					output.push(`<div class="align-self-flex-end popupbutton text-secondary text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">We'd love your feedback</div>`)
-				}
 			}
 
 			for (let i = 0; i < notduetodos.length; i++) {
@@ -3691,6 +3714,7 @@ let autoscheduleeventslist = []
 let oldautoscheduleeventslist = []
 let newautoscheduleeventslist = []
 let showsocialmediapopup = false;
+let showfeedbackpopup = false;
 
 //new calendar
 let calendarmode = 1
@@ -3730,10 +3754,8 @@ function slideeventcurve(t){
 }
 
 function groweventcurve(t) {
-	const c1 = 1.1
-    const c3 = c1 + 1
-
-    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2)
+	//ease out cubic
+	return 1 - Math.pow(1 - t, 3);
 }
 
 
@@ -4036,6 +4058,7 @@ function updatetime() {
 		lastupdateminute = currentdate.getHours() * 60 + currentdate.getMinutes()
 
 		needtoautoschedule = true
+		needtoupdateeventstatus = true
 	}
 
 	if (currentdate.getDate() != lastupdatedate) {
@@ -4073,9 +4096,14 @@ function updatetime() {
 	}
 
 	//show social media
-	if(calendar.todos.length > 2 && Date.now() - clientinfo.createddate > 1000*3600 && new Date().getMinutes() % 3 == 0 && Object.values(calendar.onboarding).every(d => d == true) && Object.values(calendar.interactivetour).every(d => d == true)){
+	if(calendar.todos.length > 2 && Date.now() - clientinfo.createddate > 1000*3600 && new Date().getMinutes() % 3 == 0 && calendar.onboarding.addtask == true){
 		//showsocialmediapopup = true
 		//here3
+	}
+
+	//show feedback
+	if(Date.now() - clientinfo.createddate > 1000*86400 && calendar.onboarding.addtask.every(d => d == true) && calendar.todos.length > 0){
+		showfeedbackpopup = true
 	}
 }
 
@@ -7796,6 +7824,11 @@ function closesocialmediapopup(){
 	calendar.updateTodo()
 }
 
+function closefeedbackpopup(){
+	calendar.closedfeedbackpopup = true
+	calendar.updateTodo()
+}
+
 //HELP
 
 function openbottomhelpmenu(event){
@@ -8103,14 +8136,93 @@ function closefeedbackpopup(){
 	let feedbackpopup = getElement('feedbackpopup')
 	feedbackpopup.classList.add('hiddenpopup')
 }
+let feedbackautoschedulerating;
+function clickfeedbackautoschedulerating(index){
+	feedbackautoschedulerating = index
+	updatefeedbackautoschedulerating()
+}
+function updatefeedbackautoschedulerating(){
+	let feedbackpopuprating = getElement('feedbackpopuprating')
+	for(let [index, div] of Object.entries(feedbackpopuprating.children)){
+		if(feedbackautoschedulerating != null && index == feedbackautoschedulerating){
+			div.classList.add('selectedfeedbackemoji')
+		}else{
+			div.classList.remove('selectedfeedbackemoji')
+		}
+	}
+}
+
 async function submitfeedbackpopup(){
+	//validate
 	let feedbackpopuperrorwrap = getElement('feedbackpopuperrorwrap')
+	let feedbackpopuperrorwrap3 = getElement('feedbackpopuperrorwrap3')
+	let feedbackpopuperrorwrap2 = getElement('feedbackpopuperrorwrap2')
+	let feedbackpopuperrorwrap1 = getElement('feedbackpopuperrorwrap1')
+	let feedbackpopuperrorwrap0 = getElement('feedbackpopuperrorwrap0')
+
 	feedbackpopuperrorwrap.classList.add('display-none')
+	feedbackpopuperrorwrap3.classList.add('display-none')
+	feedbackpopuperrorwrap2.classList.add('display-none')
+	feedbackpopuperrorwrap1.classList.add('display-none')
+	feedbackpopuperrorwrap0.classList.add('display-none')
 
-	let feedbackpopupmessage = getElement('feedbackpopupmessage')
+	let feedbackpopupmessage2 = getElement('feedbackpopupmessage2')
+	let feedbackpopupmessage1 = getElement('feedbackpopupmessage1')
+	let feedbackpopupmessage3 = getElement('feedbackpopupmessage3')
 
-	let content = feedbackpopupmessage.value
-	if(!content) return
+	feedbackpopupmessage1.classList.remove('display-none')
+	feedbackpopupmessage2.classList.remove('display-none')
+	feedbackpopupmessage3.classList.remove('display-none')
+
+	if(!feedbackautoschedulerating){
+		feedbackpopuperrorwrap.classList.remove('display-none')
+		feedbackpopuperrorwrap0.classList.remove('display-none')
+
+		feedbackpopuperrorwrap.innerHTML = `Please select a rating emotji above`
+		feedbackpopuperrorwrap0.innerHTML = `Please select a rating`
+
+		feedbackpopupmessage1.classList.add('display-none')
+		feedbackpopupmessage2.classList.add('display-none')
+		feedbackpopupmessage3.classList.add('display-none')
+		return
+	}
+
+	if(feedbackpopupmessage1.value.length < 10){
+		feedbackpopuperrorwrap.classList.remove('display-none')
+		feedbackpopuperrorwrap1.classList.remove('display-none')
+
+		feedbackpopuperrorwrap.innerHTML = `Please write more above`
+		feedbackpopuperrorwrap1.innerHTML = `Please write a little more`
+
+		feedbackpopupmessage2.classList.add('display-none')
+		feedbackpopupmessage3.classList.add('display-none')
+		return
+	}
+
+	if(feedbackpopupmessage2.value.length < 10){
+		feedbackpopuperrorwrap.classList.remove('display-none')
+		feedbackpopuperrorwrap2.classList.remove('display-none')
+
+		feedbackpopuperrorwrap.innerHTML = `Please write more above`
+		feedbackpopuperrorwrap2.innerHTML = `Please write a little more`
+
+		feedbackpopupmessage3.classList.add('display-none')
+		return
+	}
+
+	if(feedbackpopupmessage3.value.length < 10){
+		feedbackpopuperrorwrap.classList.remove('display-none')
+		feedbackpopuperrorwrap3.classList.remove('display-none')
+
+		feedbackpopuperrorwrap.innerHTML = `Please write more above`
+		feedbackpopuperrorwrap3.innerHTML = `Please write a little more`
+		return
+	}
+
+
+	//request
+
+	let content = { autoschedulerating: feedbackautoschedulerating + 1, autoschedulemessage: feedbackpopupmessage1.value, challengesmessage: feedbackpopupmessage2.value, suggestionsmessage: feedbackpopupmessage3.value }
 
 	try{
 		const response = await fetch(`/sendmessage`, {
@@ -8121,7 +8233,14 @@ async function submitfeedbackpopup(){
 			body: JSON.stringify({ content: content })
 		})
 		if (response.status == 200) {
-			feedbackpopupmessage.value = ''
+			//reset
+			feedbackpopupmessage1.value = ''
+			feedbackpopupmessage2.value = ''
+			feedbackpopupmessage3.value = ''
+
+			feedbackautoschedulerating = null
+			updatefeedbackautoschedulerating()
+
 
 			let feedbackpopupinputwrap = getElement('feedbackpopupinputwrap')
 			let feedbackpopupdonewrap = getElement('feedbackpopupdonewrap')
@@ -12094,12 +12213,13 @@ function openaichat(){
 			
 			const tempoptions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my agenda for today?')">What's on my agenda today?</div>`,
 			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, 
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`,
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Reschedule an event for me')">Reschedule an event for me</div>`]
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`,]
 
-			/*`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Which task should I work on?')">Which task should I work on?</div>`,*/
-			/*`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan my day for success')">Help me plan my day for success</div>`,*/
-			/*`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my to do list for today?')">What's on my to do list for today?</div>`,*/
+			/*
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Reschedule an event for me')">Reschedule an event for me</div>`
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Which task should I work on?')">Which task should I work on?</div>`,
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan my day for success')">Help me plan my day for success</div>`,
+			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my to do list for today?')">What's on my to do list for today?</div>`,*/
 
 			responsechatmessage.nextactions = getRandomItems(tempoptions, 3)
 	
@@ -13368,7 +13488,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 
 	let output = ''
 	output = `
-	<div class="absolute pointer-none animatedeventwrap ${itemclasses3.join(' ')}" style="transform: ${!addedtodo ? `translateX(${percentage * difference * 100}%)` : ''} ${addedtodo ? `scale(${percentage * 100}%)` : ''};top:${mytop}px;height:${myheight}px;left:0;width:100%;">
+	<div class="absolute pointer-none animatedeventwrap ${itemclasses3.join(' ')}" style="transform: ${!addedtodo ? `translateX(${percentage * difference * 100}%)` : ''} ${addedtodo ? `translateY(${(1 - percentage) * 60}px);opacity: ${percentage}` : ''};top:${mytop}px;height:${myheight}px;left:0;width:100%;">
 		<div class="popupbutton eventwrap pointer-auto eventborder ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})" style="${!item.iseventsuggestion ? `background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`};border-color:${item.hexcolor}` : ''}">
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
@@ -14130,7 +14250,7 @@ function getconflictingevent(data, item1, allresults) {
 		let tempstartdate2 = new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute)
 		let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
 
-		let spacing = getbreaktime(item2)
+		let spacing = getbreaktime(tempstartdate1.getTime() > tempstartdate2.getTime() ? item2 : item1)
 
 		if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
 			tempoutput.push([item2, spacing])
@@ -14292,8 +14412,10 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			return getcalculatedpriority(b) - getcalculatedpriority(a)
 		})
 
+		
 
 		//unlock tasks that are locked but no conflict
+		/*
 		let lockedtasks = smartevents.filter(d => d.autoschedulelocked)
 		for(let tempitem of lockedtasks){
 			let conflictitem = getconflictingevent(iteratedevents, tempitem)
@@ -14301,11 +14423,16 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				tempitem.autoschedulelocked = false
 			}
 		}
+		*/
 
 		//last moved event business
 		if(lastmovedeventid){
 			let lastmoveditem = calendar.events.find(d => d.id == lastmovedeventid)
 			if(lastmoveditem){
+				//detect if moved event/task conflicts with an event
+				//HERE2
+
+
 				//unlock tasks that conflict with moved event
 				let conflicts = getconflictingevent(iteratedevents, lastmoveditem, true)
 				for(let tempdata of conflicts){
@@ -14314,21 +14441,22 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 					}
 				}
 
+
 				//lock tasks that are moved to conflict
 				if(lastmoveditem.type == 1){
 					if(conflicts.length > 0){
 						lastmoveditem.autoschedulelocked = true
 
-						let newdate = new Date();
-						lastmoveditem.startafter.year = newdate.getFullYear()
-						lastmoveditem.startafter.month = newdate.getMonth()
-						lastmoveditem.startafter.day = newdate.getDate()
-						lastmoveditem.startafter.minute = newdate.getHours() * 60 + newdate.getMinutes()
+						lastmoveditem.startafter.year = null
+						lastmoveditem.startafter.month = null
+						lastmoveditem.startafter.day = null
+						lastmoveditem.startafter.minute = null
 					}else{
 						lastmoveditem.autoschedulelocked = false
 					}
 				}
 			}
+
 
 			lastmovedeventid = null
 		}

@@ -1883,6 +1883,13 @@ ol{
 	transform:scale(1.2)
 }
 
+.selectedfeedbackemoji{
+	transform:scale(1.5)
+}
+.feedbackpopupheight{
+	max-height:50vh;
+}
+
 .todoitembutton {
 	height: fit-content;
 	transition: background-color 0.1s, color 0.1s, border-color 0.1s;
@@ -2295,6 +2302,10 @@ ol{
 
 .socialmediagradient{
 	background: linear-gradient(to top right, #5126ff, #7626ff);
+}
+
+.feedbackgradient{
+	background: linear-gradient(to top right, #0e9d39, #12c353);
 }
 
 .modeoptionbutton:hover {
