@@ -4105,9 +4105,7 @@ function updatetime() {
 
 	//show feedback
 	if(Date.now() - clientinfo.createddate > 1000*86400 && calendar.onboarding.addtask == true && calendar.todos.length > 0){
-		if(clientinfo?.google_email?.includes('james.ts')){
-			showfeedbackpopup = true
-		}
+		showfeedbackpopup = true
 	}
 }
 
@@ -8149,7 +8147,7 @@ function clickfeedbackautoschedulerating(index){
 	updatefeedbackpopup()
 }
 
-function updatefeedbackpopup(){
+function updatefeedbackpopup(submit){
 	let feedbackpopuprating = getElement('feedbackpopuprating')
 	for(let [index, div] of Object.entries(feedbackpopuprating.children)){
 		if(feedbackautoschedulerating != null && index == feedbackautoschedulerating){
@@ -8188,20 +8186,32 @@ function updatefeedbackpopup(){
 	let feedbackgroup3 = getElement('feedbackgroup3')
 
 
-	if(feedbackpopupmessage3.value.length > 0 && feedbackpopupmessage2.value.length > 0 && feedbackpopupmessage1.value.length > 0 && feedbackautoschedulerating){
+
+	feedbackpopuperrorwrap.innerHTML = ''
+	feedbackpopuperrorwrap3.innerHTML = ''
+	feedbackpopuperrorwrap2.innerHTML = ''
+	feedbackpopuperrorwrap1.innerHTML = ''
+	feedbackpopuperrorwrap0.innerHTML = ''
+
+
+	if(feedbackpopupmessage3.value.length > 0 && feedbackpopupmessage2.value.length > 0 && feedbackpopupmessage1.value.length > 0 && feedbackautoschedulerating != null){
 		feedbackpopupsubmit.classList.remove('display-none')
 	}
 
-	if(!feedbackautoschedulerating){
+	if(feedbackautoschedulerating == null){
 		feedbackpopuperrorwrap.classList.remove('display-none')
 		feedbackpopuperrorwrap0.classList.remove('display-none')
 
-		feedbackpopuperrorwrap.innerHTML = `Please select a rating emoji above`
-		feedbackpopuperrorwrap0.innerHTML = `Please select a rating`
+		if(submit){
+			feedbackpopuperrorwrap.innerHTML = `Please select a rating emoji above`
+			feedbackpopuperrorwrap0.innerHTML = `Please select a rating`
+		}
 
-		feedbackgroup1.classList.add('display-none')
-		feedbackgroup2.classList.add('display-none')
-		feedbackgroup3.classList.add('display-none')
+
+		feedbackgroup1.classList.add('hiddenfaderelative')
+		feedbackgroup2.classList.add('hiddenfaderelative')
+		feedbackgroup3.classList.add('hiddenfaderelative')
+
 		return
 	}
 
@@ -8209,36 +8219,58 @@ function updatefeedbackpopup(){
 		feedbackpopuperrorwrap.classList.remove('display-none')
 		feedbackpopuperrorwrap1.classList.remove('display-none')
 
-		feedbackpopuperrorwrap.innerHTML = `Please write more above`
 		feedbackpopuperrorwrap1.innerHTML = `Please write a little more`
+		if(submit){
+			feedbackpopuperrorwrap.innerHTML = `Please write more above`
+		}
 
-		feedbackgroup2.classList.add('display-none')
-		feedbackgroup3.classList.add('display-none')
+		feedbackgroup2.classList.add('hiddenfaderelative')
+		feedbackgroup3.classList.add('hiddenfaderelative')
+
 		return
+	}else{
+		feedbackgroup1.classList.remove('hiddenfaderelative')
 	}
 
 	if(feedbackpopupmessage2.value.length < 10){
 		feedbackpopuperrorwrap.classList.remove('display-none')
 		feedbackpopuperrorwrap2.classList.remove('display-none')
 
-		feedbackpopuperrorwrap.innerHTML = `Please write more above`
 		feedbackpopuperrorwrap2.innerHTML = `Please write a little more`
 
-		feedbackgroup3.classList.add('display-none')
+		if(submit){
+			feedbackpopuperrorwrap.innerHTML = `Please write more above`
+		}
+
+		feedbackgroup3.classList.add('hiddenfaderelative')
+
 		return
+	}else{
+		feedbackgroup1.classList.remove('hiddenfaderelative')
+		feedbackgroup2.classList.remove('hiddenfaderelative')
 	}
 
 	if(feedbackpopupmessage3.value.length < 10){
 		feedbackpopuperrorwrap.classList.remove('display-none')
 		feedbackpopuperrorwrap3.classList.remove('display-none')
 
-		feedbackpopuperrorwrap.innerHTML = `Please write more above`
 		feedbackpopuperrorwrap3.innerHTML = `Please write a little more`
+
+		if(submit){
+			feedbackpopuperrorwrap.innerHTML = `Please write more above`
+		}
+
 		return
+	}else{
+		feedbackgroup1.classList.remove('hiddenfade')
+		feedbackgroup2.classList.remove('hiddenfade')
+		feedbackgroup3.classList.remove('hiddenfade')
 	}
 }
 
 async function submitfeedbackpopup(){
+	let feedbackpopuperrorwrap = getElement('feedbackpopuperrorwrap')
+
 	//validate
 	updatefeedbackpopup()
 
@@ -8272,6 +8304,29 @@ async function submitfeedbackpopup(){
 
 			calendar.closedfeedbackpopup = true
 			calendar.updateTodo()
+
+
+			let confetticanvas = getElement('confetticanvas')
+			let myconfetti = confetti.create(confetticanvas, {
+				resize: true,
+				useWorker: true
+			})
+
+			await myconfetti({
+				particleCount: 100,
+				gravity: 0.8,
+				startVelocity: 30,
+				decay: 0.96,
+				ticks: 300,
+				origin: {
+					x: 0.5,
+					y: 1
+				}
+			})
+
+			try{
+				myconfetti.reset()
+			}catch(e){}
 		}else{
 			let data = await response.json()
 

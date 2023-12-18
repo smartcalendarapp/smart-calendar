@@ -450,7 +450,7 @@
 
 
 	<div class="absolute backdrop-blur fadetransition hiddenfade top-0 left-0 display-flex border-box z-index-10000 align-center justify-center width-full height-full" id="feedbackpopupcontainer">
-		<div class="background-primary-transparent border-16px border-box small:border-0 feedbackpopupheight gap-12px max-width-500px height-full width-full">
+		<div class="overflow-y-auto display-flex flex-column background-primary-transparent box-shadow border-16px border-box small:border-0 feedbackpopupheight max-width-500px height-full width-full">
 			<div class="borderbottom display-flex flex-row justify-space-between padding-12px align-center">
 				<div>
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -459,7 +459,7 @@
 					</svg>
 				</div>
 				
-				<div class="infotitle text-center">Please tell us your candid feedback<br><span class="text-14px text-quaternary">(with a chance at winning 1 month of premium)</span></div>
+				<div class="infotitle text-center">Smart Calendar feedback</div>
 
 				<div class="infotoprightgroup">
 					<div class="infotopright pointer" onclick="closefeedbackpopup(event)">
@@ -476,7 +476,10 @@
 			</div>
 
 			<div class="padding-12px display-flex flex-column gap-24px overflow-y-auto" id="feedbackpopupinputwrap">
-				<div class="text-primary text-14px white-space-normal break-word">As an early adopter, your honest feedback is VERY valuable to us. Please take only <span class="text-bold">2 min</span> to fill this out. We promise to read it ASAP.</div>
+				<div class="text-primary text-16px white-space-normal break-word">We'd love to hear your feedback as an early adopter! Please take only <span class="text-bold">2 min</span> to fill this out. We promise to read it carefully.</div>
+
+				<div class="text-primary text-16px white-space-normal break-word">PS you will be automatically entered in our lottery to win 1 month of <span class="text-bold">Smart Calendar premium</span>!</div>
+
 
 				<div class="infogroup">
 					<div class="text-primary text-16px white-space-normal break-word">How useful and intuitive is our AI scheduling?</div>
@@ -490,8 +493,8 @@
 					<div class="errorwrap display-none" id="feedbackpopuperrorwrap0"></div>
 				</div>
 
-				<div class="infogroup" id="feedbackgroup1">
-					<div class="text-primary text-16px white-space-normal break-word"><span class="text-secondary">(1 of 3)</span> How could the auto-scheduling be improved, for you?</div>
+				<div class="infogroup hiddenfaderelative fadetransition" id="feedbackgroup1">
+					<div class="text-primary text-16px white-space-normal break-word">How could the auto-scheduling be improved, for you?</div>
 
 					<div class="inputgroupitem flex-1">
 						<textarea id="feedbackpopupmessage1" onblur="updatefeedbackpopup()" class="infoinput infonotes" placeholder="Be as descriptive or brief as you would like..." maxlength="20000"></textarea>
@@ -502,8 +505,8 @@
 					<div class="errorwrap display-none" id="feedbackpopuperrorwrap1"></div>
 				</div>
 
-				<div class="infogroup" id="feedbackgroup2">
-					<div class="text-primary text-16px white-space-normal break-word"><span class="text-secondary">(2 of 3)</span> Any challenges or annoyances while you use the app?</div>
+				<div class="infogroup hiddenfaderelative fadetransition" id="feedbackgroup2">
+					<div class="text-primary text-16px white-space-normal break-word">Any challenges or annoyances while you use the app?</div>
 					<div class="inputgroupitem flex-1">
 						<textarea id="feedbackpopupmessage2" onblur="updatefeedbackpopup()" class="infoinput infonotes" placeholder="Any moments when something didn't meet your expectations? Tell us more..." maxlength="20000"></textarea>
 						<span class="inputlinewrap">
@@ -513,8 +516,8 @@
 					<div class="errorwrap display-none" id="feedbackpopuperrorwrap2"></div>
 				</div>
 
-				<div class="infogroup" id="feedbackgroup3">
-					<div class="text-primary text-16px white-space-normal break-word"><span class="text-secondary">(3 of 3)</span> Any suggestions or other thoughts?</div>
+				<div class="infogroup hiddenfaderelative fadetransition" id="feedbackgroup3">
+					<div class="text-primary text-16px white-space-normal break-word">Any suggestions or other thoughts?</div>
 					<div class="inputgroupitem flex-1">
 						<textarea id="feedbackpopupmessage3" onblur="updatefeedbackpopup()" class="infoinput infonotes" placeholder="Please be specific, we'd love to understand what you're thinking..." maxlength="20000"></textarea>
 						<span class="inputlinewrap">
@@ -529,10 +532,10 @@
 				<div class="align-self-flex-end border-round background-blue text-white padding-8px-12px pointer hover:background-blue-hover text-14px transition-duration-100" id="feedbackpopupsubmit" onclick="submitfeedbackpopup()">Submit</div>
 			</div>
 
-			<div class="display-flex flex-column gap-12px display-none" id="feedbackpopupdonewrap">
-				<div class="text-quaternary text-16px white-space-normal break-word">Thank you so much for the feedback! We'll definitely read it, and get back to you if we have any questions.<br><br>You've also been registered for the lottery for 1 month of Smart Calendar Premium! (there will be many winners!)</div>
+			<div class="padding-12px border-box display-flex flex-column gap-12px display-none" id="feedbackpopupdonewrap">
+				<div class="text-primary text-16px white-space-normal break-word">Thanks so much for the feedback! We'll definitely read it, and get back to you if we have any questions.<br><br>You've also been registered for the lottery for 1 month of Smart Calendar premium. We'll let you know if you win!</div>
 
-				<div class="text-center width-full border-8px background-blue text-white padding-8px-12px pointer hover:background-blue-hover text-14px transition-duration-100" onclick="closefeedbackpopup()">Done</div>
+				<div class="text-center border-box width-full border-8px background-blue text-white padding-8px-12px pointer hover:background-blue-hover text-14px transition-duration-100" onclick="closefeedbackpopup()">Done</div>
 			</div>
 
 		</div>

@@ -1884,7 +1884,7 @@ ol{
 }
 
 .selectedfeedbackemoji{
-	transform:scale(1.5)
+	transform:scale(1.5) !important;
 }
 .feedbackpopupheight{
 	max-height:80vh;
@@ -4310,6 +4310,14 @@ ol{
 	visibility: hidden;
 	left: -99999px !important;
 	top: -99999px !important;
+}
+
+
+
+.hiddenfaderelative {
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s;
+	opacity: 0;
+	visibility: hidden;
 }
 
 
