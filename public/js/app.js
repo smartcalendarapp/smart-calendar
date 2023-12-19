@@ -1249,7 +1249,7 @@ class Calendar {
 		aichattitle2.classList.remove('selectedbuttonunderline')
 		todolisttitle2.classList.remove('selectedbuttonunderline')
 
-		if(calendartabs.includes(0)){
+		if(calendartabs.includes(1)){
 			todolisttitle.classList.add('selectedbuttonunderline')
 			todolisttitle2.classList.add('selectedbuttonunderline')
 		}
