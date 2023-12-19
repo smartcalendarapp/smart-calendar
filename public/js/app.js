@@ -1238,6 +1238,26 @@ class Calendar {
 
 		paneldivider.classList.add('display-none')
 
+
+		let todolisttitle = getElement('todolisttitle')
+		let aichattitle = getElement('aichattitle')
+		let todolisttitle2 = getElement('todolisttitle2')
+		let aichattitle2 = getElement('aichattitle2')
+
+		aichattitle.classList.remove('selectedbuttonunderline')
+		todolisttitle.classList.remove('selectedbuttonunderline')
+		aichattitle2.classList.remove('selectedbuttonunderline')
+		todolisttitle2.classList.remove('selectedbuttonunderline')
+
+		if(calendartabs.includes(0)){
+			todolisttitle.classList.add('selectedbuttonunderline')
+			todolisttitle2.classList.add('selectedbuttonunderline')
+		}
+		if(calendartabs.includes(4)){
+			aichattitle.classList.add('selectedbuttonunderline')
+			aichattitle2.classList.add('selectedbuttonunderline')
+		}
+
 		if (calendartabs.includes(1)) {
 			resetcreatetodo()
 			updatecreatetodo()
@@ -1283,6 +1303,7 @@ class Calendar {
 		if(calendartabs.includes(4)){
 			this.updateAIAssistant()
 			aiassistantwrap.classList.remove('display-none')
+			aiassistantwrap.style.flex = '1'
 
 			aiassistanttab.classList.add('selectedbuttonunderline')
 			aiassistanttab2.classList.add('selectedbutton2')
@@ -3670,6 +3691,9 @@ function changedevicescreen(event){
 		if(calendartabs.includes(0) && calendartabs.includes(1)){
 			calendartabs = [1]
 		}
+		if(calendartabs.includes(0) && calendartabs.includes(4)){
+			calendartabs = [4]
+		}
 	}else{
 		smallscreen = false
 
@@ -3699,7 +3723,7 @@ if (mobilescreen) {
 	}catch(err){
 	}
 }
-  
+
 
 //initialize
 let historydata = []
@@ -4616,6 +4640,8 @@ function updatestatus(newstatus) {
 
 
 
+
+
 function clicktab(index) {
 	let currentdate = new Date()
 
@@ -5419,17 +5445,29 @@ function clicktakeinteractivetour() {
 
 //TABS
 function clickpaneldivider(event) {
-	let todowrap = getElement('todowrap')
+	let mywrap;
+	if(calendartabs.includes(1)){
+		mywrap = getElement('todowrap')
+	}else{
+		mywrap = getElement('aiassistantwrap')
+	}
+
 	let calendarwrap = getElement('calendarwrap')
-	todowrap.classList.add('movingpanel')
+	mywrap.classList.add('movingpanel')
 	calendarwrap.classList.add('movingpanel')
 
 	document.addEventListener("mousemove", movepaneldivider, false)
 	document.addEventListener("mouseup", finishfunction, false);
 	function finishfunction() {
-		let todowrap = getElement('todowrap')
+		let mywrap;
+		if(calendartabs.includes(1)){
+			mywrap = getElement('todowrap')
+		}else{
+			mywrap = getElement('aiassistantwrap')
+		}
+
 		let calendarwrap = getElement('calendarwrap')
-		todowrap.classList.remove('movingpanel')
+		mywrap.classList.remove('movingpanel')
 		calendarwrap.classList.remove('movingpanel')
 
 		document.removeEventListener("mousemove", movepaneldivider, false);
@@ -5439,7 +5477,12 @@ function clickpaneldivider(event) {
 
 function movepaneldivider(event) {
 	let panelwrap = getElement('panelwrap')
-	let todowrap = getElement('todowrap')
+	let mywrap;
+	if(calendartabs.includes(1)){
+		mywrap = getElement('todowrap')
+	}else{
+		mywrap = getElement('aiassistantwrap')
+	}
 	let calendarwrap = getElement('calendarwrap')
 
 	let maxwidth = panelwrap.offsetWidth
@@ -5452,7 +5495,7 @@ function movepaneldivider(event) {
 		relativex = maxwidth
 	}
 
-	todowrap.style.flex = relativex / maxwidth + ''
+	mywrap.style.flex = relativex / maxwidth + ''
 	calendarwrap.style.flex = 1 - (relativex / maxwidth) + ''
 }
 

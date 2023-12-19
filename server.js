@@ -3643,7 +3643,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						...[
 							{
 								role: "user",
-								content: "I need to [work on task, project, etc] by [date or time deadline]"
+								content: "I need to work on project by tomorrow 6pm"
 							},
 							{
 								role: "assistant",
