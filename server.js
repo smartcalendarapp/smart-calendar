@@ -3469,9 +3469,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				{
 					name: 'get_calendar_events',
 				},
-				/*{
+				{
 					name: 'get_todo_list_tasks',
-				},*/
+				},
 				/*{
 					name: 'auto_schedule_tasks',
 					description: `Auto-schedule one or multiple tasks into user's calendar. Not to be confused with create a task or create an event.`,
@@ -3587,8 +3587,8 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						required: ["tasks"]
 					}
 				},*/
-				/*{
-					name: 'delete_tasks',
+				{
+					name: 'delete_task',
 					description: 'Check for task to delete by title or direct reference. Need high confidence. Returns an error if the task does not exist.',
 					parameters: {
 						type: 'object',
@@ -3614,7 +3614,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: []
 					}
-				}*/
+				}
 			]
 
 			const customfunctions = ['create_events', 'create_event', 'delete_event', 'modify_event', 'create_tasks','create_task', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
@@ -3866,7 +3866,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			return tempoutput
 		}
 
-		function getconversationhistory(temphistory){ //cheap way for history, just send latest X messages
+		function getconversationhistory(temphistory){ //simple way for history, just send latest X messages
 			let tempoutput = []
 			let counter = 0
 			for(let interactionmessages of temphistory.reverse()){
