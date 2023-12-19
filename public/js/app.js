@@ -1197,7 +1197,7 @@ class Calendar {
 	}
 
 	//main
-	updateTabs() {
+	updateTabs(updatecalendar) {
 		//tabs
 		let summarywrap = getElement('summarywrap')
 		let calendarwrap = getElement('calendarwrap')
@@ -1273,8 +1273,9 @@ class Calendar {
 		}
 
 		if (calendartabs.includes(0)) {
-			
-			this.updateCalendar()
+			if(updatecalendar === false){
+				this.updateCalendar()
+			}
 			calendarwrap.classList.remove('display-none')
 			calendarwrap.style.flex = '2'
 
@@ -3700,6 +3701,9 @@ function changedevicescreen(event){
 		if(calendartabs.includes(0) || calendartabs.includes(1)){
 			calendartabs = [0, 1]
 		}
+		if(calendartabs.includes(4)){
+			calendartabs = [0, 4]
+		}
 	}
 	calendar.updateTabs()
 }
@@ -4660,7 +4664,7 @@ function clicktab(index) {
 		calendarday = currentdate.getDate()
 	}
 
-	calendar.updateTabs()
+	calendar.updateTabs(gototoday)
 
 	if (gototoday) {
 		let barcolumncontainer = getElement('barcolumncontainer')
@@ -8120,13 +8124,6 @@ async function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [],
 		calendar.events.push(...addedtodos)
 	}
 
-	let openaichatboolean;
-	if(calendartabs.includes(4)){
-		if(scheduletodos.length > 0){
-			openaichatboolean = true
-			calendartabs = [0, 1]
-		}
-	}
 
 	if(scheduletodos.length > 0){
 		if(mobilescreen){
@@ -8153,18 +8150,6 @@ async function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [],
 	//start
 	await autoScheduleV2({smartevents: scheduleitems, addedtodos: addedtodos, eventsuggestiontodos: eventsuggestiontodos, moveditemtimestamp: moveditemtimestamp, moveditem: moveditem })
 
-	if(openaichatboolean){
-		requestAnimationFrame(function(){	
-			let todowrap = getElement('todowrap')
-
-			let aichatwrap = getElement('aichatwrap')
-			aichatwrap.style.left = '12px'
-			aichatwrap.style.top = '72px'
-			aichatwrap.style.width = (todowrap.offsetWidth - 24) + 'px'
-
-			openaichat()
-		})
-	}
 }
 
 
@@ -11450,11 +11435,6 @@ function gototaskincalendar(id){
 	calendarmonth = item.start.month
 	calendarday = item.start.day
 
-	let openaichatboolean;
-	if(calendartabs.includes(4)){
-		openaichatboolean = true
-	}
-
 	if(mobilescreen){
 		calendartabs = [0]
 		calendar.updateTabs()
@@ -11469,19 +11449,6 @@ function gototaskincalendar(id){
 	}
 
 	scrollcalendarY(item.start.minute)
-
-	if(openaichatboolean){
-		requestAnimationFrame(function(){	
-			let todowrap = getElement('todowrap')
-
-			let aichatwrap = getElement('aichatwrap')
-			aichatwrap.style.left = '12px'
-			aichatwrap.style.top = '72px'
-			aichatwrap.style.width = (todowrap.offsetWidth - 24) + 'px'
-
-			openaichat()
-		})
-	}
 }
 
 //go to task in todo list
@@ -11489,16 +11456,12 @@ function gototaskintodolist(id){
 	let item = [...calendar.todos, ...calendar.events].find(x => x.id == id)
 	if (!item) return
 
-	let openaichatboolean;
-	if(calendartabs.includes(4)){
-		openaichatboolean = true
-	}
 
 	if(mobilescreen){
 		calendartabs = [1]
 		calendar.updateTabs()
 	}else{
-		if(!calendartabs.includes(0)){
+		if(!calendartabs.includes(1)){
 			calendartabs = [0, 1]
 			calendar.updateTabs()
 		}
@@ -11506,6 +11469,7 @@ function gototaskintodolist(id){
 
 	scrolltodoY(getElement(`todo-${item.id}`).offsetTop)
 
+	/*
 	if(openaichatboolean){
 		requestAnimationFrame(function(){
 			let calendarwrap = getElement('calendarwrap')
@@ -11518,6 +11482,7 @@ function gototaskintodolist(id){
 			openaichat()
 		})
 	}
+	*/
 }
 
 
