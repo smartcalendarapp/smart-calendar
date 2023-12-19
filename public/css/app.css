@@ -1385,10 +1385,6 @@ ol{
 	)
 }
 
-.selectedeventsugestion{
-	background-color:var(--background-tint-1);
-	background-image:none;
-}
 
 .todosuggestionwrap:hover .hovertodosuggestiongroup{
 	visibility: visible;

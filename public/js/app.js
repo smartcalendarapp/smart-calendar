@@ -8388,6 +8388,67 @@ function openfeedbackpopup(event){
 }
 
 
+
+function closefeedbackpopupmini(){
+	let feedbackpopup = getElement('feedbackpopupmini')
+	feedbackpopup.classList.add('hiddenpopup')
+}
+async function submitfeedbackpopupmini(){
+	let feedbackpopuperrorwrap = getElement('feedbackpopuperrorwrapmini')
+	feedbackpopuperrorwrap.classList.add('display-none')
+
+	let feedbackpopupmessage = getElement('feedbackpopupmessage')
+
+	let content = feedbackpopupmessage.value
+	if(!content) return
+
+	try{
+		const response = await fetch(`/sendmessage`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ content: content })
+		})
+		if (response.status == 200) {
+			feedbackpopupmessage.value = ''
+
+			let feedbackpopupinputwrap = getElement('feedbackpopupinputwrapmini')
+			let feedbackpopupdonewrap = getElement('feedbackpopupdonewrapmini')
+
+			feedbackpopupinputwrap.classList.add('display-none')
+			feedbackpopupdonewrap.classList.remove('display-none')
+		}else{
+			let data = await response.json()
+
+			feedbackpopuperrorwrap.innerHTML = data.error
+			feedbackpopuperrorwrap.classList.remove('display-none')
+		}
+	}catch(err){
+		feedbackpopuperrorwrap.innerHTML = 'Unexpected error, please try again.'
+		feedbackpopuperrorwrap.classList.remove('display-none')
+	}
+}
+function openfeedbackpopupmini(event){
+	let button = event.target
+
+	let feedbackpopupinputwrap = getElement('feedbackpopupinputwrapmini')
+	let feedbackpopupdonewrap = getElement('feedbackpopupdonewrapmini')
+
+	feedbackpopupinputwrap.classList.remove('display-none')
+	feedbackpopupdonewrap.classList.add('display-none')
+
+	let feedbackpopuperrorwrap = getElement('feedbackpopuperrorwrap')
+	feedbackpopuperrorwrap.classList.add('display-none')
+
+	let feedbackpopup = getElement('feedbackpopupmini')
+	feedbackpopup.classList.toggle('hiddenpopup')
+	feedbackpopup.style.top = fixtop(button.getBoundingClientRect().top + button.getBoundingClientRect().height, feedbackpopup) + 'px'
+	feedbackpopup.style.left = fixleft(button.getBoundingClientRect().left - feedbackpopup.offsetWidth * 0.5 + button.getBoundingClientRect().width * 0.5, feedbackpopup) + 'px'
+}
+
+
+
 //SUMMARY
 
 function getlineprogressbar(value, max) {
@@ -12278,42 +12339,40 @@ function openaichat(){
 
 	updateaichat()
 
-	setTimeout(function(){
-		if(chathistory.getInteractions() == 0){
-			let chatinteraction = new ChatInteraction()
-			let responsechatmessage = new ChatMessage({
-				role: 'assistant',
-				message: `Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, plan your tasks, rearrange your schedule, and more! Ask me any time.`
-			})
+	if(chathistory.getInteractions() == 0){
+		let chatinteraction = new ChatInteraction()
+		let responsechatmessage = new ChatMessage({
+			role: 'assistant',
+			message: `Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, plan your tasks, rearrange your schedule, and more! Ask me any time.`
+		})
 
-			function getRandomItems(arr, num) {
-				return arr
-					.map(value => ({ value, sort: Math.random() }))
-					.sort((a, b) => a.sort - b.sort)
-					.map(({ value }) => value)
-					.slice(0, num)
-			}
-			
-			const tempoptions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my agenda for today?')">What's on my agenda today?</div>`,
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is next on my agenda?')">What's next on my agenda?</div>`,
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, 
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`,]
-
-			/*
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Reschedule an event for me')">Reschedule an event for me</div>`
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Which task should I work on?')">Which task should I work on?</div>`,
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan my day for success')">Help me plan my day for success</div>`,
-			`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my to do list for today?')">What's on my to do list for today?</div>`,*/
-
-			responsechatmessage.nextactions = getRandomItems(tempoptions, 3)
-	
-			chatinteraction.addMessage(responsechatmessage)
-			
-			chathistory.addInteraction(chatinteraction)
-	
-			updateaichat()
+		function getRandomItems(arr, num) {
+			return arr
+				.map(value => ({ value, sort: Math.random() }))
+				.sort((a, b) => a.sort - b.sort)
+				.map(({ value }) => value)
+				.slice(0, num)
 		}
-	}, 1000)
+		
+		const tempoptions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my agenda for today?')">What's on my agenda today?</div>`,
+		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is next on my agenda?')">What's next on my agenda?</div>`,
+		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, 
+		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`]
+
+		/*
+		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Reschedule an event for me')">Reschedule an event for me</div>`
+		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Which task should I work on?')">Which task should I work on?</div>`,
+		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan my day for success')">Help me plan my day for success</div>`,
+		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my to do list for today?')">What's on my to do list for today?</div>`,*/
+
+		responsechatmessage.nextactions = getRandomItems(tempoptions, 3)
+
+		chatinteraction.addMessage(responsechatmessage)
+		
+		chathistory.addInteraction(chatinteraction)
+
+		updateaichat()
+	}
 }
 
 function promptaiassistantwithnextaction(prompt){
@@ -12478,7 +12537,7 @@ async function likeaichatmessage(event, id){
 
 	updateaichat()
 
-	openfeedbackpopup(event)
+	openfeedbackpopupmini(event)
 }
 
 async function dislikeaichatmessage(event, id){
@@ -12508,7 +12567,7 @@ async function dislikeaichatmessage(event, id){
 
 	updateaichat()
 
-	openfeedbackpopup(event)
+	openfeedbackpopupmini(event)
 }
 
 
@@ -13113,7 +13172,7 @@ async function submitaimessage(optionalinput){
 							return output
 						}
 
-						responsechatmessage.message = `Done! I added your task "${Calendar.Event.getTitle(item)}" to your calendar. It will be auto-scheduled for the optimal time.`
+						responsechatmessage.message = `Done! I added your task "${Calendar.Event.getTitle(item)}" to your calendar. It will be auto-scheduled, but you can move it to another time.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
 						responsechatmessage.message = `What time do you want ${title} to be due?`
@@ -13527,13 +13586,9 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 
 
 	if (selectedeventid == item.id) {
-		if(item.iseventsuggestion){
-			itemclasses.push('selectedeventsugestion')
-		}else{
-			itemclasses.push('selectedevent')
-			itemclasses3.push('selectedcalendarevent')
-			itemclasses2.push('selectedtext')
-		}
+		itemclasses.push('selectedevent')
+		itemclasses3.push('selectedcalendarevent')
+		itemclasses2.push('selectedtext')
 	}
 
 	if(myheight <= 15){
@@ -13671,13 +13726,9 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 
 	if (selectedeventid == item.id) {
-		if(item.iseventsuggestion){
-			itemclasses.push('selectedeventsugestion')
-		}else{
-			itemclasses.push('selectedevent')
-			itemclasses3.push('selectedcalendarevent')
-			itemclasses2.push('selectedtext')
-		}
+		itemclasses.push('selectedevent')
+		itemclasses3.push('selectedcalendarevent')
+		itemclasses2.push('selectedtext')
 	}
 
 	if (tempenddate.getTime() < Date.now() || (item.type == 1 && item.completed)) {
@@ -15429,7 +15480,7 @@ function openscheduleeditorpopup(id){
 
 		</div>`)
 
-		output.push(`<div class="text-secondary text-14px popupbutton align-self-flex-end width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">Feedback</div>`)
+		output.push(`<div class="text-secondary text-14px popupbutton align-self-flex-end width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopupmini(event)">Feedback</div>`)
 
 
 		let scheduleeditorpopupcontent = getElement('scheduleeditorpopupcontent')
@@ -15792,7 +15843,7 @@ function openreschedulepopup(id){
 
 	</div>`)
 
-	output.push(`<div class="text-secondary text-14px popupbutton align-self-flex-end width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">Feedback</div>`)
+	output.push(`<div class="text-secondary text-14px popupbutton align-self-flex-end width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopupmini(event)">Feedback</div>`)
 
 
 	let scheduleeditorpopupcontent = getElement('scheduleeditorpopupcontent')

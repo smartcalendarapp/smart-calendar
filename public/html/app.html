@@ -169,7 +169,7 @@
 
 			</div>
 
-			<div class="text-quaternary padding-left-12px border-box padding-right-12px text-12px text-center margin-bottom-6px">This is a free preview of our AI assistant in development. We appreciate your honest <span class="popupbutton display-inline-block text-blue width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">feedback</span> :)</div>
+			<div class="text-quaternary padding-left-12px border-box padding-right-12px text-12px text-center margin-bottom-6px">This is a free preview of our AI assistant in development. We appreciate your honest <span class="popupbutton display-inline-block text-blue width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopupmini(event)">feedback</span> :)</div>
 
 		</div>
 	</div>
@@ -449,7 +449,60 @@
 	</div>
 
 
-	<div class="absolute backdrop-blur fadetransition hiddenfade top-0 left-0 display-flex border-box z-index-10000 align-center justify-center width-full height-full" id="feedbackpopupcontainer">
+
+	<div class="helpmenu border-box small:width-full hiddenpopup popup z-index-10000 padding-12px gap-12px max-width-300px" id="feedbackpopupmini">
+		<div class="display-flex flex-row justify-space-between align-center">
+
+			<div>
+				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+				<g>
+				</g>
+				</svg>
+			</div>
+			
+			<div class="infotitle">Feedback</div>
+
+			<div class="infotoprightgroup">
+				<div class="infotopright pointer" onclick="closefeedbackpopupmini(event)">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+			</div>
+		</div>
+
+		<div class="display-flex flex-column gap-12px" id="feedbackpopupinputwrapmini">
+			<div class="text-primary text-14px white-space-normal break-word">We're counting on your honest feedback to improve Smart Calendar. Please let us know what you think.</div>
+
+			<div class="display-flex flex-column gap-6px">
+				<div class="errorwrap display-none" id="feedbackpopuperrorwrapmini"></div>
+
+				<div class="inputgroupitem flex-1">
+					<textarea id="feedbackpopupmessagemini" class="infoinput infonotes" placeholder="Add your feedback, suggestions, or comments"  maxlength="2000"></textarea>
+					<span class="inputlinewrap">
+						<span class="inputline"></span>
+					</span>
+				</div>
+			</div>
+
+			<div class="align-self-flex-end border-round background-blue text-white padding-8px-12px pointer hover:background-blue-hover text-14px transition-duration-100" onclick="submitfeedbackpopupmini()">Submit</div>
+		</div>
+
+		<div class="display-flex flex-column gap-12px display-none" id="feedbackpopupdonewrapmini">
+			<div class="text-quaternary text-14px white-space-normal break-word">Thank you for the feedback! We'll get back to you if we have any questions.</div>
+
+			<div class="text-center width-full border-8px background-blue text-white padding-8px-12px pointer hover:background-blue-hover text-14px transition-duration-100" onclick="closefeedbackpopupmini()">Done</div>
+		</div>
+
+	</div>
+
+
+	<div class="absolute backdrop-blur fadetransition hiddenfade top-0 left-0 display-flex border-box z-index-1000 align-center justify-center width-full height-full" id="feedbackpopupcontainer">
 		<div class="overflow-y-auto display-flex flex-column background-primary-transparent box-shadow border-16px border-box small:border-0 feedbackpopupheight small:max-height-revert max-width-500px height-full width-full">
 			<div class="borderbottom display-flex flex-row justify-space-between padding-12px align-center">
 				<div>
@@ -738,7 +791,7 @@
 			<div class="text-14px text-primary pointer-none">Take a tour</div>
 		</div>
 
-		<div class="helpitem align-center popupbutton display-flex flex-row gap-12px" onclick="openfeedbackpopup(event)">
+		<div class="helpitem align-center popupbutton display-flex flex-row gap-12px" onclick="openfeedbackpopupmini(event)">
 			<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite">
 				<g>
 				<path d="M52.2188 4.75C23.3798 4.75 0 28.1298 0 56.9688L0 149.469C0 178.308 23.3798 201.687 52.2188 201.688L133.344 201.688L184 248.594C190.422 254.536 200.83 249.937 200.781 241.188L200.594 201.656L203.719 201.688C232.633 201.688 256 178.308 256 149.469L256 56.9688C256 28.1298 232.62 4.75 203.781 4.75L52.2188 4.75ZM52.2188 24.75L203.781 24.75C221.574 24.75 236 39.1755 236 56.9688L236 149.469C236 167.262 221.575 181.687 203.781 181.688L190.594 181.594C185.02 181.552 180.5 186.082 180.531 191.656L180.688 218.25L144.031 184.344C142.183 182.633 139.768 181.687 137.25 181.688L52.2188 181.688C34.4255 181.688 20 167.262 20 149.469L20 56.9688C20 39.1755 34.4255 24.75 52.2188 24.75Z" fill-rule="nonzero" opacity="1" ></path>
@@ -1869,19 +1922,19 @@
 
 			<!-- middle -->
 			<div class="display-flex flex-row align-center flex-1 justify-center gap-24px">
-				<div class="display-none padding-top-6px nowrap padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="if(event.shiftKey){ popoutaichat(); return };clicktab([4]);if(gtag){gtag('event', 'button_click', { useraction: 'AI Assistant - nav bar' })} " id="aiassistanttab">
+				<div class="display-none padding-top-6px nowrap padding-bottom-6px relative text-16px text-secondary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="if(event.shiftKey){ popoutaichat(); return };clicktab([4]);if(gtag){gtag('event', 'button_click', { useraction: 'AI Assistant - nav bar' })} " id="aiassistanttab">
 					AI Assistant <span class="text-12px badgepadding text-white background-purple border-round">beta</span>
 					<span class="buttonunderline"></span>
 				</div>
-				<div class="padding-top-6px nowrap padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);if(gtag){gtag('event', 'button_click', { useraction: 'Calendar - nav bar' })} " id="hometab">
+				<div class="padding-top-6px nowrap padding-bottom-6px relative text-16px text-secondary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1]);if(gtag){gtag('event', 'button_click', { useraction: 'Calendar - nav bar' })} " id="hometab">
 					Calendar
 					<span class="buttonunderline"></span>
 				</div>
-				<div class="padding-top-6px nowrap padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([2]);if(gtag){gtag('event', 'button_click', { useraction: 'Time report - nav bar' })} " id="summarytab">
+				<div class="padding-top-6px nowrap padding-bottom-6px relative text-16px text-secondary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([2]);if(gtag){gtag('event', 'button_click', { useraction: 'Time report - nav bar' })} " id="summarytab">
 					Time report
 					<span class="buttonunderline"></span>
 				</div>
-				<div class="padding-top-6px nowrap padding-bottom-6px relative text-16px text-quaternary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([3]);if(gtag){gtag('event', 'button_click', { useraction: 'Settings - nav bar' })} " id="settingstab">
+				<div class="padding-top-6px nowrap padding-bottom-6px relative text-16px text-secondary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([3]);if(gtag){gtag('event', 'button_click', { useraction: 'Settings - nav bar' })} " id="settingstab">
 					Settings
 					<span class="buttonunderline"></span>
 				</div>
@@ -1954,7 +2007,7 @@
 
 								<!-- hidden spacer -->
 								<div>
-									<div class="display-flex visibility-hidden flex-row padding-6px-12px align-center gap-6px">
+									<div class="infotopright visibility-hidden">
 										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite">
 										</svg>
 									</div>
@@ -1963,10 +2016,10 @@
 								<div class="flex-1 display-flex flex-row gap-24px justify-center">
 									<div class="display-none small:display-block text-18px text-bold text-primary pointer-none">AI Chat</div>
 	
-									<div class="small:display-none padding-top-6px nowrap padding-bottom-6px relative text-18px text-bold text-quaternary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1])" id="todolisttitle2">To do list
+									<div class="small:display-none padding-top-6px nowrap padding-bottom-6px relative text-18px text-bold text-secondary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1])" id="todolisttitle2">To do list
 										<span class="small:display-none buttonunderline"></span>
 									</div>
-									<div class="small:display-none padding-top-6px nowrap padding-bottom-6px relative text-18px text-bold text-quaternary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([0, 4])" id="aichattitle2">AI Chat
+									<div class="small:display-none padding-top-6px nowrap padding-bottom-6px relative text-18px text-bold text-secondary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([0, 4])" id="aichattitle2">AI Chat
 										<span class="buttonunderline"></span>
 									</div>
 								</div>
@@ -2019,7 +2072,7 @@
 
 							</div>
 
-							<div class="text-quaternary padding-left-12px border-box padding-right-12px text-12px text-center margin-bottom-6px">This is a free preview of our AI assistant in development. We appreciate your honest <span class="popupbutton display-inline-block text-blue width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">feedback</span> :)</div>
+							<div class="text-quaternary padding-left-12px border-box padding-right-12px text-12px text-center margin-bottom-6px">This is a free preview of our AI assistant in development. We appreciate your honest <span class="popupbutton display-inline-block text-blue width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopupmini(event)">feedback</span> :)</div>
 						</div>
 
 					</div>
@@ -2144,10 +2197,10 @@
 							<div class="flex-1 display-flex flex-row gap-24px justify-center">
 								<div class="display-none small:display-block text-18px text-bold text-primary pointer-none">To do list</div>
 
-								<div class="small:display-none padding-top-6px nowrap padding-bottom-6px relative text-18px text-bold text-quaternary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1])" id="todolisttitle">To do list
+								<div class="small:display-none padding-top-6px nowrap padding-bottom-6px relative text-18px text-bold text-secondary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1])" id="todolisttitle">To do list
 									<span class="small:display-none buttonunderline"></span>
 								</div>
-								<div class="small:display-none padding-top-6px nowrap padding-bottom-6px relative text-18px text-bold text-quaternary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([0, 4])" id="aichattitle">AI Chat
+								<div class="small:display-none padding-top-6px nowrap padding-bottom-6px relative text-18px text-bold text-secondary hover:text-primary pointer transition-none display-flex gap-6px flex-row align-center" onclick="clicktab([0, 4])" id="aichattitle">AI Chat
 									<span class="buttonunderline"></span>
 								</div>
 							</div>
@@ -2364,7 +2417,7 @@
 									<div class="text-16px text-white display-flex flex-row gap-6px  pointer-none nowrap transition-none" id="submitcreatetodoaddnumber">Create</div>
 								</div>
 
-								<div class="popupbutton absolute left-0 bottom-0 text-secondary padding-12px text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopup(event)">Feedback</div>
+								<div class="popupbutton absolute left-0 bottom-0 text-secondary padding-12px text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopupmini(event)">Feedback</div>
 
 							</div>
 						</div>
