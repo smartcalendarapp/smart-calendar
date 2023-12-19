@@ -450,7 +450,7 @@
 
 
 	<div class="absolute backdrop-blur fadetransition hiddenfade top-0 left-0 display-flex border-box z-index-10000 align-center justify-center width-full height-full" id="feedbackpopupcontainer">
-		<div class="overflow-y-auto display-flex flex-column background-primary-transparent box-shadow border-16px border-box small:border-0 feedbackpopupheight max-width-500px height-full width-full">
+		<div class="overflow-y-auto display-flex flex-column background-primary-transparent box-shadow border-16px border-box small:border-0 feedbackpopupheight small:max-height-revert max-width-500px height-full width-full">
 			<div class="borderbottom display-flex flex-row justify-space-between padding-12px align-center">
 				<div>
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -475,10 +475,12 @@
 				</div>
 			</div>
 
-			<div class="padding-12px display-flex flex-column gap-24px overflow-y-auto" id="feedbackpopupinputwrap">
-				<div class="text-primary text-16px white-space-normal break-word">We'd love to hear your feedback as an early adopter! Please take only <span class="text-bold">2 min</span> to fill this out. We promise to read it carefully.</div>
+			<div class="padding-left-12px padding-right-12px padding-bottom-48px padding-top-48px display-flex flex-column gap-24px overflow-y-auto" id="feedbackpopupinputwrap">
+				<div class="text-primary text-16px white-space-normal break-word">We'd love to hear your feedback as an early adopter! Please take only <span class="text-bold">2 min</span> to fill this out. We promise to read your feedback carefully.</div>
 
 				<div class="text-primary text-16px white-space-normal break-word">PS you will be automatically entered in our lottery to win 1 month of <span class="text-bold">Smart Calendar premium</span>!</div>
+
+				<div class="horizontalbar"></div>
 
 
 				<div class="infogroup">
@@ -494,10 +496,10 @@
 				</div>
 
 				<div class="infogroup hiddenfaderelative fadetransition" id="feedbackgroup1">
-					<div class="text-primary text-16px white-space-normal break-word">How could the auto-scheduling be improved, for you?</div>
+					<div class="text-primary text-16px white-space-normal break-word">How could the auto-scheduling be improved?</div>
 
 					<div class="inputgroupitem flex-1">
-						<textarea id="feedbackpopupmessage1" onblur="updatefeedbackpopup()" class="infoinput infonotes" placeholder="Be as descriptive or brief as you would like..." maxlength="20000"></textarea>
+						<textarea id="feedbackpopupmessage1" onblur="updatefeedbackpopup(true)" class="infoinput infonotes" placeholder="Describe how you want it to work..." maxlength="20000"></textarea>
 						<span class="inputlinewrap">
 							<span class="inputline"></span>
 						</span>
@@ -508,7 +510,7 @@
 				<div class="infogroup hiddenfaderelative fadetransition" id="feedbackgroup2">
 					<div class="text-primary text-16px white-space-normal break-word">Any challenges or annoyances while you use the app?</div>
 					<div class="inputgroupitem flex-1">
-						<textarea id="feedbackpopupmessage2" onblur="updatefeedbackpopup()" class="infoinput infonotes" placeholder="Any moments when something didn't meet your expectations? Tell us more..." maxlength="20000"></textarea>
+						<textarea id="feedbackpopupmessage2" onblur="updatefeedbackpopup(true)" class="infoinput infonotes" placeholder="Any moments when something didn't meet your expectations? Tell us more..." maxlength="20000"></textarea>
 						<span class="inputlinewrap">
 							<span class="inputline"></span>
 						</span>
@@ -519,7 +521,7 @@
 				<div class="infogroup hiddenfaderelative fadetransition" id="feedbackgroup3">
 					<div class="text-primary text-16px white-space-normal break-word">Any suggestions or other thoughts?</div>
 					<div class="inputgroupitem flex-1">
-						<textarea id="feedbackpopupmessage3" onblur="updatefeedbackpopup()" class="infoinput infonotes" placeholder="Please be specific, we'd love to understand what you're thinking..." maxlength="20000"></textarea>
+						<textarea id="feedbackpopupmessage3" onblur="updatefeedbackpopup(true)" class="infoinput infonotes" placeholder="Please be specific, we'd love to understand what you're thinking..." maxlength="20000"></textarea>
 						<span class="inputlinewrap">
 							<span class="inputline"></span>
 						</span>
@@ -1109,6 +1111,16 @@
 			<div class="infotitle text-center">Task completed?</div>
 			<div class="text-16px text-primary white-space-normal break-word" id="rescheduletaskpopuptext"></div>
 			<div class="display-flex flex-row gap-12px justify-flex-end" id="rescheduletaskpopupbuttons"></div>
+	
+		</div>
+	</div>
+
+	
+	<div class="padding-12px absolute pointer-none top-0 z-index-1000 left-0 bottom-0 right-0 display-flex flex-column align-center justify-center">
+		<div class="popuptransition box-shadow padding-12px pointer-auto display-flex flex-column gap-12px border-8px background-primary-transparent backdrop-blur hiddenpopup max-width-400px width-full border-box" id="rescheduleconflictspopup">
+			<div class="infotitle text-center">Reschedule conflicts?</div>
+			<div class="text-16px text-primary white-space-normal break-word" id="rescheduleconflictspopuptext"></div>
+			<div class="display-flex flex-row gap-12px justify-flex-end" id="rescheduleconflictspopupbutton"></div>
 	
 		</div>
 	</div>

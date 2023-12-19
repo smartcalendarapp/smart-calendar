@@ -2422,19 +2422,17 @@ class Calendar {
 
 					output.push(`
 					<div class="display-flex flex-row align-center gap-12px">
-						<div class="infotext selecttext nowrap">${calendar.settings.gettasksuggestions == true && item.iseventsuggestion ?
-						`<span class="align-center pointer-auto display-inline-flex flex-row column-gap-6px">
-							<span class="tooltip transition-duration-100 text-12px suggestionborder hover:background-tint-1 pointer-auto gap-6px text-purple  pointer transition-duration-100 padding-6px-12px border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap" onclick="accepteventsuggestion(event, '${item.id}')">Pending time: <span class="text-bold">${Calendar.Event.getStartText(item)}</span>
-								<span class="tooltiptextcenter">Click to accept time</span>
-							</span>
+						<div class="infotext selecttext nowrap">
+						${Calendar.Event.getFullStartEndText(item)}
+						${calendar.settings.gettasksuggestions == true && item.iseventsuggestion ?
+						`
+						<span class="align-center pointer-auto display-inline-flex flex-row column-gap-6px">
 							<div class="align-center display-flex flex-row gap-6px">
-								<div class="text-white transition-duration-100 nowrap pointer width-fit background-blue hover:background-blue-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
-								<div class="text-white transition-duration-100 nowrap pointer width-fit background-red hover:background-red-hover border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
-								<div class="text-quaternary pointer width-fit hover:text-decoration-underline text-12px" onclick="turnoffaisuggestions()">Turn off</div>
+								<div class="text-primary transition-duration-100 nowrap pointer width-fit background-tint-1 hover:background-tint-2 border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">Undo schedule</div>
 							</div>
 						</span>`
 						:
-						`${Calendar.Event.getFullStartEndText(item)}`}</div>
+						``}</div>
 
 						${!item.iseventsuggestion && item.type == 1 ?
 						`<div class="popuptransition pointer-auto padding-6px-12px pointer popupbutton transition-duration-100 width-fit background-blue hover:background-blue-hover display-flex gap-6px flex-row align-center border-round" onclick="clickreschedule('${item.id}')" id="reschedulebutton" >
@@ -2694,8 +2692,8 @@ class Calendar {
 					</div>
 				</div>
 
-				<div class="text-18px text-bold text-white text-center">We <span class="italics">really need</span> your feedback! (only 2 min)</div>
-				<div class="text-16px text-white text-center">Tell us what you think of Smart Calendar. You could win <span class="text-bold">1 month Premium access</span>!</div>
+				<div class="text-18px text-bold text-white text-center">We need <span class="italics">your</span> your feedback! (only 2 min)</div>
+				<div class="text-16px text-white text-center">We're looking for feedback from early adopters like you. Please tell us what you think of Smart Calendar. You could win <span class="text-bold">1 month Premium access</span>!</div>
 
 				<div class="transition-duration-100 text-bold text-14px border-round regularwhitebutton padding-8px-16px pointer" onclick="openfeedbackpopup(event)">Share my feedback</div>
 			</div>`
@@ -4100,7 +4098,6 @@ function updatetime() {
 	//show social media
 	if(calendar.todos.length > 2 && Date.now() - clientinfo.createddate > 1000*3600 && new Date().getMinutes() % 3 == 0 && calendar.onboarding.addtask == true){
 		//showsocialmediapopup = true
-		//here3
 	}
 
 	//show feedback
@@ -8196,10 +8193,10 @@ function updatefeedbackpopup(submit){
 
 	if(feedbackpopupmessage3.value.length > 0 && feedbackpopupmessage2.value.length > 0 && feedbackpopupmessage1.value.length > 0 && feedbackautoschedulerating != null){
 		feedbackpopupsubmit.classList.remove('display-none')
+		feedbackpopuperrorwrap.classList.remove('display-none')
 	}
 
 	if(feedbackautoschedulerating == null){
-		feedbackpopuperrorwrap.classList.remove('display-none')
 		feedbackpopuperrorwrap0.classList.remove('display-none')
 
 		if(submit){
@@ -8213,14 +8210,15 @@ function updatefeedbackpopup(submit){
 		feedbackgroup3.classList.add('hiddenfaderelative')
 
 		return
+	}else{
+		feedbackgroup1.classList.remove('hiddenfaderelative')
 	}
 
 	if(feedbackpopupmessage1.value.length < 10){
-		feedbackpopuperrorwrap.classList.remove('display-none')
 		feedbackpopuperrorwrap1.classList.remove('display-none')
 
-		feedbackpopuperrorwrap1.innerHTML = `Please write a little more`
 		if(submit){
+			feedbackpopuperrorwrap1.innerHTML = `Please write a little more`
 			feedbackpopuperrorwrap.innerHTML = `Please write more above`
 		}
 
@@ -8230,15 +8228,14 @@ function updatefeedbackpopup(submit){
 		return
 	}else{
 		feedbackgroup1.classList.remove('hiddenfaderelative')
+		feedbackgroup2.classList.remove('hiddenfaderelative')
 	}
 
 	if(feedbackpopupmessage2.value.length < 10){
-		feedbackpopuperrorwrap.classList.remove('display-none')
 		feedbackpopuperrorwrap2.classList.remove('display-none')
 
-		feedbackpopuperrorwrap2.innerHTML = `Please write a little more`
-
 		if(submit){
+			feedbackpopuperrorwrap2.innerHTML = `Please write a little more`
 			feedbackpopuperrorwrap.innerHTML = `Please write more above`
 		}
 
@@ -8248,23 +8245,22 @@ function updatefeedbackpopup(submit){
 	}else{
 		feedbackgroup1.classList.remove('hiddenfaderelative')
 		feedbackgroup2.classList.remove('hiddenfaderelative')
+		feedbackgroup3.classList.remove('hiddenfaderelative')
 	}
 
 	if(feedbackpopupmessage3.value.length < 10){
-		feedbackpopuperrorwrap.classList.remove('display-none')
 		feedbackpopuperrorwrap3.classList.remove('display-none')
 
-		feedbackpopuperrorwrap3.innerHTML = `Please write a little more`
-
 		if(submit){
+			feedbackpopuperrorwrap3.innerHTML = `Please write a little more`
 			feedbackpopuperrorwrap.innerHTML = `Please write more above`
 		}
 
 		return
 	}else{
-		feedbackgroup1.classList.remove('hiddenfade')
-		feedbackgroup2.classList.remove('hiddenfade')
-		feedbackgroup3.classList.remove('hiddenfade')
+		feedbackgroup1.classList.remove('hiddenfaderelative')
+		feedbackgroup2.classList.remove('hiddenfaderelative')
+		feedbackgroup3.classList.remove('hiddenfaderelative')
 	}
 }
 
@@ -8352,6 +8348,8 @@ function openfeedbackpopup(event){
 
 	let feedbackpopupcontainer = getElement('feedbackpopupcontainer')
 	feedbackpopupcontainer.classList.remove('hiddenfade')
+
+	updatefeedbackpopup()
 }
 
 
@@ -9058,7 +9056,7 @@ function updatecreatetodo() {
 		let d = createtodoaisuggestionsubtasks[i]
 
 		tempoutput.push(`<div class="text-left min-width-160px flex-1 white-space-normal break-word suggestionborder display-flex gap-4px border-box transition-duration-100 flex-column padding-8px-12px pointer hover:background-tint-1 border-8px" onclick="clickcreatetodosubtasksuggestion('${d.id}')">
-			<span class="text-12px nowrap text-purple">AI suggestion:</span>
+			<span class="text-12px nowrap text-purple">Suggestion:</span>
 			<span class="text-bold text-bold text-14px text-primary">${d.title} <span class="text-quaternary">- ${getDHMText(d.duration)}</span></span>
 		</div>`)
 
@@ -10306,7 +10304,7 @@ function gettododata(item) {
 			let d = item.subtasksuggestions[i]
 
 			tempoutput.push(`<div class="min-width-160px flex-1 white-space-normal break-word suggestionborder display-flex gap-4px border-box transition-duration-100 flex-column padding-8px-12px pointer hover:background-tint-1 border-8px" onclick="clicksubtasksuggestion('${item.id}', '${d.id}')">
-				<span class="text-12px nowrap text-purple">AI suggestion:</span>
+				<span class="text-12px nowrap text-purple">Suggestion:</span>
 				<span class="text-bold text-bold text-14px text-primary">${d.title} <span class="text-quaternary">- ${getDHMText(d.duration)}</span></span>
 			</div>`)
 
@@ -10333,21 +10331,6 @@ function gettododata(item) {
 		</div>` 
 	}
 
-
-	let eventsuggestionoutput = ''
-	if(Calendar.Event.isEvent(item) && calendar.settings.gettasksuggestions == true && item.iseventsuggestion && !item.completed){
-		eventsuggestionoutput = `
-		<span class="margin-left-6px"></span>
-		<span class="flex-wrap-wrap align-center pointer-auto display-inline-flex flex-row gap-6px">
-			<span class="pointer-auto tooltip hover:background-tint-1 text-12px suggestionborder gap-6px text-purple  padding-6px-12px pointer border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="accepteventsuggestion(event, '${item.id}')">Pending time: <span class="text-bold">${Calendar.Event.getStartText(item)}</span>
-			<span class="tooltiptextcenter">Click to accept time</span>
-			</span>
-			<div class="display-flex flex-row gap-6px">
-				<div class="text-white transition-duration-100 nowrap pointer width-fit background-blue hover:background-blue-hover border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
-				<div class="text-white transition-duration-100 nowrap pointer width-fit background-red hover:background-red-hover border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
-			</div>
-		</span>`
-	}
 
 	let output = ''
 	if (selectededittodoid == item.id) {
@@ -10487,13 +10470,17 @@ function gettododata(item) {
 				 
 									<div class="todoitemtext text-16px ${itemclasses.join(' ')}">
 										${Calendar.Event.isEvent(item) ? 
-											`${calendar.settings.gettasksuggestions == true && item.iseventsuggestion ?
-												``
-												:
-												`<span class="margin-right-6px text-12px hover:text-red-hover pointer-auto tooltip gap-6px text-red todoscheduleddate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">
-													${Calendar.Event.getStartText(item)}
-													<span class="tooltiptextcenter">Show calendar event</span>
-												</span>`}`
+											`<span class="${!item.iseventsuggestion ? 'margin-right-6px' : ''} text-12px hover:text-red-hover pointer-auto tooltip gap-6px text-red todoscheduleddate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">
+												${Calendar.Event.getStartText(item)}
+												<span class="tooltiptextcenter">Show calendar event</span>
+											</span>
+											
+											${calendar.settings.gettasksuggestions == true && item.iseventsuggestion ? `
+											<span class="flex-wrap-wrap margin-right-6px align-center pointer-none 
+											display-inline-flex flex-row column-gap-6px">
+												<div class="transition-duration-100 text-primary pointer-auto background-tint-1 hover:background-tint-2 badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">Undo</div>
+											</span>` : ''}
+											`
 											:
 											``
 										}
@@ -10513,7 +10500,6 @@ function gettododata(item) {
 											<span class="tooltiptextcenter">Repeats ${getRepeatText(item, true)}</span>
 										</span>` : ''}
 
-										${eventsuggestionoutput}
 										
 									</div>
 
@@ -10633,7 +10619,7 @@ function gettododata(item) {
 
 
 //AI suggestion
-function clicksubtasksuggestion(id, suggestionid){
+async function clicksubtasksuggestion(id, suggestionid){
 	let item = [...calendar.todos, ...calendar.events].find(f => f.id == id)
 	if (!item) return
 
@@ -10647,24 +10633,27 @@ function clicksubtasksuggestion(id, suggestionid){
 
 	calendar.todos.push(subtaskitem)
 
-	if(Calendar.Event.isEvent(item)){
-		//unschedule
+	let isevent = Calendar.Event.isEvent(item)
+
+	if(isevent){
+		//unschedule main task
 		let todoitem = gettodofromevent(item)
 
 		calendar.todos.push(todoitem)
 		calendar.events = calendar.events.filter(d => d.id != item.id)
 
-		selectedeventid = null
-
-		calendar.updateTodo()
-		calendar.updateEvents()
+		fixsubandparenttask(subtaskitem)
 	}
 
-	fixsubandparenttask(subtaskitem)
+	if(isevent || Calendar.Todo.getSubtasks(item).find(d => Calendar.Event.isEvent(d))){
+		//schedule subtask
+		await startAutoSchedule({ eventsuggestiontodos: [subtaskitem] })
+	}
 
 	calendar.updateTodo()
 	calendar.updateHistory()
 }
+
 function regeneratesubtasksuggestions(id){
 	let item = [...calendar.todos, ...calendar.events].find(f => f.id == id)
 	if (!item) return
@@ -11375,33 +11364,34 @@ function deletecompletedtodos(){
 }
 
 //add subtask
-function addsubtask(event, id){
+async function addsubtask(event, id){
 	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
 
 	let newendbeforedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 	let newduration = 60
 	
-	let newtask = new Calendar.Todo(newendbeforedate.getFullYear(), newendbeforedate.getMonth(), newendbeforedate.getDate(), newendbeforedate.getHours() * 60 + newendbeforedate.getMinutes(), newduration)
-	newtask.parentid = item.id
+	let subtaskitem = new Calendar.Todo(newendbeforedate.getFullYear(), newendbeforedate.getMonth(), newendbeforedate.getDate(), newendbeforedate.getHours() * 60 + newendbeforedate.getMinutes(), newduration)
+	subtaskitem.parentid = item.id
 
-	calendar.todos.push(newtask)
+	calendar.todos.push(subtaskitem)
 
-	if(Calendar.Event.isEvent(item)){
-		//unschedule
+	let isevent = Calendar.Event.isEvent(item)
+
+	if(isevent){
+		//unschedule main task
 		let todoitem = gettodofromevent(item)
 
 		calendar.todos.push(todoitem)
 		calendar.events = calendar.events.filter(d => d.id != item.id)
 
-		selectedeventid = null
-
-		calendar.updateTodo()
-		calendar.updateEvents()
+		fixsubandparenttask(subtaskitem)
 	}
 
-	
-	fixsubandparenttask(newtask)
+	if(isevent || Calendar.Todo.getSubtasks(item).find(d => Calendar.Event.isEvent(d))){
+		//schedule subtask
+		await startAutoSchedule({ eventsuggestiontodos: [subtaskitem] })
+	}
 
 	calendar.updateTodo()
 	calendar.updateHistory()
@@ -13534,10 +13524,12 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 		itemclasses2.push('smalleventtext')
 	}
 
+	/*
 	if(item.iseventsuggestion){
 		itemclasses.push('eventsuggestionborder')
 		itemclasses.push('eventsuggestionglow')
 	}
+	*/
 
 	/*
 	let aisuggestiontext = item.iseventsuggestion ? `
@@ -13553,9 +13545,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 	let aisuggestiontext = item.iseventsuggestion ? `
 	<span class="flex-wrap-wrap align-center pointer-none 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-none text-quaternary text-bold   transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
-		<div class="transition-duration-100 text-white pointer-auto background-blue hover:background-blue-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
-		<div class="transition-duration-100 text-white pointer-auto background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
+		<div class="transition-duration-100 text-primary pointer-auto background-tint-1 hover:background-tint-2 badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">Undo</div>
 	</span>` : ''
 
 
@@ -13567,7 +13557,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 	let output = ''
 	output = `
 	<div class="absolute pointer-none animatedeventwrap ${itemclasses3.join(' ')}" style="transform: ${!addedtodo ? `translateX(${percentage * difference * 100}%)` : ''} ${addedtodo ? `translateY(${(1 - percentage) * 60}px);opacity: ${percentage}` : ''};top:${mytop}px;height:${myheight}px;left:0;width:100%;">
-		<div class="popupbutton eventwrap pointer-auto eventborder ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})" style="${!item.iseventsuggestion ? `background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`};border-color:${item.hexcolor}` : ''}">
+		<div class="popupbutton eventwrap pointer-auto eventborder ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})" style="background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`};border-color:${item.hexcolor}">
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
 				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
@@ -13682,10 +13672,12 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 		itemclasses2.push('smalleventtext')
 	}
 
+	/*
 	if(item.iseventsuggestion){
 		itemclasses.push('eventsuggestionborder')
 		itemclasses.push('eventsuggestionglow')
 	}
+	*/
 
 	/*
 	let aisuggestiontext = item.iseventsuggestion ? `
@@ -13701,15 +13693,13 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	let aisuggestiontext = item.iseventsuggestion ? `
 	<span class="flex-wrap-wrap align-center pointer-none 
 	display-inline-flex flex-row column-gap-6px">
-		<span class="transition-duration-100 text-12px pointer-none text-quaternary text-bold   transition-duration-100 width-fit todoitemtext nowrap">Pending</span>
-		<div class="transition-duration-100 text-white pointer-auto background-blue hover:background-blue-hover pointer width-fit border-round badgepadding text-12px" onclick="accepteventsuggestion(event, '${item.id}')">Yes</div>
-		<div class="transition-duration-100 text-white pointer-auto background-red hover:background-red-hover badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">No</div>
+		<div class="transition-duration-100 text-primary pointer-auto background-tint-1 hover:background-tint-2 badgepadding border-round pointer width-fit text-12px" onclick="rejecteventsuggestion('${item.id}')">Undo</div>
 	</span>` : ''
 
 	let output = ''
 	output = `
 	<div class="absolute pointer-none ${itemclasses3.join(' ')}" style="top:${mytop}px;height:${myheight}px;left:${leftindent / columnwidth * 100}%;width:${100 / columnwidth}%">
-		<div class="popupbutton eventwrap pointer-auto eventborder ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})" style="${!item.iseventsuggestion ? `background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`};border-color:${item.hexcolor}` : ''}">
+		<div class="popupbutton eventwrap pointer-auto eventborder ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickevent(event, ${timestamp})" style="background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`};border-color:${item.hexcolor}">
 			${!Calendar.Event.isReadOnly(item) ? itemclicks.join('') : ''}
 			<div class="eventtext">
 				<div class="eventtextspace"></div>
@@ -14507,17 +14497,20 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		if(lastmovedeventid){
 			let lastmoveditem = calendar.events.find(d => d.id == lastmovedeventid)
 			if(lastmoveditem){
-				//detect if moved event/task conflicts with an event
+				//detect if moved event/task conflicts with an event or locked task
 				//HERE2
 
 
 				//unlock tasks that conflict with moved event
+				
 				let conflicts = getconflictingevent(iteratedevents, lastmoveditem, true)
+
 				for(let tempdata of conflicts){
 					if(tempdata[0].type == 1){
 						tempdata[0].autoschedulelocked = false
 					}
 				}
+
 
 
 				//lock tasks that are moved to conflict
@@ -14693,13 +14686,16 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 			//fix conflicts
 			let donesmartevents = []
-			smartevents = smartevents.sort((a, b) => getcalculatedpriority(b) - getcalculatedpriority(a)).sort((a, b) => {
+			smartevents = smartevents.sort((a, b) => getcalculatedpriority(b) - getcalculatedpriority(a)).sort((a, b) => b.autoschedulelocked - a.autoschedulelocked).sort((a, b) => (moveditem && moveditem.id == b.id) - (moveditem && moveditem.id == a.id))
+			/*
+			.sort((a, b) => {
 				let nowdate = new Date()
 				let effectivestartafterdateA = a.startafter.year != null && a.startafter.month != null && a.startafter.day != null && a.startafter.minute != null ? new Date(a.startafter.year, a.startafter.month, a.startafter.day, 0, a.startafter.minute) : nowdate
 				let effectivestartafterdateB = b.startafter.year != null && b.startafter.month != null && b.startafter.day != null && b.startafter.minute != null ? new Date(b.startafter.year, b.startafter.month, b.startafter.day, 0, b.startafter.minute) : nowdate
 
 				return effectivestartafterdateA.getTime() - effectivestartafterdateB.getTime()
-			}).sort((a, b) => b.autoschedulelocked - a.autoschedulelocked).sort((a, b) => (moveditem && moveditem.id == b.id) - (moveditem && moveditem.id == a.id))
+			})
+			*/
 
 			for (let item of smartevents) {
 				donesmartevents.push(item)
