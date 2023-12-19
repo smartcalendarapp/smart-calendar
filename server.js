@@ -3694,7 +3694,6 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					],
 					max_tokens: 200,
 					temperature: 0.5,
-					
 				})
 				totaltokens += response.usage.total_tokens
 

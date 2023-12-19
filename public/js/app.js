@@ -1197,7 +1197,7 @@ class Calendar {
 	}
 
 	//main
-	updateTabs(updatecalendar) {
+	updateTabs(toggletodolistaiassistant) {
 		//tabs
 		let summarywrap = getElement('summarywrap')
 		let calendarwrap = getElement('calendarwrap')
@@ -1244,20 +1244,27 @@ class Calendar {
 		let todolisttitle2 = getElement('todolisttitle2')
 		let aichattitle2 = getElement('aichattitle2')
 
-		aichattitle.classList.remove('selectedbuttonunderline')
-		todolisttitle.classList.remove('selectedbuttonunderline')
-		aichattitle2.classList.remove('selectedbuttonunderline')
-		todolisttitle2.classList.remove('selectedbuttonunderline')
 
-		if(calendartabs.includes(1)){
-			todolisttitle.classList.add('selectedbuttonunderline')
-			todolisttitle2.classList.add('selectedbuttonunderline')
-		}
-		if(calendartabs.includes(4)){
-			aichattitle.classList.add('selectedbuttonunderline')
-			aichattitle2.classList.add('selectedbuttonunderline')
-		}
 
+		requestAnimationFrame(function(){
+
+			if(calendartabs.includes(1)){
+				todolisttitle.classList.add('selectedbuttonunderline')
+				todolisttitle2.classList.add('selectedbuttonunderline')
+			}else{
+				todolisttitle2.classList.remove('selectedbuttonunderline')
+				todolisttitle.classList.remove('selectedbuttonunderline')
+			}
+			if(calendartabs.includes(4)){
+				aichattitle.classList.add('selectedbuttonunderline')
+				aichattitle2.classList.add('selectedbuttonunderline')
+			}else{
+				aichattitle.classList.remove('selectedbuttonunderline')
+				aichattitle2.classList.remove('selectedbuttonunderline')
+			}
+	
+		})
+		
 		if (calendartabs.includes(1)) {
 			resetcreatetodo()
 			updatecreatetodo()
@@ -1273,7 +1280,7 @@ class Calendar {
 		}
 
 		if (calendartabs.includes(0)) {
-			if(updatecalendar !== false){
+			if(!toggletodolistaiassistant){
 				this.updateCalendar()
 			}
 			calendarwrap.classList.remove('display-none')
@@ -4664,7 +4671,7 @@ function clicktab(index) {
 		calendarday = currentdate.getDate()
 	}
 
-	calendar.updateTabs(gototoday)
+	calendar.updateTabs(!gototoday)
 
 	if (gototoday) {
 		let barcolumncontainer = getElement('barcolumncontainer')
