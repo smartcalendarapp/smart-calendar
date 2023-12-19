@@ -1273,7 +1273,7 @@ class Calendar {
 		}
 
 		if (calendartabs.includes(0)) {
-			if(updatecalendar === false){
+			if(updatecalendar !== false){
 				this.updateCalendar()
 			}
 			calendarwrap.classList.remove('display-none')
