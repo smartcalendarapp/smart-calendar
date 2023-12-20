@@ -12447,6 +12447,7 @@ class ChatMessage {
 		this.nextactions = nextactions
 		
 		this.id = generateID()
+		this.timestamp = Date.now()
 
 		this.displaycontent = this.message
 		if(this.role == 'assistant'){
@@ -13418,13 +13419,15 @@ async function submitaimessage(optionalinput){
 
 	//save conversation data
 	try{
+		let newsendchathistory = chathistory.getInteractions().map(d => d.getMessages().map(f => { return { role: f.role, content: f.message, timestamp: f.timestamp } }))
+
 		const response = await fetch('/savegptchatinteraction', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				chathistory: sendchathistory,
+				chathistory: newsendchathistory,
 				conversationid: chathistory.id
 			})
 		})
