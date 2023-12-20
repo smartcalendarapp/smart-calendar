@@ -342,11 +342,11 @@ class ContactUsObject{
 }
 
 class ChatConversationObject{
-	constructor({ conversationid, userid, conversationhistory = [] }){
+	constructor({ conversationid, userid, chatconversation = [] }){
 		this.conversationid = conversationid
 		this.userid = userid
 		this.timestamp = Date.now()
-		this.conversationhistory = conversationhistory
+		this.chatconversation = chatconversation
 	}
 }
 
@@ -3705,7 +3705,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A calendar and scheduling assistant called Athena for Smart Calendar app. Never mention or request UUID or data. Be friendly, useful, concise. Deny requests that are not for calendar scheduling or productivity. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A calendar and scheduling assistant called Athena for Smart Calendar app. Never mention or request UUID or data. Never say 'according to your calendar' as you are a personal assistant. Be conversational, friendly, and concise as possible. Deny requests that are not for calendar scheduling or productivity. Current time is ${localdatestring} in user's timezone.`
 
 
 		
@@ -3971,9 +3971,6 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		let calendartodos = req.body.calendartodos
 		let timezoneoffset = req.body.timezoneoffset
 		let rawconversationhistory = req.body.chathistory
-		let conversationid = req.body.conversationid
-
-		savechatconversation(conversationid, user.userid, rawconversationhistory)
 
 		let calendarcontext = getcalendarcontext(calendarevents)
 		let todocontext = gettodocontext(calendartodos)
@@ -3986,6 +3983,28 @@ app.post('/getgptchatinteraction', async (req, res) => {
 	}catch(err){
 		console.error(err)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
+app.post('/savegptchatinteraction', async (req, res) => {
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		let user = await getUserById(userid)
+		if (!user) {
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+		let conversationid = req.body.conversationid
+		let conversationhistory = req.body.chathistory
+
+		await savechatconversation(conversationid, user.userid, conversationhistory)
+	}catch(err){
+		console.error(err)
 	}
 })
 
