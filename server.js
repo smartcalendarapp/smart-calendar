@@ -182,6 +182,7 @@ async function savecontactusobject(data){
 }
 
 async function savechatconversation(conversationid, userid, chatconversation){
+	if(userid === 'qoc6sjx02h708xk4sqxhy770dkzow3f2') return
 	try{
 		const params = {
 			TableName: 'smartcalendarchatconversations',
@@ -3552,8 +3553,8 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				{
 					name: 'get_todo_list_tasks',
 				},
-				/*{
-					name: 'auto_schedule_tasks',
+				{
+					name: 'schedule_tasks_in_calendar',
 					description: `Auto-schedule one or multiple tasks into user's calendar. Not to be confused with create a task or create an event.`,
 					parameters: {
 						type: 'object',
@@ -3569,7 +3570,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: []
 					}
-				},*/
+				},
 				{
 					name: 'create_task',
 					description: 'Create an event in the calendar, auto-scheduled by the app',
@@ -3697,15 +3698,15 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				}
 			]
 
-			const customfunctions = ['create_multiple_events', 'create_event', 'delete_event', 'modify_event', 'create_multiple_tasks','create_task', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_multiple_events', 'create_event', 'delete_event', 'modify_event', 'create_multiple_tasks','create_task', 'delete_task', 'modify_task', 'schedule_tasks_in_calendar'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
-			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'auto_schedule_tasks'] //a subset of all functions, the functions that need todo data
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'schedule_tasks_in_calendar'] //a subset of all functions, the functions that need todo data
 
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A calendar and scheduling assistant called Athena for Smart Calendar app. Never mention or request UUID or data. Never say 'according to your calendar' as you are a personal assistant. Be conversational, friendly, and concise as possible. Deny requests that are not for calendar scheduling or productivity. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A calendar and scheduling assistant called Athena for Smart Calendar app. Never mention 'UUID' or 'data'. Never say 'according to your...' and assume you are a personal assistant with knowledge of user's calendar and to-do list. Be intuitive, helpful, and concise. Be subjective and give productivity recommendations and suggestions. Deny requests that are not for calendar scheduling or productivity. Current time is ${localdatestring} in user's timezone.`
 
 
 		
@@ -3746,6 +3747,20 @@ app.post('/getgptchatinteraction', async (req, res) => {
 									name: "app_action",
 									arguments: JSON.stringify({
 										command: 'modify_event'
+									})
+								}
+							},
+							{
+								role: "user",
+								content: "Schedule today's tasks in my calendar"
+							},
+							{
+								role: "assistant",
+								content: null,
+								function_call: {
+									name: "app_action",
+									arguments: JSON.stringify({
+										command: 'schedule_tasks_in_calendar'
 									})
 								}
 							},

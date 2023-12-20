@@ -8278,7 +8278,7 @@ function updatefeedbackpopup(submit){
 	if(feedbackpopupmessage1.value.length < 10){
 		feedbackpopuperrorwrap1.classList.remove('display-none')
 
-		if(submit){
+		if(submit && feedbackpopupmessage1.value.length > 0){
 			feedbackpopuperrorwrap1.innerHTML = `Please write a little more`
 			feedbackpopuperrorwrap.innerHTML = `Please write more above`
 		}
@@ -8295,7 +8295,7 @@ function updatefeedbackpopup(submit){
 	if(feedbackpopupmessage2.value.length < 10){
 		feedbackpopuperrorwrap2.classList.remove('display-none')
 
-		if(submit){
+		if(submit && feedbackpopupmessage2.value.length > 0){
 			feedbackpopuperrorwrap2.innerHTML = `Please write a little more`
 			feedbackpopuperrorwrap.innerHTML = `Please write more above`
 		}
@@ -8312,7 +8312,7 @@ function updatefeedbackpopup(submit){
 	if(feedbackpopupmessage3.value.length < 10){
 		feedbackpopuperrorwrap3.classList.remove('display-none')
 
-		if(submit){
+		if(submit && feedbackpopupmessage3.value.length > 0){
 			feedbackpopuperrorwrap3.innerHTML = `Please write a little more`
 			feedbackpopuperrorwrap.innerHTML = `Please write more above`
 		}
@@ -12381,15 +12381,9 @@ function openaichat(){
 		}
 		
 		const tempoptions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my agenda for today?')">What's on my agenda today?</div>`,
-		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is next on my agenda?')">What's next on my agenda?</div>`,
 		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, 
-		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`]
-
-		/*
-		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Reschedule an event for me')">Reschedule an event for me</div>`
-		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Which task should I work on?')">Which task should I work on?</div>`,
-		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan my day for success')">Help me plan my day for success</div>`,
-		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my to do list for today?')">What's on my to do list for today?</div>`,*/
+		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`,
+		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What are my tasks for today?')">What are my tasks for today?</div>`]
 
 		responsechatmessage.nextactions = getRandomItems(tempoptions, 3)
 
@@ -12825,7 +12819,7 @@ async function submitaimessage(optionalinput){
 	let now = new Date()
 	let endrange = new Date(Date.now() + 86400*1000*CALENDAR_CONTEXT_RANGE_DAYS)
 	let calendarevents = sortstartdate(getevents(now, endrange).filter(d => !Calendar.Event.isHidden(d)))
-	let calendartodos = sortduedate(gettodos(null, endrange).filter(d => !d.completed))
+	let calendartodos = sortduedate([...gettodos(null, endrange), ...getevents().filter(d => d.type == 1 && !d.completed && ((new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() < endrange.getTime() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > now.getTime()) || (new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute).getTime() < endrange.getTime())))].filter(d => !d.completed))
 	let sendchathistory = chathistory.getInteractions().filter(d => d.getMessages().length > 1 && !d.getMessages().find(g => g.message == null)).map(d => d.getMessages().map(f => { return { role: f.role, content: f.message } }))
 
 	try{
@@ -13361,7 +13355,7 @@ async function submitaimessage(optionalinput){
 							responsechatmessage.message = `I could not find that task, could you please tell me more?`
 						}
 					}
-				}else if(output.command == 'auto_schedule_tasks'){
+				}else if(output.command == 'schedule_tasks_in_calendar'){
 					let arguments = output.arguments
 
 					let idList = (arguments?.idList || []).map(d => getrealid(d))
@@ -15232,8 +15226,8 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			oldautoscheduleeventslist = []
 			newautoscheduleeventslist = []
 
-			calendar.updateAnimatedEvents()
 			calendar.updateEvents()
+			calendar.updateAnimatedEvents()
 
 			calendar.updateHistory()
 			calendar.updateInfo(true)
@@ -15247,8 +15241,8 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		oldautoscheduleeventslist = calendar.events.filter(d => oldsmartevents.find(g => g.id == d.id))
 		newautoscheduleeventslist = newcalendarevents
 
-		calendar.updateEvents()
 		calendar.updateAnimatedEvents()
+		calendar.updateEvents()
 
 		calendar.updateInfo()
 
