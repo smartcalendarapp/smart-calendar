@@ -12440,7 +12440,7 @@ function simulateaiassistantwithnextaction(prompt, response){
 function updateaiassistanttooltip(){
 	let aichattooltip = getElement('aichattooltip')
 
-	let unreadmessages = chathistory.getInteractions().map(d => d.getMessages()).flat().find(d => d.unread == true)
+	let unreadmessages = chathistory.getInteractions().map(d => d.getMessages()).flat().filter(d => d.unread == true)
 
 	aichattooltip.classList.add('hiddentooltiptextcentertop')
 
