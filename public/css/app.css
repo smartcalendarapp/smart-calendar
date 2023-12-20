@@ -1785,6 +1785,10 @@ ol{
 	color:var(--white) !important;
 }
 
+.selectedevent .text-primary{
+	color:var(--white) !important
+}
+
 
 .completedtext {
 	color: var(--text-secondary) !important
@@ -3600,15 +3604,8 @@ ol{
 	visibility:visible !important
 }
 
-.aimessagebutton{
-	fill: var(--text-quaternary);
-	height: 14px;
-	width: 14px;
-	display: block;
-	transition-duration:0.1s;
-	cursor:pointer;
-}
-.aimessagebutton:hover{
+
+.aimessagebutton:hover svg{
 	fill:var(--text-primary)
 }
 
@@ -4009,6 +4006,51 @@ ol{
 	position: relative;
 }
 
+
+
+.aichattooltip{
+	max-width:200px;
+}
+
+.tooltiptextcentertop {
+	text-align: center;
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, transform 0.2s, visibility 0.2s !important;
+	pointer-events: none;
+	display: block;
+	position: absolute;
+	border-radius: 8px;
+	background-color: var(--background-primary);
+	box-shadow: 0 0 40px 0px var(--black-transparent);
+	color: var(--text-primary);
+	padding-left: 12px;
+	padding-right: 12px;
+	padding-top: 6px;
+	padding-bottom: 6px;
+	font-size: 14px;
+	white-space: nowrap;
+	margin-bottom: 15px;
+	z-index: 200;
+	opacity: 1;
+	transform: scale(1);
+}
+.tooltiptextcentertop::before {
+	content: '';
+	display: block;
+	width: 0;
+	height: 0;
+	position: absolute;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-top: 10px solid var(--background-primary);
+	bottom: -10px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+.hiddentooltiptextcentertop {
+	opacity: 0;
+	visibility: hidden;
+	transform: scale(0.9);
+}
 
 
 

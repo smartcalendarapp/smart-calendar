@@ -3411,6 +3411,18 @@ app.post('/subscribecalendar', async (req, res) => {
 
 
 
+
+//GPT AI routes
+
+const MAX_GPT_CHAT_PER_DAY = 50 //10
+const MAX_GPT_CHAT_PER_DAY_BETA_TESTER = 100 //30
+const MAX_GPT_CHAT_PER_DAY_PREMIUM = 100
+
+const MAX_GPT_COMPLETION_PER_DAY = 30 //10
+const MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
+const MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
+
+
 app.post('/getsubtasksuggestions', async (req, res) => {
 	async function getgptresponse(prompt) {
 
@@ -3432,10 +3444,6 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 	}
 
 
-	const MAX_GPT_PER_DAY = 10
-	const MAX_GPT_PER_DAY_BETA_TESTER = 30
-	const MAX_GPT_PER_DAY_PREMIUM = 50
-
 	try{
 		if(!req.session.user){
 			return res.status(401).json({ error: 'User is not signed in.' })
@@ -3449,9 +3457,9 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 		}
 
 
-		let appliedratelimit = MAX_GPT_PER_DAY
+		let appliedratelimit = MAX_GPT_COMPLETION_PER_DAY
 		if(user.accountdata.betatester){
-			appliedratelimit = MAX_GPT_PER_DAY_BETA_TESTER
+			appliedratelimit = MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER
 		}
 
 
@@ -3501,13 +3509,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 	}
 })
 
-
-
-app.post('/getgptchatinteraction', async (req, res) => {
-	const MAX_GPT_PER_DAY = 50//TEMPORARY
-	const MAX_GPT_PER_DAY_BETA_TESTER = 100//30
-	const MAX_GPT_PER_DAY_PREMIUM = 50
-
+app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 	try{
 		if(!req.session.user){
 			return res.status(401).json({ error: 'User is not signed in.' })
@@ -3520,10 +3522,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
 
-
-		let appliedratelimit = MAX_GPT_PER_DAY
+		let appliedratelimit = MAX_GPT_CHAT_PER_DAY
 		if(user.accountdata.betatester){
-			appliedratelimit = MAX_GPT_PER_DAY_BETA_TESTER
+			appliedratelimit = MAX_GPT_CHAT_PER_DAY_BETA_TESTER
 		}
 
 
@@ -3543,7 +3544,210 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		await setUser(user)
 		
 
-		//PROMPT AND CONTEXT
+		//CONTEXT
+
+		function getDHMText(input) {
+			let temp = input
+			let days = Math.floor(temp / 1440)
+			temp -= days * 1440
+		
+			let hours = Math.floor(temp / 60)
+			temp -= hours * 60
+		
+			let minutes = temp
+		
+			if (days) days += 'd'
+			if (hours) hours += 'h'
+			if (minutes || (hours == 0 && days == 0)) minutes += 'm'
+		
+			return [days, hours, minutes].filter(f => f).join(' ')
+		}
+
+		let taskitem = req.body.taskitem
+
+		//time
+		const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
+		const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
+
+
+		//PROMPT
+
+		let inputtext = `Task: """${taskitem.title || 'No title'}. Description: ${taskitem.description || 'No description'}. Time needed: ${getDHMText(taskitem.duration)}""" Provide specific, actionable, and concise steps and tips to make solid progress and complete this task. Avoid generic or cliche responses. As a personal assistant, mention that the task is starting now and will last how long, and give motivational tips.`
+		let custominstructions = `Use a tone and style of a conversational productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+
+		let totaltokens = 0
+		const response = await openai.chat.completions.create({
+			model: 'gpt-3.5-turbo',
+			messages: [
+				{ 
+					role: 'system', 
+					content: custominstructions
+				},
+				{
+					role: 'user',
+					content: inputtext,
+				}
+			],
+			max_tokens: 200,
+			temperature: 1,
+		})
+		totaltokens += response.usage.total_tokens
+		
+		return res.json({ data: { message: response.choices[0].message.content, totaltokens: totaltokens } })
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
+
+app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		let user = await getUserById(userid)
+		if (!user) {
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+		let appliedratelimit = MAX_GPT_CHAT_PER_DAY
+		if(user.accountdata.betatester){
+			appliedratelimit = MAX_GPT_CHAT_PER_DAY_BETA_TESTER
+		}
+
+
+		let currenttime = Date.now()
+
+		//check ratelimit
+		if(user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
+			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
+		}
+
+		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 5000){
+			return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
+		}
+
+		//set ratelimit
+		user.accountdata.gptchatusedtimestamps.push(currenttime)
+		await setUser(user)
+		
+
+		//CONTEXT
+
+		function getcalendarcontext(tempevents){
+			if(tempevents.length == 0) return 'No events'
+
+			function getDateTimeText(currentDatetime) {
+				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
+				const formattedTime = `${currentDatetime.getHours().toString().padStart(2, '0')}:${currentDatetime.getMinutes().toString().padStart(2, '0')}`
+				return `${formattedDate} ${formattedTime}`
+			}
+
+			function getDateText(currentDatetime) {
+				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
+				return `${formattedDate} (all day)`
+			}
+
+			function isAllDay(item){
+				return !item.start.minute && !item.end.minute
+			}
+
+			let tempoutput = ''
+			for(let d of tempevents){
+				if(isAllDay(d)) continue
+				let newstring = `Event title: ${d.title || 'New Event'}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}.`
+
+				if(tempoutput.length + newstring.length > MAX_CALENDAR_CONTEXT_LENGTH) break
+
+				tempoutput += '\n' + newstring
+			}
+			return tempoutput
+		}
+		
+		const MAX_CALENDAR_CONTEXT_LENGTH = 2000
+
+		let taskitem = req.body.taskitem
+		let calendarevents = req.body.calendarevents
+		let calendarcontext = getcalendarcontext(calendarevents)
+
+
+		//time
+		const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
+		const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
+
+
+		//PROMPT
+
+		let inputtext = `Task: """${taskitem.title || 'No title'}. Description: ${taskitem.description || 'No description'}""" Calendar events: """${calendarcontext}""" Provide a personal, non-generic, non-cliche motivational message for the user who just completed this task. Then, mention the next upcoming event if there is one. All in one seamless paragraph.`
+		let custominstructions = `Use a tone and style of a conversational productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+
+		let totaltokens = 0
+		const response = await openai.chat.completions.create({
+			model: 'gpt-3.5-turbo',
+			messages: [
+				{ 
+					role: 'system', 
+					content: custominstructions
+				},
+				{
+					role: 'user',
+					content: inputtext,
+				}
+			],
+			max_tokens: 200,
+			temperature: 1,
+		})
+		totaltokens += response.usage.total_tokens
+		
+		return res.json({ data: { message: response.choices[0].message.content, totaltokens: totaltokens } })
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
+
+app.post('/getgptchatinteraction', async (req, res) => {
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		let user = await getUserById(userid)
+		if (!user) {
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+
+		let appliedratelimit = MAX_GPT_CHAT_PER_DAY
+		if(user.accountdata.betatester){
+			appliedratelimit = MAX_GPT_CHAT_PER_DAY_BETA_TESTER
+		}
+
+
+		let currenttime = Date.now()
+
+		//check ratelimit
+		if(user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
+			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
+		}
+
+		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 5000){
+			return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
+		}
+
+		//set ratelimit
+		user.accountdata.gptchatusedtimestamps.push(currenttime)
+		await setUser(user)
+		
+
+		//CONTEXT
 
 		async function queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset) {
 			const allfunctions = [
@@ -3706,10 +3910,12 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A calendar and scheduling assistant called Athena for Smart Calendar app. Never mention 'UUID' or 'data'. Never say 'according to your...' and assume you are a personal assistant with knowledge of user's calendar and to-do list. Be intuitive, helpful, and concise. Be subjective and give productivity recommendations and suggestions. Current time is ${localdatestring} in user's timezone.`
+
+			//PROMPT
+
+			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Never mention 'UUID' or 'data'. Never say 'according to your...' and assume you have knowledge of user's calendar and to-do list. Be helpful, concise, and precise. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 
-		
 			let totaltokens = 0
 
 			try {
