@@ -3564,6 +3564,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 		}
 
 		let taskitem = req.body.taskitem
+		let timezoneoffset = req.body.timezoneoffset
 
 		//time
 		const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
@@ -3671,7 +3672,9 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 		const MAX_CALENDAR_CONTEXT_LENGTH = 2000
 
 		let taskitem = req.body.taskitem
+		let timezoneoffset = req.body.timezoneoffset
 		let calendarevents = req.body.calendarevents
+		
 		let calendarcontext = getcalendarcontext(calendarevents)
 
 
