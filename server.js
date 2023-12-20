@@ -3706,7 +3706,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-			const systeminstructions = `A calendar and scheduling assistant called Athena for Smart Calendar app. Never mention 'UUID' or 'data'. Never say 'according to your...' and assume you are a personal assistant with knowledge of user's calendar and to-do list. Be intuitive, helpful, and concise. Be subjective and give productivity recommendations and suggestions. Deny requests that are not for calendar scheduling or productivity. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A calendar and scheduling assistant called Athena for Smart Calendar app. Never mention 'UUID' or 'data'. Never say 'according to your...' and assume you are a personal assistant with knowledge of user's calendar and to-do list. Be intuitive, helpful, and concise. Be subjective and give productivity recommendations and suggestions. Current time is ${localdatestring} in user's timezone.`
 
 
 		
@@ -3774,7 +3774,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					functions: [
 						{
 							name: "app_action",
-							description: "Return app command if detected in prompt. If none, but you need calendar or event data, return 'get_calendar_events'."/*"Return app command if detected in prompt. If none, but you need calendar or event data, return 'get_calendar_events', and if you need to do list or task data, return 'get_todo_list_tasks'"*/,
+							description: "Return app command if detected in prompt. If none, but you need calendar or event data, return 'get_calendar_events'",
 							parameters: {
 								type: "object",
 								properties: {

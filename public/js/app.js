@@ -2468,7 +2468,7 @@ class Calendar {
 							}
 
 							${!Calendar.Event.isReadOnly(item) && item.type == 1 ? 
-								`<span class="text-primary display-inline-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-tint-1 hover:background-tint-2 pointer-auto transition-duration-100 border-round pointer" onclick="todocompleted(event, selectedeventid)">
+								`<span class="text-primary display-inline-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-tint-1 hover:background-tint-2 pointer-auto transition-duration-100 border-round pointer" onclick="eventcompleted(event, selectedeventid)">
 									<div class="pointer-none nowrap text-primary text-14px">${item.completed ? `Mark uncomplete` : 'Mark complete'}</div>
 								</span>` : ''
 							}
@@ -12382,6 +12382,7 @@ function openaichat(){
 		
 		const tempoptions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my agenda for today?')">What's on my agenda today?</div>`,
 		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, 
+		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Schedule todays tasks in my calendar')">Schedule today's tasks in my calendar</div>`, 
 		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`,
 		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What are my tasks for today?')">What are my tasks for today?</div>`]
 
@@ -12398,7 +12399,9 @@ function openaichat(){
 function promptaiassistantwithnextaction(prompt){
 	submitaimessage(prompt)
 }
-
+function simulateaiassistantwithnextaction(prompt, response){
+	chathistory.addInteraction(new ChatInteraction([new ChatMessage({ role: 'user', message: prompt}), new ChatMessage({ role: 'assistant', message: response})]))
+}
 
 class ChatConversation{
 	constructor(interactions = []){
@@ -13155,54 +13158,6 @@ async function submitaimessage(optionalinput){
 
 						startAutoSchedule({eventsuggestiontodos: [item]})
 
-						
-						function gettimeoptions(){
-							function gettextfromavailabletime(timestamp){
-								const now = new Date()
-								const date = new Date(timestamp)
-						
-								const nowday = new Date(now)
-								nowday.setHours(0,0,0,0)
-								const dateday = new Date(date)
-								dateday.setHours(0,0,0,0)
-						
-								function timeOfDay(hour) {
-									if (hour < 12) return 'morning'
-									if (hour < 18) return 'afternoon'
-									return 'evening'
-								}
-						
-								const today = nowday.getTime() == dateday.getTime()
-						
-								const tomorrowday = new Date(nowday)
-								tomorrowday.setDate(tomorrowday.getDate() + 1)
-								const isTomorrow = tomorrowday.getTime() == dateday.getTime()
-						
-								if (today) {
-									return `This ${timeOfDay(date.getHours())}`
-								} else if (isTomorrow) {
-									return `Tomorrow ${timeOfDay(date.getHours())}`
-								} else {
-									return `${DAYLIST[date.getDay()]} ${timeOfDay(date.getHours())}`
-								}
-							}
-
-							let output = []
-							
-							let tempdate = new Date()
-							tempdate.setMinutes(0,0,0)
-
-							while(output.length < 3){
-								let tempoutput = gettextfromavailabletime(tempdate)
-								if(!output.includes(tempoutput)){
-									output.push(tempoutput)
-								}
-
-								tempdate.setHours(tempdate.getHours() + 1)
-							}
-
-							return output
-						}
 
 						responsechatmessage.message = `Done! I created a task "${Calendar.Event.getTitle(item)}" and added it to your calendar.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
@@ -13368,21 +13323,26 @@ async function submitaimessage(optionalinput){
 						if(items.length > 0){
 							aichattemporarydata = items
 							
-							responsechatmessage.message = `Just a confirmation: do you want to schedule these tasks?\n${items.map(d => `- ${d.title}`).join('\n')}`
-							responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('No')">No</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({scheduletodos: aichattemporarydata}))">Yes</div>`]
+							responsechatmessage.message = `I just want to confirm with you before scheduling these tasks:\n${items.map(d => `- ${d.title}`).join('\n')}`
+							responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule these tasks in your calendar.')">No</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata })); simulateaiassistantwithnextaction('Yes', 'Done! I added ${items.length} tasks to your calendar.')">Yes</div>`]
 						}else{
-							responsechatmessage.message = `I could not find that task, could you please tell me more?`
+							let calendaritems = idList && calendar.events.filter(d => idList.find(g => g == d.id))
+							if(calendaritems.length > 0){
+								responsechatmessage.message = `It looks like these tasks are already scheduled in your calendar!`
+							}else{
+								responsechatmessage.message = `I could not find this task, could you please tell me more?`
+							}
 						}
 					}
 					
 				}else{
-					responsechatmessage.message = `An unexpected error occured in determining your command. Please try again or contact us.`
+					responsechatmessage.message = `This is weird, I could not determine your command. Please click the thumbs down button and try again.`
 				}
 
 			}else if(output.error){
 				responsechatmessage.message = `${output.error}`
 			}else if(!data.data?.message){
-				responsechatmessage.message = `I could not generate a response, please try again.`
+				responsechatmessage.message = `This is weird, I could not generate a response. Please click the thumbs down button and try again.`
 			}else{
 				responsechatmessage.message = `${data.data?.message}`
 			}
