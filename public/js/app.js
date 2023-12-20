@@ -1069,6 +1069,32 @@ class Calendar {
 			}
 		}
 
+		static getNaturalStartEndText(item){
+			let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+			let enddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
+
+			let timelist = []
+			if (Calendar.Event.isAllDay(item)) {
+				enddate.setDate(enddate.getDate() - 1)
+				timelist.push(getDMDYText(startdate))
+
+				if (enddate.getDate() != startdate.getDate() || enddate.getMonth() != startdate.getMonth() || enddate.getFullYear() != startdate.getFullYear()) {
+					timelist.push(' to ')
+					timelist.push(getDMDYText(enddate))
+				}
+			} else {
+				timelist.push(getDMDYText(startdate))
+				timelist.push(getHMText(startdate.getHours() * 60 + startdate.getMinutes()))
+
+				timelist.push(' to ')
+				if (enddate.getDate() != startdate.getDate() || enddate.getMonth() != startdate.getMonth() || enddate.getFullYear() != startdate.getFullYear()) {
+					timelist.push(getDMDYText(enddate))
+				}
+				timelist.push(getHMText(enddate.getHours() * 60 + enddate.getMinutes()))
+			}
+			return timelist.join(' ')
+		}
+
 		static getFullStartEndText(item) {
 			let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 			let enddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
@@ -8310,7 +8336,7 @@ async function submitfeedbackpopup(){
 	let content = { autoschedulerating: feedbackautoschedulerating + 1, autoschedulemessage: feedbackpopupmessage1.value, challengesmessage: feedbackpopupmessage2.value, suggestionsmessage: feedbackpopupmessage3.value }
 
 	try{
-		const response = await fetch(`/sendmessage`, {
+		const response = await fetch(`/sendfeedback`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -8397,13 +8423,13 @@ async function submitfeedbackpopupmini(){
 	let feedbackpopuperrorwrap = getElement('feedbackpopuperrorwrapmini')
 	feedbackpopuperrorwrap.classList.add('display-none')
 
-	let feedbackpopupmessage = getElement('feedbackpopupmessage')
+	let feedbackpopupmessage = getElement('feedbackpopupmessagemini')
 
 	let content = feedbackpopupmessage.value
 	if(!content) return
 
 	try{
-		const response = await fetch(`/sendmessage`, {
+		const response = await fetch(`/sendfeedback`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -12304,7 +12330,7 @@ function closeaichat(){
 }
 
 function newaichat(){
-	chathistory = new ChatInterface()
+	chathistory = new ChatConversation()
 	openaichat()
 }
 
@@ -12380,9 +12406,11 @@ function promptaiassistantwithnextaction(prompt){
 }
 
 
-class ChatInterface{
+class ChatConversation{
 	constructor(interactions = []){
 		this.interactions = interactions
+
+		this.id = generateID()
 	}
 
 	addInteraction(chatinteraction){
@@ -12507,7 +12535,7 @@ class ChatMessage {
 
 
 
-let chathistory = new ChatInterface()
+let chathistory = new ChatConversation()
 
 
 async function likeaichatmessage(event, id){
@@ -12519,7 +12547,7 @@ async function likeaichatmessage(event, id){
 	chatmessage.liked = true
 
 	try{
-		const response = await fetch(`/sendmessage`, {
+		const response = await fetch(`/sendfeedback`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -12549,7 +12577,7 @@ async function dislikeaichatmessage(event, id){
 	chatmessage.disliked = true
 
 	try{
-		const response = await fetch(`/sendmessage`, {
+		const response = await fetch(`/sendfeedback`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -12804,7 +12832,8 @@ async function submitaimessage(optionalinput){
 				calendartodos: calendartodos,
 				userinput: userinput,
 				timezoneoffset: new Date().getTimezoneOffset(),
-				chathistory: sendchathistory
+				chathistory: sendchathistory,
+				conversationid: chathistory.id
 			})
 		})
 		if(response.status == 200){
@@ -12917,7 +12946,7 @@ async function submitaimessage(optionalinput){
 						responsechatmessage.message = `What time do you want "${title}" to take place?`
 						responsechatmessage.nextactions = [...timeoptions.map(d => `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('${d}')">${d}</div>`), `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Auto schedule')">Auto schedule</div>`]
 					}
-				}else if(output.command == 'create_events'){
+				}else if(output.command == 'create_multiple_events'){
 					let arguments = output.arguments
 					if(arguments.events && Array.isArray(arguments.events) && arguments.events.length > 0){
 
@@ -13020,12 +13049,14 @@ async function submitaimessage(optionalinput){
 								}
 
 
-								if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
+								if(startdate && !isNaN(startdate.getTime())){
 									item.start.year = startdate.getFullYear()
 									item.start.month = startdate.getMonth()
 									item.start.day = startdate.getDate()
 									item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+								}
 
+								if(enddate && !isNaN(enddate.getTime())){
 									item.end.year = enddate.getFullYear()
 									item.end.month = enddate.getMonth()
 									item.end.day = enddate.getDate()
@@ -13057,7 +13088,7 @@ async function submitaimessage(optionalinput){
 									if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
 										tempmsg = `Done! I moved your event "${Calendar.Event.getTitle(item)}" to ${Calendar.Event.getStartText(item)}`
 									}else{
-										tempmsg = `Done! I modified your event "${Calendar.Event.getTitle(item)}" to be on ${Calendar.Event.getFullStartEndText(item)}`
+										tempmsg = `Done! I modified your event "${Calendar.Event.getTitle(item)}" to be from ${Calendar.Event.getNaturalStartEndText(item)}`
 									}
 								}
 								responsechatmessage.message = tempmsg
@@ -13172,13 +13203,13 @@ async function submitaimessage(optionalinput){
 							return output
 						}
 
-						responsechatmessage.message = `Done! I added your task "${Calendar.Event.getTitle(item)}" to your calendar. It will be auto-scheduled, but you can move it to another time.`
+						responsechatmessage.message = `Done! I created a task "${Calendar.Event.getTitle(item)}" and added it to your calendar.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
 						responsechatmessage.message = `What time do you want ${title} to be due?`
 						responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('In 1 week')">In 1 week</div>`]
 					}
-				}else if(output.command == 'create_tasks'){
+				}else if(output.command == 'create_multiple_tasks'){
 					let arguments = output.arguments
 					if(arguments.tasks && Array.isArray(arguments.tasks) && arguments.tasks.length > 0){
 
@@ -13289,7 +13320,7 @@ async function submitaimessage(optionalinput){
 								if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
 									tempmsg = `Done! I set your task "${Calendar.Event.getTitle(item)}" to be due ${Calendar.Event.getDueText(item)}`
 								}else{
-									tempmsg = `Done! I modified your event "${Calendar.Event.getTitle(item)}" to be on ${Calendar.Event.getFullStartEndText(item)}`
+									tempmsg = `Done! I modified your event "${Calendar.Event.getTitle(item)}" to be from ${Calendar.Event.getNaturalStartEndText(item)}`
 								}
 							}
 							if(newcompleted != null && newcompleted != oldcompleted){

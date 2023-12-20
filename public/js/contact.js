@@ -97,7 +97,7 @@ async function submitmessage(event){
 	let feedbackformemail = getElement('feedbackformemail')
 	let feedbackformcontent = getElement('feedbackformcontent')
 	
-	const response = await fetch(`/sendmessage`, {
+	const response = await fetch(`/sendcontactus`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'

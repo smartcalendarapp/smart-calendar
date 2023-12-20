@@ -161,14 +161,54 @@ async function deleteUser(userid){
 }
 
 
-async function sendmessage(data){
+async function savefeedbackobject(data){
 	const params = {
-	  TableName: 'smartcalendarmessages',
+	  TableName: 'smartcalendarfeedback',
 	  Item: marshall(data, { convertClassInstanceToMap: true, removeUndefinedValues: true })
 	}
 	
 	await dynamoclient.send(new PutItemCommand(params))
 	return data
+}
+
+async function savecontactusobject(data){
+	const params = {
+	  TableName: 'smartcalendarcontactus',
+	  Item: marshall(data, { convertClassInstanceToMap: true, removeUndefinedValues: true })
+	}
+	
+	await dynamoclient.send(new PutItemCommand(params))
+	return data
+}
+
+async function savechatconversation(conversationid, userid, chatconversation){
+	try{
+		const params = {
+			TableName: 'smartcalendarchatconversations',
+			Key: {
+				'conversationid': { S: conversationid }
+			}
+		}
+		const data = await dynamoclient.send(new GetItemCommand(params))
+		let tempdata = data.Item
+
+		if(tempdata){
+			tempdata = unmarshall(tempdata)
+		}else{
+			tempdata = new ChatConversationObject({ conversationid: conversationid, userid: userid })
+		}
+
+		tempdata.chatconversation = chatconversation
+
+		const params2 = {
+			TableName: 'smartcalendarchatconversations',
+			Item: marshall(tempdata, { convertClassInstanceToMap: true, removeUndefinedValues: true })
+		}
+		
+		await dynamoclient.send(new PutItemCommand(params2))
+	}catch(error){
+		console.error(error)
+	}
 }
 
 //DATABASE CLASSES
@@ -282,7 +322,16 @@ function round(number, increment) {
 	return Math.round(number / increment) * increment;
 }
 
-class Message{
+class FeedbackObject{
+	constructor({ content, userid }){
+		this.id = generateID()
+		this.content = content
+		this.userid = userid
+		this.timestamp = Date.now()
+	}
+}
+
+class ContactUsObject{
 	constructor({ content, userid, email }){
 		this.id = generateID()
 		this.content = content
@@ -291,6 +340,16 @@ class Message{
 		this.timestamp = Date.now()
 	}
 }
+
+class ChatConversationObject{
+	constructor({ conversationid, userid, conversationhistory = [] }){
+		this.conversationid = conversationid
+		this.userid = userid
+		this.timestamp = Date.now()
+		this.conversationhistory = conversationhistory
+	}
+}
+
 
 
 class User{
@@ -1775,6 +1834,7 @@ app.post('/auth/apple/callback', async (req, res) => {
 
 //DISCORD BOT INITIALIZATION
 const { Client, GatewayIntentBits, EmbedBuilder, ActivityType } = require('discord.js')
+const { chat } = require("googleapis/build/src/apis/chat")
 
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN
 const discordclient = new Client({ intents: [GatewayIntentBits.Guilds] })
@@ -3240,16 +3300,36 @@ app.post('/setclientdata', async (req, res, next) => {
 })
 
 
-app.post('/sendmessage', async (req, res, next) => {
+app.post('/sendcontactus', async (req, res, next) => {
 	try {
 		const content = req.body.content
 		const email = req.body.email
 		const userid = req.session?.user?.userid
 
-		const message = new Message({ email: email, userid: userid, content: content })
+		const message = new ContactUsObject({ email: email, userid: userid, content: content })
 		
 		try{
-			await sendmessage(message)
+			await savecontactusobject(message)
+		}catch(error){
+			return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		}
+
+		return res.end()
+	}catch(error){
+		console.error(error)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
+app.post('/sendfeedback', async (req, res, next) => {
+	try {
+		const content = req.body.content
+		const userid = req.session?.user?.userid
+
+		const message = new FeedbackObject({ userid: userid, content: content })
+		
+		try{
+			await savefeedbackobject(message)
 		}catch(error){
 			return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
 		}
@@ -3516,9 +3596,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						required: ['title']
 					}
 				},
-				/*{
-					name: 'create_events',
-					description: 'Create new events in the calendar',
+				{
+					name: 'create_multiple_events',
+					description: 'Create multiple new events in the calendar',
 					parameters: {
 						type: "object",
 						properties: {
@@ -3537,7 +3617,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: ["events"]
 					}
-				},*/
+				},
 				{
 					name: 'delete_event',
 					description: 'Check for event to delete by title or direct reference. Need high confidence. Returns an error if the event does not exist.',
@@ -3565,9 +3645,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						required: []
 					}
 				},
-				/*{
-					name: 'create_tasks',
-					description: 'Create new tasks in the to do list',
+				{
+					name: 'create_multiple_tasks',
+					description: 'Create multiple new tasks in the to do list',
 					parameters: {
 						type: "object",
 						properties: {
@@ -3586,7 +3666,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: ["tasks"]
 					}
-				},*/
+				},
 				{
 					name: 'delete_task',
 					description: 'Check for task to delete by title or direct reference. Need high confidence. Returns an error if the task does not exist.',
@@ -3617,7 +3697,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				}
 			]
 
-			const customfunctions = ['create_events', 'create_event', 'delete_event', 'modify_event', 'create_tasks','create_task', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_multiple_events', 'create_event', 'delete_event', 'modify_event', 'create_multiple_tasks','create_task', 'delete_task', 'modify_task', 'auto_schedule_tasks'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'auto_schedule_tasks'] //a subset of all functions, the functions that need todo data
 
@@ -3891,6 +3971,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		let calendartodos = req.body.calendartodos
 		let timezoneoffset = req.body.timezoneoffset
 		let rawconversationhistory = req.body.chathistory
+		let conversationid = req.body.conversationid
+
+		savechatconversation(conversationid, user.userid, rawconversationhistory)
 
 		let calendarcontext = getcalendarcontext(calendarevents)
 		let todocontext = gettodocontext(calendartodos)
@@ -3905,6 +3988,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
 	}
 })
+
 
 /*
   _____  _    _  _____ _    _   _   _  ____ _______ _____ ______ _____ _____       _______ _____ ____  _   _  _____ 
