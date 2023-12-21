@@ -10030,7 +10030,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	getElement('aichatrecognitionwrap').classList.add('display-none')
 }
 
-function updaterecognitionui(){
+function updaterecognitionui(close){
 	let addtododictationpopup = getElement('addtododictationpopup')
 	let addeventdictationpopup = getElement('addeventdictationpopup')
 	let aichatdictationpopup = getElement('aichatdictationpopup')
@@ -10067,17 +10067,12 @@ function updaterecognitionui(){
 	todorecognitionbutton.classList.remove('display-none')
 	aichatrecognitionbutton.classList.remove('display-none')
 
+	if(close) return
+
 	//error
 	const permanentrecognitionerrors = ['service-not-allowed', 'not-allowed']
 	if(recognitionerror && permanentrecognitionerrors.includes(recognitionerror)){
 		ispaused = true
-		
-		let errorhtml = `<span class="text-red">No permission to use dictation, please check your browser/device settings.</span>`
-		if(recognitionoutputtype == 'task'){
-			addtododictationtext.innerHTML = errorhtml
-		}else if(recognitionoutputtype == 'event'){
-			addeventdictationtext.innerHTML = errorhtml
-		}
 	}
 
 
@@ -10153,6 +10148,17 @@ function updaterecognitionui(){
 			}
 		}
 	}
+
+	if(recognitionerror && permanentrecognitionerrors.includes(recognitionerror)){		
+		let errorhtml = `<span class="text-red">No permission to use dictation, please check your browser/device settings.</span>`
+		if(recognitionoutputtype == 'task'){
+			addtododictationtext.innerHTML = errorhtml
+		}else if(recognitionoutputtype == 'event'){
+			addeventdictationtext.innerHTML = errorhtml
+		}else if(recognitionoutputtype == 'aichat'){
+			aichatdictationtext.innerHTML = errorhtml
+		}
+	}
 }
 
 function togglerecognition(type){
@@ -10187,7 +10193,7 @@ function closerecognitionpopup(){
 	stoprecognition()
 	ispaused = false
 
-	updaterecognitionui()
+	updaterecognitionui(true)
 }
 function submitdictation(){
 	if(totalTranscriptCopy){
@@ -13251,6 +13257,8 @@ async function submitaimessage(optionalinput, dictated){
 
 						responsechatmessage.message = `Done! I have created an event "${Calendar.Event.getRawTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
+
+						gototaskincalendar(item.id)
 					}else{
 
 						function gettimeoptions(amount){
@@ -13358,6 +13366,8 @@ async function submitaimessage(optionalinput, dictated){
 						responsechatmessage.message = tempoutput.join('\n')
 						if(firstitem){
 							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${firstitem.id}')">Show me</div>`]
+
+							gototaskincalendar(firstitem.id)
 						}
 
 						selectedeventid = null
@@ -13453,6 +13463,8 @@ async function submitaimessage(optionalinput, dictated){
 								}
 								responsechatmessage.message = tempmsg
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
+
+								gototaskincalendar(item.id)
 							}
 						}else{
 							responsechatmessage.message = `I could not find that event, could you please tell me more?`
@@ -13517,6 +13529,8 @@ async function submitaimessage(optionalinput, dictated){
 
 						responsechatmessage.message = `Done! I created a task "${Calendar.Event.getRawTitle(item)}" and added it to your calendar.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
+
+						gototaskincalendar(item.id)
 					}else{
 						responsechatmessage.message = `What time do you want ${title} to be due?`
 						responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('In 1 week')">In 1 week</div>`]
@@ -13564,6 +13578,8 @@ async function submitaimessage(optionalinput, dictated){
 						responsechatmessage.message = tempoutput.join('\n')
 						if(firstitem){
 							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`]
+
+							gototaskintodolist(firstitem.id)
 						}
 
 						calendar.updateTodo()
@@ -13641,6 +13657,8 @@ async function submitaimessage(optionalinput, dictated){
 
 							responsechatmessage.message = tempmsg
 							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
+
+							gototaskintodolist(item.id)
 
 						}else{
 							responsechatmessage.message = `I could not find that task, could you please tell me more?`

@@ -1835,14 +1835,22 @@ app.post('/auth/apple/callback', async (req, res) => {
 
 //DISCORD BOT INITIALIZATION
 const { Client, GatewayIntentBits, EmbedBuilder, ActivityType } = require('discord.js')
-const { chat } = require("googleapis/build/src/apis/chat")
 
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN
 const discordclient = new Client({ intents: [GatewayIntentBits.Guilds] })
 
 discordclient.on('ready', async () => {
 	console.log(`Logged in as ${discordclient.user.tag}.`)
-	discordclient.user.setActivity('your reminders', { type: ActivityType.Watching })
+
+	function setactivity(){
+		let tempvalue = Object.values(reminderscache).filter(b=>b.filter(f => f.user.discordid != null).length > 0).flat().length
+		discordclient.user.setActivity(`${tempvalue == 0 ? 'your' : tempvalue} reminders`, { type: ActivityType.Watching })
+	}
+
+	setactivity()
+	setInterval(function(){
+		setactivity()
+	}, 5*60000)
 })
 
 discordclient.login(DISCORD_TOKEN)
@@ -3938,7 +3946,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				},
 				{
 					name: 'delete_event',
-					description: 'Check for event to delete by title or direct reference. Need high confidence. Returns an error if the event does not exist.',
+					description: 'Check for event in calendar to delete by title or direct reference. Need high confidence. Returns an error if the event does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -3950,7 +3958,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				},
 				{
 					name: 'modify_event',
-					description: 'Check for event to modify by title or direct reference. Need high confidence. Returns an error if the event does not exist.',
+					description: 'Check for event in calendar to modify by title or direct reference. Need high confidence. Returns an error if the event does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -3987,7 +3995,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				},
 				{
 					name: 'delete_task',
-					description: 'Check for task to delete by title or direct reference. Need high confidence. Returns an error if the task does not exist.',
+					description: 'Check for task in to-do list to delete by title or direct reference. Need high confidence. Returns an error if the task does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -3999,7 +4007,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				},
 				{
 					name: 'modify_task',
-					description: 'Check for task to modify by title or direct reference. Returns an error if the task does not exist.',
+					description: 'Check for task in to-do list to modify by title or direct reference. Returns an error if the task does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -4018,6 +4026,14 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const customfunctions = ['create_multiple_events', 'create_event', 'delete_event', 'modify_event', 'create_multiple_tasks','create_task', 'delete_task', 'modify_task', 'schedule_tasks_in_calendar'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'schedule_tasks_in_calendar'] //a subset of all functions, the functions that need todo data
+			const conjugatecommands = {
+				'create_event': 'create_task',
+				'modify_event': 'modify_task',
+				'delete_event': 'delete_task',
+				'create_task': 'create_event',
+				'modify_task': 'modify_event',
+				'delete_task': 'delete_event',
+			}
 
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
@@ -4120,9 +4136,10 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				if (response.choices[0].message.function_call?.name === 'app_action') {
 					const command = JSON.parse(response.choices[0].message.function_call?.arguments)?.command
 					if (command) {
-						const requirescalendardata = calendardataneededfunctions.includes(command)
-						const requirestododata = tododataneededfunctions.includes(command)
-						const requirescustomfunction = customfunctions.includes(command)
+						const conjugatecommand = conjugatecommands[command]
+						const requirescalendardata = calendardataneededfunctions.includes(command) || (conjugatecommand &&  calendardataneededfunctions.includes(conjugatecommand))
+						const requirestododata = tododataneededfunctions.includes(command) || (conjugatecommand &&  tododataneededfunctions.includes(conjugatecommand))
+						const requirescustomfunction = customfunctions.includes(command) || (conjugatecommand &&  customfunctions.includes(conjugatecommand))
 		
 						let request2options = {
 							model: 'gpt-3.5-turbo',
