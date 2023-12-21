@@ -1360,6 +1360,8 @@ class Calendar {
 			aiassistanttab.classList.add('selectedbuttonunderline')
 			aiassistanttab2.classList.add('selectedbutton2')
 		}
+
+		setStorage('calendartabs', calendartabs)
 	}
 
 
@@ -3806,6 +3808,18 @@ if(mobilescreen){
 let calendartabs = [0, 1]
 if(mobilescreen){
 	calendartabs = [1]
+}
+let calendartabsstorage = getStorage('calendartabs')
+if(calendartabsstorage != null){
+	if(mobilescreen){
+		if(calendartabsstorage.includes(0) || calendartabs.includes(1) || calendartabs.includes(4)){
+			calendartabs = calendartabsstorage.slice(0, 1)
+		}
+	}else{
+		if(calendartabsstorage.includes(0)){
+			calendartabs = calendartabsstorage
+		}
+	}
 }
 
 

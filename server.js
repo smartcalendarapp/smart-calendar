@@ -3870,7 +3870,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 		//CONTEXT
 
-		async function queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset) {
+		async function queryGptWithFunction(userinput, calendarcontext, todocontext, todowithouteventscontext, conversationhistory, timezoneoffset) {
 			const allfunctions = [
 				{
 					name: 'get_calendar_events',
@@ -4157,7 +4157,11 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						if(requirestododata){
 							//yes todo data
 		
-							request2input = `Todo data: """${todocontext}""" Prompt: """${userinput}""" `
+							if(requirescalendardata){
+								request2input = `Todo data: """${todowithouteventscontext}""" Prompt: """${userinput}""" `
+							}else{
+								request2input = `Todo data: """${todocontext}""" Prompt: """${userinput}""" `
+							}
 						}
 		
 						if(requirescustomfunction){
@@ -4297,6 +4301,46 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			return tempoutput
 		}
 
+		function gettodowithouteventscontext(temptodos){
+			if(temptodos.length == 0) return 'No tasks'
+
+			function getDateTimeText(currentDatetime) {
+				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
+				const formattedTime = `${currentDatetime.getHours().toString().padStart(2, '0')}:${currentDatetime.getMinutes().toString().padStart(2, '0')}`
+				return `${formattedDate} ${formattedTime}`
+			}
+
+			function getDHMText(input) {
+				let temp = input
+				let days = Math.floor(temp / 1440)
+				temp -= days * 1440
+			
+				let hours = Math.floor(temp / 60)
+				temp -= hours * 60
+			
+				let minutes = temp
+			
+				if (days) days += 'd'
+				if (hours) hours += 'h'
+				if (minutes || (hours == 0 && days == 0)) minutes += 'm'
+			
+				return [days, hours, minutes].filter(f => f).join(' ')
+			}
+
+
+			let tempoutput = ''
+			for(let d of temptodos){
+				if(d.type == 1) continue
+				
+				let newstring = `Task title: ${d.title || 'New Task'}, UUID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration)}, completed: ${d.completed}.`
+
+				if(tempoutput.length + newstring.length > MAX_TODO_CONTEXT_LENGTH) break
+
+				tempoutput += '\n' + newstring
+			}
+			return tempoutput
+		}
+
 		function getconversationhistory(temphistory){ //simple way for history, just send latest X messages
 			let tempoutput = []
 			let counter = 0
@@ -4325,10 +4369,11 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 		let calendarcontext = getcalendarcontext(calendarevents)
 		let todocontext = gettodocontext(calendartodos)
+		let todowithouteventscontext = gettodowithouteventscontext(calendartodos)
 		let conversationhistory = getconversationhistory(rawconversationhistory)
 
 		//REQUEST
-		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset)
+		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, todowithouteventscontext, conversationhistory, timezoneoffset)
 
 		return res.json({ data: output, idmap: idmap })
 	}catch(err){
