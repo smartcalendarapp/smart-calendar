@@ -4167,7 +4167,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						if(requirescustomfunction){
 							//yes custom function
 		
-							request2options.functions = [allfunctions.find(d => d.name == command)]
+							request2options.functions = allfunctions.filter(d => d.name == command || (conjugatecommand && d.name == conjugatecommand))
 						}
 		
 						request2options.messages = [
@@ -4331,7 +4331,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			let tempoutput = ''
 			for(let d of temptodos){
 				if(d.type == 1) continue
-				
+
 				let newstring = `Task title: ${d.title || 'New Task'}, UUID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration)}, completed: ${d.completed}.`
 
 				if(tempoutput.length + newstring.length > MAX_TODO_CONTEXT_LENGTH) break

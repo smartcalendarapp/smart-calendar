@@ -12659,6 +12659,44 @@ async function promptaiassistanttaskstarted(item){
 	}
 }
 
+//get reminder when event started
+async function promptaiassistanteventstarted(item){//here3
+	if(!clientinfo.betatester) return
+
+	try{
+		const response = await fetch('/getgptchatresponsetaskstarted', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				taskitem: item,
+				timezoneoffset: new Date().getTimezoneOffset(),
+			})
+		})
+
+		if(response.status == 200){
+			let data = await response.json()
+
+			let output = data.data
+
+			if(clientinfo.betatester){
+				console.log(data.data?.totaltokens, output)
+			}
+
+			chathistory.addInteraction(new ChatInteraction([new ChatMessage({ role: 'assistant', message: output.message, unread: true })]))
+
+			updateaichat()
+		}else if(response.status == 401){
+			let data = await response.json()
+
+			console.log(data.error)
+		}
+	}catch(error){
+		console.log(error)
+	}
+}
+
 
 async function promptaiassistantmorningsummary(){
 	if(!clientinfo.betatester) return
@@ -13232,7 +13270,7 @@ async function submitaimessage(optionalinput, dictated){
 
 
 			if(clientinfo.betatester){
-				console.log(data.data?.totaltokens, output)
+				console.log(data.data?.totaltokens, output, idmap)
 			}
 
 
@@ -13660,9 +13698,9 @@ async function submitaimessage(optionalinput, dictated){
 								}
 							}else{
 								if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
-									tempmsg = `Done! I set your task "${Calendar.Event.getRawTitle(item)}" to be due ${Calendar.Event.getDueText(item)}`
+									tempmsg = `Done! I set your task "${Calendar.Event.getRawTitle(item)}" to be due ${Calendar.Event.getDueText(item)}.`
 								}else{
-									tempmsg = `Done! I modified your event "${Calendar.Event.getRawTitle(item)}" to be from ${Calendar.Event.getNaturalStartEndText(item)}`
+									tempmsg = `Done! I modified your task "${Calendar.Event.getRawTitle(item)}".`
 								}
 							}
 							if(newcompleted != null && newcompleted != oldcompleted){
