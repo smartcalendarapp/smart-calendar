@@ -4151,16 +4151,16 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						if(requirescalendardata){
 							//yes calendar data
 		
-							request2input = `Calendar data: """${calendarcontext}""" Prompt: """${userinput}""" `
+							request2input = `Calendar data: """${calendarcontext}""" Prompt: """${userinput}"""`
 						}
 
 						if(requirestododata){
 							//yes todo data
 		
 							if(requirescalendardata){
-								request2input = `Todo data: """${todowithouteventscontext}""" Prompt: """${userinput}""" `
+								request2input = `Calendar data: """${calendarcontext}""" Todo data: """${todowithouteventscontext}""" Prompt: """${userinput}"""`
 							}else{
-								request2input = `Todo data: """${todocontext}""" Prompt: """${userinput}""" `
+								request2input = `Todo data: """${todocontext}""" Prompt: """${userinput}"""`
 							}
 						}
 		
