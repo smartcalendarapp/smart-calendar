@@ -4092,7 +4092,7 @@ ol{
     left: 50%;
     transform: translateX(-50%);
 }
-.hiddentooltiptextcentertop {
+.hiddentooltiptop {
 	opacity: 0;
 	visibility: hidden;
 	transform: scale(0.9);
@@ -4129,7 +4129,7 @@ ol{
 	border-right: 10px solid transparent;
 	border-top: 10px solid var(--background-primary);
 	bottom: -10px;
-	left: 0;
+	left: 6px;
 	z-index:1;
 }
 .aichatborder.tooltiptextlefttop::after{
@@ -4142,7 +4142,7 @@ ol{
     border-right: 10px solid transparent;
     border-top: 10px solid var(--purple);
     bottom: -11.5px;
-    left: 0;
+    left: 6px;
 }
 
 

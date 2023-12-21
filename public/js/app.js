@@ -12449,7 +12449,7 @@ function updateaiassistanttooltip(){
 
 	let unreadmessages = chathistory.getInteractions().map(d => d.getMessages()).flat().filter(d => d.unread == true)
 
-	aichattooltip.classList.add('hiddentooltiptextcentertop')
+	aichattooltip.classList.add('hiddentooltiptop')
 
 	if(unreadmessages.length > 0){
 		let latestunreaditem = unreadmessages[unreadmessages.length - 1]
@@ -12460,7 +12460,7 @@ function updateaiassistanttooltip(){
 			if(!calendartabs.includes(4)){
 				aichattooltip.classList.remove('tooltiptextcentertop')
 				aichattooltip.classList.add('tooltiptextlefttop')
-				aichattooltip.classList.remove('hiddentooltiptextcentertop')
+				aichattooltip.classList.remove('hiddentooltiptop')
 
 				let aiassistanttab2 = getElement('aiassistanttab2')
 
@@ -12471,7 +12471,7 @@ function updateaiassistanttooltip(){
 			if(calendartabs.includes(0) && !calendartabs.includes(4)){
 				aichattooltip.classList.add('tooltiptextcentertop')
 				aichattooltip.classList.remove('tooltiptextlefttop')
-				aichattooltip.classList.remove('hiddentooltiptextcentertop')
+				aichattooltip.classList.remove('hiddentooltiptop')
 
 				let aichattitle = getElement('aichattitle')
 
@@ -12569,6 +12569,13 @@ async function promptaiassistanttaskstarted(item){
 
 async function promptaiassistantmorningsummary(){
 	if(!clientinfo.betatester) return
+
+	if(mobilescreen){
+		calendartabs = [4]
+	}else{
+		calendartabs = [0, 4]
+	}
+	calendar.updateTabs()
 
 	calendar.lastprompttodotodaydate = Date.now()
 
