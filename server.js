@@ -3590,7 +3590,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 					content: inputtext,
 				}
 			],
-			max_tokens: 200,
+			max_tokens: 150,
 			temperature: 1,
 		})
 		totaltokens += response.usage.total_tokens
@@ -3702,7 +3702,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 					content: inputtext,
 				}
 			],
-			max_tokens: 200,
+			max_tokens: 150,
 			temperature: 1,
 		})
 		totaltokens += response.usage.total_tokens
@@ -3812,7 +3812,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 					content: inputtext,
 				}
 			],
-			max_tokens: 200,
+			max_tokens: 150,
 			temperature: 1,
 		})
 		totaltokens += response.usage.total_tokens

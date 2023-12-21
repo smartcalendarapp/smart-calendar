@@ -1342,8 +1342,6 @@ class Calendar {
 			aiassistanttab.classList.add('selectedbuttonunderline')
 			aiassistanttab2.classList.add('selectedbutton2')
 		}
-
-		updateaiassistanttooltip()
 	}
 
 
@@ -12393,7 +12391,14 @@ function openaichat(){
 		aichatwrap.classList.add('hiddenpopup')
 	}
 
-	updateaichat()
+	//mark as read
+	for(let chatinteraction of chathistory.getInteractions()){
+		for(let chatmessage of chatinteraction.getMessages()){
+			if(chatmessage.unread){
+				chatmessage.unread = false
+			}
+		}
+	}
 
 	if(chathistory.getInteractions() == 0){
 		let chatinteraction = new ChatInteraction()
@@ -12419,11 +12424,10 @@ function openaichat(){
 		responsechatmessage.nextactions = getRandomItems(tempoptions, 3)
 
 		chatinteraction.addMessage(responsechatmessage)
-		
 		chathistory.addInteraction(chatinteraction)
-
-		updateaichat()
 	}
+
+	updateaichat()
 }
 
 
@@ -12450,25 +12454,29 @@ function updateaiassistanttooltip(){
 	if(unreadmessages.length > 0){
 		let latestunreaditem = unreadmessages[unreadmessages.length - 1]
 
-		aichattooltip.innerHTML = `<span class="text-bold text-primary">Athena:</span><br>${latestunreaditem.message.slice(0, 50)}...`
+		aichattooltip.innerHTML = `<span class="text-bold text-primary">Athena:</span> ${latestunreaditem.message.slice(0, 50)}...`
 
 		if(mobilescreen){
 			if(!calendartabs.includes(4)){
+				aichattooltip.classList.remove('tooltiptextcentertop')
+				aichattooltip.classList.add('tooltiptextlefttop')
 				aichattooltip.classList.remove('hiddentooltiptextcentertop')
 
 				let aiassistanttab2 = getElement('aiassistanttab2')
 
 				aichattooltip.style.top = (aiassistanttab2.getBoundingClientRect().top - aichattooltip.offsetHeight) + 'px'
-				aichattooltip.style.left = fixleft(aiassistanttab2.getBoundingClientRect().left - aiassistanttab2.offsetWidth/2 + aichattooltip.offsetWidth/2, aichattooltip) + 'px'
+				aichattooltip.style.left = fixleft(aiassistanttab2.getBoundingClientRect().left, aichattooltip) + 'px'
 			}
 		}else{
 			if(calendartabs.includes(0) && !calendartabs.includes(4)){
+				aichattooltip.classList.add('tooltiptextcentertop')
+				aichattooltip.classList.remove('tooltiptextlefttop')
 				aichattooltip.classList.remove('hiddentooltiptextcentertop')
 
 				let aichattitle = getElement('aichattitle')
 
 				aichattooltip.style.top = (aichattitle.getBoundingClientRect().top - aichattooltip.offsetHeight) + 'px'
-				aichattooltip.style.left = (aichattitle.getBoundingClientRect().left - aichattitle.offsetWidth/2 + aichattooltip.offsetWidth/2) + 'px'
+				aichattooltip.style.left = (aichattitle.getBoundingClientRect().left - aichattooltip.offsetWidth/2 + aichattitle.offsetWidth/2) + 'px'
 			}
 		}
 	}
@@ -12509,7 +12517,7 @@ async function promptaiassistanttaskcompleted(item){
 
 			chathistory.addInteraction(new ChatInteraction([new ChatMessage({ role: 'assistant', message: output.message, unread: true })]))
 
-			updateaiassistanttooltip()
+			updateaichat()
 		}else if(response.status == 401){
 			let data = await response.json()
 
@@ -12547,7 +12555,7 @@ async function promptaiassistanttaskstarted(item){
 
 			chathistory.addInteraction(new ChatInteraction([new ChatMessage({ role: 'assistant', message: output.message, unread: true })]))
 
-			updateaiassistanttooltip()
+			updateaichat()
 		}else if(response.status == 401){
 			let data = await response.json()
 
@@ -12593,7 +12601,7 @@ async function promptaiassistantmorningsummary(){
 
 			chathistory.addInteraction(new ChatInteraction([new ChatMessage({ role: 'assistant', message: output.message, unread: true })]))
 
-			updateaiassistanttooltip()
+			updateaichat()
 		}else if(response.status == 401){
 			let data = await response.json()
 
@@ -12853,6 +12861,8 @@ function markdowntoHTML(markdown, role) {
 
 
 function updateaichat(){
+	updateaiassistanttooltip()
+
 	function nameToColor(name) {
 		let sum = 0;
 		for (let i = 0; i < name.length; i++) {
@@ -12931,10 +12941,12 @@ function updateaichat(){
 
 
 	//animate
-	for(let chatinteraction of chathistory.getInteractions()){
-		for(let chatmessage of chatinteraction.getMessages()){
-			if(!chatmessage.startedanimating){
-				chatmessage.animateTyping()
+	if(calendartabs.includes(4)){
+		for(let chatinteraction of chathistory.getInteractions()){
+			for(let chatmessage of chatinteraction.getMessages()){
+				if(!chatmessage.startedanimating){
+					chatmessage.animateTyping()
+				}
 			}
 		}
 	}

@@ -1327,6 +1327,30 @@ ol{
 }
 
 
+@keyframes aichatborder {
+	0% {
+		box-shadow: var(--purple-transparent) 0px 2px 12px -7px;
+	}
+
+	50% {
+		box-shadow: var(--purple-transparent) 0px 2px 20px -4px;
+	}
+
+	100% {
+		box-shadow: var(--purple-transparent) 0px 2px 12px -7px;
+	}
+}
+
+.aichatborder{
+	animation-name: aichatborder;
+	animation-duration: 4s;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+	border:1px solid var(--purple);
+	box-shadow: var(--purple-transparent) 0px 2px 12px -7px;
+}
+
+
 
 
 @keyframes suggestionborder {
@@ -4055,7 +4079,7 @@ ol{
 	transform: translateX(-50%);
 	z-index:1;
 }
-.tooltiptextcentertop::after{
+.aichatborder.tooltiptextcentertop::after{
 	content: '';
     display: block;
     width: 0;
@@ -4063,7 +4087,7 @@ ol{
     position: absolute;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
-    border-top: 10px solid var(--blue);
+    border-top: 10px solid var(--purple);
     bottom: -11.5px;
     left: 50%;
     transform: translateX(-50%);
@@ -4073,6 +4097,56 @@ ol{
 	visibility: hidden;
 	transform: scale(0.9);
 }
+
+.tooltiptextlefttop {
+	text-align: center;
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, transform 0.2s, visibility 0.2s !important;
+	pointer-events: none;
+	display: block;
+	position: absolute;
+	border-radius: 8px;
+	background-color: var(--background-primary);
+	box-shadow: 0 0 40px 0px var(--black-transparent);
+	color: var(--text-primary);
+	padding-left: 12px;
+	padding-right: 12px;
+	padding-top: 6px;
+	padding-bottom: 6px;
+	font-size: 14px;
+	white-space: nowrap;
+	margin-bottom: 15px;
+	z-index: 200;
+	opacity: 1;
+	transform: scale(1);
+}
+.tooltiptextlefttop::before {
+	content: '';
+	display: block;
+	width: 0;
+	height: 0;
+	position: absolute;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-top: 10px solid var(--background-primary);
+	bottom: -10px;
+	left: 0;
+	z-index:1;
+}
+.aichatborder.tooltiptextlefttop::after{
+	content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid var(--purple);
+    bottom: -11.5px;
+    left: 0;
+}
+
+
+
 
 
 
