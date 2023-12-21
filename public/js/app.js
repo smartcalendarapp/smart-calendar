@@ -9996,15 +9996,21 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 }else{
 	getElement('todorecognitionwrap').classList.add('display-none')
 	getElement('eventrecognitionwrap').classList.add('display-none')
+	getElement('aichatrecognitionwrap').classList.add('display-none')
 }
 
 function updaterecognitionui(){
 	let addtododictationpopup = getElement('addtododictationpopup')
 	let addeventdictationpopup = getElement('addeventdictationpopup')
+	let aichatdictationpopup = getElement('aichatdictationpopup')
+
 	let addtododictationtext = getElement('addtododictationtext')
 	let addeventdictationtext = getElement('addeventdictationtext')
+	let aichatdictationtext = getElement('aichatdictationtext')
+
 	let addtododictationbutton = getElement('addtododictationbutton')
 	let addeventdictationbutton = getElement('addeventdictationbutton')
+	let aichatdictationbutton = getElement('aichatdictationbutton')
 
 	addtododictationpopup.classList.add('hiddenpopup')
 	addeventdictationpopup.classList.add('hiddenpopup')
@@ -10013,15 +10019,19 @@ function updaterecognitionui(){
 
 	let addeventdictationtext2 = getElement('addeventdictationtext2')
 	let addtododictationtext2 = getElement('addtododictationtext2')
+	let aichatdictationtext2 = getElement('aichatdictationtext2')
 
 	addtododictationtext2.classList.add('display-none')
 	addeventdictationtext2.classList.add('display-none')
+	aichatdictationtext2.classList.add('display-none')
 
 	let eventrecognitionbutton = getElement('eventrecognitionbutton')
 	let todorecognitionbutton = getElement('todorecognitionbutton')
+	let aichatrecognitionbutton = getElement('aichatrecognitionbutton')
 
 	eventrecognitionbutton.classList.remove('display-none')
 	todorecognitionbutton.classList.remove('display-none')
+	aichatrecognitionbutton.classList.remove('display-none')
 
 	//error
 	const permanentrecognitionerrors = ['service-not-allowed', 'not-allowed']
@@ -10061,6 +10071,17 @@ function updaterecognitionui(){
 			}else{
 				addeventdictationtext.innerHTML = `<span class="text-quaternary">Listening...</span>`
 			}
+		}else if(recognitionoutputtype == 'aichat'){
+			aichatrecognitionbutton.classList.add('display-none')
+
+			aichatdictationtext.classList.remove('hiddenpopup')
+			aichatdictationtext.classList.add('recognitionredanimation')
+
+			if(totalTranscriptCopy){
+				aichatdictationtext.innerHTML =  `<span class="text-primary">${totalTranscriptCopy}</span>`
+			}else{
+				aichatdictationtext.innerHTML = `<span class="text-quaternary">Listening...</span>`
+			}
 		}
 	}else{
 
@@ -10085,6 +10106,16 @@ function updaterecognitionui(){
 				}
 
 				addeventdictationtext.innerHTML = ''
+			}else if(recognitionoutputtype == 'aichat'){
+				aichatrecognitionbutton.classList.add('display-none')
+
+				aichatdictationpopup.classList.remove('hiddenpopup')
+
+				if(!recognitionerror && !permanentrecognitionerrors.includes(recognitionerror)){
+					aichatdictationtext2.classList.remove('display-none')
+				}
+
+				aichatdictationtext.innerHTML = ''
 			}
 		}
 	}
@@ -10097,10 +10128,13 @@ function togglerecognition(type){
 
 			let addtododictationpopup = getElement('addtododictationpopup')
 			let addeventdictationpopup = getElement('addeventdictationpopup')
+			let aichatdictationpopup = getElement('aichatdictationpopup')
 			if(recognitionoutputtype == 'task'){
 				addtododictationpopup.classList.remove('hiddenpopup')
 			}else if(recognitionoutputtype == 'event'){
 				addeventdictationpopup.classList.remove('hiddenpopup')
+			}else if(recognitionoutputtype == 'aichat'){
+				aichatdictationpopup.classList.remove('hiddenpopup')
 			}
 
 			recognition.start()
@@ -10138,6 +10172,13 @@ function submitdictation(){
 
 			typeaddevent()
 			createeventtitle.focus()
+		}else if(recognitionoutputtype == 'aichat'){
+			let aichatinput2 = getElement('aichatinput2')
+			aichatinput2.value = totalTranscriptCopy
+
+			updateaichatinput()
+			resizeaichatinput()
+			aichatinput2.focus()
 		}
 
 		stoprecognition()
@@ -12998,6 +13039,17 @@ function updateaichatinput(){
 		submitaichatbutton.classList.add('greyedoutevent')
 	}else{
 		submitaichatbutton.classList.remove('greyedoutevent')
+	}
+
+
+	//conditional dictation button
+	let aichatrecognitionwrap = getElement('aichatrecognitionwrap')
+	if(userinput.length > 0){
+		submitaichatbutton.classList.remove('display-none')
+		aichatrecognitionwrap.classList.add('display-none')
+	}else{
+		submitaichatbutton.classList.add('display-none')
+		aichatrecognitionwrap.classList.remove('display-none')
 	}
 }
 
