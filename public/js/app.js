@@ -13111,17 +13111,6 @@ function updateaichatinput(){
 	}else{
 		submitaichatbutton.classList.remove('greyedoutevent')
 	}
-
-
-	//conditional dictation button
-	let aichatrecognitionwrap = getElement('aichatrecognitionwrap')
-	if(userinput.length > 0){
-		submitaichatbutton.classList.remove('display-none')
-		aichatrecognitionwrap.classList.add('display-none')
-	}else{
-		submitaichatbutton.classList.add('display-none')
-		aichatrecognitionwrap.classList.remove('display-none')
-	}
 }
 
 let aichattemporarydata;
