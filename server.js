@@ -3574,7 +3574,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}. Time needed: ${getDHMText(taskitem.duration)}""" Provide specific, actionable, and concise steps and tips to make solid progress and complete this task. Avoid generic or cliche responses. As a personal assistant, mention that the task is starting now and will last how long, and give motivational tips.`
+		let inputtext = `Task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}. Time needed: ${getDHMText(taskitem.duration)}""" Provide specific, actionable, and concise steps and tips to make solid progress and complete this task. Avoid generic or cliche responses. As a personal assistant, mention that the task is starting now and will last how long, and give motivational tips. Concise as possible, maximum 5 sentences.`
 		let custominstructions = `Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
@@ -3686,7 +3686,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}""" Calendar events: """${calendarcontext}""" Provide a personal, non-generic, non-cliche motivational message for the user who just completed this task. Then, mention the next upcoming event if there is one. All in one coherent paragraph. Concise as possible.`
+		let inputtext = `Task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}""" Calendar events: """${calendarcontext}""" Provide a personal, non-generic, non-cliche motivational message for the user who just completed this task. Then, mention the next upcoming event if there is one. All in one coherent paragraph. Concise as possible, maximum 5 sentences.`
 		let custominstructions = `Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
@@ -3796,7 +3796,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Calendar events: """${calendarcontext}""" Provide a morning greeting and morning summary message of the user's agenda, including only the important or unique events today in a personal and helpful style. Subtly integrate motivational productivity messages. Finally, ask the user for 3 tasks they want to complete today to promote planning. All in one coherent paragraph. Concise as possible.`
+		let inputtext = `Calendar events: """${calendarcontext}""" Provide a morning greeting and morning summary message of the user's agenda, including only the important or unique events today in a personal and helpful style. Subtly integrate motivational productivity messages. Finally, ask the user for 3 tasks they want to complete today to promote planning. All in one coherent paragraph. Concise as possible, maximum 5 sentences.`
 		let custominstructions = `Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
@@ -4057,7 +4057,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							},
 							{
 								role: "user",
-								content: "Move it to 4pm"
+								content: "Reschedule it to 4pm"
 							},
 							{
 								role: "assistant",

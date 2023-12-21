@@ -970,6 +970,15 @@ class Calendar {
 			return `New Event`
 		}
 
+		static getRawTitle(item){
+			if(!item) return
+			if(item.title) return cleanInput(item.title)
+			if(this.isSubtask(item)){
+				return `${this.getTitle(this.getMainTask(item))} (part ${this.getSubtaskIndex(item) + 1})`
+			}
+			return `New Event`
+		}
+
 		static getMainTask(item){
 			let parent = [...calendar.events, ...calendar.todos].find(d => d.id == item.parentid)
 			return parent
@@ -1168,6 +1177,15 @@ class Calendar {
 			if(item.title) return cleanInput(item.title)
 			if(this.isSubtask(item)){
 				return `${cleanInput(this.getTitle(this.getMainTask(item)))} (part ${this.getSubtaskIndex(item) + 1})`
+			}
+			return `New Task`
+		}
+
+		static getRawTitle(item){
+			if(!item) return
+			if(item.title) return cleanInput(item.title)
+			if(this.isSubtask(item)){
+				return `${this.getTitle(this.getMainTask(item))} (part ${this.getSubtaskIndex(item) + 1})`
 			}
 			return `New Task`
 		}
@@ -12669,6 +12687,9 @@ class ChatConversation{
 		this.interactions = interactions
 
 		this.id = generateID()
+
+		this.chatmessagescounter = 0
+		this.showedfeedback = false
 	}
 
 	addInteraction(chatinteraction){
@@ -12721,6 +12742,8 @@ class ChatMessage {
 
 		this.liked = false
 		this.disliked = false
+
+		chathistory.chatmessagescounter++
 	}
 	
 	async animateTyping(){
@@ -12858,6 +12881,25 @@ async function dislikeaichatmessage(event, id){
 	updateaichat()
 }
 
+async function sendfeedbackaichatmessage(rating){
+	try{
+		const response = await fetch(`/sendfeedback`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				content: {
+					type: 'AI Chat Interaction - RATE',
+					conversationhistory: chathistory.getInteractions().map(d => d.getMessages().map(f => { return { role: f.role, content: f.message, timestamp: f.timestamp } })),
+					rating: rating
+				}
+			})
+		})
+		
+	}catch(err){
+	}
+}
 
 function markdowntoHTML(markdown, role) {
     if (role != 'assistant') return markdown
@@ -13006,6 +13048,29 @@ function updateaichat(){
 	//input
 	updateaichatinput()
 	resizeaichatinput()
+
+	//feedback message
+	if(!chathistory.showedfeedback && chathistory.chatmessagescounter > 10){
+		//😢😕😐🙂😄
+
+		let tempinteraction = new ChatInteraction()
+		tempinteraction.addMessage(new ChatMessage({
+			role: 'assistant',
+			message: `How's your experience with me so far?`,
+			nextactions: [
+				`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(1);simulateaiassistantwithnextaction('😢', 'Got it, thanks for the feedback')"><span class="text-28px">😢</span></div>`,
+				`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(2);simulateaiassistantwithnextaction('😕', 'Got it, thanks for the feedback')"><span class="text-28px">😕</span></div>`,
+				`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(3);simulateaiassistantwithnextaction('😐', 'Got it, thanks for the feedback')"><span class="text-28px">😐</span></div>`,
+				`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(4);simulateaiassistantwithnextaction('🙂', 'Got it, thanks for the feedback')"><span class="text-28px">🙂</span></div>`,
+				`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(5);simulateaiassistantwithnextaction('😄', 'Got it, thanks for the feedback')"><span class="text-28px">😄</span></div>`
+			]
+		}))
+
+		chathistory.showedfeedback = true
+		chathistory.addInteraction(tempinteraction)
+
+		updateaichat()
+	}
 }
 
 function resizeaichatinput(){
@@ -13173,7 +13238,7 @@ async function submitaimessage(optionalinput){
 						calendar.updateEvents()
 
 
-						responsechatmessage.message = `Done! I have created an event "${Calendar.Event.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
+						responsechatmessage.message = `Done! I have created an event "${Calendar.Event.getRawTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
 
@@ -13266,7 +13331,7 @@ async function submitaimessage(optionalinput){
 								calendar.updateEvents()
 
 
-								tempoutput.push(`Done! I created the event "${Calendar.Todo.getTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`)
+								tempoutput.push(`Done! I created the event "${Calendar.Todo.getRawTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`)
 
 								if(!firstitem){
 									firstitem = item
@@ -13364,15 +13429,15 @@ async function submitaimessage(optionalinput){
 								let tempmsg;
 								if(newtitle != null && newtitle != oldtitle){
 									if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
-										tempmsg = `Done! I renamed your event to "${Calendar.Event.getTitle(item)}", and moved it to ${Calendar.Event.getStartText(item)}`
+										tempmsg = `Done! I renamed your event to "${Calendar.Event.getRawTitle(item)}", and moved it to ${Calendar.Event.getStartText(item)}`
 									}else{
-										tempmsg = `Done! I renamed your event to "${Calendar.Event.getTitle(item)}".`
+										tempmsg = `Done! I renamed your event to "${Calendar.Event.getRawTitle(item)}".`
 									}
 								}else{
 									if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
-										tempmsg = `Done! I moved your event "${Calendar.Event.getTitle(item)}" to ${Calendar.Event.getStartText(item)}`
+										tempmsg = `Done! I moved your event "${Calendar.Event.getRawTitle(item)}" to ${Calendar.Event.getStartText(item)}`
 									}else{
-										tempmsg = `Done! I modified your event "${Calendar.Event.getTitle(item)}" to be from ${Calendar.Event.getNaturalStartEndText(item)}`
+										tempmsg = `Done! I modified your event "${Calendar.Event.getRawTitle(item)}" to be from ${Calendar.Event.getNaturalStartEndText(item)}`
 									}
 								}
 								responsechatmessage.message = tempmsg
@@ -13403,7 +13468,7 @@ async function submitaimessage(optionalinput){
 								calendar.updateEvents()
 
 
-								responsechatmessage.message = `Done! I have deleted your event "${Calendar.Event.getTitle(item)}."`
+								responsechatmessage.message = `Done! I have deleted your event "${Calendar.Event.getRawTitle(item)}."`
 							}
 						}else{
 							responsechatmessage.message = `I could not find that event, could you please tell me more?`
@@ -13439,7 +13504,7 @@ async function submitaimessage(optionalinput){
 						startAutoSchedule({eventsuggestiontodos: [item]})
 
 
-						responsechatmessage.message = `Done! I created a task "${Calendar.Event.getTitle(item)}" and added it to your calendar.`
+						responsechatmessage.message = `Done! I created a task "${Calendar.Event.getRawTitle(item)}" and added it to your calendar.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 					}else{
 						responsechatmessage.message = `What time do you want ${title} to be due?`
@@ -13472,7 +13537,7 @@ async function submitaimessage(optionalinput){
 								item.duration = duration
 								calendar.todos.push(item)
 
-								tempoutput.push(`Done! I added the task "${Calendar.Todo.getTitle(item)}" to your to-do list, due ${Calendar.Event.getDueText(item)}.`)
+								tempoutput.push(`Done! I added the task "${Calendar.Todo.getRawTitle(item)}" to your to-do list, due ${Calendar.Event.getDueText(item)}.`)
 
 								if(!firstitem){
 									firstitem = item
@@ -13548,19 +13613,19 @@ async function submitaimessage(optionalinput){
 							let tempmsg;
 							if(newtitle != null && newtitle != oldtitle){
 								if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
-									tempmsg = `Done! I renamed your task to "${Calendar.Event.getTitle(item)}", and set it to be due ${Calendar.Event.getDueText(item)}`
+									tempmsg = `Done! I renamed your task to "${Calendar.Event.getRawTitle(item)}", and set it to be due ${Calendar.Event.getDueText(item)}`
 								}else{
-									tempmsg = `Done! I renamed your task to "${Calendar.Event.getTitle(item)}".`
+									tempmsg = `Done! I renamed your task to "${Calendar.Event.getRawTitle(item)}".`
 								}
 							}else{
 								if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
-									tempmsg = `Done! I set your task "${Calendar.Event.getTitle(item)}" to be due ${Calendar.Event.getDueText(item)}`
+									tempmsg = `Done! I set your task "${Calendar.Event.getRawTitle(item)}" to be due ${Calendar.Event.getDueText(item)}`
 								}else{
-									tempmsg = `Done! I modified your event "${Calendar.Event.getTitle(item)}" to be from ${Calendar.Event.getNaturalStartEndText(item)}`
+									tempmsg = `Done! I modified your event "${Calendar.Event.getRawTitle(item)}" to be from ${Calendar.Event.getNaturalStartEndText(item)}`
 								}
 							}
 							if(newcompleted != null && newcompleted != oldcompleted){
-								tempmsg = `Done! I marked your task "${Calendar.Event.getTitle(item)}" as complete. Good job!`
+								tempmsg = `Done! I marked your task "${Calendar.Event.getRawTitle(item)}" as complete. Good job!`
 							}
 
 							responsechatmessage.message = tempmsg
@@ -13585,7 +13650,7 @@ async function submitaimessage(optionalinput){
 
 							calendar.updateTodo()
 
-							responsechatmessage.message = `Done! I have deleted your task "${Calendar.Event.getTitle(item)}."`
+							responsechatmessage.message = `Done! I have deleted your task "${Calendar.Event.getRawTitle(item)}."`
 						}else{
 							responsechatmessage.message = `I could not find that task, could you please tell me more?`
 						}
