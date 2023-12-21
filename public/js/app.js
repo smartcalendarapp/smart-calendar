@@ -11741,10 +11741,9 @@ function rejecteventsuggestion(id){
 
 
 function playsound(name){
-	let sounddiv = getElement('sounddiv')
-	sounddiv.src = `${name}`
-	sounddiv.load()
-
+	let sounddiv = getElement(name)
+	if(!sounddiv) return
+	
 	sounddiv.play()
 }
 
@@ -11778,8 +11777,8 @@ async function todocompleted(event, id) {
 
 	if(item.completed){
 		promptaiassistanttaskcompleted(item)
-		
-		playsound('check-ding.mp3')
+
+		playsound('check-ding')
 	}
 
 	if(item.completed){
@@ -12566,7 +12565,7 @@ function updateaiassistanttooltip(){
 	if(unreadmessages.length > 0){
 		let latestunreaditem = unreadmessages[unreadmessages.length - 1]
 
-		aichattooltip.innerHTML = `<span class="text-bold text-primary">Athena:</span> ${latestunreaditem.message ? latestunreaditem.message.slice(0, 70) : '<div class="typingdots"><span></span><span></span><span></span></div>'}`
+		aichattooltip.innerHTML = `<span class="text-bold text-primary">Athena:</span> ${latestunreaditem.message ? latestunreaditem.message.slice(0, 70) + '...' : '<div class="typingdots"><span></span><span></span><span></span></div>'}`
 
 		if(mobilescreen){
 			if(!calendartabs.includes(4)){
@@ -12689,7 +12688,7 @@ async function promptaiassistanttaskstarted(item){
 
 			//sound
 			if(document.visibilityState != 'visible' || !calendartabs.includes(4)){
-				playsound('quick-beep.mp3')
+				playsound('quick-beep')
 			}
 		}else if(response.status == 401){
 			let data = await response.json()
@@ -12764,7 +12763,7 @@ async function promptaiassistantmorningsummary(){
 
 			//sound
 			if(document.visibilityState != 'visible' || !calendartabs.includes(4)){
-				playsound('quick-beep.mp3')
+				playsound('quick-beep')
 			}
 		}else if(response.status == 401){
 			let data = await response.json()
@@ -17162,7 +17161,7 @@ async function eventcompleted(event, id) {
 	if(item.completed){
 		promptaiassistanttaskcompleted(item)
 
-		playsound('check-ding.mp3')
+		playsound('check-ding')
 	}
 
 	if (item.completed) {
