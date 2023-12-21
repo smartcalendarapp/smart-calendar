@@ -3582,7 +3582,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}. Time needed: ${getDHMText(taskitem.duration)}""" Provide specific, actionable, and concise steps and tips to make solid progress and complete this task. Avoid generic or cliche responses. As a personal assistant, mention that the task is starting now and will last how long, and give motivational tips. Concise as possible, maximum 5 sentences.`
+		let inputtext = `Task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}. Time needed: ${getDHMText(Math.floor((new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())/60000))}""" Provide specific, actionable, and concise steps and tips to make solid progress and complete this task. Avoid generic or cliche responses. As a personal assistant, mention that the task is starting now and will last how long, and give motivational tips. Concise as possible, maximum 5 sentences.`
 		let custominstructions = `Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
@@ -3918,7 +3918,6 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							startDate: { type: 'string', description: '(optional) Event start date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Event title' },
 							endDate: { type: 'string', descrption: '(optional) Event end date in YYYY-MM-DD HH:MM' },
-							duration: { type: 'string', description: '(optional) Event duration in HH:MM' },
 						},
 						required: ['title']
 					}
@@ -3938,7 +3937,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 										title: { type: 'string', description: 'Event title' },
 										endDate: { type: 'string', descrption: 'Event end date in YYYY-MM-DD HH:MM' },
 									},
-									required: ['startDate', 'title']
+									required: ['title']
 								}
 							},
 						},
@@ -3988,7 +3987,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 										title: { type: 'string', description: 'Task title' },
 										duration: { type: 'string', description: 'Task duration in HH:MM' },
 									},
-									required: ['dueDate', 'title']
+									required: ['title']
 								}
 							},
 						},

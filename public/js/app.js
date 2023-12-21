@@ -1088,14 +1088,14 @@ class Calendar {
 				timelist.push(getDMDYText(startdate))
 
 				if (enddate.getDate() != startdate.getDate() || enddate.getMonth() != startdate.getMonth() || enddate.getFullYear() != startdate.getFullYear()) {
-					timelist.push(' to ')
+					timelist.push('to')
 					timelist.push(getDMDYText(enddate))
 				}
 			} else {
 				timelist.push(getDMDYText(startdate))
 				timelist.push(getHMText(startdate.getHours() * 60 + startdate.getMinutes()))
 
-				timelist.push(' to ')
+				timelist.push('to')
 				if (enddate.getDate() != startdate.getDate() || enddate.getMonth() != startdate.getMonth() || enddate.getFullYear() != startdate.getFullYear()) {
 					timelist.push(getDMDYText(enddate))
 				}
@@ -4598,7 +4598,7 @@ function run() {
 			let nextminutedate = new Date(currentdate)
 			nextminutedate.setMinutes(nextminutedate.getMinutes() + 1)
 
-			let startedtasks = getevents(currentdate, nextminutedate).filter(d => d.type == 1 && !d.completed)
+			let startedtasks = getevents(currentdate, nextminutedate).filter(d => d.type == 1 && !d.completed).filter(d => d.start.minute == currentdate.getHours() * 60 + currentdate.getMinutes())
 			if(startedtasks.length > 0){
 				promptaiassistanttaskstarted(startedtasks[0])
 			}
@@ -13475,11 +13475,19 @@ async function submitaimessage(optionalinput, dictated){
 								}
 								let duration = getDuration(newduration).value
 								if(duration != null){
-									enddate = new Date(startdate)
+									if(startdate){
+										enddate = new Date(startdate)
+									}else{
+										enddate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+									}
 									enddate.setMinutes(enddate.getMinutes() + duration)
 								}
 								if(!enddate || isNaN(enddate.getTime())){
-									enddate = new Date(startdate)
+									if(startdate){
+										enddate = new Date(startdate)
+									}else{
+										enddate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+									}
 									enddate.setTime(enddate.getTime() + oldduration)
 								}
 
@@ -13637,7 +13645,7 @@ async function submitaimessage(optionalinput, dictated){
 								allitems.push(item)
 
 							}else{
-								tempoutput.push(`I don't have enough information to add the task "${title}", could you tell me more?`)
+								tempoutput.push(`I don't have enough information to add the task "${title}", could you please tell me more?`)
 							}
 						}
 
