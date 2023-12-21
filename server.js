@@ -3694,7 +3694,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Competed task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}""" Provide a short personal, non-generic, non-cliche motivational message for the user who just completed this task. Then, mention the next upcoming event if there is one. All in one coherent paragraph. Concise as possible, maximum 5 sentences. Calendar events: """${calendarcontext}"""`
+		let inputtext = `Competed task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}""" Provide a short personal, non-generic, non-cliche motivational message for the user who just completed this task. Then, mention the next upcoming event if there is one. All in one coherent paragraph. Concise as possible, maximum 5 sentences. Calendar data: """${calendarcontext}"""`
 		let custominstructions = `Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
@@ -3804,7 +3804,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Calendar events: """${calendarcontext}""" Provide a morning greeting and morning summary message of the user's agenda, briefing user on a few of the important or unique events today in a personal and helpful style. Subtly integrate motivational productivity messages. Finally, you must ask the user for 3 tasks they want to complete today to promote planning. All in one coherent paragraph. Concise as possible, maximum 5 sentences.`
+		let inputtext = `Calendar data: """${calendarcontext}""" Provide a morning greeting and morning summary message of the user's agenda, briefing user on a few of the important or unique events today in a personal and helpful style. Subtly integrate motivational productivity messages. Finally, you must ask the user for 3 tasks they want to complete today to promote planning. All in one coherent paragraph. Concise as possible, maximum 5 sentences.`
 		let custominstructions = `Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0

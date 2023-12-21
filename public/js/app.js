@@ -11740,6 +11740,15 @@ function rejecteventsuggestion(id){
 }
 
 
+function playsound(name){
+	let sounddiv = getElement('sounddiv')
+	sounddiv.src = `${name}`
+	sounddiv.load()
+
+	sounddiv.play()
+}
+
+
 //check completed
 async function todocompleted(event, id) {
 	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
@@ -11769,6 +11778,8 @@ async function todocompleted(event, id) {
 
 	if(item.completed){
 		promptaiassistanttaskcompleted(item)
+		
+		playsound('check-ding.mp3')
 	}
 
 	if(item.completed){
@@ -12555,7 +12566,7 @@ function updateaiassistanttooltip(){
 	if(unreadmessages.length > 0){
 		let latestunreaditem = unreadmessages[unreadmessages.length - 1]
 
-		aichattooltip.innerHTML = `<span class="text-bold text-primary">Athena:</span> ${latestunreaditem.message ? latestunreaditem.message.slice(0, 70) : '<div class="display-inline-block typingdots"><span></span><span></span><span></span></div>'}...`
+		aichattooltip.innerHTML = `<span class="text-bold text-primary">Athena:</span> ${latestunreaditem.message ? latestunreaditem.message.slice(0, 70) : '<div class="typingdots"><span></span><span></span><span></span></div>'}`
 
 		if(mobilescreen){
 			if(!calendartabs.includes(4)){
@@ -12597,7 +12608,8 @@ async function promptaiassistanttaskcompleted(item){
 
 	//typing...
 	let tempmessage = new ChatMessage({ role: 'assistant', message: null, unread: true })
-	chathistory.addInteraction(new ChatInteraction([tempmessage]))
+	let tempinteraction = new ChatInteraction([tempmessage])
+	chathistory.addInteraction(tempinteraction)
 	updateaichat()
 
 	try{
@@ -12628,9 +12640,15 @@ async function promptaiassistanttaskcompleted(item){
 			let data = await response.json()
 
 			console.log(data.error)
+
+			chathistory.removeInteraction(tempinteraction)
+			updateaichat()
 		}
 	}catch(error){
 		console.log(error)
+
+		chathistory.removeInteraction(tempinteraction)
+		updateaichat()
 	}
 }
 
@@ -12641,7 +12659,8 @@ async function promptaiassistanttaskstarted(item){
 
 	//typing...
 	let tempmessage = new ChatMessage({ role: 'assistant', message: null, unread: true })
-	chathistory.addInteraction(new ChatInteraction([tempmessage]))
+	let tempinteraction = new ChatInteraction([tempmessage])
+	chathistory.addInteraction(tempinteraction)
 	updateaichat()
 
 	try{
@@ -12667,13 +12686,24 @@ async function promptaiassistanttaskstarted(item){
 
 			tempmessage.message = output.message
 			updateaichat()
+
+			//sound
+			if(document.visibilityState != 'visible' || !calendartabs.includes(4)){
+				playsound('quick-beep.mp3')
+			}
 		}else if(response.status == 401){
 			let data = await response.json()
 
 			console.log(data.error)
+
+			chathistory.removeInteraction(tempinteraction)
+			updateaichat()
 		}
 	}catch(error){
 		console.log(error)
+
+		chathistory.removeInteraction(tempinteraction)
+		updateaichat()
 	}
 }
 
@@ -12703,9 +12733,9 @@ async function promptaiassistantmorningsummary(){
 
 
 	//typing...
-	chathistory = new ChatConversation()
 	let tempmessage = new ChatMessage({ role: 'assistant', message: null, unread: true })
-	chathistory.addInteraction(new ChatInteraction([tempmessage]))
+	let tempinteraction = new ChatInteraction([tempmessage])
+	chathistory.addInteraction(tempinteraction)
 	updateaichat()
 
 	try{
@@ -12731,13 +12761,24 @@ async function promptaiassistantmorningsummary(){
 
 			tempmessage.message = output.message
 			updateaichat()
+
+			//sound
+			if(document.visibilityState != 'visible' || !calendartabs.includes(4)){
+				playsound('quick-beep.mp3')
+			}
 		}else if(response.status == 401){
 			let data = await response.json()
 
 			console.log(data.error)
+
+			chathistory.removeInteraction(tempinteraction)
+			updateaichat()
 		}
 	}catch(error){
 		console.log(error)
+
+		chathistory.removeInteraction(tempinteraction)
+		updateaichat()
 	}
 }
 
@@ -13057,7 +13098,7 @@ function updateaichat(){
 				<div class="flex-1 overflow-hidden display-flex flex-column gap-12px">
 					<div class="display-flex flex-column gap-6px">
 						<div class="text-primary text-16px text-bold">${role == 'user' ? username : ainame}</div>
-						<div class="selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : `<div class="display-inline-block typingdots"><span></span><span></span><span></span></div>`}</div>
+						<div class="selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : `<div class="typingdots"><span></span><span></span><span></span></div>`}</div>
 
 						${actions ? `<div class="hoverchatmessagebuttons display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${actions.join('')}</div>` : ''}
 
@@ -17120,6 +17161,8 @@ async function eventcompleted(event, id) {
 
 	if(item.completed){
 		promptaiassistanttaskcompleted(item)
+
+		playsound('check-ding.mp3')
 	}
 
 	if (item.completed) {
