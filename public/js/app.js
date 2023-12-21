@@ -4537,7 +4537,7 @@ function run() {
 			endrange.setHours(0,0,0,0)
 			endrange.setDate(endrange.getDate() + 1)
 
-			let sortedevents = sortstartdate(getevents(startrange, endrange))
+			let sortedevents = sortstartdate(getevents(startrange, endrange).filter(d => d.type != 1 || !d.completed))
 			
 			let nowevents = sortedevents.filter(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now())
 
@@ -10112,7 +10112,7 @@ function updaterecognitionui(){
 
 				addtododictationpopup.classList.remove('hiddenpopup')
 
-				if(!recognitionerror && !permanentrecognitionerrors.includes(recognitionerror)){
+				if(!permanentrecognitionerrors.includes(recognitionerror)){
 					addtododictationtext2.classList.remove('display-none')
 				}
 
@@ -10122,7 +10122,7 @@ function updaterecognitionui(){
 
 				addeventdictationpopup.classList.remove('hiddenpopup')
 
-				if(!recognitionerror && !permanentrecognitionerrors.includes(recognitionerror)){
+				if(!permanentrecognitionerrors.includes(recognitionerror)){
 					addeventdictationtext2.classList.remove('display-none')
 				}
 
@@ -10132,7 +10132,7 @@ function updaterecognitionui(){
 
 				aichatdictationpopup.classList.remove('hiddenpopup')
 
-				if(!recognitionerror && !permanentrecognitionerrors.includes(recognitionerror)){
+				if(!permanentrecognitionerrors.includes(recognitionerror)){
 					aichatdictationtext2.classList.remove('display-none')
 				}
 
@@ -13049,28 +13049,31 @@ function updateaichat(){
 	updateaichatinput()
 	resizeaichatinput()
 
+
 	//feedback message
-	if(!chathistory.showedfeedback && chathistory.chatmessagescounter > 10){
-		//😢😕😐🙂😄
+	setTimeout(function(){
+		if(!chathistory.showedfeedback && chathistory.chatmessagescounter > 10){
+			//😢😕😐🙂😄
+	
+			let tempinteraction = new ChatInteraction()
+			tempinteraction.addMessage(new ChatMessage({
+				role: 'assistant',
+				message: `How's your experience with me so far?`,
+				actions: [
+					`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(1);simulateaiassistantwithnextaction('😢', 'Got it, thanks for the feedback')"><span class="text-28px">😢</span></div>`,
+					`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(2);simulateaiassistantwithnextaction('😕', 'Got it, thanks for the feedback')"><span class="text-28px">😕</span></div>`,
+					`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(3);simulateaiassistantwithnextaction('😐', 'Got it, thanks for the feedback')"><span class="text-28px">😐</span></div>`,
+					`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(4);simulateaiassistantwithnextaction('🙂', 'Got it, thanks for the feedback')"><span class="text-28px">🙂</span></div>`,
+					`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(5);simulateaiassistantwithnextaction('😄', 'Got it, thanks for the feedback')"><span class="text-28px">😄</span></div>`
+				]
+			}))
 
-		let tempinteraction = new ChatInteraction()
-		tempinteraction.addMessage(new ChatMessage({
-			role: 'assistant',
-			message: `How's your experience with me so far?`,
-			actions: [
-				`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(1);simulateaiassistantwithnextaction('😢', 'Got it, thanks for the feedback')"><span class="text-28px">😢</span></div>`,
-				`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(2);simulateaiassistantwithnextaction('😕', 'Got it, thanks for the feedback')"><span class="text-28px">😕</span></div>`,
-				`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(3);simulateaiassistantwithnextaction('😐', 'Got it, thanks for the feedback')"><span class="text-28px">😐</span></div>`,
-				`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(4);simulateaiassistantwithnextaction('🙂', 'Got it, thanks for the feedback')"><span class="text-28px">🙂</span></div>`,
-				`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(5);simulateaiassistantwithnextaction('😄', 'Got it, thanks for the feedback')"><span class="text-28px">😄</span></div>`
-			]
-		}))
+			chathistory.showedfeedback = true
+			chathistory.addInteraction(tempinteraction)
 
-		chathistory.showedfeedback = true
-		chathistory.addInteraction(tempinteraction)
-
-		updateaichat()
-	}
+			updateaichat()
+		}
+	}, 2000)
 }
 
 function resizeaichatinput(){
