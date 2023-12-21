@@ -12555,7 +12555,7 @@ function updateaiassistanttooltip(){
 	if(unreadmessages.length > 0){
 		let latestunreaditem = unreadmessages[unreadmessages.length - 1]
 
-		aichattooltip.innerHTML = `<span class="text-bold text-primary">Athena:</span> ${latestunreaditem.message.slice(0, 70)}...`
+		aichattooltip.innerHTML = `<span class="text-bold text-primary">Athena:</span> ${latestunreaditem.message ? latestunreaditem.message.slice(0, 70) : '<div class="display-inline-block typingdots"><span></span><span></span><span></span></div>'}...`
 
 		if(mobilescreen){
 			if(!calendartabs.includes(4)){
@@ -12592,7 +12592,13 @@ async function promptaiassistanttaskcompleted(item){
 	let endrange = new Date()
 	endrange.setHours(0,0,0,0)
 	endrange.setDate(endrange.getDate() + 1)
-	let calendarevents = sortstartdate(getevents(now, endrange).filter(d => !Calendar.Event.isHidden(d)) && d.id != item.id)
+	let calendarevents = sortstartdate(getevents(now, endrange).filter(d => !Calendar.Event.isHidden(d) && d.id != item.id))
+
+
+	//typing...
+	let tempmessage = new ChatMessage({ role: 'assistant', message: null, unread: true })
+	chathistory.addInteraction(new ChatInteraction([tempmessage]))
+	updateaichat()
 
 	try{
 		const response = await fetch('/getgptchatresponsetaskcompleted', {
@@ -12616,8 +12622,7 @@ async function promptaiassistanttaskcompleted(item){
 				console.log(data.data?.totaltokens, output)
 			}
 
-			chathistory.addInteraction(new ChatInteraction([new ChatMessage({ role: 'assistant', message: output.message, unread: true })]))
-
+			tempmessage.message = output.message
 			updateaichat()
 		}else if(response.status == 401){
 			let data = await response.json()
@@ -12633,6 +12638,12 @@ async function promptaiassistanttaskcompleted(item){
 async function promptaiassistanttaskstarted(item){
 	if(!clientinfo.betatester) return
 
+
+	//typing...
+	let tempmessage = new ChatMessage({ role: 'assistant', message: null, unread: true })
+	chathistory.addInteraction(new ChatInteraction([tempmessage]))
+	updateaichat()
+
 	try{
 		const response = await fetch('/getgptchatresponsetaskstarted', {
 			method: 'POST',
@@ -12654,8 +12665,7 @@ async function promptaiassistanttaskstarted(item){
 				console.log(data.data?.totaltokens, output)
 			}
 
-			chathistory.addInteraction(new ChatInteraction([new ChatMessage({ role: 'assistant', message: output.message, unread: true })]))
-
+			tempmessage.message = output.message
 			updateaichat()
 		}else if(response.status == 401){
 			let data = await response.json()
@@ -12669,40 +12679,7 @@ async function promptaiassistanttaskstarted(item){
 
 //get reminder when event started
 async function promptaiassistanteventstarted(item){//here3
-	if(!clientinfo.betatester) return
 
-	try{
-		const response = await fetch('/getgptchatresponsetaskstarted', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				taskitem: item,
-				timezoneoffset: new Date().getTimezoneOffset(),
-			})
-		})
-
-		if(response.status == 200){
-			let data = await response.json()
-
-			let output = data.data
-
-			if(clientinfo.betatester){
-				console.log(data.data?.totaltokens, output)
-			}
-
-			chathistory.addInteraction(new ChatInteraction([new ChatMessage({ role: 'assistant', message: output.message, unread: true })]))
-
-			updateaichat()
-		}else if(response.status == 401){
-			let data = await response.json()
-
-			console.log(data.error)
-		}
-	}catch(error){
-		console.log(error)
-	}
 }
 
 
@@ -12723,6 +12700,13 @@ async function promptaiassistantmorningsummary(){
 	endrange.setHours(0,0,0,0)
 	endrange.setDate(endrange.getDate() + 1)
 	let calendarevents = sortstartdate(getevents(now, endrange).filter(d => !Calendar.Event.isHidden(d)))
+
+
+	//typing...
+	chathistory = new ChatConversation()
+	let tempmessage = new ChatMessage({ role: 'assistant', message: null, unread: true })
+	chathistory.addInteraction(new ChatInteraction([tempmessage]))
+	updateaichat()
 
 	try{
 		const response = await fetch('/getgptchatresponsemorningsummary', {
@@ -12745,9 +12729,7 @@ async function promptaiassistantmorningsummary(){
 				console.log(data.data?.totaltokens, output)
 			}
 
-			chathistory = new ChatConversation()
-			chathistory.addInteraction(new ChatInteraction([new ChatMessage({ role: 'assistant', message: output.message, unread: true })]))
-
+			tempmessage.message = output.message
 			updateaichat()
 		}else if(response.status == 401){
 			let data = await response.json()
@@ -12897,7 +12879,6 @@ class ChatMessage {
 	}
 
 }
-
 
 
 
@@ -13076,7 +13057,7 @@ function updateaichat(){
 				<div class="flex-1 overflow-hidden display-flex flex-column gap-12px">
 					<div class="display-flex flex-column gap-6px">
 						<div class="text-primary text-16px text-bold">${role == 'user' ? username : ainame}</div>
-						<div class="selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : `<span class="aichatcursorloadingwrap"><span class="aichatcursorloading"></span></span>`}</div>
+						<div class="selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : `<div class="display-inline-block typingdots"><span></span><span></span><span></span></div>`}</div>
 
 						${actions ? `<div class="hoverchatmessagebuttons display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${actions.join('')}</div>` : ''}
 
@@ -13110,11 +13091,14 @@ function updateaichat(){
 		}
 	}
 
+	/*
 	if(calendartabs.includes(4)){
 		aichatcontent2.innerHTML = output.join('')
 	}else{
 		aichatcontent.innerHTML = output.join('')
 	}
+	*/
+	aichatcontent2.innerHTML = output.join('')
 
 
 	//animate
@@ -13831,7 +13815,7 @@ async function submitaimessage(optionalinput, dictated){
 
 	//save conversation data
 	try{
-		let newsendchathistory = chathistory.getInteractions().map(d => d.getMessages().map(f => { return { role: f.role, content: f.message, timestamp: f.timestamp } }))
+		let newsendchathistory = chathistory.getInteractions().map(d => d.getMessages())
 
 		const response = await fetch('/savegptchatinteraction', {
 			method: 'POST',
