@@ -3600,6 +3600,14 @@ ol{
 	pointer-events: none;
 }
 
+.buttonfillquaternarysmall {
+	fill: var(--text-quaternary);
+	height: 14px;
+	width: 14px;
+	display: block;
+	pointer-events: none;
+}
+
 .aichatmessagewrap:hover .hoverchatmessagebuttons{
 	visibility:visible !important
 }
@@ -4045,6 +4053,20 @@ ol{
 	bottom: -10px;
 	left: 50%;
 	transform: translateX(-50%);
+	z-index:1;
+}
+.tooltiptextcentertop::after{
+	content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid var(--blue);
+    bottom: -11.5px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 .hiddentooltiptextcentertop {
 	opacity: 0;

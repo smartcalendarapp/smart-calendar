@@ -3509,6 +3509,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 	}
 })
 
+
 app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 	try{
 		if(!req.session.user){
@@ -3574,7 +3575,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 		//PROMPT
 
 		let inputtext = `Task: """${taskitem.title || 'No title'}. Description: ${taskitem.description || 'No description'}. Time needed: ${getDHMText(taskitem.duration)}""" Provide specific, actionable, and concise steps and tips to make solid progress and complete this task. Avoid generic or cliche responses. As a personal assistant, mention that the task is starting now and will last how long, and give motivational tips.`
-		let custominstructions = `Use a tone and style of a conversational productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let custominstructions = `Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -3685,8 +3686,8 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Task: """${taskitem.title || 'No title'}. Description: ${taskitem.description || 'No description'}""" Calendar events: """${calendarcontext}""" Provide a personal, non-generic, non-cliche motivational message for the user who just completed this task. Then, mention the next upcoming event if there is one. All in one seamless paragraph.`
-		let custominstructions = `Use a tone and style of a conversational productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let inputtext = `Task: """${taskitem.title || 'No title'}. Description: ${taskitem.description || 'No description'}""" Calendar events: """${calendarcontext}""" Provide a personal, non-generic, non-cliche motivational message for the user who just completed this task. Then, mention the next upcoming event if there is one. All in one coherent paragraph. Concise as possible.`
+		let custominstructions = `Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -3713,6 +3714,115 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 	}
 })
 
+
+app.post('/getgptchatresponsemorningsummary', async (req, res) => {
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		let user = await getUserById(userid)
+		if (!user) {
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+		let appliedratelimit = MAX_GPT_CHAT_PER_DAY
+		if(user.accountdata.betatester){
+			appliedratelimit = MAX_GPT_CHAT_PER_DAY_BETA_TESTER
+		}
+
+
+		let currenttime = Date.now()
+
+		//check ratelimit
+		if(user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
+			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
+		}
+
+		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 5000){
+			return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
+		}
+
+		//set ratelimit
+		user.accountdata.gptchatusedtimestamps.push(currenttime)
+		await setUser(user)
+		
+
+		//CONTEXT
+
+		function getcalendarcontext(tempevents){
+			if(tempevents.length == 0) return 'No events'
+
+			function getDateTimeText(currentDatetime) {
+				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
+				const formattedTime = `${currentDatetime.getHours().toString().padStart(2, '0')}:${currentDatetime.getMinutes().toString().padStart(2, '0')}`
+				return `${formattedDate} ${formattedTime}`
+			}
+
+			function getDateText(currentDatetime) {
+				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
+				return `${formattedDate} (all day)`
+			}
+
+			function isAllDay(item){
+				return !item.start.minute && !item.end.minute
+			}
+
+			let tempoutput = ''
+			for(let d of tempevents){
+				let newstring = `Event title: ${d.title || 'New Event'}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}.`
+
+				if(tempoutput.length + newstring.length > MAX_CALENDAR_CONTEXT_LENGTH) break
+
+				tempoutput += '\n' + newstring
+			}
+			return tempoutput
+		}
+		
+		const MAX_CALENDAR_CONTEXT_LENGTH = 2000
+
+		let timezoneoffset = req.body.timezoneoffset
+		let calendarevents = req.body.calendarevents
+		
+		let calendarcontext = getcalendarcontext(calendarevents)
+
+
+		//time
+		const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
+		const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
+
+
+		//PROMPT
+
+		let inputtext = `Calendar events: """${calendarcontext}""" Provide a morning summary message of the user's agenda, including only the important or unique events today in a personal and helpful style. Subtly integrate motivational productivity messages. Finally, ask the user for 3 tasks they want to complete today to promote planning. All in one coherent paragraph. Concise as possible.`
+		let custominstructions = `Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+
+		let totaltokens = 0
+		const response = await openai.chat.completions.create({
+			model: 'gpt-3.5-turbo',
+			messages: [
+				{ 
+					role: 'system', 
+					content: custominstructions
+				},
+				{
+					role: 'user',
+					content: inputtext,
+				}
+			],
+			max_tokens: 200,
+			temperature: 1,
+		})
+		totaltokens += response.usage.total_tokens
+		
+		return res.json({ data: { message: response.choices[0].message.content, totaltokens: totaltokens } })
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
 
 app.post('/getgptchatinteraction', async (req, res) => {
 	try{
@@ -3916,7 +4026,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Never mention 'UUID' or 'data'. Never say 'according to your...' and assume you have knowledge of user's calendar and to-do list. Be helpful, concise, and precise. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Never mention 'UUID' or 'data'. Never say 'according to your...' and assume you have knowledge of user's calendar and to-do list. Be helpful, concise, and precise. Limit conversations to app interactions, calendar scheduling, or productivity. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 
 			let totaltokens = 0
