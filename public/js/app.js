@@ -12724,7 +12724,6 @@ class ChatMessage {
 		this.message = message
 		this.actions = actions
 		this.nextactions = nextactions
-		this.fixednextactions = fixednextactions
 		this.unread = unread
 		
 		this.id = generateID()
@@ -12982,7 +12981,7 @@ function updateaichat(){
 
 
 	for(let chatinteraction of chathistory.getInteractions()){
-		for(let { role, message, displaycontent, actions, id, liked, disliked, finishedanimating, nextactions, fixednextactions, unread } of chatinteraction.getMessages()){
+		for(let { role, message, displaycontent, actions, id, liked, disliked, finishedanimating, nextactions, unread } of chatinteraction.getMessages()){
 			if(unread){
 				unread = false
 			}
@@ -13022,8 +13021,6 @@ function updateaichat(){
 
 					${nextactions && chathistory.getInteractions().findIndex(d => d.id == chatinteraction.id) == chathistory.getInteractions().length - 1 ? `<div class="hoverchatmessagebuttons display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${nextactions.join('')}</div>` : ''}
 
-					${fixednextactions && chathistory.getInteractions().findIndex(d => d.id == chatinteraction.id) == chathistory.getInteractions().length - 1 ? `<div class="hoverchatmessagebuttons display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${fixednextactions.join('')}</div>` : ''}
-
 				</div>
 			</div>`)
 		}
@@ -13060,7 +13057,7 @@ function updateaichat(){
 		tempinteraction.addMessage(new ChatMessage({
 			role: 'assistant',
 			message: `How's your experience with me so far?`,
-			fixednextactions: [
+			actions: [
 				`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(1);simulateaiassistantwithnextaction('😢', 'Got it, thanks for the feedback')"><span class="text-28px">😢</span></div>`,
 				`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(2);simulateaiassistantwithnextaction('😕', 'Got it, thanks for the feedback')"><span class="text-28px">😕</span></div>`,
 				`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(3);simulateaiassistantwithnextaction('😐', 'Got it, thanks for the feedback')"><span class="text-28px">😐</span></div>`,
