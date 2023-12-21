@@ -12532,8 +12532,16 @@ function promptaiassistantwithnextaction(prompt){
 
 //simulate next action response
 function simulateaiassistantwithnextaction(prompt, response){
-	chathistory.addInteraction(new ChatInteraction([new ChatMessage({ role: 'user', message: prompt}), new ChatMessage({ role: 'assistant', message: response})]))
+	let tempinteraction = new ChatInteraction([new ChatMessage({ role: 'user', message: prompt})])
+	chathistory.addInteraction(tempinteraction)
+
 	updateaichat()
+
+	setTimeout(function(){
+		tempinteraction.addMessage(new ChatMessage({ role: 'assistant', message: response}))
+
+		updateaichat()
+	}, 2000)
 }
 
 
@@ -13437,6 +13445,7 @@ async function submitaimessage(optionalinput, dictated){
 					let newtitle = arguments?.newTitle
 					let newstartdate = arguments?.newStartDate
 					let newenddate = arguments?.newEndDate
+					let newduration = arguments?.newDuration
 
 					if(error){
 						responsechatmessage.message = `${error}`
@@ -13447,7 +13456,6 @@ async function submitaimessage(optionalinput, dictated){
 								responsechatmessage.message = `I could not edit that event as it is read-only (it may be part of a calendar you cannot edit).`
 							}else{
 								let oldstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-								let oldenddate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
 								let oldtitle = item.title
 
 
@@ -13464,6 +13472,11 @@ async function submitaimessage(optionalinput, dictated){
 								}
 								if(endminute != null && endyear != null && endmonth != null && endday != null){
 									enddate = new Date(endyear, endmonth, endday, 0, endminute)
+								}
+								let duration = getDuration(newduration).value
+								if(duration != null){
+									enddate = new Date(startdate)
+									enddate.setMinutes(enddate.getMinutes() + duration)
 								}
 								if(!enddate || isNaN(enddate.getTime())){
 									enddate = new Date(startdate)
@@ -13593,6 +13606,7 @@ async function submitaimessage(optionalinput, dictated){
 
 						let tempoutput = []
 						let firstitem;
+						let allitems = []
 
 						for(let tempitem of arguments.tasks){
 							let title = tempitem?.title
@@ -13620,18 +13634,19 @@ async function submitaimessage(optionalinput, dictated){
 									firstitem = item
 								}
 
-							}else{
-								tempoutput.push(`I don't have enough information to add the task "${title}", please try again.`)
+								allitems.push(item)
 
+							}else{
+								tempoutput.push(`I don't have enough information to add the task "${title}", could you tell me more?`)
 							}
 						}
 
-
 						responsechatmessage.message = tempoutput.join('\n')
 						if(firstitem){
-							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`]
+							aichattemporarydata = allitems
 
-							gototaskintodolist(firstitem.id)
+							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`]
+							responsechatmessage.actions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata })); simulateaiassistantwithnextaction('Schedule them in my calendar', 'Done! I scheduled ${items.length} tasks in your calendar.')">Schedule in calendar</div>`]
 						}
 
 						calendar.updateTodo()
@@ -13653,7 +13668,7 @@ async function submitaimessage(optionalinput, dictated){
 					if(error){
 						responsechatmessage.message = `${error}`
 					}else{
-						let item = id && calendar.todos.find(d => d.id == id)
+						let item = id && [...calendar.todos, ...calendar.events].find(d => d.id == id)
 						if(item){
 							let oldtitle = item.title
 							let oldcompleted = item.completed
@@ -13679,7 +13694,17 @@ async function submitaimessage(optionalinput, dictated){
 							item.title = newtitle || item.title
 
 							if(duration != null){
-								item.duration = duration
+								if(Calendar.Event.isEvent(item)){
+									let tempdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+									tempdate.setMinutes(tempdate.getMinutes() + duration)
+
+									item.end.year = tempdate.getFullYear()
+									item.end.month = tempdate.getMonth()
+									item.end.day = tempdate.getDate()
+									item.end.minute = tempdate.getHours() * 60 + tempdate.getMinutes()
+								}else{
+									item.duration = duration
+								}
 							}
 
 							if(newcompleted !== null){
@@ -13710,8 +13735,6 @@ async function submitaimessage(optionalinput, dictated){
 							responsechatmessage.message = tempmsg
 							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
 
-							gototaskintodolist(item.id)
-
 						}else{
 							responsechatmessage.message = `I could not find that task, could you please tell me more?`
 						}
@@ -13725,9 +13748,10 @@ async function submitaimessage(optionalinput, dictated){
 					if(error){
 						responsechatmessage.message = `${error}`
 					}else{
-						let item = id && calendar.todos.find(d => d.id == id)
+						let item = id && [...calendar.todos, ...calendar.events].find(d => d.id == id)
 						if(item){
 							calendar.todos = calendar.todos.filter(d => d.id != id)
+							calendar.events = calendar.events.filter(d => d.id != id)
 
 							calendar.updateTodo()
 
@@ -13746,14 +13770,14 @@ async function submitaimessage(optionalinput, dictated){
 						responsechatmessage.message = `${error}`
 					}else{
 						let items = idList && calendar.todos.filter(d => idList.find(g => g == d.id))
-						if(items.length > 0){
+						if(items && items.length > 0){
 							aichattemporarydata = items
 							
-							responsechatmessage.message = `I just want to confirm with you before scheduling these tasks:\n${items.map(d => `- ${d.title}`).join('\n')}`
-							responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule these tasks in your calendar.')">No</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata })); simulateaiassistantwithnextaction('Yes', 'Done! I added ${items.length} tasks to your calendar.')">Yes</div>`]
+							responsechatmessage.message = `Just a confirmation, I'll schedule these tasks for you:\n${items.map(d => `- ${d.title}`).join('\n')}`
+							responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule these tasks in your calendar.')">No</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled ${items.length} tasks in your calendar.')">Yes</div>`]
 						}else{
 							let calendaritems = idList && calendar.events.filter(d => idList.find(g => g == d.id))
-							if(calendaritems.length > 0){
+							if(calendaritems && calendaritems.length > 0){
 								responsechatmessage.message = `It looks like these tasks are already scheduled in your calendar!`
 							}else{
 								responsechatmessage.message = `I could not find this task, could you please tell me more?`

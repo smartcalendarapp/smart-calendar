@@ -3898,13 +3898,13 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				},
 				{
 					name: 'create_task',
-					description: 'Create an event in the calendar, auto-scheduled by the app',
+					description: 'Create a task to be auto-scheduled by the app in the calendar',
 					parameters: {
 						type: 'object',
 						properties: {
 							dueDate: { type: 'string', description: '(optional) Task due date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Task title' },
-							duration: { type: 'string', description: 'Task duration in HH:MM' },
+							duration: { type: 'string', description: '(optional) Task duration in HH:MM' },
 						},
 						required: ['title']
 					}
@@ -3918,6 +3918,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							startDate: { type: 'string', description: '(optional) Event start date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Event title' },
 							endDate: { type: 'string', descrption: '(optional) Event end date in YYYY-MM-DD HH:MM' },
+							duration: { type: 'string', description: '(optional) Event duration in HH:MM' },
 						},
 						required: ['title']
 					}
@@ -3966,6 +3967,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							newTitle: { type: 'string', description: '(optional) New event title' },
 							newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
 							newEndDate: { type: 'string', description: '(optional) New event end date in YYYY-MM-DD HH:MM' },
+							newDuration: { type: 'string', description: '(optional) New event duration in HH:MM' },
 							errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
 						},
 						required: []
@@ -4027,10 +4029,10 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'schedule_tasks_in_calendar'] //a subset of all functions, the functions that need todo data
 			const conjugatecommands = {
-				'create_event': 'create_task',
+				//'create_event': 'create_task',
 				'modify_event': 'modify_task',
 				'delete_event': 'delete_task',
-				'create_task': 'create_event',
+				//'create_task': 'create_event',
 				'modify_task': 'modify_event',
 				'delete_task': 'delete_event',
 			}
