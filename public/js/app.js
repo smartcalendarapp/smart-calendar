@@ -7479,7 +7479,7 @@ async function getclientgooglecalendar() {
 		} else if (response.status == 200) {
 			const data = await response.json()
 
-			if(calendar.lastmodified > tempstartgetclientgooglecalendardate || isautoscheduling || issettingclientgooglecalendar || lastsetclientgooglecalendar > tempstartgetclientgooglecalendardate){
+			if(calendar.lastmodified + 5000 > tempstartgetclientgooglecalendardate || isautoscheduling || issettingclientgooglecalendar || lastsetclientgooglecalendar + 5000 > tempstartgetclientgooglecalendardate){
 				isgettingclientgooglecalendar = false
 				return
 			}
@@ -9943,7 +9943,20 @@ async function uploadtaskpicture(event) {
 }
 
 
-//speech recognition to add task
+//TEXT TO SPEECH
+function texttospeech(text) {
+    if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text)
+		utterance.rate = 1.05
+		utterance.pitch = 1.3
+		
+        speechSynthesis.speak(utterance)
+    } else {
+        console.log("Your browser does not support text-to-speech.")
+    }
+}
+
+//SPEECH RECOGNITION
 let isspeaking = false
 let ispaused = false
 let recognition;
@@ -10194,12 +10207,10 @@ function submitdictation(){
 			typeaddevent()
 			createeventtitle.focus()
 		}else if(recognitionoutputtype == 'aichat'){
-			let aichatinput2 = getElement('aichatinput2')
-			aichatinput2.value = totalTranscriptCopy
-
 			updateaichatinput()
 			resizeaichatinput()
-			aichatinput2.focus()
+			
+			submitaimessage(totalTranscriptCopy, true)
 		}
 
 		stoprecognition()
@@ -12516,7 +12527,7 @@ function updateaiassistanttooltip(){
 	if(unreadmessages.length > 0){
 		let latestunreaditem = unreadmessages[unreadmessages.length - 1]
 
-		aichattooltip.innerHTML = `<span class="text-bold text-primary">Athena:</span> ${latestunreaditem.message.slice(0, 50)}...`
+		aichattooltip.innerHTML = `<span class="text-bold text-primary">Athena:</span> ${latestunreaditem.message.slice(0, 70)}...`
 
 		if(mobilescreen){
 			if(!calendartabs.includes(4)){
@@ -12537,12 +12548,12 @@ function updateaiassistanttooltip(){
 
 				let aichattitle = getElement('aichattitle')
 
-				aichattooltip.style.top = (aichattitle.getBoundingClientRect().top - aichattooltip.offsetHeight - 10) + 'px'
+				aichattooltip.style.top = fixtop(aichattitle.getBoundingClientRect().top - aichattooltip.offsetHeight - 10, aichattooltip) + 'px'
 				aichattooltip.style.left = (aichattitle.getBoundingClientRect().left - aichattooltip.offsetWidth/2 + aichattitle.offsetWidth/2) + 'px'
 			}
 		}
 	}
-	//here3
+
 }
 
 //get motivational task completed message
@@ -12553,7 +12564,7 @@ async function promptaiassistanttaskcompleted(item){
 	let endrange = new Date()
 	endrange.setHours(0,0,0,0)
 	endrange.setDate(endrange.getDate() + 1)
-	let calendarevents = sortstartdate(getevents(now, endrange).filter(d => !Calendar.Event.isHidden(d)))
+	let calendarevents = sortstartdate(getevents(now, endrange).filter(d => !Calendar.Event.isHidden(d)) && d.id != item.id)
 
 	try{
 		const response = await fetch('/getgptchatresponsetaskcompleted', {
@@ -12595,7 +12606,7 @@ async function promptaiassistanttaskstarted(item){
 	if(!clientinfo.betatester) return
 
 	try{
-		const response = await fetch('/getgptchatresponsetaskcompleted', {
+		const response = await fetch('/getgptchatresponsetaskstarted', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -12668,6 +12679,7 @@ async function promptaiassistantmorningsummary(){
 				console.log(data.data?.totaltokens, output)
 			}
 
+			chathistory = new ChatConversation()
 			chathistory.addInteraction(new ChatInteraction([new ChatMessage({ role: 'assistant', message: output.message, unread: true })]))
 
 			updateaichat()
@@ -12719,12 +12731,13 @@ class ChatInteraction {
 }
 
 class ChatMessage {
-	constructor({role, message, actions, nextactions, unread}){
+	constructor({ role, message, actions, nextactions, unread, dictated }){
 		this.role = role
 		this.message = message
 		this.actions = actions
 		this.nextactions = nextactions
 		this.unread = unread
+		this.dictated = dictated
 		
 		this.id = generateID()
 		this.timestamp = Date.now()
@@ -12780,6 +12793,10 @@ class ChatMessage {
 		//typing
 		let splitmessage = this.message.split(/(\s+)/g)
 		let totalwords = splitmessage.length
+
+		if(clientinfo.betatester && this.dictated == true){
+			texttospeech(this.message)
+		}
 
 		let random;
 		for(let i = 0; i < totalwords; i++){
@@ -12931,7 +12948,8 @@ function markdowntoHTML(markdown, role) {
 
 	markdown = markdown.replace(/^\d+\.\s+(.+)(\n+\d+\.\s+.+)*/gm, (match) => {
 		const listItems = match.split(/\n+/gm).map(item => `<li>${item.slice(item.indexOf(' ') + 1)}</li>`).join('');
-		return `<ol>${listItems}</ol>`
+		const num = match.match(/^\d+/gm)
+		return `<ol start="${num && num[0]}">${listItems}</ol>`
 	})
 
 	markdown = markdown.replace(/^[-*+]\s+(.+)(\n+[-*+]\s+.+)*/gm, (match) => {
@@ -12991,8 +13009,8 @@ function updateaichat(){
 				${role == 'user' ? useravatar : aiavatar}
 				<div class="flex-1 overflow-hidden display-flex flex-column gap-12px">
 					<div class="display-flex flex-column gap-6px">
-						<div class="text-primary text-15px text-bold">${role == 'user' ? username : ainame}</div>
-						<div class="selecttext pre-wrap break-word text-primary text-15px" id="chatmessage-body-${id}">${message ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : `<span class="aichatcursorloadingwrap"><span class="aichatcursorloading"></span></span>`}</div>
+						<div class="text-primary text-16px text-bold">${role == 'user' ? username : ainame}</div>
+						<div class="selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : `<span class="aichatcursorloadingwrap"><span class="aichatcursorloading"></span></span>`}</div>
 
 						${actions ? `<div class="hoverchatmessagebuttons display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${actions.join('')}</div>` : ''}
 
@@ -13052,7 +13070,7 @@ function updateaichat(){
 
 	//feedback message
 	setTimeout(function(){
-		if(!chathistory.showedfeedback && chathistory.chatmessagescounter > 10){
+		if(!chathistory.showedfeedback && chathistory.chatmessagescounter > 7){
 			//😢😕😐🙂😄
 	
 			let tempinteraction = new ChatInteraction()
@@ -13115,7 +13133,7 @@ function updateaichatinput(){
 
 let aichattemporarydata;
 let isgenerating = false
-async function submitaimessage(optionalinput){
+async function submitaimessage(optionalinput, dictated){
 	if(isgenerating) return
 	
 	let aichatinput;
@@ -13133,7 +13151,8 @@ async function submitaimessage(optionalinput){
 	let chatinteraction = new ChatInteraction()
 	chatinteraction.addMessage(new ChatMessage({
 		role: 'user',
-		message: userinput
+		message: userinput,
+		dictated: dictated
 	}))
 	let responsechatmessage = new ChatMessage({
 		role: 'assistant',
@@ -14866,11 +14885,27 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			}
 		}
 
-		function getcalculatedpriority(tempitem) {
+		//old
+		/*function getcalculatedpriority(tempitem) {
 			let currentdate = new Date()
 			let timedifference = new Date(tempitem.endbefore.year, tempitem.endbefore.month, tempitem.endbefore.day, 0, tempitem.endbefore.minute).getTime() - currentdate.getTime()
 			return currentdate.getTime() * (tempitem.priority + 1) / Math.max(timedifference, 1)
+		}*/
+
+		function getcalculatedpriority(tempItem) {
+			let currentDate = new Date()
+			let dueDate = new Date(tempItem.endbefore.year, tempItem.endbefore.month, tempItem.endbefore.day, 0, tempItem.endbefore.minute)
+			let timeDifference = dueDate.getTime() - currentDate.getTime()
+			
+			// logarithmic
+			let timeFactor = Math.log(Math.max(timeDifference, 1))
+		
+			// exponential
+			let priorityWeight = Math.pow(2, tempItem.priority) - 1 // For priority 0, 1, 2
+		
+			return priorityWeight * timeFactor
 		}
+
 
 
 		//============================================================================

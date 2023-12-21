@@ -59,12 +59,12 @@ ul{
 	list-style-type:disc;
 	padding:0;
 	margin:0;
-	padding-inline-start:24px;
+	padding-inline-start:30px;
 }
 ol{
 	padding:0;
 	margin:0;
-	padding-inline-start:24px;
+	padding-inline-start:30px;
 }
 .codeblock{
 	background-color: var(--black);
@@ -4485,10 +4485,15 @@ ol{
 }
 
 
+.paddingright78px{
+	padding-right:78px
+}
+
 .aichatdictationpopup{
 	position:absolute;
-	bottom:100%;
-	left:0;
+	bottom:100% !important;
+	left:0 !important;
+	top: revert !important;
 }
 
 .addtodosuggestions{
