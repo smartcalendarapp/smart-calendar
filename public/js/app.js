@@ -12464,7 +12464,7 @@ function updateaiassistanttooltip(){
 
 				let aiassistanttab2 = getElement('aiassistanttab2')
 
-				aichattooltip.style.top = (aiassistanttab2.getBoundingClientRect().top - aichattooltip.offsetHeight) + 'px'
+				aichattooltip.style.top = (aiassistanttab2.getBoundingClientRect().top - aichattooltip.offsetHeight - 10) + 'px'
 				aichattooltip.style.left = fixleft(aiassistanttab2.getBoundingClientRect().left, aichattooltip) + 'px'
 			}
 		}else{
@@ -12475,7 +12475,7 @@ function updateaiassistanttooltip(){
 
 				let aichattitle = getElement('aichattitle')
 
-				aichattooltip.style.top = (aichattitle.getBoundingClientRect().top - aichattooltip.offsetHeight) + 'px'
+				aichattooltip.style.top = (aichattitle.getBoundingClientRect().top - aichattooltip.offsetHeight - 10) + 'px'
 				aichattooltip.style.left = (aichattitle.getBoundingClientRect().left - aichattooltip.offsetWidth/2 + aichattitle.offsetWidth/2) + 'px'
 			}
 		}
