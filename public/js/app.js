@@ -12708,7 +12708,7 @@ async function promptaiassistanttaskstarted(item){
 
 //get reminder when event started
 async function promptaiassistanteventstarted(item){//here3
-
+	//later
 }
 
 
@@ -12794,6 +12794,10 @@ class ChatConversation{
 
 	addInteraction(chatinteraction){
 		this.interactions.push(chatinteraction)
+	}
+
+	removeInteraction(chatinteraction){
+		this.interactions = this.interactions.filter(d => d.id != chatinteraction.id)
 	}
 
 	getInteractions(){
