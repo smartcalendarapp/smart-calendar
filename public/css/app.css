@@ -4485,6 +4485,12 @@ ol{
 }
 
 
+.aichatdictationpopup{
+	position:absolute;
+	bottom:100%;
+	left:0;
+}
+
 .addtodosuggestions{
 	position:absolute;
 	top:100% !important;

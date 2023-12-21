@@ -10014,8 +10014,11 @@ function updaterecognitionui(){
 
 	addtododictationpopup.classList.add('hiddenpopup')
 	addeventdictationpopup.classList.add('hiddenpopup')
+	aichatdictationpopup.classList.add('hiddenpopup')
+
 	addeventdictationbutton.classList.remove('recognitionredanimation')
 	addtododictationbutton.classList.remove('recognitionredanimation')
+	aichatdictationbutton.classList.remove('recognitionredanimation')
 
 	let addeventdictationtext2 = getElement('addeventdictationtext2')
 	let addtododictationtext2 = getElement('addtododictationtext2')
@@ -10074,8 +10077,8 @@ function updaterecognitionui(){
 		}else if(recognitionoutputtype == 'aichat'){
 			aichatrecognitionbutton.classList.add('display-none')
 
-			aichatdictationtext.classList.remove('hiddenpopup')
-			aichatdictationtext.classList.add('recognitionredanimation')
+			aichatdictationpopup.classList.remove('hiddenpopup')
+			aichatdictationbutton.classList.add('recognitionredanimation')
 
 			if(totalTranscriptCopy){
 				aichatdictationtext.innerHTML =  `<span class="text-primary">${totalTranscriptCopy}</span>`

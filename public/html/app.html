@@ -2058,15 +2058,15 @@
 					<div class="width-full align-center sticky bottom-0 display-flex flex-column border-box">
 						<div class="border-box padding-left-12px padding-right-12px aiassistantcontent display-flex flex-column gap-12px padding-bottom-12px">
 							<!-- input -->
-							<div class="relative align-center overflow-hidden border-12px border-box bordertertiary display-flex flex-row relative">
+							<div class="relative align-center border-12px border-box bordertertiary display-flex flex-row relative">
 								<div class="display-flex flex-row flex-1">
 									<textarea rows="1" oninput="updateaichatinput();resizeaichatinput()" class="createtodotextarea padding-right-0 infoinput text-14px padding-top-16px padding-bottom-16px padding-left-16px padding-right-48px transparentinput" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitaimessage() }" placeholder="Message Athena..." maxlength="300" id="aichatinput2"></textarea>
-									<span class="inputline"></span>
+									<span class="inputlinewrap"><span class="inputline"></span></span>
 								</div>
 
 
 								<!-- record button -->
-								<div class="padding-right-12px padding-top-6px absolute top-0 right-0 display-flex flex-column justify-center" id="aichatrecognitionwrap">
+								<div class="padding-right-12px padding-top-12px absolute bottom-0 right-0 display-flex flex-column justify-center" id="aichatrecognitionwrap">
 									<div class="tooltip pointer hover:background-tint-2 transition-duration-100 border-round padding-6px display-flex" onclick="togglerecognition('aichat')" id="aichatrecognitionbutton">
 										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="fillbutton">
 											<g>
@@ -2082,7 +2082,7 @@
 
 
 								<!-- dictation popup -->
-								<div class="border-box width-full popuptransition overflow-hidden background-primary box-shadow padding-12px gap-24px addtodosuggestions z-index-100 border-8px display-flex flex-column hiddenpopup" id="aichatdictationpopup">
+								<div class="border-box width-full popuptransition overflow-hidden background-primary box-shadow padding-12px gap-24px aichatdictationpopup z-index-100 border-8px display-flex flex-column hiddenpopup" id="aichatdictationpopup">
 									<div class="display-flex flex-row gap-12px justify-space-between align-center">
 										<div>
 											<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
