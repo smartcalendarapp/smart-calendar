@@ -12467,7 +12467,6 @@ function closeaichat(){
 }
 
 function newaichat(){
-	ca
 	chathistory = new ChatConversation()
 	openaichat()
 }
