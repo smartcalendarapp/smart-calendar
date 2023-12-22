@@ -12799,7 +12799,7 @@ class ChatConversation{
 		this.id = generateID()
 
 		this.chatmessagescounter = 0
-		this.showedfeedbacktimes = 0
+		this.showedfeedback = false
 	}
 
 	addInteraction(chatinteraction){
@@ -13174,7 +13174,7 @@ function updateaichat(){
 
 	//feedback message
 	setTimeout(function(){
-		if(chathistory.chatmessagescounter > 4 * 2^(chathistory.showedfeedbacktimes + 2) - 8){
+		if(!chathistory.showedfeedback && chathistory.chatmessagescounter > 7){
 			//😢😕😐🙂😄
 	
 			let tempinteraction = new ChatInteraction()
@@ -13190,7 +13190,7 @@ function updateaichat(){
 				]
 			}))
 
-			chathistory.showedfeedbacktimes++
+			chathistory.showedfeedback = true
 			chathistory.addInteraction(tempinteraction)
 
 			updateaichat()
