@@ -12903,12 +12903,12 @@ class ChatMessage {
 
 
 		let successfullyspoken;
-		if(clientinfo.betatester && this.dictated == true || true){
+		if(clientinfo.betatester && this.dictated == true){
 			//text to speech
 			if ('speechSynthesis' in window) {
 
 				const speakasync = () => {
-					return new Promise((resolve, reject) => {
+					return new Promise(async (resolve, reject) => {
 						try{
 							const utterance = new SpeechSynthesisUtterance(this.message)
 							utterance.rate = 1.05
@@ -12916,16 +12916,27 @@ class ChatMessage {
 							
 							speechSynthesis.speak(utterance)
 
-							utterance.onboundary = (event) => {
-								//update word
-								this.displaycontent = this.message.slice(0, event.charIndex)
+
+							//typing
+							let splitmessage = this.message.split(/(\s+)/g)
+							let totalwords = splitmessage.length
+
+							for(let i = 0; i < totalwords; i++){
+								this.displaycontent = splitmessage.slice(0, i + 1).join('')
 								let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
 								chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)} <span class="aichatcursor"></span>`
+
+								//delay
+								let currentword = splitmessage[i]
+								let delay = 60 * (currentword.length/10)
+
+								await sleep(delay)
 
 								requestAnimationFrame(function(){
 									scrollaichatY()
 								})
 							}
+
 
 							utterance.onend = () => {
 								//complete message
