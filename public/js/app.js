@@ -4495,9 +4495,6 @@ function run() {
 	updateAvatar()
 	updateuserinfo()
 
-	//chat history
-	chathistory = Object.assign(new ChatConversation(), calendar.aiassistantchathistory)
-
 	//set initial save data
 	lastbodydata = calendar.getChangedJSON()
 	
@@ -12470,8 +12467,8 @@ function closeaichat(){
 }
 
 function newaichat(){
+	ca
 	chathistory = new ChatConversation()
-	calendar.aiassistantchathistory = chathistory
 	openaichat()
 }
 
