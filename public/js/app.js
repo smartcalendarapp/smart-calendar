@@ -9982,7 +9982,7 @@ let recognitionoutputtype;
 let recognitionerror;
 let totalTranscriptCopy;
 
-const SPEECH_END_TIMEOUT_DURATION = 2000
+const SPEECH_END_TIMEOUT_DURATION = 3000
 let speechEndTimeout = null
 
 function resetSpeechEndTimeout() {

@@ -4156,7 +4156,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						if(requirescustomfunction){
 							//yes custom function
 		
-							request2options.functions = [...allfunctions.filter(d => d.name == command), ...allfunctions.filter(d => conjugatecommand && d.name == conjugatecommand)]
+							request2options.functions = [...allfunctions.filter(d => d.name == command)]
 						}
 		
 						request2options.messages = [
