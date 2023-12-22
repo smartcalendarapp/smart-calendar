@@ -515,7 +515,7 @@ async function processReminders(){
 							urgency: 'high'
 						  })
 					}catch(error){
-						console.error(error)
+						//console.error(error)
 					}
 				}else if (item.type == 'task'){
 					try{
@@ -525,7 +525,7 @@ async function processReminders(){
 							urgency: 'high'
 						  })
 					}catch(error){
-						console.error(error)
+						//console.error(error)
 					}
 				}
 			}
@@ -547,7 +547,7 @@ async function processReminders(){
 					
 					let result = await apnProvider.send(note, item.iosdevicetoken)
 					if (result.failed.length > 0) {
-						console.error("iOS notification failed:", result.failed)
+						//console.error("iOS notification failed:", result.failed)
 					}
 				}catch(error){
 					console.error(error)
@@ -565,7 +565,7 @@ async function processReminders(){
 					
 					let result = await apnProvider.send(note, item.iosdevicetoken)
 					if (result.failed.length > 0) {
-						console.error("iOS notification failed:", result.failed)
+						//console.error("iOS notification failed:", result.failed)
 					}
 				}catch(error){
 					console.error(error)
@@ -2455,11 +2455,11 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 				try{
 					let start, end;
 					if(isAllDay(item)){
-						start = { date: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().slice(0, 10), timeZone: timezonename }
-						end = { date:  new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().slice(0, 10), timeZone: timezonename }
+						start = { date: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().slice(0, 10), timeZone: timezonename, dateTime: null }
+						end = { date:  new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().slice(0, 10), timeZone: timezonename, dateTime: null }
 					}else{
-						start = { dateTime: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
-						end = { dateTime: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
+						start = { dateTime: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename, date: null }
+						end = { dateTime: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename, date: null }
 					}
 
 					const response = await googlecalendar.events.patch({
@@ -2504,11 +2504,11 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 				try{
 					let start, end;
 					if(isAllDay(item)){
-						start = { date: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().slice(0, 10), timeZone: timezonename }
-						end = { date:  new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().slice(0, 10), timeZone: timezonename }
+						start = { date: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().slice(0, 10), timeZone: timezonename, dateTime: null }
+						end = { date:  new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().slice(0, 10), timeZone: timezonename, dateTime: null }
 					}else{
-						start = { dateTime: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
-						end = { dateTime: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename }
+						start = { dateTime: new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename, date: null }
+						end = { dateTime: new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).toISOString().replace('Z', timezoneoffsetstring), timeZone: timezonename, date: null }
 					}
 
 					const response = await googlecalendar.events.insert({
@@ -3583,7 +3583,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}. Time needed: ${getDHMText(Math.floor((new Date(taskitem.end.year, taskitem.end.month, taskitem.end.day, 0, taskitem.end.minute).getTime() - new Date(taskitem.start.year, taskitem.start.month, taskitem.start.day, 0, taskitem.start.minute).getTime())/60000))}""" Concise as possible, maximum 5 sentences. Provide specific, actionable, and concise steps and tips to make solid progress and complete this task. Avoid generic or cliche responses. As a personal assistant, mention that the task is starting now and will last how long, and give motivational tips.`
+		let inputtext = `Task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}. Time needed: ${getDHMText(Math.floor((new Date(taskitem.end.year, taskitem.end.month, taskitem.end.day, 0, taskitem.end.minute).getTime() - new Date(taskitem.start.year, taskitem.start.month, taskitem.start.day, 0, taskitem.start.minute).getTime())/60000))}""" Respond concise as possible, max 5 sentences. Provide specific and actionable steps and tips to make solid progress and complete this task. Avoid generic or cliche responses. As a personal assistant, mention that the task is starting now and will last how long, and give motivational tips.`
 		let custominstructions = `Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
@@ -3600,7 +3600,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 				}
 			],
 			max_tokens: 150,
-			temperature: 1,
+			temperature: 0.5,
 		})
 		totaltokens += response.usage.total_tokens
 		
@@ -3695,7 +3695,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Competed task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}""" Concise as possible, maximum 5 sentences. Provide a short personal, non-generic, non-cliche motivational message for the user who just completed this task. Then, mention the next upcoming event if there is one. All in one coherent paragraph. Calendar data: """${calendarcontext}"""`
+		let inputtext = `Competed task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}""" Respond concise as possible, max 5 sentences. Provide a short personal, non-generic, non-cliche motivational message for the user who just completed this task. Then, mention only the next upcoming event if there is one. All in one coherent paragraph. Calendar data: """${calendarcontext}"""`
 		let custominstructions = `Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
@@ -3712,7 +3712,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 				}
 			],
 			max_tokens: 150,
-			temperature: 1,
+			temperature: 0.5,
 		})
 		totaltokens += response.usage.total_tokens
 		
@@ -3805,7 +3805,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Calendar data: """${calendarcontext}""" Concise as possible, maximum 5 sentences. Provide a morning greeting and morning summary message of the user's agenda, briefing user on a few of the important or unique events today in a personal and helpful style. Subtly integrate motivational productivity messages. Finally, you must ask the user for 3 tasks they want to complete today to promote planning. All in one coherent paragraph.`
+		let inputtext = `Calendar data: """${calendarcontext}""" Respond concise as possible, max 5 sentences. Provide a morning greeting and morning summary message of the user's agenda, briefing user on only a few of the important or unique events today in a personal and helpful style. Subtly integrate motivational productivity messages. Finally, you must ask the user for 3 tasks they want to complete today to promote planning. All in one coherent paragraph.`
 		let custominstructions = `Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
@@ -3822,7 +3822,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 				}
 			],
 			max_tokens: 150,
-			temperature: 1,
+			temperature: 0.5,
 		})
 		totaltokens += response.usage.total_tokens
 		
@@ -3871,7 +3871,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 		//CONTEXT
 
-		async function queryGptWithFunction(userinput, calendarcontext, todocontext, todowithouteventscontext, conversationhistory, timezoneoffset) {
+		async function queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset) {
 			const allfunctions = [
 				{
 					name: 'get_calendar_events',
@@ -4028,13 +4028,6 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const customfunctions = ['create_multiple_events', 'create_event', 'delete_event', 'modify_event', 'create_multiple_tasks','create_task', 'delete_task', 'modify_task', 'schedule_tasks_in_calendar'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'schedule_tasks_in_calendar'] //a subset of all functions, the functions that need todo data
-			const conjugatecommands = {
-				'modify_event': 'modify_task',
-				'delete_event': 'delete_task',
-				'modify_task': 'modify_event',
-				'delete_task': 'delete_event',
-			}
-
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
@@ -4136,10 +4129,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				if (response.choices[0].message.function_call?.name === 'app_action') {
 					const command = JSON.parse(response.choices[0].message.function_call?.arguments)?.command
 					if (command) {
-						const conjugatecommand = conjugatecommands[command]
-						const requirescalendardata = calendardataneededfunctions.includes(command) || (conjugatecommand &&  calendardataneededfunctions.includes(conjugatecommand))
-						const requirestododata = tododataneededfunctions.includes(command) || (conjugatecommand &&  tododataneededfunctions.includes(conjugatecommand))
-						const requirescustomfunction = customfunctions.includes(command) || (conjugatecommand &&  customfunctions.includes(conjugatecommand))
+						const requirescalendardata = calendardataneededfunctions.includes(command)
+						const requirestododata = tododataneededfunctions.includes(command)
+						const requirescustomfunction = customfunctions.includes(command)
 		
 						let request2options = {
 							model: 'gpt-3.5-turbo',
@@ -4157,11 +4149,8 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						if(requirestododata){
 							//yes todo data
 		
-							if(requirescalendardata){
-								request2input = `Calendar data: """${calendarcontext}""" Todo data: """${todowithouteventscontext}""" Prompt: """${userinput}"""`
-							}else{
-								request2input = `Todo data: """${todocontext}""" Prompt: """${userinput}"""`
-							}
+							
+							request2input = `Todo data: """${todocontext}""" Prompt: """${userinput}"""`
 						}
 		
 						if(requirescustomfunction){
@@ -4301,45 +4290,6 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			return tempoutput
 		}
 
-		function gettodowithouteventscontext(temptodos){
-			if(temptodos.length == 0) return 'No tasks'
-
-			function getDateTimeText(currentDatetime) {
-				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
-				const formattedTime = `${currentDatetime.getHours().toString().padStart(2, '0')}:${currentDatetime.getMinutes().toString().padStart(2, '0')}`
-				return `${formattedDate} ${formattedTime}`
-			}
-
-			function getDHMText(input) {
-				let temp = input
-				let days = Math.floor(temp / 1440)
-				temp -= days * 1440
-			
-				let hours = Math.floor(temp / 60)
-				temp -= hours * 60
-			
-				let minutes = temp
-			
-				if (days) days += 'd'
-				if (hours) hours += 'h'
-				if (minutes || (hours == 0 && days == 0)) minutes += 'm'
-			
-				return [days, hours, minutes].filter(f => f).join(' ')
-			}
-
-
-			let tempoutput = ''
-			for(let d of temptodos){
-				if(d.type == 1) continue
-
-				let newstring = `Task title: ${d.title || 'New Task'}, UUID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration)}, completed: ${d.completed}.`
-
-				if(tempoutput.length + newstring.length > MAX_TODO_CONTEXT_LENGTH) break
-
-				tempoutput += '\n' + newstring
-			}
-			return tempoutput
-		}
 
 		function getconversationhistory(temphistory){ //simple way for history, just send latest X messages
 			let tempoutput = []
@@ -4369,11 +4319,10 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 		let calendarcontext = getcalendarcontext(calendarevents)
 		let todocontext = gettodocontext(calendartodos)
-		let todowithouteventscontext = gettodowithouteventscontext(calendartodos)
 		let conversationhistory = getconversationhistory(rawconversationhistory)
 
 		//REQUEST
-		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, todowithouteventscontext, conversationhistory, timezoneoffset)
+		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset)
 
 		return res.json({ data: output, idmap: idmap })
 	}catch(err){

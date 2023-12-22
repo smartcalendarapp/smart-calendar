@@ -1768,7 +1768,6 @@ class Calendar {
 
 
 	updateAnimatedEvents() {
-		requestAnimationFrame(function(){
 		if (calendarmode == 0 || calendarmode == 1) {
 			for (let i = 0; i < [3, 21][calendarmode]; i++) {
 				let currentdate = new Date(calendar.getDate())
@@ -1811,7 +1810,6 @@ class Calendar {
 			}
 
 		}
-		})
 	}
 
 
@@ -4557,7 +4555,7 @@ function run() {
 			endrange.setHours(0,0,0,0)
 			endrange.setDate(endrange.getDate() + 1)
 
-			let sortedevents = sortstartdate(getevents(startrange, endrange).filter(d => d.type != 1 || !d.completed))
+			let sortedevents = sortstartdate(getevents(startrange, endrange).filter(d => (d.type != 1 || !d.completed) && !Calendar.Event.isAllDay(d)))
 			
 			let nowevents = sortedevents.filter(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now())
 
@@ -9984,6 +9982,19 @@ let recognitionoutputtype;
 let recognitionerror;
 let totalTranscriptCopy;
 
+const SPEECH_END_TIMEOUT_DURATION = 2000
+let speechEndTimeout = null
+
+function resetSpeechEndTimeout() {
+    clearTimeout(speechEndTimeout)
+    speechEndTimeout = setTimeout(() => {
+        if (isspeaking) {
+            submitdictation()
+            recognition.stop()
+        }
+    }, SPEECH_END_TIMEOUT_DURATION)
+}
+
 if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
 	recognition.continuous = true
@@ -9994,6 +10005,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	let finalTranscript = ''
 	let interimTranscript = ''
 	totalTranscriptCopy = ''
+	
 
 	recognition.addEventListener('result', event => {
 		interimTranscript = ''
@@ -10010,6 +10022,8 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 		totalTranscriptCopy = totalTranscript
 		updaterecognitionui()
+
+		resetSpeechEndTimeout()
 	})
 
 	recognition.addEventListener('start', () => {
@@ -10018,6 +10032,8 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		updaterecognitionui()
 
 		console.log("Recognition started")
+
+		resetSpeechEndTimeout()
 	})
 	  
 	recognition.addEventListener('error', (event) => {
@@ -10043,6 +10059,8 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		updaterecognitionui()
 
 		console.log("Recognition ended")
+
+		resetSpeechEndTimeout()
 	})
 }else{
 	getElement('todorecognitionwrap').classList.add('display-none')
@@ -12712,10 +12730,6 @@ async function promptaiassistanttaskstarted(item){
 	}
 }
 
-//get reminder when event started
-async function promptaiassistanteventstarted(item){//here3
-	//later
-}
 
 
 async function promptaiassistantmorningsummary(){
@@ -12787,6 +12801,11 @@ async function promptaiassistantmorningsummary(){
 	}
 }
 
+function sleep(time) {
+	return new Promise(resolve => {
+		setTimeout(resolve, time)
+	})
+}
 
 class ChatConversation{
 	constructor(interactions = []){
@@ -12866,12 +12885,6 @@ class ChatMessage {
 			return this.message
 		}
 
-		function sleep(time) {
-			return new Promise(resolve => {
-				setTimeout(resolve, time)
-			})
-		}
-
 		//waiting
 		if(!this.message){
 			const waitforload = () => {
@@ -12887,38 +12900,86 @@ class ChatMessage {
 
 			await waitforload()
 		}
-		
-		//typing
-		let splitmessage = this.message.split(/(\s+)/g)
-		let totalwords = splitmessage.length
 
-		if(clientinfo.betatester && this.dictated == true){
-			texttospeech(this.message)
-		}
 
-		let random;
-		for(let i = 0; i < totalwords; i++){
-			this.displaycontent = splitmessage.slice(0, i + 1).join('')
-			let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-			chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)} <span class="aichatcursor"></span>`
+		let successfullyspoken;
+		if(clientinfo.betatester && this.dictated == true || true){
+			//text to speech
+			if ('speechSynthesis' in window) {
 
-			//delay
-			if(i % 5 == 0){
-				random = Math.random()
+				const speakasync = () => {
+					return new Promise((resolve, reject) => {
+						try{
+							const utterance = new SpeechSynthesisUtterance(this.message)
+							utterance.rate = 1.05
+							utterance.pitch = 1.3
+							
+							speechSynthesis.speak(utterance)
+
+							utterance.onboundary = (event) => {
+								//update word
+								this.displaycontent = this.message.slice(0, event.charIndex)
+								let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
+								chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)} <span class="aichatcursor"></span>`
+
+								requestAnimationFrame(function(){
+									scrollaichatY()
+								})
+							}
+
+							utterance.onend = () => {
+								//complete message
+								this.displaycontent = this.message
+								let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
+								chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)}`
+								
+								successfullyspoken = true
+								resolve()
+							}
+
+							utterance.onerror = () => {
+								resolve()
+							}
+						}catch(e){
+							resolve()
+						}
+					})
+				}
+
+				await speakasync()
 			}
-			let currentword = splitmessage[i]
-			let delay = 10 + random * 30 * (currentword.length/10)
-
-			await sleep(delay)
-
-			requestAnimationFrame(function(){
-				scrollaichatY()
-			})
 		}
 
-		this.displaycontent = this.message
-		let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-		chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)}`
+		if(!successfullyspoken){
+			//typing
+			let splitmessage = this.message.split(/(\s+)/g)
+			let totalwords = splitmessage.length
+
+			let random;
+			for(let i = 0; i < totalwords; i++){
+				this.displaycontent = splitmessage.slice(0, i + 1).join('')
+				let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
+				chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)} <span class="aichatcursor"></span>`
+
+				//delay
+				if(i % 5 == 0){
+					random = Math.random()
+				}
+				let currentword = splitmessage[i]
+				let delay = 10 + random * 30 * (currentword.length/10)
+
+				await sleep(delay)
+
+				requestAnimationFrame(function(){
+					scrollaichatY()
+				})
+			}
+
+			//complete message
+			this.displaycontent = this.message
+			let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
+			chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)}`
+		}
 
 		requestAnimationFrame(function(){
 			scrollaichatY()
@@ -13688,7 +13749,7 @@ async function submitaimessage(optionalinput, dictated){
 							aichattemporarydata = allitems
 
 							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`]
-							responsechatmessage.actions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata })); simulateaiassistantwithnextaction('Schedule them in my calendar', 'Done! I scheduled ${items.length} tasks in your calendar.')">Schedule in calendar</div>`]
+							responsechatmessage.actions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata })); simulateaiassistantwithnextaction('Schedule them in my calendar', 'Done! I scheduled ${allitems.length} tasks in your calendar.')">Schedule in calendar</div>`]
 						}
 
 						calendar.updateTodo()
@@ -13861,6 +13922,12 @@ async function submitaimessage(optionalinput, dictated){
 	requestAnimationFrame(function(){
 		scrollaichatY()
 	})
+
+
+	//continuous speak
+	if(dictated){
+		togglerecognition('aichat')
+	}
 
 
 	//save conversation data
@@ -14656,22 +14723,11 @@ function getLeastBusyDateV1(item, myevents) {
 
 //get iterated events in calendar view
 function getiteratedevents() {
-	let currentdate;
-	let nextdate;
-	if (calendarmode == 1 || calendarmode == 0) {
-		currentdate = new Date(calendar.getDate())
-		currentdate.setHours(0, 0, 0, 0)
-		currentdate.setDate(currentdate.getDate() - currentdate.getDay() - 7)
-		nextdate = new Date(currentdate.getTime())
-		nextdate.setDate(nextdate.getDate() + 21)
-	} else if (calendarmode == 2) {
-		currentdate = new Date(calendar.getDate())
-		currentdate.setHours(0, 0, 0, 0)
-		currentdate.setDate(1)
-		currentdate.setMonth(currentdate.getMonth() - 1)
-		nextdate = new Date(currentdate.getTime())
-		nextdate.setMonth(nextdate.getMonth() + 3)
-	}
+	let currentdate = new Date()
+	currentdate.setHours(0, 0, 0, 0)
+	
+	let nextdate = new Date(currentdate)
+	nextdate.setDate(nextdate.getDate() + 30) //30 days
 
 	let tempborders = getborders(currentdate, nextdate)
 	let tempevents = getevents(currentdate, nextdate)
@@ -14920,11 +14976,6 @@ let rescheduletaskfunction;
 async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassedtodos = [], eventsuggestiontodos = [], moveditemtimestamp, moveditem}) {
 	try{
 		//functions
-		function sleep(time) {
-			return new Promise(resolve => {
-				setTimeout(resolve, time)
-			})
-		}
 
 		function fixconflict(item, conflictitem, spacing = 0) {
 			let duration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
@@ -15077,8 +15128,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		if(lastmovedeventid){
 			let lastmoveditem = calendar.events.find(d => d.id == lastmovedeventid)
 			if(lastmoveditem){
-				//detect if moved event/task conflicts with an event or locked task
-				//HERE2
+				//detect if moved event/task conflicts with an event or locked task?
 
 
 				//unlock tasks that conflict with moved event
@@ -16596,11 +16646,7 @@ async function autoScheduleV1(currentevents, showsummary) {
 	}
 
 	//animate
-	function sleep(time) {
-		return new Promise(resolve => {
-			setTimeout(resolve, time)
-		})
-	}
+
 
 	let newevents = deepCopy(calendar.events)
 	let intermediateevents = deepCopy(oldcalendarevents)

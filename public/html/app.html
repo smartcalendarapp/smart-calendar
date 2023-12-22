@@ -740,7 +740,7 @@
 	
 	<div class="helpmenu hiddenpopup popup z-index-1000" id="timewindowpopup"></div>
 	
-	<div class="eventinfo hiddenpopup popup z-index-1000 width400px minwidthheight" id="calendaritempopup"></div>
+	<div class="eventinfo hiddenpopup popup z-index-1000 width400px minwidthheight small:width-full" id="calendaritempopup"></div>
 
 	<div class="helpmenu hiddenpopup popup picker z-index-1000 max-height-240px" onmousedown="event.preventDefault()" id="durationpicker"></div>
 
@@ -1334,13 +1334,13 @@
 
 			<div class="absolute top-0 left-0 width-full height-full display-flex flex-column align-center " id="onboardingconnecttodolists">
 				
-				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
+				<div class="height-full todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
 					<div class="display-flex flex-column gap-12px">
 						<div class="text-24px text-primary text-bold">Pick your calendars</div>
 						<div class="text-18px text-quaternary">Pick which calendars you want Smart Calendar to show, and plan your day around.</div>
 					</div>
 
-					<div id="pickyourcalendarslist" class="display-flex flex-column gap-6px"></div>
+					<div id="pickyourcalendarslist" class="overflow-x-hidden overflow-y-auto display-flex flex-column gap-6px"></div>
 
 
 					<div class="display-flex flex-row gap-24px justify-center align-center">
