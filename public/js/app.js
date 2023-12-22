@@ -1768,6 +1768,7 @@ class Calendar {
 
 
 	updateAnimatedEvents() {
+		requestAnimationFrame(function(){
 		if (calendarmode == 0 || calendarmode == 1) {
 			for (let i = 0; i < [3, 21][calendarmode]; i++) {
 				let currentdate = new Date(calendar.getDate())
@@ -1810,12 +1811,15 @@ class Calendar {
 			}
 
 		}
+		})
 	}
 
 
 	updateEvents() {
 		this.updateAnimatedEvents()
 
+		requestAnimationFrame(function(){
+		
 		if (calendarmode == 0 || calendarmode == 1) {
 			function getConflictingData(temp1, data, strict) {
 				let item1 = temp1.item;
@@ -1917,6 +1921,7 @@ class Calendar {
 					dayeventbox.innerHTML = daydisplayoutput.join('');
 				}
 			}
+
 		} else if (calendarmode == 2) {
 			let rangestartdate = new Date(calendar.getDate())
 			let rangeenddate = new Date(calendar.getDate())
@@ -1971,6 +1976,7 @@ class Calendar {
 
 		}
 
+		})
 	}
 
 	updateEventTime() {
@@ -2610,7 +2616,7 @@ class Calendar {
 
 
 
-				if (movingevent || iseditingschedule || isautoscheduling) {
+				if (movingevent || iseditingschedule || (isautoscheduling && editinfo == false)) {
 					eventinfo.classList.add('hiddenpopup')
 					return
 				}
@@ -4488,6 +4494,9 @@ function run() {
 	//avatar and userinfo
 	updateAvatar()
 	updateuserinfo()
+
+	//chat history
+	chathistory = Object.assign(new ChatConversation(), calendar.aiassistantchathistory)
 
 	//set initial save data
 	lastbodydata = calendar.getChangedJSON()
@@ -12462,6 +12471,7 @@ function closeaichat(){
 
 function newaichat(){
 	chathistory = new ChatConversation()
+	calendar.aiassistantchathistory = chathistory
 	openaichat()
 }
 
@@ -12789,7 +12799,7 @@ class ChatConversation{
 		this.id = generateID()
 
 		this.chatmessagescounter = 0
-		this.showedfeedback = false
+		this.showedfeedbacktimes = 0
 	}
 
 	addInteraction(chatinteraction){
@@ -13164,7 +13174,7 @@ function updateaichat(){
 
 	//feedback message
 	setTimeout(function(){
-		if(!chathistory.showedfeedback && chathistory.chatmessagescounter > 7){
+		if(chathistory.chatmessagescounter > 4 * 2^(chathistory.showedfeedbacktimes + 2) - 8){
 			//😢😕😐🙂😄
 	
 			let tempinteraction = new ChatInteraction()
@@ -13180,7 +13190,7 @@ function updateaichat(){
 				]
 			}))
 
-			chathistory.showedfeedback = true
+			chathistory.showedfeedbacktimes++
 			chathistory.addInteraction(tempinteraction)
 
 			updateaichat()
@@ -14652,13 +14662,7 @@ function getLeastBusyDateV1(item, myevents) {
 function getiteratedevents() {
 	let currentdate;
 	let nextdate;
-	if (calendarmode == 0) {
-		currentdate = new Date(calendar.getDate())
-		currentdate.setHours(0, 0, 0, 0)
-		currentdate.setDate(currentdate.getDate() - 1)
-		nextdate = new Date(currentdate.getTime())
-		nextdate.setDate(nextdate.getDate() + 3)
-	} else if (calendarmode == 1) {
+	if (calendarmode == 1 || calendarmode == 0) {
 		currentdate = new Date(calendar.getDate())
 		currentdate.setHours(0, 0, 0, 0)
 		currentdate.setDate(currentdate.getDate() - currentdate.getDay() - 7)
@@ -15688,8 +15692,8 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			oldautoscheduleeventslist = []
 			newautoscheduleeventslist = []
 
-			calendar.updateEvents()
 			calendar.updateAnimatedEvents()
+			calendar.updateEvents()
 
 			calendar.updateHistory()
 			calendar.updateInfo(true)
@@ -15703,8 +15707,8 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		oldautoscheduleeventslist = calendar.events.filter(d => oldsmartevents.find(g => g.id == d.id))
 		newautoscheduleeventslist = newcalendarevents
 
-		calendar.updateAnimatedEvents()
 		calendar.updateEvents()
+		calendar.updateAnimatedEvents()
 
 		calendar.updateInfo()
 

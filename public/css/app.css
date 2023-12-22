@@ -4494,7 +4494,6 @@ ol{
 	pointer-events: none;
 	display:inline-flex;
 	position: relative;
-	height:18px;
 	align-content:center;
 	flex-direction:row;
 	gap:6px
