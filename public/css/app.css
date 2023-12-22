@@ -2324,6 +2324,39 @@ ol{
 	background-color: var(--white-hover);
 }
 
+
+.upgradebackgroundsplash{
+	background: linear-gradient(161deg, rgb(47, 69, 157) 9.24%, #3a64c9 29.83%, #9857f7 41.6%, rgb(195, 83, 216) 51.68%, rgb(233, 114, 58) 61.76%);
+	height:200vh;
+}
+.upgradecurve{
+	top:200vh;
+	height: 100vh;
+}
+.upgradecurve::before {
+    content: '';
+    display: block;
+    position: absolute;
+    border-radius: 100% 50%;
+    width: 55%;
+    height: 100%;
+    transform: translate(85%, 60%);
+    background-color: hsl(216, 21%, 16%);
+}
+.upgradecurve::after {
+    content: '';
+    display: block;
+    position: absolute;
+    border-radius: 100% 50%;
+    width: 55%;
+    height: 100%;
+    background-color: #3c31dd;
+    transform: translate(-4%, 40%);
+    z-index: -1;
+}
+
+
+
 .socialmediagradient{
 	background: linear-gradient(to top right, #5126ff, #7626ff);
 }

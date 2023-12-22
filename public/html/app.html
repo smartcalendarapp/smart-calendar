@@ -1924,6 +1924,8 @@
 
 			<!-- middle -->
 			<div class="display-flex flex-row align-center flex-1 justify-center gap-24px">
+				<!-- tabs -->
+
 				<div class="display-none padding-top-6px nowrap padding-bottom-6px relative text-16px text-secondary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="if(event.shiftKey){ popoutaichat(); return };clicktab([4]);if(gtag){gtag('event', 'button_click', { useraction: 'AI Assistant - nav bar' })} " id="aiassistanttab">
 					AI Assistant <span class="text-12px badgepadding text-white background-purple border-round">beta</span>
 					<span class="buttonunderline"></span>
@@ -1937,6 +1939,10 @@
 					<span class="buttonunderline"></span>
 				</div>
 				<div class="padding-top-6px nowrap padding-bottom-6px relative text-16px text-secondary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([3]);if(gtag){gtag('event', 'button_click', { useraction: 'Settings - nav bar' })} " id="settingstab">
+					Settings
+					<span class="buttonunderline"></span>
+				</div>
+				<div class="display-none padding-top-6px nowrap padding-bottom-6px relative text-16px text-secondary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([5]);if(gtag){gtag('event', 'button_click', { useraction: 'Upgrade - nav bar' })} " id="upgradetab">
 					Settings
 					<span class="buttonunderline"></span>
 				</div>
@@ -2016,12 +2022,12 @@
 								</div>
 
 								<div class="flex-1 display-flex flex-row gap-24px justify-center">
-									<div class="display-none small:display-block text-18px text-bold text-primary pointer-none">AI Chat</div>
+									<div class="display-none small:display-block text-18px text-bold text-primary pointer-none">AI Assistant</div>
 	
 									<div class="small:display-none padding-top-6px nowrap padding-bottom-6px relative text-18px text-bold text-secondary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1])" id="todolisttitle2">To do list
 										<span class="small:display-none buttonunderline"></span>
 									</div>
-									<div class="small:display-none padding-top-6px nowrap padding-bottom-6px relative text-18px text-bold text-secondary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([0, 4])" id="aichattitle2">AI Chat <span class="text-12px badgepadding text-white background-purple border-round">beta</span>
+									<div class="small:display-none padding-top-6px nowrap padding-bottom-6px relative text-18px text-bold text-secondary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([0, 4])" id="aichattitle2">AI Assistant <span class="text-12px badgepadding text-white background-purple border-round">beta</span>
 										<span class="buttonunderline"></span>
 									</div>
 								</div>
@@ -2145,6 +2151,18 @@
 					</div>
 
 				</div>
+
+
+				<div class="summarywrap display-none small:border-none small:border-0" id="upgradewrap">
+					<div class="align-center relative overflow-y-auto padding-24px display-flex flex-column">
+
+						<!-- background -->
+						<div class="absolute top-0 left-0 right-0 upgradebackgroundsplash"></div>
+						<div class="absolute upgradecurve left-0 right-0">
+
+					</div>
+				</div>
+
 				
 				<div class="summarywrap display-none small:border-none small:border-0" id="summarywrap">
 					<div class="summarycontainer">
@@ -2267,7 +2285,7 @@
 								<div class="small:display-none padding-top-6px nowrap padding-bottom-6px relative text-18px text-bold text-secondary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([0, 1])" id="todolisttitle">To do list
 									<span class="small:display-none buttonunderline"></span>
 								</div>
-								<div class="small:display-none padding-top-6px nowrap padding-bottom-6px relative text-18px text-bold text-secondary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([0, 4])" id="aichattitle">AI Chat <span class="text-12px badgepadding text-white background-purple border-round">beta</span>
+								<div class="small:display-none padding-top-6px nowrap padding-bottom-6px relative text-18px text-bold text-secondary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([0, 4])" id="aichattitle">AI Assistant <span class="text-12px badgepadding text-white background-purple border-round">beta</span>
 									<span class="buttonunderline"></span>
 								</div>
 							</div>
@@ -3140,23 +3158,9 @@
 				
 
 				<!-- mobile only bottom bar -->
-				<div class="align-center display-none small:display-flex flex-row gap-12px padding-12px bordertop">	
+				<div class="align-center display-none small:display-flex flex-row padding-top-12px padding-bottom-12px bordertop">	
 
-					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([4]);if(gtag){gtag('event', 'button_click', { useraction: 'AI Assistant - nav bar' })} " id="aiassistanttab2">
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite flex-shrink-0">
-							<g>
-								<path d="M116.697 68.9269C111.629 69.2588 106.599 71.0688 102.28 74.4124C90.7618 83.3285 88.669 99.8408 97.5851 111.359C98.2562 112.226 200.877 244.813 201.548 245.68C210.464 257.198 227.011 259.317 238.529 250.401C250.047 241.485 252.162 224.907 243.246 213.389L139.288 79.0988C133.715 71.8999 125.144 68.3738 116.697 68.9269ZM150.93 119.849L230.775 223.006C233.039 225.93 233.221 234.599 228.942 237.926C224.213 241.603 216.316 239.012 214.053 236.089C213.538 235.423 162.596 169.648 134.177 132.935L150.93 119.849Z" fill-rule="nonzero" opacity="1"></path>
-								<path d="M46.0296 117.475C48.1906 117.475 49.4872 116.286 49.9194 113.909C51.3241 106.13 52.6207 99.9978 53.8093 95.5137C54.9978 91.0296 56.7266 87.599 58.9957 85.2219C61.2648 82.8448 64.6954 80.9809 69.2875 79.6302C73.8797 78.2796 80.2277 76.902 88.3315 75.4973C90.8166 75.0651 92.0592 73.7145 92.0592 71.4454C92.0592 69.1763 90.8166 67.8257 88.3315 67.3935C80.2277 65.9888 73.8797 64.6382 69.2875 63.3416C64.6954 62.045 61.2648 60.1811 58.9957 57.75C56.7266 55.3188 54.9978 51.8612 53.8093 47.3771C52.6207 42.893 51.3241 36.8152 49.9194 29.1436C49.4872 26.6584 48.1906 25.4158 46.0296 25.4158C43.7605 25.4158 42.4099 26.6584 41.9777 29.1436C40.573 36.8152 39.2764 42.893 38.0879 47.3771C36.8993 51.8612 35.1705 55.3188 32.9014 57.75C30.6324 60.1811 27.2288 62.045 22.6906 63.3416C18.1525 64.6382 11.8316 65.9888 3.72775 67.3935C2.64724 67.6096 1.75582 68.0688 1.05349 68.7711C0.351165 69.4735-8.88178e-16 70.3649-8.88178e-16 71.4454C-8.88178e-16 73.7145 1.24258 75.0651 3.72775 75.4973C11.8316 76.902 18.1525 78.2796 22.6906 79.6302C27.2288 80.9809 30.6324 82.8448 32.9014 85.2219C35.1705 87.599 36.8993 91.0296 38.0879 95.5137C39.2764 99.9978 40.573 106.13 41.9777 113.909C42.4099 116.286 43.7605 117.475 46.0296 117.475Z" fill-rule="nonzero" opacity="1"></path>
-								<path d="M71.5465 225.528C73.742 225.528 75.0593 224.321 75.4984 221.906C76.9255 214.002 78.2428 207.772 79.4503 203.217C80.6579 198.661 82.4143 195.176 84.7195 192.761C87.0248 190.345 90.5102 188.452 95.1756 187.08C99.8411 185.707 106.29 184.308 114.523 182.881C117.048 182.442 118.311 181.069 118.311 178.764C118.311 176.459 117.048 175.087 114.523 174.648C106.29 173.221 99.8411 171.848 95.1756 170.531C90.5102 169.214 87.0248 167.32 84.7195 164.85C82.4143 162.38 80.6579 158.867 79.4503 154.312C78.2428 149.756 76.9255 143.581 75.4984 135.787C75.0593 133.262 73.742 132 71.5465 132C69.2412 132 67.8691 133.262 67.43 135.787C66.0029 143.581 64.6856 149.756 63.4781 154.312C62.2705 158.867 60.5141 162.38 58.2088 164.85C55.9036 167.32 52.4457 169.214 47.8351 170.531C43.2245 171.848 36.8027 173.221 28.5696 174.648C27.4718 174.867 26.5662 175.334 25.8526 176.047C25.1391 176.761 24.7823 177.666 24.7823 178.764C24.7823 181.069 26.0447 182.442 28.5696 182.881C36.8027 184.308 43.2245 185.707 47.8351 187.08C52.4457 188.452 55.9036 190.345 58.2088 192.761C60.5141 195.176 62.2705 198.661 63.4781 203.217C64.6856 207.772 66.0029 214.002 67.43 221.906C67.8691 224.321 69.2412 225.528 71.5465 225.528Z" fill-rule="nonzero" opacity="1"></path>
-								<path d="M169.411 95.851C171.661 95.851 173.011 94.6135 173.461 92.1385C174.924 84.0384 176.274 77.6539 177.512 72.9851C178.749 68.3163 180.549 64.7444 182.912 62.2694C185.274 59.7944 188.846 57.8537 193.627 56.4475C198.409 55.0412 205.018 53.6068 213.456 52.1443C216.043 51.6943 217.337 50.288 217.337 47.9255C217.337 45.563 216.043 44.1567 213.456 43.7067C205.018 42.2442 198.409 40.8379 193.627 39.4879C188.846 38.1379 185.274 36.1973 182.912 33.666C180.549 31.1347 178.749 27.5347 177.512 22.8659C176.274 18.1971 174.924 11.8689 173.461 3.88129C173.011 1.29376 171.661 0 169.411 0C167.049 0 165.643 1.29376 165.193 3.88129C163.73 11.8689 162.38 18.1971 161.143 22.8659C159.905 27.5347 158.105 31.1347 155.743 33.666C153.38 36.1973 149.836 38.1379 145.111 39.4879C140.386 40.8379 133.805 42.2442 125.367 43.7067C124.242 43.9317 123.314 44.4098 122.583 45.1411C121.852 45.8724 121.486 46.8005 121.486 47.9255C121.486 50.288 122.78 51.6943 125.367 52.1443C133.805 53.6068 140.386 55.0412 145.111 56.4475C149.836 57.8537 153.38 59.7944 155.743 62.2694C158.105 64.7444 159.905 68.3163 161.143 72.9851C162.38 77.6539 163.73 84.0384 165.193 92.1385C165.643 94.6135 167.049 95.851 169.411 95.851Z" fill-rule="nonzero" opacity="1"></path>
-							</g>
-						</svg>
-							
-						
-						<div class="text-12px text-primary pointer-none nowrap mobilepagetext transition-none">AI Chat</div>
-					</div>
-
-											
+		
 					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([1]);if(gtag){gtag('event', 'button_click', { useraction: 'To do list - nav bar' })} " id="todolisttab2">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonfillwhite">
 							<g>
@@ -3170,6 +3174,20 @@
 						</svg>
 						
 						<div class="text-12px text-primary pointer-none nowrap mobilepagetext transition-duration-100">To do list</div>
+					</div>
+
+					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([4]);if(gtag){gtag('event', 'button_click', { useraction: 'AI Assistant - nav bar' })} " id="aiassistanttab2">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillwhite flex-shrink-0">
+							<g>
+								<path d="M116.697 68.9269C111.629 69.2588 106.599 71.0688 102.28 74.4124C90.7618 83.3285 88.669 99.8408 97.5851 111.359C98.2562 112.226 200.877 244.813 201.548 245.68C210.464 257.198 227.011 259.317 238.529 250.401C250.047 241.485 252.162 224.907 243.246 213.389L139.288 79.0988C133.715 71.8999 125.144 68.3738 116.697 68.9269ZM150.93 119.849L230.775 223.006C233.039 225.93 233.221 234.599 228.942 237.926C224.213 241.603 216.316 239.012 214.053 236.089C213.538 235.423 162.596 169.648 134.177 132.935L150.93 119.849Z" fill-rule="nonzero" opacity="1"></path>
+								<path d="M46.0296 117.475C48.1906 117.475 49.4872 116.286 49.9194 113.909C51.3241 106.13 52.6207 99.9978 53.8093 95.5137C54.9978 91.0296 56.7266 87.599 58.9957 85.2219C61.2648 82.8448 64.6954 80.9809 69.2875 79.6302C73.8797 78.2796 80.2277 76.902 88.3315 75.4973C90.8166 75.0651 92.0592 73.7145 92.0592 71.4454C92.0592 69.1763 90.8166 67.8257 88.3315 67.3935C80.2277 65.9888 73.8797 64.6382 69.2875 63.3416C64.6954 62.045 61.2648 60.1811 58.9957 57.75C56.7266 55.3188 54.9978 51.8612 53.8093 47.3771C52.6207 42.893 51.3241 36.8152 49.9194 29.1436C49.4872 26.6584 48.1906 25.4158 46.0296 25.4158C43.7605 25.4158 42.4099 26.6584 41.9777 29.1436C40.573 36.8152 39.2764 42.893 38.0879 47.3771C36.8993 51.8612 35.1705 55.3188 32.9014 57.75C30.6324 60.1811 27.2288 62.045 22.6906 63.3416C18.1525 64.6382 11.8316 65.9888 3.72775 67.3935C2.64724 67.6096 1.75582 68.0688 1.05349 68.7711C0.351165 69.4735-8.88178e-16 70.3649-8.88178e-16 71.4454C-8.88178e-16 73.7145 1.24258 75.0651 3.72775 75.4973C11.8316 76.902 18.1525 78.2796 22.6906 79.6302C27.2288 80.9809 30.6324 82.8448 32.9014 85.2219C35.1705 87.599 36.8993 91.0296 38.0879 95.5137C39.2764 99.9978 40.573 106.13 41.9777 113.909C42.4099 116.286 43.7605 117.475 46.0296 117.475Z" fill-rule="nonzero" opacity="1"></path>
+								<path d="M71.5465 225.528C73.742 225.528 75.0593 224.321 75.4984 221.906C76.9255 214.002 78.2428 207.772 79.4503 203.217C80.6579 198.661 82.4143 195.176 84.7195 192.761C87.0248 190.345 90.5102 188.452 95.1756 187.08C99.8411 185.707 106.29 184.308 114.523 182.881C117.048 182.442 118.311 181.069 118.311 178.764C118.311 176.459 117.048 175.087 114.523 174.648C106.29 173.221 99.8411 171.848 95.1756 170.531C90.5102 169.214 87.0248 167.32 84.7195 164.85C82.4143 162.38 80.6579 158.867 79.4503 154.312C78.2428 149.756 76.9255 143.581 75.4984 135.787C75.0593 133.262 73.742 132 71.5465 132C69.2412 132 67.8691 133.262 67.43 135.787C66.0029 143.581 64.6856 149.756 63.4781 154.312C62.2705 158.867 60.5141 162.38 58.2088 164.85C55.9036 167.32 52.4457 169.214 47.8351 170.531C43.2245 171.848 36.8027 173.221 28.5696 174.648C27.4718 174.867 26.5662 175.334 25.8526 176.047C25.1391 176.761 24.7823 177.666 24.7823 178.764C24.7823 181.069 26.0447 182.442 28.5696 182.881C36.8027 184.308 43.2245 185.707 47.8351 187.08C52.4457 188.452 55.9036 190.345 58.2088 192.761C60.5141 195.176 62.2705 198.661 63.4781 203.217C64.6856 207.772 66.0029 214.002 67.43 221.906C67.8691 224.321 69.2412 225.528 71.5465 225.528Z" fill-rule="nonzero" opacity="1"></path>
+								<path d="M169.411 95.851C171.661 95.851 173.011 94.6135 173.461 92.1385C174.924 84.0384 176.274 77.6539 177.512 72.9851C178.749 68.3163 180.549 64.7444 182.912 62.2694C185.274 59.7944 188.846 57.8537 193.627 56.4475C198.409 55.0412 205.018 53.6068 213.456 52.1443C216.043 51.6943 217.337 50.288 217.337 47.9255C217.337 45.563 216.043 44.1567 213.456 43.7067C205.018 42.2442 198.409 40.8379 193.627 39.4879C188.846 38.1379 185.274 36.1973 182.912 33.666C180.549 31.1347 178.749 27.5347 177.512 22.8659C176.274 18.1971 174.924 11.8689 173.461 3.88129C173.011 1.29376 171.661 0 169.411 0C167.049 0 165.643 1.29376 165.193 3.88129C163.73 11.8689 162.38 18.1971 161.143 22.8659C159.905 27.5347 158.105 31.1347 155.743 33.666C153.38 36.1973 149.836 38.1379 145.111 39.4879C140.386 40.8379 133.805 42.2442 125.367 43.7067C124.242 43.9317 123.314 44.4098 122.583 45.1411C121.852 45.8724 121.486 46.8005 121.486 47.9255C121.486 50.288 122.78 51.6943 125.367 52.1443C133.805 53.6068 140.386 55.0412 145.111 56.4475C149.836 57.8537 153.38 59.7944 155.743 62.2694C158.105 64.7444 159.905 68.3163 161.143 72.9851C162.38 77.6539 163.73 84.0384 165.193 92.1385C165.643 94.6135 167.049 95.851 169.411 95.851Z" fill-rule="nonzero" opacity="1"></path>
+							</g>
+						</svg>
+							
+						
+						<div class="text-12px text-primary pointer-none nowrap mobilepagetext transition-none">AI Assistant</div>
 					</div>
 
 					<div class="display-flex flex-column align-center border-8px pointer transition-duration-100 flex-1 text-14px" onclick="clicktab([0]);if(gtag){gtag('event', 'button_click', { useraction: 'Calendar - nav bar' })} " id="calendartab2">

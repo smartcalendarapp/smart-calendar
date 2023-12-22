@@ -3695,7 +3695,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Competed task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}""" Respond concise as possible, max 5 sentences. Provide a short personal, non-generic, non-cliche motivational message for the user who just completed this task. Then, mention only the next upcoming event if there is one. All in one coherent paragraph. Calendar data: """${calendarcontext}"""`
+		let inputtext = `Competed task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}""" Respond concise as possible, max 5 sentences. Provide a very short personal, non-generic, non-cliche motivational message for the user who just completed this task. Then, mention only the next upcoming event if there is one, and if the user has a break. All in one coherent paragraph. Calendar data: """${calendarcontext}"""`
 		let custominstructions = `Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0

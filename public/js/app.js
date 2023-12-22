@@ -1248,8 +1248,10 @@ class Calendar {
 		let todowrap = getElement('todowrap')
 		let settingswrap = getElement('settingswrap')
 		let aiassistantwrap = getElement('aiassistantwrap')
+		let upgradewrap = getElement('upgradewrap')
 
 		summarywrap.classList.add('display-none')
+		upgradewrap.classList.add('display-none')
 		todowrap.classList.add('display-none')
 		calendarwrap.classList.add('display-none')
 		settingswrap.classList.add('display-none')
@@ -1262,6 +1264,7 @@ class Calendar {
 		let summarytab = getElement('summarytab')
 		let settingstab = getElement('settingstab')
 		let aiassistanttab = getElement('aiassistanttab')
+		let upgradetab = getElement('upgradetab')
 
 		let calendartab2 = getElement('calendartab2')
 		let todolisttab2 = getElement('todolisttab2')
@@ -1273,6 +1276,7 @@ class Calendar {
 		summarytab.classList.remove('selectedbuttonunderline')
 		settingstab.classList.remove('selectedbuttonunderline')
 		aiassistanttab.classList.remove('selectedbuttonunderline')
+		upgradetab.classList.remove('selectedbuttonunderline')
 
 		calendartab2.classList.remove('selectedbutton2')
 		todolisttab2.classList.remove('selectedbutton2')
@@ -1359,6 +1363,12 @@ class Calendar {
 
 			aiassistanttab.classList.add('selectedbuttonunderline')
 			aiassistanttab2.classList.add('selectedbutton2')
+		}
+
+		if(calendartabs.includes(5)){
+			upgradewrap.classList.remove('display-none')
+
+			upgradetab.classList.add('selectedbuttonunderline')
 		}
 
 		setStorage('calendartabs', calendartabs)
@@ -4569,7 +4579,7 @@ function run() {
 				let nowitem = nowevents[0]
 
 				let difference = Math.floor((Date.now() - new Date(nowitem.end.year, nowitem.end.month, nowitem.end.day, 0, nowitem.end.minute).getTime()) / 60000)
-				eventstatus.innerHTML = `<div class="text-12px text-quaternary">Now:</div><div class="text-primary pointer pointer-auto text-12px overflowtextelipses hover:text-quaternary transition-duration-100" onclick="gototaskincalendar('${nowitem.id}')">${Calendar.Event.getTitle(nowitem)}</div><div class="text-12px text-quaternary">• ${getDHMText(Math.abs(difference))} left</div>`
+				eventstatus.innerHTML = `<div class="text-12px nowrap text-quaternary">Now:</div><div class="text-primary pointer pointer-auto text-12px overflowtextelipses hover:text-quaternary transition-duration-100" onclick="gototaskincalendar('${nowitem.id}')">${Calendar.Event.getTitle(nowitem)}</div><div class="text-12px nowrap text-quaternary">• ${getDHMText(Math.abs(difference))} left</div>`
 			}else if(sortedevents[0]){
 				let nextitem = sortedevents[0]
 				let difference = Math.floor((Date.now() - new Date(nextitem.start.year, nextitem.start.month, nextitem.start.day, 0, nextitem.start.minute).getTime()) / 60000)
@@ -4577,16 +4587,16 @@ function run() {
 				if(Math.abs(difference) < 60){
 					eventstatus.classList.add('eventstatusblue')
 
-					eventstatus.innerHTML = `<div class="text-12px text-quaternary">Up next:</div><div class="text-primary pointer text-12px pointer-auto overflowtextelipses hover:text-quaternary transition-duration-100" onclick="gototaskincalendar('${nextitem.id}')"> ${Calendar.Event.getTitle(nextitem)}</div><div class="text-12px text-quaternary">• in ${getDHMText(Math.abs(difference))}</div>`
+					eventstatus.innerHTML = `<div class="text-12px nowrap text-quaternary">Up next:</div><div class="text-primary pointer text-12px pointer-auto overflowtextelipses hover:text-quaternary transition-duration-100" onclick="gototaskincalendar('${nextitem.id}')"> ${Calendar.Event.getTitle(nextitem)}</div><div class="nowrap text-12px text-quaternary">• in ${getDHMText(Math.abs(difference))}</div>`
 				}else{
 					eventstatus.classList.add('bordertertiary')
 
-					eventstatus.innerHTML = `<div class="text-12px text-quaternary">No events for a while`
+					eventstatus.innerHTML = `<div class="text-12px nowrap text-quaternary">No events for a while`
 				}
 			}else{
 				eventstatus.classList.add('bordertertiary')
 
-				eventstatus.innerHTML = `<div class="text-12px text-quaternary">No more events today!</div>`
+				eventstatus.innerHTML = `<div class="text-12px nowrap text-quaternary">No more events today!</div>`
 			}
 
 			needtoupdateeventstatus = false
@@ -9982,17 +9992,20 @@ let recognitionoutputtype;
 let recognitionerror;
 let totalTranscriptCopy;
 
-const SPEECH_END_TIMEOUT_DURATION = 3000
+const SPEECH_END_TIMEOUT_DURATION = 2000
 let speechEndTimeout = null
 
 function resetSpeechEndTimeout() {
-    clearTimeout(speechEndTimeout)
-    speechEndTimeout = setTimeout(() => {
-        if (isspeaking) {
-            submitdictation()
-            recognition.stop()
-        }
-    }, SPEECH_END_TIMEOUT_DURATION)
+	if(isspeaking){
+		let oldtext = totalTranscriptCopy
+		clearTimeout(speechEndTimeout)
+		speechEndTimeout = setTimeout(() => {
+			if (totalTranscriptCopy.length > 0 && totalTranscriptCopy == oldtext) {
+				submitdictation()
+				recognition.stop()
+			}
+		}, SPEECH_END_TIMEOUT_DURATION)
+	}
 }
 
 if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
@@ -12907,57 +12920,39 @@ class ChatMessage {
 			//text to speech
 			if ('speechSynthesis' in window) {
 
-				const speakasync = () => {
-					return new Promise(async (resolve, reject) => {
-						try{
-							const utterance = new SpeechSynthesisUtterance(this.message)
-							utterance.rate = 1.05
-							utterance.pitch = 1.3
-							
-							speechSynthesis.speak(utterance)
+				const utterance = new SpeechSynthesisUtterance(this.message)
+				utterance.rate = 1.05
+				utterance.pitch = 1.3
+				
+				speechSynthesis.speak(utterance)
+
+				successfullyspoken = true
 
 
-							//typing
-							let splitmessage = this.message.split(/(\s+)/g)
-							let totalwords = splitmessage.length
+				//typing
+				let splitmessage = this.message.split(/(\s+)/g)
+				let totalwords = splitmessage.length
 
-							for(let i = 0; i < totalwords; i++){
-								this.displaycontent = splitmessage.slice(0, i + 1).join('')
-								let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-								chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)} <span class="aichatcursor"></span>`
+				for(let i = 0; i < totalwords; i++){
+					this.displaycontent = splitmessage.slice(0, i + 1).join('')
+					let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
+					chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)} <span class="aichatcursor"></span>`
 
-								//delay
-								let currentword = splitmessage[i]
-								let delay = 60 * (currentword.length/10)
+					//delay
+					let currentword = splitmessage[i]
+					let delay = 500 * (currentword.length/10)
 
-								await sleep(delay)
+					await sleep(delay)
 
-								requestAnimationFrame(function(){
-									scrollaichatY()
-								})
-							}
-
-
-							utterance.onend = () => {
-								//complete message
-								this.displaycontent = this.message
-								let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-								chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)}`
-								
-								successfullyspoken = true
-								resolve()
-							}
-
-							utterance.onerror = () => {
-								resolve()
-							}
-						}catch(e){
-							resolve()
-						}
+					requestAnimationFrame(function(){
+						scrollaichatY()
 					})
 				}
 
-				await speakasync()
+				//complete message
+				this.displaycontent = this.message
+				let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
+				chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)}`
 			}
 		}
 
