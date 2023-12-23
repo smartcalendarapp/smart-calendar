@@ -2353,7 +2353,7 @@ ol{
 	bottom:0;
 	width:100%;
 	transform:translateX(-100%);
-	transition:transform 0.5s;
+	transition:transform 1s ease-in-out;
 }
 
 
@@ -2361,11 +2361,24 @@ ol{
 	height:30px;
 	width:30px;
 }
+.upgradereferprogressitemtext{
+	top:100%;
+	left:50%;
+	transform:translate(-50%, 12px)
+}
+.upgradereferprogressitemtexttop{
+	bottom:100%;
+	left:50%;
+	transform:translate(-50%, -12px)
+}
 .selectedupgradeprogressitem .upgradereferprogressitem{
 	background-color: var(--blue);
 }
 .selectedupgradeprogressitem .text-quaternary{
-	color:var(--text-primary);
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-image: linear-gradient(to right, #ed4ac7, #ed32e7);
 	font-weight:bold;
 }
 

@@ -1119,7 +1119,7 @@
 				<div class="border-8px flex-1 text-center background-tint-1 hover:background-tint-2 padding-8px-12px text-primary nowrap text-14px transition-duration-100 pointer" onclick="disablesyncgooglecalendar();closeloginwithgooglepopup()">Turn off</div>
 
 				<div class="border-8px nowrap flex-1 display-flex flex-row gap-6px align-center googlebutton justify-center text-center text-14px padding-8px-16px pointer transition-duration-100" onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })">
-					<img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png">
+					<img loading="lazy" class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png">
 					Connect to Google Calendar
 				</div>
 			</div>
@@ -1152,7 +1152,7 @@
 				<div class="border-8px flex-1 text-center background-tint-1 hover:background-tint-2 padding-8px-12px text-primary nowrap text-14px transition-duration-100 pointer" onclick="disablesyncgoogleclassroom();closeloginwithgoogleclassroompopup()">Turn off</div>
 
 				<div class="border-8px nowrap flex-1 display-flex flex-row gap-6px align-center googlebutton justify-center text-center text-14px padding-8px-16px pointer transition-duration-100" onclick="logingoogle({ scope: ['calendar', 'classroom'], enable: ['classroom'] })">
-					<img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png">
+					<img loading="lazy" class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png">
 					Connect to Google Classroom
 				</div>
 			</div>
@@ -1301,11 +1301,11 @@
 
 					<div class="display-flex align-self-center flex-column gap-24px">
 						<div class="display-flex flex-column gap-6px">
-							<div class="text-bold text-16px text-primary display-flex flex-row align-center gap-6px"><img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png"></img> Google Calendar</div>
+							<div class="text-bold text-16px text-primary display-flex flex-row align-center gap-6px"><img loading="lazy" class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png"></img> Google Calendar</div>
 
 							<div class="display-flex flex-row gap-12px align-center flex-wrap-wrap">
 								<div class="border-8px display-flex flex-row gap-6px align-center width300px googlebutton justify-center text-center text-14px padding-8px-16px pointer transition-duration-100" onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })">
-									<img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png">
+									<img loading="lazy" class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png">
 									Connect to Google Calendar
 								</div>
 
@@ -1314,7 +1314,7 @@
 						</div>
 
 						<div class="display-flex flex-column gap-6px">
-							<div class="text-bold text-16px text-primary display-flex flex-row align-center gap-6px"><img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Outlook.com_icon_%282012-2019%29.svg/1200px-Outlook.com_icon_%282012-2019%29.svg.png"></img> Outlook Calendar</div>
+							<div class="text-bold text-16px text-primary display-flex flex-row align-center gap-6px"><img loading="lazy" class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Outlook.com_icon_%282012-2019%29.svg/1200px-Outlook.com_icon_%282012-2019%29.svg.png"></img> Outlook Calendar</div>
 							<div class="display-flex flex-row gap-12px align-center flex-wrap-wrap">
 								<div class="text-primary width300px text-14px text-center padding-8px-12px bordertertiary border-8px">Outlook calendar coming soon!</div>
 
@@ -2175,42 +2175,48 @@
 							<div class="box-shadow-3 border-16px padding-24px background-primary display-flex flex-column gap-24px">
 								<div class="display-flex flex-column gap-12px">
 									<div class="text-center text-primary text-24px text-bold">Refer a Friend, Get Free Premium! (limited time)</div>
-									<div class="text-primary text-18px">We're counting on early adopters like you to spread the word, so we've set up a referral system. Simply <span class="text-ultra-bold gradienttextgreen">invite 3 friends</span> or colleagues to get <span class="text-ultra-bold gradienttextpink">1 month of free</span> Premium! No credit card needed.</div>
+									<div class="text-quaternary text-18px">We're counting on early adopters like you to spread the word, so we've set up a referral system. Simply <span class="text-bold gradienttextgreen">invite 3 friends</span> or colleagues to get <span class="text-bold gradienttextpink">1 month of free</span> Premium! No credit card needed.</div>
 								</div>
 
 								<div class="display-flex flex-row align-center justify-center">
 									[Invite link and stuff]
 								</div>
 
-								<div class="align-self-center relative justify-space-between display-flex flex-row align-center">
-									<div class="absolute top-0 bottom-0 left-0 right-0 display-flex flex-row align-center">
-										<div class="border-round width-full background-tint-1 upgradereferprogressbar">
-											<div class="upgradereferprogressbarvalue border-round background-blue" id="upgradereferprogressbarvalue"></div>
+								<div class="border-box padding-left-96px padding-right-96px display-flex flex-column">
+									<div class="width-full relative justify-space-between display-flex flex-row align-center">
+										<div class="absolute top-0 bottom-0 left-0 right-0 display-flex flex-row align-center">
+											<div class="backdrop-blur border-round width-full background-tint-1 upgradereferprogressbar">
+												<div class="upgradereferprogressbarvalue border-round background-blue" id="upgradereferprogressbarvalue"></div>
+											</div>
 										</div>
-									</div>
 
-									<div class="display-flex flex-column gap-6px" id="upgradeprogressitem1">
-										<div class="text-primary text-16px visibility-hidden">Text</div>
-										<div class="box-shadow-3 background-tint-1 border-round upgradereferprogressitem"></div>
-										<div class="text-quaternary text-16px">No premium</div>
-									</div>
+										<div class="z-index-1 align-center display-flex flex-column gap-6px" id="upgradeprogressitem1">
+											<div class="backdrop-blur relative box-shadow background-tint-1 border-round upgradereferprogressitem">
+												<div class="display-none nowrap absolute upgradereferprogressitemtexttop text-quaternary text-16px"></div>
+												<div class="nowrap absolute upgradereferprogressitemtext text-quaternary text-16px">No premium</div>
+											</div>
+										</div>
 
-									<div class="display-flex flex-column gap-6px" id="upgradeprogressitem2">
-										<div class="text-primary text-16px visibility-hidden">Text</div>
-										<div class="box-shadow-3 background-tint-1 border-round upgradereferprogressitem"></div>
-										<div class="text-quaternary text-16px">1 month Premium</div>
-									</div>
+										<div class="z-index-1 align-center display-flex flex-column gap-6px" id="upgradeprogressitem2">
+											<div class="backdrop-blur relative box-shadow background-tint-1 border-round upgradereferprogressitem">
+												<div class="display-none nowrap absolute upgradereferprogressitemtexttop text-quaternary text-16px"></div>
+												<div class="nowrap absolute upgradereferprogressitemtext text-quaternary text-16px">1 month free</div>
+											</div>
+										</div>
 
-									<div class="display-flex flex-column gap-6px" id="upgradeprogressitem3">
-										<div class="text-primary text-16px visibility-hidden">Text</div>
-										<div class="box-shadow-3 background-tint-1 border-round upgradereferprogressitem"></div>
-										<div class="text-quaternary text-16px">2 months Premium</div>
-									</div>
+										<div class="z-index-1 align-center display-flex flex-column gap-6px" id="upgradeprogressitem2">
+											<div class="backdrop-blur relative box-shadow background-tint-1 border-round upgradereferprogressitem">
+												<div class="display-none nowrap absolute upgradereferprogressitemtexttop text-quaternary text-16px"></div>
+												<div class="nowrap absolute upgradereferprogressitemtext text-quaternary text-16px">2 months</div>
+											</div>
+										</div>
 
-									<div class="display-flex flex-column gap-6px" id="upgradeprogressitem4">
-										<div class="text-primary text-16px visibility-hidden">Text</div>
-										<div class="box-shadow-3 background-tint-1 border-round upgradereferprogressitem"></div>
-										<div class="text-quaternary text-16px">6 months Premium</div>
+										<div class="z-index-1 align-center display-flex flex-column gap-6px" id="upgradeprogressitem2">
+											<div class="backdrop-blur relative box-shadow background-tint-1 border-round upgradereferprogressitem">
+												<div class="display-none nowrap absolute upgradereferprogressitemtexttop text-quaternary text-16px"></div>
+												<div class="nowrap absolute upgradereferprogressitemtext text-quaternary text-16px">6 months</div>
+											</div>
+										</div>
 									</div>
 
 								</div>
@@ -2224,44 +2230,44 @@
 								<div class="text-center text-ultra-bold text-primary text-36px">See what's included</div>
 
 								<div class="display-flex flex-row gap-24px small:flex-column">
-									<div class="flex-1 background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
-										<div class="text-center white-space-normal text-bold text-primary text-24px">Early access to features</div>
-										<div class="text-center white-space-normal text-quaternary text-16px">You'll be the first to see our new exciting features and and have your opinions heard.</div>
+									<div class="flex-1 border-box background-secondary border-16px padding-24px display-flex flex-column gap-12px">
+										<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">Early access to features</div>
+										<div class="white-space-normal text-quaternary text-16px">Be the first to see our new exciting features and use them for your productivity.</div>
 									</div>
-									<div class="flex-1 background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
-										<div class="text-center white-space-normal text-bold text-primary text-24px">Almost Unlimited AI chat</div>
-										<div class="text-center white-space-normal text-quaternary text-16px">You'll be able to send up to 100 messages to our AI Assistant Athena every day.</div>
+									<div class="flex-1 border-box background-secondary border-16px padding-24px display-flex flex-column gap-12px">
+										<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">(almost) Unlimited AI chat</div>
+										<div class="white-space-normal text-quaternary text-16px">Send up to 100 messages to our AI Assistant Athena every day.</div>
 									</div>
-									<div class="flex-1 background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
-										<div class="text-center white-space-normal text-bold text-primary text-24px">Enhanced Personal Assistant</div>
-										<div class="text-center white-space-normal text-quaternary text-16px">Be like a boss. Your personal assistant Athena will brief you on your day, give you tips on completing your tasks, and help you stay productive.</div>
+									<div class="flex-1 border-box background-secondary border-16px padding-24px display-flex flex-column gap-12px">
+										<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">Enhanced Personal Assistant</div>
+										<div class="white-space-normal text-quaternary text-16px">Be like a boss. Your personal assistant Athena will brief you on your day, help you complete your tasks, and more.</div>
 									</div>
 								</div>
 
 								<div class="text-center text-ultra-bold text-primary text-36px">Coming soon</div>
 
 								<div class="display-flex flex-row gap-24px small:flex-column">
-									<div class="flex-1 background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
-										<div class="text-center white-space-normal text-bold text-primary text-24px">Custom App Themes</div>
-										<div class="text-center white-space-normal text-quaternary text-16px">Superpower your focus and productivity with science-backed themes. Or upload your own.</div>
+									<div class="flex-1 border-box background-secondary border-16px padding-24px display-flex flex-column gap-12px">
+										<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">Custom App Themes</div>
+										<div class="white-space-normal text-quaternary text-16px">Choose custom background themes to help you get in a focused and productive mood.</div>
 									</div>
-									<div class="flex-1 background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
-										<div class="text-center white-space-normal text-bold text-primary text-24px">Conversational AI Assistant</div>
-										<div class="text-center white-space-normal text-quaternary text-16px">You'll be able to say 'Hey, Athena' and manage your schedule hands-free.</div>
+									<div class="flex-1 border-box background-secondary border-16px padding-24px display-flex flex-column gap-12px">
+										<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">Conversational AI Assistant</div>
+										<div class="white-space-normal text-quaternary text-16px">Say 'Hey, Athena' and manage your schedule hands-free.</div>
 									</div>
-									<div class="flex-1 background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
-										<div class="text-center white-space-normal text-bold text-primary text-24px">Multiple Calendars Integration</div>
-										<div class="text-center white-space-normal text-quaternary text-16px">You'll be able to sync multiple calendar accounts to the app, including Outlook.</div>
+									<div class="flex-1 border-box background-secondary border-16px padding-24px display-flex flex-column gap-12px">
+										<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">Multiple Calendars Integration</div>
+										<div class="white-space-normal text-quaternary text-16px">Sync multiple calendar accounts to the app, including Outlook.</div>
 									</div>
 								</div>
 
 								<div class="display-flex flex-row gap-24px small:flex-column">
-									<div class="flex-1"></div>
-									<div class="flex-1 background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
-										<div class="text-center white-space-normal text-bold text-primary text-24px">Something you want not here?</div>
-										<div class="text-center white-space-normal text-quaternary text-16px">Please let us know your suggestions <span class="popupbutton absolute left-0 bottom-0 text-secondary padding-12px text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopupmini(event)">here</span>. We take it into consideration.</div>
+									<div class="flex-1 border-box padding-24px"></div>
+									<div class="flex-1 border-box background-secondary border-16px padding-24px display-flex flex-column gap-12px">
+										<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">Something you want not here?</div>
+										<div class="white-space-normal text-quaternary text-16px">Please let us know your suggestions <span class="popupbutton text-blue text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopupmini(event)">here</span>. We take it into consideration.</div>
 									</div>
-									<div class="flex-1"></div>
+									<div class="flex-1 border-box padding-24px"></div>
 								</div>
 							</div>
 
@@ -2973,7 +2979,7 @@
 											<div class="display-flex flex-column bordertertiary border-16px">
 												<div class="infogroup padding-12px">
 													<div class="display-flex justify-space-between flex-row gap-12px align-center">
-														<div class="infotext text-16px text-bold display-flex flex-row align-center gap-6px"><img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png"></img> Sync with Google Calendar</div>
+														<div class="infotext text-16px text-bold display-flex flex-row align-center gap-6px"><img loading="lazy" class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png"></img> Sync with Google Calendar</div>
 														<label class="switch">
 															<input type="checkbox" oninput="togglesyncgooglecalendar(event)" id="syncgooglecalendartoggle">
 															<span class="slider"></span>
@@ -2990,7 +2996,7 @@
 
 												<div class="infogroup padding-12px">
 													<div class="display-flex justify-space-between flex-row gap-12px align-center">
-														<div class="infotext text-16px text-bold display-flex flex-row align-center gap-6px"><img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png"></img> Sync with Google Classroom To-do list</div>
+														<div class="infotext text-16px text-bold display-flex flex-row align-center gap-6px"><img class="logopng" loading="lazy" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png"></img> Sync with Google Classroom To-do list</div>
 
 														<label class="switch">
 															<input type="checkbox" oninput="togglesyncgoogleclassroom(event)" id="syncgoogleclassroomtoggle">
@@ -3149,7 +3155,7 @@
 			
 										<div class="infogroup">
 											<div class="display-flex justify-space-between flex-row gap-12px align-center">
-												<div class="infotext text-16px text-bold display-flex flex-row align-center gap-6px"><img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png"></img> Sync with Google Calendar</div>
+												<div class="infotext text-16px text-bold display-flex flex-row align-center gap-6px"><img loading="lazy" class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png"></img> Sync with Google Calendar</div>
 												<label class="switch">
 													<input type="checkbox" oninput="togglesyncgooglecalendar(event)" id="syncgooglecalendartoggle2">
 													<span class="slider"></span>
