@@ -2327,6 +2327,7 @@ ol{
 }
 
 
+
 .upgradebackgroundsplash{
 	background: linear-gradient(164deg, rgb(47, 69, 157) 5.88%, #3a64c9 36.55%, #9857f7 57.56%, rgb(195, 83, 216) 72.69%, rgb(233, 114, 58) 84.87%);
 	height:800px;
@@ -2374,29 +2375,25 @@ ol{
 	aspect-ratio:1;
 }
 .upgradefeaturecard:hover{
-	transform:scale(1.1);
 	box-shadow:0 0 60px -15px var(--black-transparent)
 }
 
 .upgradefeaturecardgradient{
 	background:linear-gradient(to bottom, var(--background-secondary), #00000000);
 	opacity:0;
-	transition: opactiy 0.2s, visibility 0.2s;
-	visibility:hidden;
+	transition: opacity 0.2s;
+	transform:scale(1.2);
 }
 .upgradefeaturecard:hover .upgradefeaturecardgradient{
 	opacity:1;
-	visibility: visible;
 }
 
 .upgradefeaturehovergroup{
 	opacity:0;
-	transition: opactiy 0.2s, visibility 0.2s;
-	visibility:hidden;
+	transition: opacity 0.2s;
 }
 .upgradefeaturecard:hover .upgradefeaturehovergroup{
 	opacity:1;
-	visibility: visible;
 }
 
 
@@ -2420,7 +2417,7 @@ ol{
 	transform:translate(-50%, -12px)
 }
 .selectedupgradeprogressitem .upgradereferprogressitem{
-	background-color: var(--blue);
+	background-color: var(--green);
 }
 .selectedupgradeprogressitembig .upgradereferprogressitem{
 	height:30px;
