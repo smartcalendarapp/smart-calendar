@@ -2175,8 +2175,10 @@
 							<div class="box-shadow-3 border-16px padding-24px background-primary display-flex flex-column gap-48px">
 								<div class="display-flex flex-column gap-12px">
 									<div class="text-center text-primary text-24px text-bold">Refer a Friend, Get Free Premium! (limited time)</div>
-									<div class="text-primary text-18px">Have a friend who you want to help organize their life better?<br>Simply the button below, and <span class="text-bold gradienttextgreen">invite 3 friends</span> to get <span class="text-bold gradienttextpink">1 month of free</span> Premium! No credit card needed.</div>
+									<div class="text-primary text-18px">Have a friend who you want to help organize their life better?<br>Simply <span class="text-bold gradienttextgreen">invite your friends</span> to get <span class="text-bold gradienttextpink">free Premium</span>! No credit card needed.</div>
 								</div>
+
+								<div id="referafrienderror" class="errorwrap display-none"></div>
 
 								<div class="display-flex flex-row align-center gap-24px justify-center" id="referafriendgenerate">
 									<div class="background-green padding-top-12px padding-bottom-12px padding-left-16px padding-right-16px text-bold transition-duration-100 hover:background-green-hover text-14px pointer border-8px text-white" onclick="referafriendgeneratelink(event)" id="referafriendgeneratelinkbutton">Generate invite link</div>
@@ -2254,7 +2256,7 @@
 											<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">Early access to features</div>
 											<div class="white-space-normal text-quaternary text-16px">Be the first to see our new exciting features and use them for your productivity.</div>
 										</div>
-										<div class="relative">
+										<div class="relative upgradefeaturecardimgwrap">
 											<div class="z-index-1 upgradefeaturecardgradient absolute top-0 left-0 right-0 bottom-0"></div>
 											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column">
 												<div class="text-primary text-16px text-quaternary white-space-normal">Some more text</div>
@@ -2262,16 +2264,18 @@
 												<div class="text-center border-box text-bold width-full background-blue text-primary hover:background-blue-hover pointer-auto transition-duration-100 padding-12px text-14px pointer border-8px" onclick="clickreferafriendfeaturegetpremiumnow()">Get premium now</div>
 											</div>
 
-											<img loading="lazy" src="../earlyaccess.png" height="480" width="480" class="padding-left-24px padding-right-24px padding-bottom-24px border-box  objectfitcover border-16px width-full height-auto" alt="Early access illustration"/>
+											<div class="border-box absolute top-0 left-0 right-0 bottom-0 border-16px overflow-hidden padding-24px">
+												<img loading="lazy" src="../earlyaccess.png" height="480" width="480" class=" border-box  objectfitcover border-16px width-full height-auto" alt="Early access illustration"/>
+											</div>
 										</div>
 									</div>
 
 									<div class="upgradefeaturecard flex-1 border-box background-secondary border-16px display-flex flex-column">
 										<div class="z-index-2 padding-24px display-flex flex-column gap-12px">
-											<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">Unlimited AI Chat</div>
+											<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">Increased AI Chat</div>
 											<div class="white-space-normal text-quaternary text-16px">Send up to 100 messages to our AI Assistant Athena every day.</div>
 										</div>
-										<div class="relative">
+										<div class="relative upgradefeaturecardimgwrap">
 											<div class="z-index-1 upgradefeaturecardgradient absolute top-0 left-0 right-0 bottom-0"></div>
 											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column">
 												<div class="text-primary text-16px text-quaternary white-space-normal">Some more text</div>
@@ -2279,16 +2283,18 @@
 												<div class="text-center border-box text-bold width-full background-blue text-primary hover:background-blue-hover pointer-auto transition-duration-100 padding-12px text-14px pointer border-8px" onclick="clickreferafriendfeaturegetpremiumnow()">Get premium now</div>
 											</div>
 
-											<img loading="lazy" src="../infinitechat.png" height="480" width="480" class="padding-left-24px padding-right-24px padding-bottom-24px border-box  objectfitcover border-16px width-full height-auto" alt="Unlimited AI chat illustration"/>
+											<div class="border-box absolute top-0 left-0 right-0 bottom-0 border-16px overflow-hidden padding-24px">
+												<img loading="lazy" src="../infinitechat.png" height="480" width="480" class=" border-box  objectfitcover border-16px width-full height-auto" alt="Unlimited AI chat illustration"/>
+											</div>
 										</div>
 									</div>
 
 									<div class="upgradefeaturecard flex-1 border-box background-secondary border-16px display-flex flex-column">
 										<div class="z-index-2 padding-24px display-flex flex-column gap-12px">
 											<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">Enhanced Personal Assistant</div>
-											<div class="white-space-normal text-quaternary text-16px">Be like a boss. Athena will brief you on your day, help you complete your tasks, and more.</div>
+											<div class="white-space-normal text-quaternary text-16px">Just like an executive, you will have an personal assistant provide you daily briefings, suggestions to complete your tasks, and more.</div>
 										</div>
-										<div class="relative">
+										<div class="relative upgradefeaturecardimgwrap">
 											<div class="z-index-1 upgradefeaturecardgradient absolute top-0 left-0 right-0 bottom-0"></div>
 											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column">
 												<div class="text-primary text-16px text-quaternary white-space-normal">Some more text</div>
@@ -2296,7 +2302,9 @@
 												<div class="text-center border-box text-bold width-full background-blue text-primary hover:background-blue-hover pointer-auto transition-duration-100 padding-12px text-14px pointer border-8px" onclick="clickreferafriendfeaturegetpremiumnow()">Get premium now</div>
 											</div>
 
-											<img loading="lazy" src="../aiassistant.png" height="480" width="480" class="padding-left-24px padding-right-24px padding-bottom-24px border-box  objectfitcover border-16px width-full height-auto" alt="AI Assistant illustration"/>
+											<div class="border-box absolute top-0 left-0 right-0 bottom-0 border-16px overflow-hidden padding-24px">
+												<img loading="lazy" src="../aiassistant.png" height="480" width="480" class=" border-box  objectfitcover border-16px width-full height-auto" alt="AI Assistant illustration"/>
+											</div>
 										</div>
 									</div>
 
@@ -2312,7 +2320,7 @@
 											<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">Custom App Themes</div>
 											<div class="white-space-normal text-quaternary text-16px">Pick custom background themes that help you get in a focused and productive mood.</div>
 										</div>
-										<div class="relative">
+										<div class="relative upgradefeaturecardimgwrap">
 											<div class="z-index-1 upgradefeaturecardgradient absolute top-0 left-0 right-0 bottom-0"></div>
 											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column">
 												<div class="text-primary text-16px text-quaternary white-space-normal">Some more text</div>
@@ -2320,7 +2328,9 @@
 												<div class="text-center border-box text-bold width-full background-blue text-primary hover:background-blue-hover pointer-auto transition-duration-100 padding-12px text-14px pointer border-8px" onclick="clickreferafriendfeaturegetpremiumnow()">Get premium now</div>
 											</div>
 
-											<img loading="lazy" src="../customthemes.png" height="480" width="480" class="padding-left-24px padding-right-24px padding-bottom-24px border-box  objectfitcover border-16px width-full height-auto" alt="Custom themes illustration"/>
+											<div class="border-box absolute top-0 left-0 right-0 bottom-0 border-16px overflow-hidden padding-24px">
+												<img loading="lazy" src="../customthemes.png" height="480" width="480" class=" border-box  objectfitcover border-16px width-full height-auto" alt="Custom themes illustration"/>
+											</div>
 										</div>
 									</div>
 
@@ -2329,7 +2339,7 @@
 											<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">Conversational AI Assistant</div>
 											<div class="white-space-normal text-quaternary text-16px">Say 'Hey, Athena' and manage your schedule hands-free.</div>
 										</div>
-										<div class="relative">
+										<div class="relative upgradefeaturecardimgwrap">
 											<div class="z-index-1 upgradefeaturecardgradient absolute top-0 left-0 right-0 bottom-0"></div>
 											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column">
 												<div class="text-primary text-16px text-quaternary white-space-normal">Some more text</div>
@@ -2337,7 +2347,9 @@
 												<div class="text-center border-box text-bold width-full background-blue text-primary hover:background-blue-hover pointer-auto transition-duration-100 padding-12px text-14px pointer border-8px" onclick="clickreferafriendfeaturegetpremiumnow()">Get premium now</div>
 											</div>
 
-											<img loading="lazy" src="../microphone.png" height="480" width="480" class="padding-left-24px padding-right-24px padding-bottom-24px border-box  objectfitcover border-16px width-full height-auto" alt="AI dictation illustration"/>
+											<div class="border-box absolute top-0 left-0 right-0 bottom-0 border-16px overflow-hidden padding-24px">
+												<img loading="lazy" src="../microphone.png" height="480" width="480" class=" border-box  objectfitcover border-16px width-full height-auto" alt="AI dictation illustration"/>
+											</div>
 										</div>
 									</div>
 
@@ -2346,7 +2358,7 @@
 											<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">Multiple Calendars Integration</div>
 											<div class="white-space-normal text-quaternary text-16px">Sync multiple calendar accounts to the app, including Outlook.</div>
 										</div>
-										<div class="relative">
+										<div class="relative upgradefeaturecardimgwrap">
 											<div class="z-index-1 upgradefeaturecardgradient absolute top-0 left-0 right-0 bottom-0"></div>
 											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column">
 												<div class="text-primary text-16px text-quaternary white-space-normal">Some more text</div>
@@ -2354,7 +2366,9 @@
 												<div class="text-center border-box text-bold width-full background-blue text-primary hover:background-blue-hover pointer-auto transition-duration-100 padding-12px text-14px pointer border-8px" onclick="clickreferafriendfeaturegetpremiumnow()">Get premium now</div>
 											</div>
 
-											<img loading="lazy" src="../morecalendars.png" height="480" width="480" class="padding-left-24px padding-right-24px padding-bottom-24px border-box  objectfitcover border-16px width-full height-auto" alt="More calendars illustration"/>
+											<div class="border-box absolute top-0 left-0 right-0 bottom-0 border-16px overflow-hidden padding-24px">
+												<img loading="lazy" src="../morecalendars.png" height="480" width="480" class=" border-box  objectfitcover border-16px width-full height-auto" alt="More calendars illustration"/>
+											</div>
 										</div>
 									</div>
 

@@ -848,7 +848,7 @@ async function processengagementalerts(){
 							</p>
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<p style="font-size: 18px; color: #333;">
-								If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;">contact us</a>. We're here for you.
+								If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;"><a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a></a>. We're here for you.
 							</p>
 							<p style="text-align: center;font-size: 18px; color: #333;">
 								<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
@@ -874,7 +874,7 @@ async function processengagementalerts(){
 
 				We would really like to show you the power of Smart Calendar. By completing your setup, you'll unlock the full potential of turning to-dos into a well-organized schedule. We think you'll like that a lot.
 	
-				If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you.
+				If you have any questions or have feedback, please <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a> at https://smartcalendar.us/contact. We're here for you.
 	
 				Stay Productive,
 				Smart Calendar | Where AI Meets Agenda
@@ -927,7 +927,7 @@ async function processengagementalerts(){
 							</p>
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<p style="font-size: 18px; color: #333;">
-								If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;">contact us</a>. We're here for you.
+								If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;"><a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a></a>. We're here for you.
 							</p>
 							<p style="text-align: center;font-size: 18px; color: #333;">
 								<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
@@ -951,7 +951,7 @@ async function processengagementalerts(){
 			
 				It's been a while since we last saw you on Smart Calendar. We have a lot of new things to share with you, and we think you'll like them a lot. Try planning your schedule for this week. You'll unlock the full potential of Smart Calendar's AI planning.
 	
-				If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you.
+				If you have any questions or have feedback, please <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a> at https://smartcalendar.us/contact. We're here for you.
 	
 				Stay Productive,
 				Smart Calendar | Where AI Meets Agenda
@@ -1456,7 +1456,7 @@ app.post('/auth/google', async (req, res, next) => {
 		return res.json({ url: authurl })
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -2133,7 +2133,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 		//download data
 		const googlecalendarlist = await googlecalendar.calendarList.list()
 		if(googlecalendarlist.status != 200){
-			return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.'})
+			return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.'})
 		}
 
 		const currentdate = new Date()
@@ -2150,7 +2150,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 		  })
 
 			if(calendarevents.status != 200){
-				return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+				return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 			}
 			
 			googlecalendardata.push({ calendar: calendaritem, events: calendarevents.data.items })
@@ -2379,7 +2379,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 		
 		const newgooglecalendarlist = await googlecalendar.calendarList.list()
 		if(newgooglecalendarlist.status != 200){
-			return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+			return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 		}
 
 		let newgooglecalendardata = []
@@ -2391,7 +2391,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 		  })
 
 			if(calendarevents.status != 200){
-				return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+				return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 			}
 			
 			newgooglecalendardata.push({ calendar: calendaritem, events: calendarevents.data.items })
@@ -2678,7 +2678,7 @@ app.post('/getclientgooglecalendar', async (req, res, next) => {
 		//download data
 		const googlecalendarlist = await googlecalendar.calendarList.list()
 		if(googlecalendarlist.status != 200){
-			return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.'})
+			return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.'})
 		}
 
 		const currentdate = new Date()
@@ -2696,7 +2696,7 @@ app.post('/getclientgooglecalendar', async (req, res, next) => {
 		  })
 
 			if(calendarevents.status != 200){
-				return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+				return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 			}
 			
 			googlecalendardata.push({ calendar: calendaritem, events: calendarevents.data.items })
@@ -2727,7 +2727,7 @@ app.post('/disconnectdiscord', async (req, res, next) => {
 		return res.end()
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -2750,7 +2750,7 @@ app.post('/getdiscordusername', async (req, res, next) => {
 		return res.json({ data: username })
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -2801,7 +2801,7 @@ app.post('/disconnectgoogle', async (req, res, next) => {
 		return res.end()
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -2832,7 +2832,7 @@ app.post('/disconnectapple', async (req, res, next) => {
 		return res.end()
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -2944,7 +2944,7 @@ app.post('/login', async (req, res, next) => {
 		return res.redirect(301, '/app')
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -2987,7 +2987,7 @@ app.post('/signup', async (req, res, next) => {
 		return res.redirect(301, '/app')
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -3029,7 +3029,7 @@ async function sendwelcomeemail(user){
 				</p>
 				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<p style="font-size: 18px; color: #333;">
-						We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;">contact us</a>. We're here for you.
+						We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;"><a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a></a>. We're here for you.
 				</p>
 				<p style="text-align: center;font-size: 18px; color: #333;">
 					<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
@@ -3053,7 +3053,7 @@ async function sendwelcomeemail(user){
 
 	You are now a part of a group of hundreds people who use Smart Calendar to find productivity and peace in life. That's special!
 
-	We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please contact us at https://smartcalendar.us/contact. We're here for you.
+	We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a> at https://smartcalendar.us/contact. We're here for you.
 
 	Stay Productive,
 	Smart Calendar | Where AI Meets Agenda
@@ -3109,7 +3109,7 @@ app.post('/changepassword', async (req, res, next) => {
 		return res.end()
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -3152,7 +3152,7 @@ app.post('/setpassword', async (req, res, next) => {
 		return res.end()
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -3200,7 +3200,7 @@ app.post('/deleteaccount', async (req, res, next) => {
 		return res.redirect(301, '/')
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -3250,7 +3250,7 @@ app.post('/changeusername', async (req, res, next) => {
 		return res.end()
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -3274,7 +3274,7 @@ app.post('/getclientinfo', async (req, res, next) => {
 		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, apple: user.accountdata.apple, appleid: user.appleid != null, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null, betatester: user.accountdata.betatester, referafriend: user.accountdata.referafriend } })
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -3304,7 +3304,7 @@ app.post('/getclientdata', async (req, res, next) => {
 		}
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -3329,7 +3329,7 @@ app.post('/setclientdata', async (req, res, next) => {
 		return res.end()
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -3345,13 +3345,13 @@ app.post('/sendcontactus', async (req, res, next) => {
 		try{
 			await savecontactusobject(message)
 		}catch(error){
-			return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+			return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 		}
 
 		return res.end()
 	}catch(error){
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -3365,13 +3365,13 @@ app.post('/sendfeedback', async (req, res, next) => {
 		try{
 			await savefeedbackobject(message)
 		}catch(error){
-			return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+			return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 		}
 
 		return res.end()
 	}catch(error){
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -3468,7 +3468,7 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 		})
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -3532,7 +3532,7 @@ app.post('/generatereferafriendinvitelink', async (req, res) => {
 		}
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -3631,7 +3631,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 		return res.json({ data: gptresponse })
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -3724,7 +3724,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 		return res.json({ data: { message: response.choices[0].message.content, totaltokens: totaltokens } })
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -3836,7 +3836,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 		return res.json({ data: { message: response.choices[0].message.content, totaltokens: totaltokens } })
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -3946,7 +3946,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 		return res.json({ data: { message: response.choices[0].message.content, totaltokens: totaltokens } })
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
@@ -4311,12 +4311,12 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				}
 
 				console.error(response.choices[0].message)
-				return { error: 'An unexpected error occurred, please try again or contact us.', totaltokens: totaltokens }
+				return { error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).', totaltokens: totaltokens }
 		
 			} catch (err) {
 				console.error(err)
 
-				return { error: `An unexpected error occurred: ${err.message}, please try again or contact us.`, totaltokens: totaltokens }
+				return { error: `An unexpected error occurred: ${err.message}, please try again or [https://smartcalendar.us/contact](contact us).`, totaltokens: totaltokens }
 			}
 
 		}
@@ -4444,7 +4444,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 		return res.json({ data: output, idmap: idmap })
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).' })
 	}
 })
 
@@ -4502,7 +4502,7 @@ app.post("/push-subscription", async (req, res) => {
 	  return res.end()
 	}catch(error){
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 

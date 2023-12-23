@@ -4477,7 +4477,7 @@ async function createtodogetsubtasksuggestions(inputtext){
 	}catch(err){
 		console.log(err)
 
-		clickcreatetodoaisuggestionsubtasksdiverror.innerHTML = `Unexpected error, please try later or contact us.`
+		clickcreatetodoaisuggestionsubtasksdiverror.innerHTML = `Unexpected error, please try later or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.`
 		clickcreatetodoaisuggestionsubtasksdiverror.classList.remove('display-none')
 	}
 
@@ -12559,6 +12559,9 @@ async function referafriendgeneratelink(event){
 	if(isgeneratingreferafriendlink) return
 	isgeneratingreferafriendlink = true
 
+	let referafrienderror = getElement('referafrienderror')
+	referafrienderror.classList.add('display-none')
+
 	let referafriendgeneratelinkbutton = getElement('referafriendgeneratelinkbutton')
 	referafriendgeneratelinkbutton.innerHTML = 'Generating...'
 
@@ -12577,12 +12580,14 @@ async function referafriendgeneratelink(event){
 
 			console.log(data.error)
 
-			//need to show error message
+			referafrienderror.classList.remove('display-none')
+			referafrienderror.innerHTML = `Could not generate an invite link: ${data.error}. Please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.`
 		}
 	}catch(error){
 		console.log(error)
 
-		//need to show error message
+		referafrienderror.classList.remove('display-none')
+		referafrienderror.innerHTML = `Could not generate an invite link. Please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.`
 	}
 
 	referafriendgeneratelinkbutton.innerHTML = 'Generate a link'
@@ -12593,9 +12598,13 @@ async function referafriendgeneratelink(event){
 }
 
 async function copyreferafriendinvitelink(event){
+	let referafrienderror = getElement('referafrienderror')
+	referafrienderror.classList.add('display-none')
+
 	if(!clientinfo.referafriend.invitelink){
 		await referafriendgeneratelink()
 	}
+
 
 	if(clientinfo.referafriend.invitelink){
 		try{
@@ -12607,16 +12616,18 @@ async function copyreferafriendinvitelink(event){
 				referafriendcopybutton.innerHTML = 'Copy'
 			}, 3000)
 		}catch(err){
-			//need to show error message
+			referafrienderror.classList.remove('display-none')
+			referafrienderror.innerHTML = `Could not copy the link. Please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.`
 		}
-	}else{
-		//need to show error message
 	}
 }
 
 async function clickreferafriendinviteemail(event){
 	let referafriendinvitebutton = getElement('referafriendinvitebutton')
 	referafriendinvitebutton.innerHTML = 'Inviting...'
+
+	let referafrienderror = getElement('referafrienderror')
+	referafrienderror.classList.add('display-none')
 
 	let referafriendemail = getElement('referafriendemail')
 	let inviteemail = referafriendemail.value.trim()
@@ -12651,20 +12662,23 @@ async function clickreferafriendinviteemail(event){
 	
 				console.log(data.error)
 
-				//need to show error message
+				referafrienderror.classList.remove('display-none')
+				referafrienderror.innerHTML = `Could not send email invite: ${data.error}. Please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.`
 
 				referafriendinvitebutton.innerHTML = 'Email invite'
 			}
 		}catch(error){
 			console.log(error)
 
-			//need to show error message
+			referafrienderror.classList.remove('display-none')
+			referafrienderror.innerHTML = `Could not send email invite. Please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.`
 
 			referafriendinvitebutton.innerHTML = 'Email invite'
 		}
 
 	}else{
-		//need to show error message
+		referafrienderror.classList.remove('display-none')
+		referafrienderror.innerHTML = `Please enter a valid email.`
 	}
 }
 
@@ -14150,7 +14164,7 @@ async function submitaimessage(optionalinput, dictated){
 		if(!navigator.onLine){
 			responsechatmessage.message = `Your internet connection is offline, please reconnect.`
 		}else{
-			responsechatmessage.message = `An unexpected error occurred: ${err.message}, please try again or contact us.`
+			responsechatmessage.message = `An unexpected error occurred: ${err.message}, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.`
 		}
 
 		console.log(err)
