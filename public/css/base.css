@@ -344,6 +344,9 @@
 .box-shadow-2{
 	box-shadow:0 0 15px -5px var(--black-transparent)
 }
+.box-shadow-3{
+	box-shadow:0 0 60px -15px var(--black-transparent)
+}
 .box-shadow-none{
 	box-shadow:none
 }

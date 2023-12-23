@@ -1366,6 +1366,7 @@ class Calendar {
 		}
 
 		if(calendartabs.includes(5)){
+			this.updateUpgrade()
 			upgradewrap.classList.remove('display-none')
 
 			upgradetab.classList.add('selectedbuttonunderline')
@@ -1476,6 +1477,62 @@ class Calendar {
 
 			setHistory(newjson)
 		}
+	}
+
+
+	//upgrade
+	updateUpgrade(){
+		let invitesvalue = Math.floor(Math.random() * 15)
+
+		let upgradeprogressitem1 = getElement('upgradeprogressitem1')
+		let upgradeprogressitem2 = getElement('upgradeprogressitem2')
+		let upgradeprogressitem3 = getElement('upgradeprogressitem3')
+		let upgradeprogressitem4 = getElement('upgradeprogressitem4')
+
+		upgradeprogressitem1.classList.remove('selectedupgradeprogressitem')
+		upgradeprogressitem2.classList.remove('selectedupgradeprogressitem')
+		upgradeprogressitem3.classList.remove('selectedupgradeprogressitem')
+		upgradeprogressitem4.classList.remove('selectedupgradeprogressitem')
+
+		upgradeprogressitem1.children[0].classList.add('visibility-hidden')
+		upgradeprogressitem2.children[0].classList.add('visibility-hidden')
+		upgradeprogressitem3.children[0].classList.add('visibility-hidden')
+		upgradeprogressitem4.children[0].classList.add('visibility-hidden')
+
+		let upgradereferprogressbarvalue = getElement('upgradereferprogressbarvalue')
+
+		let translatevalue;
+		if(invitesvalue < 3){
+			upgradeprogressitem1.classList.add('selectedupgradeprogressitem')
+
+			upgradeprogressitem1.children[0].classList.remove('visibility-hidden')
+			upgradeprogressitem1.children[0].innerHTML = `${invitesvalue || 'No'} invites`
+
+			translatevalue = (invitesvalue/3)/3 * 100 - 100
+		}else if(invitesvalue < 5){
+			upgradeprogressitem2.classList.add('selectedupgradeprogressitem')
+
+			upgradeprogressitem2.children[0].classList.remove('visibility-hidden')
+			upgradeprogressitem2.children[0].innerHTML = `${invitesvalue || 'No'} invites!`
+
+			translatevalue = (1/3 + ((invitesvalue - 3)/2)/3) * 100 - 100
+		}else if(invitesvalue < 10){
+			upgradeprogressitem3.classList.add('selectedupgradeprogressitem')
+
+			upgradeprogressitem3.children[0].classList.remove('visibility-hidden')
+			upgradeprogressitem3.children[0].innerHTML = `${invitesvalue || 'No'} invites!!`
+
+			translatevalue = (2/3 + ((invitesvalue - 5)/2)/5) * 100 - 100
+		}else{
+			upgradeprogressitem4.classList.add('selectedupgradeprogressitem')
+
+			upgradeprogressitem4.children[0].classList.remove('visibility-hidden')
+			upgradeprogressitem4.children[0].innerHTML = `${invitesvalue || 'No'} invites!!!`
+
+			translatevalue = 100
+		}
+
+		upgradereferprogressbarvalue.style.transform = `translateX(${translatevalue}%)`
 	}
 
 

@@ -1943,7 +1943,7 @@
 					<span class="buttonunderline"></span>
 				</div>
 				<div class="display-none padding-top-6px nowrap padding-bottom-6px relative text-16px text-secondary hover:text-primary pointer transition-duration-100 display-flex gap-6px flex-row align-center" onclick="clicktab([5]);if(gtag){gtag('event', 'button_click', { useraction: 'Upgrade - nav bar' })} " id="upgradetab">
-					Settings
+					<span class="text-bold gradienttextgold">Free Premium</span>
 					<span class="buttonunderline"></span>
 				</div>
 			</div>
@@ -2160,56 +2160,108 @@
 						<div class="absolute top-0 left-0 right-0 upgradebackgroundsplash"></div>
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 1024 216.28" width="100%" class="upgradewave absolute left-0 right-0">
 							<g>
-							<path d="M0 138.179C0 138.179 150.95 56.2989 311.541 53.6925C472.131 51.0862 537.739 99.913 716.358 89.5322C894.978 79.1513 1024-2.50808e-13 1024-2.50808e-13L1024 218.078L0 218.078L0 138.179Z" fill-rule="nonzero" opacity="1" ></path>
-							</g>								
+							<path d="M0 138.179C0 138.179 150.95 56.2989 311.541 53.6925C472.131 51.0862 537.739 99.913 716.358 89.5322C894.978 79.1513 1024-2.50808e-13 1024-2.50808e-13L1024 800L3.56324e-14 800L0 138.179Z" fill-rule="nonzero" opacity="1" ></path>
+							</g>							
 						</svg>
 
 
-						<div class="upgradecontent align-center padding-top-96px padding-bottom-96px width-full z-index-1 display-flex flex-column gap-24px">
+						<div class="upgradecontent align-center padding-top-96px padding-bottom-96px width-full z-index-1 display-flex flex-column">
 							<div class="text-center text-ultra-bold text-white text-48px small:text-36px">Upgrade to supercharge your productivity<br>with <span class="upgradegreentext">cutting-edge</span> tools</div>
 
 							<div class="padding-top-192px"></div>
 
 
-							<div class="text-center border-16px padding-24px background-secondary display-flex flex-column gap-12px">
-								<div class="text-primary text-24px text-bold">You can get Premium for free (limited time)</div>
-								<div class="text-primary text-18px">We're counting on early adopters like you to spread the word, so we've set up a referral system. Simply <span class="text-bold">invite 3 friends</span> or colleagues to get <span class="text-bold gradienttextpink">1 month of free</span> Premium. It's that simple!</div>
+							<!-- refer -->
+							<div class="box-shadow-3 border-16px padding-24px background-primary display-flex flex-column gap-24px">
+								<div class="display-flex flex-column gap-12px">
+									<div class="text-center text-primary text-24px text-bold">Refer a Friend, Get Free Premium! (limited time)</div>
+									<div class="text-primary text-18px">We're counting on early adopters like you to spread the word, so we've set up a referral system. Simply <span class="text-ultra-bold gradienttextgreen">invite 3 friends</span> or colleagues to get <span class="text-ultra-bold gradienttextpink">1 month of free</span> Premium! No credit card needed.</div>
+								</div>
+
+								<div class="display-flex flex-row align-center justify-center">
+									[Invite link and stuff]
+								</div>
+
+								<div class="align-self-center relative justify-space-between display-flex flex-row align-center">
+									<div class="absolute top-0 bottom-0 left-0 right-0 display-flex flex-row align-center">
+										<div class="border-round width-full background-tint-1 upgradereferprogressbar">
+											<div class="upgradereferprogressbarvalue border-round background-blue" id="upgradereferprogressbarvalue"></div>
+										</div>
+									</div>
+
+									<div class="display-flex flex-column gap-6px" id="upgradeprogressitem1">
+										<div class="text-primary text-16px visibility-hidden">Text</div>
+										<div class="box-shadow-3 background-tint-1 border-round upgradereferprogressitem"></div>
+										<div class="text-quaternary text-16px">No premium</div>
+									</div>
+
+									<div class="display-flex flex-column gap-6px" id="upgradeprogressitem2">
+										<div class="text-primary text-16px visibility-hidden">Text</div>
+										<div class="box-shadow-3 background-tint-1 border-round upgradereferprogressitem"></div>
+										<div class="text-quaternary text-16px">1 month Premium</div>
+									</div>
+
+									<div class="display-flex flex-column gap-6px" id="upgradeprogressitem3">
+										<div class="text-primary text-16px visibility-hidden">Text</div>
+										<div class="box-shadow-3 background-tint-1 border-round upgradereferprogressitem"></div>
+										<div class="text-quaternary text-16px">2 months Premium</div>
+									</div>
+
+									<div class="display-flex flex-column gap-6px" id="upgradeprogressitem4">
+										<div class="text-primary text-16px visibility-hidden">Text</div>
+										<div class="box-shadow-3 background-tint-1 border-round upgradereferprogressitem"></div>
+										<div class="text-quaternary text-16px">6 months Premium</div>
+									</div>
+
+								</div>
 							</div>
 
 
 							<div class="padding-top-192px"></div>
 
-							<div class="text-center text-ultra-bold text-primary text-36px">See what's included</div>
-
 							<!-- features -->
 							<div class="display-flex flex-column gap-24px">
+								<div class="text-center text-ultra-bold text-primary text-36px">See what's included</div>
+
 								<div class="display-flex flex-row gap-24px small:flex-column">
-									<div class="background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
-										<div class="text-center white-space-normal text-bold text-primary text-24px">Feature 1</div>
-										<div class="text-center white-space-normal text-quaternary text-16px">Feature 1 description some text is very cool.</div>
+									<div class="flex-1 background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
+										<div class="text-center white-space-normal text-bold text-primary text-24px">Early access to features</div>
+										<div class="text-center white-space-normal text-quaternary text-16px">You'll be the first to see our new exciting features and and have your opinions heard.</div>
 									</div>
-									<div class="background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
-										<div class="text-center white-space-normal text-bold text-primary text-24px">Feature 2</div>
-										<div class="text-center white-space-normal text-quaternary text-16px">Feature 2 description some text is very cool.</div>
+									<div class="flex-1 background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
+										<div class="text-center white-space-normal text-bold text-primary text-24px">Almost Unlimited AI chat</div>
+										<div class="text-center white-space-normal text-quaternary text-16px">You'll be able to send up to 100 messages to our AI Assistant Athena every day.</div>
 									</div>
-									<div class="background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
-										<div class="text-center white-space-normal text-bold text-primary text-24px">Feature 3</div>
-										<div class="text-center white-space-normal text-quaternary text-16px">Feature 3 description some text is very cool.</div>
+									<div class="flex-1 background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
+										<div class="text-center white-space-normal text-bold text-primary text-24px">Enhanced Personal Assistant</div>
+										<div class="text-center white-space-normal text-quaternary text-16px">Be like a boss. Your personal assistant Athena will brief you on your day, give you tips on completing your tasks, and help you stay productive.</div>
 									</div>
 								</div>
+
+								<div class="text-center text-ultra-bold text-primary text-36px">Coming soon</div>
+
 								<div class="display-flex flex-row gap-24px small:flex-column">
-									<div class="background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
-										<div class="text-center white-space-normal text-bold text-primary text-24px">Feature 1</div>
-										<div class="text-center white-space-normal text-quaternary text-16px">Feature 1 description some text is very cool.</div>
+									<div class="flex-1 background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
+										<div class="text-center white-space-normal text-bold text-primary text-24px">Custom App Themes</div>
+										<div class="text-center white-space-normal text-quaternary text-16px">Superpower your focus and productivity with science-backed themes. Or upload your own.</div>
 									</div>
-									<div class="background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
-										<div class="text-center white-space-normal text-bold text-primary text-24px">Feature 2</div>
-										<div class="text-center white-space-normal text-quaternary text-16px">Feature 2 description some text is very cool.</div>
+									<div class="flex-1 background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
+										<div class="text-center white-space-normal text-bold text-primary text-24px">Conversational AI Assistant</div>
+										<div class="text-center white-space-normal text-quaternary text-16px">You'll be able to say 'Hey, Athena' and manage your schedule hands-free.</div>
 									</div>
-									<div class="background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
-										<div class="text-center white-space-normal text-bold text-primary text-24px">Feature 3</div>
-										<div class="text-center white-space-normal text-quaternary text-16px">Feature 3 description some text is very cool.</div>
+									<div class="flex-1 background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
+										<div class="text-center white-space-normal text-bold text-primary text-24px">Multiple Calendars Integration</div>
+										<div class="text-center white-space-normal text-quaternary text-16px">You'll be able to sync multiple calendar accounts to the app, including Outlook.</div>
 									</div>
+								</div>
+
+								<div class="display-flex flex-row gap-24px small:flex-column">
+									<div class="flex-1"></div>
+									<div class="flex-1 background-secondary align-center border-16px padding-24px display-flex flex-column gap-12px">
+										<div class="text-center white-space-normal text-bold text-primary text-24px">Something you want not here?</div>
+										<div class="text-center white-space-normal text-quaternary text-16px">Please let us know your suggestions <span class="popupbutton absolute left-0 bottom-0 text-secondary padding-12px text-14px width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopupmini(event)">here</span>. We take it into consideration.</div>
+									</div>
+									<div class="flex-1"></div>
 								</div>
 							</div>
 
