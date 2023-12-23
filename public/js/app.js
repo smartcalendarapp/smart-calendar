@@ -1482,7 +1482,7 @@ class Calendar {
 
 	//upgrade
 	updateUpgrade(){
-		let invitesvalue = Math.floor(Math.random() * 15)
+		let invitesvalue = clientinfo.referafriend?.acceptedcount
 
 		let upgradeprogressitem1 = getElement('upgradeprogressitem1')
 		let upgradeprogressitem2 = getElement('upgradeprogressitem2')
@@ -1513,7 +1513,7 @@ class Calendar {
 			upgradeprogressitem1.classList.add('selectedupgradeprogressitembig')
 
 			upgradeprogressitem1.children[0].children[0].classList.remove('display-none')
-			upgradeprogressitem1.children[0].children[0].innerHTML = `${invitesvalue || 'No'} invite${invitesvalue == 1 ? '' : 's'}`
+			upgradeprogressitem1.children[0].children[0].innerHTML = `${invitesvalue || '0'} invited`
 
 			translatevalue = (invitesvalue/3)/3 * 100 - 100
 		}else if(invitesvalue < 5){
@@ -1523,7 +1523,7 @@ class Calendar {
 			upgradeprogressitem2.classList.add('selectedupgradeprogressitembig')
 
 			upgradeprogressitem2.children[0].children[0].classList.remove('display-none')
-			upgradeprogressitem2.children[0].children[0].innerHTML = `${invitesvalue} invites`
+			upgradeprogressitem2.children[0].children[0].innerHTML = `${invitesvalue} invited`
 
 			translatevalue = (1/3 + ((invitesvalue - 3)/2)/3) * 100 - 100
 		}else if(invitesvalue < 10){
@@ -1534,9 +1534,9 @@ class Calendar {
 			upgradeprogressitem3.classList.add('selectedupgradeprogressitembig')
 
 			upgradeprogressitem3.children[0].children[0].classList.remove('display-none')
-			upgradeprogressitem3.children[0].children[0].innerHTML = `${invitesvalue} invites!`
+			upgradeprogressitem3.children[0].children[0].innerHTML = `${invitesvalue} invited!`
 
-			translatevalue = (2/3 + ((invitesvalue - 8)/2)/5) * 100 - 100
+			translatevalue = (2/3 + ((invitesvalue - 5)/5)/3) * 100 - 100
 		}else{
 			upgradeprogressitem1.classList.add('selectedupgradeprogressitem')
 			upgradeprogressitem2.classList.add('selectedupgradeprogressitem')
@@ -1546,12 +1546,12 @@ class Calendar {
 			upgradeprogressitem4.classList.add('selectedupgradeprogressitembig')
 
 			upgradeprogressitem4.children[0].children[0].classList.remove('display-none')
-			upgradeprogressitem4.children[0].children[0].innerHTML = `${invitesvalue} invites!`
+			upgradeprogressitem4.children[0].children[0].innerHTML = `${invitesvalue} invited!`
 
 			translatevalue = 0
 		}
 
-		upgradereferprogressbarvalue.style.transform = `translateX(${translatevalue}%)`
+		upgradereferprogressbarvalue.style.left = `${translatevalue}%`
 
 
 		let referafriendgenerate = getElement('referafriendgenerate')
@@ -1568,7 +1568,7 @@ class Calendar {
 
 
 		let referafriendemaillink = getElement('referafriendemaillink')
-		referafriendemaillink.innerHTML = clientinfo.referafriend.invitelink
+		referafriendemaillink.innerHTML = clientinfo.referafriend?.invitelink ? `https://smartcalendar.us/invite/${clientinfo.referafriend.invitelink.toUpperCase()}` : ''
 	}
 
 
@@ -12597,7 +12597,21 @@ async function copyreferafriendinvitelink(event){
 		await referafriendgeneratelink()
 	}
 
-	await navigator.clipboard.writeText(clientinfo.referafriend.invitelink)
+	if(clientinfo.referafriend.invitelink){
+		try{
+			let finallink = `https://smartcalendar.us/invite/${clientinfo.referafriend.invitelink.toUpperCase()}`
+			await navigator.clipboard.writeText(finallink)
+
+			referafriendcopybutton.innerHTML = 'Copied!'
+			setTimeout(function(){
+				referafriendcopybutton.innerHTML = 'Copy'
+			}, 3000)
+		}catch(err){
+			//need to show error message
+		}
+	}else{
+		//need to show error message
+	}
 }
 
 async function clickreferafriendinviteemail(event){
@@ -12605,8 +12619,8 @@ async function clickreferafriendinviteemail(event){
 	referafriendinvitebutton.innerHTML = 'Inviting...'
 
 	let referafriendemail = getElement('referafriendemail')
-	let email = referafriendemail.value.trim()
-	if(email){
+	let inviteemail = referafriendemail.value.trim()
+	if(inviteemail){
 		referafriendemail.value = ''
 
 		if(!clientinfo.referafriend.invitelink){
@@ -12621,18 +12635,16 @@ async function clickreferafriendinviteemail(event){
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					calendarevents: calendarevents,
-					taskitem: item,
-					timezoneoffset: new Date().getTimezoneOffset(),
+					inviteemail: inviteemail
 				})
 			})
 	
 			if(response.status == 200){
 				let data = await response.json()
 
-				referafriendinvitebutton.innerHTML = 'Invited!'
+				referafriendinvitebutton.innerHTML = 'Sent!'
 				setTimeout(function(){
-					referafriendinvitebutton.innerHTML = 'Invite'
+					referafriendinvitebutton.innerHTML = 'Email invite'
 				}, 3000)
 			}else if(response.status == 401){
 				let data = await response.json()
@@ -12641,14 +12653,14 @@ async function clickreferafriendinviteemail(event){
 
 				//need to show error message
 
-				referafriendinvitebutton.innerHTML = 'Invite'
+				referafriendinvitebutton.innerHTML = 'Email invite'
 			}
 		}catch(error){
 			console.log(error)
 
 			//need to show error message
 
-			referafriendinvitebutton.innerHTML = 'Invite'
+			referafriendinvitebutton.innerHTML = 'Email invite'
 		}
 
 	}else{
@@ -12656,6 +12668,34 @@ async function clickreferafriendinviteemail(event){
 	}
 }
 
+function clickreferafriendfeaturegetpremiumnow(){
+	let upgradewrapcontent = getElement('upgradewrapcontent')
+	
+	let target = 0
+	let duration = 1000
+	let start = upgradewrapcontent.scrollTop
+	let end = target
+	let change = end - start
+	let increment = 20
+	let currentTime = 0
+
+	function animateScroll() {
+		function easeinoutquad(t, b, c, d) {
+			t /= d / 2
+			if (t < 1) return c / 2 * t * t + b
+			t--
+			return -c / 2 * (t * (t - 2) - 1) + b
+		}
+
+		currentTime += increment
+		const val = easeinoutquad(currentTime, start, change, duration)
+		upgradewrapcontent.scrollTo(0, val)
+		if (currentTime < duration) {
+			requestAnimationFrame(animateScroll, increment)
+		}
+	}
+	requestAnimationFrame(animateScroll, increment)
+}
 
 //AI CHAT
 

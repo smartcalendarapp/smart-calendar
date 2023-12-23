@@ -1711,7 +1711,9 @@ ol{
 .objectfitcontain {
 	object-fit: contain;
 }
-
+.objectfitcover{
+	object-fit:cover
+}
 
 
 .schedulingscreenbackground {
@@ -2351,13 +2353,56 @@ ol{
 	position:absolute;
 	top:0;
 	bottom:0;
+	left:-100%;
 	width:100%;
-	transform:translateX(-100%);
-	transition:transform 1s ease-in-out;
+	transition:left 1s ease-in-out;
 }
 
+
+.upgradefeaturecard{
+	overflow:hidden;
+	transition:transform 0.2s, background-color 0.5s, color 0.5s, box-shadow 0.2s;
+}
+.upgradefeaturecard img{
+	aspect-ratio:5/3;
+	transition: aspect-ratio 0.2s, transform 0.2s, border-radius 0.2s, filter 0.2s;
+}
+.upgradefeaturecard:hover img{
+	transform:scale(1.2);
+	border-radius:0;
+	filter: opacity (0.6);
+	aspect-ratio:1;
+}
+.upgradefeaturecard:hover{
+	transform:scale(1.1);
+	box-shadow:0 0 60px -15px var(--black-transparent)
+}
+
+.upgradefeaturecardgradient{
+	background:linear-gradient(to bottom, var(--background-secondary), #00000000);
+	opacity:0;
+	transition: opactiy 0.2s, visibility 0.2s;
+	visibility:hidden;
+}
+.upgradefeaturecard:hover .upgradefeaturecardgradient{
+	opacity:1;
+	visibility: visible;
+}
+
+.upgradefeaturehovergroup{
+	opacity:0;
+	transition: opactiy 0.2s, visibility 0.2s;
+	visibility:hidden;
+}
+.upgradefeaturecard:hover .upgradefeaturehovergroup{
+	opacity:1;
+	visibility: visible;
+}
+
+
+
 .invitelinkwidth{
-	width:200px;
+	min-width:200px;
 }
 
 .upgradereferprogressitem{
@@ -2383,6 +2428,8 @@ ol{
 }
 .selectedupgradeprogressitem .text-quaternary{
 	color:var(--text-primary);
+}
+.selectedupgradeprogressitembig .text-quaternary{
 	font-weight:bold;
 }
 

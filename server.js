@@ -3491,7 +3491,7 @@ app.post('/generatereferafriendinvitelink', async (req, res) => {
 			async function generatereferafriendinvitelink(){
 				function generateinvitelink() {
 					let tempdata = ''
-					const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
+					const chars = 'abcdefghjkmnopqrstuvwxyz23456789'
 				
 					for (let i = 0; i < 8; i++) {
 						const rnd = Math.floor(Math.random() * chars.length)
