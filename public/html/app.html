@@ -2172,49 +2172,67 @@
 
 
 							<!-- refer -->
-							<div class="box-shadow-3 border-16px padding-24px background-primary display-flex flex-column gap-24px">
+							<div class="box-shadow-3 border-16px padding-24px background-primary display-flex flex-column gap-48px">
 								<div class="display-flex flex-column gap-12px">
 									<div class="text-center text-primary text-24px text-bold">Refer a Friend, Get Free Premium! (limited time)</div>
-									<div class="text-quaternary text-18px">We're counting on early adopters like you to spread the word, so we've set up a referral system. Simply <span class="text-bold gradienttextgreen">invite 3 friends</span> or colleagues to get <span class="text-bold gradienttextpink">1 month of free</span> Premium! No credit card needed.</div>
+									<div class="text-primary text-18px">Have a friend who you want to help organize their life better?<br><br>Simply click the button below, and simply<span class="text-bold gradienttextgreen">invite 3 friends</span> to get <span class="text-bold gradienttextpink">1 month of free</span> Premium! No credit card needed.</div>
 								</div>
 
-								<div class="display-flex flex-row align-center justify-center">
-									[Invite link and stuff]
+								<div class="display-flex flex-row align-center gap-24px justify-center" id="referafriendgenerate">
+									<div class="background-green padding-8px-12px transition-duration-100 hover:background-green-hover text-14px pointer border-8px text-white" onclick="referafriendgeneratelink(event)" id="referafriendgeneratelinkbutton">Generate invite link</div>
 								</div>
 
-								<div class="border-box padding-left-96px padding-right-96px display-flex flex-column">
+								<div class="display-flex flex-row align-center gap-24px justify-center display-none" id="referafriendsend">
+									<div class="display-flex flex-row align-center background-secondary border-8px padding-4px">
+										<div class="selecttext text-quaternary text-16px padding-6px invitelinkwidth" id="referafriendemaillink"></div>
+										<div class="background-blue text-primary bordertertiary hover:background-blue-hover transition-duration-100 padding-6px-12px text-14px pointer border-8px" onclick="copyreferafriendinvitelink(event)">Copy</div>
+									</div>
+
+									<div class="text-16px text-quaternary">or</div>
+
+									<div class="display-flex flex-row align-center gap-6px justify-center">
+										<div class="inputgroupitem">
+											<input id="referafriendemail" class="infoinput" type="email" placeholder="Your friend's email"></input>
+											<span class="inputline"></span>
+										</div>
+
+										<div class="background-blue padding-6px-12px transition-duration-100 hover:background-blue-hover text-14px pointer border-8px text-white" onclick="clickreferafriendinviteemail(event)" id="referafriendinvitebutton">Invite</div>
+									</div>
+								</div>
+
+								<div class="border-box padding-top-24px padding-bottom-24px padding-left-96px padding-right-96px display-flex flex-column">
 									<div class="width-full relative justify-space-between display-flex flex-row align-center">
 										<div class="absolute top-0 bottom-0 left-0 right-0 display-flex flex-row align-center">
-											<div class="backdrop-blur border-round width-full background-tint-1 upgradereferprogressbar">
+											<div class="overflow-hidden backdrop-blur border-round width-full background-tint-1 upgradereferprogressbar">
 												<div class="upgradereferprogressbarvalue border-round background-blue" id="upgradereferprogressbarvalue"></div>
 											</div>
 										</div>
 
 										<div class="z-index-1 align-center display-flex flex-column gap-6px" id="upgradeprogressitem1">
 											<div class="backdrop-blur relative box-shadow background-tint-1 border-round upgradereferprogressitem">
-												<div class="display-none nowrap absolute upgradereferprogressitemtexttop text-quaternary text-16px"></div>
-												<div class="nowrap absolute upgradereferprogressitemtext text-quaternary text-16px">No premium</div>
+												<div class="display-none nowrap absolute upgradereferprogressitemtexttop text-quaternary text-14px"></div>
+												<div class="nowrap absolute upgradereferprogressitemtext text-quaternary text-14px">No premium</div>
 											</div>
 										</div>
 
 										<div class="z-index-1 align-center display-flex flex-column gap-6px" id="upgradeprogressitem2">
 											<div class="backdrop-blur relative box-shadow background-tint-1 border-round upgradereferprogressitem">
-												<div class="display-none nowrap absolute upgradereferprogressitemtexttop text-quaternary text-16px"></div>
-												<div class="nowrap absolute upgradereferprogressitemtext text-quaternary text-16px">1 month free</div>
+												<div class="display-none nowrap absolute upgradereferprogressitemtexttop text-quaternary text-14px"></div>
+												<div class="nowrap absolute upgradereferprogressitemtext text-quaternary text-14px">1 month free</div>
 											</div>
 										</div>
 
-										<div class="z-index-1 align-center display-flex flex-column gap-6px" id="upgradeprogressitem2">
+										<div class="z-index-1 align-center display-flex flex-column gap-6px" id="upgradeprogressitem3">
 											<div class="backdrop-blur relative box-shadow background-tint-1 border-round upgradereferprogressitem">
-												<div class="display-none nowrap absolute upgradereferprogressitemtexttop text-quaternary text-16px"></div>
-												<div class="nowrap absolute upgradereferprogressitemtext text-quaternary text-16px">2 months</div>
+												<div class="display-none nowrap absolute upgradereferprogressitemtexttop text-quaternary text-14px"></div>
+												<div class="nowrap absolute upgradereferprogressitemtext text-quaternary text-14px">2 months free</div>
 											</div>
 										</div>
 
-										<div class="z-index-1 align-center display-flex flex-column gap-6px" id="upgradeprogressitem2">
+										<div class="z-index-1 align-center display-flex flex-column gap-6px" id="upgradeprogressitem4">
 											<div class="backdrop-blur relative box-shadow background-tint-1 border-round upgradereferprogressitem">
-												<div class="display-none nowrap absolute upgradereferprogressitemtexttop text-quaternary text-16px"></div>
-												<div class="nowrap absolute upgradereferprogressitemtext text-quaternary text-16px">6 months</div>
+												<div class="display-none nowrap absolute upgradereferprogressitemtexttop text-quaternary text-14px"></div>
+												<div class="nowrap absolute upgradereferprogressitemtext text-quaternary text-14px">6 months free</div>
 											</div>
 										</div>
 									</div>

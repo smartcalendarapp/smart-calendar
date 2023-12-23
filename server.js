@@ -212,6 +212,30 @@ async function savechatconversation(conversationid, userid, chatconversation){
 	}
 }
 
+async function getreferafriendinvitelink(invitelink){
+	const params = {
+		TableName: 'smartcalendarreferafriendinvitelinks',
+		Key: {
+		  'invitelink': { S: invitelink }
+		}
+	}
+	const data = await dynamoclient.send(new GetItemCommand(params))
+	if(data.Item){
+		return unmarshall(data.Item)
+	}
+	return null
+}
+
+async function setreferafriendinvitelink(data){
+	const params = {
+		TableName: 'smartcalendarreferafriendinvitelinks',
+		Item: marshall(data, { convertClassInstanceToMap: true, removeUndefinedValues: true })
+	  }
+	  
+	  await dynamoclient.send(new PutItemCommand(params))
+	  return data
+}
+
 //DATABASE CLASSES
 function addmissingproperties(model, current) {
   for (let prop in model) {
@@ -375,7 +399,7 @@ class User{
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false }
-const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], betatester: false, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null } }
+const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], betatester: false, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
 const MODELEVENT = { start: {}, end: {}, endbefore: {}, startafter: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0, parentid: null, subtasksuggestions: [], gotsubtasksuggestions: false, iseventsuggestion: false, goteventsuggestion: false, autoschedulelocked: false }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#18a4f5', isprimary: false, subscriptionurl: null, lastmodified: 0  }
@@ -3247,7 +3271,7 @@ app.post('/getclientinfo', async (req, res, next) => {
 		cacheReminders(user)
 		await setUser(user)
 		
-		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, apple: user.accountdata.apple, appleid: user.appleid != null, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null, betatester: user.accountdata.betatester } })
+		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, apple: user.accountdata.apple, appleid: user.appleid != null, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null, betatester: user.accountdata.betatester, referafriend: user.accountdata.referafriend } })
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
@@ -3418,6 +3442,99 @@ app.post('/subscribecalendar', async (req, res) => {
 	}
 })
 
+
+app.post('/sendinviteemailreferafriend', async (req, res) => {
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		let user = await getUserById(userid)
+		if (!user) {
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+
+		let email = req.body.email
+
+		//here3
+		return res.end()
+
+		await sendEmail({
+			from: 'James at Smart Calendar <james@smartcalendar.us>',
+			to: email
+		})
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
+
+app.post('/generatereferafriendinvitelink', async (req, res) => {
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		let user = await getUserById(userid)
+		if (!user) {
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+		
+		if(user.accountdata.referafriend.invitelink){
+			return res.json({ data: { invitelink: user.accountdata.referafriend.invitelink, acceptedcount: user.accountdata.referafriend.acceptedcount } })
+		}else{
+			async function generatereferafriendinvitelink(){
+				function generateinvitelink() {
+					let tempdata = ''
+					const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
+				
+					for (let i = 0; i < 8; i++) {
+						const rnd = Math.floor(Math.random() * chars.length)
+						tempdata += chars[rnd]
+					}
+				
+					return tempdata
+				}
+
+				while(true){
+					let tempinvitelink = generateinvitelink()
+
+					//prevent duplicate, super rare tho
+					let existinginvitelink = await getreferafriendinvitelink(tempinvitelink)
+					if(!existinginvitelink){
+						return tempinvitelink
+					}
+				}
+			}
+
+			const invitelink = await generatereferafriendinvitelink()
+
+			user.accountdata.referafriend.invitelink = invitelink
+			user.accountdata.referafriend.acceptedcount = 0
+			await setUser(user)
+
+
+			//invite db object
+			const invitelinkobject = {
+				invitelink: invitelink,
+				userid: user.userid,
+				accepted: [],
+				emailinvited: []
+			}
+			await setreferafriendinvitelink(invitelinkobject)
+
+			return res.json({ data: { invitelink: invitelink, acceptedcount: 0 } })
+		}
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or contact us.' })
+	}
+})
 
 
 
