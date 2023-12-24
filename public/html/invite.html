@@ -69,23 +69,37 @@
 
 		<div class="screen">
 			<div class="formcontainer display-flex gap-24px flex-column background-primary box-shadow-3 padding-24px border-16px" id="invitecontainer">
-				<div class="text-24px text-primary text-center text-ultra-bold">Welcome to Smart Calendar</div>
-				<div class="text-18px text-primary text-bold">Paste your invite link here:</div>
+				<div class="text-24px text-primary text-center text-bold">Welcome to Smart Calendar!</div>
+				<div class="text-18px text-primary">Paste your invite link here:</div>
 				<div id="inviteerror" class="errorwrap"></div>
 
-				<div class="forminputwrap background-secondary width-full">
-					<input id="invitecodeinput" placeholder="Code or link" type="text" onkeydown="if(event.key == 'Enter'){ checkinvitecode() }" class="infoinput width-full"><span class="inputline"></span></input>
+				<div class="display-flex flex-column gap-6px">
+					<div class="forminputwrap background-secondary width-full">
+						<input id="invitecodeinput" placeholder="Code or link" type="text" onkeydown="if(event.key == 'Enter'){ checkinvitecode() }" class="infoinput width-full text-16px"><span class="inputline"></span></input>
+					</div>
+					<div class="background-green width-full text-center border-box padding-top-12px padding-bottom-12px padding-left-16px padding-right-16px text-bold transition-duration-100 hover:background-green-hover text-14px pointer border-8px text-white" onclick="checkinvitecode()" id="checkinvitesubmitbutton">Submit</div>
 				</div>
-				<div class="background-green width-full text-center border-box padding-top-12px padding-bottom-12px padding-left-16px padding-right-16px text-bold transition-duration-100 hover:background-green-hover text-14px pointer border-8px text-white" onclick="checkinvitecode()" id="referafriendgeneratelinkbutton">Submit</div>
 			</div>
 
 			<div class="formcontainer display-flex gap-24px flex-column background-primary box-shadow-3 padding-24px border-16px display-none" id="invitecontainerloaded">
-				<div id="invitecontainerloadedavatar" class="align-self-center"></div> 
-				<div class="text-18px text-quaternary text-primary" id="invitecontainerloadedtext">invited you to sign up with</div>
-				<div class="text-24px text-primary text-ultra-bold">Smart Calendar!</div>
+				<div id="inviteerror2" class="errorwrap"></div>
+
+				<div class="display-flex flex-column gap-6px">
+					<div id="invitecontainerloadedavatar" class="align-self-center"></div> 
+					<div class="text-18px text-quaternary text-center text-primary" id="invitecontainerloadedtext">invited you to sign up with</div>
+				</div>
+				<div class="text-24px text-primary text-center text-bold">Smart Calendar!</div>
 				<div class="text-18px text-primary text-bold">Sign up to accept your friend's invite</div>
 
-				<div class="background-blue width-full border-box padding-top-12px padding-bottom-12px padding-left-16px padding-right-16px text-bold transition-duration-100 hover:background-blue-hover text-14px text-center pointer border-8px text-white" onclick="letsdothis()">Let's do this</div>
+				<div class="display-flex justify-center flex-row align-center gap-6px background-blue width-full border-box padding-top-12px padding-bottom-12px padding-left-16px padding-right-16px text-bold transition-duration-100 hover:background-blue-hover text-14px text-center pointer border-8px text-white" onclick="letsdothis()">Continue
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+						<g>
+						<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+						</g>
+					</svg>
+				</div>
 			</div>
 
 

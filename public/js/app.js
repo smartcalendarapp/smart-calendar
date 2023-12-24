@@ -4646,7 +4646,7 @@ function run() {
 		if(document.visibilityState === 'visible' && calendartabs.includes(5)){
 			await referafriendgeneratelink()
 		}
-	}, 10000)
+	}, 30000)
 
 
 	setInterval(async function(){
@@ -12584,7 +12584,7 @@ async function referafriendgeneratelink(event){
 			clientinfo.referafriend.invitelink = data.data.invitelink
 			clientinfo.referafriend.acceptedcount = data.data.acceptedcount
 
-			if(acceptedcount > oldacceptedcount){
+			if(clientinfo.referafriend.acceptedcount > oldacceptedcount){
 				let confetticanvas = getElement('confetticanvas')
 				let myconfetti = confetti.create(confetticanvas, {
 					resize: true,

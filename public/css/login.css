@@ -284,6 +284,14 @@ html, body{
 
 
 .avatarimage {
-	height: 24px;
-	width: 24px;
+	height: 60px;
+	width: 60px;
+}
+
+.buttonwhite {
+	height:18px;
+	width:18px;
+	stroke: var(--white);
+	fill: none;
+	display: block;
 }

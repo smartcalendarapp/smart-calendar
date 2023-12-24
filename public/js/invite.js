@@ -78,19 +78,21 @@ async function checkinvitecode(){
 	let invitecodeinput = getElement('invitecodeinput')
 
 	let invitecode = pathSegments[2] || (invitecodeinput && invitecodeinput.value)
-	invitecode = invitecode && invitecode.replace('https://smartcalendar.us/invite/', '')
+	invitecode = invitecode && invitecode.replace('https://smartcalendar.us/invite/', '').trim()
 
 
 	let invitecontainer = getElement('invitecontainer')
 	let formcontainer = getElement('formcontainer')
 	let invitecontainerloaded = getElement('invitecontainerloaded')
 
-	formcontainer.classList.add('display-none')
-	invitecontainerloaded.classList.add('display-none')
-	invitecontainer.classList.add('display-none')
-
     if(!invitecode){
-		invitecontainer.classList.remove('display-none')
+		if(!invitecontainer.classList.contains('display-none')){
+			let errtext = `Please enter a code!`
+			inviteerror.innerHTML = errtext
+			inviteerror2.innerHTML = errtext
+		}else{
+			invitecontainer.classList.remove('display-none')
+		}
 		return
     }
 
@@ -98,6 +100,9 @@ async function checkinvitecode(){
 		if(invitecodeinput){
 			invitecodeinput.value = ''
 		}
+
+		let checkinvitesubmitbutton = getElement('checkinvitesubmitbutton')
+		checkinvitesubmitbutton.innerHTML = 'Loading...'
 
 		const response = await fetch('/submitreferafriendinvitelink', { 
 			method: 'POST',
@@ -123,21 +128,21 @@ async function checkinvitecode(){
 
 			let data = await response.json()
 			
-			let errtext = `
-			<div class="errorwrap">${data.error}</div>`
+			let errtext = `${data.error}`
 			inviteerror.innerHTML = errtext
 			inviteerror2.innerHTML = errtext
 		}
 	}catch(err){
 		invitecontainer.classList.remove('display-none')
 
-		let errtext = `
-		<div class="errorwrap">An unexpected error ocurred, please try again.</div>`
+		let errtext = `An unexpected error ocurred, please try again.`
 		inviteerror.innerHTML = errtext
 		inviteerror2.innerHTML = errtext
 
 		console.log(err)
 	}
+
+	checkinvitesubmitbutton.innerHTML = 'Submit'
 
 }
 checkinvitecode()
