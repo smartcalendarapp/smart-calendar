@@ -3491,6 +3491,8 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 			return res.status(401).json({ error: 'Invite link not found.' })
 		}
 
+		invitecode = invitecode.toLowerCase()
+
 		let existinginviteobject = await getreferafriendinvitelinkobject(invitecode)
 		if(!existinginviteobject){
 			return res.status(401).json({ error: 'Invite link not found.' })
@@ -3579,12 +3581,17 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 			return res.status(401).json({ error: `Could not send an email to ${inviteemail}, please enter a valid email or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.` })
 		}
 
+		existinginviteobject.emailinvited.push({ email: inviteemail, timestamp: Date.now() })
+		await setreferafriendinvitelinkobject(existinginviteobject)
+
 		return res.end()
 	}catch(err){
 		console.error(err)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
+
+
 
 app.post('/submitreferafriendinvitelink', async (req, res) => {
 	try{
@@ -3593,6 +3600,8 @@ app.post('/submitreferafriendinvitelink', async (req, res) => {
 		if(!invitecode){
 			return res.status(401).json({ error: 'Invite link not found.' })
 		}
+
+		invitecode = invitecode.toLowerCase()
 
 		let existinginviteobject = await getreferafriendinvitelinkobject(invitecode)
 		if(!existinginviteobject){
@@ -3605,6 +3614,9 @@ app.post('/submitreferafriendinvitelink', async (req, res) => {
 		}
 
 		//set req session
+		if(!req.session.user){
+			req.session.user = {}
+		}
 		req.session.user.inviteafriend = { invitecode: invitecode, timestamp: Date.now() }
 
 		return res.json({ data: { name: getUserName(inviteuser), googleprofilepicture: inviteuser.accountdata.google.profilepicture } })
@@ -3614,6 +3626,8 @@ app.post('/submitreferafriendinvitelink', async (req, res) => {
 	}
 })
 
+
+//validate when sign up
 async function validatereferafriendinvitecode(req){
 	if(!req.session?.user?.userid) return false
 
@@ -3623,6 +3637,8 @@ async function validatereferafriendinvitecode(req){
 	if(Date.now() - timestamp > 60 * 60 * 1000) return false
 
 	if(!referafriendinvitecode) return false
+
+	referafriendinvitecode = referafriendinvitecode.toLowerCase()
 
 	//get invite db object
 	let existinginviteobject = await getreferafriendinvitelinkobject(referafriendinvitecode)

@@ -2346,10 +2346,13 @@ ol{
 }
 
 .upgradereferprogressbar{
+	width:100%;
 	height:16px;
 	overflow:hidden;
 	position:relative;
 }
+
+
 .upgradereferprogressbarvalue{
 	position:absolute;
 	top:0;
@@ -2418,12 +2421,17 @@ ol{
 .upgradereferprogressitemtext{
 	top:100%;
 	left:50%;
-	transform:translate(-50%, 12px)
+	transform:translateX(-50%);
+	padding-top:12px;
 }
 .upgradereferprogressitemtexttop{
 	bottom:100%;
 	left:50%;
-	transform:translate(-50%, -12px)
+	transform:translateX(-50%);
+	padding-bottom:12px;
+}
+.breakall{
+	word-break: break-all;
 }
 .selectedupgradeprogressitem .upgradereferprogressitem{
 	background-color: var(--green);
@@ -2435,8 +2443,34 @@ ol{
 .selectedupgradeprogressitem .text-quaternary{
 	color:var(--text-primary);
 }
-.selectedupgradeprogressitembig .text-quaternary{
+.selectedupgradeprogressitembig .upgradereferprogressitemtext{
 	font-weight:bold;
+}
+
+@media only screen and (max-width: 600px) {
+	.upgradereferprogressbar{
+		width:16px;
+		height:100%;
+	}
+	.upgradereferprogressbarwrap{
+		height:300px;
+	}
+	.upgradereferprogressitemtext{
+		top:50%;
+		right:100%;
+		transform:translateY(-50%);
+		padding-right:12px;
+		padding-top:0;
+		padding-bottom:0;
+	}
+	.upgradereferprogressitemtexttop{
+		left:100%;
+		top:50%;
+		transform:translateY(-50%);
+		padding-left:12px;
+		padding-top:0;
+		padding-bottom:0;
+	}
 }
 
 .upgradewave{
@@ -2470,6 +2504,23 @@ ol{
 
 
 
+
+@keyframes slideupdown{
+	0% {
+	  transform: translateY(0)
+	}
+	50% {
+	  transform: translateY(10px)
+	}
+	100% {
+	  transform: translateY(0)
+	}
+  }
+  .learnmorebutton{
+	  transition: transform 0.2s;
+	  animation: slideupdown 2s ease-in-out infinite;
+  }
+  
 
 .socialmediagradient{
 	background: linear-gradient(to top right, #5126ff, #7626ff);
@@ -2853,12 +2904,6 @@ ol{
 	max-height: 80vh;
 }
 
-.gradienttextblue {
-	background-clip: text;
-	-webkit-background-clip: text;
-	-webkit-text-fill-color: transparent;
-	background-image: linear-gradient(to right, #37e6e0, #37c0e6);
-}
 
 
 

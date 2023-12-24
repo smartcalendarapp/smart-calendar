@@ -72,23 +72,25 @@ async function checkinvitecode(){
 	const url = new URL(window.location.href)
     const pathSegments = url.pathname.split('/')
 
-	let invitetitle = getElement('invitetitle')
+	let inviteerror = getElement('inviteerror')
+	let inviteerror2 = getElement('inviteerror2')
 	
 	let invitecodeinput = getElement('invitecodeinput')
 
 	let invitecode = pathSegments[2] || (invitecodeinput && invitecodeinput.value)
-	invitecode = invitecode.replace('https://smartcalendar.us/invite/', '')
+	invitecode = invitecode && invitecode.replace('https://smartcalendar.us/invite/', '')
+
+
+	let invitecontainer = getElement('invitecontainer')
+	let formcontainer = getElement('formcontainer')
+	let invitecontainerloaded = getElement('invitecontainerloaded')
+
+	formcontainer.classList.add('display-none')
+	invitecontainerloaded.classList.add('display-none')
+	invitecontainer.classList.add('display-none')
 
     if(!invitecode){
-		invitetitle.innerHTML = `
-		<div class="text-24px text-primary text-bold">Welcome to Smart Calendar</div>
-		<div class="padding-top-24px"></div>
-		<div class="text-18px text-primary text-bold">Paste your invite link here:</div>
-		<div class="forminputwrap width-full">
-			<input id="invitecodeinput" placeholder="Code or link" type="text" onkeydown="if(event.key == 'Enter'){ checkinvitecode() }" class="infoinput width-full"><span class="inputline"></span></input>
-		</div>
-		<div class="background-green width-full border-box padding-top-12px padding-bottom-12px padding-left-16px padding-right-16px text-bold transition-duration-100 hover:background-green-hover text-14px pointer border-8px text-white" onclick="checkinvitecode()" id="referafriendgeneratelinkbutton">Submit</div>`
-
+		invitecontainer.classList.remove('display-none')
 		return
     }
 
@@ -106,32 +108,49 @@ async function checkinvitecode(){
 		})
 
 		if(response.status == 200){
+			invitecontainerloaded.classList.remove('display-none')
+			invitecontainer.classList.add('display-none')
+
 			let data = await response.json()
 
-			invitetitle.innerHTML = `
-			<div class="display-flex flex-row gap-6px align-center">
-				${getAvatar(data.data.googleprofilepicture, data.data.name)}
-				<div class="text-18px text-quaternary text-primary">${data.data.name} invited you to sign up with</div>
-			</div>
-			<div class="text-24px text-primary text-bold">Smart Calendar!</div>
-			<div class="padding-top-24px"></div>
-			<div class="text-18px text-primary text-bold">Sign up to accept your friend's invite</div>`
+			let invitecontainerloadedavatar = getElement('invitecontainerloadedavatar')
+			invitecontainerloadedavatar.innerHTML = getAvatar(data.data.googleprofilepicture, data.data.name)
 
+			let invitecontainerloadedtext = getElement('invitecontainerloadedtext')
+			invitecontainerloadedtext.innerHTML = `${data.data.name} invited you to sign up with`
 		}else if(response.status == 401){
+			invitecontainer.classList.remove('display-none')
+
 			let data = await response.json()
 			
-			invitetitle.innerHTML = `
+			let errtext = `
 			<div class="errorwrap">${data.error}</div>`
+			inviteerror.innerHTML = errtext
+			inviteerror2.innerHTML = errtext
 		}
 	}catch(err){
-		invitetitle.innerHTML = `
+		invitecontainer.classList.remove('display-none')
+
+		let errtext = `
 		<div class="errorwrap">An unexpected error ocurred, please try again.</div>`
+		inviteerror.innerHTML = errtext
+		inviteerror2.innerHTML = errtext
 
 		console.log(err)
 	}
 
 }
 checkinvitecode()
+
+function letsdothis(){
+	let invitecontainer = getElement('invitecontainer')
+	let formcontainer = getElement('formcontainer')
+	let invitecontainerloaded = getElement('invitecontainerloaded')
+
+	invitecontainerloaded.classList.add('display-none')
+	invitecontainer.classList.add('display-none')
+	formcontainer.classList.remove('display-none')
+}
 
 function getAvatar(googleprofilepicture, name){
     const DEFAULTCOLORS = ['#ff2e2e', '#ff932e', '#ffe32e', '#b4f22e', '#2ad143', '#18f595', '#18f5ea', '#18a4f5', '#185bf5', '#4724f2', '#8138ff', '#b232fc', '#f022d8', '#e62971', '#000000']

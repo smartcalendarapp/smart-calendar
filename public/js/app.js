@@ -972,7 +972,7 @@ class Calendar {
 
 		static getRawTitle(item){
 			if(!item) return
-			if(item.title) return cleanInput(item.title)
+			if(item.title) return item.title
 			if(this.isSubtask(item)){
 				return `${this.getTitle(this.getMainTask(item))} (part ${this.getSubtaskIndex(item) + 1})`
 			}
@@ -1183,7 +1183,7 @@ class Calendar {
 
 		static getRawTitle(item){
 			if(!item) return
-			if(item.title) return cleanInput(item.title)
+			if(item.title) return item.title
 			if(this.isSubtask(item)){
 				return `${this.getTitle(this.getMainTask(item))} (part ${this.getSubtaskIndex(item) + 1})`
 			}
@@ -4642,6 +4642,12 @@ function run() {
 	}, 1000)
 	*/
 
+	setInterval(async function(){
+		if(document.visibilityState === 'visible' && calendartabs.includes(5)){
+			await referafriendgeneratelink()
+		}
+	}, 10000)
+
 
 	setInterval(async function(){
 		if(document.visibilityState === 'visible' && needtoupdateeventstatus){
@@ -5416,8 +5422,8 @@ async function connectapple(){
 //INTERACTIVE TOUR
 function updateinteractivetour() {
 	function movepopup(tempdiv, top, left) {
-		const scrollLeft = document.documentElement.scrollLeft || window.pageXOffset
-		const scrollTop = document.documentElement.scrollTop || window.pageYOffset
+		const scrollLeft = document.documentElement.scrollLeft
+		const scrollTop = document.documentElement.scrollTop
 
 		if (!tempdiv) return
 		tempdiv.style.left = fixleft(left + scrollLeft, tempdiv) + 'px'
@@ -5425,8 +5431,8 @@ function updateinteractivetour() {
 	}
 
 	function movebeacon(tempdiv, top, left) {
-		const scrollLeft = document.documentElement.scrollLeft || window.pageXOffset
-		const scrollTop = document.documentElement.scrollTop || window.pageYOffset
+		const scrollLeft = document.documentElement.scrollLeft
+		const scrollTop = document.documentElement.scrollTop
 
 		if (!tempdiv) return
 		tempdiv.style.left = (left + scrollLeft) + 'px'
@@ -12571,10 +12577,39 @@ async function referafriendgeneratelink(event){
 		})
 
 		if(response.status == 200){
+			let oldacceptedcount = clientinfo.referafriend.acceptedcount
+
 			let data = await response.json()
 
 			clientinfo.referafriend.invitelink = data.data.invitelink
 			clientinfo.referafriend.acceptedcount = data.data.acceptedcount
+
+			if(acceptedcount > oldacceptedcount){
+				let confetticanvas = getElement('confetticanvas')
+				let myconfetti = confetti.create(confetticanvas, {
+					resize: true,
+					useWorker: true
+				})
+
+				let upgradereferprogressbarcontainer = getElement('upgradereferprogressbarcontainer')
+
+				await myconfetti({
+					particleCount: 100,
+					gravity: 0.8,
+					startVelocity: 30,
+					decay: 0.96,
+					ticks: 300,
+					origin: {
+						x: 0.5,
+						y: (upgradereferprogressbarcontainer.getBoundingClientRect().top + upgradereferprogressbarcontainer.getBoundingClientRect().height) / (window.innerHeight || document.body.clientHeight),
+					}
+				})
+
+				try{
+					myconfetti.reset()
+				}catch(e){}
+			}
+
 		}else if(response.status == 401){
 			let data = await response.json()
 
@@ -12623,6 +12658,8 @@ async function copyreferafriendinvitelink(event){
 }
 
 async function clickreferafriendinviteemail(event){
+	event.preventDefault()
+
 	let referafriendinvitebutton = getElement('referafriendinvitebutton')
 	referafriendinvitebutton.innerHTML = 'Inviting...'
 
@@ -13646,7 +13683,7 @@ async function submitaimessage(optionalinput, dictated){
 					let title = arguments?.title || ''
 					let startminute = getMinute(arguments?.startDate).value || 9*60
 					let [startyear, startmonth, startday] = getDate(arguments?.startDate).value
-					let endminute = getMinute(arguments?.endDate)
+					let endminute = getMinute(arguments?.endDate).value
 					let [endyear, endmonth, endday] = getDate(arguments?.endDate).value
 
 					let startdate, enddate;
@@ -13741,7 +13778,7 @@ async function submitaimessage(optionalinput, dictated){
 							let title = tempitem?.title
 							let startminute = getMinute(tempitem?.startDate).value || 9*60
 							let [startyear, startmonth, startday] = getDate(tempitem?.startDate).value
-							let endminute = getMinute(tempitem?.endDate)
+							let endminute = getMinute(tempitem?.endDate).value
 							let [endyear, endmonth, endday] = getDate(tempitem?.endDate).value
 
 							let startdate, enddate;

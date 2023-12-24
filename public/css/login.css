@@ -98,6 +98,7 @@ html, body{
 }
 
 .formcontainer{
+	box-sizing: border-box;
 	width:100%;
 	max-width:400px;
 	padding-left:12px;
@@ -141,7 +142,6 @@ html, body{
 	padding-bottom:8px;
 	border-radius:8px;
 	font-weight:normal;
-	-webkit-appearance:none;
 }
 .formsubmit:hover{
 	background-color:var(--blue-hover);
