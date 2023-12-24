@@ -3279,7 +3279,7 @@ app.post('/getclientinfo', async (req, res, next) => {
 					inviteuser.accountdata.referafriend.acceptedcount++
 
 					//invite db object
-					existinginviteobject.accepted.push({ userid: userid })
+					existinginviteobject.accepted.push({ userid: userid, timestamp: Date.now() })
 					await setreferafriendinvitelink(existinginviteobject)
 
 					succeededreferafriend = true
