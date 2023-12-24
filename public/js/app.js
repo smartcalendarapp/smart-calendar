@@ -1499,12 +1499,12 @@ class Calendar {
 		upgradeprogressitem3.classList.remove('selectedupgradeprogressitembig')
 		upgradeprogressitem4.classList.remove('selectedupgradeprogressitembig')
 
-		upgradeprogressitem1.children[0].children[0].classList.add('display-none')
-		upgradeprogressitem2.children[0].children[0].classList.add('display-none')
-		upgradeprogressitem3.children[0].children[0].classList.add('display-none')
-		upgradeprogressitem4.children[0].children[0].classList.add('display-none')
-
 		let upgradereferprogressbarvalue = getElement('upgradereferprogressbarvalue')
+
+		upgradeprogressitem1.children[0].children[0].innerHTML = `None invited`
+		upgradeprogressitem1.children[0].children[0].innerHTML = `3 invited`
+		upgradeprogressitem1.children[0].children[0].innerHTML = `5 invited`
+		upgradeprogressitem1.children[0].children[0].innerHTML = `10 invited`
 
 		let translatevalue;
 		if(invitesvalue < 3){
@@ -1512,7 +1512,6 @@ class Calendar {
 
 			upgradeprogressitem1.classList.add('selectedupgradeprogressitembig')
 
-			upgradeprogressitem1.children[0].children[0].classList.remove('display-none')
 			upgradeprogressitem1.children[0].children[0].innerHTML = `${invitesvalue || '0'} invited`
 
 			translatevalue = (invitesvalue/3)/3 * 100 - 100
@@ -1522,7 +1521,6 @@ class Calendar {
 
 			upgradeprogressitem2.classList.add('selectedupgradeprogressitembig')
 
-			upgradeprogressitem2.children[0].children[0].classList.remove('display-none')
 			upgradeprogressitem2.children[0].children[0].innerHTML = `${invitesvalue} invited`
 
 			translatevalue = (1/3 + ((invitesvalue - 3)/2)/3) * 100 - 100
@@ -1533,7 +1531,6 @@ class Calendar {
 
 			upgradeprogressitem3.classList.add('selectedupgradeprogressitembig')
 
-			upgradeprogressitem3.children[0].children[0].classList.remove('display-none')
 			upgradeprogressitem3.children[0].children[0].innerHTML = `${invitesvalue} invited!`
 
 			translatevalue = (2/3 + ((invitesvalue - 5)/5)/3) * 100 - 100
@@ -1545,13 +1542,14 @@ class Calendar {
 
 			upgradeprogressitem4.classList.add('selectedupgradeprogressitembig')
 
-			upgradeprogressitem4.children[0].children[0].classList.remove('display-none')
 			upgradeprogressitem4.children[0].children[0].innerHTML = `${invitesvalue} invited!`
 
 			translatevalue = 0
 		}
 
-		upgradereferprogressbarvalue.style.left = `${translatevalue}%`
+		setTimeout(function(){
+			upgradereferprogressbarvalue.style.left = `${translatevalue}%`
+		}, 1000)
 
 
 		let referafriendgenerate = getElement('referafriendgenerate')
@@ -4138,21 +4136,35 @@ async function getclientdata() {
 }
 
 async function getclientinfo() {
+	let requestbody = {
+		timezoneoffset: new Date().getTimezoneOffset(),
+	}
+
+	let referafriendinvitecode = getStorage('referafriendinvitecode')
+	if(referafriendinvitecode){
+		requestbody.referafriendinvitecode = referafriendinvitecode
+	}
+
 	const response2 = await fetch('/getclientinfo', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify({
-			timezoneoffset: new Date().getTimezoneOffset()
-		})
+		body: JSON.stringify(requestbody)
 	}).catch(e => e)
 	if (response2.status == 200) {
 		const data = await response2.json()
 		clientinfo = data.data
 
+		//block analytics
 		if (clientinfo.google_email == 'james.tsaggaris@gmail.com') {
 			setStorage('noanalytics', true)
+		}
+
+		//refer a friend
+		if(data.succeededreferafriend){
+			deleteStorage('referafriendinvitecode')
+			displayalert(`You successfully claimed your friend's invite!`)
 		}
 	} else if (response2.status == 401) {
 		showloginpopup()
@@ -12686,7 +12698,7 @@ function clickreferafriendfeaturegetpremiumnow(){
 	let upgradewrapcontent = getElement('upgradewrapcontent')
 	
 	let target = 0
-	let duration = 1000
+	let duration = 500
 	let start = upgradewrapcontent.scrollTop
 	let end = target
 	let change = end - start
@@ -12710,6 +12722,8 @@ function clickreferafriendfeaturegetpremiumnow(){
 	}
 	requestAnimationFrame(animateScroll, increment)
 }
+
+
 
 //AI CHAT
 

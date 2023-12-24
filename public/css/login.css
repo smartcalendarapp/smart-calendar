@@ -280,3 +280,10 @@ html, body{
 .filterblureffect{
 	filter:blur(5px)
 }
+
+
+
+.avatarimage {
+	height: 24px;
+	width: 24px;
+}

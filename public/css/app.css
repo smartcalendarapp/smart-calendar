@@ -2361,6 +2361,7 @@ ol{
 
 
 .upgradefeaturecard{
+	height:fit-content;
 	overflow:hidden;
 	transition:transform 0.2s, background-color 0.5s, color 0.5s, box-shadow 0.2s;
 }
@@ -2382,10 +2383,13 @@ ol{
 	background:linear-gradient(to bottom, var(--background-secondary), #00000000);
 	opacity:0;
 	transition: opacity 0.2s;
-	transform:scale(1.2);
 }
 .upgradefeaturecard:hover .upgradefeaturecardgradient{
 	opacity:1;
+}
+
+.upgradefeaturecard:hover .border-16px{
+	border-radius:0
 }
 
 .upgradefeaturehovergroup{
@@ -2898,10 +2902,7 @@ ol{
 }
 
 
-.avatarimage {
-	height: 36px;
-	width: 36px;
-}
+
 
 .avatarimage {
 	height: 36px;

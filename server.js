@@ -3267,11 +3267,35 @@ app.post('/getclientinfo', async (req, res, next) => {
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
 
+		//referral
+		let referafriendinvitecode = req.body.referafriendinvitecode
+
+		let succeededreferafriend;
+		let existinginviteobject = await getreferafriendinvitelink(referafriendinvitecode)
+		if(existinginviteobject){
+			if(!existinginviteobject.accepted.find(d => d.userid == userid)){
+			let inviteuser = await getUserById(existinginviteobject.userid)
+				if(inviteuser){
+					inviteuser.accountdata.referafriend.acceptedcount++
+
+					//invite db object
+					existinginviteobject.accepted.push({ userid: userid })
+					await setreferafriendinvitelink(existinginviteobject)
+
+					succeededreferafriend = true
+				}
+			}
+		}
+
+
+
+		//timezone
 		user.accountdata.timezoneoffset = req.body.timezoneoffset
 		cacheReminders(user)
+
 		await setUser(user)
 		
-		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, apple: user.accountdata.apple, appleid: user.appleid != null, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null, betatester: user.accountdata.betatester, referafriend: user.accountdata.referafriend } })
+		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, apple: user.accountdata.apple, appleid: user.appleid != null, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null, betatester: user.accountdata.betatester, referafriend: user.accountdata.referafriend }, succeededreferafriend: succeededreferafriend })
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
@@ -3460,12 +3484,34 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 		let email = req.body.email
 
 		//here3
+		//make sure not sent already
 		return res.end()
 
 		await sendEmail({
-			from: 'James at Smart Calendar <james@smartcalendar.us>',
+			from: 'Smart Calendar <referafriend@smartcalendar.us>',
 			to: email
 		})
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+	}
+})
+
+app.post('/getreferafriendinviteinfo', async (req, res) => {
+	try{
+		let inviteCode = req.body.inviteCode
+
+		let existinginviteobject = await getreferafriendinvitelink(inviteCode)
+		if(!existinginviteobject){
+			return res.status(401).json({ error: 'Invite link not found.' })
+		}
+
+		let inviteuser = await getUserById(existinginviteobject.userid)
+		if(!inviteuser){
+			return res.status(401).json({ error: 'Invite link not valid. The user who made this invite link has deleted their account.' })
+		}
+
+		return res.json({ data: { name: getUserName(inviteuser), googleprofilepicture: inviteuser.accountdata.google.profilepicture } })
 	}catch(err){
 		console.error(err)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
@@ -3505,8 +3551,8 @@ app.post('/generatereferafriendinvitelink', async (req, res) => {
 					let tempinvitelink = generateinvitelink()
 
 					//prevent duplicate, super rare tho
-					let existinginvitelink = await getreferafriendinvitelink(tempinvitelink)
-					if(!existinginvitelink){
+					let existinginviteobject = await getreferafriendinvitelink(tempinvitelink)
+					if(!existinginviteobject){
 						return tempinvitelink
 					}
 				}
