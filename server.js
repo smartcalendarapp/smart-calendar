@@ -455,6 +455,8 @@ async function sendEmail({ from, to, subject, htmlbody, textbody }){
 		return response
   } catch (error) {
     console.error(error)
+
+	return null
   }
 }
 
@@ -1630,6 +1632,11 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			req.session.user = { userid: newUser.userid }
 			req.session.tokens = tokens
 
+
+			if(req.session.user?.inviteafriend?.invitecode){
+				await validatereferafriendinvitecode(req)
+			}
+
 			await sendwelcomeemail(newUser)
 
 			return res.redirect(301, getfinalredirect())
@@ -1739,6 +1746,10 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 
 			req.session.user = { userid: newUser.userid }
 
+			if(req.session.user?.inviteafriend?.invitecode){
+				await validatereferafriendinvitecode(req)
+			}
+
 			await sendwelcomeemail(newUser)
 			return res.redirect(301, '/app')
 		}
@@ -1845,6 +1856,10 @@ app.post('/auth/apple/callback', async (req, res) => {
 			await createUser(newuser)
 
 			req.session.user = { userid: newuser.userid }
+
+			if(req.session.user?.inviteafriend?.invitecode){
+				await validatereferafriendinvitecode(req)
+			}
 
 			await sendwelcomeemail(newuser)
 
@@ -2051,6 +2066,11 @@ app.get('/login', async (req, res, next) => {
 	} else{
 		next()
 	}
+})
+
+app.get('/invite/:code', async (req, res, next) => {
+	const filepath = path.join(__dirname, 'public', 'invite.html')
+	res.sendFile(filepath)
 })
 
 app.get('/blog/:page', (req, res, next) => {
@@ -2980,7 +3000,12 @@ app.post('/signup', async (req, res, next) => {
 		
 		const user = new User({ username: username, password: password})
 		await createUser(user)
+
 		req.session.user = { userid: user.userid }
+
+		if(req.session.user?.inviteafriend?.invitecode){
+			await validatereferafriendinvitecode(req)
+		}
 
 		await sendwelcomeemail(user)
 
@@ -3267,29 +3292,6 @@ app.post('/getclientinfo', async (req, res, next) => {
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
 
-		//referral
-		let referafriendinvitecode = req.body.referafriendinvitecode
-
-		let succeededreferafriend;
-		if(referafriendinvitecode){
-			let existinginviteobject = await getreferafriendinvitelink(referafriendinvitecode)
-			if(existinginviteobject){
-				if(!existinginviteobject.accepted.find(d => d.userid == userid)){
-				let inviteuser = await getUserById(existinginviteobject.userid)
-					if(inviteuser){
-						inviteuser.accountdata.referafriend.acceptedcount++
-
-						//invite db object
-						existinginviteobject.accepted.push({ userid: userid, timestamp: Date.now() })
-						await setreferafriendinvitelink(existinginviteobject)
-
-						succeededreferafriend = true
-					}
-				}
-			}
-		}
-
-
 		//timezone
 		user.accountdata.timezoneoffset = req.body.timezoneoffset
 		cacheReminders(user)
@@ -3447,7 +3449,7 @@ app.post('/subscribecalendar', async (req, res) => {
 	  return pattern.test(url)
 	}
 		
-  const url = req.body.url
+  	const url = req.body.url
 	if(!isurl(url)) return res.status(401).end()
 	
 	try{
@@ -3482,35 +3484,120 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 		}
 
 
-		let email = req.body.email
+		let inviteemail = req.body.inviteemail
+		let invitecode = req.body.invitecode
 
-		//here3
-		//make sure not sent already
-		return res.end()
-
-		await sendEmail({
-			from: 'Smart Calendar <referafriend@smartcalendar.us>',
-			to: email
-		})
-	}catch(err){
-		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
-	}
-})
-
-app.post('/getreferafriendinviteinfo', async (req, res) => {
-	try{
-		let inviteCode = req.body.inviteCode
-
-		let existinginviteobject = await getreferafriendinvitelink(inviteCode)
+		let existinginviteobject = await getreferafriendinvitelink(invitecode)
 		if(!existinginviteobject){
 			return res.status(401).json({ error: 'Invite link not found.' })
 		}
 
 		let inviteuser = await getUserById(existinginviteobject.userid)
 		if(!inviteuser){
-			return res.status(401).json({ error: 'Invite link not valid. The user who made this invite link has deleted their account.' })
+			return res.status(401).json({ error: 'Invite link not valid. The user who made this invite link no longer exists.' })
 		}
+		
+
+		if(!isEmail(inviteemail)){
+			return res.status(401).json({ error: 'Please enter a valid email.' })
+		}
+
+
+		let response = await sendEmail({
+			from: 'Smart Calendar <friend@smartcalendar.us>',
+			to: inviteemail,
+			subject: `${getUserName(inviteuser)} invited you to Smart Calendar`,
+			htmlbody: `
+			<!DOCTYPE html>
+			<html>
+			<head>
+					<title>Smart Calendar | Invitation to Sign Up</title>
+					<style>
+							@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+					</style>
+			</head>
+			<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
+					<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 6px;">
+							<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />
+							<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
+									Hey!
+							</p>
+							<p style="font-size: 18px; color: #333;">
+								${getUserName(inviteuser)} invited you to sign up for Smart Calendar.
+							</p>
+							<p style="text-align: center;font-size: 14px; color: #333;padding:12px;">
+								Not sure what we are? We're a productivity app that uses AI to build your schedule, manage your tasks, and more. And, we've developed a super cool AI assistant that you can even talk to (we're so excited and we think you will love it)!
+							</p>
+
+							<p style="text-align: center;font-size: 14px; color: #333;padding:12px;">
+								<a href="https://smartcalendar.us/invite/${invitecode}" style="font-size:18px;padding:8px 16px;background-color:#13b03b;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Accept invite</span></a>
+							</p>
+
+							<p style="text-align: center;font-size: 14px; color: #333;padding:12px;">
+								By signing up, you'll also help your friend get closer to 1 month of free Premium. Let's give it a try!
+							</p>
+
+							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+							<p style="text-align: center; font-size: 18px; color: #333;">
+									Stay Productive,<br>
+									Smart Calendar | Where AI Meets Agenda
+							</p>
+
+					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+							<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
+								<p>You are receiving this email because a Smart Calendar user sent you an invitation. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+							<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
+							</div>
+
+					</div>
+			</body>
+			</html>`,
+			textbody: `Hey!
+			${getUserName(inviteuser)} invited you to sign up for Smart Calendar.
+
+			Not sure what we are? We're a productivity app that uses AI to build your schedule, manage your tasks, and more. And, we've developed a super cool AI assistant that you can even talk to (we're so excited and we think you will love it)!
+
+			Accept invite: https://smartcalendar.us/invite/${invitecode}.
+
+			By signing up, you'll also help your friend get closer to 1 month of free Premium. Let's give it a try!
+
+			Stay Productive,
+			Smart Calendar | Where AI Meets Agenda
+
+			You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?managenotifications=true.
+			(c) 2023 James Tsaggaris. All rights reserved.`
+		})
+
+
+
+		if(!response){
+			return res.status(401).json({ error: `Could not send an email to ${inviteemail}, please enter a valid email or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.` })
+		}
+
+		return res.end()
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+	}
+})
+
+app.post('/submitreferafriendinvitelink', async (req, res) => {
+	try{
+		let invitecode = req.body.inviteCode
+
+		let existinginviteobject = await getreferafriendinvitelink(invitecode)
+		if(!existinginviteobject){
+			return res.status(401).json({ error: 'Invite link not found.' })
+		}
+
+		let inviteuser = await getUserById(existinginviteobject.userid)
+		if(!inviteuser){
+			return res.status(401).json({ error: 'Invite link not valid. The user who made this invite link no longer exists.' })
+		}
+
+		//set req session
+		req.session.user.inviteafriend = { invitecode: invitecode, timestamp: Date.now() }
 
 		return res.json({ data: { name: getUserName(inviteuser), googleprofilepicture: inviteuser.accountdata.google.profilepicture } })
 	}catch(err){
@@ -3518,6 +3605,39 @@ app.post('/getreferafriendinviteinfo', async (req, res) => {
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
+
+async function validatereferafriendinvitecode(req){
+	if(!req.session?.user?.userid) return false
+
+	let referafriendinvitecode = req.session.user?.inviteafriend?.invitecode
+	let timestamp = req.session.user?.inviteafriend?.timestamp
+
+	if(Date.now() - timestamp > 60 * 60 * 1000) return false
+
+	if(!referafriendinvitecode) return false
+
+	//get invite db object
+	let existinginviteobject = await getreferafriendinvitelink(referafriendinvitecode)
+	if(!existinginviteobject) return false
+
+	//return if already accepted
+	if(existinginviteobject.accepted.find(d => d.userid == req.session.user.userid)) return false
+
+	//get inviter
+	let inviteuser = await getUserById(existinginviteobject.userid)
+	if(!inviteuser) return false
+
+	//save invite db object
+	existinginviteobject.accepted.push({ userid: req.session.user.userid, timestamp: Date.now() })
+	await setreferafriendinvitelink(existinginviteobject)
+
+	//save inviter object
+	inviteuser.accountdata.referafriend.acceptedcount = existinginviteobject.accepted.length
+	await setUser(inviteuser)
+
+	return true
+}
+
 
 app.post('/generatereferafriendinvitelink', async (req, res) => {
 	try{

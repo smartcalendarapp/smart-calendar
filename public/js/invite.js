@@ -76,9 +76,9 @@ async function checkinvitecode(){
 	
 	let invitecodeinput = getElement('invitecodeinput')
 
-	const inviteCode = pathSegments[pathSegments.length - 1] || (invitecodeinput && invitecodeinput.value)
+	const inviteCode = pathSegments[2] || (invitecodeinput && invitecodeinput.value)
 
-    if(inviteCode == 'invite'){
+    if(!inviteCode){
 		invitetitle.innerHTML = `
 		<div class="text-24px text-primary text-bold">Welcome to Smart Calendar</div>
 		<div class="padding-top-24px"></div>
@@ -95,8 +95,8 @@ async function checkinvitecode(){
 		if(invitecodeinput){
 			invitecodeinput.value = ''
 		}
-		
-		const response = await fetch('/getreferafriendinviteinfo', { 
+
+		const response = await fetch('/submitreferafriendinvitelink', { 
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -115,8 +115,6 @@ async function checkinvitecode(){
 			<div class="text-24px text-primary text-bold">Smart Calendar!</div>
 			<div class="padding-top-24px"></div>
 			<div class="text-18px text-primary text-bold">Sign up to accept your friend's invite</div>`
-
-			setStorage('referafriendinvitecode', inviteCode)
 
 		}else if(response.status == 401){
 			let data = await response.json()

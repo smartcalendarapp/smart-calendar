@@ -4136,21 +4136,14 @@ async function getclientdata() {
 }
 
 async function getclientinfo() {
-	let requestbody = {
-		timezoneoffset: new Date().getTimezoneOffset(),
-	}
-
-	let referafriendinvitecode = getStorage('referafriendinvitecode')
-	if(referafriendinvitecode){
-		requestbody.referafriendinvitecode = referafriendinvitecode
-	}
-
 	const response2 = await fetch('/getclientinfo', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json'
 		},
-		body: JSON.stringify(requestbody)
+		body: JSON.stringify({
+			timezoneoffset: new Date().getTimezoneOffset(),
+		})
 	}).catch(e => e)
 	if (response2.status == 200) {
 		const data = await response2.json()
@@ -4161,11 +4154,6 @@ async function getclientinfo() {
 			setStorage('noanalytics', true)
 		}
 
-		//refer a friend
-		if(data.succeededreferafriend){
-			deleteStorage('referafriendinvitecode')
-			displayalert(`You successfully claimed your friend's invite!`)
-		}
 	} else if (response2.status == 401) {
 		showloginpopup()
 	} else {
@@ -12650,6 +12638,10 @@ async function clickreferafriendinviteemail(event){
 			await referafriendgeneratelink()
 		}
 
+		if(!clientinfo.referafriend.invitelink){
+			return
+		}
+
 
 		try{
 			const response = await fetch('/sendinviteemailreferafriend', {
@@ -12658,14 +12650,13 @@ async function clickreferafriendinviteemail(event){
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					inviteemail: inviteemail
+					inviteemail: inviteemail,
+					invitecode: clientinfo.referafriend.invitelink
 				})
 			})
 	
 			if(response.status == 200){
-				let data = await response.json()
-
-				referafriendinvitebutton.innerHTML = 'Sent!'
+				referafriendinvitebutton.innerHTML = 'Successfully sent!'
 				setTimeout(function(){
 					referafriendinvitebutton.innerHTML = 'Email invite'
 				}, 3000)
