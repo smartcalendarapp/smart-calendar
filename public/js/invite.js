@@ -56,7 +56,7 @@ async function logingoogle(options){
 }
 
 //login with apple
-if(window.AppleID){
+if(typeof window.AppleID !== 'undefined' && typeof window.AppleID.auth.init === 'function'){
 	getElement('appleidwrap').classList.remove('display-none')
 	AppleID.auth.init({
 		clientId: 'us.smartcalendar.web',
@@ -68,7 +68,8 @@ if(window.AppleID){
 }
 
 
-async function checkinvitecode(){
+//invite stuff
+async function checkinvitecode(submit){
 	const url = new URL(window.location.href)
     const pathSegments = url.pathname.split('/')
 
@@ -86,7 +87,7 @@ async function checkinvitecode(){
 	let invitecontainerloaded = getElement('invitecontainerloaded')
 
     if(!invitecode){
-		if(!invitecontainer.classList.contains('display-none')){
+		if(submit && !invitecontainer.classList.contains('display-none')){
 			let errtext = `Please enter a code!`
 			inviteerror.innerHTML = errtext
 			inviteerror2.innerHTML = errtext
@@ -155,6 +156,8 @@ function letsdothis(){
 	invitecontainerloaded.classList.add('display-none')
 	invitecontainer.classList.add('display-none')
 	formcontainer.classList.remove('display-none')
+
+	google.accounts.id.prompt()
 }
 
 function getAvatar(googleprofilepicture, name){

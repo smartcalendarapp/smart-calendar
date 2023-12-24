@@ -133,7 +133,7 @@ async function logingoogle(options){
 
 
 //login with apple
-if(window.AppleID){
+if(typeof window.AppleID !== 'undefined' && typeof window.AppleID.auth.init === 'function'){
 	getElement('appleidwrap').classList.remove('display-none')
 	AppleID.auth.init({
 		clientId: 'us.smartcalendar.web',

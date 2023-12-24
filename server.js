@@ -3598,14 +3598,14 @@ app.post('/submitreferafriendinvitelink', async (req, res) => {
 		let invitecode = req.body.invitecode
 
 		if(!invitecode){
-			return res.status(401).json({ error: 'Invite link not found.' })
+			return res.status(401).json({ error: 'Invite link not found!' })
 		}
 
 		invitecode = invitecode.toLowerCase()
 
 		let existinginviteobject = await getreferafriendinvitelinkobject(invitecode)
 		if(!existinginviteobject){
-			return res.status(401).json({ error: 'Invite link not found.' })
+			return res.status(401).json({ error: 'Invite link not found!' })
 		}
 
 		let inviteuser = await getUserById(existinginviteobject.userid)

@@ -76,39 +76,49 @@ draw()
 //check for logged in user
 let clientinfo;
 async function getclientinfo() {
-	const response2 = await fetch('/getclientinfo', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({
-			timezoneoffset: new Date().getTimezoneOffset()
-		})
-	}).catch(e => e)
-	if (response2.status == 200) {
-		const data = await response2.json()
-		clientinfo = data.data
-		
-		let navbuttonsloggedout = getElement('navbuttonsloggedout')
-		let navbuttonsloggedin = getElement('navbuttonsloggedin')
-		let navbuttonsloggedout2 = getElement('navbuttonsloggedout2')
-		let navbuttonsloggedin2 = getElement('navbuttonsloggedin2')
+	let loggedin;
+	try{
+		const response2 = await fetch('/getclientinfo', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				timezoneoffset: new Date().getTimezoneOffset()
+			})
+		}).catch(e => e)
+		if (response2.status == 200) {
+			const data = await response2.json()
+			clientinfo = data.data
+			
+			let navbuttonsloggedout = getElement('navbuttonsloggedout')
+			let navbuttonsloggedin = getElement('navbuttonsloggedin')
+			let navbuttonsloggedout2 = getElement('navbuttonsloggedout2')
+			let navbuttonsloggedin2 = getElement('navbuttonsloggedin2')
 
-		navbuttonsloggedin.classList.remove('display-none')
-		navbuttonsloggedout.classList.add('display-none')
-		navbuttonsloggedin2.classList.remove('display-none')
-		navbuttonsloggedout2.classList.add('display-none')
+			navbuttonsloggedin.classList.remove('display-none')
+			navbuttonsloggedout.classList.add('display-none')
+			navbuttonsloggedin2.classList.remove('display-none')
+			navbuttonsloggedout2.classList.add('display-none')
 
-		//close one tap popup
-		setInterval(() => {
-			if(window.google) google.accounts.id.cancel()
-		}, 100)
-	} else if (response2.status == 401) {
-	} else {
-		return setTimeout(function () {
-			getclientinfo()
-		}, 3000)
+			loggedin = true
+
+		} else if (response2.status == 401) {
+		} else {
+			return setTimeout(function () {
+				getclientinfo()
+			}, 3000)
+		}
+	}catch(err){
+
 	}
+
+	if(!loggedin){
+		if(typeof google !== 'undefined'){
+			google.accounts.id.prompt()
+		}
+	}
+
 }
 getclientinfo()
 
