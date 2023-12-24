@@ -2069,7 +2069,7 @@ app.get('/login', async (req, res, next) => {
 })
 
 app.get('/invite/:code', async (req, res, next) => {
-	const filepath = path.join(__dirname, 'public', 'invite.html')
+	const filepath = path.join(__dirname, 'public', 'html', 'invite.html')
 	res.sendFile(filepath)
 })
 
@@ -3298,7 +3298,7 @@ app.post('/getclientinfo', async (req, res, next) => {
 
 		await setUser(user)
 		
-		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, apple: user.accountdata.apple, appleid: user.appleid != null, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null, betatester: user.accountdata.betatester, referafriend: user.accountdata.referafriend }, succeededreferafriend: succeededreferafriend })
+		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, apple: user.accountdata.apple, appleid: user.appleid != null, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null, betatester: user.accountdata.betatester, referafriend: user.accountdata.referafriend } })
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
