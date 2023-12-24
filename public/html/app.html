@@ -80,7 +80,7 @@
 	<div class="absolute top-0 padding-top-60px padding-bottom-60px border-box left-0 width-full z-index-2000 height-full display-flex justify-space-between center align-center fadetransition transition-duration-200 background-primary flex-column gap-24px" id="loadingscreen">
 		<div class="flex-1"></div>
 		<div class="flex-column display-flex gap-24px flex-1 justify-center">
-			<img src="logo.png" class="loadinglogo" class="flex-1 justify-self-center"></img>
+			<img src="../logo.png" class="loadinglogo" class="flex-1 justify-self-center"></img>
 		</div>
 		<div class="flex-column display-flex align-center gap-24px flex-1 justify-flex-end">
 			<div class="text-24px text-bold text-primary">Smart Calendar</div>
@@ -531,9 +531,9 @@
 			</div>
 
 			<div class="padding-left-12px padding-right-12px padding-bottom-48px padding-top-48px display-flex flex-column gap-24px overflow-y-auto" id="feedbackpopupinputwrap">
-				<div class="text-primary text-16px white-space-normal break-word">We'd love to hear your feedback as an early adopter! Please take only <span class="text-bold">2 min</span> to fill this out. We promise to read your feedback carefully.</div>
+				<div class="text-primary text-16px white-space-normal break-word">You made it here, so we know We'd love to hear your feedback as an early adopter! Please take only <span class="text-bold">2 min</span> to fill this out. We promise to read your feedback carefully.</div>
 
-				<div class="text-primary text-16px white-space-normal break-word">PS you will be automatically entered in our lottery to win 1 month of <span class="text-bold">Smart Calendar premium</span>!</div>
+				<div class="text-primary text-16px white-space-normal break-word">PS people who give constructive feedback will be invited to our exclusive <span class="text-bold">Beta Tester Program</span>!</div>
 
 				<div class="horizontalbar"></div>
 
@@ -590,7 +590,7 @@
 			</div>
 
 			<div class="padding-12px border-box display-flex flex-column gap-12px display-none" id="feedbackpopupdonewrap">
-				<div class="text-primary text-16px white-space-normal break-word">Thanks so much for the feedback! We'll definitely read it, and get back to you if we have any questions.<br><br>You've also been registered for the lottery for 1 month of Smart Calendar premium. We'll let you know if you win!</div>
+				<div class="text-primary text-16px white-space-normal break-word">Thank you so much for the feedback. We'll definitely read it soon, and get back to you if we have any questions.<br><br>If we find that your feedback is constructive, you will be invited to our exclusive <span class="text-bold">Beta Tester Program</span>! (we'll email you)</div>
 
 				<div class="text-center border-box width-full border-8px background-blue text-white padding-8px-12px pointer hover:background-blue-hover text-14px transition-duration-100" onclick="closefeedbackpopup()">Done</div>
 			</div>
@@ -1266,7 +1266,7 @@
 
 		<div class="width-full border-box padding-12px">
 			<a href="/" class="navtitle width-fit">
-				<img src="logo.png" class="buttonlogo"></img>
+				<img src="../logo.png" class="buttonlogo"></img>
 			
 				<div class="text-18px text-bold pointer-none nowrap text-primary">Smart Calendar</div>
 			</a>
@@ -1914,7 +1914,7 @@
 				</div>
 				
 				<a href="/" class="navtitle">
-					<img src="logo.png" class="buttonlogo"></img>
+					<img src="../logo.png" class="buttonlogo"></img>
 		
 					<div class="text-18px pointer-none nowrap text-bold">Smart Calendar</div>
 				</a>
@@ -2165,7 +2165,7 @@
 						</svg>
 
 
-						<div class="upgradecontent align-center padding-top-96px padding-bottom-96px width-full z-index-1 display-flex flex-column">
+						<div class="border-box upgradecontent align-center padding-top-96px padding-bottom-96px width-full z-index-1 display-flex flex-column">
 							<div class="text-center text-ultra-bold text-white text-48px small:text-36px">Upgrade to supercharge your productivity<br>with <span class="upgradegreentext">cutting-edge</span> tools</div>
 
 							<div class="padding-top-192px"></div>
@@ -2184,10 +2184,10 @@
 									<div class="background-green padding-top-12px padding-bottom-12px padding-left-16px padding-right-16px text-bold transition-duration-100 hover:background-green-hover text-14px pointer border-8px text-white" onclick="referafriendgeneratelink(event)" id="referafriendgeneratelinkbutton">Generate invite link</div>
 								</div>
 
-								<div class="display-flex flex-row align-center gap-24px justify-center display-none" id="referafriendsend">
-									<div class="display-flex flex-row align-center background-secondary border-8px padding-6px">
-										<div class="selecttext text-quaternary text-16px padding-left-12px padding-right-12px invitelinkwidth" id="referafriendemaillink"></div>
-										<div class="background-blue text-white hover:background-blue-hover transition-duration-100 padding-6px-12px text-14px pointer border-8px" onclick="copyreferafriendinvitelink(event)" id="referafriendcopybutton">Copy</div>
+								<div class="small:flex-column small:gap-12px display-flex flex-row align-center gap-24px justify-center display-none" id="referafriendsend">
+									<div class="small:flex-column small:gap-12px display-flex flex-row align-center background-secondary border-8px padding-6px small:padding-12px">
+										<div class="overflow-hidden selecttext text-quaternary text-16px padding-left-12px padding-right-12px invitelinkwidth" id="referafriendemaillink"></div>
+										<div class="background-blue border-box small:width-full text-center text-white hover:background-blue-hover transition-duration-100 padding-6px-12px text-14px pointer border-8px" onclick="copyreferafriendinvitelink(event)" id="referafriendcopybutton">Copy</div>
 									</div>
 
 									<div class="text-16px text-quaternary">or</div>
@@ -2376,7 +2376,7 @@
 
 								<div class="display-flex flex-row gap-24px small:flex-column">
 									<div class="flex-1 border-box padding-24px"></div>
-									<div class="hover:box-shadow-3 flex-1 border-box background-secondary border-16px padding-24px display-flex flex-column ">
+									<div class="flex-1 border-box background-secondary border-16px padding-24px display-flex flex-column ">
 										<div class="display-flex flex-column gap-12px">
 											<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">Something you want not here?</div>
 											<div class="white-space-normal text-quaternary text-16px">Please let us know your suggestions <span class="popupbutton text-blue width-fit pointer hover:text-decoration-underline" onclick="openfeedbackpopupmini(event)">here</span>. We take them seriously.</div>

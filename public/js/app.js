@@ -2868,8 +2868,8 @@ class Calendar {
 					</div>
 				</div>
 
-				<div class="text-18px text-bold text-white text-center">We need <span class="italics">your</span> your feedback! (only 2 min)</div>
-				<div class="text-16px text-white text-center">We're looking for feedback from early adopters like you. Please tell us what you think of Smart Calendar. You could win <span class="text-bold">1 month Premium access</span>!</div>
+				<div class="text-24px text-bold text-white text-center">Take a 2 minute break...</div>
+				<div class="text-16px text-white"><span class="text-italics text-bold">Before you return to your busy life</span>, please consider taking a 2 minute break to fill out our short feedback form :)<br><br>We ask this sincerely,<br>Smart Calendar Team</div>
 
 				<div class="transition-duration-100 text-bold text-14px border-round regularwhitebutton padding-8px-16px pointer" onclick="openfeedbackpopup(event)">Share my feedback</div>
 			</div>`

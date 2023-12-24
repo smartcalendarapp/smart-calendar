@@ -212,7 +212,7 @@ async function savechatconversation(conversationid, userid, chatconversation){
 	}
 }
 
-async function getreferafriendinvitelink(invitelink){
+async function getreferafriendinvitelinkobject(invitelink){
 	const params = {
 		TableName: 'smartcalendarreferafriendinvitelinks',
 		Key: {
@@ -226,14 +226,14 @@ async function getreferafriendinvitelink(invitelink){
 	return null
 }
 
-async function setreferafriendinvitelink(data){
+async function setreferafriendinvitelinkobject(data){
 	const params = {
 		TableName: 'smartcalendarreferafriendinvitelinks',
 		Item: marshall(data, { convertClassInstanceToMap: true, removeUndefinedValues: true })
-	  }
+	}
 	  
-	  await dynamoclient.send(new PutItemCommand(params))
-	  return data
+	await dynamoclient.send(new PutItemCommand(params))
+	return data
 }
 
 //DATABASE CLASSES
@@ -3487,7 +3487,11 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 		let inviteemail = req.body.inviteemail
 		let invitecode = req.body.invitecode
 
-		let existinginviteobject = await getreferafriendinvitelink(invitecode)
+		if(!invitecode){
+			return res.status(401).json({ error: 'Invite link not found.' })
+		}
+
+		let existinginviteobject = await getreferafriendinvitelinkobject(invitecode)
 		if(!existinginviteobject){
 			return res.status(401).json({ error: 'Invite link not found.' })
 		}
@@ -3584,9 +3588,13 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 
 app.post('/submitreferafriendinvitelink', async (req, res) => {
 	try{
-		let invitecode = req.body.inviteCode
+		let invitecode = req.body.invitecode
 
-		let existinginviteobject = await getreferafriendinvitelink(invitecode)
+		if(!invitecode){
+			return res.status(401).json({ error: 'Invite link not found.' })
+		}
+
+		let existinginviteobject = await getreferafriendinvitelinkobject(invitecode)
 		if(!existinginviteobject){
 			return res.status(401).json({ error: 'Invite link not found.' })
 		}
@@ -3617,7 +3625,7 @@ async function validatereferafriendinvitecode(req){
 	if(!referafriendinvitecode) return false
 
 	//get invite db object
-	let existinginviteobject = await getreferafriendinvitelink(referafriendinvitecode)
+	let existinginviteobject = await getreferafriendinvitelinkobject(referafriendinvitecode)
 	if(!existinginviteobject) return false
 
 	//return if already accepted
@@ -3629,7 +3637,7 @@ async function validatereferafriendinvitecode(req){
 
 	//save invite db object
 	existinginviteobject.accepted.push({ userid: req.session.user.userid, timestamp: Date.now() })
-	await setreferafriendinvitelink(existinginviteobject)
+	await setreferafriendinvitelinkobject(existinginviteobject)
 
 	//save inviter object
 	inviteuser.accountdata.referafriend.acceptedcount = existinginviteobject.accepted.length
@@ -3672,7 +3680,7 @@ app.post('/generatereferafriendinvitelink', async (req, res) => {
 					let tempinvitelink = generateinvitelink()
 
 					//prevent duplicate, super rare tho
-					let existinginviteobject = await getreferafriendinvitelink(tempinvitelink)
+					let existinginviteobject = await getreferafriendinvitelinkobject(tempinvitelink)
 					if(!existinginviteobject){
 						return tempinvitelink
 					}
@@ -3693,7 +3701,7 @@ app.post('/generatereferafriendinvitelink', async (req, res) => {
 				accepted: [],
 				emailinvited: []
 			}
-			await setreferafriendinvitelink(invitelinkobject)
+			await setreferafriendinvitelinkobject(invitelinkobject)
 
 			return res.json({ data: { invitelink: invitelink, acceptedcount: 0 } })
 		}

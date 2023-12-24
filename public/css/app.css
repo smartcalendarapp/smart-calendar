@@ -2329,7 +2329,7 @@ ol{
 
 
 .upgradebackgroundsplash{
-	background: linear-gradient(164deg, rgb(47, 69, 157) 5.88%, #3a64c9 36.55%, #9857f7 57.56%, rgb(195, 83, 216) 72.69%, rgb(233, 114, 58) 84.87%);
+	background: linear-gradient(164deg, rgb(83, 130, 241) 1.68%, #4c92fc 23.95%, #9c59ff 57.56%, rgb(211, 94, 233) 72.69%, rgb(251, 126, 67) 84.87%);
 	height:800px;
 }
 
@@ -2337,7 +2337,7 @@ ol{
 	background-clip: text;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
-	background-image: linear-gradient(99deg, #0bab26, #08ff41)
+	background-image: radial-gradient(#5aff76, #15f649)
 }
 
 .upgradecontent{
@@ -2476,7 +2476,7 @@ ol{
 }
 
 .feedbackgradient{
-	background: linear-gradient(to top right, #0e9d39, #12c353);
+	background: linear-gradient(to top right, #0d9035, #0fae49);
 }
 
 .modeoptionbutton:hover {

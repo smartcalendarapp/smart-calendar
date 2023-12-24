@@ -76,9 +76,10 @@ async function checkinvitecode(){
 	
 	let invitecodeinput = getElement('invitecodeinput')
 
-	const inviteCode = pathSegments[2] || (invitecodeinput && invitecodeinput.value)
+	let invitecode = pathSegments[2] || (invitecodeinput && invitecodeinput.value)
+	invitecode = invitecode.replace('https://smartcalendar.us/invite/', '')
 
-    if(!inviteCode){
+    if(!invitecode){
 		invitetitle.innerHTML = `
 		<div class="text-24px text-primary text-bold">Welcome to Smart Calendar</div>
 		<div class="padding-top-24px"></div>
@@ -86,7 +87,7 @@ async function checkinvitecode(){
 		<div class="forminputwrap width-full">
 			<input id="invitecodeinput" placeholder="Code or link" type="text" onkeydown="if(event.key == 'Enter'){ checkinvitecode() }" class="infoinput width-full"><span class="inputline"></span></input>
 		</div>
-		<div class="background-green width-full padding-top-12px padding-bottom-12px padding-left-16px padding-right-16px text-bold transition-duration-100 hover:background-green-hover text-14px pointer border-8px text-white" onclick="checkinvitecode()" id="referafriendgeneratelinkbutton">Submit</div>`
+		<div class="background-green width-full border-box padding-top-12px padding-bottom-12px padding-left-16px padding-right-16px text-bold transition-duration-100 hover:background-green-hover text-14px pointer border-8px text-white" onclick="checkinvitecode()" id="referafriendgeneratelinkbutton">Submit</div>`
 
 		return
     }
@@ -101,7 +102,7 @@ async function checkinvitecode(){
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ invitelink: inviteCode })
+			body: JSON.stringify({ invitecode: invitecode })
 		})
 
 		if(response.status == 200){
