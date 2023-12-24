@@ -3271,22 +3271,23 @@ app.post('/getclientinfo', async (req, res, next) => {
 		let referafriendinvitecode = req.body.referafriendinvitecode
 
 		let succeededreferafriend;
-		let existinginviteobject = await getreferafriendinvitelink(referafriendinvitecode)
-		if(existinginviteobject){
-			if(!existinginviteobject.accepted.find(d => d.userid == userid)){
-			let inviteuser = await getUserById(existinginviteobject.userid)
-				if(inviteuser){
-					inviteuser.accountdata.referafriend.acceptedcount++
+		if(referafriendinvitecode){
+			let existinginviteobject = await getreferafriendinvitelink(referafriendinvitecode)
+			if(existinginviteobject){
+				if(!existinginviteobject.accepted.find(d => d.userid == userid)){
+				let inviteuser = await getUserById(existinginviteobject.userid)
+					if(inviteuser){
+						inviteuser.accountdata.referafriend.acceptedcount++
 
-					//invite db object
-					existinginviteobject.accepted.push({ userid: userid, timestamp: Date.now() })
-					await setreferafriendinvitelink(existinginviteobject)
+						//invite db object
+						existinginviteobject.accepted.push({ userid: userid, timestamp: Date.now() })
+						await setreferafriendinvitelink(existinginviteobject)
 
-					succeededreferafriend = true
+						succeededreferafriend = true
+					}
 				}
 			}
 		}
-
 
 
 		//timezone
