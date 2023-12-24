@@ -295,3 +295,18 @@ html, body{
 	fill: none;
 	display: block;
 }
+.rotate180{
+	transform:rotate(180deg)
+}
+
+
+.buttonfillquaternary {
+	fill: var(--text-quaternary);
+	height: 18px;
+	width: 18px;
+	display: block;
+	pointer-events: none;
+}
+.hoverback:hover svg{
+	fill:var(--text-quinary)
+}

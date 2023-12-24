@@ -3576,6 +3576,7 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 		})
 
 
+		console.log(response)
 
 		if(!response){
 			return res.status(401).json({ error: `Could not send an email to ${inviteemail}, please enter a valid email or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.` })

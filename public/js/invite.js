@@ -74,7 +74,8 @@ async function checkinvitecode(submit){
     const pathSegments = url.pathname.split('/')
 
 	let inviteerror = getElement('inviteerror')
-	let inviteerror2 = getElement('inviteerror2')
+
+	inviteerror.classList.add('display-none')
 	
 	let invitecodeinput = getElement('invitecodeinput')
 
@@ -89,8 +90,10 @@ async function checkinvitecode(submit){
     if(!invitecode){
 		if(submit && !invitecontainer.classList.contains('display-none')){
 			let errtext = `Please enter a code!`
+
+			inviteerror.classList.remove('display-none')
+
 			inviteerror.innerHTML = errtext
-			inviteerror2.innerHTML = errtext
 		}else{
 			invitecontainer.classList.remove('display-none')
 		}
@@ -98,10 +101,6 @@ async function checkinvitecode(submit){
     }
 
 	try{
-		if(invitecodeinput){
-			invitecodeinput.value = ''
-		}
-
 		let checkinvitesubmitbutton = getElement('checkinvitesubmitbutton')
 		checkinvitesubmitbutton.innerHTML = 'Loading...'
 
@@ -131,14 +130,16 @@ async function checkinvitecode(submit){
 			
 			let errtext = `${data.error}`
 			inviteerror.innerHTML = errtext
-			inviteerror2.innerHTML = errtext
+
+			inviteerror.classList.remove('display-none')
 		}
 	}catch(err){
 		invitecontainer.classList.remove('display-none')
 
 		let errtext = `An unexpected error ocurred, please try again.`
 		inviteerror.innerHTML = errtext
-		inviteerror2.innerHTML = errtext
+
+		inviteerror.classList.remove('display-none')
 
 		console.log(err)
 	}
@@ -148,6 +149,16 @@ async function checkinvitecode(submit){
 }
 checkinvitecode()
 
+function clickback(){
+	let invitecontainer = getElement('invitecontainer')
+	let formcontainer = getElement('formcontainer')
+	let invitecontainerloaded = getElement('invitecontainerloaded')
+
+	invitecontainerloaded.classList.add('display-none')
+	invitecontainer.classList.remove('display-none')
+	formcontainer.classList.add('display-none')
+}
+
 function letsdothis(){
 	let invitecontainer = getElement('invitecontainer')
 	let formcontainer = getElement('formcontainer')
@@ -156,6 +167,10 @@ function letsdothis(){
 	invitecontainerloaded.classList.add('display-none')
 	invitecontainer.classList.add('display-none')
 	formcontainer.classList.remove('display-none')
+	
+	let inviteerror = getElement('inviteerror')
+
+	inviteerror.classList.add('display-none')
 
 	google.accounts.id.prompt()
 }
@@ -171,7 +186,7 @@ function getAvatar(googleprofilepicture, name){
 		return DEFAULTCOLORS[sum % DEFAULTCOLORS.length]
 	}
 
-	const avataricon = `<div style="background-color: ${nameToColor(name)}" class="border-round avatarimage pointer display-flex flex-row align-center justify-center"><div class="text-20px text-white text-bold">${name.slice(0, 1)}</div>`
+	const avataricon = `<div style="background-color: ${nameToColor(name)}" class="border-round avatarimage pointer display-flex flex-row align-center justify-center"><div class="text-20px text-white text-bold">${name.slice(0, 1).toUpperCase()}</div>`
 	
 	let avatar = googleprofilepicture ? `<img class="border-round avatarimage" src="${googleprofilepicture}" alt="Profile picture"></img>` : avataricon
 	

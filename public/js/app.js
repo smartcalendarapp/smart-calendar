@@ -1501,7 +1501,7 @@ class Calendar {
 
 		let upgradereferprogressbarvalue = getElement('upgradereferprogressbarvalue')
 
-		upgradeprogressitem1.children[0].children[0].innerHTML = `None invited`
+		upgradeprogressitem1.children[0].children[0].innerHTML = `0 invited`
 		upgradeprogressitem1.children[0].children[0].innerHTML = `3 invited`
 		upgradeprogressitem1.children[0].children[0].innerHTML = `5 invited`
 		upgradeprogressitem1.children[0].children[0].innerHTML = `10 invited`
@@ -5731,7 +5731,7 @@ function updateAvatar(){
 		return DEFAULTCOLORS[sum % DEFAULTCOLORS.length]
 	}
 
-	const avataricon = `<div style="background-color: ${nameToColor(getUserName())}" class="border-round avatarimage pointer display-flex flex-row align-center justify-center"><div class="text-20px text-white text-bold">${getUserName().slice(0, 1)}</div>`
+	const avataricon = `<div style="background-color: ${nameToColor(getUserName())}" class="border-round avatarimage pointer display-flex flex-row align-center justify-center"><div class="text-20px text-white text-bold">${getUserName().slice(0, 1).toUpperCase()}</div>`
 	
 	let avatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : avataricon}` : avataricon
 	
@@ -12693,6 +12693,9 @@ async function clickreferafriendinviteemail(event){
 			})
 	
 			if(response.status == 200){
+				let referfriendemailform = getElement('referfriendemailform')
+				referfriendemailform.reset()
+
 				referafriendinvitebutton.innerHTML = 'Successfully sent!'
 				setTimeout(function(){
 					referafriendinvitebutton.innerHTML = 'Email invite'
@@ -13439,7 +13442,7 @@ function updateaichat(){
 	}
 
 
-	const avataricon = `<div style="background-color: ${nameToColor(getUserName())}" class="border-round avatarimage pointer display-flex flex-row align-center justify-center"><div class="text-20px text-white text-bold">${getUserName().slice(0, 1)}</div></div>`
+	const avataricon = `<div style="background-color: ${nameToColor(getUserName())}" class="border-round avatarimage pointer display-flex flex-row align-center justify-center"><div class="text-20px text-white text-bold">${getUserName().slice(0, 1).toUpperCase()}</div></div>`
 	const useravatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" height="36" width="36" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : avataricon}` : avataricon
 	const username = getUserName()
 

@@ -1358,7 +1358,7 @@
 				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
 					<div class="display-flex flex-column gap-12px">
 						<div class="text-24px text-primary text-ultra-bold">Stay on track with reminders</div>
-						<div class="text-18px text-quaternary">Get notified when events start, tasks are due, and more. We strongly recommend choosing <span class="text-ultra-bold gradienttextgreen">Email</span> and <span class="text-ultra-bold gradienttextgreen">Discord</span> (if you use it).</div>
+						<div class="text-18px text-quaternary">Get notified when events start, tasks are due, and more. We strongly recommend choosing <span class="text-bold gradienttextgreen">Email</span> and <span class="text-bold gradienttextgreen">Discord</span> (if you use it).</div>
 					</div>
 
 					<div class="display-flex align-self-center flex-column gap-24px">
@@ -2193,7 +2193,7 @@
 
 									<div class="text-16px text-quaternary">or</div>
 
-									<form class="display-flex flex-row align-center gap-12px justify-center" onsubmit="clickreferafriendinviteemail()">
+									<form class="display-flex flex-row align-center gap-12px justify-center" onsubmit="clickreferafriendinviteemail()" id="referfriendemailform">
 										<div class="border-8px relative overflow-hidden display-flex background-secondary">
 											<input id="referafriendemail" class="infoinput text-16px" type="email" placeholder="Your friend's email"></input>
 											<span class="inputline"></span>
@@ -2213,8 +2213,7 @@
 
 										<div class="z-index-1 align-center display-flex flex-column gap-6px" id="upgradeprogressitem1">
 											<div class="backdrop-blur relative box-shadow background-tint-1 border-round upgradereferprogressitem">
-												<div class="nowrap absolute upgradereferprogressitemtexttop text-quaternary text-14px">None invited</div>
-												<div class="nowrap absolute upgradereferprogressitemtext text-quaternary text-14px">No premium</div>
+												<div class="nowrap absolute upgradereferprogressitemtexttop text-quaternary text-14px">0 invited</div>
 											</div>
 										</div>
 
@@ -2246,7 +2245,7 @@
 							<div class="padding-top-48px"></div>
 
 							<div class="pointer-none display-flex flex-column gap-12px align-center">
-								<div class="text-16px text-center nowrap text-quaternary pointer-none">Learn more about Premium</div>
+								<div class="text-16px text-center nowrap text-quaternary pointer-none">Learn more about premium</div>
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge buttonquaternary learnmorebutton">
 								<g>
 								<path d="M226.201 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
@@ -2272,7 +2271,7 @@
 										</div>
 										<div class="relative upgradefeaturecardimgwrap">
 											<div class="z-index-1 upgradefeaturecardgradient absolute top-0 left-0 right-0 bottom-0"></div>
-											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column padding-bottom-0">
+											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column ">
 												<div class="text-primary text-16px text-quaternary white-space-normal">Some more text</div>
 
 												<div class="text-center border-box text-bold width-full background-blue text-primary hover:background-blue-hover pointer-auto transition-duration-100 padding-12px text-14px pointer border-8px" onclick="clickreferafriendfeaturegetpremiumnow()">Get premium now</div>
@@ -2291,7 +2290,7 @@
 										</div>
 										<div class="relative upgradefeaturecardimgwrap">
 											<div class="z-index-1 upgradefeaturecardgradient absolute top-0 left-0 right-0 bottom-0"></div>
-											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column padding-bottom-0">
+											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column ">
 												<div class="text-primary text-16px text-quaternary white-space-normal">Some more text</div>
 
 												<div class="text-center border-box text-bold width-full background-blue text-primary hover:background-blue-hover pointer-auto transition-duration-100 padding-12px text-14px pointer border-8px" onclick="clickreferafriendfeaturegetpremiumnow()">Get premium now</div>
@@ -2310,7 +2309,7 @@
 										</div>
 										<div class="relative upgradefeaturecardimgwrap">
 											<div class="z-index-1 upgradefeaturecardgradient absolute top-0 left-0 right-0 bottom-0"></div>
-											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column padding-bottom-0">
+											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column ">
 												<div class="text-primary text-16px text-quaternary white-space-normal">Some more text</div>
 
 												<div class="text-center border-box text-bold width-full background-blue text-primary hover:background-blue-hover pointer-auto transition-duration-100 padding-12px text-14px pointer border-8px" onclick="clickreferafriendfeaturegetpremiumnow()">Get premium now</div>
@@ -2336,7 +2335,7 @@
 										</div>
 										<div class="relative upgradefeaturecardimgwrap">
 											<div class="z-index-1 upgradefeaturecardgradient absolute top-0 left-0 right-0 bottom-0"></div>
-											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column padding-bottom-0">
+											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column ">
 												<div class="text-primary text-16px text-quaternary white-space-normal">Some more text</div>
 
 												<div class="text-center border-box text-bold width-full background-blue text-primary hover:background-blue-hover pointer-auto transition-duration-100 padding-12px text-14px pointer border-8px" onclick="clickreferafriendfeaturegetpremiumnow()">Get premium now</div>
@@ -2355,7 +2354,7 @@
 										</div>
 										<div class="relative upgradefeaturecardimgwrap">
 											<div class="z-index-1 upgradefeaturecardgradient absolute top-0 left-0 right-0 bottom-0"></div>
-											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column padding-bottom-0">
+											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column ">
 												<div class="text-primary text-16px text-quaternary white-space-normal">Some more text</div>
 
 												<div class="text-center border-box text-bold width-full background-blue text-primary hover:background-blue-hover pointer-auto transition-duration-100 padding-12px text-14px pointer border-8px" onclick="clickreferafriendfeaturegetpremiumnow()">Get premium now</div>
@@ -2374,7 +2373,7 @@
 										</div>
 										<div class="relative upgradefeaturecardimgwrap">
 											<div class="z-index-1 upgradefeaturecardgradient absolute top-0 left-0 right-0 bottom-0"></div>
-											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column padding-bottom-0">
+											<div class="z-index-2 upgradefeaturehovergroup absolute top-0 bottom-0 left-0 right-0 border-box padding-24px display-flex justify-space-between flex-column ">
 												<div class="text-primary text-16px text-quaternary white-space-normal">Some more text</div>
 
 												<div class="text-center border-box text-bold width-full background-blue text-primary hover:background-blue-hover pointer-auto transition-duration-100 padding-12px text-14px pointer border-8px" onclick="clickreferafriendfeaturegetpremiumnow()">Get premium now</div>
