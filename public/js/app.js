@@ -1500,6 +1500,7 @@ class Calendar {
 		upgradeprogressitem4.classList.remove('selectedupgradeprogressitembig')
 
 		let upgradereferprogressbarvalue = getElement('upgradereferprogressbarvalue')
+		let upgradereferprogressbarvaluemobile = getElement('upgradereferprogressbarvaluemobile')
 
 		upgradeprogressitem1.children[0].children[0].innerHTML = `0 invited`
 		upgradeprogressitem1.children[0].children[0].innerHTML = `3 invited`
@@ -1547,9 +1548,8 @@ class Calendar {
 			translatevalue = 0
 		}
 
-		setTimeout(function(){
-			upgradereferprogressbarvalue.style.left = `${translatevalue}%`
-		}, 1000)
+		upgradereferprogressbarvalue.style.left = `${translatevalue}%`
+		upgradereferprogressbarvaluemobile.style.top = `${translatevalue}%`
 
 
 		let referafriendgenerate = getElement('referafriendgenerate')
@@ -6819,7 +6819,7 @@ async function dev(input){
 	}
 	
 	function formatoutput(temp){
-		if(typeof temp === 'Object' && temp !== null){
+		if(typeof temp === 'object' && temp !== null){
 			return JSON.stringify(temp)
 		}
 		return temp
@@ -8529,19 +8529,19 @@ async function submitfeedbackpopup(){
 				useWorker: true
 			})
 
-			await myconfetti({
-				particleCount: 100,
-				gravity: 0.8,
-				startVelocity: 30,
-				decay: 0.96,
-				ticks: 300,
-				origin: {
-					x: 0.5,
-					y: 1
-				}
-			})
-
 			try{
+				await myconfetti({
+					particleCount: 100,
+					gravity: 0.8,
+					startVelocity: 30,
+					decay: 0.96,
+					ticks: 300,
+					origin: {
+						x: 0.5,
+						y: 1
+					}
+				})
+
 				myconfetti.reset()
 			}catch(e){}
 		}else{
@@ -11842,19 +11842,19 @@ async function accepteventsuggestion(event, id){
 		useWorker: true
 	})
 
-	await myconfetti({
-		particleCount: 30,
-		gravity: 0.8,
-		startVelocity: 20,
-		decay: 0.94,
-		ticks: 150,
-		origin: {
-			x: (event.clientX) / (window.innerWidth || document.body.clientWidth),
-			y: (event.clientY) / (window.innerHeight || document.body.clientHeight)
-		}
-	})
-
 	try{
+		await myconfetti({
+			particleCount: 30,
+			gravity: 0.8,
+			startVelocity: 20,
+			decay: 0.94,
+			ticks: 150,
+			origin: {
+				x: (event.clientX) / (window.innerWidth || document.body.clientWidth),
+				y: (event.clientY) / (window.innerHeight || document.body.clientHeight)
+			}
+		})
+
 		myconfetti.reset()
 	}catch(e){}
 }
@@ -11924,20 +11924,20 @@ async function todocompleted(event, id) {
 			useWorker: true
 		})
 		
-		await myconfetti({
-			spread: 30,
-			particleCount: 30,
-			gravity: 0.8,
-			startVelocity: 20,
-			decay: 0.94,
-			ticks: 150,
-			origin: {
-				x: (itemrect.x + itemrect.width / 2) / (window.innerWidth || document.body.clientWidth),
-				y: (itemrect.y + itemrect.height / 2) / (window.innerHeight || document.body.clientHeight)
-			}
-		})
-
 		try{
+			await myconfetti({
+				spread: 30,
+				particleCount: 30,
+				gravity: 0.8,
+				startVelocity: 20,
+				decay: 0.94,
+				ticks: 150,
+				origin: {
+					x: (itemrect.x + itemrect.width / 2) / (window.innerWidth || document.body.clientWidth),
+					y: (itemrect.y + itemrect.height / 2) / (window.innerHeight || document.body.clientHeight)
+				}
+			})
+
 			myconfetti.reset()
 		}catch(e){}
 	}
@@ -12593,19 +12593,19 @@ async function referafriendgeneratelink(event){
 
 				let upgradereferprogressbarcontainer = getElement('upgradereferprogressbarcontainer')
 
-				await myconfetti({
-					particleCount: 100,
-					gravity: 0.8,
-					startVelocity: 30,
-					decay: 0.96,
-					ticks: 300,
-					origin: {
-						x: 0.5,
-						y: (upgradereferprogressbarcontainer.getBoundingClientRect().top + upgradereferprogressbarcontainer.getBoundingClientRect().height) / (window.innerHeight || document.body.clientHeight),
-					}
-				})
-
 				try{
+					await myconfetti({
+						particleCount: 100,
+						gravity: 0.8,
+						startVelocity: 30,
+						decay: 0.96,
+						ticks: 300,
+						origin: {
+							x: 0.5,
+							y: (upgradereferprogressbarcontainer.getBoundingClientRect().top + upgradereferprogressbarcontainer.getBoundingClientRect().height) / (window.innerHeight || document.body.clientHeight),
+						}
+					})
+
 					myconfetti.reset()
 				}catch(e){}
 			}
@@ -16162,9 +16162,9 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				}
 			}))
 		}
-		await Promise.all(promises)
-
 		try{
+			await Promise.all(promises)
+
 			myconfetti.reset()
 		}catch(e){}
 	}catch(err){
@@ -17526,20 +17526,20 @@ async function eventcompleted(event, id) {
 		if (!itemelement) return
 		let itemrect = itemelement.getBoundingClientRect()
 
-		await myconfetti({
-			spread: 30,
-			particleCount: 30,
-			gravity: 0.8,
-			startVelocity: 20,
-			decay: 0.94,
-			ticks: 150,
-			origin: {
-				x: (itemrect.x + itemrect.width / 2) / (window.innerWidth || document.body.clientWidth),
-				y: (itemrect.y + itemrect.height / 2) / (window.innerHeight || document.body.clientHeight)
-			}
-		})
-
 		try{
+			await myconfetti({
+				spread: 30,
+				particleCount: 30,
+				gravity: 0.8,
+				startVelocity: 20,
+				decay: 0.94,
+				ticks: 150,
+				origin: {
+					x: (itemrect.x + itemrect.width / 2) / (window.innerWidth || document.body.clientWidth),
+					y: (itemrect.y + itemrect.height / 2) / (window.innerHeight || document.body.clientHeight)
+				}
+			})
+
 			myconfetti.reset()
 		}catch(e){}
 

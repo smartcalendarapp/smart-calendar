@@ -399,7 +399,7 @@ class User{
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false }
-const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], betatester: false, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
+const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, loggedindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], betatester: false, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
 const MODELEVENT = { start: {}, end: {}, endbefore: {}, startafter: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0, parentid: null, subtasksuggestions: [], gotsubtasksuggestions: false, iseventsuggestion: false, goteventsuggestion: false, autoschedulelocked: false }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#18a4f5', isprimary: false, subscriptionurl: null, lastmodified: 0  }
@@ -984,6 +984,16 @@ async function processengagementalerts(){
 	}
 }
 
+function getLoginData(req){
+	return {
+		ip: req?.headers['x-forwarded-for']?.split(',')[0],
+		useragent: req?.headers['user-agent'],
+		iosapp: req?.cookies?.iosapp === 'true',
+		hotjarid: Object.keys(req?.cookies)?.find(d => d.startsWith('_hjSessionUser_'))?.replace('_hjSessionUser_', ''),
+		timestamp: Date.now()
+	}
+}
+
 
 function isEmail(str) {
 	let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -1563,6 +1573,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			user.accountdata.google.firstname = firstname
 			user.accountdata.google.profilepicture = profilepicture
 			user.accountdata.lastloggedindate = Date.now()
+			user.accountdata.logindata.push(getLoginData(req))
 			user.googleid = googleid
 			user.google_email = email
 			await setUser(user)
@@ -1589,6 +1600,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			loggedInUser.accountdata.google.firstname = firstname
 			loggedInUser.accountdata.google.profilepicture = profilepicture
 			loggedInUser.accountdata.lastloggedindate = Date.now()
+			loggedInUser.accountdata.logindata.push(getLoginData(req))
 			await setUser(loggedInUser)
 
 			return res.redirect(301, getfinalredirect())
@@ -1611,6 +1623,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 				userWithEmail.accountdata.google.firstname = firstname
 				userWithEmail.accountdata.google.profilepicture = profilepicture
 				userWithEmail.accountdata.lastloggedindate = Date.now()
+				userWithEmail.accountdata.logindata.push(getLoginData(req))
 				userWithEmail.googleid = googleid
 				userWithEmail.google_email = email
 				await setUser(userWithEmail)
@@ -1627,6 +1640,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			newUser.accountdata.google.name = name
 			newUser.accountdata.google.firstname = firstname
 			newUser.accountdata.google.profilepicture = profilepicture
+			newUser.accountdata.logindata.push(getLoginData(req))
 			await createUser(newUser)
 
 			if(!req.session.user){
@@ -1686,6 +1700,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 			user.accountdata.google.firstname = firstname
 			user.accountdata.google.profilepicture = profilepicture
 			user.accountdata.lastloggedindate = Date.now()
+			user.accountdata.logindata.push(getLoginData(req))
 			user.googleid = googleid
 			user.google_email = email
 			await setUser(user)
@@ -1710,6 +1725,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 			loggedInUser.accountdata.google.firstname = firstname
 			loggedInUser.accountdata.google.profilepicture = profilepicture
 			loggedInUser.accountdata.lastloggedindate = Date.now()
+			loggedInUser.accountdata.logindata.push(getLoginData(req))
 			await setUser(loggedInUser)
 
 			return res.redirect(301, '/app')
@@ -1730,6 +1746,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 				userWithEmail.accountdata.google.firstname = firstname
 				userWithEmail.accountdata.google.profilepicture = profilepicture
 				userWithEmail.accountdata.lastloggedindate = Date.now()
+				userWithEmail.accountdata.logindata.push(getLoginData(req))
 				userWithEmail.googleid = googleid
 				userWithEmail.google_email = email
 				await setUser(userWithEmail)
@@ -1746,6 +1763,7 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 			newUser.accountdata.google.name = name
 			newUser.accountdata.google.firstname = firstname
 			newUser.accountdata.google.profilepicture = profilepicture
+			newUser.accountdata.logindata.push(getLoginData(req))
 			await createUser(newUser)
 
 			if(!req.session.user){
@@ -1834,6 +1852,7 @@ app.post('/auth/apple/callback', async (req, res) => {
 		let existinguser = await getUserByAppleId(appleuserID)
 		if(existinguser){
 			existinguser.accountdata.lastloggedindate = Date.now()
+			existinguser.accountdata.logindata.push(getLoginData(req))
 			existinguser.accountdata.apple.email = appleuseremail
 
 			await setUser(existinguser)
@@ -1849,6 +1868,7 @@ app.post('/auth/apple/callback', async (req, res) => {
 			loggedInUser.appleid = appleuserID
 			loggedInUser.accountdata.apple.email = appleuseremail
 			loggedInUser.accountdata.lastloggedindate = Date.now()
+			existinguser.accountdata.logindata.push(getLoginData(req))
 
 			await setUser(loggedInUser)
 
@@ -1859,6 +1879,7 @@ app.post('/auth/apple/callback', async (req, res) => {
 		if(true){
 			const newuser = addmissingpropertiestouser(new User({ appleid: appleuserID }))
 			newuser.accountdata.apple.email = appleuseremail
+			newuser.accountdata.logindata.push(getLoginData(req))
 			
 			await createUser(newuser)
 
@@ -2969,6 +2990,7 @@ app.post('/login', async (req, res, next) => {
 		
 		req.session.user = { userid: user.userid }
 		user.accountdata.lastloggedindate = Date.now()
+		user.accountdata.logindata.push(getLoginData(req))
 
 		await setUser(user)
 		return res.redirect(301, '/app')
@@ -3009,6 +3031,7 @@ app.post('/signup', async (req, res, next) => {
 		}
 		
 		const user = new User({ username: username, password: password})
+		user.accountdata.logindata.push(getLoginData(req))
 		await createUser(user)
 
 		if(!req.session.user){
@@ -3641,7 +3664,6 @@ app.post('/submitreferafriendinvitelink', async (req, res) => {
 
 //validate when sign up
 async function validatereferafriendinvitecode(req){
-	console.warn(req)
 	if(!req.session?.user?.userid) return false
 
 	let referafriendinvitecode = req.session.user?.inviteafriend?.invitecode
@@ -3657,16 +3679,97 @@ async function validatereferafriendinvitecode(req){
 	let existinginviteobject = await getreferafriendinvitelinkobject(referafriendinvitecode)
 	if(!existinginviteobject) return false
 
-	//return if already accepted
-	if(existinginviteobject.accepted.find(d => d.userid == req.session.user.userid)) return false
+	if(existinginviteobject.whitelisted == true){
+		//return if already in accepted
+		if(existinginviteobject.accepted.find(d => d.userid == req.session.user.userid)) return false
+
+		//save invite db object accepted
+		existinginviteobject.accepted.push({ userid: req.session.user.userid, logindata: getLoginData(req) })
+		await setreferafriendinvitelinkobject(existinginviteobject)
+	}else{
+		//return if already in pending
+		if(existinginviteobject.pending.find(d => d.userid == req.session.user.userid)) return false
+
+		//save invite db object pending
+		existinginviteobject.pending.push({ userid: req.session.user.userid, logindata: getLoginData(req) })
+		await setreferafriendinvitelinkobject(existinginviteobject)
+	}
 
 	//get inviter
 	let inviteuser = await getUserById(existinginviteobject.userid)
 	if(!inviteuser) return false
 
+	//save inviter object
+	inviteuser.accountdata.referafriend.acceptedcount = existinginviteobject.accepted.length
+	await setUser(inviteuser)
+
+	return true
+}
+
+async function approvereferafriendinvitecode(invitecode, userid){
+	invitecode = invitecode.toLowerCase()
+
+	//get invite db object
+	let existinginviteobject = await getreferafriendinvitelinkobject(invitecode)
+	if(!existinginviteobject) return false
+
+	//fix properties
+	if(!existinginviteobject.pending) existinginviteobject.pending = []
+	if(!existinginviteobject.accepted) existinginviteobject.accepted = []
+	if(!existinginviteobject.rejected) existinginviteobject.accepted = []
+	if(!existinginviteobject.emailinvited) existinginviteobject.emailinvited = []
+
+	if(!existinginviteobject.pending.find(d => d.userid == userid)) return false
+
+	let tempitem = existinginviteobject.pending.find(d => d.userid == userid)
+	existinginviteobject.accepted.push(tempitem)
+	existinginviteobject.pending = existinginviteobject.pending.filter(d => d.userid != userid)
+
 	//save invite db object
-	existinginviteobject.accepted.push({ userid: req.session.user.userid, timestamp: Date.now() })
+	existinginviteobject.pending.push({ userid: req.session.user.userid, logindata: getLoginData(req) })
 	await setreferafriendinvitelinkobject(existinginviteobject)
+	
+	//get inviter
+	let inviteuser = await getUserById(existinginviteobject.userid)
+	if(!inviteuser) return false
+
+	//save inviter object
+	inviteuser.accountdata.referafriend.acceptedcount = existinginviteobject.accepted.length
+	await setUser(inviteuser)
+
+	return true
+}
+
+async function rejectreferafriendinvitecode(invitecode, userid){
+	invitecode = invitecode.toLowerCase()
+
+	//get invite db object
+	let existinginviteobject = await getreferafriendinvitelinkobject(invitecode)
+	if(!existinginviteobject) return false
+
+	//fix properties
+	if(!existinginviteobject.pending) existinginviteobject.pending = []
+	if(!existinginviteobject.accepted) existinginviteobject.accepted = []
+	if(!existinginviteobject.rejected) existinginviteobject.accepted = []
+	if(!existinginviteobject.emailinvited) existinginviteobject.emailinvited = []
+
+
+	//find item
+	if(!existinginviteobject.pending.find(d => d.userid == userid)) return false
+
+	let tempitem = existinginviteobject.pending.find(d => d.userid == userid)
+	existinginviteobject.rejected.push(tempitem)
+	existinginviteobject.pending = existinginviteobject.pending.filter(d => d.userid != userid)
+
+	existinginviteobject.whitelisted = false
+
+	//save invite db object
+	existinginviteobject.pending.push({ userid: req.session.user.userid, logindata: getLoginData(req) })
+	await setreferafriendinvitelinkobject(existinginviteobject)
+	
+	//get inviter
+	let inviteuser = await getUserById(existinginviteobject.userid)
+	if(!inviteuser) return false
 
 	//save inviter object
 	inviteuser.accountdata.referafriend.acceptedcount = existinginviteobject.accepted.length
@@ -3728,6 +3831,9 @@ app.post('/generatereferafriendinvitelink', async (req, res) => {
 				invitelink: invitelink,
 				userid: user.userid,
 				accepted: [],
+				pending: [],
+				rejected: [],
+				whitelisted: false,
 				emailinvited: []
 			}
 			await setreferafriendinvitelinkobject(invitelinkobject)
