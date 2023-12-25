@@ -3030,7 +3030,7 @@ app.post('/signup', async (req, res, next) => {
 			return res.status(401).json({ error: 'Email is already taken.' })
 		}
 		
-		const user = new User({ username: username, password: password})
+		const user = addmissingpropertiestouser(new User({ username: username, password: password}))
 		user.accountdata.logindata.push(getLoginData(req))
 		await createUser(user)
 
