@@ -3465,6 +3465,126 @@ app.post('/dev', async (req, res) => {
 			return res.status(401).json({ error: 'Unathorized.' })
 		}
 
+
+		//functions
+		async function addbetatesterbyid(tempid){
+			let tempuser = await getUserById(tempid)
+			if(!tempuser) return false
+			tempuser.accountdata.betatester = true
+			await setUser(tempuser)
+			return true
+		}
+
+		async function addbetatester(tempusername){
+			let tempuser = await getUserByAttribute(tempusername)
+			tempuser.accountdata.betatester = true
+			if(!tempuser) return false
+			await setUser(tempuser)
+			return true
+		}
+
+		async function getuserinfo(tempid){
+			function charstosize(chars) {
+				let bytes = chars.length
+				if (bytes < 1024) return bytes + " bytes"
+				else if (bytes < 1024 ** 2) return (bytes / 1024).toFixed(0) + " KB"
+				else if (bytes < 1024 ** 3) return (bytes / 1024 ** 2).toFixed(0) + " MB"
+				return (bytes / 1024 ** 3).toFixed(0) + " GB"
+			}
+
+			function getlocaldate(date){
+				return new Date(date).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', hour12: true })
+			}
+
+			let tempuser = await getUserById(tempid)
+			if(!tempuser) return false
+
+			return `User ID: ${tempuser.userid}\nUsername: ${tempuser.username || ''}\nGoogle email: ${tempuser.google_email || ''}\nApple ID: ${tempuser.appleid || ''}\nCreated date: ${getlocaldate(tempuser.accountdata.createddate)} (UTC)\nLast logged in date: ${getlocaldate(tempuser.accountdata.lastloggedindate)} (UTC)\n\nAccount data size: ${charstosize(JSON.stringify(user))}\nCalendar data size: ${charstosize(JSON.stringify(tempuser.calendardata))}\n\nEvents: ${tempuser.calendardata.events.length}\nTasks: ${tempuser.calendardata.todos.length}\nFixed events: ${tempuser.calendardata.events.filter(d => d.type == 0).length}\nFlexible events: ${tempuser.calendardata.events.filter(d => d.type == 1).length}\n\n\nGPT chat uses: ${tempuser.accountdata.gptchatusedtimestamps.length}`
+		}
+
+		async function getdiscorduserid(tempdiscordid){
+			for(let [key, value] of Object.entries(reminderscache)){if(value[0]?.user?.discordid == tempdiscordid){return JSON.stringify(key)}}
+			return false
+		}
+
+		async function getreferafriendpending(){
+			function getlocaldate(date){
+				return new Date(date).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', hour12: true })
+			}
+
+			let allitems = []
+			try {
+				let ExclusiveStartKey;
+				do {
+					const command = new ScanCommand({
+						TableName: 'smartcalendarreferafriendinvitelinks',
+						ExclusiveStartKey
+					})
+		
+					const response = await dynamoclient.send(command)
+					const items = response.Items.map(item => unmarshall(item))	
+					
+					allitems.push(...items)
+					ExclusiveStartKey = response.LastEvaluatedKey
+				} while (ExclusiveStartKey)
+			} catch (error) {
+				console.error(error)
+			}
+
+			return allitems.filter(d => d.pending.length > 0).map(d => `Invite code: ${d.invitelink}\nInvite user ID: ${d.userid}\nInvite date: ${getlocaldate(d.logindata?.timestamp)}\nInvite IP: ${d.logindata?.ip}\nInvite user agent: ${d.logindata?.useragent}\nInvite IOS app: ${d.logindata?.iosapp}\nInvite Hotjar ID: ${d.logindata?.hotjarid}\n\nAccepted: ${d.accepted?.length}\nRejected: ${d.rejected?.length}\n\n\nPending:\n\n${d.pending?.map(f => `User ID: ${f.userid}\nDate: ${getlocaldate(f.logindata?.timestamp)}\nIP: ${f.logindata?.ip}\nUser agent: ${f.logindata?.useragent}\nIOS app: ${f.logindata?.iosapp}\nHotjar ID: ${f.logindata?.hotjarid}\nTo accept: <span class="inlinecode">return await acceptreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo reject: <span class="inlinecode">return await rejectreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo whitelist: <span class="inlinecode">return await whitelistreferafriendinvitecode('${d.invitelink}')</span>`).join('\n\n')}`)
+		}
+		
+		async function getstats(){
+			function getDHMText(input) {
+				let temp = input
+				let days = Math.floor(temp / 1440)
+				temp -= days * 1440
+			
+				let hours = Math.floor(temp / 60)
+				temp -= hours * 60
+			
+				let minutes = temp
+			
+				if (days) days += 'd'
+				if (hours) hours += 'h'
+				if (minutes || (hours == 0 && days == 0)) minutes += 'm'
+			
+				return [days, hours, minutes].filter(f => f).join(' ')
+			}
+
+			
+			function charsToSize(chars) {
+				let bytes = chars;
+				if (bytes < 1024) return bytes + " bytes";
+				else if (bytes < 1024 ** 2) return (bytes / 1024).toFixed(0) + " KB";
+				else if (bytes < 1024 ** 3) return (bytes / 1024 ** 2).toFixed(0) + " MB";
+				return (bytes / 1024 ** 3).toFixed(0) + " GB";
+			}
+
+			const memoryUsage = process.memoryUsage();
+
+			let stats = [];
+			stats.push('Server Stats:\n');
+			stats.push(`Node.js Version: ${process.version}`);
+			stats.push(`Process ID: ${process.pid}`);
+			stats.push(`Platform: ${process.platform}`);
+			stats.push(`Architecture: ${process.arch}`);
+			stats.push(`Execution Path: ${process.execPath}`);
+			stats.push(`Memory Usage:`);
+			stats.push(`- RSS: ${charsToSize(memoryUsage.rss)}`);
+			stats.push(`- Heap Total: ${charsToSize(memoryUsage.heapTotal)}`);
+			stats.push(`- Heap Used: ${charsToSize(memoryUsage.heapUsed)}`);
+			stats.push(`- External: ${charsToSize(memoryUsage.external)}`);
+			stats.push(`- Array Buffers: ${charsToSize(memoryUsage.arrayBuffers)}`);
+			stats.push(`Uptime: ${getDHMText(Math.floor(process.uptime()/60))}`);
+			return stats.join('\n');
+		}
+
+		async function help(){
+			return `addbetatesterbyid(userid)\naddbetatester(email)\n\ngetuserinfo(userid)\ngetdiscorduserid(discordid)\n\ngetreferafriendpending()\nacceptreferafriendinvitecode(invitecode, userid)\nrejectreferafriendinvitecode(invitecode, userid)\nwhitelistreferafriendinvitecode(invitecode)\n\ngetstats()`
+		}
+
+		//eval
 		let errordata, output;
 		try{
 			output = await eval(`(async () => {${req.body.input}})()`)
@@ -3706,7 +3826,7 @@ async function validatereferafriendinvitecode(req){
 	return true
 }
 
-async function approvereferafriendinvitecode(invitecode, userid){
+async function acceptreferafriendinvitecode(invitecode, userid){
 	invitecode = invitecode.toLowerCase()
 
 	//get invite db object
@@ -3738,6 +3858,18 @@ async function approvereferafriendinvitecode(invitecode, userid){
 	await setUser(inviteuser)
 
 	return true
+}
+
+async function whitelistreferafriendinvitecode(invitecode){
+	invitecode = invitecode.toLowerCase()
+
+	//get invite db object
+	let existinginviteobject = await getreferafriendinvitelinkobject(invitecode)
+	if(!existinginviteobject) return false
+
+	existinginviteobject.whitelisted = true
+
+	await setreferafriendinvitelinkobject(existinginviteobject)
 }
 
 async function rejectreferafriendinvitecode(invitecode, userid){
@@ -3826,7 +3958,7 @@ app.post('/generatereferafriendinvitelink', async (req, res) => {
 			await setUser(user)
 
 
-			//invite db object
+			//create invite db object
 			const invitelinkobject = {
 				invitelink: invitelink,
 				userid: user.userid,
@@ -3834,7 +3966,8 @@ app.post('/generatereferafriendinvitelink', async (req, res) => {
 				pending: [],
 				rejected: [],
 				whitelisted: false,
-				emailinvited: []
+				emailinvited: [],
+				logindata: getLoginData(req),
 			}
 			await setreferafriendinvitelinkobject(invitelinkobject)
 
