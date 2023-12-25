@@ -4080,7 +4080,8 @@ function scrolltodoY(targetminute) {
 
 
 //load data
-const clientinfo = {}
+let clientinfo = {}
+let frozenclientinfo = {}
 
 function isEmail(str) {
 	let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -4134,8 +4135,6 @@ async function getclientdata() {
 
 	isgettingclientdata = false
 }
-
-const frozenclientinfo = {}
 
 async function getclientinfo() {
 	const response2 = await fetch('/getclientinfo', {
@@ -6068,7 +6067,10 @@ function press3(event){
 		window.removeEventListener('keydown', press3, false)
 
 		if(clientinfo.google_email == 'james.tsaggaris@gmail.com'){
+			event.preventDefault()
+
 			getElement('devpopup').classList.remove('hiddenpopup')
+			getElement('devinput').focus()
 		}
 	}else{
 		window.removeEventListener('keydown', press3, false)
