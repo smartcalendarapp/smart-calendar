@@ -1503,9 +1503,9 @@ class Calendar {
 		let upgradereferprogressbarvaluemobile = getElement('upgradereferprogressbarvaluemobile')
 
 		upgradeprogressitem1.children[0].children[0].innerHTML = `0 invited`
-		upgradeprogressitem1.children[0].children[0].innerHTML = `3 invited`
-		upgradeprogressitem1.children[0].children[0].innerHTML = `5 invited`
-		upgradeprogressitem1.children[0].children[0].innerHTML = `10 invited`
+		upgradeprogressitem2.children[0].children[0].innerHTML = `3 invited`
+		upgradeprogressitem3.children[0].children[0].innerHTML = `5 invited`
+		upgradeprogressitem4.children[0].children[0].innerHTML = `10 invited`
 
 		let translatevalue;
 		if(invitesvalue < 3){
@@ -1567,6 +1567,8 @@ class Calendar {
 
 		let referafriendemaillink = getElement('referafriendemaillink')
 		referafriendemaillink.innerHTML = clientinfo.referafriend?.invitelink ? `https://smartcalendar.us/invite/${clientinfo.referafriend.invitelink.toUpperCase()}` : ''
+
+		referafriendgeneratelink()
 	}
 
 

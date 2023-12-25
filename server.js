@@ -3534,7 +3534,7 @@ app.post('/dev', async (req, res) => {
 				console.error(error)
 			}
 
-			return allitems.filter(d => d.pending.length > 0).map(d => `Invite code: ${d.invitelink}\nInvite user ID: ${d.userid}\nInvite date: ${getlocaldate(d.logindata?.timestamp)}\nInvite IP: ${d.logindata?.ip}\nInvite user agent: ${d.logindata?.useragent}\nInvite IOS app: ${d.logindata?.iosapp}\nInvite Hotjar ID: ${d.logindata?.hotjarid}\n\nAccepted: ${d.accepted?.length}\nRejected: ${d.rejected?.length}\n\n\nPending:\n\n${d.pending?.map(f => `User ID: ${f.userid}\nDate: ${getlocaldate(f.logindata?.timestamp)}\nIP: ${f.logindata?.ip}\nUser agent: ${f.logindata?.useragent}\nIOS app: ${f.logindata?.iosapp}\nHotjar ID: ${f.logindata?.hotjarid}\nTo accept: <span class="inlinecode">return await acceptreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo reject: <span class="inlinecode">return await rejectreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo whitelist: <span class="inlinecode">return await setwhitelistreferafriendinvitecode('${d.invitelink}', true)</span>`).join('\n\n')}`).join('\n\n\n')
+			return allitems.filter(d => d.pending.length > 0).map(d => `Invite code: ${d.invitelink}\nInvite user ID: ${d.userid}\nInvite date: ${getlocaldate(d.logindata?.timestamp)}\nInvite IP: ${d.logindata?.ip}\nInvite user agent: ${d.logindata?.useragent}\nInvite IOS app: ${d.logindata?.iosapp}\nInvite Hotjar ID: ${d.logindata?.hotjarid}\n\nAccepted: ${d.accepted?.length}\nRejected: ${d.rejected?.length}\n\n\nPending:\n\n${d.pending?.map(f => `User ID: ${f.userid}\nDate: ${getlocaldate(f.logindata?.timestamp)}\nIP: ${f.logindata?.ip}\nUser agent: ${f.logindata?.useragent}\nIOS app: ${f.logindata?.iosapp}\nHotjar ID: ${f.logindata?.hotjarid}\nTo accept: <span class="inlinecode">await acceptreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo reject: <span class="inlinecode">await rejectreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo whitelist: <span class="inlinecode">await setwhitelistreferafriendinvitecode('${d.invitelink}', true)</span>`).join('\n\n')}`).join('\n\n\n')
 		}
 		
 		async function getstats(){
@@ -3584,7 +3584,7 @@ app.post('/dev', async (req, res) => {
 		}
 
 		async function help(){
-			return `addbetatesterbyid(userid)\naddbetatester(email)\n\ngetuserinfo(userid)\ngetdiscorduserid(discordid)\n\ngetreferafriendpending()\nacceptreferafriendinvitecode(invitecode, userid)\nrejectreferafriendinvitecode(invitecode, userid)\nwhitelistreferafriendinvitecode(invitecode)\n\ngetstats()`
+			return `<span class="inlinecode">addbetatesterbyid(userid)</span>\n<span class="inlinecode">addbetatester(email)</span>\n\n<span class="inlinecode">getuserinfo(userid)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">whitelistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>`
 		}
 
 		//eval
@@ -3836,7 +3836,7 @@ async function validatereferafriendinvitecode(req){
 }
 
 function checkreferafriendpremium(user){
-	if(user.acceptedcount >= 10){
+	if(user.accountdata.referafriend.acceptedcount >= 10){
 		if(user.accountdata.premium.referafriendclaimvalue < 3){
 			user.accountdata.premium.referafriendclaimvalue = 3
 
@@ -3849,7 +3849,7 @@ function checkreferafriendpremium(user){
 				user.accountdata.premium.endtimestamp = user.accountdata.premium.endtimestamp + 86400*1000*180
 			}
 		}
-	}else if(user.acceptedcount >= 5){
+	}else if(user.accountdata.referafriend.acceptedcount >= 5){
 		if(user.accountdata.premium.referafriendclaimvalue < 2){
 			user.accountdata.premium.referafriendclaimvalue = 2
 
@@ -3862,7 +3862,7 @@ function checkreferafriendpremium(user){
 				user.accountdata.premium.endtimestamp = user.accountdata.premium.endtimestamp + 86400*1000*60
 			}
 		}
-	}else if(user.acceptedcount >= 3){
+	}else if(user.accountdata.referafriend.acceptedcount >= 3){
 		if(user.accountdata.premium.referafriendclaimvalue < 1){
 			user.accountdata.premium.referafriendclaimvalue = 1
 			
