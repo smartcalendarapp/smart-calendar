@@ -1629,7 +1629,11 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			newUser.accountdata.google.profilepicture = profilepicture
 			await createUser(newUser)
 
-			req.session.user = { userid: newUser.userid }
+			if(!req.session.user){
+				req.session.user = {}
+			}
+			req.session.user.userid = newUser.userid
+
 			req.session.tokens = tokens
 
 
@@ -1744,7 +1748,10 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 			newUser.accountdata.google.profilepicture = profilepicture
 			await createUser(newUser)
 
-			req.session.user = { userid: newUser.userid }
+			if(!req.session.user){
+				req.session.user = {}
+			}
+			req.session.user.userid = newUser.userid
 
 			if(req.session.user?.inviteafriend?.invitecode){
 				await validatereferafriendinvitecode(req)
@@ -1855,7 +1862,10 @@ app.post('/auth/apple/callback', async (req, res) => {
 			
 			await createUser(newuser)
 
-			req.session.user = { userid: newuser.userid }
+			if(!req.session.user){
+				req.session.user = {}
+			}
+			req.session.user.userid = newuser.userid
 
 			if(req.session.user?.inviteafriend?.invitecode){
 				await validatereferafriendinvitecode(req)
@@ -3001,11 +3011,13 @@ app.post('/signup', async (req, res, next) => {
 		const user = new User({ username: username, password: password})
 		await createUser(user)
 
-		req.session.user = { userid: user.userid }
+		if(!req.session.user){
+			req.session.user = {}
+		}
+		req.session.user.userid = user.userid
 
 		if(req.session.user?.inviteafriend?.invitecode){
-			let x = await validatereferafriendinvitecode(req)
-			console.warn('VALIDATE!!! : ' + x)
+			await validatereferafriendinvitecode(req)
 		}
 
 		await sendwelcomeemail(user)
@@ -3511,7 +3523,7 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 
 
 		let response = await sendEmail({
-			from: 'Smart Calendar <friend@smartcalendar.us>',
+			from: 'Smart Calendar <reminders@smartcalendar.us>',
 			to: inviteemail,
 			subject: `${getUserName(inviteuser)} invited you to Smart Calendar`,
 			htmlbody: `
@@ -3577,9 +3589,7 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 		})
 
 
-		console.warn(response)
-
-		if(!response){
+		if(!response || response?.$metadata?.httpStatusCode != 200){
 			return res.status(401).json({ error: `Could not send an email to ${inviteemail}, please enter a valid email or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.` })
 		}
 
@@ -3631,6 +3641,7 @@ app.post('/submitreferafriendinvitelink', async (req, res) => {
 
 //validate when sign up
 async function validatereferafriendinvitecode(req){
+	console.warn(req)
 	if(!req.session?.user?.userid) return false
 
 	let referafriendinvitecode = req.session.user?.inviteafriend?.invitecode
