@@ -3004,7 +3004,8 @@ app.post('/signup', async (req, res, next) => {
 		req.session.user = { userid: user.userid }
 
 		if(req.session.user?.inviteafriend?.invitecode){
-			await validatereferafriendinvitecode(req)
+			let x = await validatereferafriendinvitecode(req)
+			console.warn('VALIDATE!!! : ' + x)
 		}
 
 		await sendwelcomeemail(user)
@@ -3576,7 +3577,7 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 		})
 
 
-		console.log(response)
+		console.warn(response)
 
 		if(!response){
 			return res.status(401).json({ error: `Could not send an email to ${inviteemail}, please enter a valid email or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.` })
