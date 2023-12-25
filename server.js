@@ -399,7 +399,7 @@ class User{
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false }
-const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, logindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], betatester: false, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
+const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, logindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], betatester: false, haspremium: false, premium: { referafriendclaimvalue: 0, starttimestamp: null, endtimestamp: null }, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
 const MODELEVENT = { start: {}, end: {}, endbefore: {}, startafter: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0, parentid: null, subtasksuggestions: [], gotsubtasksuggestions: false, iseventsuggestion: false, goteventsuggestion: false, autoschedulelocked: false }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#18a4f5', isprimary: false, subscriptionurl: null, lastmodified: 0  }
@@ -3332,9 +3332,12 @@ app.post('/getclientinfo', async (req, res, next) => {
 		user.accountdata.timezoneoffset = req.body.timezoneoffset
 		cacheReminders(user)
 
+		//premium
+		checkreferafriendpremium(user)
+
 		await setUser(user)
 		
-		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, apple: user.accountdata.apple, appleid: user.appleid != null, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null, betatester: user.accountdata.betatester, referafriend: user.accountdata.referafriend } })
+		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, apple: user.accountdata.apple, appleid: user.appleid != null, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null, betatester: user.accountdata.betatester, referafriend: user.accountdata.referafriend, haspremium: user.accountdata.haspremium, premiumendtimestamp: user.accountdata.premium.endtimestamp } })
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
@@ -3531,7 +3534,7 @@ app.post('/dev', async (req, res) => {
 				console.error(error)
 			}
 
-			return allitems.filter(d => d.pending.length > 0).map(d => `Invite code: ${d.invitelink}\nInvite user ID: ${d.userid}\nInvite date: ${getlocaldate(d.logindata?.timestamp)}\nInvite IP: ${d.logindata?.ip}\nInvite user agent: ${d.logindata?.useragent}\nInvite IOS app: ${d.logindata?.iosapp}\nInvite Hotjar ID: ${d.logindata?.hotjarid}\n\nAccepted: ${d.accepted?.length}\nRejected: ${d.rejected?.length}\n\n\nPending:\n\n${d.pending?.map(f => `User ID: ${f.userid}\nDate: ${getlocaldate(f.logindata?.timestamp)}\nIP: ${f.logindata?.ip}\nUser agent: ${f.logindata?.useragent}\nIOS app: ${f.logindata?.iosapp}\nHotjar ID: ${f.logindata?.hotjarid}\nTo accept: <span class="inlinecode">return await acceptreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo reject: <span class="inlinecode">return await rejectreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo whitelist: <span class="inlinecode">return await whitelistreferafriendinvitecode('${d.invitelink}')</span>`).join('\n\n')}`)
+			return allitems.filter(d => d.pending.length > 0).map(d => `Invite code: ${d.invitelink}\nInvite user ID: ${d.userid}\nInvite date: ${getlocaldate(d.logindata?.timestamp)}\nInvite IP: ${d.logindata?.ip}\nInvite user agent: ${d.logindata?.useragent}\nInvite IOS app: ${d.logindata?.iosapp}\nInvite Hotjar ID: ${d.logindata?.hotjarid}\n\nAccepted: ${d.accepted?.length}\nRejected: ${d.rejected?.length}\n\n\nPending:\n\n${d.pending?.map(f => `User ID: ${f.userid}\nDate: ${getlocaldate(f.logindata?.timestamp)}\nIP: ${f.logindata?.ip}\nUser agent: ${f.logindata?.useragent}\nIOS app: ${f.logindata?.iosapp}\nHotjar ID: ${f.logindata?.hotjarid}\nTo accept: <span class="inlinecode">return await acceptreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo reject: <span class="inlinecode">return await rejectreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo whitelist: <span class="inlinecode">return await setwhitelistreferafriendinvitecode('${d.invitelink}', true)</span>`).join('\n\n')}`).join('\n\n\n')
 		}
 		
 		async function getstats(){
@@ -3690,18 +3693,18 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 							<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
 									Hey!
 							</p>
-							<p style="font-size: 18px; color: #333;">
+							<p style="font-size: 18px; color: #333;text-align:center;">
 								${getUserName(inviteuser)} invited you to sign up for Smart Calendar.
 							</p>
-							<p style="text-align: center;font-size: 14px; color: #333;padding:12px;">
+							<p style="text-align: center;font-size: 16px; color: #333;padding:12px;">
 								Not sure what we are? We're a productivity app that uses AI to build your schedule, manage your tasks, and more. And, we've developed a super cool AI assistant that you can even talk to (we're so excited and we think you will love it)!
 							</p>
 
 							<p style="text-align: center;font-size: 14px; color: #333;padding:12px;">
-								<a href="https://smartcalendar.us/invite/${invitecode}" style="font-size:18px;padding:8px 16px;background-color:#13b03b;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Accept invite</span></a>
+								<a href="https://smartcalendar.us/invite/${invitecode.toUpperCase()}" style="font-size:18px;padding:8px 16px;background-color:#13b03b;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Accept invite</span></a>
 							</p>
 
-							<p style="text-align: center;font-size: 14px; color: #333;padding:12px;">
+							<p style="text-align: center;font-size: 16px; color: #333;padding:12px;">
 								By signing up, you'll also help your friend get closer to 1 month of free Premium. Let's give it a try!
 							</p>
 
@@ -3725,7 +3728,7 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 
 			Not sure what we are? We're a productivity app that uses AI to build your schedule, manage your tasks, and more. And, we've developed a super cool AI assistant that you can even talk to (we're so excited and we think you will love it)!
 
-			Accept invite: https://smartcalendar.us/invite/${invitecode}.
+			Accept invite: https://smartcalendar.us/invite/${invitecode.toUpperCase()}.
 
 			By signing up, you'll also help your friend get closer to 1 month of free Premium. Let's give it a try!
 
@@ -3826,9 +3829,59 @@ async function validatereferafriendinvitecode(req){
 
 	//save inviter object
 	inviteuser.accountdata.referafriend.acceptedcount = existinginviteobject.accepted.length
+	checkreferafriendpremium(inviteuser)
 	await setUser(inviteuser)
 
 	return true
+}
+
+function checkreferafriendpremium(user){
+	if(user.acceptedcount >= 10){
+		if(user.accountdata.premium.referafriendclaimvalue < 3){
+			user.accountdata.premium.referafriendclaimvalue = 3
+
+			if(!user.accountdata.premium.endtimestamp || user.accountdata.premium.starttimestamp || user.accountdata.premium.endtimestamp < Date.now()){
+				//start new
+				user.accountdata.premium.starttimestamp = Date.now()
+				user.accountdata.premium.endtimestamp = Date.now() + 86400*1000*180 //6 months
+			}else{
+				//continue
+				user.accountdata.premium.endtimestamp = user.accountdata.premium.endtimestamp + 86400*1000*180
+			}
+		}
+	}else if(user.acceptedcount >= 5){
+		if(user.accountdata.premium.referafriendclaimvalue < 2){
+			user.accountdata.premium.referafriendclaimvalue = 2
+
+			if(!user.accountdata.premium.endtimestamp || user.accountdata.premium.starttimestamp || user.accountdata.premium.endtimestamp < Date.now()){
+				//start new
+				user.accountdata.premium.starttimestamp = Date.now()
+				user.accountdata.premium.endtimestamp = Date.now() + 86400*1000*60 //2 months
+			}else{
+				//continue
+				user.accountdata.premium.endtimestamp = user.accountdata.premium.endtimestamp + 86400*1000*60
+			}
+		}
+	}else if(user.acceptedcount >= 3){
+		if(user.accountdata.premium.referafriendclaimvalue < 1){
+			user.accountdata.premium.referafriendclaimvalue = 1
+			
+			if(!user.accountdata.premium.endtimestamp || user.accountdata.premium.starttimestamp || user.accountdata.premium.endtimestamp < Date.now()){
+				//start new
+				user.accountdata.premium.starttimestamp = Date.now()
+				user.accountdata.premium.endtimestamp = Date.now() + 86400*1000*30 //1 month
+			}else{
+				//continue
+				user.accountdata.premium.endtimestamp = user.accountdata.premium.endtimestamp + 86400*1000*30
+			}
+		}
+	}
+
+	updateuserhaspremium(user)
+}
+
+function updateuserhaspremium(user){
+	user.haspremium = user.accountdata.premium.endtimestamp && user.accountdata.premium.endtimestamp > Date.now()
 }
 
 async function acceptreferafriendinvitecode(invitecode, userid){
@@ -3844,14 +3897,18 @@ async function acceptreferafriendinvitecode(invitecode, userid){
 	if(!existinginviteobject.rejected) existinginviteobject.accepted = []
 	if(!existinginviteobject.emailinvited) existinginviteobject.emailinvited = []
 
+
+	//find item
 	if(!existinginviteobject.pending.find(d => d.userid == userid)) return false
+
+	if(existinginviteobject.accepted.find(d => d.userid == userid)) return false
 
 	let tempitem = existinginviteobject.pending.find(d => d.userid == userid)
 	existinginviteobject.accepted.push(tempitem)
 	existinginviteobject.pending = existinginviteobject.pending.filter(d => d.userid != userid)
 
 	//save invite db object
-	existinginviteobject.pending.push({ userid: req.session.user.userid, logindata: getLoginData(req) })
+	existinginviteobject.accepted.push({ userid: userid, logindata: getLoginData(req) })
 	await setreferafriendinvitelinkobject(existinginviteobject)
 	
 	//get inviter
@@ -3860,19 +3917,20 @@ async function acceptreferafriendinvitecode(invitecode, userid){
 
 	//save inviter object
 	inviteuser.accountdata.referafriend.acceptedcount = existinginviteobject.accepted.length
+	checkreferafriendpremium(inviteuser)
 	await setUser(inviteuser)
 
 	return true
 }
 
-async function whitelistreferafriendinvitecode(invitecode){
+async function setwhitelistreferafriendinvitecode(invitecode, bool){
 	invitecode = invitecode.toLowerCase()
 
 	//get invite db object
 	let existinginviteobject = await getreferafriendinvitelinkobject(invitecode)
 	if(!existinginviteobject) return false
 
-	existinginviteobject.whitelisted = true
+	existinginviteobject.whitelisted = bool
 
 	await setreferafriendinvitelinkobject(existinginviteobject)
 }
@@ -3894,6 +3952,8 @@ async function rejectreferafriendinvitecode(invitecode, userid){
 	//find item
 	if(!existinginviteobject.pending.find(d => d.userid == userid)) return false
 
+	if(existinginviteobject.rejected.find(d => d.userid == userid)) return false
+
 	let tempitem = existinginviteobject.pending.find(d => d.userid == userid)
 	existinginviteobject.rejected.push(tempitem)
 	existinginviteobject.pending = existinginviteobject.pending.filter(d => d.userid != userid)
@@ -3910,6 +3970,7 @@ async function rejectreferafriendinvitecode(invitecode, userid){
 
 	//save inviter object
 	inviteuser.accountdata.referafriend.acceptedcount = existinginviteobject.accepted.length
+	checkreferafriendpremium(inviteuser)
 	await setUser(inviteuser)
 
 	return true

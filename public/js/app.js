@@ -4080,7 +4080,7 @@ function scrolltodoY(targetminute) {
 
 
 //load data
-let clientinfo = {}
+const clientinfo = {}
 
 function isEmail(str) {
 	let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -4135,6 +4135,8 @@ async function getclientdata() {
 	isgettingclientdata = false
 }
 
+const frozenclientinfo = {}
+
 async function getclientinfo() {
 	const response2 = await fetch('/getclientinfo', {
 		method: 'POST',
@@ -4149,6 +4151,10 @@ async function getclientinfo() {
 		const data = await response2.json()
 		clientinfo = data.data
 
+		//freeze
+		frozenclientinfo = data.data
+		Object.freeze(frozenclientinfo)
+		
 		//block analytics
 		if (clientinfo.google_email == 'james.tsaggaris@gmail.com') {
 			setStorage('noanalytics', true)
@@ -5719,7 +5725,14 @@ function openleftmenu2(event) {
 function updateuserinfo(){
 	let userinfodisplay = getElement('userinfodisplay')
 	userinfodisplay.innerHTML = `
-	<div class="text-16px text-primary text-bold">${getUserName() ? cleanInput(getUserName()) : ''}${clientinfo?.betatester ? `<span class="text-14px margin-left-6px badgepadding background-green border-8px text-white">Beta tester</span>` : ''}</div>
+	<div class="display-flex flex-row column-gap-6px align-center flex-wrap-wrap text-bold breakall">
+		<div class="text-16px text-primary">${getUserName() ? cleanInput(getUserName()) : ''}</div>
+		${clientinfo?.betatester ? `<span class="text-14px nowrap badgepadding background-green border-8px text-white">Beta tester</span>` : ''}
+		${clientinfo?.haspremium ? `<span class="text-14px nowrap badgepadding background-gold border-8px text-white">Premium</span>` : ''}
+	</div>
+
+	${clientinfo?.haspremium && frozenclientinfo?.premiumendtimestamp ? `<div class="text-14px text-quaternary nowrap">Premium expires ${getRelativeDHMText(Date.now() - frozenclientinfo?.premiumendtimestamp)}</div>` : ''}
+	
 	<div class="text-14px text-primary">${getUserEmail() && isEmail(getUserEmail()) && getUserEmail()  != getUserName() ? getUserEmail() : ''}</div>`
 }
 function updateAvatar(){

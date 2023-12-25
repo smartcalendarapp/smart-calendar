@@ -2516,7 +2516,9 @@ max-width:1000px;
 	background-image: linear-gradient(to right, #d3c916, #ebcd0b);
 }
 
-
+.background-gold{
+	background-image: linear-gradient(to right, #d3c916, #ebcd0b);
+}
 
 
 
@@ -4578,6 +4580,7 @@ max-width:1000px;
 
 @media only screen and (max-width: 600px) {
 
+
 	input,
 	textarea {
 		font-size: 16px !important;
@@ -4632,6 +4635,10 @@ max-width:1000px;
 	}
 	#scheduleeditorpopup::before{
 		display:none !important;
+	}
+
+	#devpopup{
+		transform:none !important
 	}
 }
 
