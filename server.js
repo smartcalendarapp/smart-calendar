@@ -3908,7 +3908,6 @@ async function acceptreferafriendinvitecode(invitecode, userid){
 	existinginviteobject.pending = existinginviteobject.pending.filter(d => d.userid != userid)
 
 	//save invite db object
-	existinginviteobject.accepted.push({ userid: userid, logindata: getLoginData(req) })
 	await setreferafriendinvitelinkobject(existinginviteobject)
 	
 	//get inviter
@@ -3961,7 +3960,6 @@ async function rejectreferafriendinvitecode(invitecode, userid){
 	existinginviteobject.whitelisted = false
 
 	//save invite db object
-	existinginviteobject.pending.push({ userid: req.session.user.userid, logindata: getLoginData(req) })
 	await setreferafriendinvitelinkobject(existinginviteobject)
 	
 	//get inviter
