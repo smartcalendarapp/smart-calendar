@@ -12561,7 +12561,7 @@ function updatedatepicker() {
 
 //REFER A FRIEND
 let isgeneratingreferafriendlink = false;
-async function referafriendgeneratelink(event){
+async function referafriendgeneratelink(generate){
 	if(isgeneratingreferafriendlink) return
 	isgeneratingreferafriendlink = true
 
@@ -12573,7 +12573,13 @@ async function referafriendgeneratelink(event){
 
 	try{
 		const response = await fetch('/generatereferafriendinvitelink', {
-			method: 'POST'
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				generate: !!generate
+			})
 		})
 
 		if(response.status == 200){
@@ -12637,7 +12643,7 @@ async function copyreferafriendinvitelink(event){
 	referafrienderror.classList.add('display-none')
 
 	if(!clientinfo.referafriend.invitelink){
-		await referafriendgeneratelink()
+		await referafriendgeneratelink(true)
 	}
 
 
@@ -12672,7 +12678,7 @@ async function clickreferafriendinviteemail(event){
 		referafriendemail.value = ''
 
 		if(!clientinfo.referafriend.invitelink){
-			await referafriendgeneratelink()
+			await referafriendgeneratelink(true)
 		}
 
 		if(!clientinfo.referafriend.invitelink){

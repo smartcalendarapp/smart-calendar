@@ -3923,8 +3923,10 @@ app.post('/generatereferafriendinvitelink', async (req, res) => {
 		if (!user) {
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
+
+		let generate = req.body.generate
 		
-		if(user.accountdata.referafriend.invitelink){
+		if(!generate || user.accountdata.referafriend.invitelink){
 			return res.json({ data: { invitelink: user.accountdata.referafriend.invitelink, acceptedcount: user.accountdata.referafriend.acceptedcount } })
 		}else{
 			async function generatereferafriendinvitelink(){
