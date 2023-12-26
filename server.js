@@ -4493,7 +4493,7 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 		//PROMPT
 		let message = req.body.message
 
-		const mp3 = await openai.audio.speech.create({
+		const response = await openai.audio.speech.create({
 			model: "tts-1",
 			voice: "nova",
 			input: message,
