@@ -1160,6 +1160,26 @@
 		</div>
 	</div>
 
+	<div class="padding-12px absolute pointer-none top-0 z-index-1000 left-0 bottom-0 right-0 display-flex flex-column align-center justify-center">
+		<div class="popuptransition box-shadow padding-12px pointer-auto display-flex flex-column gap-12px border-16px background-primary-transparent backdrop-blur hiddenpopup max-width-400px width-full border-box" id="generalusepopup">
+
+			<div class="display-flex flex-row justify-flex-end">
+				<div class="infotopright pointer" onclick="closepopup(event)">
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					<g opacity="1">
+					<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+					</g>
+					</g>
+					</svg>
+				</div>
+			</div>
+
+			<div id="generalusepopupcontent" class="display-flex flex-column gap-12px"></div>
+		</div>
+	</div>
+
 
 	<div class="padding-12px absolute pointer-none top-0 z-index-1000 left-0 bottom-0 right-0 display-flex flex-column align-center justify-center">
 		<div class="popuptransition box-shadow padding-12px pointer-auto display-flex flex-column gap-12px border-8px background-primary-transparent backdrop-blur hiddenpopup max-width-400px width-full border-box" id="rescheduletaskpopup">
@@ -2306,7 +2326,7 @@
 									<div class="upgradefeaturecard flex-1 border-box background-secondary border-16px display-flex flex-column">
 										<div class="z-index-2 padding-24px display-flex flex-column gap-12px">
 											<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">Enhanced Personal Assistant</div>
-											<div class="white-space-normal text-quaternary text-16px">Just like an executive, you will have an personal assistant provide you daily briefings, suggestions to complete your tasks, and more.</div>
+											<div class="white-space-normal text-quaternary text-16px">Athena will have more capabilities, and will provide you daily briefings, suggestions to complete your tasks, and more productivity help.</div>
 										</div>
 										<div class="relative upgradefeaturecardimgwrap">
 											<div class="z-index-1 upgradefeaturecardgradient absolute top-0 left-0 right-0 bottom-0"></div>
@@ -3499,6 +3519,7 @@
 
 		<audio id="quick-beep" class="display-none" preload="none" src="../quick-beep.mp3"></audio>
 		<audio id="check-ding" class="display-none" preload="none" src="../check-ding.mp3"></audio>
+		<audio id="aiassistantaudio" src=""></audio>
 </body>
 
 </html>

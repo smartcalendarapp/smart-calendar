@@ -157,6 +157,8 @@ function getRelativeDHMText(input) {
 	}
 }
 
+
+
 function getRelativeYMWDText(input) {
     let temp = Math.abs(input)
     let days = Math.floor(temp / 1440)
@@ -4083,7 +4085,6 @@ function scrolltodoY(targetminute) {
 
 //load data
 let clientinfo = {}
-let frozenclientinfo = {}
 
 function isEmail(str) {
 	let pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -4152,9 +4153,6 @@ async function getclientinfo() {
 		const data = await response2.json()
 		clientinfo = data.data
 
-		//freeze
-		frozenclientinfo = data.data
-		Object.freeze(frozenclientinfo)
 		
 		//block analytics
 		if (clientinfo.google_email == 'james.tsaggaris@gmail.com') {
@@ -5732,7 +5730,7 @@ function updateuserinfo(){
 		${clientinfo?.haspremium ? `<span class="text-14px nowrap badgepadding background-gold border-8px text-white">Premium</span>` : ''}
 	</div>
 
-	${clientinfo?.haspremium && frozenclientinfo?.premiumendtimestamp ? `<div class="text-14px text-quaternary nowrap">Premium expires ${getRelativeDHMText(Date.now() - frozenclientinfo?.premiumendtimestamp)}</div>` : ''}
+	${clientinfo?.haspremium && clientinfo?.premiumendtimestamp ? `<div class="text-14px text-quaternary nowrap">Premium expires ${getRelativeDHMText(Math.floor(Date.now() - clientinfo?.premiumendtimestamp)/60000)}</div>` : ''}
 	
 	<div class="text-14px text-primary">${getUserEmail() && isEmail(getUserEmail()) && getUserEmail()  != getUserName() ? getUserEmail() : ''}</div>`
 }
@@ -7021,6 +7019,37 @@ async function disconnectgoogle() {
 	}
 }
 
+
+//POPUP
+let popupqueue = []
+let popupshown = false
+function displaypopup(content){
+	let generalusepopup = getElement('generalusepopup')
+	let generalusepopupcontent = getElement('generalusepopupcontent')
+
+	popupqueue.push(content)
+
+	if(!popupshown){
+		popupshown = true
+
+		generalusepopup.classList.remove('hiddenpopup')
+
+		generalusepopupcontent.innerHTML = content
+	}
+}
+function closepopup(){
+	let generalusepopup = getElement('generalusepopup')
+	generalusepopup.classList.add('hiddenpopup')
+
+	setTimeout(function(){
+		popupqueue.shift()
+		popupshown = false
+
+		if(popupqueue.length > 0){
+			displaypopup(popupqueue[0])
+		}
+	}, 300)
+}
 
 //ALERTS
 function displayalert(title) {
@@ -12576,6 +12605,7 @@ function updatedatepicker() {
 }
 
 
+
 //REFER A FRIEND
 let isgeneratingreferafriendlink = false;
 async function referafriendgeneratelink(generate){
@@ -12601,13 +12631,72 @@ async function referafriendgeneratelink(generate){
 
 		if(response.status == 200){
 			let oldacceptedcount = clientinfo.referafriend.acceptedcount
+			let oldhaspremium = clientinfo.haspremium
+			let oldpremiumendtimestamp = clientinfo.premiumendtimestamp
 
 			let data = await response.json()
 
 			clientinfo.referafriend.invitelink = data.data.invitelink
 			clientinfo.referafriend.acceptedcount = data.data.acceptedcount
 
-			if(clientinfo.referafriend.acceptedcount > oldacceptedcount){
+			clientinfo.haspremium = data.data.haspremium
+			clientinfo.premiumendtimestamp = data.data.premiumendtimestamp
+
+
+			if(oldhaspremium != clientinfo.haspremium || (oldpremiumendtimestamp && clientinfo.premiumendtimestamp && clientinfo.premiumendtimestamp > oldpremiumendtimestamp)){
+
+				function getRoundedYMWDtext(input) {
+					let temp = Math.abs(input)
+					let days = Math.round(temp / 1440)
+					let weeks = Math.round(days / 7)
+					let months = Math.round(days / 30.44)
+					let years = Math.round(days / 365.25)
+
+					let output = ''
+
+					if (years >= 1) {
+						output = `${years} year${years === 1 ? '' : 's'}`
+					} else if (months >= 1 && months < 12) {
+						output = `${months} month${months === 1 ? '' : 's'}`
+					} else if (weeks >= 1 && weeks < 4) {
+						output = `${weeks} week${weeks === 1 ? '' : 's'}`
+					} else if (days >= 1) {
+						output = `${days} day${days === 1 ? '' : 's'}`
+					} else {
+						return ''
+					}
+
+					return output
+				}
+
+				displaypopup(`
+				<div class="text-18px text-primary">Congrats!</div>
+				<div class="text-16px text-primary">You have been granted ${getRoundedYMWDtext(Math.ceil(Date.now() - clientinfo?.premiumendtimestamp)/60000)} of free premium! See what you can do now:</div>
+				${markdowntoHTML(`- Increased AI chat: send up to 100 messages to our AI Assistant Athena every day.\n- Enhanced Personal Assistant: Athena will have more capabilities, and will provide you daily briefings, suggestions to complete your tasks, and more productivity help.\n- Early access to new features: you'll be the first to see our new exciting features and use them for your productivity.`, 'assistant')}
+				<div class="border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Done</div>`)
+
+				let confetticanvas = getElement('confetticanvas')
+				let myconfetti = confetti.create(confetticanvas, {
+					resize: true,
+					useWorker: true
+				})
+
+				try{
+					await myconfetti({
+						particleCount: 100,
+						gravity: 0.8,
+						startVelocity: 30,
+						decay: 0.96,
+						ticks: 300,
+						origin: {
+							x: 0.5,
+							y: 1,
+						}
+					})
+
+					myconfetti.reset()
+				}catch(e){}
+			}else if(clientinfo.referafriend.acceptedcount > oldacceptedcount){
 				let confetticanvas = getElement('confetticanvas')
 				let myconfetti = confetti.create(confetticanvas, {
 					resize: true,
@@ -13138,6 +13227,36 @@ function sleep(time) {
 	})
 }
 
+
+async function aispeakmessage(message){
+	try{
+		const response = await fetch('/getgptvoiceinteraction', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				message: message,
+			})
+		})
+		if(response.status == 200){
+			let aiassistantaudio = getElement('aiassistantaudio')
+			aiassistantaudio.src = '/getgptvoiceinteraction'
+            aiassistantaudio.play()
+
+			return true
+		}else if(response.status == 401){
+			let error = await response.json()
+			console.log(error)
+
+			return false
+		}
+	}catch(err){
+		console.log(err)
+		return false
+	}
+}
+
 class ChatConversation{
 	constructor(interactions = []){
 		this.interactions = interactions
@@ -13212,12 +13331,12 @@ class ChatMessage {
 		if(this.startedanimating) return
 		this.startedanimating = true
 
-		const getthismessage = () => {
-			return this.message
-		}
-
 		//waiting
 		if(!this.message){
+			const getthismessage = () => {
+				return this.message
+			}
+
 			const waitforload = () => {
 				return new Promise((resolve) => {
 					const interval = setInterval(() => {
@@ -13236,6 +13355,9 @@ class ChatMessage {
 		let successfullyspoken;
 		if(clientinfo.betatester && this.dictated == true){
 			//text to speech
+			let successfullyspoken = await aispeakmessage(this.message)
+
+			/*
 			if ('speechSynthesis' in window) {
 
 				const utterance = new SpeechSynthesisUtterance(this.message)
@@ -13272,6 +13394,7 @@ class ChatMessage {
 				let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
 				chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)}`
 			}
+			*/
 		}
 
 		if(!successfullyspoken){

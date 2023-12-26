@@ -3470,18 +3470,13 @@ app.post('/dev', async (req, res) => {
 
 
 		//functions
-		async function addbetatesterbyid(tempid){
-			let tempuser = await getUserById(tempid)
-			if(!tempuser) return false
-			tempuser.accountdata.betatester = true
-			await setUser(tempuser)
-			return true
-		}
-
 		async function addbetatester(tempusername){
-			let tempuser = await getUserByAttribute(tempusername)
+			let tempuser = await getUserById(tempusername)
 			tempuser.accountdata.betatester = true
-			if(!tempuser) return false
+			if(!tempuser){
+				tempuser = await getUserByAttribute(tempusername)
+				if(!tempuser) return false
+			}
 			await setUser(tempuser)
 			return true
 		}
@@ -3584,7 +3579,7 @@ app.post('/dev', async (req, res) => {
 		}
 
 		async function help(){
-			return `<span class="inlinecode">addbetatesterbyid(userid)</span>\n<span class="inlinecode">addbetatester(email)</span>\n\n<span class="inlinecode">getuserinfo(userid)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">whitelistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>`
+			return `<span class="inlinecode">addbetatester(email)</span>\n\n<span class="inlinecode">getuserinfo(userid)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">whitelistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>`
 		}
 
 		//eval
@@ -3881,7 +3876,7 @@ function checkreferafriendpremium(user){
 }
 
 function updateuserhaspremium(user){
-	user.haspremium = user.accountdata.premium.endtimestamp && user.accountdata.premium.endtimestamp > Date.now()
+	user.accountdata.haspremium = user.accountdata.premium.endtimestamp && user.accountdata.premium.endtimestamp > Date.now()
 }
 
 async function acceptreferafriendinvitecode(invitecode, userid){
@@ -3991,7 +3986,9 @@ app.post('/generatereferafriendinvitelink', async (req, res) => {
 		let generate = req.body.generate
 		
 		if(!generate || user.accountdata.referafriend.invitelink){
-			return res.json({ data: { invitelink: user.accountdata.referafriend.invitelink, acceptedcount: user.accountdata.referafriend.acceptedcount } })
+			checkreferafriendpremium(user)
+
+			return res.json({ data: { invitelink: user.accountdata.referafriend.invitelink, acceptedcount: user.accountdata.referafriend.acceptedcount, haspremium: user.accountdata.haspremium, premiumendtimestamp: user.accountdata.premium.endtimestamp } })
 		}else{
 			async function generatereferafriendinvitelink(){
 				function generateinvitelink() {
@@ -4456,6 +4453,58 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 	}catch(err){
 		console.error(err)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+	}
+})
+
+
+app.post('/getgptvoiceinteraction', async (req, res) => {
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		let user = await getUserById(userid)
+		if (!user) {
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+		let appliedratelimit = MAX_GPT_CHAT_PER_DAY
+		if(user.accountdata.betatester){
+			appliedratelimit = MAX_GPT_CHAT_PER_DAY_BETA_TESTER
+		}
+
+		let currenttime = Date.now()
+
+		//check ratelimit
+		if(user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
+			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
+		}
+
+		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 5000){
+			return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
+		}
+
+		//set ratelimit
+		user.accountdata.gptchatusedtimestamps.push(currenttime)
+		await setUser(user)
+
+		//PROMPT
+		let message = req.body.message
+
+		const mp3 = await openai.audio.speech.create({
+			model: "tts-1",
+			voice: "nova",
+			input: message,
+		})
+
+		const buffer = Buffer.from(await response.arrayBuffer())
+		res.set('Content-Type', 'audio/mpeg')
+		res.send(buffer)
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).' })
 	}
 })
 

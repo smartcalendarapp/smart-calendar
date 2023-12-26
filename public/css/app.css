@@ -2514,11 +2514,11 @@ max-width:1000px;
 	background-clip: text;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
-	background-image: linear-gradient(to right, #ffd700, #ffdd29);
+	background-image: linear-gradient(to right, #facd1b, #f1b100)
 }
 
 .background-gold{
-	background-image: linear-gradient(to right, #ffd700, #ffdd29);
+	background-image: linear-gradient(to right, #facd1b, #f1b100)
 }
 
 
