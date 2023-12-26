@@ -13240,10 +13240,11 @@ async function aispeakmessage(message){
 			})
 		})
 		if(response.status == 200){
-			let aiassistantaudio = getElement('aiassistantaudio')
-			aiassistantaudio.src = '/getgptvoiceinteraction'
+			const blob = await response.blob()
+            const aiassistantaudio = getElement('aiassistantaudio')
+            aiassistantaudio.src = URL.createObjectURL(blob);
             aiassistantaudio.play()
-
+			
 			return true
 		}else if(response.status == 401){
 			let error = await response.json()

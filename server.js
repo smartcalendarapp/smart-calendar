@@ -4499,9 +4499,10 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 			input: message,
 		})
 
-		const buffer = Buffer.from(await response.arrayBuffer())
-		res.set('Content-Type', 'audio/mpeg')
-		res.send(buffer)
+		response.data.pipe(res).on('error', (error) => {
+            console.error(error);
+            res.status(500).send('Error streaming the response');
+        })
 	}catch(err){
 		console.error(err)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).' })
