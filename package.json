@@ -16,6 +16,7 @@
     "@replit/database": "^2.0.2",
     "@types/node": "^18.0.6",
     "apn": "^2.0.0",
+    "axios": "^1.6.3",
     "body-parser": "^1.20.1",
     "compression": "^1.7.4",
     "connect-dynamodb": "^2.0.6",

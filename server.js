@@ -1266,6 +1266,7 @@ const SESSION_SECRET = process.env.SESSION_SECRET
 const port = process.env.PORT || 3000
 
 const fs = require('fs')
+const axios = require('axios');
 const path = require('path')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
@@ -4493,16 +4494,21 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 		//PROMPT
 		let message = req.body.message
 
-		const response = await openai.audio.speech.create({
-			model: "tts-1",
-			voice: "nova",
-			input: message,
-		})
-
-		response.data.pipe(res).on('error', (error) => {
-            console.error(error);
-            res.status(500).send('Error streaming the response');
+		const openaiResponse = await axios.post('https://api.openai.com/v1/audio/speech', {
+            model: "tts-1",
+            voice: "nova",
+            input: message,
+        }, {
+            headers: {
+                'Authorization': `Bearer ${OPENAI_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            responseType: 'stream'
         })
+
+		res.set('Content-Type', 'audio/mpeg');
+		openaiResponse.data.pipe(res);
+		//here3
 	}catch(err){
 		console.error(err)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).' })
