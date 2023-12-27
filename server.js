@@ -4500,7 +4500,17 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 			input: message,
 		})
 
-		response.body.pipe(res)
+		const stream = response.body
+
+        stream.on('data', (chunk) => {
+            console.warn(`Received ${chunk.length} bytes of data.`)
+        })
+
+        stream.on('end', () => {
+            console.warn('Stream ended.')
+        })
+
+		stream.pipe(res)
 	}catch(err){
 		console.error(err)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
