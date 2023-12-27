@@ -4818,11 +4818,16 @@ function run() {
 	window.addEventListener('mousedown', clickforaiassistantaudio, false)
 	window.addEventListener('touchstart', clickforaiassistantaudio, false)
 
-	function clickforaiassistantaudio(){
+	async function clickforaiassistantaudio(){
+		let aiassistantaudio = getElement('aiassistantaudio')
+		aiassistantaudio.src = '../quick-beep.mp3'
+		aiassistantaudio.volume = 0.01
+		
 		try{
-			let aiassistantaudio = getElement('aiassistantaudio')
-			aiassistantaudio.play()
+			await aiassistantaudio.play()
 		}catch(err){}
+
+		aiassistantaudio.volume = 1
 
 		window.removeEventListener('mousedown', clickforaiassistantaudio, false)
 		window.removeEventListener('touchstart', clickforaiassistantaudio, false)
@@ -12016,11 +12021,13 @@ function rejecteventsuggestion(id){
 }
 
 
-function playsound(name){
+async function playsound(name){
 	let sounddiv = getElement(name)
 	if(!sounddiv) return
 	
-	sounddiv.play()
+	try{
+		await sounddiv.play()
+	}catch(e){}
 }
 
 
@@ -13470,7 +13477,7 @@ class ChatMessage {
 
 		const aispeakmessage = async () => {
 			return new Promise(async (resolve) => {
-				try{	
+				try{
 					if(clientinfo.betatester){
 						console.log(this.message.length)
 					}
@@ -13531,7 +13538,11 @@ class ChatMessage {
 						appendNextChunk()
 					})
 		
-					aiassistantaudio.play()
+					try{
+						await aiassistantaudio.play()
+					}catch(err){
+						return resolve(false)
+					}
 		
 					aiassistantaudio.addEventListener('error', () => {
 						return resolve(false)
@@ -13584,6 +13595,7 @@ class ChatMessage {
 
 		if(clientinfo.betatester && this.dictated == true){
 		 	let successful = await aispeakmessage(this.message)
+
 			if(!successful){
 				await processtyping(1)
 			}
