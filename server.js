@@ -4498,6 +4498,7 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
             model: "tts-1",
             voice: "nova",
             input: message,
+			stream: true,
         }, {
             headers: {
                 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,

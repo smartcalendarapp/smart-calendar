@@ -1498,15 +1498,12 @@ ol{
 	background-color:var(--red-hover) !important
 }
 .dictationbutton{
-	transition:transform 0.2s, background-color 0.2s;
 	position:relative;
-}
-.dictationbutton:hover{
-	transform:scale(0.9);
 }
 .recognitionredanimation svg{
 	fill:var(--white) !important;
 }
+
 
 
 @keyframes recognitionredanimationbefore {

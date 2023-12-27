@@ -10263,8 +10263,8 @@ function updaterecognitionui(close){
 	todorecognitionbutton.classList.remove('display-none')
 	aichatrecognitionbutton.classList.remove('display-none')
 
-	let aichatinputmask = getElement('aichatinputmask')
-	aichatinputmask.classList.add('hiddenfade')
+	let aichatinputwrap = getElement('aichatinputwrap')
+	aichatinputwrap.classList.remove('hiddenfade')
 
 	if(close) return
 
@@ -10303,7 +10303,7 @@ function updaterecognitionui(close){
 			aichatrecognitionbutton.classList.add('display-none')
 
 			aichatdictationpopup.classList.remove('hiddenfade')
-			aichatinputmask.classList.remove('hiddenfade')
+			aichatinputwrap.classList.add('hiddenfade')
 			aichatdictationbutton.classList.add('recognitionredanimation')
 
 			if(totalTranscriptCopy){
@@ -10339,7 +10339,7 @@ function updaterecognitionui(close){
 				aichatrecognitionbutton.classList.add('display-none')
 
 				aichatdictationpopup.classList.remove('hiddenfade')
-				aichatinputmask.classList.add('hiddenfade')
+				aichatinputwrap.classList.remove('hiddenfade')
 
 				if(!permanentrecognitionerrors.includes(recognitionerror)){
 					aichatdictationtext2.classList.remove('display-none')
@@ -10370,7 +10370,7 @@ function togglerecognition(type){
 			let addtododictationpopup = getElement('addtododictationpopup')
 			let addeventdictationpopup = getElement('addeventdictationpopup')
 			let aichatdictationpopup = getElement('aichatdictationpopup')
-			let aichatinputmask = getElement('aichatinputmask')
+			let aichatinputwrap = getElement('aichatinputwrap')
 			
 			if(recognitionoutputtype == 'task'){
 				addtododictationpopup.classList.remove('hiddenpopup')
@@ -10378,7 +10378,7 @@ function togglerecognition(type){
 				addeventdictationpopup.classList.remove('hiddenpopup')
 			}else if(recognitionoutputtype == 'aichat'){
 				aichatdictationpopup.classList.remove('hiddenfade')
-				aichatinputmask.classList.remove('hiddenfade')
+				aichatinputwrap.classList.add('hiddenfade')
 			}
 
 			recognition.start()
@@ -13237,32 +13237,43 @@ function sleep(time) {
 
 
 async function aispeakmessage(message){
-	try{
-		const response = await fetch('/getgptvoiceinteraction', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				message: message,
+	return new Promise(async (resolve) => {
+		try{
+			const response = await fetch('/getgptvoiceinteraction', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					message: message,
+				})
 			})
-		})
 
-		if(response.status == 401){
-			let error = await response.json()
-			console.log(error)
+			if(response.status == 401){
+				let error = await response.json()
+				console.log(error)
 
-			return false
+				resolve(false)
+			}
+			
+			const blob = await response.blob()
+			let aiassistantaudio = getElement('aiassistantaudio')
+			aiassistantaudio.src = URL.createObjectURL(blob)
+			aiassistantaudio.play()
+
+			aiassistantaudio.addEventListener('error', () => {
+				resolve(false)
+			})
+			
+			aiassistantaudio.addEventListener('ended', () => {
+				resolve(true)
+			})
+		}catch(err){
+			console.log(err)
+
+			resolve(false)
 		}
-		
-		const blob = await response.blob()
-		const aiassistantaudio = getElement('aiassistantaudio')
-		aiassistantaudio.src = URL.createObjectURL(blob)
-		aiassistantaudio.play()
-	}catch(err){
-		console.log(err)
-		return false
-	}
+	})
 }
 
 class ChatConversation{
@@ -13744,6 +13755,16 @@ function updateaichatinput(){
 		submitaichatbutton.classList.add('greyedoutevent')
 	}else{
 		submitaichatbutton.classList.remove('greyedoutevent')
+	}
+
+	let aichatrecognitionwrap = getElement('aichatrecognitionwrap')
+	let aichatdictationpopup = getElement('aichatdictationpopup')
+	if(userinput.length > 0){
+		aichatrecognitionwrap.classList.add('hiddenfade')
+		aichatdictationpopup.classList.add('hiddenfade')
+	}else{
+		aichatrecognitionwrap.classList.remove('hiddenfade')
+		aichatdictationpopup.classList.remove('hiddenfade')
 	}
 }
 
