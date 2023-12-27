@@ -1280,6 +1280,14 @@ ol{
 	text-overflow: ellipsis;
 }
 
+
+.aichatlanguagebutton:hover div{
+	color:var(--text-quinary) !important; 
+}
+.aichatlanguagebutton:hover svg{
+	stroke:var(--text-quinary) !important
+}
+
 @keyframes eventstatusblue {
 	0% {
 		box-shadow: var(--blue-transparent) 0px 2px 12px -7px;

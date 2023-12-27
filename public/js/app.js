@@ -10161,6 +10161,9 @@ function chooseaichatlanguage(value){
 
 	let aichatlanguagetext = getElement('aichatlanguagetext')
 	aichatlanguagetext.innerHTML = aichatlanguagemap[value]
+
+	let aichatlanguagepopup = getElement('aichatlanguagepopup')
+	aichatlanguagepopup.classList.add('hiddenpopup')
 }
 function clickaichatlanguagebutton(){
 	let aichatlanguagebutton = getElement('aichatlanguagebutton')
@@ -10170,7 +10173,6 @@ function clickaichatlanguagebutton(){
 
 	aichatlanguagepopup.style.top = fixtop(aichatlanguagebutton.getBoundingClientRect().top + aichatlanguagebutton.offsetHeight, aichatlanguagepopup) + 'px'
 	aichatlanguagepopup.style.left = fixleft(aichatlanguagebutton.getBoundingClientRect().left, repeatoptionmenu) + 'px'
-	aichatlanguagepopup.style.width = aichatlanguagebutton.offsetWidth + 'px'
 }
 const aichatlanguagemap = {
 	'en-US' : 'English',
@@ -10379,7 +10381,7 @@ function updaterecognitionui(close){
 				aichatdictationpopup.classList.remove('hiddenfade')
 				aichatinputwrap.classList.remove('hiddenfaderelative')
 
-				aichatcontent2.classList.remove('padding-bottom-192px')
+				aichatcontent2.classList.add('padding-bottom-192px')
 
 				if(!permanentrecognitionerrors.includes(recognitionerror)){
 					aichatdictationtext2.classList.remove('display-none')
@@ -13403,6 +13405,9 @@ class ChatMessage {
 		if(this.startedanimating) return
 		this.startedanimating = true
 
+		isanimating = true
+		updateaichatinput()
+
 		//waiting
 		if(!this.message){
 			const getthismessage = () => {
@@ -13550,6 +13555,7 @@ class ChatMessage {
 		})
 
 		this.finishedanimating = true
+		isanimating = false
 		updateaichat()
 
 
@@ -13775,13 +13781,7 @@ function updateaichat(){
 		}
 	}
 
-	/*
-	if(calendartabs.includes(4)){
-		aichatcontent2.innerHTML = output.join('')
-	}else{
-		aichatcontent.innerHTML = output.join('')
-	}
-	*/
+
 	aichatcontent2.innerHTML = output.join('')
 
 
@@ -13858,7 +13858,7 @@ function updateaichatinput(){
 	}else{
 		submitaichatbutton = getElement('submitaichatbutton')
 	}
-	if(isgenerating || userinput.length == 0){
+	if(isgenerating || isanimating || userinput.length == 0){
 		submitaichatbutton.classList.add('greyedoutevent')
 	}else{
 		submitaichatbutton.classList.remove('greyedoutevent')
@@ -13866,19 +13866,21 @@ function updateaichatinput(){
 
 	let aichatrecognitionwrap = getElement('aichatrecognitionwrap')
 	let aichatdictationpopup = getElement('aichatdictationpopup')
-	if(userinput.length > 0){
+	if(userinput.length > 0 || isanimating || isgenerating){
 		aichatrecognitionwrap.classList.add('hiddenfade')
 		aichatdictationpopup.classList.add('hiddenfade')
 	}else{
-		aichatrecognitionwrap.classList.remove('hiddenfade')
 		aichatdictationpopup.classList.remove('hiddenfade')
+
+		aichatcontent2.classList.add('padding-bottom-192px')
 	}
 }
 
 let aichattemporarydata;
 let isgenerating = false
+let isanimating = false
 async function submitaimessage(optionalinput, dictated){
-	if(isgenerating) return
+	if(isgenerating || isanimating) return
 	
 	let aichatinput;
 	if(calendartabs.includes(4)){
