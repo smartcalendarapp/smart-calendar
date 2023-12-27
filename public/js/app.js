@@ -10173,6 +10173,7 @@ function chooseaichatlanguage(value){
 	if(!Object.keys(aichatlanguagemap).includes(value)) value = 'en-US'
 
 	calendar.recognitionlanguage = value
+	updateaichatrecognitionlanguage()
 
 	let aichatlanguagepopup = getElement('aichatlanguagepopup')
 	aichatlanguagepopup.classList.add('hiddenpopup')
@@ -10452,6 +10453,8 @@ function togglerecognition(type){
 			}else if(recognitionoutputtype == 'event'){
 				addeventdictationpopup.classList.remove('hiddenpopup')
 			}else if(recognitionoutputtype == 'aichat'){
+				if(isgenerating || isanimating) return
+
 				aichatdictationpopup.classList.remove('hiddenfade')
 
 				aichatinputwrap.classList.add('hiddenfaderelative')
@@ -13590,7 +13593,7 @@ class ChatMessage {
 
 
 
-		if(clientinfo.betatester && this.dictated == true){
+		if(this.dictated == true){
 		 	let successful = await aispeakmessage(this.message)
 
 			if(!successful){
