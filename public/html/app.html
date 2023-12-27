@@ -2121,9 +2121,9 @@
 								</div>
 
 
-								<!-- microphone  -->
+								<!-- microphone -->
 								<div class="border-box width-full pointer-none fadetransition padding-12px aichatdictationpopup z-index-100 display-flex flex-column gap-12px" id="aichatrecognitionwrap">
-									<div class="pointer pointer-auto align-self-center background-tint-1 border-round hover:background-tint-2 transition-duration-100 padding-12px display-flex" onclick="togglerecognition('aichat')" id="aichatrecognitionbutton">
+									<div class="pointer pointer-auto backdrop-blur align-self-center background-tint-1 border-round hover:background-tint-2 transition-duration-100 padding-12px display-flex" onclick="togglerecognition('aichat')" id="aichatrecognitionbutton">
 										<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="recognitionbuttonlarge">
 											<g>
 												<path d="M128 0.46875C103.522 0.46875 83.6875 20.3029 83.6875 44.7812C83.6875 45.3985 83.6875 123.164 83.6875 123.781C83.6875 148.26 103.522 168.125 128 168.125C152.478 168.125 172.344 148.26 172.344 123.781L172.344 44.7812C172.344 20.3029 152.478 0.46875 128 0.46875Z" fill-rule="nonzero" opacity="1" ></path>
@@ -2141,12 +2141,13 @@
 
 									<div id="aichatdictationtext" class="text-center white-space-normal break-word text-primary text-16px"></div>
 
+									<div id="aichatdictationtext2" class="text-center text-quaternary text-14px display-none">Paused. Click microphone to try again</div>
+
 									<div class="display-flex flex-column gap-6px">
-										<div id="aichatdictationtext2" class="text-center text-quaternary text-14px display-none">Paused. Click microphone to try again</div>
 										
 										<div class="display-flex gap-48px flex-row align-center">
-											<div class="flex-1 justify-flex-end">
-												<div class="hover:text-quinary transition-duration-100 text-quaternary text-14px" onclick="restartaichatrecognition()">Restart</div>
+											<div class="flex-1 display-flex flex-row align-center justify-flex-end">
+												<div class="fadetransition hiddenfaderelative pointer pointer-auto hover:text-quinary transition-duration-100 text-quaternary text-14px" onclick="stoprecognition()" id="stopaichatrecognitionbutton">Stop</div>
 											</div>
 
 											<!-- microphone -->
@@ -3537,9 +3538,8 @@
 		<script src="../app.js"></script>
 
 
-		<audio id="quick-beep" class="display-none" preload="none" src="../quick-beep.mp3"></audio>
-		<audio id="check-ding" class="display-none" preload="none" src="../check-ding.mp3"></audio>
-		<audio id="aiassistantaudio" src=""></audio>
+		<audio id="soundeffectaudio" class="display-none" preload="none" src=""></audio>
+		<audio id="aiassistantaudio" class="display-none" preload="none" src=""></audio>
 </body>
 
 </html>

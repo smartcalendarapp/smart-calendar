@@ -10170,15 +10170,6 @@ function resetSpeechEndTimeout() {
 }
 
 
-function restartaichatrecognition(){
-	if(isspeaking){
-		stoprecognition()
-
-		setTimeout(function(){
-			togglerecognition('aichat')
-		}, 1000)
-	}
-}
 
 function chooseaichatlanguage(value){
 	if(!Object.keys(aichatlanguagemap).includes(value)) value = 'en-US'
@@ -10342,16 +10333,24 @@ function updaterecognitionui(close){
 	let aichatcontent2 = getElement('aichatcontent2')
 	aichatcontent2.classList.remove('padding-bottom-192px')
 
+	let stopaichatrecognitionbutton = getElement('stopaichatrecognitionbutton')
+	stopaichatrecognitionbutton.classList.add('hiddenfaderelative')
+
 	if(close) return
 
 	//error
 	const permanentrecognitionerrors = ['service-not-allowed', 'not-allowed']
 	if(recognitionerror && permanentrecognitionerrors.includes(recognitionerror)){
 		ispaused = true
+
+		setTimeout(function(){
+			togglerecognition(recognitionoutputtype)
+		}, 1000)
 	}
 	if(recognitionerror === 'language-not-supported'){
 		calendar.recognitionlanguage = 'en-US'
-		togglerecognition()
+		
+		togglerecognition(recognitionoutputtype)
 	}
 
 
@@ -10386,6 +10385,8 @@ function updaterecognitionui(close){
 
 			aichatinputwrap.classList.add('hiddenfaderelative')
 			aichatcontent2.classList.add('padding-bottom-192px')
+
+			stopaichatrecognitionbutton.classList.remove('hiddenfaderelative')
 
 			aichatdictationbutton.classList.add('recognitionredanimation')
 
@@ -12033,8 +12034,8 @@ function rejecteventsuggestion(id){
 
 
 async function playsound(name){
-	let sounddiv = getElement(name)
-	if(!sounddiv) return
+	let sounddiv = getElement('soundeffectaudio')
+	sounddiv.src = `${name}.mp3`
 	
 	try{
 		await sounddiv.play()
@@ -12072,7 +12073,7 @@ async function todocompleted(event, id) {
 	if(item.completed){
 		promptaiassistanttaskcompleted(item)
 
-		playsound('check-ding')
+		playsound('check-ding-2')
 	}
 
 	if(item.completed){
@@ -13018,7 +13019,7 @@ function closeaichat(){
 
 function newaichat(){
 	closerecognitionpopup()
-	abruptlystopvoice = true
+	stopplayingvoice = true
 
 	chathistory = new ChatConversation()
 	openaichat()
@@ -13247,7 +13248,7 @@ async function promptaiassistanttaskstarted(item){
 
 			//sound
 			if(document.visibilityState != 'visible' || !calendartabs.includes(4)){
-				playsound('quick-beep')
+				playsound('incoming')
 			}
 		}else if(response.status == 401){
 			let data = await response.json()
@@ -13318,7 +13319,7 @@ async function promptaiassistantmorningsummary(){
 
 			//sound
 			if(document.visibilityState != 'visible' || !calendartabs.includes(4)){
-				playsound('quick-beep')
+				playsound('incoming')
 			}
 		}else if(response.status == 401){
 			let data = await response.json()
@@ -13423,7 +13424,7 @@ if ('speechSynthesis' in window) {
 }
 */
 
-let abruptlystopvoice = false
+let stopplayingvoice = false
 
 class ChatMessage {
 	constructor({ role, message, actions, nextactions, unread, dictated }){
@@ -13460,7 +13461,7 @@ class ChatMessage {
 
 		this.startedanimating = true
 
-		abruptlystopvoice = false
+		stopplayingvoice = false
 
 		isanimating = true
 		updateaichatinput()
@@ -13488,6 +13489,7 @@ class ChatMessage {
 
 		const aispeakmessage = async () => {
 			return new Promise(async (resolve) => {
+				let checkstopplayinginterval;
 				try{
 					if(clientinfo.betatester){
 						console.log(this.message.length)
@@ -13502,6 +13504,8 @@ class ChatMessage {
 							message: this.message,
 						})
 					})
+
+					this.waitingforvoice = false
 		
 		
 					if(response.status == 401){
@@ -13512,6 +13516,17 @@ class ChatMessage {
 					}
 		
 					processtyping(0.5)
+
+					checkstopplayinginterval = setInterval(function(){
+						if(stopplayingvoice == true){
+							aiassistantaudio.pause()
+							aiassistantaudio.src = ''
+							aiassistantaudio.load()
+
+							clearInterval(checkstopplayinginterval)
+							return resolve(true)
+						}
+					}, 100)
 					
 					const reader = response.body.getReader()
 					const mediaSource = new MediaSource()
@@ -13523,12 +13538,6 @@ class ChatMessage {
 						sourceBuffer.mode = 'sequence'
 		
 						function appendNextChunk() {
-							if (abruptlystopvoice == true) {
-								abruptlystopvoice = false
-								mediaSource.endOfStream()
-								return
-							}
-
 							reader.read().then(({ done, value }) => {
 								if (done) {
 									mediaSource.endOfStream()
@@ -13552,21 +13561,29 @@ class ChatMessage {
 					try{
 						await aiassistantaudio.play()
 					}catch(err){
+						clearInterval(checkstopplayinginterval)
 						return resolve(false)
 					}
 		
 					aiassistantaudio.addEventListener('error', () => {
+						clearInterval(checkstopplayinginterval)
 						return resolve(false)
 					})
 		
 					aiassistantaudio.addEventListener('ended', () => {
+						aiassistantaudio.pause()
 						aiassistantaudio.src = ''
+						aiassistantaudio.load()
 
+						clearInterval(checkstopplayinginterval)
 						return resolve(true)
 					})
 				}catch(err){
+					this.waitingforvoice = false
+					
 					console.log(err)
 		
+					clearInterval(checkstopplayinginterval)
 					return resolve(false)
 				}
 			})
@@ -13796,7 +13813,6 @@ function updateaichat(){
 	const aiavatar = `<img class="border-round avatarimage" height="36" width="36" src="athena.png" alt="Profile picture"></img>`
 
 
-	let aichatcontent = getElement('aichatcontent')
 	let aichatcontent2 = getElement('aichatcontent2')
 	
 
@@ -13804,18 +13820,20 @@ function updateaichat(){
 
 
 	for(let chatinteraction of chathistory.getInteractions()){
-		for(let { role, message, displaycontent, actions, id, liked, disliked, finishedanimating, nextactions, unread } of chatinteraction.getMessages()){
+		for(let { role, message, displaycontent, actions, id, liked, disliked, finishedanimating, waitingforvoice, nextactions, unread } of chatinteraction.getMessages()){
 			if(unread){
 				unread = false
 			}
 
 			output.push(`
-			<div class="aichatmessagewrap display-flex flex-row gap-12px">
+			<div class="aichatmessagewrap display-flex flex-column gap-6px">
+			<div class="display-flex align-self-center align-center flex-column justify-center">
 				${role == 'user' ? useravatar : aiavatar}
+				<div class="text-primary text-16px text-bold">${role == 'user' ? username : ainame}</div>
+			</div>
 				<div class="flex-1 overflow-hidden display-flex flex-column gap-12px">
 					<div class="display-flex flex-column gap-6px">
-						<div class="text-primary text-16px text-bold">${role == 'user' ? username : ainame}</div>
-						<div class="selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : `<div class="typingdots"><span></span><span></span><span></span></div>`}</div>
+						<div class="padding-12px background-tint-1 border-12px selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message && !waitingforvoice ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : `<div class="typingdots"><span></span><span></span><span></span></div>`}</div>
 
 						${actions ? `<div class="hoverchatmessagebuttons display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${actions.join('')}</div>` : ''}
 
@@ -13977,7 +13995,8 @@ async function submitaimessage(optionalinput, dictated){
 	let responsechatmessage = new ChatMessage({
 		role: 'assistant',
 		message: null,
-		dictated: !!dictated
+		dictated: !!dictated,
+		waitingforvoice: !!dictated
 	})
 
 	chatinteraction.addMessage(responsechatmessage)
@@ -17865,7 +17884,7 @@ async function eventcompleted(event, id) {
 	if(item.completed){
 		promptaiassistanttaskcompleted(item)
 
-		playsound('check-ding')
+		playsound('check-ding-2')
 	}
 
 	if (item.completed) {
