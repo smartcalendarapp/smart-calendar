@@ -4814,6 +4814,20 @@ function run() {
 		window.removeEventListener('touchstart', clickforpushnotif, false)
 	}
 
+	//audio
+	window.addEventListener('mousedown', clickforaiassistantaudio, false)
+	window.addEventListener('touchstart', clickforaiassistantaudio, false)
+
+	function clickforaiassistantaudio(){
+		try{
+			let aiassistantaudio = getElement('aiassistantaudio')
+			aiassistantaudio.play()
+		}catch(err){}
+
+		window.removeEventListener('mousedown', clickforaiassistantaudio, false)
+		window.removeEventListener('touchstart', clickforaiassistantaudio, false)
+	}
+
 }
 
 //update status indicator
@@ -10153,17 +10167,27 @@ function resetSpeechEndTimeout() {
 	}
 }
 
-let restartrecognition = false
 function chooseaichatlanguage(value){
 	if(!Object.keys(aichatlanguagemap).includes(value)) value = 'en-US'
 
 	calendar.recognitionlanguage = value
 
-	let aichatlanguagetext = getElement('aichatlanguagetext')
-	aichatlanguagetext.innerHTML = aichatlanguagemap[value]
-
 	let aichatlanguagepopup = getElement('aichatlanguagepopup')
 	aichatlanguagepopup.classList.add('hiddenpopup')
+
+	if(isspeaking){
+		stoprecognition()
+
+		setTimeout(function(){
+			togglerecognition('aichat')
+		}, 1000)
+	}
+}
+function updateaichatrecognitionlanguage(){
+	if(!Object.keys(aichatlanguagemap).includes(value)) calendar.recognitionlanguage = 'en-US'
+
+	let aichatlanguagetext = getElement('aichatlanguagetext')
+	aichatlanguagetext.innerHTML = aichatlanguagemap[calendar.recognitionlanguage]
 }
 function clickaichatlanguagebutton(){
 	let aichatlanguagebutton = getElement('aichatlanguagebutton')
@@ -10174,6 +10198,7 @@ function clickaichatlanguagebutton(){
 	aichatlanguagepopup.style.top = fixtop(aichatlanguagebutton.getBoundingClientRect().top + aichatlanguagebutton.offsetHeight, aichatlanguagepopup) + 'px'
 	aichatlanguagepopup.style.left = fixleft(aichatlanguagebutton.getBoundingClientRect().left, repeatoptionmenu) + 'px'
 }
+
 const aichatlanguagemap = {
 	'en-US' : 'English',
 	'zh-CN': 'Chinese',
@@ -13727,6 +13752,7 @@ function markdowntoHTML(markdown, role) {
 
 function updateaichat(){
 	updateaiassistanttooltip()
+	updateaichatrecognitionlanguage()
 
 	function nameToColor(name) {
 		let sum = 0;
