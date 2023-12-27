@@ -10229,6 +10229,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 function updaterecognitionui(close){
 	let addtododictationpopup = getElement('addtododictationpopup')
 	let addeventdictationpopup = getElement('addeventdictationpopup')
+	let aichatdictationpopup = getElement('aichatdictationpopup')
 
 	let addtododictationtext = getElement('addtododictationtext')
 	let addeventdictationtext = getElement('addeventdictationtext')
@@ -10240,9 +10241,7 @@ function updaterecognitionui(close){
 
 	addtododictationpopup.classList.add('hiddenpopup')
 	addeventdictationpopup.classList.add('hiddenpopup')
-	
-	let aichatmessageinput = getElement('aichatmessageinput')
-	aichatmessageinput.classList.remove('hiddenfade')
+	aichatdictationpopup.classList.add('hiddenfade')
 
 	addeventdictationbutton.classList.remove('recognitionredanimation')
 	addtododictationbutton.classList.remove('recognitionredanimation')
@@ -10263,6 +10262,9 @@ function updaterecognitionui(close){
 	eventrecognitionbutton.classList.remove('display-none')
 	todorecognitionbutton.classList.remove('display-none')
 	aichatrecognitionbutton.classList.remove('display-none')
+
+	let aichatinputmask = getElement('aichatinputmask')
+	aichatinputmask.classList.add('hiddenfade')
 
 	if(close) return
 
@@ -10300,10 +10302,9 @@ function updaterecognitionui(close){
 		}else if(recognitionoutputtype == 'aichat'){
 			aichatrecognitionbutton.classList.add('display-none')
 
+			aichatdictationpopup.classList.remove('hiddenfade')
+			aichatinputmask.classList.remove('hiddenfade')
 			aichatdictationbutton.classList.add('recognitionredanimation')
-
-			let aichatmessageinput = getElement('aichatmessageinput')
-			aichatmessageinput.classList.add('hiddenfade')
 
 			if(totalTranscriptCopy){
 				aichatdictationtext.innerHTML =  `<span class="text-primary">${totalTranscriptCopy}</span>`
@@ -10337,8 +10338,8 @@ function updaterecognitionui(close){
 			}else if(recognitionoutputtype == 'aichat'){
 				aichatrecognitionbutton.classList.add('display-none')
 
-				let aichatmessageinput = getElement('aichatmessageinput')
-				aichatmessageinput.classList.remove('hiddenfade')
+				aichatdictationpopup.classList.remove('hiddenfade')
+				aichatinputmask.classList.add('hiddenfade')
 
 				if(!permanentrecognitionerrors.includes(recognitionerror)){
 					aichatdictationtext2.classList.remove('display-none')
@@ -10368,13 +10369,16 @@ function togglerecognition(type){
 
 			let addtododictationpopup = getElement('addtododictationpopup')
 			let addeventdictationpopup = getElement('addeventdictationpopup')
-			let aichatmessageinput = getElement('aichatmessageinput')
+			let aichatdictationpopup = getElement('aichatdictationpopup')
+			let aichatinputmask = getElement('aichatinputmask')
+			
 			if(recognitionoutputtype == 'task'){
 				addtododictationpopup.classList.remove('hiddenpopup')
 			}else if(recognitionoutputtype == 'event'){
 				addeventdictationpopup.classList.remove('hiddenpopup')
 			}else if(recognitionoutputtype == 'aichat'){
-				aichatmessageinput.classList.add('hiddenfade')
+				aichatdictationpopup.classList.remove('hiddenfade')
+				aichatinputmask.classList.remove('hiddenfade')
 			}
 
 			recognition.start()
@@ -13740,13 +13744,6 @@ function updateaichatinput(){
 		submitaichatbutton.classList.add('greyedoutevent')
 	}else{
 		submitaichatbutton.classList.remove('greyedoutevent')
-	}
-
-	let aichatrecognitionwrap = getElement('aichatrecognitionwrap')
-	if(userinput.length > 0){
-		aichatrecognitionwrap.classList.add('hiddenfade')
-	}else{
-		aichatrecognitionwrap.classList.remove('hiddenfade')
 	}
 }
 

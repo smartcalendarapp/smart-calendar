@@ -1493,13 +1493,15 @@ ol{
 
 .recognitionredanimation{
 	background-color:var(--red) !important;
-	position:relative;
-	transition:transform 0.2s, background-color 0.2s;
 }
 .recognitionredanimation:hover{
 	background-color:var(--red-hover) !important
 }
-.recognitionredanimation:active{
+.dictationbutton{
+	transition:transform 0.2s, background-color 0.2s;
+	position:relative;
+}
+.dictationbutton:hover{
 	transform:scale(0.9);
 }
 .recognitionredanimation svg{
@@ -1510,15 +1512,16 @@ ol{
 @keyframes recognitionredanimationbefore {
 	0% {
 		transform:scale(1);
-		opacity:1
+		opacity:0.8
 	}
 
 	100% {
-		transform:scale(3);
+		transform:scale(2);
 		opacity:0;
 	}
 }
 .recognitionredanimation::before {
+	z-index:-1;
 	position: absolute;
 	content: "";
 	height: 100%;
