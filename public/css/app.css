@@ -1491,33 +1491,51 @@ ol{
 }
 
 
-@keyframes recognitionredanimation {
-	0% {
-		opacity: 1
-	}
-
-	50% {
-		opacity: 0.5;
-	}
-
-	100% {
-		opacity: 1;
-	}
-}
-
 .recognitionredanimation{
-	animation-name: recognitionredanimation;
-	animation-duration: 2s;
-	animation-iteration-count: infinite;
-	animation-timing-function: ease-in-out;
-	opacity: 1;
-	background-color:var(--red) !important
+	background-color:var(--red) !important;
+	position:relative;
+	transition:transform 0.2s, background-color 0.2s;
 }
 .recognitionredanimation:hover{
 	background-color:var(--red-hover) !important
 }
+.recognitionredanimation:active{
+	transform:scale(0.9);
+}
 .recognitionredanimation svg{
 	fill:var(--white) !important;
+}
+
+
+@keyframes recognitionredanimationbefore {
+	0% {
+		transform:scale(1);
+		opacity:1
+	}
+
+	100% {
+		transform:scale(3);
+		opacity:0;
+	}
+}
+.recognitionredanimation::before {
+	position: absolute;
+	content: "";
+	height: 100%;
+	width: 100%;
+	left: 0;
+	top: 0;
+	border-radius: 50%;
+	background-color: #ff3636;
+	box-sizing: border-box;
+	animation-name: recognitionredanimationbefore;
+	animation-delay: 1s;
+	animation-duration: 2s;
+	animation-fill-mode: forwards;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease;
+	opacity: 1;
+	transform: scale(1);
 }
 
 
