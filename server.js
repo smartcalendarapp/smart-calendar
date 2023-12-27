@@ -399,7 +399,7 @@ class User{
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false }
-const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, logindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], betatester: false, haspremium: false, premium: { referafriendclaimvalue: 0, starttimestamp: null, endtimestamp: null }, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
+const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, logindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], gptvoiceusedtimestamps: [], betatester: false, haspremium: false, premium: { referafriendclaimvalue: 0, starttimestamp: null, endtimestamp: null }, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
 const MODELEVENT = { start: {}, end: {}, endbefore: {}, startafter: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0, parentid: null, subtasksuggestions: [], gotsubtasksuggestions: false, iseventsuggestion: false, goteventsuggestion: false, autoschedulelocked: false }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#18a4f5', isprimary: false, subscriptionurl: null, lastmodified: 0  }
@@ -4051,6 +4051,10 @@ const MAX_GPT_CHAT_PER_DAY = 50 //10
 const MAX_GPT_CHAT_PER_DAY_BETA_TESTER = 100 //30
 const MAX_GPT_CHAT_PER_DAY_PREMIUM = 100
 
+const MAX_GPT_VOICE_PER_DAY = 50 //10
+const MAX_GPT_VOICE_PER_DAY_BETA_TESTER = 100 //30
+const MAX_GPT_VOICE_PER_DAY_PREMIUM = 100
+
 const MAX_GPT_COMPLETION_PER_DAY = 30 //10
 const MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
 const MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
@@ -4471,24 +4475,24 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 			return res.status(401).json({ error: 'User does not exist.' })
 		}
 
-		let appliedratelimit = MAX_GPT_CHAT_PER_DAY
+		let appliedratelimit = MAX_GPT_VOICE_PER_DAY
 		if(user.accountdata.betatester){
-			appliedratelimit = MAX_GPT_CHAT_PER_DAY_BETA_TESTER
+			appliedratelimit = MAX_GPT_VOICE_PER_DAY_BETA_TESTER
 		}
 
 		let currenttime = Date.now()
 
 		//check ratelimit
-		if(user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
+		if(user.accountdata.gptvoiceusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
 			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
 		}
 
-		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 5000){
+		if(Date.now() - Math.max(...user.accountdata.gptvoiceusedtimestamps) < 5000){
 			return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
 		}
 
 		//set ratelimit
-		user.accountdata.gptchatusedtimestamps.push(currenttime)
+		user.accountdata.gptvoiceusedtimestamps.push(currenttime)
 		await setUser(user)
 
 		//PROMPT
@@ -4498,18 +4502,10 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 			model: 'tts-1',
 			voice: 'nova',
 			input: message,
+			speed: 1.2,
 		})
 
 		const stream = response.body
-
-        stream.on('data', (chunk) => {
-            console.warn(`Received ${chunk.length} bytes of data.`)
-        })
-
-        stream.on('end', () => {
-            console.warn('Stream ended.')
-        })
-
 		stream.pipe(res)
 	}catch(err){
 		console.error(err)

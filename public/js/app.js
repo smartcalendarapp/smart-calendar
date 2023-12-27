@@ -10264,7 +10264,10 @@ function updaterecognitionui(close){
 	aichatrecognitionbutton.classList.remove('display-none')
 
 	let aichatinputwrap = getElement('aichatinputwrap')
-	aichatinputwrap.classList.remove('hiddenfade')
+	aichatinputwrap.classList.remove('hiddenfaderelative')
+
+	let aichatcontent2 = getElement('aichatcontent2')
+	aichatcontent2.classList.remove('padding-bottom-192px')
 
 	if(close) return
 
@@ -10303,7 +10306,10 @@ function updaterecognitionui(close){
 			aichatrecognitionbutton.classList.add('display-none')
 
 			aichatdictationpopup.classList.remove('hiddenfade')
-			aichatinputwrap.classList.add('hiddenfade')
+
+			aichatinputwrap.classList.add('hiddenfaderelative')
+			aichatcontent2.classList.add('padding-bottom-192px')
+
 			aichatdictationbutton.classList.add('recognitionredanimation')
 
 			if(totalTranscriptCopy){
@@ -10339,7 +10345,9 @@ function updaterecognitionui(close){
 				aichatrecognitionbutton.classList.add('display-none')
 
 				aichatdictationpopup.classList.remove('hiddenfade')
-				aichatinputwrap.classList.remove('hiddenfade')
+				aichatinputwrap.classList.remove('hiddenfaderelative')
+
+				aichatcontent2.classList.remove('padding-bottom-192px')
 
 				if(!permanentrecognitionerrors.includes(recognitionerror)){
 					aichatdictationtext2.classList.remove('display-none')
@@ -10370,7 +10378,9 @@ function togglerecognition(type){
 			let addtododictationpopup = getElement('addtododictationpopup')
 			let addeventdictationpopup = getElement('addeventdictationpopup')
 			let aichatdictationpopup = getElement('aichatdictationpopup')
+
 			let aichatinputwrap = getElement('aichatinputwrap')
+			let aichatcontent2 = getElement('aichatcontent2')
 			
 			if(recognitionoutputtype == 'task'){
 				addtododictationpopup.classList.remove('hiddenpopup')
@@ -10378,7 +10388,9 @@ function togglerecognition(type){
 				addeventdictationpopup.classList.remove('hiddenpopup')
 			}else if(recognitionoutputtype == 'aichat'){
 				aichatdictationpopup.classList.remove('hiddenfade')
-				aichatinputwrap.classList.add('hiddenfade')
+
+				aichatinputwrap.classList.add('hiddenfaderelative')
+				aichatcontent2.classList.add('padding-bottom-192px')
 			}
 
 			recognition.start()
@@ -13238,7 +13250,11 @@ function sleep(time) {
 
 async function aispeakmessage(message){
 	return new Promise(async (resolve) => {
-		try{			
+		try{	
+			if(clientinfo.betatester){
+				console.log(message.length)
+			}
+
 			const response = await fetch('/getgptvoiceinteraction', {
 				method: 'POST',
 				headers: {
@@ -13249,37 +13265,62 @@ async function aispeakmessage(message){
 				})
 			})
 
+
 			if(response.status == 401){
 				let error = await response.json()
 				console.log(error)
 
-				resolve(false)
+				return resolve(false)
 			}
 
-			/*const arrayBuffer = await response.arrayBuffer()
-			const audioBuffer = await audioContext.decodeAudioData(arrayBuffer)
-
-			const source = audioContext.createBufferSource()
-			source.buffer = audioBuffer
-			source.connect(audioContext.destination)
-			source.start(0)*/
+			//here2
 			
-			const blob = await response.blob()
-			let aiassistantaudio = getElement('aiassistantaudio')
-			aiassistantaudio.src = URL.createObjectURL(blob)
-			aiassistantaudio.play()
+			const reader = response.body.getReader()
+            const mediaSource = new MediaSource()
+            let aiassistantaudio = getElement('aiassistantaudio')
+            aiassistantaudio.src = URL.createObjectURL(mediaSource)
+
+            mediaSource.addEventListener('sourceopen', () => {
+				const sourceBuffer = mediaSource.addSourceBuffer('audio/mpeg')
+				sourceBuffer.mode = 'sequence'
+
+				function appendNextChunk() {
+					reader.read().then(({ done, value }) => {
+						if (done) {
+							mediaSource.endOfStream()
+							if(clientinfo.betatester){
+								console.log('Stream ended')
+							}
+							return
+						}
+						if(clientinfo.betatester){
+							console.log(`Received chunk with ${value.length} bytes`)
+						}
+						sourceBuffer.appendBuffer(value)
+					}).catch(error => {
+						console.error('Error reading chunk', error)
+						mediaSource.endOfStream('decode')
+					});
+				}
+
+				sourceBuffer.addEventListener('updateend', appendNextChunk);
+
+				appendNextChunk();
+			})
+
+            aiassistantaudio.play()
 
 			aiassistantaudio.addEventListener('error', () => {
-				resolve(false)
+				return resolve(false)
 			})
 
 			aiassistantaudio.addEventListener('ended', () => {
-				resolve(true)
+				return resolve(true)
 			})
 		}catch(err){
 			console.log(err)
 
-			resolve(false)
+			return resolve(false)
 		}
 	})
 }
