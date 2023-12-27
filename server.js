@@ -4506,8 +4506,8 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
             responseType: 'stream'
         })
 
-		res.set('Content-Type', 'audio/mpeg');
-		openaiResponse.data.pipe(res);
+		res.set('Content-Type', 'audio/mp3')
+		openaiResponse.data.pipe(res)
 		//here3
 	}catch(err){
 		console.error(err)

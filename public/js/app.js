@@ -13239,19 +13239,18 @@ async function aispeakmessage(message){
 				message: message,
 			})
 		})
-		if(response.status == 200){
-			const blob = await response.blob()
-            const aiassistantaudio = getElement('aiassistantaudio')
-            aiassistantaudio.src = URL.createObjectURL(blob);
-            aiassistantaudio.play()
-			
-			return true
-		}else if(response.status == 401){
+
+		if(response.status == 401){
 			let error = await response.json()
 			console.log(error)
 
 			return false
 		}
+		
+		const blob = await response.blob()
+		const aiassistantaudio = getElement('aiassistantaudio')
+		aiassistantaudio.src = URL.createObjectURL(blob)
+		aiassistantaudio.play()
 	}catch(err){
 		console.log(err)
 		return false
