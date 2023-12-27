@@ -4502,7 +4502,6 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 			model: 'tts-1',
 			voice: 'nova',
 			input: message,
-			speed: 1.2,
 		})
 
 		const stream = response.body

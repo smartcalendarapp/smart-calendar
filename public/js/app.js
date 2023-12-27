@@ -10179,6 +10179,8 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		let totalTranscript = (finalTranscript.trim() + ' ' + interimTranscript.trim()).trim()
 
 		totalTranscriptCopy = totalTranscript
+		
+		recognitionerror = null
 		updaterecognitionui()
 
 		resetSpeechEndTimeout()
@@ -10187,6 +10189,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition.addEventListener('start', () => {
 		isspeaking = true
 
+		recognitionerror = null
 		updaterecognitionui()
 
 		console.log("Recognition started")
@@ -10391,6 +10394,10 @@ function togglerecognition(type){
 
 				aichatinputwrap.classList.add('hiddenfaderelative')
 				aichatcontent2.classList.add('padding-bottom-192px')
+
+				requestAnimationFrame(function(){
+					scrollaichatY()
+				})
 			}
 
 			recognition.start()
@@ -13248,83 +13255,6 @@ function sleep(time) {
 }
 
 
-async function aispeakmessage(message){
-	return new Promise(async (resolve) => {
-		try{	
-			if(clientinfo.betatester){
-				console.log(message.length)
-			}
-
-			const response = await fetch('/getgptvoiceinteraction', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					message: message,
-				})
-			})
-
-
-			if(response.status == 401){
-				let error = await response.json()
-				console.log(error)
-
-				return resolve(false)
-			}
-
-			//here2
-			
-			const reader = response.body.getReader()
-            const mediaSource = new MediaSource()
-            let aiassistantaudio = getElement('aiassistantaudio')
-            aiassistantaudio.src = URL.createObjectURL(mediaSource)
-
-            mediaSource.addEventListener('sourceopen', () => {
-				const sourceBuffer = mediaSource.addSourceBuffer('audio/mpeg')
-				sourceBuffer.mode = 'sequence'
-
-				function appendNextChunk() {
-					reader.read().then(({ done, value }) => {
-						if (done) {
-							mediaSource.endOfStream()
-							if(clientinfo.betatester){
-								console.log('Stream ended')
-							}
-							return
-						}
-						if(clientinfo.betatester){
-							console.log(`Received chunk with ${value.length} bytes`)
-						}
-						sourceBuffer.appendBuffer(value)
-					}).catch(error => {
-						console.error('Error reading chunk', error)
-						mediaSource.endOfStream('decode')
-					});
-				}
-
-				sourceBuffer.addEventListener('updateend', appendNextChunk);
-
-				appendNextChunk();
-			})
-
-            aiassistantaudio.play()
-
-			aiassistantaudio.addEventListener('error', () => {
-				return resolve(false)
-			})
-
-			aiassistantaudio.addEventListener('ended', () => {
-				return resolve(true)
-			})
-		}catch(err){
-			console.log(err)
-
-			return resolve(false)
-		}
-	})
-}
-
 class ChatConversation{
 	constructor(interactions = []){
 		this.interactions = interactions
@@ -13364,6 +13294,46 @@ class ChatInteraction {
 		return this.messages
 	}
 }
+
+
+/*
+if ('speechSynthesis' in window) {
+
+	const utterance = new SpeechSynthesisUtterance(this.message)
+	utterance.rate = 1.05
+	utterance.pitch = 1.3
+	
+	speechSynthesis.speak(utterance)
+
+	successfullyspoken = true
+
+
+	//typing
+	let splitmessage = this.message.split(/(\s+)/g)
+	let totalwords = splitmessage.length
+
+	for(let i = 0; i < totalwords; i++){
+		this.displaycontent = splitmessage.slice(0, i + 1).join('')
+		let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
+		chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)} <span class="aichatcursor"></span>`
+
+		//delay
+		let currentword = splitmessage[i]
+		let delay = 500 * (currentword.length/10)
+
+		await sleep(delay)
+
+		requestAnimationFrame(function(){
+			scrollaichatY()
+		})
+	}
+
+	//complete message
+	this.displaycontent = this.message
+	let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
+	chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)}`
+}
+*/
 
 class ChatMessage {
 	constructor({ role, message, actions, nextactions, unread, dictated }){
@@ -13420,52 +13390,85 @@ class ChatMessage {
 		}
 
 
-		let successfullyspoken;
-		if(clientinfo.betatester && this.dictated == true){
-			//text to speech
-			let successfullyspoken = await aispeakmessage(this.message)
-
-			/*
-			if ('speechSynthesis' in window) {
-
-				const utterance = new SpeechSynthesisUtterance(this.message)
-				utterance.rate = 1.05
-				utterance.pitch = 1.3
-				
-				speechSynthesis.speak(utterance)
-
-				successfullyspoken = true
-
-
-				//typing
-				let splitmessage = this.message.split(/(\s+)/g)
-				let totalwords = splitmessage.length
-
-				for(let i = 0; i < totalwords; i++){
-					this.displaycontent = splitmessage.slice(0, i + 1).join('')
-					let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-					chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)} <span class="aichatcursor"></span>`
-
-					//delay
-					let currentword = splitmessage[i]
-					let delay = 500 * (currentword.length/10)
-
-					await sleep(delay)
-
-					requestAnimationFrame(function(){
-						scrollaichatY()
+		const aispeakmessage = async () => {
+			return new Promise(async (resolve) => {
+				try{	
+					if(clientinfo.betatester){
+						console.log(this.message.length)
+					}
+		
+					const response = await fetch('/getgptvoiceinteraction', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							message: this.message,
+						})
 					})
+		
+		
+					if(response.status == 401){
+						let error = await response.json()
+						console.log(error)
+		
+						return resolve(false)
+					}
+		
+					processtyping(0.5)
+					
+					const reader = response.body.getReader()
+					const mediaSource = new MediaSource()
+					let aiassistantaudio = getElement('aiassistantaudio')
+					aiassistantaudio.src = URL.createObjectURL(mediaSource)
+		
+					mediaSource.addEventListener('sourceopen', () => {
+						const sourceBuffer = mediaSource.addSourceBuffer('audio/mpeg')
+						sourceBuffer.mode = 'sequence'
+		
+						function appendNextChunk() {
+							reader.read().then(({ done, value }) => {
+								if (done) {
+									mediaSource.endOfStream()
+									if(clientinfo.betatester){
+										console.log('Stream ended')
+									}
+									return
+								}
+								if(clientinfo.betatester){
+									console.log(`Received chunk with ${value.length} bytes`)
+								}
+								sourceBuffer.appendBuffer(value)
+							}).catch(error => {
+								console.error('Error reading chunk', error)
+								mediaSource.endOfStream('decode')
+							});
+						}
+		
+						sourceBuffer.addEventListener('updateend', appendNextChunk);
+		
+						appendNextChunk()
+					})
+		
+					aiassistantaudio.play()
+		
+					aiassistantaudio.addEventListener('error', () => {
+						return resolve(false)
+					})
+		
+					aiassistantaudio.addEventListener('ended', () => {
+						return resolve(true)
+					})
+				}catch(err){
+					console.log(err)
+		
+					return resolve(false)
 				}
-
-				//complete message
-				this.displaycontent = this.message
-				let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-				chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)}`
-			}
-			*/
+			})
 		}
 
-		if(!successfullyspoken){
+
+		const processtyping = async (speed) => {
 			//typing
 			let splitmessage = this.message.split(/(\s+)/g)
 			let totalwords = splitmessage.length
@@ -13481,7 +13484,7 @@ class ChatMessage {
 					random = Math.random()
 				}
 				let currentword = splitmessage[i]
-				let delay = 10 + random * 30 * (currentword.length/10)
+				let delay = (10 + random * 30 * (currentword.length/10)) * 1/speed
 
 				await sleep(delay)
 
@@ -13496,12 +13499,31 @@ class ChatMessage {
 			chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)}`
 		}
 
+
+
+		if(clientinfo.betatester && this.dictated == true){
+		 	let successful = await aispeakmessage(this.message)
+			if(!successful){
+				await processtyping(1)
+			}
+		}else{
+			await processtyping(1)
+		}
+
+
 		requestAnimationFrame(function(){
 			scrollaichatY()
 		})
 
 		this.finishedanimating = true
 		updateaichat()
+
+
+		//continuous speak for conversation!
+		if(this.dictated){
+			togglerecognition('aichat')
+		}
+
 	}
 
 }
@@ -13838,11 +13860,12 @@ async function submitaimessage(optionalinput, dictated){
 	chatinteraction.addMessage(new ChatMessage({
 		role: 'user',
 		message: userinput,
-		dictated: dictated
+		dictated: !!dictated
 	}))
 	let responsechatmessage = new ChatMessage({
 		role: 'assistant',
 		message: null,
+		dictated: !!dictated
 	})
 
 	chatinteraction.addMessage(responsechatmessage)
@@ -14447,12 +14470,6 @@ async function submitaimessage(optionalinput, dictated){
 	requestAnimationFrame(function(){
 		scrollaichatY()
 	})
-
-
-	//continuous speak
-	if(dictated){
-		togglerecognition('aichat')
-	}
 
 
 	//save conversation data
