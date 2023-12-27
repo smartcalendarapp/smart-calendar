@@ -10467,6 +10467,11 @@ function submitdictation(){
 		}else if(recognitionoutputtype == 'aichat'){
 			updateaichatinput()
 			resizeaichatinput()
+
+			let aichatdictationpopup = getElement('aichatdictationpopup')
+			aichatdictationpopup.classList.add('hiddenfade')
+			let aichatrecognitionwrap = getElement('aichatrecognitionwrap')
+			aichatrecognitionwrap.classList.remove('hiddenfade')
 			
 			submitaimessage(totalTranscriptCopy, true)
 		}
