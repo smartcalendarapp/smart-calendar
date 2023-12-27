@@ -10153,11 +10153,40 @@ function resetSpeechEndTimeout() {
 	}
 }
 
+let recognitionlanguage = 'en-US'
+function chooseaichatlanguage(value){
+	if(!Object.keys(aichatlanguagemap).includes(value)) value = 'en-US'
+
+	recognitionlanguage = value
+
+	let aichatlanguagetext = getElement('aichatlanguagetext')
+	aichatlanguagetext.innerHTML = aichatlanguagemap[value]
+}
+function clickaichatlanguagebutton(){
+	let aichatlanguagebutton = getElement('aichatlanguagebutton')
+	let aichatlanguagepopup = getElement('aichatlanguagepopup')
+
+	aichatlanguagepopup.classList.toggle('hiddenpopup')
+
+	aichatlanguagepopup.style.top = fixtop(aichatlanguagebutton.getBoundingClientRect().top + aichatlanguagebutton.offsetHeight, aichatlanguagepopup) + 'px'
+	aichatlanguagepopup.style.left = fixleft(aichatlanguagebutton.getBoundingClientRect().left, repeatoptionmenu) + 'px'
+	aichatlanguagepopup.style.width = aichatlanguagebutton.offsetWidth + 'px'
+}
+const aichatlanguagemap = {
+	'en-US' : 'English',
+	'zh-CN': 'Chinese',
+	'fr-FR': 'French',
+	'hi-IN': 'Hindi',
+	'ja-JP': 'Japanese',
+	'ru-RU': 'Russian',
+	'es-ES': 'Spanish',
+}
+
 if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
 	recognition.continuous = true
 	recognition.interimResults = true
-	recognition.lang = 'en-US'
+	recognition.lang = recognitionlanguage
 
 
 	let finalTranscript = ''
@@ -10179,7 +10208,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		let totalTranscript = (finalTranscript.trim() + ' ' + interimTranscript.trim()).trim()
 
 		totalTranscriptCopy = totalTranscript
-		
+
 		recognitionerror = null
 		updaterecognitionui()
 
@@ -13521,6 +13550,8 @@ class ChatMessage {
 
 		//continuous speak for conversation!
 		if(this.dictated){
+			await sleep(1000)
+
 			togglerecognition('aichat')
 		}
 
