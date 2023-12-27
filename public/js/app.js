@@ -10184,7 +10184,7 @@ function chooseaichatlanguage(value){
 	}
 }
 function updateaichatrecognitionlanguage(){
-	if(!Object.keys(aichatlanguagemap).includes(value)) calendar.recognitionlanguage = 'en-US'
+	if(!Object.keys(aichatlanguagemap).includes(calendar.recognitionlanguage)) calendar.recognitionlanguage = 'en-US'
 
 	let aichatlanguagetext = getElement('aichatlanguagetext')
 	aichatlanguagetext.innerHTML = aichatlanguagemap[calendar.recognitionlanguage]
