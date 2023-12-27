@@ -3471,18 +3471,18 @@ app.post('/dev', async (req, res) => {
 
 
 		//functions
-		async function addbetatester(tempusername){
-			let tempuser = await getUserById(tempusername)
+		async function addbetatester(tempvalue){
+			let tempuser = await getUserById(tempvalue)
 			tempuser.accountdata.betatester = true
 			if(!tempuser){
-				tempuser = await getUserByAttribute(tempusername)
+				tempuser = await getUserByAttribute(tempvalue)
 				if(!tempuser) return false
 			}
 			await setUser(tempuser)
 			return true
 		}
 
-		async function getuserinfo(tempid){
+		async function getuserinfo(tempvalue){
 			function charstosize(chars) {
 				let bytes = chars.length
 				if (bytes < 1024) return bytes + " bytes"
@@ -3495,9 +3495,13 @@ app.post('/dev', async (req, res) => {
 				return new Date(date).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', hour12: true })
 			}
 
-			let tempuser = await getUserById(tempid)
-			if(!tempuser) return false
+			let tempuser = await getUserById(tempvalue)
 
+			if(!tempuser){
+				tempuser = await getUserByAttribute(tempvalue)
+				if(!tempuser) return false
+			}
+			
 			return `User ID: ${tempuser.userid}\nUsername: ${tempuser.username || ''}\nGoogle email: ${tempuser.google_email || ''}\nApple ID: ${tempuser.appleid || ''}\nCreated date: ${getlocaldate(tempuser.accountdata.createddate)} (UTC)\nLast logged in date: ${getlocaldate(tempuser.accountdata.lastloggedindate)} (UTC)\n\nAccount data size: ${charstosize(JSON.stringify(user))}\nCalendar data size: ${charstosize(JSON.stringify(tempuser.calendardata))}\n\nEvents: ${tempuser.calendardata.events.length}\nTasks: ${tempuser.calendardata.todos.length}\nFixed events: ${tempuser.calendardata.events.filter(d => d.type == 0).length}\nFlexible events: ${tempuser.calendardata.events.filter(d => d.type == 1).length}\n\n\nGPT chat uses: ${tempuser.accountdata.gptchatusedtimestamps.length}`
 		}
 
@@ -3530,7 +3534,7 @@ app.post('/dev', async (req, res) => {
 				console.error(error)
 			}
 
-			return allitems.filter(d => d.pending.length > 0).map(d => `Invite code: ${d.invitelink}\nInvite user ID: ${d.userid}\nInvite date: ${getlocaldate(d.logindata?.timestamp)}\nInvite IP: ${d.logindata?.ip}\nInvite user agent: ${d.logindata?.useragent}\nInvite IOS app: ${d.logindata?.iosapp}\nInvite Hotjar ID: ${d.logindata?.hotjarid}\n\nAccepted: ${d.accepted?.length}\nRejected: ${d.rejected?.length}\n\n\nPending:\n\n${d.pending?.map(f => `User ID: ${f.userid}\nDate: ${getlocaldate(f.logindata?.timestamp)}\nIP: ${f.logindata?.ip}\nUser agent: ${f.logindata?.useragent}\nIOS app: ${f.logindata?.iosapp}\nHotjar ID: ${f.logindata?.hotjarid}\nTo accept: <span class="inlinecode">await acceptreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo reject: <span class="inlinecode">await rejectreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo whitelist: <span class="inlinecode">await setwhitelistreferafriendinvitecode('${d.invitelink}', true)</span>`).join('\n\n')}`).join('\n\n\n')
+			return allitems.length > 0 ? allitems.filter(d => d.pending.length > 0).map(d => `Invite code: ${d.invitelink}\nInvite user ID: ${d.userid}\nInvite date: ${getlocaldate(d.logindata?.timestamp)}\nInvite IP: ${d.logindata?.ip}\nInvite user agent: ${d.logindata?.useragent}\nInvite IOS app: ${d.logindata?.iosapp}\nInvite Hotjar ID: ${d.logindata?.hotjarid}\n\nAccepted: ${d.accepted?.length}\nRejected: ${d.rejected?.length}\n\n\nPending:\n\n${d.pending?.map(f => `User ID: ${f.userid}\nDate: ${getlocaldate(f.logindata?.timestamp)}\nIP: ${f.logindata?.ip}\nUser agent: ${f.logindata?.useragent}\nIOS app: ${f.logindata?.iosapp}\nHotjar ID: ${f.logindata?.hotjarid}\nTo accept: <span class="inlinecode">await acceptreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo reject: <span class="inlinecode">await rejectreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo whitelist: <span class="inlinecode">await setwhitelistreferafriendinvitecode('${d.invitelink}', true)</span>`).join('\n\n')}`).join('\n\n\n') : 'None'
 		}
 		
 		async function getstats(){
@@ -3580,7 +3584,7 @@ app.post('/dev', async (req, res) => {
 		}
 
 		async function help(){
-			return `<span class="inlinecode">addbetatester(email)</span>\n\n<span class="inlinecode">getuserinfo(userid)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">whitelistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>`
+			return `<span class="inlinecode">addbetatester(userid or email)</span>\n\n<span class="inlinecode">getuserinfo(userid or email)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">whitelistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>`
 		}
 
 		//eval

@@ -10169,6 +10169,17 @@ function resetSpeechEndTimeout() {
 	}
 }
 
+
+function restartaichatrecognition(){
+	if(isspeaking){
+		stoprecognition()
+
+		setTimeout(function(){
+			togglerecognition('aichat')
+		}, 1000)
+	}
+}
+
 function chooseaichatlanguage(value){
 	if(!Object.keys(aichatlanguagemap).includes(value)) value = 'en-US'
 
@@ -10425,7 +10436,7 @@ function updaterecognitionui(close){
 	}
 
 	if(recognitionerror && permanentrecognitionerrors.includes(recognitionerror)){		
-		let errorhtml = `<span class="text-red">No permission to use dictation, please check your browser/device settings.</span>`
+		let errorhtml = `<span class="text-red text-14px">No permission to use dictation, please check your browser/device settings.</span>`
 		if(recognitionoutputtype == 'task'){
 			addtododictationtext.innerHTML = errorhtml
 		}else if(recognitionoutputtype == 'event'){
@@ -13549,6 +13560,8 @@ class ChatMessage {
 					})
 		
 					aiassistantaudio.addEventListener('ended', () => {
+						aiassistantaudio.src = ''
+
 						return resolve(true)
 					})
 				}catch(err){

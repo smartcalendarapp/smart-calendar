@@ -2144,11 +2144,13 @@
 									<div class="display-flex flex-column gap-6px">
 										<div id="aichatdictationtext2" class="text-center text-quaternary text-14px display-none">Paused. Click microphone to try again</div>
 										
-										<div class="display-flex flex-row align-center">
-											<div class="flex-1"></div>
+										<div class="display-flex gap-48px flex-row align-center">
+											<div class="flex-1 justify-flex-end">
+												<div class="hover:text-quinary transition-duration-100 text-quaternary text-14px" onclick="restartaichatrecognition()">Restart</div>
+											</div>
 
 											<!-- microphone -->
-											<div class="flex-1 display-flex flex-row justify-center">
+											<div class="display-flex flex-row justify-center">
 												<div class="pointer pointer-auto background-tint-1 hover:background-tint-2 dictationbutton pointer border-round transition-duration-100 border-round padding-12px display-flex" onclick="submitdictation()" id="aichatdictationbutton">
 													<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="recognitionbuttonlarge">
 														<g>
@@ -2162,7 +2164,7 @@
 											</div>
 
 											<!-- language -->
-											<div class="flex-1 display-flex pointer-none flex-row justify-flex-end">
+											<div class="flex-1 display-flex pointer-none flex-row">
 												<div class="popupbutton pointer display-flex flex-row gap-6px align-center pointer pointer-auto aichatlanguagebutton" onclick="clickaichatlanguagebutton()" id="aichatlanguagebutton">
 													<div id="aichatlanguagetext" class="pointer-none transition-duration-100 text-quaternary text-14px">English</div>
 													<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="transition-duration-100 buttoninline buttonquaternary rotate90">
