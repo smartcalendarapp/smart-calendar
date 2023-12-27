@@ -7027,14 +7027,14 @@ function displaypopup(content){
 	let generalusepopup = getElement('generalusepopup')
 	let generalusepopupcontent = getElement('generalusepopupcontent')
 
-	popupqueue.push(content)
-
 	if(!popupshown){
 		popupshown = true
 
 		generalusepopup.classList.remove('hiddenpopup')
 
 		generalusepopupcontent.innerHTML = content
+	}else{
+		popupqueue.push(content)
 	}
 }
 function closepopup(){
@@ -10153,11 +10153,11 @@ function resetSpeechEndTimeout() {
 	}
 }
 
-let recognitionlanguage = 'en-US'
+let restartrecognition = false
 function chooseaichatlanguage(value){
 	if(!Object.keys(aichatlanguagemap).includes(value)) value = 'en-US'
 
-	recognitionlanguage = value
+	calendar.recognitionlanguage = value
 
 	let aichatlanguagetext = getElement('aichatlanguagetext')
 	aichatlanguagetext.innerHTML = aichatlanguagemap[value]
@@ -10188,7 +10188,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
 	recognition.continuous = true
 	recognition.interimResults = true
-	recognition.lang = recognitionlanguage
+	recognition.lang = 'en-US'
 
 
 	let finalTranscript = ''
@@ -10310,6 +10310,10 @@ function updaterecognitionui(close){
 	if(recognitionerror && permanentrecognitionerrors.includes(recognitionerror)){
 		ispaused = true
 	}
+	if(recognitionerror === 'language-not-supported'){
+		calendar.recognitionlanguage = 'en-US'
+		togglerecognition()
+	}
 
 
 	//display ui
@@ -10430,6 +10434,8 @@ function togglerecognition(type){
 					scrollaichatY()
 				})
 			}
+
+			recognition.lang = calendar.recognitionlanguage
 
 			recognition.start()
 		}else{
@@ -12733,10 +12739,10 @@ async function referafriendgeneratelink(generate){
 				}
 
 				displaypopup(`
-				<div class="text-18px text-primary">Congrats!</div>
+				<div class="text-18px text-primary text-center">Congrats!!</div>
 				<div class="text-16px text-primary">You have been granted ${getRoundedYMWDtext(Math.ceil(Date.now() - clientinfo?.premiumendtimestamp)/60000)} of free premium! See what you can do now:</div>
-				${markdowntoHTML(`- Increased AI chat: send up to 100 messages to our AI Assistant Athena every day.\n- Enhanced Personal Assistant: Athena will have more capabilities, and will provide you daily briefings, suggestions to complete your tasks, and more productivity help.\n- Early access to new features: you'll be the first to see our new exciting features and use them for your productivity.`, 'assistant')}
-				<div class="border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Done</div>`)
+				<div class="text-16px text-quaternary">${markdowntoHTML(`- Increased AI chat: send up to 100 messages to our AI Assistant Athena every day.\n- Enhanced Personal Assistant: Athena will have more capabilities, and will provide you daily briefings, suggestions to complete your tasks, and more productivity help.\n- Early access to new features: you'll be the first to see our new exciting features and use them for your productivity.`, 'assistant')}</div>
+				<div class="border-8px background-blue hover:background-blue-hover text-center padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Done</div>`)
 
 				let confetticanvas = getElement('confetticanvas')
 				let myconfetti = confetti.create(confetticanvas, {
@@ -12968,6 +12974,9 @@ function closeaichat(){
 }
 
 function newaichat(){
+	closerecognitionpopup()
+	abruptlystopvoice = true
+
 	chathistory = new ChatConversation()
 	openaichat()
 }
@@ -13371,6 +13380,8 @@ if ('speechSynthesis' in window) {
 }
 */
 
+let abruptlystopvoice = false
+
 class ChatMessage {
 	constructor({ role, message, actions, nextactions, unread, dictated }){
 		this.role = role
@@ -13403,7 +13414,10 @@ class ChatMessage {
 	async animateTyping(){
 		if(this.role != 'assistant') return
 		if(this.startedanimating) return
+
 		this.startedanimating = true
+
+		abruptlystopvoice = false
 
 		isanimating = true
 		updateaichatinput()
@@ -13466,6 +13480,12 @@ class ChatMessage {
 						sourceBuffer.mode = 'sequence'
 		
 						function appendNextChunk() {
+							if (abruptlystopvoice == true) {
+								abruptlystopvoice = false
+								mediaSource.endOfStream()
+								return
+							}
+
 							reader.read().then(({ done, value }) => {
 								if (done) {
 									mediaSource.endOfStream()
@@ -13474,17 +13494,14 @@ class ChatMessage {
 									}
 									return
 								}
-								if(clientinfo.betatester){
-									console.log(`Received chunk with ${value.length} bytes`)
-								}
 								sourceBuffer.appendBuffer(value)
 							}).catch(error => {
 								console.error('Error reading chunk', error)
 								mediaSource.endOfStream('decode')
-							});
+							})
 						}
 		
-						sourceBuffer.addEventListener('updateend', appendNextChunk);
+						sourceBuffer.addEventListener('updateend', appendNextChunk)
 		
 						appendNextChunk()
 					})
@@ -13866,13 +13883,19 @@ function updateaichatinput(){
 
 	let aichatrecognitionwrap = getElement('aichatrecognitionwrap')
 	let aichatdictationpopup = getElement('aichatdictationpopup')
-	if(userinput.length > 0 || isanimating || isgenerating){
-		aichatrecognitionwrap.classList.add('hiddenfade')
-		aichatdictationpopup.classList.add('hiddenfade')
-	}else{
-		aichatdictationpopup.classList.remove('hiddenfade')
 
-		aichatcontent2.classList.add('padding-bottom-192px')
+	aichatrecognitionwrap.classList.add('hiddenfade')
+	aichatdictationpopup.classList.add('hiddenfade')
+
+	aichatcontent2.classList.remove('padding-bottom-192px')
+
+	if(userinput.length == 0 && !isanimating && !isgenerating){
+		if(ispaused || isspeaking){
+			aichatdictationpopup.classList.remove('hiddenfade')
+			aichatcontent2.classList.add('padding-bottom-192px')
+		}else{
+			aichatrecognitionwrap.classList.remove('hiddenfade')
+		}
 	}
 }
 
