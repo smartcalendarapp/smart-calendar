@@ -13255,8 +13255,16 @@ async function aispeakmessage(message){
 
 				resolve(false)
 			}
+
+			const arrayBuffer = await response.arrayBuffer()
+			const audioBuffer = await audioContext.decodeAudioData(arrayBuffer)
+
+			const source = audioContext.createBufferSource()
+			source.buffer = audioBuffer
+			source.connect(audioContext.destination)
+			source.start(0)
 			
-			const blob = await response.blob()
+			/*const blob = await response.blob()
 			let aiassistantaudio = getElement('aiassistantaudio')
 			aiassistantaudio.src = URL.createObjectURL(blob)
 			aiassistantaudio.play()
@@ -13264,10 +13272,10 @@ async function aispeakmessage(message){
 			aiassistantaudio.addEventListener('error', () => {
 				resolve(false)
 			})
-			
+
 			aiassistantaudio.addEventListener('ended', () => {
 				resolve(true)
-			})
+			})*/
 		}catch(err){
 			console.log(err)
 

@@ -4494,25 +4494,16 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 		//PROMPT
 		let message = req.body.message
 
-		const openaiResponse = await axios.post('https://api.openai.com/v1/audio/speech', {
-            model: "tts-1",
-            voice: "nova",
-            input: message,
-			stream: true,
-        }, {
-            headers: {
-                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            responseType: 'stream'
-        })
+		const response = await openai.audio.speech.create({
+			model: 'tts-1',
+			voice: 'nova',
+			input: message,
+		})
 
-		res.set('Content-Type', 'audio/mp3')
-		openaiResponse.data.pipe(res)
-		//here3
+		response.body.pipe(res)
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).' })
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
 
