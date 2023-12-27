@@ -4820,14 +4820,11 @@ function run() {
 
 	async function clickforaiassistantaudio(){
 		let aiassistantaudio = getElement('aiassistantaudio')
-		aiassistantaudio.src = '../quick-beep.mp3'
-		aiassistantaudio.volume = 0.01
-		
+		aiassistantaudio.src = '../short-silence.mp3'
+
 		try{
 			await aiassistantaudio.play()
 		}catch(err){}
-
-		aiassistantaudio.volume = 1
 
 		window.removeEventListener('mousedown', clickforaiassistantaudio, false)
 		window.removeEventListener('touchstart', clickforaiassistantaudio, false)
