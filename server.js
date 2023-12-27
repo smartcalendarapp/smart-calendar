@@ -4500,7 +4500,7 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
             input: message,
         }, {
             headers: {
-                'Authorization': `Bearer ${OPENAI_API_KEY}`,
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
                 'Content-Type': 'application/json'
             },
             responseType: 'stream'
