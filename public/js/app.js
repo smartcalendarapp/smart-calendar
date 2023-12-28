@@ -3886,6 +3886,16 @@ if (mobilescreen) {
 	}
 }
 
+//initialize ios
+(function() {
+	try{
+		if (!window.navigator) window.navigator = {}
+		window.navigator.getUserMedia = function() {
+			webkit.messageHandlers.callbackHandler.postMessage(arguments)
+		}
+	}catch(err){}
+})()
+
 
 //initialize
 let historydata = []
@@ -10145,6 +10155,7 @@ function texttospeech(text) {
     }
 }
 
+
 //SPEECH RECOGNITION
 let isspeaking = false
 let ispaused = false
@@ -10170,6 +10181,7 @@ function resetSpeechEndTimeout() {
 		}, SPEECH_END_TIMEOUT_DURATION)
 	}
 }
+
 
 
 
@@ -10292,6 +10304,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	getElement('aichatrecognitionwrap').classList.add('display-none')
 }
 
+let retryrecognitiontimeout;
 function updaterecognitionui(close){
 	let addtododictationpopup = getElement('addtododictationpopup')
 	let addeventdictationpopup = getElement('addeventdictationpopup')
@@ -10346,11 +10359,13 @@ function updaterecognitionui(close){
 	if(recognitionerror && permanentrecognitionerrors.includes(recognitionerror)){
 		ispaused = true
 
-		setTimeout(function(){
-			togglerecognition(recognitionoutputtype)
+		clearTimeout(retryrecognitiontimeout)
+		retryrecognitiontimeout = setTimeout(function(){
+			if(recognitionerror && permanentrecognitionerrors.includes(recognitionerror)){
+				togglerecognition(recognitionoutputtype)
+			}
 		}, 1000)
-	}
-	if(recognitionerror === 'language-not-supported'){
+	}else if(recognitionerror === 'language-not-supported'){
 		calendar.recognitionlanguage = 'en-US'
 		
 		togglerecognition(recognitionoutputtype)
@@ -10440,7 +10455,7 @@ function updaterecognitionui(close){
 	}
 
 	if(recognitionerror && permanentrecognitionerrors.includes(recognitionerror)){		
-		let errorhtml = `<span class="text-red text-14px">No permission to use dictation, please check your browser/device settings.</span>`
+		let errorhtml = `<span class="text-red text-14px">No permission to use dictation, please check your browser settings. <a href="../contact" class="pointer pointer-auto text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">Contact us</a> if you're still stuck.</span>`
 		if(recognitionoutputtype == 'task'){
 			addtododictationtext.innerHTML = errorhtml
 		}else if(recognitionoutputtype == 'event'){
@@ -13971,7 +13986,10 @@ function updateaichatinput(){
 	}
 
 	ispaused = false
+
+	recognitionerror = null
 }
+
 
 let aichattemporarydata = {}
 let isgenerating = false
