@@ -10282,7 +10282,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		recognitionerror = event.error
 		updaterecognitionui()
 
-		if(clientinfo.betatester){calendar.todos.push(new Calendar.Todo(2023, 11, 30, 0, 60, event.error.toString()))}
+		if(clientinfo.betatester){togglerecognition('aichat')}
 
 		console.log("Recognition error occurred: " + event.error)
 	})
