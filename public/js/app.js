@@ -4830,10 +4830,10 @@ function run() {
 
 	async function clickforaiassistantaudio(){
 		let aiassistantaudio = getElement('aiassistantaudio')
-		//aiassistantaudio.src = '../short-silence.mp3'
+		aiassistantaudio.src = '../short-silence.mp3'
 
 		try{
-			//await aiassistantaudio.play()
+			await aiassistantaudio.play()
 		}catch(err){}
 
 		window.removeEventListener('mousedown', clickforaiassistantaudio, false)
