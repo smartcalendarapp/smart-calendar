@@ -10238,6 +10238,11 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	let finalTranscript = ''
 	let interimTranscript = ''
 	totalTranscriptCopy = ''
+
+	if(clientinfo.google_email == 'smartcalendartester@gmail.com'){
+		recognition.abort = ''
+		recognition.stop = ''
+	}
 	
 
 	recognition.addEventListener('result', event => {
@@ -10271,7 +10276,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 		resetSpeechEndTimeout()
 	})
-	  
+
 	recognition.addEventListener('error', (event) => {
 		finalTranscript = ''
 		interimTranscript = ''
@@ -10281,8 +10286,6 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 		recognitionerror = event.error
 		updaterecognitionui()
-
-		if(clientinfo.betatester){togglerecognition('aichat')}
 
 		console.log("Recognition error occurred: " + event.error)
 	})
