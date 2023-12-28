@@ -13085,7 +13085,7 @@ function openaichat(){
 		let chatinteraction = new ChatInteraction()
 		let responsechatmessage = new ChatMessage({
 			role: 'assistant',
-			message: `Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, plan your tasks, rearrange your schedule, and more! Ask me any time.`
+			message: `Hello, I am Athena, your assistant for productivity! I can schedule meetings for you, plan your tasks, rearrange your schedule, and more! What can I do for you?`
 		})
 
 		function getRandomItems(arr, num) {
