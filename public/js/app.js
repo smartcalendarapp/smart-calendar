@@ -4830,10 +4830,10 @@ function run() {
 
 	async function clickforaiassistantaudio(){
 		let aiassistantaudio = getElement('aiassistantaudio')
-		aiassistantaudio.src = '../short-silence.mp3'
+		//aiassistantaudio.src = '../short-silence.mp3'
 
 		try{
-			await aiassistantaudio.play()
+			//await aiassistantaudio.play()
 		}catch(err){}
 
 		window.removeEventListener('mousedown', clickforaiassistantaudio, false)
@@ -10238,11 +10238,6 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	let finalTranscript = ''
 	let interimTranscript = ''
 	totalTranscriptCopy = ''
-
-	if(clientinfo.google_email == 'smartcalendartester@gmail.com'){
-		recognition.abort = ''
-		recognition.stop = ''
-	}
 	
 
 	recognition.addEventListener('result', event => {
