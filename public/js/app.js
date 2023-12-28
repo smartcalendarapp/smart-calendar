@@ -10153,15 +10153,17 @@ let recognitionoutputtype;
 let recognitionerror;
 let totalTranscriptCopy;
 
-const SPEECH_END_TIMEOUT_DURATION = 2000
+let SPEECH_END_TIMEOUT_DURATION = 2000
 let speechEndTimeout = null
 
 function resetSpeechEndTimeout() {
+	let aichatlanguagepopup = getElement('aichatlanguagepopup')
+
 	if(isspeaking){
 		let oldtext = totalTranscriptCopy
 		clearTimeout(speechEndTimeout)
 		speechEndTimeout = setTimeout(() => {
-			if (totalTranscriptCopy.length > 0 && totalTranscriptCopy == oldtext) {
+			if (totalTranscriptCopy.length > 0 && totalTranscriptCopy == oldtext && aichatlanguagepopup.classList.contains('hiddenpopup')) {
 				submitdictation()
 				recognition.stop()
 			}
@@ -10185,7 +10187,7 @@ function chooseaichatlanguage(value){
 
 		setTimeout(function(){
 			togglerecognition('aichat')
-		}, 1000)
+		}, 500)
 	}
 }
 function updateaichatrecognitionlanguage(){
@@ -10321,11 +10323,12 @@ function updaterecognitionui(close){
 
 	let eventrecognitionbutton = getElement('eventrecognitionbutton')
 	let todorecognitionbutton = getElement('todorecognitionbutton')
-	let aichatrecognitionbutton = getElement('aichatrecognitionbutton')
+	let aichatrecognitionwrap = getElement('aichatrecognitionwrap')
 
 	eventrecognitionbutton.classList.remove('display-none')
 	todorecognitionbutton.classList.remove('display-none')
-	aichatrecognitionbutton.classList.remove('display-none')
+
+	aichatrecognitionwrap.classList.remove('hiddenfade')
 
 	let aichatinputwrap = getElement('aichatinputwrap')
 	aichatinputwrap.classList.remove('hiddenfaderelative')
@@ -10379,7 +10382,7 @@ function updaterecognitionui(close){
 				addeventdictationtext.innerHTML = `<span class="text-quaternary">Listening...</span>`
 			}
 		}else if(recognitionoutputtype == 'aichat'){
-			aichatrecognitionbutton.classList.add('display-none')
+			aichatrecognitionwrap.classList.add('hiddenfade')
 
 			aichatdictationpopup.classList.remove('hiddenfade')
 
@@ -10420,7 +10423,7 @@ function updaterecognitionui(close){
 
 				addeventdictationtext.innerHTML = ''
 			}else if(recognitionoutputtype == 'aichat'){
-				aichatrecognitionbutton.classList.add('display-none')
+				aichatrecognitionwrap.classList.add('hiddenfade')
 
 				aichatdictationpopup.classList.remove('hiddenfade')
 				aichatinputwrap.classList.remove('hiddenfaderelative')
@@ -13078,11 +13081,11 @@ function openaichat(){
 				.slice(0, num)
 		}
 		
-		const tempoptions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my agenda for today?')">What's on my agenda today?</div>`,
-		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, 
-		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Schedule todays tasks in my calendar')">Schedule today's tasks in my calendar</div>`, 
-		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`,
-		`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What are my tasks for today?')">What are my tasks for today?</div>`]
+		const tempoptions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my agenda for today?')">What's on my agenda today?</div>`,
+		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, 
+		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Schedule todays tasks in my calendar')">Schedule today's tasks in my calendar</div>`, 
+		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`,
+		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What are my tasks for today?')">What are my tasks for today?</div>`]
 
 		responsechatmessage.nextactions = getRandomItems(tempoptions, 3)
 
@@ -13645,7 +13648,7 @@ class ChatMessage {
 
 		//continuous speak for conversation!
 		if(this.dictated){
-			await sleep(1000)
+			await sleep(500)
 
 			togglerecognition('aichat')
 		}
@@ -13826,19 +13829,19 @@ function updateaichat(){
 			}
 
 			output.push(`
-			<div class="aichatmessagewrap display-flex flex-column gap-6px">
-			<div class="display-flex align-self-center align-center flex-column justify-center">
-				${role == 'user' ? useravatar : aiavatar}
-				<div class="text-primary text-16px text-bold">${role == 'user' ? username : ainame}</div>
-			</div>
+			<div class="aichatmessagewrap display-flex flex-column gap-12px">
+				<div class="display-flex gap-6px align-self-center align-center flex-column justify-center">
+					${role == 'user' ? useravatar : aiavatar}
+					<div class="text-primary text-16px text-bold">${role == 'user' ? username : ainame}</div>
+				</div>
 				<div class="flex-1 overflow-hidden display-flex flex-column gap-12px">
 					<div class="display-flex flex-column gap-6px">
-						<div class="padding-12px background-tint-1 border-12px selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message && !waitingforvoice ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : `<div class="typingdots"><span></span><span></span><span></span></div>`}</div>
+						<div class="padding-12px align-self-center background-tint-1 border-12px selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message && !waitingforvoice ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : `<div class="typingdots"><span></span><span></span><span></span></div>`}</div>
 
-						${actions ? `<div class="hoverchatmessagebuttons display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${actions.join('')}</div>` : ''}
+						${actions ? `<div class="hoverchatmessagebuttons justify-center display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${actions.join('')}</div>` : ''}
 
 						${role == 'assistant' ? `
-						<div class="display-flex flex-row gap-6px ${chathistory.getInteractions().findIndex(d => d.id == chatinteraction.id) == chathistory.getInteractions().length - 1 ? '' : 'visibility-hidden small:visibility-visible hoverchatmessagebuttons'} ${!finishedanimating ? 'display-none' : ''}">
+						<div class="display-flex flex-row gap-6px align-self-center ${chathistory.getInteractions().findIndex(d => d.id == chatinteraction.id) == chathistory.getInteractions().length - 1 ? '' : 'visibility-hidden small:visibility-visible hoverchatmessagebuttons'} ${!finishedanimating ? 'display-none' : ''}">
 
 							<div class="pointer aimessagebutton pointer-auto padding-6px ${liked ? 'background-tint-1 border-8px' : ''}"  onclick="likeaichatmessage(event, '${id}')">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonfillquaternarysmall pointer-none">
@@ -13860,7 +13863,7 @@ function updateaichat(){
 						
 					</div>
 
-					${nextactions && chathistory.getInteractions().findIndex(d => d.id == chatinteraction.id) == chathistory.getInteractions().length - 1 ? `<div class="hoverchatmessagebuttons display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${nextactions.join('')}</div>` : ''}
+					${nextactions && chathistory.getInteractions().findIndex(d => d.id == chatinteraction.id) == chathistory.getInteractions().length - 1 ? `<div class="justify-center hoverchatmessagebuttons display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${nextactions.join('')}</div>` : ''}
 
 				</div>
 			</div>`)
@@ -13898,11 +13901,11 @@ function updateaichat(){
 				role: 'assistant',
 				message: `How's your experience with me so far?`,
 				actions: [
-					`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(1);simulateaiassistantwithnextaction('😢', 'Got it, thanks for the feedback')"><span class="text-28px">😢</span></div>`,
-					`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(2);simulateaiassistantwithnextaction('😕', 'Got it, thanks for the feedback')"><span class="text-28px">😕</span></div>`,
-					`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(3);simulateaiassistantwithnextaction('😐', 'Got it, thanks for the feedback')"><span class="text-28px">😐</span></div>`,
-					`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(4);simulateaiassistantwithnextaction('🙂', 'Got it, thanks for the feedback')"><span class="text-28px">🙂</span></div>`,
-					`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="sendfeedbackaichatmessage(5);simulateaiassistantwithnextaction('😄', 'Got it, thanks for the feedback')"><span class="text-28px">😄</span></div>`
+					`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-6px-12px" onclick="sendfeedbackaichatmessage(1);simulateaiassistantwithnextaction('😢', 'Got it, thanks for the feedback')"><span class="text-24px">😢</span></div>`,
+					`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-6px-12px" onclick="sendfeedbackaichatmessage(2);simulateaiassistantwithnextaction('😕', 'Got it, thanks for the feedback')"><span class="text-24px">😕</span></div>`,
+					`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-6px-12px" onclick="sendfeedbackaichatmessage(3);simulateaiassistantwithnextaction('😐', 'Got it, thanks for the feedback')"><span class="text-24px">😐</span></div>`,
+					`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-6px-12px" onclick="sendfeedbackaichatmessage(4);simulateaiassistantwithnextaction('🙂', 'Got it, thanks for the feedback')"><span class="text-24px">🙂</span></div>`,
+					`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-6px-12px" onclick="sendfeedbackaichatmessage(5);simulateaiassistantwithnextaction('😄', 'Got it, thanks for the feedback')"><span class="text-24px">😄</span></div>`
 				]
 			}))
 
@@ -13966,9 +13969,11 @@ function updateaichatinput(){
 			aichatrecognitionwrap.classList.remove('hiddenfade')
 		}
 	}
+
+	ispaused = false
 }
 
-let aichattemporarydata;
+let aichattemporarydata = {}
 let isgenerating = false
 let isanimating = false
 async function submitaimessage(optionalinput, dictated){
@@ -14146,7 +14151,7 @@ async function submitaimessage(optionalinput, dictated){
 						let timeoptions = gettimeoptions(3)
 
 						responsechatmessage.message = `What time do you want "${title}" to take place?`
-						responsechatmessage.nextactions = [...timeoptions.map(d => `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('${d}')">${d}</div>`), `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Auto schedule')">Auto schedule</div>`]
+						responsechatmessage.nextactions = [...timeoptions.map(d => `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('${d}')">${d}</div>`), `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Auto schedule')">Auto schedule</div>`]
 					}
 				}else if(output.command == 'create_multiple_events'){
 					let arguments = output.arguments
@@ -14380,7 +14385,7 @@ async function submitaimessage(optionalinput, dictated){
 						gototaskincalendar(item.id)
 					}else{
 						responsechatmessage.message = `What time do you want ${title} to be due?`
-						responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('In 1 week')">In 1 week</div>`]
+						responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('In 1 week')">In 1 week</div>`]
 					}
 				}else if(output.command == 'create_multiple_tasks'){
 					let arguments = output.arguments
@@ -14425,10 +14430,10 @@ async function submitaimessage(optionalinput, dictated){
 
 						responsechatmessage.message = tempoutput.join('\n')
 						if(firstitem){
-							aichattemporarydata = allitems
+							aichattemporarydata[responsechatmessage.id] = allitems
 
 							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`]
-							responsechatmessage.actions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata })); simulateaiassistantwithnextaction('Schedule them in my calendar', 'Done! I scheduled ${allitems.length} tasks in your calendar.')">Schedule in calendar</div>`]
+							responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] }); simulateaiassistantwithnextaction('Schedule them in my calendar', 'Done! I scheduled ${allitems.length} tasks in your calendar.')">Schedule in calendar</div>`]
 						}
 
 						calendar.updateTodo()
@@ -14553,10 +14558,10 @@ async function submitaimessage(optionalinput, dictated){
 					}else{
 						let items = idList && calendar.todos.filter(d => idList.find(g => g == d.id))
 						if(items && items.length > 0){
-							aichattemporarydata = items
+							aichattemporarydata[responsechatmessage.id] = items
 							
 							responsechatmessage.message = `Just a confirmation, I'll schedule these tasks for you:\n${items.map(d => `- ${d.title}`).join('\n')}`
-							responsechatmessage.nextactions = [`<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule these tasks in your calendar.')">No</div>`, `<div class="background-tint-1 bordertertiary hover:background-tint-2 border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled ${items.length} tasks in your calendar.')">Yes</div>`]
+							responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule these tasks in your calendar.')">No</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled ${items.length} tasks in your calendar.')">Yes</div>`]
 						}else{
 							let calendaritems = idList && calendar.events.filter(d => idList.find(g => g == d.id))
 							if(calendaritems && calendaritems.length > 0){
