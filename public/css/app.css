@@ -4321,7 +4321,7 @@ max-width:1000px;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
     border-top: 10px solid var(--purple);
-    bottom: -11.5px;
+    bottom: -11px;
     left: 50%;
     transform: translateX(-50%);
 }
@@ -4374,7 +4374,7 @@ max-width:1000px;
     border-left: 10px solid transparent;
     border-right: 10px solid transparent;
     border-top: 10px solid var(--purple);
-    bottom: -11.5px;
+    bottom: -11px;
     left: 6px;
 }
 
