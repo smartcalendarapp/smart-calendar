@@ -3215,7 +3215,7 @@ class Calendar {
 				return dstartdate.getTime() < tempenddate.getTime() && denddate.getTime() > tempstartdate.getTime()
 			})) {
 				timebusy++
-				if ((min >= getnormalizedsleeptime().start && min < getnormalizedsleeptime().end) || (min >= getnormalizedsleeptime().start-1440 && min < getnormalizedsleeptime().end-1440)) {
+				if (!(min >= getnormalizedsleeptime().start && min < getnormalizedsleeptime().end) && !(min >= getnormalizedsleeptime().start-1440 && min < getnormalizedsleeptime().end-1440)) {
 					timefree--
 				}
 			}
@@ -3259,7 +3259,7 @@ class Calendar {
 					return dstartdate.getTime() < temptempenddate.getTime() && denddate.getTime() > temptempstartdate.getTime()
 				})) {
 					temptimebusy++
-					if ((min >= getnormalizedsleeptime().start && min < getnormalizedsleeptime().end) || (min >= getnormalizedsleeptime().start-1440 && min < getnormalizedsleeptime().end-1440)) {
+					if (!(min >= getnormalizedsleeptime().start && min < getnormalizedsleeptime().end) && !(min >= getnormalizedsleeptime().start-1440 && min < getnormalizedsleeptime().end-1440)) {
 						temptimefree--
 					}
 				}
@@ -14113,7 +14113,7 @@ async function submitaimessage(optionalinput, dictated){
 						responsechatmessage.message = `Done! I have created an event "${Calendar.Event.getRawTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 
-						gototaskincalendar(item.id)
+						if(!mobilescreen)gototaskincalendar(item.id)
 					}else{
 
 						function gettimeoptions(amount){
@@ -14222,7 +14222,7 @@ async function submitaimessage(optionalinput, dictated){
 						if(firstitem){
 							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${firstitem.id}')">Show me</div>`]
 
-							gototaskincalendar(firstitem.id)
+							if(!mobilescreen)gototaskincalendar(firstitem.id)
 						}
 
 						selectedeventid = null
@@ -14230,6 +14230,129 @@ async function submitaimessage(optionalinput, dictated){
 						calendar.updateEvents()
 					}else{
 						responsechatmessage.message = `I could not create an event for you, please try again.`
+					}
+
+				}else if(output.command == 'modify_multiple_events'){
+					let arguments = output.arguments
+					if(arguments.events && Array.isArray(arguments.events) && arguments.events.length > 0){
+
+						let tempoutput = []
+						let firstitem;
+
+						for(let tempitem of arguments.events){
+							let id = getrealid(tempitem?.id)
+							let error = tempitem?.errorMessage || ''
+							let newtitle = tempitem?.newTitle
+							let newstartdate = tempitem?.newStartDate
+							let newenddate = tempitem?.newEndDate
+							let newduration = tempitem?.newDuration
+							
+							if(error){
+								tempoutput.push(error)
+							}else{
+								let item = id && calendar.events.find(d => d.id == id)
+								if(item){
+									if(Calendar.Event.isReadOnly(item)){
+										tempoutput.push(`I could not edit the event ${Calendar.Event.getRawTitle(item)} as it is read-only (it may be part of a calendar you cannot edit).`)
+									}else{
+										let oldstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+										let oldtitle = item.title
+		
+		
+										let oldduration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
+		
+										let startminute = getMinute(newstartdate).value
+										let [startyear, startmonth, startday] = getDate(newstartdate).value
+										let endminute = getMinute(newenddate).value
+										let [endyear, endmonth, endday] = getDate(newenddate).value
+		
+										let startdate, enddate;
+										if(startminute != null && startyear != null && startmonth != null && startday != null){
+											startdate = new Date(startyear, startmonth, startday, 0, startminute)
+										}
+										if(endminute != null && endyear != null && endmonth != null && endday != null){
+											enddate = new Date(endyear, endmonth, endday, 0, endminute)
+										}
+										let duration = getDuration(newduration).value
+										if(duration != null){
+											if(startdate){
+												enddate = new Date(startdate)
+											}else{
+												enddate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+											}
+											enddate.setMinutes(enddate.getMinutes() + duration)
+										}
+										if(!enddate || isNaN(enddate.getTime())){
+											if(startdate){
+												enddate = new Date(startdate)
+											}else{
+												enddate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+											}
+											enddate.setTime(enddate.getTime() + oldduration)
+										}
+		
+		
+										if(startdate && !isNaN(startdate.getTime())){
+											item.start.year = startdate.getFullYear()
+											item.start.month = startdate.getMonth()
+											item.start.day = startdate.getDate()
+											item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+										}
+		
+										if(enddate && !isNaN(enddate.getTime())){
+											item.end.year = enddate.getFullYear()
+											item.end.month = enddate.getMonth()
+											item.end.day = enddate.getDate()
+											item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+										}
+		
+										item.title = newtitle || item.title
+		
+										lastmovedeventid = item.id;
+										item.startafter.year = item.start.year;
+										item.startafter.month = item.start.month;
+										item.startafter.day = item.start.day;
+										item.startafter.minute = item.start.minute;
+		
+		
+										let tempmsg;
+										if(newtitle != null && newtitle != oldtitle){
+											if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
+												tempmsg = `Done! I renamed your event to "${Calendar.Event.getRawTitle(item)}", and moved it to ${Calendar.Event.getStartText(item)}`
+											}else{
+												tempmsg = `Done! I renamed your event to "${Calendar.Event.getRawTitle(item)}".`
+											}
+										}else{
+											if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
+												tempmsg = `Done! I moved your event "${Calendar.Event.getRawTitle(item)}" to ${Calendar.Event.getStartText(item)}`
+											}else{
+												tempmsg = `Done! I modified your event "${Calendar.Event.getRawTitle(item)}" to be from ${Calendar.Event.getNaturalStartEndText(item)}`
+											}
+										}
+										tempoutput.push(tempmsg)
+		
+										if(!mobilescreen)gototaskincalendar(item.id)
+									}
+								}else{
+									tempoutput.push(`I could not find that event, could you please tell me more?`)
+								}
+							}
+							
+						}
+
+
+						responsechatmessage.message = tempoutput.join('\n')
+						if(firstitem){
+							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${firstitem.id}')">Show me</div>`]
+
+							if(!mobilescreen) gototaskincalendar(firstitem.id)
+						}
+
+						selectedeventid = null
+						calendar.updateInfo()
+						calendar.updateEvents()
+					}else{
+						responsechatmessage.message = `I could not modify an event for you, please try again.`
 					}
 
 				}else if(output.command == 'modify_event'){
@@ -14332,7 +14455,7 @@ async function submitaimessage(optionalinput, dictated){
 								responsechatmessage.message = tempmsg
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 
-								gototaskincalendar(item.id)
+								if(!mobilescreen)gototaskincalendar(item.id)
 							}
 						}else{
 							responsechatmessage.message = `I could not find that event, could you please tell me more?`
@@ -14402,7 +14525,7 @@ async function submitaimessage(optionalinput, dictated){
 						responsechatmessage.message = `Done! I created a task "${Calendar.Event.getRawTitle(item)}" and added it to your calendar.`
 						responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 
-						gototaskincalendar(item.id)
+						if(!mobilescreen)gototaskincalendar(item.id)
 					}else{
 						responsechatmessage.message = `What time do you want ${title} to be due?`
 						responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('In 1 week')">In 1 week</div>`]
@@ -14466,6 +14589,105 @@ async function submitaimessage(optionalinput, dictated){
 					}
 
 
+				}else if(output.command == 'modify_multiple_tasks'){
+					let arguments = output.arguments
+					if(arguments.tasks && Array.isArray(arguments.tasks) && arguments.tasks.length > 0){
+
+						let tempoutput = []
+						let firstitem;
+
+						for(let tempitem of arguments.tasks){
+							let id = getrealid(tempitem?.id)
+							let error = tempitem?.errorMessage || ''
+							let newtitle = tempitem?.newTitle
+							let newduedate = tempitem?.newDueDate
+							let newduration = tempitem?.newDuration
+							let newcompleted = tempitem?.newCompleted
+		
+							if(error){
+								tempoutput.push(`${error}`)
+							}else{
+								let item = id && [...calendar.todos, ...calendar.events].find(d => d.id == id)
+								if(item){
+									let oldtitle = item.title
+									let oldcompleted = item.completed
+									let oldduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
+									
+									let endbeforeminute = getMinute(newduedate).value
+									let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(newduedate).value
+									
+									let endbeforedate;
+									if(endbeforeminute != null && endbeforeyear != null && endbeforemonth != null && endbeforeday != null){
+										endbeforedate = new Date(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute)
+									}
+		
+									let duration = getDuration(newduration).value
+		
+									if(endbeforedate && !isNaN(endbeforedate.getTime())){
+										item.endbefore.year = endbeforedate.getFullYear()
+										item.endbefore.month = endbeforedate.getMonth()
+										item.endbefore.day = endbeforedate.getDate()
+										item.endbefore.minute = endbeforedate.getHours() * 60 + endbeforedate.getMinutes()
+									}
+		
+									item.title = newtitle || item.title
+		
+									if(duration != null){
+										if(Calendar.Event.isEvent(item)){
+											let tempdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+											tempdate.setMinutes(tempdate.getMinutes() + duration)
+		
+											item.end.year = tempdate.getFullYear()
+											item.end.month = tempdate.getMonth()
+											item.end.day = tempdate.getDate()
+											item.end.minute = tempdate.getHours() * 60 + tempdate.getMinutes()
+										}else{
+											item.duration = duration
+										}
+									}
+		
+									if(newcompleted !== null){
+										item.completed = !!newcompleted
+									}
+		
+									calendar.updateTodo()
+		
+		
+									let tempmsg;
+									if(newtitle != null && newtitle != oldtitle){
+										if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
+											tempmsg = `Done! I renamed your task to "${Calendar.Event.getRawTitle(item)}", and set it to be due ${Calendar.Event.getDueText(item)}`
+										}else{
+											tempmsg = `Done! I renamed your task to "${Calendar.Event.getRawTitle(item)}".`
+										}
+									}else{
+										if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
+											tempmsg = `Done! I set your task "${Calendar.Event.getRawTitle(item)}" to be due ${Calendar.Event.getDueText(item)}.`
+										}else{
+											tempmsg = `Done! I modified your task "${Calendar.Event.getRawTitle(item)}".`
+										}
+									}
+									if(newcompleted != null && newcompleted != oldcompleted){
+										tempmsg = `Done! I marked your task "${Calendar.Event.getRawTitle(item)}" as complete. Good job!`
+									}
+		
+									tempoutput.push(tempmsg)
+		
+								}else{
+									tempoutput.push(`I could not find that task, could you please tell me more?`)
+								}
+							}
+						}
+
+						responsechatmessage.message = tempoutput.join('\n')
+						if(firstitem){
+							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`]
+						}
+
+						calendar.updateTodo()
+					}else{
+						responsechatmessage.message = `I could not modify a task for you, please try again.`
+					}
 				}else if(output.command == 'modify_task'){
 					let arguments = output.arguments
 

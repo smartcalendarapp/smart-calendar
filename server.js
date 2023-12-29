@@ -4642,7 +4642,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 				},
 				{
 					name: 'modify_event',
-					description: 'Check for event in calendar to modify by title or direct reference. Need high confidence. Returns an error if the event does not exist.',
+					description: 'Check for event in calendar to modify by title or direct reference. Need high confidence. Returns an error if an event does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -4654,6 +4654,31 @@ app.post('/getgptchatinteraction', async (req, res) => {
 							errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
 						},
 						required: []
+					}
+				},
+				{
+					name: 'modify_multiple_events',
+					description: 'Check for event in calendar to modify by title or direct reference. Need high confidence. Returns an error if the event does not exist.',
+					parameters: {
+						type: "object",
+						properties: {
+							events: {
+								type: "array",
+								items: {
+									type: 'object',
+									properties: {
+										id: { type: 'string', description: 'Specific UUID of event.' },
+										newTitle: { type: 'string', description: '(optional) New event title' },
+										newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
+										newEndDate: { type: 'string', description: '(optional) New event end date in YYYY-MM-DD HH:MM' },
+										newDuration: { type: 'string', description: '(optional) New event duration in HH:MM' },
+										errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
+									},
+									required: []
+								}
+							},
+						},
+						required: ["events"]
 					}
 				},
 				{
@@ -4705,12 +4730,38 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						},
 						required: []
 					}
+				},
+				{
+					name: 'modify_multiple_tasks',
+					description: 'Check for task in to-do list to modify by title or direct reference. Returns an error if a task does not exist.',
+					parameters: {
+						type: "object",
+						properties: {
+							tasks: {
+								type: "array",
+								items: {
+									type: 'object',
+									properties: {
+										id: { type: 'string', description: 'Specific UUID of task.' },
+										newTitle: { type: 'string', description: 'New task title' },
+										newDueDate: { type: 'string', description: 'New task due date in YYYY-MM-DD HH:MM' },
+										newDuration: { type: 'string', description: 'New task duration in HH:MM' },
+										newCompleted: { type: 'boolean', description: 'New task completed status' },
+										errorMessage: { type: 'string', description: 'An error message if task is not found or other error.' },
+									},
+									required: []
+								}
+							},
+						},
+						required: ["tasks"]
+					}
 				}
+
 			]
 
-			const customfunctions = ['create_multiple_events', 'create_event', 'delete_event', 'modify_event', 'create_multiple_tasks','create_task', 'delete_task', 'modify_task', 'schedule_tasks_in_calendar'] //a subset of all functions, the functions that invoke custom function
-			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
-			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'schedule_tasks_in_calendar'] //a subset of all functions, the functions that need todo data
+			const customfunctions = ['create_multiple_events', 'create_event', 'delete_event', 'modify_event', 'modify_multiple_events', 'create_multiple_tasks','create_task', 'delete_task', 'modify_task', 'modify_multiple_tasks', 'schedule_tasks_in_calendar'] //a subset of all functions, the functions that invoke custom function
+			const calendardataneededfunctions = ['delete_event', 'modify_event', 'modify_multiple_events', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'modify_multiple_tasks', 'get_todo_list_tasks', 'schedule_tasks_in_calendar'] //a subset of all functions, the functions that need todo data
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
