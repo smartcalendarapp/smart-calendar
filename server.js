@@ -4215,7 +4215,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}. Time needed: ${getDHMText(Math.floor((new Date(taskitem.end.year, taskitem.end.month, taskitem.end.day, 0, taskitem.end.minute).getTime() - new Date(taskitem.start.year, taskitem.start.month, taskitem.start.day, 0, taskitem.start.minute).getTime())/60000))}""" Respond in maximum 30 words. Provide specific and actionable steps and tips to make solid progress and complete this task. Avoid generic or cliche responses. As a personal assistant, mention that the task is starting now and will last how long, and give motivational tips.`
+		let inputtext = `Task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}. Time needed: ${getDHMText(Math.floor((new Date(taskitem.end.year, taskitem.end.month, taskitem.end.day, 0, taskitem.end.minute).getTime() - new Date(taskitem.start.year, taskitem.start.month, taskitem.start.day, 0, taskitem.start.minute).getTime())/60000))}""" Respond in no more than 30 words. Provide specific and actionable steps and tips to make solid progress and complete this task. Avoid generic or cliche responses. As a personal assistant, mention that the task is starting now and will last how long, and give motivational tips.`
 		let custominstructions = `Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
@@ -4327,7 +4327,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Competed task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}""" Respond in maximum 30 words. Provide a very short personal, non-generic, non-cliche motivational message for the user who just completed this task. Then, mention only the next upcoming event if there is one, and if the user has a break. All in one coherent paragraph. Calendar data: """${calendarcontext}"""`
+		let inputtext = `Competed task: """${taskitem.title || 'No title'}. Description: ${taskitem.notes || 'No description'}""" Respond in no more than 30 words. Provide a very short personal, non-generic, non-cliche motivational message for the user who just completed this task. Then, mention only the next upcoming event if there is one, and if the user has a break. All in one coherent paragraph. Calendar data: """${calendarcontext}"""`
 		let custominstructions = `Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
@@ -4437,7 +4437,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Calendar data: """${calendarcontext}""" Respond in maximum 30 words. Provide a morning greeting and morning summary message of the user's agenda, briefing user on only a few of the important or unique events today in a personal and helpful style. Subtly integrate motivational productivity messages. Finally, you must ask the user for 3 tasks they want to complete today to promote planning. All in one coherent paragraph.`
+		let inputtext = `Calendar data: """${calendarcontext}""" Respond in no more than 30 words. Provide a morning greeting and morning summary message of the user's agenda, briefing user on only a few of the important or unique events today in a personal and helpful style. Subtly integrate motivational productivity messages. Finally, you must ask the user for 3 tasks they want to complete today to promote planning. All in one coherent paragraph.`
 		let custominstructions = `Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
@@ -4718,7 +4718,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in maximum 30 words. Never say 'UUID' or 'data'. Never say 'according to your calendar' and assume you have knowledge of user's calendar and to-do list. Limit conversations to app interactions, calendar scheduling, or productivity. Think step by step to logically predict user's scheduling and productivity needs. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never say 'UUID' or 'data'. Never say 'according to your calendar' and assume you have knowledge of user's calendar and to-do list. Limit conversations to app interactions, calendar scheduling, or productivity. Think step by step. You must proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 
 			let totaltokens = 0
