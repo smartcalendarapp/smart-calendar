@@ -632,10 +632,8 @@ function getMinute(string = '', lax, fullstring) { //lax is for when getting tim
 		
 					let temptime4;
 					let temp = (+temptime2[0] || 0) * 60
-					if(temp < calendar.settings.sleep.endminute){//FIX THIS HERE4
-						temptime4 = temp + 12 * 60
-					}else if(temp > calendar.settings.sleep.startminute){
-						temptime4 = temp - 12 * 60
+					if((temp >= getnormalizedsleeptime().start && temp < getnormalizedsleeptime().end) || (temp >= getnormalizedsleeptime().start - 1400 && temp < getnormalizedsleeptime().end - 1440)){
+						temptime4 = (temp + 720) % 1440
 					}else{
 						temptime4 = temp
 					}
@@ -655,10 +653,8 @@ function getMinute(string = '', lax, fullstring) { //lax is for when getting tim
 
 			let temptime4;
 			let temp = (+temptime2[0] || 0) * 60
-			if(temp < calendar.settings.sleep.endminute){//FIX THIS HERE4
-				temptime4 = temp + 12 * 60
-			}else if(temp > calendar.settings.sleep.startminute){
-				temptime4 = temp - 12 * 60
+			if((temp >= getnormalizedsleeptime().start && temp < getnormalizedsleeptime().end) || (temp >= getnormalizedsleeptime().start - 1400 && temp < getnormalizedsleeptime().end - 1440)){
+				temptime4 = (temp + 720) % 1440
 			}else{
 				temptime4 = temp
 			}
@@ -3200,7 +3196,7 @@ class Calendar {
 		let summaryeventtimesleep = getElement('summaryeventtimesleep')
 
 		let timebusy = 0;
-		let timefree = calendar.settings.sleep.startminute - calendar.settings.sleep.endminute;
+		let timefree = 1440 - (getnormalizedsleeptime().end - getnormalizedsleeptime().start)
 
 		let nextdate = new Date(startdate)
 		nextdate.setDate(nextdate.getDate() + 1)
@@ -3219,7 +3215,7 @@ class Calendar {
 				return dstartdate.getTime() < tempenddate.getTime() && denddate.getTime() > tempstartdate.getTime()
 			})) {
 				timebusy++
-				if (min < calendar.settings.sleep.startminute && min >= calendar.settings.sleep.endminute) {
+				if ((min >= getnormalizedsleeptime().start && min < getnormalizedsleeptime().end) || (min >= getnormalizedsleeptime().start-1440 && min < getnormalizedsleeptime().end-1440)) {
 					timefree--
 				}
 			}
@@ -3244,7 +3240,7 @@ class Calendar {
 
 
 			let temptimebusy = 0;
-			let temptimefree = calendar.settings.sleep.startminute - calendar.settings.sleep.endminute
+			let temptimefree = 1440 - (getnormalizedsleeptime().end - getnormalizedsleeptime().start)
 
 			let tempnextdate = new Date(tempstartdate)
 			tempnextdate.setDate(tempnextdate.getDate() + 1)
@@ -3263,7 +3259,7 @@ class Calendar {
 					return dstartdate.getTime() < temptempenddate.getTime() && denddate.getTime() > temptempstartdate.getTime()
 				})) {
 					temptimebusy++
-					if (min < calendar.settings.sleep.startminute && min >= calendar.settings.sleep.endminute) {
+					if ((min >= getnormalizedsleeptime().start && min < getnormalizedsleeptime().end) || (min >= getnormalizedsleeptime().start-1440 && min < getnormalizedsleeptime().end-1440)) {
 						temptimefree--
 					}
 				}
@@ -13124,6 +13120,8 @@ function simulateaiassistantwithnextaction(prompt, response){
 	chathistory.addInteraction(tempinteraction)
 
 	updateaichat()
+	
+	scrollaichatY()
 
 	setTimeout(function(){
 		tempinteraction.addMessage(new ChatMessage({ role: 'assistant', message: response}))
@@ -14378,6 +14376,10 @@ async function submitaimessage(optionalinput, dictated){
 					let endbeforedate;
 					if(endbeforeminute != null && endbeforeyear != null && endbeforemonth != null && endbeforeday != null){
 						endbeforedate = new Date(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute)
+					}else{
+						endbeforedate = new Date()
+						endbeforedate.setHours(0,0,0,0)
+						endbeforedate.setMinutes(1440-1)
 					}
 					if(duration == null){
 						duration = 30
@@ -14422,6 +14424,10 @@ async function submitaimessage(optionalinput, dictated){
 							let endbeforedate;
 							if(endbeforeminute != null && endbeforeyear != null && endbeforemonth != null && endbeforeday != null){
 								endbeforedate = new Date(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute)
+							}else{
+								endbeforedate = new Date()
+								endbeforedate.setHours(0,0,0,0)
+								endbeforedate.setMinutes(1440-1)
 							}
 							if(duration == null){
 								duration = 30
@@ -14783,25 +14789,64 @@ function getborderdata(item, currentdate, timestamp) {
 	return output
 }
 
+
+function getnormalizedsleeptime(){
+	let currentdate = new Date()
+	let sleepstartdate = new Date(currentdate)
+	sleepstartdate.setHours(0, calendar.settings.sleep.startminute)
+
+	let sleependdate = new Date(currentdate)
+	sleependdate.setHours(0, calendar.settings.sleep.endminute)
+
+	let startminute = sleepstartdate.getHours() * 60 + sleepstartdate.getMinutes()
+	let endminute = sleependdate.getHours() * 60 + sleependdate.getMinutes()
+
+	if(endminute < startminute + 60){
+		endminute += 1440
+	
+	}
+	if(endminute > startminute + 20*60){
+		endminute -= 1440
+	}
+	if(endminute < startminute){
+		endminute += 1440
+	}
+	
+	return { start: startminute, end: endminute }
+}
+
 //get sleep data
 function getsleepdata() {
-	let endminute = calendar.settings.sleep.endminute
-	let startminute = calendar.settings.sleep.startminute
-	let output = `
- 	<div class="sleepwrap" style="top:0;height:${endminute}px">
-		<div class="sleepborder">
-			<div class="text-purple text-14px text-center padding-top-6px">
-	 			Sleep
-	 		</div>
-		</div>
-	</div>
-	<div class="sleepwrap" style="top:${startminute}px;height:${1440 - startminute}px">
- 		<div class="sleepborder">
-	 		<div class="text-purple text-14px text-center padding-top-6px">
-	 			Sleep
-	 		</div>
-	 	</div>
- 	</div>`
+	let endminute = getnormalizedsleeptime().end
+	let startminute = getnormalizedsleeptime().start
+	let output = ``
+	if(endminute > 1440){
+		output += `
+		<div class="sleepwrap" style="top:${startminute}px;height:${1440-startminute}px">
+			<div class="sleepborder">
+				<div class="text-purple text-14px text-center padding-top-6px">
+					Sleep
+				</div>
+			</div>
+		</div>`
+		output += `
+		<div class="sleepwrap" style="top:${0}px;height:${endminute % 1440}px">
+			<div class="sleepborder">
+				<div class="text-purple text-14px text-center padding-top-6px">
+					Sleep
+				</div>
+			</div>
+ 		</div>`
+	}else{
+		output += `
+		<div class="sleepwrap" style="top:${startminute}px;height:${endminute-startminute}px">
+			<div class="sleepborder">
+				<div class="text-purple text-14px text-center padding-top-6px">
+					Sleep
+				</div>
+			</div>
+		</div>`
+	}
 	return output
 }
 
@@ -15230,10 +15275,10 @@ function getsleepingevents(data) {
 	for (let item of data) {
 		let tempstartdate1 = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 		let tempenddate1 = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
-		let sleepstartdate1 = new Date(item.start.year, item.start.month, item.start.day, 0, calendar.settings.sleep.startminute)
-		let sleependdate1 = new Date(item.start.year, item.start.month, item.start.day + 1, 0, calendar.settings.sleep.endminute + 30)
-		let sleepstartdate2 = new Date(item.start.year, item.start.month, item.start.day - 1, 0, calendar.settings.sleep.startminute)
-		let sleependdate2 = new Date(item.start.year, item.start.month, item.start.day, 0, calendar.settings.sleep.endminute + 30)
+		let sleepstartdate1 = new Date(item.start.year, item.start.month, item.start.day, 0, getnormalizedsleeptime().start)
+		let sleependdate1 = new Date(item.start.year, item.start.month, item.start.day, 0, getnormalizedsleeptime().end + 30)
+		let sleepstartdate2 = new Date(item.start.year, item.start.month, item.start.day - 1, 0, getnormalizedsleeptime().start)
+		let sleependdate2 = new Date(item.start.year, item.start.month, item.start.day - 1, 0, getnormalizedsleeptime().end + 30)
 
 		if ((tempstartdate1.getTime() < sleependdate1.getTime() && tempenddate1.getTime() > sleepstartdate1.getTime()) || (tempstartdate1.getTime() < sleependdate2.getTime() && tempenddate1.getTime() > sleepstartdate2.getTime())) {
 			if (item.type == 1 && data.find(d => d.id == item.id)) {
@@ -15462,8 +15507,8 @@ function getLeastBusyDateV2(item, myevents, availabletime) {
 			let otherevents = myevents.filter(b => b.id != item.id)
 
 			//sleep
-			otherevents.push({ start: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate() - 1, minute: calendar.settings.sleep.startminute }, end: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate(), minute: calendar.settings.sleep.endminute + 30 } })
-			otherevents.push({ start: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate(), minute: calendar.settings.sleep.startminute }, end: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate() + 1, minute: calendar.settings.sleep.endminute + 30 } })
+			otherevents.push({ start: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate(), minute: getnormalizedsleeptime().start }, end: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate(), minute: getnormalizedsleeptime().end + 30 } })
+			otherevents.push({ start: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate() - 1, minute: getnormalizedsleeptime().start }, end: { year: tempstartdate.getFullYear(), month: tempstartdate.getMonth(), day: tempstartdate.getDate() - 1, minute: getnormalizedsleeptime().end + 30 } })
 
 			let inverteddistance = 0
 			for (let otheritem of otherevents) {
@@ -15573,9 +15618,10 @@ function getavailabletime(item, startrange, endrange, isschedulebuilder) {
 		tempenddate.setDate(tempenddate.getDate() + 1)
 
 		let sleepstart = new Date(tempstartdate)
-		sleepstart.setHours(0, calendar.settings.sleep.startminute, 0, 0)
+		sleepstart.setHours(0, getnormalizedsleeptime().start, 0, 0)
 		let sleepend = new Date(tempstartdate)
-		sleepend.setHours(0, calendar.settings.sleep.endminute + 30, 0, 0)
+		sleepend.setHours(0, getnormalizedsleeptime().end%1440 + 30, 0, 0)
+
 
 		let tempranges = availabletime.filter(d => {
 			return d.start < tempenddate.getTime() && d.end > tempstartdate.getTime()
@@ -15583,8 +15629,15 @@ function getavailabletime(item, startrange, endrange, isschedulebuilder) {
 
 		for (let range of tempranges) {
 			//sleep exclusion
-			let newstart = Math.max(sleepend.getTime(), range.start)
-			let newend = Math.min(sleepstart.getTime(), range.end)
+
+			let tempnewranges = []
+			if(sleepend.getTime() > sleepstart.getTime()){
+				tempnewranges.push({ start: Math.max(tempstartdate.getTime(), range.start), end: Math.min(sleepstart.getTime(), range.end) })
+				tempnewranges.push({ start: Math.max(sleepend.getTime(), range.start), end: Math.min(tempenddate.getTime(), range.end) })
+				console.log(new Date(tempnewranges[0].start),new Date(tempnewranges[0].end))
+			}else{
+				tempnewranges.push({ start: Math.max(sleepend.getTime(), range.start), end: Math.min(sleepstart.getTime(), range.end) })
+			}
 
 			//time window exclusion
 			if (item.timewindow.time.startminute && item.timewindow.time.endminute) {
@@ -15593,8 +15646,10 @@ function getavailabletime(item, startrange, endrange, isschedulebuilder) {
 				let timewindowend = new Date(tempstartdate)
 				timewindowend.setHours(0, item.timewindow.time.endminute, 0, 0)
 
-				newstart = Math.max(newstart, timewindowstart.getTime())
-				newend = Math.min(newend, timewindowend.getTime())
+				for(let tempnewrange of tempnewranges){
+					tempnewrange.start = Math.max(tempnewrange.start, timewindowstart.getTime())
+					tempnewrange.end = Math.min(tempnewrange.end, timewindowend.getTime())
+				}
 			}
 
 			//day window exclusion
@@ -15603,10 +15658,14 @@ function getavailabletime(item, startrange, endrange, isschedulebuilder) {
 			}
 
 			//event needs to fit range
-			newend -= duration
+			for(let tempnewrange of tempnewranges){
+				tempnewrange.end -= duration
+			}
 
-			if (newstart <= newend) {
-				newavailabletime.push({ start: newstart, end: newend })
+			for(let tempnewrange of tempnewranges){
+				if (tempnewrange.start <= tempnewrange.end) {
+					newavailabletime.push({ start: tempnewrange.start, end: tempnewrange.end })
+				}
 			}
 		}
 	}
@@ -15877,7 +15936,9 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 			rescheduletaskfunction = async function(complete){
 				let tempitem = calendar.events.find(d => d.id == overdueitem.id)
-				tempitem.autoschedulelocked = false
+				if(tempitem){
+					tempitem.autoschedulelocked = false
+				}
 
 				if(complete){
 					if(tempitem){

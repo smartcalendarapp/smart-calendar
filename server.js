@@ -4667,9 +4667,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								items: {
 									type: 'object',
 									properties: {
-										dueDate: { type: 'string', description: 'Task due date in YYYY-MM-DD HH:MM' },
+										dueDate: { type: 'string', description: '(optional) Task due date in YYYY-MM-DD HH:MM' },
 										title: { type: 'string', description: 'Task title' },
-										duration: { type: 'string', description: 'Task duration in HH:MM' },
+										duration: { type: 'string', description: '(optional) Task duration in HH:MM' },
 									},
 									required: ['title']
 								}
