@@ -14043,6 +14043,8 @@ async function submitaimessage(optionalinput, dictated){
 	let calendartodos = sortduedate([...gettodos(null, endrange), ...getevents().filter(d => d.type == 1 && !d.completed && ((new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() < endrange.getTime() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > now.getTime()) || (new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute).getTime() < endrange.getTime())))].filter(d => !d.completed))
 	let sendchathistory = chathistory.getInteractions().filter(d => d.getMessages().length > 1 && !d.getMessages().find(g => g.message == null)).map(d => d.getMessages().map(f => { return { role: f.role, content: f.message } }))
 
+	let tempautoscheduleevents = []
+
 	try{
 		//temporary--vv
 		let path = '/getgptchatinteraction'
@@ -14118,10 +14120,6 @@ async function submitaimessage(optionalinput, dictated){
 							if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
 								let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title)
 								calendar.events.push(item)
-
-								selectedeventid = null
-								calendar.updateInfo()
-								calendar.updateEvents()
 
 
 								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I have created an event "${Calendar.Event.getRawTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
@@ -14215,10 +14213,6 @@ async function submitaimessage(optionalinput, dictated){
 									let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title)
 									calendar.events.push(item)
 
-									selectedeventid = null
-									calendar.updateInfo()
-									calendar.updateEvents()
-
 
 									tempoutput.push(`Done! I created the event "${Calendar.Todo.getRawTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`)
 
@@ -14240,9 +14234,6 @@ async function submitaimessage(optionalinput, dictated){
 								if(!mobilescreen)gototaskincalendar(firstitem.id)
 							}
 
-							selectedeventid = null
-							calendar.updateInfo()
-							calendar.updateEvents()
 						}else{
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not create an event for you, please try again.`
 						}
@@ -14363,9 +14354,6 @@ async function submitaimessage(optionalinput, dictated){
 								if(!mobilescreen) gototaskincalendar(firstitem.id)
 							}
 
-							selectedeventid = null
-							calendar.updateInfo()
-							calendar.updateEvents()
 						}else{
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not modify an event for you, please try again.`
 						}
@@ -14448,10 +14436,6 @@ async function submitaimessage(optionalinput, dictated){
 									item.startafter.minute = item.start.minute;
 
 
-									selectedeventid = null
-									calendar.updateInfo()
-									calendar.updateEvents()
-
 
 									let tempmsg;
 									if(!!newtitle && newtitle != oldtitle){
@@ -14467,6 +14451,12 @@ async function submitaimessage(optionalinput, dictated){
 											tempmsg = `Done! I modified your event "${Calendar.Event.getRawTitle(item)}" to be from ${Calendar.Event.getNaturalStartEndText(item)}`
 										}
 									}
+
+									if(item.type == 1){
+										fixrecurringtodo(item)
+										fixsubandparenttask(item)
+									}
+
 									responsechatmessage.message = tempmsg
 									responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 
@@ -14491,11 +14481,6 @@ async function submitaimessage(optionalinput, dictated){
 									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not delete that event as it is read-only (it may be part of a calendar you cannot edit).`
 								}else{
 									calendar.events = calendar.events.filter(d => d.id != id)
-
-									selectedeventid = null
-									calendar.updateInfo()
-									calendar.updateEvents()
-
 
 									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I have deleted your event "${Calendar.Event.getRawTitle(item)}."`
 								}
@@ -14539,7 +14524,7 @@ async function submitaimessage(optionalinput, dictated){
 								item.duration = duration
 								calendar.todos.push(item)
 
-								startAutoSchedule({eventsuggestiontodos: [item]})
+								tempautoscheduleevents.push(item)
 
 
 								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" and added it to your calendar.`
@@ -14603,8 +14588,6 @@ async function submitaimessage(optionalinput, dictated){
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`]
 								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] }); simulateaiassistantwithnextaction('Schedule them in my calendar', 'Done! I scheduled ${allitems.length} tasks in your calendar.')">Schedule in calendar</div>`]
 							}
-
-							calendar.updateTodo()
 						}else{
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not create a task for you, please try again.`
 						}
@@ -14670,8 +14653,7 @@ async function submitaimessage(optionalinput, dictated){
 										if(newcompleted !== null){
 											item.completed = !!newcompleted
 										}
-			
-										calendar.updateTodo()
+		
 			
 			
 										let tempmsg;
@@ -14704,13 +14686,10 @@ async function submitaimessage(optionalinput, dictated){
 							if(firstitem){
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`]
 							}
-
-							calendar.updateTodo()
 						}else{
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not modify a task for you, please try again.`
 						}
 					}else if(command == 'modify_task'){
-						
 
 						let id = getrealid(arguments?.id)
 						let error = arguments?.errorMessage || ''
@@ -14765,8 +14744,6 @@ async function submitaimessage(optionalinput, dictated){
 									item.completed = !!newcompleted
 								}
 
-								calendar.updateTodo()
-
 
 								let tempmsg;
 								if(!!newtitle && newtitle != oldtitle){
@@ -14785,6 +14762,9 @@ async function submitaimessage(optionalinput, dictated){
 								if(newcompleted != null && newcompleted != oldcompleted){
 									tempmsg = `Done! I marked your task "${Calendar.Event.getRawTitle(item)}" as complete. Good job!`
 								}
+
+								fixrecurringtodo(item)
+								fixsubandparenttask(item)
 
 								responsechatmessage.message = tempmsg
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
@@ -14806,8 +14786,6 @@ async function submitaimessage(optionalinput, dictated){
 							if(item){
 								calendar.todos = calendar.todos.filter(d => d.id != id)
 								calendar.events = calendar.events.filter(d => d.id != id)
-
-								calendar.updateTodo()
 
 								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I have deleted your task "${Calendar.Event.getRawTitle(item)}."`
 							}else{
@@ -14892,8 +14870,14 @@ async function submitaimessage(optionalinput, dictated){
 		console.log(err)
 	}
 
+	if(tempautoscheduleevents.length > 0){
+		startAutoSchedule({eventsuggestiontodos: tempautoscheduleevents})
+	}
+
 
 	calendar.updateHistory()
+	calendar.updateEvents()
+	calendar.updateTodo()
 
 	//update
 	updateaichat()
