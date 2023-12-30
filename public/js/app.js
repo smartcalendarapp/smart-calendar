@@ -14096,87 +14096,93 @@ async function submitaimessage(optionalinput, dictated){
 						let [startyear, startmonth, startday] = getDate(arguments?.startDate?.replace('T', ' ')).value
 						let endminute = getMinute(arguments?.endDate?.replace('T', ' ')).value
 						let [endyear, endmonth, endday] = getDate(arguments?.endDate?.replace('T', ' ')).value
+						let error = arguments?.errorMessage || ''
 
-						let startdate, enddate;
-						if(startminute != null && startyear != null && startmonth != null && startday != null){
-							startdate = new Date(startyear, startmonth, startday, 0, startminute)
-						}
-						if(endminute != null && endyear != null && endmonth != null && endday != null){
-							enddate = new Date(endyear, endmonth, endday, 0, endminute)
-						}
-						if(!enddate || isNaN(enddate.getTime())){
-							enddate = new Date(startdate)
-							enddate.setMinutes(enddate.getMinutes() + 60)
-						}
-
-
-						if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
-							let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title)
-							calendar.events.push(item)
-
-							selectedeventid = null
-							calendar.updateInfo()
-							calendar.updateEvents()
-
-
-							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I have created an event "${Calendar.Event.getRawTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
-							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
-
-							if(!mobilescreen)gototaskincalendar(item.id)
+						if(error){
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
 						}else{
 
-							function gettimeoptions(amount){
-								function gettextfromavailabletime(timestamp){
-									const now = new Date()
-									const date = new Date(timestamp)
-							
-									const nowday = new Date(now)
-									nowday.setHours(0,0,0,0)
-									const dateday = new Date(date)
-									dateday.setHours(0,0,0,0)
-							
-									function timeOfDay(hour) {
-										if (hour < 12) return 'morning'
-										if (hour < 18) return 'afternoon'
-										return 'evening'
-									}
-							
-									const today = nowday.getTime() == dateday.getTime()
-							
-									const tomorrowday = new Date(nowday)
-									tomorrowday.setDate(tomorrowday.getDate() + 1)
-									const isTomorrow = tomorrowday.getTime() == dateday.getTime()
-							
-									if (today) {
-										return `This ${timeOfDay(date.getHours())}`
-									} else if (isTomorrow) {
-										return `Tomorrow ${timeOfDay(date.getHours())}`
-									} else {
-										return `${DAYLIST[date.getDay()]} ${timeOfDay(date.getHours())}`
-									}
-								}
-
-								let output = []
-								
-								let tempdate = new Date()
-								tempdate.setMinutes(0,0,0)
-
-								while(output.length < amount){
-									let tempoutput = gettextfromavailabletime(tempdate)
-									if(!output.includes(tempoutput)){
-										output.push(tempoutput)
-									}
-
-									tempdate.setHours(tempdate.getHours() + 1)
-								}
-
-								return output
+							let startdate, enddate;
+							if(startminute != null && startyear != null && startmonth != null && startday != null){
+								startdate = new Date(startyear, startmonth, startday, 0, startminute)
+							}
+							if(endminute != null && endyear != null && endmonth != null && endday != null){
+								enddate = new Date(endyear, endmonth, endday, 0, endminute)
+							}
+							if(!enddate || isNaN(enddate.getTime())){
+								enddate = new Date(startdate)
+								enddate.setMinutes(enddate.getMinutes() + 60)
 							}
 
-							let timeoptions = gettimeoptions(3)
 
-							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `What time do you want "${title}" to take place?`
-							responsechatmessage.nextactions = [...timeoptions.map(d => `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('${d}')">${d}</div>`), `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Auto schedule')">Auto schedule</div>`]
+							if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
+								let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title)
+								calendar.events.push(item)
+
+								selectedeventid = null
+								calendar.updateInfo()
+								calendar.updateEvents()
+
+
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I have created an event "${Calendar.Event.getRawTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
+								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
+
+								if(!mobilescreen)gototaskincalendar(item.id)
+							}else{
+
+								function gettimeoptions(amount){
+									function gettextfromavailabletime(timestamp){
+										const now = new Date()
+										const date = new Date(timestamp)
+								
+										const nowday = new Date(now)
+										nowday.setHours(0,0,0,0)
+										const dateday = new Date(date)
+										dateday.setHours(0,0,0,0)
+								
+										function timeOfDay(hour) {
+											if (hour < 12) return 'morning'
+											if (hour < 18) return 'afternoon'
+											return 'evening'
+										}
+								
+										const today = nowday.getTime() == dateday.getTime()
+								
+										const tomorrowday = new Date(nowday)
+										tomorrowday.setDate(tomorrowday.getDate() + 1)
+										const isTomorrow = tomorrowday.getTime() == dateday.getTime()
+								
+										if (today) {
+											return `This ${timeOfDay(date.getHours())}`
+										} else if (isTomorrow) {
+											return `Tomorrow ${timeOfDay(date.getHours())}`
+										} else {
+											return `${DAYLIST[date.getDay()]} ${timeOfDay(date.getHours())}`
+										}
+									}
+
+									let output = []
+									
+									let tempdate = new Date()
+									tempdate.setMinutes(0,0,0)
+
+									while(output.length < amount){
+										let tempoutput = gettextfromavailabletime(tempdate)
+										if(!output.includes(tempoutput)){
+											output.push(tempoutput)
+										}
+
+										tempdate.setHours(tempdate.getHours() + 1)
+									}
+
+									return output
+								}
+
+								let timeoptions = gettimeoptions(3)
+
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `What time do you want "${title}" to take place?`
+								responsechatmessage.nextactions = [...timeoptions.map(d => `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('${d}')">${d}</div>`), `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Auto schedule')">Auto schedule</div>`]
+							}
 						}
 					}else if(command == 'create_multiple_events'){
 						
@@ -14504,40 +14510,46 @@ async function submitaimessage(optionalinput, dictated){
 						let endbeforeminute = getMinute(arguments?.dueDate?.replace('T', ' ')).value || 0
 						let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(arguments?.dueDate?.replace('T', ' ')).value
 						let duration = getDuration(arguments?.duration).value
+						let error = arguments?.errorMessage || ''
 
-						let endbeforedate;
-						if(endbeforeminute != null && endbeforeyear != null && endbeforemonth != null && endbeforeday != null){
-							endbeforedate = new Date(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute)
+						if(error){
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
 						}else{
-							endbeforedate = new Date()
-							endbeforedate.setHours(0,0,0,0)
-							endbeforedate.setMinutes(1440-1)
-						}
-						if(duration == null){
-							duration = 30
-						}
 
-						if(!endbeforedate || isNaN(endbeforedate.getTime())){
-							endbeforedate = new Date()
-							endbeforedate.setHours(0,1440-1,0,0)
-						}
+							let endbeforedate;
+							if(endbeforeminute != null && endbeforeyear != null && endbeforemonth != null && endbeforeday != null){
+								endbeforedate = new Date(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute)
+							}else{
+								endbeforedate = new Date()
+								endbeforedate.setHours(0,0,0,0)
+								endbeforedate.setMinutes(1440-1)
+							}
+							if(duration == null){
+								duration = 30
+							}
 
-
-						if(endbeforedate && !isNaN(endbeforedate.getTime())){
-							let item = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), duration, title)
-							item.duration = duration
-							calendar.todos.push(item)
-
-							startAutoSchedule({eventsuggestiontodos: [item]})
+							if(!endbeforedate || isNaN(endbeforedate.getTime())){
+								endbeforedate = new Date()
+								endbeforedate.setHours(0,1440-1,0,0)
+							}
 
 
-							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" and added it to your calendar.`
-							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
+							if(endbeforedate && !isNaN(endbeforedate.getTime())){
+								let item = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), duration, title)
+								item.duration = duration
+								calendar.todos.push(item)
 
-							if(!mobilescreen)gototaskincalendar(item.id)
-						}else{
-							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `What time do you want ${title} to be due?`
-							responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('In 1 week')">In 1 week</div>`]
+								startAutoSchedule({eventsuggestiontodos: [item]})
+
+
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" and added it to your calendar.`
+								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
+
+								if(!mobilescreen)gototaskincalendar(item.id)
+							}else{
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `What time do you want ${title} to be due?`
+								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('In 1 week')">In 1 week</div>`]
+							}
 						}
 					}else if(command == 'create_multiple_tasks'){
 						
@@ -14838,7 +14850,8 @@ async function submitaimessage(optionalinput, dictated){
 						}else{
 							let item = id && calendar.todos.find(d => d.id == id)
 							if(item){
-								aichattemporarydata[responsechatmessage.id] = (aichattemporarydata[responsechatmessage.id] || []).push(item)
+								aichattemporarydata[responsechatmessage.id] = (aichattemporarydata[responsechatmessage.id] || [])
+								aichattemporarydata[responsechatmessage.id].push(item)
 								
 								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Just a confirmation, I'll schedule this task for you: ${item.title}`
 								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled this task in your calendar.')">Yes</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule this task in your calendar.')">No</div>`]

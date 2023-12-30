@@ -4579,6 +4579,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
+							errorMessage: { type: 'string', description: 'Error message to display to user if any mandatory properties are missing.' },
 							dueDate: { type: 'string', description: '(optional) Task due date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Task title' },
 							duration: { type: 'string', description: '(optional) Task duration in HH:MM' },
@@ -4592,6 +4593,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
+							errorMessage: { type: 'string', description: 'Error message to display to user if any mandatory properties are missing.' },
 							startDate: { type: 'string', description: '(optional) Event start date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Event title' },
 							endDate: { type: 'string', descrption: '(optional) Event end date in YYYY-MM-DD HH:MM' },
@@ -4605,6 +4607,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
+							errorMessage: { type: 'string', description: 'Error message to display to user if any mandatory properties are missing.' },
 							id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
 						},
 						required: []
@@ -4616,6 +4619,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
+							errorMessage: { type: 'string', description: 'Error message to display to user if any mandatory properties are missing.' },
 							id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
 							newTitle: { type: 'string', description: '(optional) New event title' },
 							newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
@@ -4631,6 +4635,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
+							errorMessage: { type: 'string', description: 'Error message to display to user if any mandatory properties are missing.' },
 							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
 						},
 						required: []
@@ -4642,6 +4647,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
+							errorMessage: { type: 'string', description: 'Error message to display to user if any mandatory properties are missing.' },
 							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
 							newTitle: { type: 'string', description: 'New task title' },
 							newDueDate: { type: 'string', description: 'New task due date in YYYY-MM-DD HH:MM' },
@@ -4663,7 +4669,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `Athena, Smart Calendar's helpful personal assistant. Think step by step. Concise responses (max 30 words). Access to your schedule and tasks assumed. Never mention the internal ID of events or tasks. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively continue conversation by suggesting further or subsequent app interactions. Do NOT return app_action for a command if there is not enough information; instead, work step by step with user to get information. User's identity: ${getUserName(user)}. Current time: ${localdatestring}. Directly trigger 'app_action' for scheduling-related commands.`
+			const systeminstructions = `Athena, Smart Calendar's helpful personal assistant. Think step by step. Concise responses (max 30 words). Access to your schedule and tasks assumed. Never mention the internal ID of events or tasks. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively continue conversation by suggesting further or subsequent app interactions. User's identity: ${getUserName(user)}. Current time: ${localdatestring}. Directly trigger 'app_action' for scheduling-related commands.`
 
 
 			let totaltokens = 0
@@ -4745,7 +4751,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					temperature: 0.5,
 				})
 				totaltokens += response.usage.total_tokens
-				console.warn('NUMBER 1' , response.choices[0].message)
 
 				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'app_action') {
 					//no function call, return plain response
