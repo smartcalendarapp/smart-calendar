@@ -4585,7 +4585,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							dueDate: { type: 'string', description: '(optional) Task due date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Task title' },
 							duration: { type: 'string', description: '(optional) Task duration in HH:MM' },
-							errorMessage: { type: 'string', description: '(optional) A friendly error message if tasks are not found or other error, max 5 words.' },
+							//errorMessage: { type: 'string', description: '(optional) A friendly error message if tasks are not found or other error, max 5 words.' },
 						},
 						required: ['title']
 					}
@@ -4599,26 +4599,26 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							startDate: { type: 'string', description: '(optional) Event start date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Event title' },
 							endDate: { type: 'string', descrption: '(optional) Event end date in YYYY-MM-DD HH:MM' },
-							errorMessage: { type: 'string', description: '(optional) A friendly error message if tasks are not found or other error, max 5 words.' },
+							//errorMessage: { type: 'string', description: '(optional) A friendly error message if tasks are not found or other error, max 5 words.' },
 						},
 						required: ['title']
 					}
 				},
 				{
 					name: 'delete_event',
-					description: 'Check for event in calendar to delete by title or direct reference. Need high confidence. Returns an error if the event does not exist.',
+					description: 'Check for event in calendar to delete by title or direct reference. Need high confidence. Returns nothing if the event does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
 							id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
-							errorMessage: { type: 'string', description: '(optional) A friendly error message if tasks are not found or other error, max 5 words.' },
+							//errorMessage: { type: 'string', description: '(optional) A friendly error message if tasks are not found or other error, max 5 words.' },
 						},
 						required: []
 					}
 				},
 				{
 					name: 'modify_event',
-					description: 'Check for event in calendar to modify by title or direct reference. Need high confidence. Returns an error if an event does not exist.',
+					description: 'Check for event in calendar to modify by title or direct reference. Need high confidence. Returns nothing if an event does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -4627,26 +4627,26 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
 							newEndDate: { type: 'string', description: '(optional) New event end date in YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: '(optional) New event duration in HH:MM' },
-							errorMessage: { type: 'string', description: '(optional) A friendly error message if tasks are not found or other error, max 5 words.' },
+							//errorMessage: { type: 'string', description: '(optional) A friendly error message if tasks are not found or other error, max 5 words.' },
 						},
 						required: []
 					}
 				},
 				{
 					name: 'delete_task',
-					description: 'Check for task in to-do list to delete by title or direct reference. Need high confidence. Returns an error if the task does not exist.',
+					description: 'Check for task in to-do list to delete by title or direct reference. Need high confidence. Returns nothing if the task does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
 							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
-							errorMessage: { type: 'string', description: '(optional) A friendly error message if tasks are not found or other error, max 5 words.' },
+							//errorMessage: { type: 'string', description: '(optional) A friendly error message if tasks are not found or other error, max 5 words.' },
 						},
 						required: []
 					}
 				},
 				{
 					name: 'modify_task',
-					description: 'Check for task in to-do list to modify by title or direct reference. Returns an error if the task does not exist.',
+					description: 'Check for task in to-do list to modify by title or direct reference. Returns nothing if the task does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -4655,7 +4655,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							newDueDate: { type: 'string', description: 'New task due date in YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: 'New task duration in HH:MM' },
 							newCompleted: { type: 'boolean', description: 'New task completed status' },
-							errorMessage: { type: 'string', description: '(optional) A error message if tasks are not found or other error, max 5 words.' },
+							//errorMessage: { type: 'string', description: '(optional) A error message if tasks are not found or other error, max 5 words.' },
 						},
 						required: []
 					}
@@ -4942,7 +4942,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			let tempoutput = ''
 			for(let d of temptodos){
-				let newstring = `Task title: ${d.title || 'New Task'}, ID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration)}, completed: ${d.completed}.`
+				let newstring = `Task title: ${d.title || 'New Task'}, ID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration || Math.floor(((new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime()) - new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime())/60000))}, completed: ${d.completed}.`
 
 				if(tempoutput.length + newstring.length > MAX_TODO_CONTEXT_LENGTH) break
 
@@ -5493,7 +5493,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 			let tempoutput = ''
 			for(let d of temptodos){
-				let newstring = `Task title: ${d.title || 'New Task'}, ID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration)}, completed: ${d.completed}.`
+				let newstring = `Task title: ${d.title || 'New Task'}, ID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration || Math.floor(((new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime()) - new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime())/60000))}, completed: ${d.completed}.`
 
 				if(tempoutput.length + newstring.length > MAX_TODO_CONTEXT_LENGTH) break
 
