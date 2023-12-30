@@ -4568,14 +4568,14 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific ID of task. Return nothing if none found.' },
+							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
 						},
 						required: []
 					}
 				},
 				{
 					name: 'create_task',
-					description: 'Create a task to be auto-scheduled by the app in the calendar',
+					description: 'Create a task to be auto-scheduled by the app in the calendar. Do not trigger function if mandatory information is not provided by user.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -4588,7 +4588,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				},
 				{
 					name: 'create_event',
-					description: 'Create a new event in the calendar',
+					description: 'Create a new event in the calendar. Do not trigger function if mandatory information is not provided by user.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -4605,7 +4605,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific ID of event. Return nothing if none found.' },
+							id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
 						},
 						required: []
 					}
@@ -4616,7 +4616,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific ID of event. Return nothing if none found.' },
+							id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
 							newTitle: { type: 'string', description: '(optional) New event title' },
 							newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
 							newEndDate: { type: 'string', description: '(optional) New event end date in YYYY-MM-DD HH:MM' },
@@ -4631,7 +4631,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific ID of task. Return nothing if none found.' },
+							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
 						},
 						required: []
 					}
@@ -4642,7 +4642,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific ID of task. Return nothing if none found.' },
+							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
 							newTitle: { type: 'string', description: 'New task title' },
 							newDueDate: { type: 'string', description: 'New task due date in YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: 'New task duration in HH:MM' },
@@ -4663,8 +4663,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `Athena, the Smart Calendar's assistant. Concise responses (max 30 words). Access to your schedule and tasks assumed. Specializes in app interactions and scheduling. Think step by step. Continue conversation by asking for further specific actions. User's identity: ${getUserName(user)}. Current time: ${localdatestring}. Directly trigger 'app_action' for scheduling-related commands.`
-			//`A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never say 'ID' or 'data'. Never say 'according to your calendar' and assume you have knowledge of user's calendar and to-do list. Limit conversations to app interactions, calendar scheduling, or productivity. Think step by step. You must proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `Athena, Smart Calendar's helpful personal assistant. Think step by step. Concise responses (max 30 words). Access to your schedule and tasks assumed. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively continue conversation by suggesting further or subsequent app interactions. User's identity: ${getUserName(user)}. Current time: ${localdatestring}. Directly trigger 'app_action' for scheduling-related commands.`
 
 
 			let totaltokens = 0
@@ -4709,17 +4708,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							{
 								role: "user",
-								content: "Put today's tasks in my calendar for the best times"
+								content: "Help me plan a task."
 							},
 							{
 								role: "assistant",
-								content: null,
-								function_call: {
-									name: "app_action",
-									arguments: JSON.stringify({
-										commands: ['schedule_tasks_in_calendar']
-									})
-								}
+								content: "Alright! Please let me know what it's called and when it's due."
 							},
 						],
 						...conversationhistory,
