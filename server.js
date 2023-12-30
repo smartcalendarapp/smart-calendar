@@ -4568,7 +4568,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific UUID of task. Do not return any value if not found.' },
+							id: { type: 'string', description: 'Specific ID of task. Return nothing if none found.' },
 						},
 						required: []
 					}
@@ -4605,7 +4605,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific UUID of event. Do not return any value if not found.' },
+							id: { type: 'string', description: 'Specific ID of event. Return nothing if none found.' },
 						},
 						required: []
 					}
@@ -4616,7 +4616,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific UUID of event. Do not return any value if not found.' },
+							id: { type: 'string', description: 'Specific ID of event. Return nothing if none found.' },
 							newTitle: { type: 'string', description: '(optional) New event title' },
 							newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
 							newEndDate: { type: 'string', description: '(optional) New event end date in YYYY-MM-DD HH:MM' },
@@ -4631,7 +4631,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific UUID of task. Do not return any value if not found.' },
+							id: { type: 'string', description: 'Specific ID of task. Return nothing if none found.' },
 						},
 						required: []
 					}
@@ -4642,7 +4642,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific UUID of task. Do not return any value if not found.' },
+							id: { type: 'string', description: 'Specific ID of task. Return nothing if none found.' },
 							newTitle: { type: 'string', description: 'New task title' },
 							newDueDate: { type: 'string', description: 'New task due date in YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: 'New task duration in HH:MM' },
@@ -4664,7 +4664,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			//PROMPT
 
 			const systeminstructions = `Athena, the Smart Calendar's assistant. Concise responses (max 30 words). Access to your schedule and tasks assumed. Specializes in app interactions and scheduling. Think step by step. Continue conversation by asking for further specific actions. User's identity: ${getUserName(user)}. Current time: ${localdatestring}. Directly trigger 'app_action' for scheduling-related commands.`
-			//`A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never say 'UUID' or 'data'. Never say 'according to your calendar' and assume you have knowledge of user's calendar and to-do list. Limit conversations to app interactions, calendar scheduling, or productivity. Think step by step. You must proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			//`A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never say 'ID' or 'data'. Never say 'according to your calendar' and assume you have knowledge of user's calendar and to-do list. Limit conversations to app interactions, calendar scheduling, or productivity. Think step by step. You must proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 
 			let totaltokens = 0
@@ -4695,7 +4695,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							{
 								role: "user",
-								content: "Reschedule that task to an earlier time, and then add an event to meet with boss tomororw lunch and cancel my conflicting appointment."
+								content: "Move that to an earlier time, and then add an event to meet with boss tomorrow lunch"
 							},
 							{
 								role: "assistant",
@@ -4703,7 +4703,21 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								function_call: {
 									name: "app_action",
 									arguments: JSON.stringify({
-										commands: ['modify_task', 'create_event', 'delete_event']
+										commands: ['modify_event', 'create_event']
+									})
+								}
+							},
+							{
+								role: "user",
+								content: "Put today's tasks in my calendar for the best times"
+							},
+							{
+								role: "assistant",
+								content: null,
+								function_call: {
+									name: "app_action",
+									arguments: JSON.stringify({
+										commands: ['schedule_tasks_in_calendar']
 									})
 								}
 							},
@@ -4825,20 +4839,16 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						//make request
 						const response2 = await openai.chat.completions.create(request2options)
 						totaltokens += response2.usage.total_tokens
-
-						console.warn(response2.choices[0])
-						//temp
 						
-						if (response2.choices[0].finish_reason !== 'function_call') { //return plain response if no function detected
+						if (response2.choices[0].finish_reason !== 'function_call' || response2.choices[0].message.function_call?.name !== 'app_action') { //return plain response if no function detected
 							return { message: response2.choices[0].message.content, totaltokens: totaltokens }
-						}else if(response2.choices[0].message.function_call?.name === 'app_action'){
-							const commands2 =  JSON.parse(response2.choices[0].message.function_call?.arguments)?.commands
-							if (commands2 && commands2.length > 0) {					
-								return { commands: commands2, totaltokens: totaltokens }
-							}
 						}
-								
-		
+						
+						const commands2 = JSON.parse(response2.choices[0].message.function_call?.arguments)?.commands
+						if (commands2 && commands2.length > 0) {					
+							return { commands: commands2, totaltokens: totaltokens }
+						}
+	
 					}
 				}
 
@@ -4892,7 +4902,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			let tempoutput = ''
 			for(let d of tempevents){
-				let newstring = `Event title: ${d.title || 'New Event'}, UUID: ${gettempid(d.id, 'event')}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}.`
+				let newstring = `Event title: ${d.title || 'New Event'}, ID: ${gettempid(d.id, 'event')}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}.`
 
 				if(tempoutput.length + newstring.length > MAX_CALENDAR_CONTEXT_LENGTH) break
 
@@ -4930,7 +4940,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			let tempoutput = ''
 			for(let d of temptodos){
-				let newstring = `Task title: ${d.title || 'New Task'}, UUID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration)}, completed: ${d.completed}.`
+				let newstring = `Task title: ${d.title || 'New Task'}, ID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration)}, completed: ${d.completed}.`
 
 				if(tempoutput.length + newstring.length > MAX_TODO_CONTEXT_LENGTH) break
 
@@ -5034,7 +5044,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						properties: {
 							idList: {
 								type: 'array',
-								description: 'List of UUIDs of tasks.',
+								description: 'List of IDs of tasks.',
 								items: {
 									type: "string",
 								}
@@ -5098,7 +5108,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific UUID of event.' },
+							id: { type: 'string', description: 'Specific ID of event.' },
 							errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
 						},
 						required: []
@@ -5110,7 +5120,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific UUID of event.' },
+							id: { type: 'string', description: 'Specific ID of event.' },
 							newTitle: { type: 'string', description: '(optional) New event title' },
 							newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
 							newEndDate: { type: 'string', description: '(optional) New event end date in YYYY-MM-DD HH:MM' },
@@ -5131,7 +5141,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								items: {
 									type: 'object',
 									properties: {
-										id: { type: 'string', description: 'Specific UUID of event.' },
+										id: { type: 'string', description: 'Specific ID of event.' },
 										newTitle: { type: 'string', description: '(optional) New event title' },
 										newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
 										newEndDate: { type: 'string', description: '(optional) New event end date in YYYY-MM-DD HH:MM' },
@@ -5173,7 +5183,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific UUID of task.' },
+							id: { type: 'string', description: 'Specific ID of task.' },
 							errorMessage: { type: 'string', description: 'An error message if task is not found or other error.' },
 						},
 						required: []
@@ -5185,7 +5195,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific UUID of task.' },
+							id: { type: 'string', description: 'Specific ID of task.' },
 							newTitle: { type: 'string', description: 'New task title' },
 							newDueDate: { type: 'string', description: 'New task due date in YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: 'New task duration in HH:MM' },
@@ -5206,7 +5216,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								items: {
 									type: 'object',
 									properties: {
-										id: { type: 'string', description: 'Specific UUID of task.' },
+										id: { type: 'string', description: 'Specific ID of task.' },
 										newTitle: { type: 'string', description: 'New task title' },
 										newDueDate: { type: 'string', description: 'New task due date in YYYY-MM-DD HH:MM' },
 										newDuration: { type: 'string', description: 'New task duration in HH:MM' },
@@ -5233,7 +5243,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never say 'UUID' or 'data'. Never say 'according to your calendar' and assume you have knowledge of user's calendar and to-do list. Limit conversations to app interactions, calendar scheduling, or productivity. Think step by step. You must proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never say 'ID' or 'data'. Never say 'according to your calendar' and assume you have knowledge of user's calendar and to-do list. Limit conversations to app interactions, calendar scheduling, or productivity. Think step by step. You must proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 
 			let totaltokens = 0
@@ -5441,7 +5451,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 			let tempoutput = ''
 			for(let d of tempevents){
-				let newstring = `Event title: ${d.title || 'New Event'}, UUID: ${gettempid(d.id, 'event')}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}.`
+				let newstring = `Event title: ${d.title || 'New Event'}, ID: ${gettempid(d.id, 'event')}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}.`
 
 				if(tempoutput.length + newstring.length > MAX_CALENDAR_CONTEXT_LENGTH) break
 
@@ -5479,7 +5489,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 			let tempoutput = ''
 			for(let d of temptodos){
-				let newstring = `Task title: ${d.title || 'New Task'}, UUID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration)}, completed: ${d.completed}.`
+				let newstring = `Task title: ${d.title || 'New Task'}, ID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration)}, completed: ${d.completed}.`
 
 				if(tempoutput.length + newstring.length > MAX_TODO_CONTEXT_LENGTH) break
 

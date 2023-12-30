@@ -14046,7 +14046,7 @@ async function submitaimessage(optionalinput, dictated){
 	try{
 		//temporary--vv
 		let path = '/getgptchatinteraction'
-		if(clientinfo.betatester && clientinfo.google_email.includes('smartcalendar')){
+		if(clientinfo.betatester && clientinfo.google_email.includes('james.ts')){
 			path = '/getgptchatinteractionV2'
 		}
 		//-----------^^
