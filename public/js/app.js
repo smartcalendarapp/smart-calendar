@@ -14221,7 +14221,7 @@ async function submitaimessage(optionalinput, dictated){
 									}
 
 								}else{
-									tempoutput.push(`I don't have enough information to create the event "${title}", please try again.`)
+									tempoutput.push(`When is your event event "${title}" going to start?`)
 
 								}
 							}
@@ -14467,7 +14467,6 @@ async function submitaimessage(optionalinput, dictated){
 							}
 						}
 					}else if(command == 'delete_event'){
-						
 
 						let id = getrealid(arguments?.id)
 						let error = arguments?.errorMessage || ''
@@ -14577,7 +14576,7 @@ async function submitaimessage(optionalinput, dictated){
 									allitems.push(item)
 
 								}else{
-									tempoutput.push(`I don't have enough information to add the task "${title}", could you please tell me more?`)
+									tempoutput.push(`When is your task "${title}" due?`)
 								}
 							}
 
