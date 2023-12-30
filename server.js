@@ -4568,8 +4568,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific UUID of task' },
-							errorMessage: { type: 'string', description: 'An error message if tasks are not found or other error.' },
+							id: { type: 'string', description: 'Specific UUID of task. Do not return any value if not found.' },
 						},
 						required: []
 					}
@@ -4606,8 +4605,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific UUID of event.' },
-							errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
+							id: { type: 'string', description: 'Specific UUID of event. Do not return any value if not found.' },
 						},
 						required: []
 					}
@@ -4618,12 +4616,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific UUID of event.' },
+							id: { type: 'string', description: 'Specific UUID of event. Do not return any value if not found.' },
 							newTitle: { type: 'string', description: '(optional) New event title' },
 							newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
 							newEndDate: { type: 'string', description: '(optional) New event end date in YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: '(optional) New event duration in HH:MM' },
-							errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
 						},
 						required: []
 					}
@@ -4634,8 +4631,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific UUID of task.' },
-							errorMessage: { type: 'string', description: 'An error message if task is not found or other error.' },
+							id: { type: 'string', description: 'Specific UUID of task. Do not return any value if not found.' },
 						},
 						required: []
 					}
@@ -4646,12 +4642,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific UUID of task.' },
+							id: { type: 'string', description: 'Specific UUID of task. Do not return any value if not found.' },
 							newTitle: { type: 'string', description: 'New task title' },
 							newDueDate: { type: 'string', description: 'New task due date in YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: 'New task duration in HH:MM' },
 							newCompleted: { type: 'boolean', description: 'New task completed status' },
-							errorMessage: { type: 'string', description: 'An error message if task is not found or other error.' },
 						},
 						required: []
 					}
