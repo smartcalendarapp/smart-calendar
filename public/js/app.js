@@ -14696,6 +14696,8 @@ async function submitaimessage(optionalinput, dictated){
 						let newduedate = arguments?.newDueDate
 						let newduration = arguments?.newDuration
 						let newcompleted = arguments?.newCompleted
+						let newstartdate = arguments?.newStartDate
+						let newenddate = arguments?.newEndDate
 
 						if(error && !id){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
@@ -14714,6 +14716,20 @@ async function submitaimessage(optionalinput, dictated){
 									endbeforedate = new Date(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute)
 								}
 
+								let startminute = getMinute(newstartdate?.replace('T', ' ')).value
+								let [startyear, startmonth, startday] = getDate(newstartdate?.replace('T', ' ')).value
+								let endminute = getMinute(newenddate?.replace('T', ' ')).value
+								let [endyear, endmonth, endday] = getDate(newenddate?.replace('T', ' ')).value
+
+								let startdate, enddate;
+								if(startminute != null && startyear != null && startmonth != null && startday != null){
+									startdate = new Date(startyear, startmonth, startday, 0, startminute)
+								}
+								if(endminute != null && endyear != null && endmonth != null && endday != null){
+									enddate = new Date(endyear, endmonth, endday, 0, endminute)
+								}
+								
+
 								let duration = getDuration(newduration).value
 
 								if(endbeforedate && !isNaN(endbeforedate.getTime())){
@@ -14722,6 +14738,47 @@ async function submitaimessage(optionalinput, dictated){
 									item.endbefore.day = endbeforedate.getDate()
 									item.endbefore.minute = endbeforedate.getHours() * 60 + endbeforedate.getMinutes()
 								}
+
+								if(duration != null){
+									if(startdate){
+										enddate = new Date(startdate)
+									}else{
+										enddate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+									}
+									enddate.setMinutes(enddate.getMinutes() + duration)
+								}
+								if(!enddate || isNaN(enddate.getTime())){
+									if(startdate){
+										enddate = new Date(startdate)
+									}else{
+										enddate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+									}
+									enddate.setTime(enddate.getTime() + oldduration)
+								}
+
+
+								if(startdate && !isNaN(startdate.getTime())){
+									item.start.year = startdate.getFullYear()
+									item.start.month = startdate.getMonth()
+									item.start.day = startdate.getDate()
+									item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+
+									item.startafter.year = startdate.getFullYear()
+									item.startafter.month = startdate.getMonth()
+									item.startafter.day = startdate.getDate()
+									item.startafter.minute = startdate.getHours() * 60 + startdate.getMinutes()
+
+									lastmovedeventid = item.id
+								}
+
+								if(enddate && !isNaN(enddate.getTime())){
+									item.end.year = enddate.getFullYear()
+									item.end.month = enddate.getMonth()
+									item.end.day = enddate.getDate()
+									item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+								}
+
+
 
 								item.title = newtitle || item.title
 

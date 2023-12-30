@@ -4654,6 +4654,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							newTitle: { type: 'string', description: '(optional) New task title' },
 							newDueDate: { type: 'string', description: '(optional) New task due date in YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: '(optional) New task duration in HH:MM' },
+							newStartDate: { type: 'string', description: '(optional) New task start date in YYYY-MM-DD HH:MM' },
+							newEndDate: { type: 'string', description: '(optional) New task end date in YYYY-MM-DD HH:MM' },
 							newCompleted: { type: 'boolean', description: '(optional) New task completed status' },
 							//errorMessage: { type: 'string', description: '(optional) A error message if tasks are not found or other error, max 5 words.' },
 						},
