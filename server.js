@@ -4663,7 +4663,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `Athena, Smart Calendar's helpful personal assistant. Think step by step. Concise responses (max 30 words). Access to your schedule and tasks assumed. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively continue conversation by suggesting further or subsequent app interactions. User's identity: ${getUserName(user)}. Current time: ${localdatestring}. Directly trigger 'app_action' for scheduling-related commands.`
+			const systeminstructions = `Athena, Smart Calendar's helpful personal assistant. Think step by step. Concise responses (max 30 words). Access to your schedule and tasks assumed. Never mention the internal ID of events or tasks. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively continue conversation by suggesting further or subsequent app interactions. User's identity: ${getUserName(user)}. Current time: ${localdatestring}. Directly trigger 'app_action' for scheduling-related commands.`
 
 
 			let totaltokens = 0
@@ -4738,7 +4738,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								  "commands"
 								]
 							},
-							"description": `Return app commands if detected in prompt. One of the following: ${allfunctions.map(d => d.name).join(', ')}`
+							"description": `Return app commands if detected in prompt. Do NOT return command if there is not enough information; work step by step with user to get information. One of the following: ${allfunctions.map(d => d.name).join(', ')}`
 						}
 					],
 					max_tokens: 200,

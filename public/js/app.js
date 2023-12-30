@@ -14816,7 +14816,7 @@ async function submitaimessage(optionalinput, dictated){
 								aichattemporarydata[responsechatmessage.id] = items
 								
 								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Just a confirmation, I'll schedule these tasks for you:\n${items.map(d => `- ${d.title}`).join('\n')}`
-								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule these tasks in your calendar.')">No</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled ${items.length} tasks in your calendar.')">Yes</div>`]
+								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled ${items.length} tasks in your calendar.')">Yes</div>`,`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule these tasks in your calendar.')">No</div>`]
 							}else{
 								let calendaritems = idList && calendar.events.filter(d => idList.find(g => g == d.id))
 								if(calendaritems && calendaritems.length > 0){
@@ -14838,10 +14838,10 @@ async function submitaimessage(optionalinput, dictated){
 						}else{
 							let item = id && calendar.todos.find(d => d.id == id)
 							if(item){
-								aichattemporarydata[responsechatmessage.id] = [item]
+								aichattemporarydata[responsechatmessage.id] = (aichattemporarydata[responsechatmessage.id] || []).push(item)
 								
 								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Just a confirmation, I'll schedule this task for you: ${item.title}`
-								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule this task in your calendar.')">No</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled this task in your calendar.')">Yes</div>`]
+								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled this task in your calendar.')">Yes</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule this task in your calendar.')">No</div>`]
 							}else{
 								let calendaritem = id && calendar.events.find(d => d.id == id)
 								if(calendaritem){
