@@ -14044,7 +14044,13 @@ async function submitaimessage(optionalinput, dictated){
 	let sendchathistory = chathistory.getInteractions().filter(d => d.getMessages().length > 1 && !d.getMessages().find(g => g.message == null)).map(d => d.getMessages().map(f => { return { role: f.role, content: f.message } }))
 
 	try{
-		const response = await fetch('/getgptchatinteraction', {
+		//temporary--vv
+		let path = '/getgptchatinteraction'
+		if(clientinfo.betatester && clientinfo.google_email.includes('smartcalendar')){
+			path = '/getgptchatinteractionV2'
+		}
+		//-----------^^
+		const response = await fetch(path, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -14178,10 +14184,10 @@ async function submitaimessage(optionalinput, dictated){
 
 						for(let tempitem of arguments.events){
 							let title = tempitem?.title
-							let startminute = getMinute(tempitem?.startDate).value || 9*60
-							let [startyear, startmonth, startday] = getDate(tempitem?.startDate).value
-							let endminute = getMinute(tempitem?.endDate).value
-							let [endyear, endmonth, endday] = getDate(tempitem?.endDate).value
+							let startminute = getMinute(tempitem?.startDate?.replace('T', ' ')).value || 9*60
+							let [startyear, startmonth, startday] = getDate(tempitem?.startDate?.replace('T', ' ')).value
+							let endminute = getMinute(tempitem?.endDate?.replace('T', ' ')).value
+							let [endyear, endmonth, endday] = getDate(tempitem?.endDate?.replace('T', ' ')).value
 
 							let startdate, enddate;
 							if(startminute != null && startyear != null && startmonth != null && startday != null){
@@ -14247,7 +14253,7 @@ async function submitaimessage(optionalinput, dictated){
 							let newenddate = tempitem?.newEndDate
 							let newduration = tempitem?.newDuration
 							
-							if(error){
+							if(error && !id){
 								tempoutput.push(error)
 							}else{
 								let item = id && calendar.events.find(d => d.id == id)
@@ -14261,10 +14267,10 @@ async function submitaimessage(optionalinput, dictated){
 		
 										let oldduration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 		
-										let startminute = getMinute(newstartdate).value
-										let [startyear, startmonth, startday] = getDate(newstartdate).value
-										let endminute = getMinute(newenddate).value
-										let [endyear, endmonth, endday] = getDate(newenddate).value
+										let startminute = getMinute(newstartdate?.replace('T', ' ')).value
+										let [startyear, startmonth, startday] = getDate(newstartdate?.replace('T', ' ')).value
+										let endminute = getMinute(newenddate?.replace('T', ' ')).value
+										let [endyear, endmonth, endday] = getDate(newenddate?.replace('T', ' ')).value
 		
 										let startdate, enddate;
 										if(startminute != null && startyear != null && startmonth != null && startday != null){
@@ -14316,7 +14322,7 @@ async function submitaimessage(optionalinput, dictated){
 		
 		
 										let tempmsg;
-										if(newtitle != null && newtitle != oldtitle){
+										if(!!newtitle && newtitle != oldtitle){
 											if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
 												tempmsg = `Done! I renamed your event to "${Calendar.Event.getRawTitle(item)}", and moved it to ${Calendar.Event.getStartText(item)}`
 											}else{
@@ -14439,7 +14445,7 @@ async function submitaimessage(optionalinput, dictated){
 
 
 								let tempmsg;
-								if(newtitle != null && newtitle != oldtitle){
+								if(!!newtitle && newtitle != oldtitle){
 									if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
 										tempmsg = `Done! I renamed your event to "${Calendar.Event.getRawTitle(item)}", and moved it to ${Calendar.Event.getStartText(item)}`
 									}else{
@@ -14540,8 +14546,8 @@ async function submitaimessage(optionalinput, dictated){
 
 						for(let tempitem of arguments.tasks){
 							let title = tempitem?.title
-							let endbeforeminute = getMinute(tempitem?.dueDate).value || 0
-							let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(tempitem?.dueDate).value
+							let endbeforeminute = getMinute(tempitem?.dueDate?.replace('T', ' ')).value || 0
+							let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(tempitem?.dueDate?.replace('T', ' ')).value
 							let duration = getDuration(tempitem?.duration).value
 		
 							let endbeforedate;
@@ -14604,7 +14610,7 @@ async function submitaimessage(optionalinput, dictated){
 							let newduration = tempitem?.newDuration
 							let newcompleted = tempitem?.newCompleted
 		
-							if(error){
+							if(error && !id){
 								tempoutput.push(`${error}`)
 							}else{
 								let item = id && [...calendar.todos, ...calendar.events].find(d => d.id == id)
@@ -14613,8 +14619,8 @@ async function submitaimessage(optionalinput, dictated){
 									let oldcompleted = item.completed
 									let oldduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 									
-									let endbeforeminute = getMinute(newduedate).value
-									let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(newduedate).value
+									let endbeforeminute = getMinute(newduedate?.replace('T', ' ')).value
+									let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(newduedate?.replace('T', ' ')).value
 									
 									let endbeforedate;
 									if(endbeforeminute != null && endbeforeyear != null && endbeforemonth != null && endbeforeday != null){
@@ -14654,7 +14660,7 @@ async function submitaimessage(optionalinput, dictated){
 		
 		
 									let tempmsg;
-									if(newtitle != null && newtitle != oldtitle){
+									if(!!newtitle && newtitle != oldtitle){
 										if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
 											tempmsg = `Done! I renamed your task to "${Calendar.Event.getRawTitle(item)}", and set it to be due ${Calendar.Event.getDueText(item)}`
 										}else{
@@ -14748,7 +14754,7 @@ async function submitaimessage(optionalinput, dictated){
 
 
 							let tempmsg;
-							if(newtitle != null && newtitle != oldtitle){
+							if(!!newtitle && newtitle != oldtitle){
 								if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
 									tempmsg = `Done! I renamed your task to "${Calendar.Event.getRawTitle(item)}", and set it to be due ${Calendar.Event.getDueText(item)}`
 								}else{
@@ -14812,6 +14818,31 @@ async function submitaimessage(optionalinput, dictated){
 							let calendaritems = idList && calendar.events.filter(d => idList.find(g => g == d.id))
 							if(calendaritems && calendaritems.length > 0){
 								responsechatmessage.message = `It looks like these tasks are already scheduled in your calendar!`
+							}else{
+								responsechatmessage.message = `I could not find this task, could you please tell me more?`
+							}
+						}
+					}
+					
+				}else if(output.command == 'schedule_task_in_calendar'){
+					let arguments = output.arguments
+
+					let id = getrealid(arguments?.id)
+					let error = arguments?.errorMessage || ''
+
+					if(error){
+						responsechatmessage.message = `${error}`
+					}else{
+						let item = id && calendar.todos.find(d => d.id == id)
+						if(item){
+							aichattemporarydata[responsechatmessage.id] = item
+							
+							responsechatmessage.message = `Just a confirmation, I'll schedule these this task for you: ${item.title}`
+							responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule this task in your calendar.')">No</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled this task in your calendar.')">Yes</div>`]
+						}else{
+							let calendaritem = id && calendar.events.find(d => d.id == id)
+							if(calendaritem){
+								responsechatmessage.message = `It looks like this task is already scheduled in your calendar!`
 							}else{
 								responsechatmessage.message = `I could not find this task, could you please tell me more?`
 							}

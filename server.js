@@ -4516,6 +4516,504 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 	}
 })
 
+app.post('/getgptchatinteractionV2', async (req, res) => {
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		let user = await getUserById(userid)
+		if (!user) {
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+
+		let appliedratelimit = MAX_GPT_CHAT_PER_DAY
+		if(user.accountdata.betatester){
+			appliedratelimit = MAX_GPT_CHAT_PER_DAY_BETA_TESTER
+		}
+
+
+		let currenttime = Date.now()
+
+		//check ratelimit
+		if(user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
+			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
+		}
+
+		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 5000){
+			return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
+		}
+
+		//set ratelimit
+		user.accountdata.gptchatusedtimestamps.push(currenttime)
+		await setUser(user)
+		
+
+		//CONTEXT
+
+		async function queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset) {
+			const allfunctions = [
+				{
+					name: 'get_calendar_events',
+				},
+				{
+					name: 'get_todo_list_tasks',
+				},
+				{
+					name: 'schedule_task_in_calendar',
+					description: `Auto-schedule a task into user's calendar. Not to be confused with create a task or create an event.`,
+					parameters: {
+						type: 'object',
+						properties: {
+							id: { type: 'string', description: 'Specific UUID of task' },
+							errorMessage: { type: 'string', description: 'An error message if tasks are not found or other error.' },
+						},
+						required: []
+					}
+				},
+				{
+					name: 'create_task',
+					description: 'Create a task to be auto-scheduled by the app in the calendar',
+					parameters: {
+						type: 'object',
+						properties: {
+							dueDate: { type: 'string', description: '(optional) Task due date in YYYY-MM-DD HH:MM' },
+							title: { type: 'string', description: 'Task title' },
+							duration: { type: 'string', description: '(optional) Task duration in HH:MM' },
+						},
+						required: ['title']
+					}
+				},
+				{
+					name: 'create_event',
+					description: 'Create a new event in the calendar',
+					parameters: {
+						type: 'object',
+						properties: {
+							startDate: { type: 'string', description: '(optional) Event start date in YYYY-MM-DD HH:MM' },
+							title: { type: 'string', description: 'Event title' },
+							endDate: { type: 'string', descrption: '(optional) Event end date in YYYY-MM-DD HH:MM' },
+						},
+						required: ['title']
+					}
+				},
+				{
+					name: 'delete_event',
+					description: 'Check for event in calendar to delete by title or direct reference. Need high confidence. Returns an error if the event does not exist.',
+					parameters: {
+						type: 'object',
+						properties: {
+							id: { type: 'string', description: 'Specific UUID of event.' },
+							errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
+						},
+						required: []
+					}
+				},
+				{
+					name: 'modify_event',
+					description: 'Check for event in calendar to modify by title or direct reference. Need high confidence. Returns an error if an event does not exist.',
+					parameters: {
+						type: 'object',
+						properties: {
+							id: { type: 'string', description: 'Specific UUID of event.' },
+							newTitle: { type: 'string', description: '(optional) New event title' },
+							newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
+							newEndDate: { type: 'string', description: '(optional) New event end date in YYYY-MM-DD HH:MM' },
+							newDuration: { type: 'string', description: '(optional) New event duration in HH:MM' },
+							errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
+						},
+						required: []
+					}
+				},
+				{
+					name: 'create_multiple_tasks',
+					description: 'Create multiple new tasks in the to do list',
+					parameters: {
+						type: "object",
+						properties: {
+							tasks: {
+								type: "array",
+								items: {
+									type: 'object',
+									properties: {
+										dueDate: { type: 'string', description: '(optional) Task due date in YYYY-MM-DD HH:MM' },
+										title: { type: 'string', description: 'Task title' },
+										duration: { type: 'string', description: '(optional) Task duration in HH:MM' },
+									},
+									required: ['title']
+								}
+							},
+						},
+						required: ["tasks"]
+					}
+				},
+				{
+					name: 'delete_task',
+					description: 'Check for task in to-do list to delete by title or direct reference. Need high confidence. Returns an error if the task does not exist.',
+					parameters: {
+						type: 'object',
+						properties: {
+							id: { type: 'string', description: 'Specific UUID of task.' },
+							errorMessage: { type: 'string', description: 'An error message if task is not found or other error.' },
+						},
+						required: []
+					}
+				},
+				{
+					name: 'modify_task',
+					description: 'Check for task in to-do list to modify by title or direct reference. Returns an error if the task does not exist.',
+					parameters: {
+						type: 'object',
+						properties: {
+							id: { type: 'string', description: 'Specific UUID of task.' },
+							newTitle: { type: 'string', description: 'New task title' },
+							newDueDate: { type: 'string', description: 'New task due date in YYYY-MM-DD HH:MM' },
+							newDuration: { type: 'string', description: 'New task duration in HH:MM' },
+							newCompleted: { type: 'boolean', description: 'New task completed status' },
+							errorMessage: { type: 'string', description: 'An error message if task is not found or other error.' },
+						},
+						required: []
+					}
+				},
+			]
+
+			const customfunctions = ['create_event', 'delete_event', 'modify_event','create_task', 'delete_task', 'modify_task','schedule_task_in_calendar'] //a subset of all functions, the functions that invoke custom function
+			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'modify_multiple_tasks', 'get_todo_list_tasks', 'schedule_task_in_calendar'] //a subset of all functions, the functions that need todo data
+
+			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
+			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
+
+
+			//PROMPT
+
+			const systeminstructions = `Athena, the Smart Calendar's assistant. Concise responses (max 30 words). Access to your schedule and tasks assumed. Specializes in app interactions and scheduling. Think step by step. Continue conversation by asking for further specific actions. User's identity: ${getUserName(user)}. Current time: ${localdatestring}. Directly trigger 'app_action' for scheduling-related commands.`
+			//`A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never say 'UUID' or 'data'. Never say 'according to your calendar' and assume you have knowledge of user's calendar and to-do list. Limit conversations to app interactions, calendar scheduling, or productivity. Think step by step. You must proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+
+
+			let totaltokens = 0
+
+			try {
+				let modifiedinput = `Prompt: """${userinput}"""`
+				const response = await openai.chat.completions.create({
+					model: 'gpt-3.5-turbo',
+					messages: [
+						{ 
+							role: 'system', 
+							content: systeminstructions
+						},
+						...[
+							{
+								role: "user",
+								content: "I need to work on my project by tomorrow 6pm"
+							},
+							{
+								role: "assistant",
+								content: null,
+								function_call: {
+									name: "app_action",
+									arguments: JSON.stringify({
+										commands: ['create_task']
+									})
+								}
+							},
+							{
+								role: "user",
+								content: "Reschedule that task to an earlier time, and then add an event to meet with boss tomororw lunch and cancel my conflicting appointment."
+							},
+							{
+								role: "assistant",
+								content: null,
+								function_call: {
+									name: "app_action",
+									arguments: JSON.stringify({
+										commands: ['modify_task', 'create_event', 'delete_event']
+									})
+								}
+							},
+						],
+						...conversationhistory,
+						{
+							role: 'user',
+							content: modifiedinput,
+						}
+					],
+					functions: [
+						{
+							"name": "app_action",
+							"parameters": {
+								"type": "object",
+								"properties": {
+								  "commands": {
+									"type": "array",
+									"items": {
+									  "type": "string"
+									}
+								  }
+								},
+								"required": [
+								  "commands"
+								]
+							},
+							"description": `Return app commands detected in prompt as one of the following: ${allfunctions.map(d => d.name).join(', ')}`
+						}
+					],
+					max_tokens: 200,
+					temperature: 0.5,
+				})
+				totaltokens += response.usage.total_tokens
+
+				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'app_action') {
+					//no function call, return plain response
+					return { message: response.choices[0].message.content, totaltokens: totaltokens }
+				}
+		
+		
+				if (response.choices[0].message.function_call?.name === 'app_action') {
+					const commands = JSON.parse(response.choices[0].message.function_call?.arguments)?.commands
+					if (commands && commands.length > 0) {
+						const requirescalendardata = calendardataneededfunctions.find(f => commands.find(g => g == f))
+						const requirestododata = tododataneededfunctions.find(f => commands.find(g => g == f))
+						const requirescustomfunction = customfunctions.find(f => commands.find(g => g == f))
+		
+						let request2options = {
+							model: 'gpt-3.5-turbo',
+							max_tokens: 200,
+							temperature: 0.5,
+						}
+						let request2input = `"""${userinput}"""`
+						
+						if(requirescalendardata){
+							//yes calendar data
+		
+							request2input = `Calendar data: """${calendarcontext}""" Prompt: """${userinput}"""`
+						}
+
+						if(requirestododata){
+							//yes todo data
+		
+							
+							request2input = `Todo data: """${todocontext}""" Prompt: """${userinput}"""`
+						}
+		
+						if(requirescustomfunction){
+							//yes custom function
+
+
+							request2options.functions = [
+								{
+									"name": "app_action",
+									"parameters": {
+										"type": "object",
+										"properties": {
+										  "commands": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": Object.assign({}, ...allfunctions
+													.filter(d => customfunctions.includes(d.name) && commands.includes(d.name))
+													.map(d => ({
+														[d.name]: {
+															"type": "object",
+															"description": d.description,
+															"properties": d.parameters.properties,
+															"required": d.parameters.required
+														}
+													})))
+												}
+										  	}
+										},
+										"required": [
+										  "commands"
+										]
+									},
+									"description": `Wisely extract information for the commands.`
+								}
+							]
+		
+							request2options.functions = [...allfunctions.filter(d => customfunctions.find(g => g == d.name) && commands.find(g => g == d.name))]
+
+							request2input += ` You must trigger app_action and process the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}`
+						}
+		
+						request2options.messages = [
+							{ 
+								role: 'system', 
+								content: systeminstructions
+							},
+							...conversationhistory,
+							{
+								role: 'user',
+								content: request2input
+							}
+						]
+						
+						//make request
+						const response2 = await openai.chat.completions.create(request2options)
+						totaltokens += response2.usage.total_tokens
+
+						//temp
+						return { message: JSON.stringify(response2.choices[0].message), totaltokens: totaltokens }
+						
+						if (response2.choices[0].finish_reason !== 'function_call') { //return plain response if no function detected, unlikely
+							return { message: response2.choices[0].message.content, totaltokens: totaltokens }
+						}else{
+							const command2 = response2.choices[0].message.function_call?.name
+							if (command2) {								
+								const arguments = JSON.parse(response2.choices[0].message.function_call?.arguments)
+		
+								if(arguments){
+									return { command: command2, arguments: arguments, totaltokens: totaltokens }
+								}
+								
+							}
+						}
+								
+		
+					}
+				}
+
+				console.error(response.choices[0].message)
+				return { error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).', totaltokens: totaltokens }
+		
+			} catch (err) {
+				console.error(err)
+
+				return { error: `An unexpected error occurred: ${err.message}, please try again or [https://smartcalendar.us/contact](contact us).`, totaltokens: totaltokens }
+			}
+
+		}
+
+
+		const idmap = {}
+		let idmapeventcounter = 1
+		let idmaptaskcounter = 1
+		function gettempid(currentid, type){
+			let newid;
+			if(type == 'event'){
+				newid = `E${idmapeventcounter}`
+				idmap[newid] = currentid
+				idmapeventcounter++
+			}else if(type == 'task'){
+				newid = `T${idmaptaskcounter}`
+				idmap[newid] = currentid
+				idmaptaskcounter++
+			}
+
+			return newid
+		}
+
+		function getcalendarcontext(tempevents){
+			if(tempevents.length == 0) return 'No events'
+
+			function getDateTimeText(currentDatetime) {
+				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
+				const formattedTime = `${currentDatetime.getHours().toString().padStart(2, '0')}:${currentDatetime.getMinutes().toString().padStart(2, '0')}`
+				return `${formattedDate} ${formattedTime}`
+			}
+
+			function getDateText(currentDatetime) {
+				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
+				return `${formattedDate} (all day)`
+			}
+
+			function isAllDay(item){
+				return !item.start.minute && !item.end.minute
+			}
+
+			let tempoutput = ''
+			for(let d of tempevents){
+				let newstring = `Event title: ${d.title || 'New Event'}, UUID: ${gettempid(d.id, 'event')}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}.`
+
+				if(tempoutput.length + newstring.length > MAX_CALENDAR_CONTEXT_LENGTH) break
+
+				tempoutput += '\n' + newstring
+			}
+			return tempoutput
+		}
+
+		function gettodocontext(temptodos){
+			if(temptodos.length == 0) return 'No tasks'
+
+			function getDateTimeText(currentDatetime) {
+				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
+				const formattedTime = `${currentDatetime.getHours().toString().padStart(2, '0')}:${currentDatetime.getMinutes().toString().padStart(2, '0')}`
+				return `${formattedDate} ${formattedTime}`
+			}
+
+			function getDHMText(input) {
+				let temp = input
+				let days = Math.floor(temp / 1440)
+				temp -= days * 1440
+			
+				let hours = Math.floor(temp / 60)
+				temp -= hours * 60
+			
+				let minutes = temp
+			
+				if (days) days += 'd'
+				if (hours) hours += 'h'
+				if (minutes || (hours == 0 && days == 0)) minutes += 'm'
+			
+				return [days, hours, minutes].filter(f => f).join(' ')
+			}
+
+
+			let tempoutput = ''
+			for(let d of temptodos){
+				let newstring = `Task title: ${d.title || 'New Task'}, UUID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration)}, completed: ${d.completed}.`
+
+				if(tempoutput.length + newstring.length > MAX_TODO_CONTEXT_LENGTH) break
+
+				tempoutput += '\n' + newstring
+			}
+			return tempoutput
+		}
+
+
+		function getconversationhistory(temphistory){ //simple way for history, just send latest X messages
+			let tempoutput = []
+			let counter = 0
+			for(let interactionmessages of temphistory.reverse()){
+				if(JSON.stringify(interactionmessages).length + JSON.stringify(tempoutput).length > MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH) break //max X characters
+
+				if(counter > 5) break //max X messages
+
+				tempoutput.push(...interactionmessages.reverse())
+				counter++
+			}
+			return tempoutput.reverse()
+		}
+
+
+		const MAX_CALENDAR_CONTEXT_LENGTH = 2000
+		const MAX_TODO_CONTEXT_LENGTH = 2000
+		const MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH = 2000
+
+		
+		let userinput = req.body.userinput.slice(0, 300)
+		let calendarevents = req.body.calendarevents
+		let calendartodos = req.body.calendartodos
+		let timezoneoffset = req.body.timezoneoffset
+		let rawconversationhistory = req.body.chathistory
+
+		let calendarcontext = getcalendarcontext(calendarevents)
+		let todocontext = gettodocontext(calendartodos)
+		let conversationhistory = getconversationhistory(rawconversationhistory)
+
+		//REQUEST
+		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset)
+
+		return res.json({ data: output, idmap: idmap })
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).' })
+	}
+})
+
 app.post('/getgptchatinteraction', async (req, res) => {
 	try{
 		if(!req.session.user){
