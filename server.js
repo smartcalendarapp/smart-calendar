@@ -4784,19 +4784,19 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							max_tokens: 200,
 							temperature: 0.5,
 						}
-						let request2input = `"""${userinput}"""`
+						let request2input = `Prompt: """${userinput}"""`
 						
 						if(requirescalendardata){
 							//yes calendar data
 		
-							request2input = `Calendar data: """${calendarcontext}""" Prompt: """${userinput}"""`
+							request2input += ` Calendar data: """${calendarcontext}"""`
 						}
 
 						if(requirestododata){
 							//yes todo data
 		
 							
-							request2input = `Todo data: """${todocontext}""" Prompt: """${userinput}"""`
+							request2input += ` Todo data: """${todocontext}"""`
 						}
 		
 						if(requirescustomfunction){
@@ -4834,9 +4834,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								}
 							]
 		
-							request2options.functions = [...allfunctions.filter(d => customfunctions.find(g => g == d.name) && commands.find(g => g == d.name))]
-
-							request2input += ` You must trigger app_action and process the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}`
+							request2input += commands.filter(d => customfunctions.find(g => g == d)).length > 0 ? ` You must trigger app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}` : ''
 						}
 		
 						request2options.messages = [
@@ -4858,15 +4856,15 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						//temp
 						return { message: JSON.stringify(response2.choices[0].message), totaltokens: totaltokens }
 						
-						if (response2.choices[0].finish_reason !== 'function_call') { //return plain response if no function detected, unlikely
+						if (response2.choices[0].finish_reason !== 'function_call') { //return plain response if no function detected
 							return { message: response2.choices[0].message.content, totaltokens: totaltokens }
 						}else{
-							const command2 = response2.choices[0].message.function_call?.name
-							if (command2) {								
+							const commands2 = response2.choices[0].message.function_call?.name
+							if (commands2) {								
 								const arguments = JSON.parse(response2.choices[0].message.function_call?.arguments)
 		
 								if(arguments){
-									return { command: command2, arguments: arguments, totaltokens: totaltokens }
+									return { commands: commands2, totaltokens: totaltokens }
 								}
 								
 							}
