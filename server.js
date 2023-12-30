@@ -4663,7 +4663,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `Athena, Smart Calendar's helpful personal assistant. Think step by step. Concise responses (max 30 words). Access to your schedule and tasks assumed. Never mention the internal ID of events or tasks. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively continue conversation by suggesting further or subsequent app interactions. User's identity: ${getUserName(user)}. Current time: ${localdatestring}. Directly trigger 'app_action' for scheduling-related commands.`
+			const systeminstructions = `Athena, Smart Calendar's helpful personal assistant. Think step by step. Concise responses (max 30 words). Access to your schedule and tasks assumed. Never mention the internal ID of events or tasks. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively continue conversation by suggesting further or subsequent app interactions. Do NOT return app_action for a command if there is not enough information; instead, work step by step with user to get information. User's identity: ${getUserName(user)}. Current time: ${localdatestring}. Directly trigger 'app_action' for scheduling-related commands.`
 
 
 			let totaltokens = 0
@@ -4738,7 +4738,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								  "commands"
 								]
 							},
-							"description": `Return app commands if detected in prompt. If there is not enough information, do NOT return command, and work step by step with user to get information. One of the following: ${allfunctions.map(d => d.name).join(', ')}`
+							"description": `If there is not enough information, do NOT return command, and work step by step with user to get information. Otherwise, return app commands if detected in prompt. One of the following: ${allfunctions.map(d => d.name).join(', ')}`
 						}
 					],
 					max_tokens: 200,
@@ -4834,7 +4834,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						const response2 = await openai.chat.completions.create(request2options)
 						totaltokens += response2.usage.total_tokens
 						
-						console.warn(response2.choices[0])
 						if (response2.choices[0].finish_reason !== 'function_call' || response2.choices[0].message.function_call?.name !== 'app_action') { //return plain response if no function detected
 							return { message: response2.choices[0].message.content, totaltokens: totaltokens }
 						}
@@ -4847,7 +4846,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					}
 				}
 
-				console.error(response.choices[0].message)
 				return { error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).', totaltokens: totaltokens }
 		
 			} catch (err) {
