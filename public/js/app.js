@@ -14098,7 +14098,7 @@ async function submitaimessage(optionalinput, dictated){
 						let [endyear, endmonth, endday] = getDate(arguments?.endDate?.replace('T', ' ')).value
 						let error = arguments?.errorMessage || ''
 
-						if(error){
+						if(error && !title && !startminute && !startyear){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
 						}else{
 
@@ -14512,7 +14512,7 @@ async function submitaimessage(optionalinput, dictated){
 						let duration = getDuration(arguments?.duration).value
 						let error = arguments?.errorMessage || ''
 
-						if(error){
+						if(error && !title && !endbeforeminute && !endbeforeyear){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
 						}else{
 
