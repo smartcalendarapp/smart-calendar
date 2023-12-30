@@ -4745,7 +4745,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					temperature: 0.5,
 				})
 				totaltokens += response.usage.total_tokens
-				console.warn('NUMBER 1' , response)
+				console.warn('NUMBER 1' , response.choices[0].message)
 
 				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'app_action') {
 					//no function call, return plain response
