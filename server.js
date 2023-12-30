@@ -4731,7 +4731,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								  "commands"
 								]
 							},
-							"description": `Return app commands detected in prompt as one of the following: ${allfunctions.map(d => d.name).join(', ')}`
+							"description": `Return app commands if detected in prompt. One of the following: ${allfunctions.map(d => d.name).join(', ')}`
 						}
 					],
 					max_tokens: 200,

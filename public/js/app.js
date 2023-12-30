@@ -14119,8 +14119,8 @@ async function submitaimessage(optionalinput, dictated){
 							calendar.updateEvents()
 
 
-							responsechatmessage.message = `Done! I have created an event "${Calendar.Event.getRawTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
-							responsechatmessage.actions = (responsechatmessage.actions || []).push(...[`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`])
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I have created an event "${Calendar.Event.getRawTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
+							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 
 							if(!mobilescreen)gototaskincalendar(item.id)
 						}else{
@@ -14175,8 +14175,8 @@ async function submitaimessage(optionalinput, dictated){
 
 							let timeoptions = gettimeoptions(3)
 
-							responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `What time do you want "${title}" to take place?`
-							responsechatmessage.nextactions = (responsechatmessage.nextactions || []).push(...[...timeoptions.map(d => `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('${d}')">${d}</div>`), `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Auto schedule')">Auto schedule</div>`])
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `What time do you want "${title}" to take place?`
+							responsechatmessage.nextactions = [...timeoptions.map(d => `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('${d}')">${d}</div>`), `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Auto schedule')">Auto schedule</div>`]
 						}
 					}else if(command == 'create_multiple_events'){
 						
@@ -14229,7 +14229,7 @@ async function submitaimessage(optionalinput, dictated){
 
 							responsechatmessage.message = tempoutput.join('\n')
 							if(firstitem){
-								responsechatmessage.actions = (responsechatmessage.actions || []).push(...[`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${firstitem.id}')">Show me</div>`])
+								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${firstitem.id}')">Show me</div>`]
 
 								if(!mobilescreen)gototaskincalendar(firstitem.id)
 							}
@@ -14238,7 +14238,7 @@ async function submitaimessage(optionalinput, dictated){
 							calendar.updateInfo()
 							calendar.updateEvents()
 						}else{
-							responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `I could not create an event for you, please try again.`
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not create an event for you, please try again.`
 						}
 
 					}else if(command == 'modify_multiple_events'){
@@ -14352,7 +14352,7 @@ async function submitaimessage(optionalinput, dictated){
 
 							responsechatmessage.message = tempoutput.join('\n')
 							if(firstitem){
-								responsechatmessage.actions = (responsechatmessage.actions || []).push(...[`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${firstitem.id}')">Show me</div>`])
+								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${firstitem.id}')">Show me</div>`]
 
 								if(!mobilescreen) gototaskincalendar(firstitem.id)
 							}
@@ -14361,7 +14361,7 @@ async function submitaimessage(optionalinput, dictated){
 							calendar.updateInfo()
 							calendar.updateEvents()
 						}else{
-							responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `I could not modify an event for you, please try again.`
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not modify an event for you, please try again.`
 						}
 
 					}else if(command == 'modify_event'){
@@ -14375,12 +14375,12 @@ async function submitaimessage(optionalinput, dictated){
 						let newduration = arguments?.newDuration
 
 						if(error){
-							responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `${error}`
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
 						}else{
 							let item = id && calendar.events.find(d => d.id == id)
 							if(item){
 								if(Calendar.Event.isReadOnly(item)){
-									responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `I could not edit that event as it is read-only (it may be part of a calendar you cannot edit).`
+									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not edit that event as it is read-only (it may be part of a calendar you cannot edit).`
 								}else{
 									let oldstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 									let oldtitle = item.title
@@ -14462,12 +14462,12 @@ async function submitaimessage(optionalinput, dictated){
 										}
 									}
 									responsechatmessage.message = tempmsg
-									responsechatmessage.actions = (responsechatmessage.actions || []).push(...[`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`])
+									responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 
 									if(!mobilescreen)gototaskincalendar(item.id)
 								}
 							}else{
-								responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `I could not find that event, could you please tell me more?`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find that event, could you please tell me more?`
 							}
 						}
 					}else if(command == 'delete_event'){
@@ -14477,12 +14477,12 @@ async function submitaimessage(optionalinput, dictated){
 						let error = arguments?.errorMessage || ''
 
 						if(error){
-							responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `${error}`
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
 						}else{
 							let item = id && calendar.events.find(d => d.id == id)
 							if(item){
 								if(Calendar.Event.isReadOnly(item)){
-									responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `I could not delete that event as it is read-only (it may be part of a calendar you cannot edit).`
+									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not delete that event as it is read-only (it may be part of a calendar you cannot edit).`
 								}else{
 									calendar.events = calendar.events.filter(d => d.id != id)
 
@@ -14491,10 +14491,10 @@ async function submitaimessage(optionalinput, dictated){
 									calendar.updateEvents()
 
 
-									responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `Done! I have deleted your event "${Calendar.Event.getRawTitle(item)}."`
+									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I have deleted your event "${Calendar.Event.getRawTitle(item)}."`
 								}
 							}else{
-								responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `I could not find that event, could you please tell me more?`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find that event, could you please tell me more?`
 							}
 						}
 					}else if(command == 'create_task'){
@@ -14531,13 +14531,13 @@ async function submitaimessage(optionalinput, dictated){
 							startAutoSchedule({eventsuggestiontodos: [item]})
 
 
-							responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" and added it to your calendar.`
-							responsechatmessage.actions = (responsechatmessage.actions || []).push(...[`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`])
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" and added it to your calendar.`
+							responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 
 							if(!mobilescreen)gototaskincalendar(item.id)
 						}else{
-							responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `What time do you want ${title} to be due?`
-							responsechatmessage.nextactions = (responsechatmessage.nextactions || []).push(...[`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('In 1 week')">In 1 week</div>`])
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `What time do you want ${title} to be due?`
+							responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('In 1 week')">In 1 week</div>`]
 						}
 					}else if(command == 'create_multiple_tasks'){
 						
@@ -14588,13 +14588,13 @@ async function submitaimessage(optionalinput, dictated){
 							if(firstitem){
 								aichattemporarydata[responsechatmessage.id] = allitems
 
-								responsechatmessage.actions = (responsechatmessage.actions || []).push(...[`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`])
-								responsechatmessage.nextactions = (responsechatmessage.nextactions || []).push(...[`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] }); simulateaiassistantwithnextaction('Schedule them in my calendar', 'Done! I scheduled ${allitems.length} tasks in your calendar.')">Schedule in calendar</div>`])
+								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`]
+								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] }); simulateaiassistantwithnextaction('Schedule them in my calendar', 'Done! I scheduled ${allitems.length} tasks in your calendar.')">Schedule in calendar</div>`]
 							}
 
 							calendar.updateTodo()
 						}else{
-							responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `I could not create a task for you, please try again.`
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not create a task for you, please try again.`
 						}
 
 
@@ -14690,12 +14690,12 @@ async function submitaimessage(optionalinput, dictated){
 
 							responsechatmessage.message = tempoutput.join('\n')
 							if(firstitem){
-								responsechatmessage.actions = (responsechatmessage.actions || []).push(...[`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`])
+								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`]
 							}
 
 							calendar.updateTodo()
 						}else{
-							responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `I could not modify a task for you, please try again.`
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not modify a task for you, please try again.`
 						}
 					}else if(command == 'modify_task'){
 						
@@ -14708,7 +14708,7 @@ async function submitaimessage(optionalinput, dictated){
 						let newcompleted = arguments?.newCompleted
 
 						if(error){
-							responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `${error}`
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
 						}else{
 							let item = id && [...calendar.todos, ...calendar.events].find(d => d.id == id)
 							if(item){
@@ -14775,10 +14775,10 @@ async function submitaimessage(optionalinput, dictated){
 								}
 
 								responsechatmessage.message = tempmsg
-								responsechatmessage.actions = (responsechatmessage.actions || []).push(...[`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`])
+								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
 
 							}else{
-								responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `I could not find that task, could you please tell me more?`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find that task, could you please tell me more?`
 							}
 						}
 					}else if(command == 'delete_task'){
@@ -14788,7 +14788,7 @@ async function submitaimessage(optionalinput, dictated){
 						let error = arguments?.errorMessage || ''
 
 						if(error){
-							responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `${error}`
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
 						}else{
 							let item = id && [...calendar.todos, ...calendar.events].find(d => d.id == id)
 							if(item){
@@ -14797,9 +14797,9 @@ async function submitaimessage(optionalinput, dictated){
 
 								calendar.updateTodo()
 
-								responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `Done! I have deleted your task "${Calendar.Event.getRawTitle(item)}."`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I have deleted your task "${Calendar.Event.getRawTitle(item)}."`
 							}else{
-								responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `I could not find that task, could you please tell me more?`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find that task, could you please tell me more?`
 							}
 						}
 					}else if(command == 'schedule_tasks_in_calendar'){
@@ -14809,20 +14809,20 @@ async function submitaimessage(optionalinput, dictated){
 						let error = arguments?.errorMessage || ''
 
 						if(error){
-							responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `${error}`
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
 						}else{
 							let items = idList && calendar.todos.filter(d => idList.find(g => g == d.id))
 							if(items && items.length > 0){
 								aichattemporarydata[responsechatmessage.id] = items
 								
-								responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `Just a confirmation, I'll schedule these tasks for you:\n${items.map(d => `- ${d.title}`).join('\n')}`
-								responsechatmessage.nextactions = (responsechatmessage.nextactions || []).push(...[`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule these tasks in your calendar.')">No</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled ${items.length} tasks in your calendar.')">Yes</div>`])
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Just a confirmation, I'll schedule these tasks for you:\n${items.map(d => `- ${d.title}`).join('\n')}`
+								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule these tasks in your calendar.')">No</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled ${items.length} tasks in your calendar.')">Yes</div>`]
 							}else{
 								let calendaritems = idList && calendar.events.filter(d => idList.find(g => g == d.id))
 								if(calendaritems && calendaritems.length > 0){
-									responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `It looks like these tasks are already scheduled in your calendar!`
+									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `It looks like these tasks are already scheduled in your calendar!`
 								}else{
-									responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `I could not find this task, could you please tell me more?`
+									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find this task, could you please tell me more?`
 								}
 							}
 						}
@@ -14834,26 +14834,26 @@ async function submitaimessage(optionalinput, dictated){
 						let error = arguments?.errorMessage || ''
 
 						if(error){
-							responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `${error}`
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
 						}else{
 							let item = id && calendar.todos.find(d => d.id == id)
 							if(item){
 								aichattemporarydata[responsechatmessage.id] = [item]
 								
-								responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `Just a confirmation, I'll schedule this task for you: ${item.title}`
-								responsechatmessage.nextactions = (responsechatmessage.nextactions || []).push(...[`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule this task in your calendar.')">No</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled this task in your calendar.')">Yes</div>`])
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Just a confirmation, I'll schedule this task for you: ${item.title}`
+								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule this task in your calendar.')">No</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled this task in your calendar.')">Yes</div>`]
 							}else{
 								let calendaritem = id && calendar.events.find(d => d.id == id)
 								if(calendaritem){
-									responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `It looks like this task is already scheduled in your calendar!`
+									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `It looks like this task is already scheduled in your calendar!`
 								}else{
-									responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `I could not find this task, could you please tell me more?`
+									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find this task, could you please tell me more?`
 								}
 							}
 						}
 						
 					}else{
-						responsechatmessage.message = (responsechatmessage.message ? responsechatmessage.message + '\n' : '') + `This is weird, I could not determine your command. Please click the thumbs down button and try again.`
+						responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `This is weird, I could not determine your command. Please click the thumbs down button and try again.`
 					}
 				}
 
