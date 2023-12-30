@@ -4579,10 +4579,10 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							errorMessage: { type: 'string', description: 'Natural and conversational message to display to user if any mandatory properties are missing.' },
 							dueDate: { type: 'string', description: '(optional) Task due date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Task title' },
 							duration: { type: 'string', description: '(optional) Task duration in HH:MM' },
+							errorMessage: { type: 'string', description: 'A conversational message to display to user if any needed properties are missing.' },
 						},
 						required: ['title']
 					}
@@ -4593,10 +4593,10 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							errorMessage: { type: 'string', description: 'Natural and conversational message to display to user if any mandatory properties are missing.' },
 							startDate: { type: 'string', description: '(optional) Event start date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Event title' },
 							endDate: { type: 'string', descrption: '(optional) Event end date in YYYY-MM-DD HH:MM' },
+							errorMessage: { type: 'string', description: 'A conversational message to display to user if any needed properties are missing.' },
 						},
 						required: ['title']
 					}
@@ -4607,8 +4607,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							errorMessage: { type: 'string', description: 'Natural and conversational message to display to user if any mandatory properties are missing.' },
 							id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
+							errorMessage: { type: 'string', description: 'A conversational message to display to user if any needed properties are missing.' },
 						},
 						required: []
 					}
@@ -4619,12 +4619,12 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							errorMessage: { type: 'string', description: 'Natural and conversational message to display to user if any mandatory properties are missing.' },
 							id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
 							newTitle: { type: 'string', description: '(optional) New event title' },
 							newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
 							newEndDate: { type: 'string', description: '(optional) New event end date in YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: '(optional) New event duration in HH:MM' },
+							errorMessage: { type: 'string', description: 'A conversational message to display to user if any needed properties are missing.' },
 						},
 						required: []
 					}
@@ -4635,8 +4635,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							errorMessage: { type: 'string', description: 'Natural and conversational message to display to user if any mandatory properties are missing.' },
 							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
+							errorMessage: { type: 'string', description: 'A conversational message to display to user if any needed properties are missing.' },
 						},
 						required: []
 					}
@@ -4647,12 +4647,12 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							errorMessage: { type: 'string', description: 'Natural and conversational message to display to user if any mandatory properties are missing.' },
 							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
 							newTitle: { type: 'string', description: 'New task title' },
 							newDueDate: { type: 'string', description: 'New task due date in YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: 'New task duration in HH:MM' },
 							newCompleted: { type: 'boolean', description: 'New task completed status' },
+							errorMessage: { type: 'string', description: 'A conversational message to display to user if any needed properties are missing.' },
 						},
 						required: []
 					}

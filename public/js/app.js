@@ -14380,7 +14380,7 @@ async function submitaimessage(optionalinput, dictated){
 						let newenddate = arguments?.newEndDate
 						let newduration = arguments?.newDuration
 
-						if(error){
+						if(error && !id){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
 						}else{
 							let item = id && calendar.events.find(d => d.id == id)
@@ -14482,7 +14482,7 @@ async function submitaimessage(optionalinput, dictated){
 						let id = getrealid(arguments?.id)
 						let error = arguments?.errorMessage || ''
 
-						if(error){
+						if(error && !id){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
 						}else{
 							let item = id && calendar.events.find(d => d.id == id)
@@ -14719,7 +14719,7 @@ async function submitaimessage(optionalinput, dictated){
 						let newduration = arguments?.newDuration
 						let newcompleted = arguments?.newCompleted
 
-						if(error){
+						if(error && !id){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
 						}else{
 							let item = id && [...calendar.todos, ...calendar.events].find(d => d.id == id)
@@ -14799,7 +14799,7 @@ async function submitaimessage(optionalinput, dictated){
 						let id = getrealid(arguments?.id)
 						let error = arguments?.errorMessage || ''
 
-						if(error){
+						if(error && !id){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
 						}else{
 							let item = id && [...calendar.todos, ...calendar.events].find(d => d.id == id)
@@ -14845,7 +14845,7 @@ async function submitaimessage(optionalinput, dictated){
 						let id = getrealid(arguments?.id)
 						let error = arguments?.errorMessage || ''
 
-						if(error){
+						if(error && !id){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
 						}else{
 							let item = id && calendar.todos.find(d => d.id == id)
