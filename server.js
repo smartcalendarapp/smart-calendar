@@ -4629,28 +4629,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					}
 				},
 				{
-					name: 'create_multiple_tasks',
-					description: 'Create multiple new tasks in the to do list',
-					parameters: {
-						type: "object",
-						properties: {
-							tasks: {
-								type: "array",
-								items: {
-									type: 'object',
-									properties: {
-										dueDate: { type: 'string', description: '(optional) Task due date in YYYY-MM-DD HH:MM' },
-										title: { type: 'string', description: 'Task title' },
-										duration: { type: 'string', description: '(optional) Task duration in HH:MM' },
-									},
-									required: ['title']
-								}
-							},
-						},
-						required: ["tasks"]
-					}
-				},
-				{
 					name: 'delete_task',
 					description: 'Check for task in to-do list to delete by title or direct reference. Need high confidence. Returns an error if the task does not exist.',
 					parameters: {
@@ -4682,7 +4660,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			const customfunctions = ['create_event', 'delete_event', 'modify_event','create_task', 'delete_task', 'modify_task','schedule_task_in_calendar'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
-			const tododataneededfunctions = ['delete_task', 'modify_task', 'modify_multiple_tasks', 'get_todo_list_tasks', 'schedule_task_in_calendar'] //a subset of all functions, the functions that need todo data
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'schedule_task_in_calendar'] //a subset of all functions, the functions that need todo data
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
@@ -4854,19 +4832,13 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						totaltokens += response2.usage.total_tokens
 
 						//temp
-						return { message: JSON.stringify(response2.choices[0].message), totaltokens: totaltokens }
 						
 						if (response2.choices[0].finish_reason !== 'function_call') { //return plain response if no function detected
 							return { message: response2.choices[0].message.content, totaltokens: totaltokens }
-						}else{
-							const commands2 = response2.choices[0].message.function_call?.name
-							if (commands2) {								
-								const arguments = JSON.parse(response2.choices[0].message.function_call?.arguments)
-		
-								if(arguments){
-									return { commands: commands2, totaltokens: totaltokens }
-								}
-								
+						}else if(response2.choices[0].message.function_call?.name === 'app_action'){
+							const commands2 =  JSON.parse(response2.choices[0].message.function_call?.arguments)?.commands
+							if (commands2 && commands2.length > 0) {					
+								return { commands: commands2, totaltokens: totaltokens }
 							}
 						}
 								
@@ -5413,7 +5385,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								const arguments = JSON.parse(response2.choices[0].message.function_call?.arguments)
 		
 								if(arguments){
-									return { command: command2, arguments: arguments, totaltokens: totaltokens }
+									return { commands: [ { [command2]: arguments } ], totaltokens: totaltokens }
 								}
 								
 							}
