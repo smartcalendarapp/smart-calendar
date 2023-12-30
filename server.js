@@ -4745,6 +4745,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					temperature: 0.5,
 				})
 				totaltokens += response.usage.total_tokens
+				console.warn('NUMBER 1' , response)
 
 				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'app_action') {
 					//no function call, return plain response
@@ -4814,7 +4815,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								}
 							]
 		
-							request2input += commands.filter(d => customfunctions.find(g => g == d)).length > 0 ? ` You must trigger app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}` : ''
+							request2input += commands.filter(d => customfunctions.find(g => g == d)).length > 0 ? ` Trigger app_action for the following commands. ${commands.filter(d => customfunctions.find(g => g == d))}. If there is not enough information, do NOT trigger that command, and work step by step with user to get information.` : ''
 						}
 		
 						request2options.messages = [
