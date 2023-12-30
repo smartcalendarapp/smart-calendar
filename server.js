@@ -4708,11 +4708,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							{
 								role: "user",
-								content: "Help me plan a task."
+								content: "Book a meeting for me."
 							},
 							{
 								role: "assistant",
-								content: "Alright! Please let me know what it's called and when it's due."
+								content: "Alright! Please let me know what it's called and what time it's for."
 							},
 						],
 						...conversationhistory,
@@ -4738,7 +4738,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								  "commands"
 								]
 							},
-							"description": `Return app commands if detected in prompt. Do NOT return command if there is not enough information; work step by step with user to get information. One of the following: ${allfunctions.map(d => d.name).join(', ')}`
+							"description": `Return app commands if detected in prompt. If there is not enough information, do NOT return command, and work step by step with user to get information. One of the following: ${allfunctions.map(d => d.name).join(', ')}`
 						}
 					],
 					max_tokens: 200,
@@ -4833,6 +4833,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						const response2 = await openai.chat.completions.create(request2options)
 						totaltokens += response2.usage.total_tokens
 						
+						console.warn(response2.choices[0])
 						if (response2.choices[0].finish_reason !== 'function_call' || response2.choices[0].message.function_call?.name !== 'app_action') { //return plain response if no function detected
 							return { message: response2.choices[0].message.content, totaltokens: totaltokens }
 						}
