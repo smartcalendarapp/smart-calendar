@@ -4582,7 +4582,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							dueDate: { type: 'string', description: '(optional) Task due date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Task title' },
 							duration: { type: 'string', description: '(optional) Task duration in HH:MM' },
-							errorMessage: { type: 'string', description: 'A conversational message to display to user if any needed properties are missing.' },
+							errorMessage: { type: 'string', description: 'If you cannot infer or guess a due date or title, respond in a conversational friendly tone to user to ask for missing information.' },
 						},
 						required: ['title']
 					}
@@ -4596,7 +4596,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							startDate: { type: 'string', description: '(optional) Event start date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Event title' },
 							endDate: { type: 'string', descrption: '(optional) Event end date in YYYY-MM-DD HH:MM' },
-							errorMessage: { type: 'string', description: 'A conversational message to display to user if any needed properties are missing.' },
+							errorMessage: { type: 'string', description: 'If you cannot infer or guess a start time or title, respond in a conversational friendly tone to user to ask for missing information.' },
 						},
 						required: ['title']
 					}
@@ -4608,7 +4608,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						type: 'object',
 						properties: {
 							id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
-							errorMessage: { type: 'string', description: 'A conversational message to display to user if any needed properties are missing.' },
+							errorMessage: { type: 'string', description: 'If you cannot infer or guess the event ID, respond in a conversational friendly tone to user to ask for missing information.' },
 						},
 						required: []
 					}
@@ -4624,7 +4624,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							newStartDate: { type: 'string', description: 'New event start date in YYYY-MM-DD HH:MM' },
 							newEndDate: { type: 'string', description: '(optional) New event end date in YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: '(optional) New event duration in HH:MM' },
-							errorMessage: { type: 'string', description: 'A conversational message to display to user if any needed properties are missing.' },
+							errorMessage: { type: 'string', description: 'If you cannot infer or guess the event ID, respond in a conversational friendly tone to user to ask for missing information.' },
 						},
 						required: []
 					}
@@ -4636,7 +4636,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						type: 'object',
 						properties: {
 							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
-							errorMessage: { type: 'string', description: 'A conversational message to display to user if any needed properties are missing.' },
+							errorMessage: { type: 'string', description: 'If you cannot infer or guess the event ID, respond in a conversational friendly tone to user to ask for missing information.' },
 						},
 						required: []
 					}
@@ -4652,7 +4652,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							newDueDate: { type: 'string', description: 'New task due date in YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: 'New task duration in HH:MM' },
 							newCompleted: { type: 'boolean', description: 'New task completed status' },
-							errorMessage: { type: 'string', description: 'A conversational message to display to user if any needed properties are missing.' },
+							errorMessage: { type: 'string', description: 'If you cannot infer or guess the task ID, respond in a conversational friendly tone to user to ask for missing information.' },
 						},
 						required: []
 					}
