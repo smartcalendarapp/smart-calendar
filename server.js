@@ -4177,7 +4177,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
 		}
 
-		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 5000){
+		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 3000){
 			return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
 		}
 
@@ -4270,7 +4270,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
 		}
 
-		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 5000){
+		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 3000){
 			return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
 		}
 
@@ -4382,7 +4382,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
 		}
 
-		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 5000){
+		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 3000){
 			return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
 		}
 
@@ -4491,7 +4491,7 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
 		}
 
-		if(Date.now() - Math.max(...user.accountdata.gptvoiceusedtimestamps) < 5000){
+		if(Date.now() - Math.max(...user.accountdata.gptvoiceusedtimestamps) < 3000){
 			return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
 		}
 
@@ -4543,7 +4543,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
 		}
 
-		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 5000){
+		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 3000){
 			return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
 		}
 
@@ -4754,7 +4754,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		
 						let request2options = {
 							model: 'gpt-3.5-turbo',
-							max_tokens: 200,
+							max_tokens: 500,
 							temperature: 0.5,
 						}
 						let request2input = `Prompt: """${userinput}"""`
@@ -4826,6 +4826,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						const response2 = await openai.chat.completions.create(request2options)
 						totaltokens += response2.usage.total_tokens
 
+						console.warn(response2.choices[0])
 						//temp
 						
 						if (response2.choices[0].finish_reason !== 'function_call') { //return plain response if no function detected
@@ -5006,7 +5007,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
 		}
 
-		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 5000){
+		if(Date.now() - Math.max(...user.accountdata.gptchatusedtimestamps) < 3000){
 			return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
 		}
 
