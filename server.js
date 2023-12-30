@@ -4828,44 +4828,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								role: 'system', 
 								content: systeminstructions
 							},
-							...[
-								{
-									role: "user",
-									content: "I need to work on my project by tomorrow 6pm"
-								},
-								{
-									role: "assistant",
-									content: null,
-									function_call: {
-										name: "app_action",
-										arguments: JSON.stringify({
-											commands: ['create_task']
-										})
-									}
-								},
-								{
-									role: "user",
-									content: "Move that to an earlier time, and then add an event to meet with boss tomorrow lunch"
-								},
-								{
-									role: "assistant",
-									content: null,
-									function_call: {
-										name: "app_action",
-										arguments: JSON.stringify({
-											commands: ['modify_event', 'create_event']
-										})
-									}
-								},
-								{
-									role: "user",
-									content: "Book a meeting for me."
-								},
-								{
-									role: "assistant",
-									content: "Alright! Please let me know what it's called and what time it's for."
-								},
-							],
 							...conversationhistory,
 							{
 								role: 'user',
