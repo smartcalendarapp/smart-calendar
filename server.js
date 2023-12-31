@@ -171,6 +171,7 @@ async function savefeedbackobject(data){
 	return data
 }
 
+
 async function savecontactusobject(data){
 	const params = {
 	  TableName: 'smartcalendarcontactus',
@@ -179,6 +180,34 @@ async function savecontactusobject(data){
 	
 	await dynamoclient.send(new PutItemCommand(params))
 	return data
+}
+
+
+async function getchatconversation(conversationid){
+	const params = {
+		TableName: 'smartcalendarchatconversations',
+		Key: {
+		  'conversationid': { S: conversationid }
+		}
+	  }
+	  const data = await dynamoclient.send(new GetItemCommand(params))
+		if(data.Item){
+			return addmissingpropertiestouser(unmarshall(data.Item))
+		}
+		return null
+}
+
+async function setchatconversation(tempdata){
+	try{
+		const params2 = {
+			TableName: 'smartcalendarchatconversations',
+			Item: marshall(tempdata, { convertClassInstanceToMap: true, removeUndefinedValues: true })
+		}
+		
+		await dynamoclient.send(new PutItemCommand(params2))
+	}catch(error){
+		console.error(error)
+	}
 }
 
 async function savechatconversation(conversationid, userid, chatconversation){
@@ -3584,7 +3613,33 @@ app.post('/dev', async (req, res) => {
 		}
 
 		async function help(){
-			return `<span class="inlinecode">addbetatester(userid or email)</span>\n\n<span class="inlinecode">getuserinfo(userid or email)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">whitelistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>`
+			return `<span class="inlinecode">addbetatester(userid or email)</span>\n\n<span class="inlinecode">getuserinfo(userid or email)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">whitelistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>\n\n<span class="inlinecode">displaychat(conversationid)</span>\n<span class="inlinecode">markchatasread(conversationid)</span>`
+		}
+
+		async function displaychat(conversationid){
+			let tempdata = await getchatconversation(conversationid)
+			if(!tempdata) return 'Not found'
+			
+			let tempoutput = []
+			for(let [index, value] of Object.entries(tempdata)){
+				for(let item of value){
+					tempoutput.push(`${item.role == 'assistant' ? 'Athena' : 'User'}: ${item.message} ${item.liked ? '(LIKED)' : ''} ${item.disliked ? '(DISLIKED)' : ''}`)
+
+				}
+			}
+
+			return tempoutput.join('\n\n')
+		}
+
+		async function markchatasread(conversationid){
+			let tempdata = await getchatconversation(conversationid)
+			if(!tempdata) return 'Not found'
+
+			tempdata.read = true
+
+			await setchatconversation(tempdata)
+
+			return 'Done'
 		}
 
 		//eval
@@ -4585,7 +4640,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							dueDate: { type: 'string', description: '(optional) Task due date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Task title' },
 							duration: { type: 'string', description: '(optional) Task duration in HH:MM' },
-							errorMessage: { type: 'string', description: '(optional) A friendly error message if tasks are not found or other error, max 5 words.' },
+							errorMessage: { type: 'string', description: '(optional) A short message if tasks are not found or other error' },
 						},
 						required: ['title']
 					}
@@ -4599,7 +4654,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							startDate: { type: 'string', description: '(optional) Event start date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Event title' },
 							endDate: { type: 'string', descrption: '(optional) Event end date in YYYY-MM-DD HH:MM' },
-							errorMessage: { type: 'string', description: '(optional) A friendly error message if tasks are not found or other error, max 5 words.' },
+							errorMessage: { type: 'string', description: '(optional) A short message if tasks are not found or other error' },
 						},
 						required: ['title']
 					}
@@ -4611,7 +4666,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						type: 'object',
 						properties: {
 							id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
-							//errorMessage: { type: 'string', description: '(optional) A friendly error message if tasks are not found or other error, max 5 words.' },
+							//errorMessage: { type: 'string', description: '(optional) A short message if tasks are not found or other error' },
 						},
 						required: []
 					}
@@ -4627,7 +4682,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							newStartDate: { type: 'string', description: '(optional) New event start date in YYYY-MM-DD HH:MM' },
 							newEndDate: { type: 'string', description: '(optional) New event end date in YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: '(optional) New event duration in HH:MM' },
-							//errorMessage: { type: 'string', description: '(optional) A friendly error message if tasks are not found or other error, max 5 words.' },
+							//errorMessage: { type: 'string', description: '(optional) A short message if tasks are not found or other error' },
 						},
 						required: []
 					}
@@ -4639,7 +4694,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						type: 'object',
 						properties: {
 							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
-							//errorMessage: { type: 'string', description: '(optional) A friendly error message if tasks are not found or other error, max 5 words.' },
+							//errorMessage: { type: 'string', description: '(optional) A short message if tasks are not found or other error' },
 						},
 						required: []
 					}
@@ -4657,7 +4712,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							newStartDate: { type: 'string', description: '(optional) New task start date in YYYY-MM-DD HH:MM' },
 							newEndDate: { type: 'string', description: '(optional) New task end date in YYYY-MM-DD HH:MM' },
 							newCompleted: { type: 'boolean', description: '(optional) New task completed status' },
-							//errorMessage: { type: 'string', description: '(optional) A error message if tasks are not found or other error, max 5 words.' },
+							//errorMessage: { type: 'string', description: '(optional) A error message if tasks are not found or other error' },
 						},
 						required: []
 					}
@@ -4690,7 +4745,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						...[
 							{
 								role: "user",
-								content: "I need to work on my project by tomorrow 6pm"
+								content: "I need to work on a project by tomorrow 6pm"
 							},
 							{
 								role: "assistant",
@@ -4776,20 +4831,22 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							temperature: 0.5,
 							top_p: 0.5,
 						}
-						let request2input = `Prompt: """${userinput}"""`
+						let request2input = ''
 						
 						if(requirescalendardata){
 							//yes calendar data
 		
-							request2input += ` Calendar data: """${calendarcontext}"""`
+							request2input += `Calendar data: """${calendarcontext}"""`
 						}
 
 						if(requirestododata){
 							//yes todo data
 		
 							
-							request2input += ` Todo data: """${todocontext}"""`
+							request2input += `Todo data: """${todocontext}"""`
 						}
+
+						request2input += ` Prompt: """${userinput}"""`
 		
 						if(requirescustomfunction){
 							//yes custom function
@@ -4826,7 +4883,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								}
 							]
 		
-							request2input += commands.filter(d => customfunctions.find(g => g == d)).length > 0 ? ` Trigger app_action for the following commands. ${commands.filter(d => customfunctions.find(g => g == d))}. If there is not enough information, do NOT trigger that command, and work step by step with user to get information.` : ''
+							request2input += ` Trigger app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}. If there is not enough information, do NOT trigger that command, and work step by step with user to get information.`
 						}
 		
 						request2options.messages = [

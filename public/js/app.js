@@ -1869,48 +1869,50 @@ class Calendar {
 
 
 	updateAnimatedEvents() {
-		if (calendarmode == 0 || calendarmode == 1) {
-			for (let i = 0; i < [3, 21][calendarmode]; i++) {
-				let currentdate = new Date(calendar.getDate())
-				if (calendarmode == 1) {
-					currentdate.setDate(currentdate.getDate() - currentdate.getDay() + i - 7)
-				} else if (calendarmode == 0) {
-					currentdate.setDate(currentdate.getDate() + i - 1)
-				}
+		requestAnimationFrame(function(){
+			if (calendarmode == 0 || calendarmode == 1) {
+				for (let i = 0; i < [3, 21][calendarmode]; i++) {
+					let currentdate = new Date(calendar.getDate())
+					if (calendarmode == 1) {
+						currentdate.setDate(currentdate.getDate() - currentdate.getDay() + i - 7)
+					} else if (calendarmode == 0) {
+						currentdate.setDate(currentdate.getDate() + i - 1)
+					}
 
-				let nextdate = new Date(currentdate)
-				nextdate.setDate(nextdate.getDate() + 1)
+					let nextdate = new Date(currentdate)
+					nextdate.setDate(nextdate.getDate() + 1)
 
-				let templist = [...autoscheduleeventslist]
-				if (!templist.find(d => d.id == editeventid)) {
-					templist.push({ id: editeventid })
-				}
-				let tempevents = getevents(currentdate, nextdate, templist)
+					let templist = [...autoscheduleeventslist]
+					if (!templist.find(d => d.id == editeventid)) {
+						templist.push({ id: editeventid })
+					}
+					let tempevents = getevents(currentdate, nextdate, templist)
 
-				let output = []
-				for (let item of tempevents) {
-					if (editeventid == item.id) {
-						output.push(getdayeventdata(item, currentdate, currentdate.getTime(), 0, 1))
-					} else {
-						let olditem = oldautoscheduleeventslist.find(f => f.id == item.id)
-						let newitem = newautoscheduleeventslist.find(d => d.id == item.id)
+					let output = []
+					for (let item of tempevents) {
+						if (editeventid == item.id) {
+							output.push(getdayeventdata(item, currentdate, currentdate.getTime(), 0, 1))
+						} else {
+							let olditem = oldautoscheduleeventslist.find(f => f.id == item.id)
+							let newitem = newautoscheduleeventslist.find(d => d.id == item.id)
 
-						if (!olditem || !newitem) continue
+							if (!olditem || !newitem) continue
 
-						let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
-						let percentage = autoscheduleitem.percentage
-						let addedtodo = autoscheduleitem.addedtodo
-						output.push(getanimateddayeventdata(item, olditem, newitem, currentdate, currentdate.getTime(), percentage, addedtodo))
+							let autoscheduleitem = autoscheduleeventslist.find(f => f.id == item.id)
+							let percentage = autoscheduleitem.percentage
+							let addedtodo = autoscheduleitem.addedtodo
+							output.push(getanimateddayeventdata(item, olditem, newitem, currentdate, currentdate.getTime(), percentage, addedtodo))
+						}
+					}
+					let animateeventbox = getElement(`animateeventbox${i}`)
+					if (!animateeventbox) continue
+					if (animateeventbox.innerHTML != output.join('')) {
+						animateeventbox.innerHTML = output.join('')
 					}
 				}
-				let animateeventbox = getElement(`animateeventbox${i}`)
-				if (!animateeventbox) continue
-				if (animateeventbox.innerHTML != output.join('')) {
-					animateeventbox.innerHTML = output.join('')
-				}
-			}
 
-		}
+			}
+		})
 	}
 
 
@@ -13093,7 +13095,7 @@ function openaichat(){
 		}
 		
 		const tempoptions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my agenda for today?')">What's on my agenda today?</div>`,
-		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me book a meeting')">Book a meeting for me</div>`, 
+		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, 
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Schedule todays tasks in my calendar')">Schedule today's tasks in my calendar</div>`, 
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`,
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What are my tasks for today?')">What are my tasks for today?</div>`]
@@ -14048,7 +14050,7 @@ async function submitaimessage(optionalinput, dictated){
 	try{
 		//temporary--vv
 		let path = '/getgptchatinteraction'
-		if(clientinfo.betatester && clientinfo.google_email.includes('james.ts')){
+		if(clientinfo.betatester){
 			path = '/getgptchatinteractionV2'
 		}
 		//-----------^^
@@ -14227,7 +14229,7 @@ async function submitaimessage(optionalinput, dictated){
 							}
 
 
-							responsechatmessage.message = tempoutput.join('\n')
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + tempoutput.join('\n')
 							if(firstitem){
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${firstitem.id}')">Show me</div>`]
 
@@ -14347,7 +14349,7 @@ async function submitaimessage(optionalinput, dictated){
 							}
 
 
-							responsechatmessage.message = tempoutput.join('\n')
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + tempoutput.join('\n')
 							if(firstitem){
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${firstitem.id}')">Show me</div>`]
 
@@ -14457,7 +14459,7 @@ async function submitaimessage(optionalinput, dictated){
 										fixsubandparenttask(item)
 									}
 
-									responsechatmessage.message = tempmsg
+									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + tempmsg
 									responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 
 									if(!mobilescreen)gototaskincalendar(item.id)
@@ -14580,7 +14582,7 @@ async function submitaimessage(optionalinput, dictated){
 								}
 							}
 
-							responsechatmessage.message = tempoutput.join('\n')
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + tempoutput.join('\n')
 							if(firstitem){
 								aichattemporarydata[responsechatmessage.id] = allitems
 
@@ -14681,7 +14683,7 @@ async function submitaimessage(optionalinput, dictated){
 								}
 							}
 
-							responsechatmessage.message = tempoutput.join('\n')
+							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + tempoutput.join('\n')
 							if(firstitem){
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`]
 							}
@@ -14822,7 +14824,7 @@ async function submitaimessage(optionalinput, dictated){
 								fixrecurringtodo(item)
 								fixsubandparenttask(item)
 
-								responsechatmessage.message = tempmsg
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + tempmsg
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
 
 							}else{
