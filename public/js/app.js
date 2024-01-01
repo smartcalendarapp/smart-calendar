@@ -14050,7 +14050,7 @@ async function submitaimessage(optionalinput, dictated){
 	try{
 		//temporary--vv
 		let path = '/getgptchatinteraction'
-		if(clientinfo.betatester){
+		if(true||clientinfo.betatester){
 			path = '/getgptchatinteractionV2'
 		}
 		//-----------^^
