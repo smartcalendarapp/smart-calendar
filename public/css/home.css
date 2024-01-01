@@ -139,7 +139,7 @@ img{
 	border-bottom:1px solid transparent;
 }
 .navbar.scrolled{
-	background-color:var(--background-secondary-transparent);
+	background-color:var(--background-primary-home-transparent);
 	border-bottom:1px solid var(--text-tertiary)
 }
 

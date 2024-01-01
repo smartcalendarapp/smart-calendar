@@ -4729,7 +4729,16 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never mention internal ID of events or tasks data. Access to your schedule and tasks assumed. Limit conversations to app interactions, calendar scheduling, or productivity. Think step by step. Proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never mention internal ID of events or tasks data. Access to your schedule and tasks assumed. Limit conversations to app interactions, calendar scheduling, or productivity. Think step by step. Proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.
+			Sample chat to fine tune functionality:
+			"""
+			User: I need to work on a project by tomorrow 6pm
+			Assistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }
+			User: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch
+			Assistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }
+			User: Book a meeting for me
+			Assistant: Alright! Please let me know what it's called and what time it's for.
+			"""`
 
 			let totaltokens = 0
 
@@ -4742,7 +4751,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							role: 'system', 
 							content: systeminstructions
 						},
-						...[
+						/*...[
 							{
 								role: "user",
 								content: "I need to work on a project by tomorrow 6pm"
@@ -4773,13 +4782,13 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							{
 								role: "user",
-								content: "Book a meeting for me."
+								content: "Book a meeting for me"
 							},
 							{
 								role: "assistant",
 								content: "Alright! Please let me know what it's called and what time it's for."
 							},
-						],
+						],*/
 						...conversationhistory,
 						{
 							role: 'user',
@@ -4836,14 +4845,14 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						if(requirescalendardata){
 							//yes calendar data
 		
-							request2input += `Calendar data: """${calendarcontext}"""`
+							request2input += `Calendar events: """${calendarcontext}"""`
 						}
 
 						if(requirestododata){
 							//yes todo data
 		
 							
-							request2input += `Todo data: """${todocontext}"""`
+							request2input += `To-do list tasks: """${todocontext}"""`
 						}
 
 						request2input += ` Prompt: """${userinput}"""`
@@ -4883,7 +4892,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								}
 							]
 		
-							request2input += ` Trigger app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}. If there is not enough information, do NOT trigger that command, and work step by step with user to get information.`
+							request2input += ` Function call app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}. If there is not enough information, do NOT trigger that command, and work step by step with user to get information.`
 						}
 		
 						request2options.messages = [
