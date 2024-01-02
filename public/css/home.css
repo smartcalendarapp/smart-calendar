@@ -93,6 +93,28 @@ img{
 }
 
 
+.gradienttextpink {
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-image: linear-gradient(to right, #ed4ac7, #ed32e7);
+}
+
+.gradienttextgreen {
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-image: linear-gradient(to right, #2dcc52, #14e966);
+}
+
+.gradienttextgold{
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-image: linear-gradient(to right, #facd1b, #f1b100)
+}
+
+
 .gradienttext1{
 	background-clip: text;
 	-webkit-background-clip: text;

@@ -6594,10 +6594,12 @@ function getmontheventdata(item, currentdate, timestamp) {
 		itemclasses.push('greyedoutevent')
 	}
 
+	/*
 	if(item.iseventsuggestion){
 		itemclasses.push('eventsuggestionborder')
 		itemclasses.push('eventsuggestionglow')
 	}
+	*/
 
 
 	let output = ''
@@ -14050,7 +14052,7 @@ async function submitaimessage(optionalinput, dictated){
 	try{
 		//temporary--vv
 		let path = '/getgptchatinteraction'
-		if(true||clientinfo.betatester){
+		if(true){
 			path = '/getgptchatinteractionV2'
 		}
 		//-----------^^
