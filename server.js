@@ -4821,7 +4821,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				})
 				totaltokens += response.usage.total_tokens
 
-				console.warn(response.choices[0])
 				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'app_action') {
 					//no function call, return plain response
 					return { message: response.choices[0].message.content, totaltokens: totaltokens }
@@ -4843,20 +4842,20 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 						let request2input = ''
 						
+						request2input += `Prompt: """${userinput}"""`
+
 						if(requirescalendardata){
 							//yes calendar data
 		
-							request2input += `Calendar events: """${calendarcontext}"""`
+							request2input += ` Calendar events: """${calendarcontext}"""`
 						}
 
 						if(requirestododata){
 							//yes todo data
 		
 							
-							request2input += `To-do list tasks: """${todocontext}"""`
+							request2input += ` To-do list tasks: """${todocontext}"""`
 						}
-
-						request2input += ` Prompt: """${userinput}"""`
 		
 						if(requirescustomfunction){
 							//yes custom function
@@ -4908,10 +4907,12 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							}
 						]
 						
+						console.warn(request2options)
 						//make request
 						const response2 = await openai.chat.completions.create(request2options)
 						totaltokens += response2.usage.total_tokens
-						console.warn(response2.choices[0])
+
+						console.warn(request2.choices[0])
 						if (response2.choices[0].finish_reason !== 'function_call' || response2.choices[0].message.function_call?.name !== 'app_action') { //return plain response if no function detected
 							return { message: response2.choices[0].message.content, totaltokens: totaltokens }
 						}
