@@ -2602,17 +2602,9 @@ class Calendar {
 					<div class="display-flex flex-row align-center gap-12px">
 						<div class="infotext selecttext nowrap">
 						${Calendar.Event.getFullStartEndText(item)}
-						${calendar.settings.gettasksuggestions == true && item.iseventsuggestion ?
-						`
-						<span class="align-center pointer-auto display-inline-flex flex-row column-gap-6px">
-							<div class="align-center display-flex flex-row gap-6px">
-								<div class="text-primary transition-duration-100 nowrap pointer width-fit background-tint-1 hover:background-tint-2 border-round badgepadding text-12px" onclick="rejecteventsuggestion('${item.id}')">Undo schedule</div>
-							</div>
-						</span>`
-						:
-						``}</div>
+						</div>
 
-						${!item.iseventsuggestion && item.type == 1 ?
+						${ item.type == 1 ?
 						`<div class="popuptransition pointer-auto padding-6px-12px pointer popupbutton transition-duration-100 width-fit background-blue hover:background-blue-hover display-flex gap-6px flex-row align-center border-round" onclick="clickreschedule('${item.id}')" id="reschedulebutton" >
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
 						<g>
@@ -14126,7 +14118,7 @@ async function submitaimessage(optionalinput, dictated){
 								calendar.events.push(item)
 
 
-								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I have created an event "${Calendar.Event.getRawTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created an event "${Calendar.Event.getRawTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 
 								if(!mobilescreen)gototaskincalendar(item.id)
@@ -14344,7 +14336,7 @@ async function submitaimessage(optionalinput, dictated){
 											if(!mobilescreen)gototaskincalendar(item.id)
 										}
 									}else{
-										tempoutput.push(`I could not find that event, could you please tell me more?`)
+										tempoutput.push(`I could not find that event, could you please try again?`)
 									}
 								}
 								
@@ -14467,7 +14459,7 @@ async function submitaimessage(optionalinput, dictated){
 									if(!mobilescreen)gototaskincalendar(item.id)
 								}
 							}else{
-								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find that event, could you please tell me more?`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find that event, could you please try again?`
 							}
 						}
 					}else if(command == 'delete_event'){
@@ -14485,10 +14477,10 @@ async function submitaimessage(optionalinput, dictated){
 								}else{
 									calendar.events = calendar.events.filter(d => d.id != id)
 
-									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I have deleted your event "${Calendar.Event.getRawTitle(item)}."`
+									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I deleted your event "${Calendar.Event.getRawTitle(item)}."`
 								}
 							}else{
-								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find that event, could you please tell me more?`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find that event, could you please try again?`
 							}
 						}
 					}else if(command == 'create_task'){
@@ -14680,7 +14672,7 @@ async function submitaimessage(optionalinput, dictated){
 										tempoutput.push(tempmsg)
 			
 									}else{
-										tempoutput.push(`I could not find that task, could you please tell me more?`)
+										tempoutput.push(`I could not find that task, could you please try again?`)
 									}
 								}
 							}
@@ -14830,7 +14822,7 @@ async function submitaimessage(optionalinput, dictated){
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
 
 							}else{
-								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find that task, could you please tell me more?`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find that task, could you please try again?`
 							}
 						}
 					}else if(command == 'delete_task'){
@@ -14847,9 +14839,9 @@ async function submitaimessage(optionalinput, dictated){
 								calendar.todos = calendar.todos.filter(d => d.id != id)
 								calendar.events = calendar.events.filter(d => d.id != id)
 
-								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I have deleted your task "${Calendar.Event.getRawTitle(item)}."`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I deleted your task "${Calendar.Event.getRawTitle(item)}."`
 							}else{
-								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find that task, could you please tell me more?`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find that task, could you please try again?`
 							}
 						}
 					}else if(command == 'schedule_tasks_in_calendar'){
@@ -14872,7 +14864,7 @@ async function submitaimessage(optionalinput, dictated){
 								if(calendaritems && calendaritems.length > 0){
 									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `It looks like these tasks are already scheduled in your calendar!`
 								}else{
-									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find this task, could you please tell me more?`
+									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find this task, could you please try again?`
 								}
 							}
 						}
@@ -14898,7 +14890,7 @@ async function submitaimessage(optionalinput, dictated){
 								if(calendaritem){
 									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `It looks like this task is already scheduled in your calendar!`
 								}else{
-									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find this task, could you please tell me more?`
+									responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find this task, could you please try again?`
 								}
 							}
 						}
