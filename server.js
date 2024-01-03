@@ -4730,15 +4730,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			//PROMPT
 
 			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never mention internal ID of events or tasks data. Access to your schedule and tasks is granted. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.
-			Sample chat functionality:
-			"""
-			User: I need to work on a project by tomorrow 6pm
-			Assistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }
-			User: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch
-			Assistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }
-			User: Book a meeting for me
-			Assistant: Alright! Please let me know what it's called and what time it's for.
-			"""`
+			Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: Alright! Please let me know what it's called and what time it's for."""`
 
 			let totaltokens = 0
 
@@ -4912,7 +4904,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						const response2 = await openai.chat.completions.create(request2options)
 						totaltokens += response2.usage.total_tokens
 
-						console.warn(request2.choices[0])
+						console.warn(response2.choices[0])
 						if (response2.choices[0].finish_reason !== 'function_call' || response2.choices[0].message.function_call?.name !== 'app_action') { //return plain response if no function detected
 							return { message: response2.choices[0].message.content, totaltokens: totaltokens }
 						}
