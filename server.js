@@ -4494,7 +4494,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Calendar data: """${calendarcontext}""" Provide a short morning greeting and a concise morning summary of ONLY the important or unique events today in a personal and helpful style. Give a short motivational productivity or mental health tip that is not cliche or generic. Finally, you must ask the user in one short sentence for 3 tasks they want to complete today.`
+		let inputtext = `Calendar data: """${calendarcontext}""" Provide a short morning greeting and a concise morning summary of ONLY the important or unique events today in a personal and helpful style. Finally, you must ask the user in one short sentence for 3 tasks they want to complete today.`
 		let custominstructions = `Respond in no more than 30 words, concise as possible. Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
@@ -4729,8 +4729,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never mention internal ID of events or tasks data. Access to your schedule and tasks assumed. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.
-			Sample chat to fine tune functionality:
+			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never mention internal ID of events or tasks data. Access to your schedule and tasks is granted. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.
+			Sample chat functionality:
 			"""
 			User: I need to work on a project by tomorrow 6pm
 			Assistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }
