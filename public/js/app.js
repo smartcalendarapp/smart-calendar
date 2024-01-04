@@ -14069,9 +14069,9 @@ async function submitaimessage(optionalinput, dictated){
 			let data = {}
 
 			if (response.body instanceof ReadableStream && !response.headers.get('Content-Type')?.includes('application/json')) {
-				responsechatmessage.streamed = true
-				
 				updateaichat()
+
+				responsechatmessage.streamed = true
 
 				let tempdata = ''
 

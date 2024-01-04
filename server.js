@@ -4729,7 +4729,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never mention internal ID of events or tasks data. Never say you will interact with the app without calling the app_action function. Access to your schedule and tasks is granted. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone. Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: Alright! Please let me know what it's called and what time it's for."""`
+			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never mention internal ID of events or tasks data. Never say you will edit user's schedule or tasks without calling the app_action function. Access to your schedule and tasks is granted. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone. Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: Alright! Please let me know what it's called and what time it's for."""`
 
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""`
@@ -4801,7 +4801,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								  "commands"
 								]
 							},
-							"description": `If there is not enough information, do NOT return command, and ask user for more information. Otherwise, return app commands if detected in prompt (including past messages). One of the following: ${allfunctions.map(d => d.name).join(', ')}`
+							"description": `If there is not enough information, do NOT return command, and ask user for more information. Otherwise, return app commands if detected in prompt. One of the following: ${allfunctions.map(d => d.name).join(', ')}`
 						}
 					],
 					max_tokens: 200,
