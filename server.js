@@ -4835,6 +4835,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							accumulatedresponse.message.function_call.arguments += chunk.choices[0].delta.function_call.arguments
 						}else{
 							//text response
+							console.warn(chunk.choices[0].delta.content)
 
 							if(chunk.choices[0].delta.content){
 								if(!accumulatedresponse.message.content){
@@ -4968,8 +4969,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 									accumulatedresponse2.message.function_call.arguments += chunk.choices[0].delta.function_call.arguments
 								}else{
 									//text response
-
-									console.warn(chunk.choices[0].delta.content)
 
 									if(chunk.choices[0].delta.content){
 										if(!accumulatedresponse2.message.content){
