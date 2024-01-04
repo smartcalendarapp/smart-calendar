@@ -14472,11 +14472,12 @@ async function submitaimessage(optionalinput, dictated){
 
 									item.title = newtitle || item.title
 
-									lastmovedeventid = item.id;
-									item.startafter.year = item.start.year;
-									item.startafter.month = item.start.month;
-									item.startafter.day = item.start.day;
-									item.startafter.minute = item.start.minute;
+									//for auto schedule
+									lastmovedeventid = item.id
+									item.startafter.year = item.start.year
+									item.startafter.month = item.start.month
+									item.startafter.day = item.start.day
+									item.startafter.minute = item.start.minute
 
 
 

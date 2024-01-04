@@ -4270,8 +4270,8 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}. Time needed: ${getDHMText(Math.floor((new Date(taskitem.end.year, taskitem.end.month, taskitem.end.day, 0, taskitem.end.minute).getTime() - new Date(taskitem.start.year, taskitem.start.month, taskitem.start.day, 0, taskitem.start.minute).getTime())/60000))}""" Provide short, specific and actionable steps and tips to make real progress and complete this task, ,mention task name. Avoid generic or cliche responses. As a personal assistant, mention that the task is starting now and will last how long, as if the user is a boss. Incorporate short motivational tips.`
-		let custominstructions = `Respond in no more than 30 words, concise as possible. Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let inputtext = `Task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}. Time needed: ${getDHMText(Math.floor((new Date(taskitem.end.year, taskitem.end.month, taskitem.end.day, 0, taskitem.end.minute).getTime() - new Date(taskitem.start.year, taskitem.start.month, taskitem.start.day, 0, taskitem.start.minute).getTime())/60000))}""" Mention task name, and provide short, specific and actionable steps and tips to make real progress and complete this task in one short sentence. Avoid generic or cliche responses. As a personal assistant, mention that the task is starting now and will last how long, as if the user is a boss. Incorporate short motivational tips.`
+		let custominstructions = `Respond in no more than 30 words, concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -4383,8 +4383,8 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Competed task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}""" Provide a very short personal, non-generic, non-cliche motivational message for the user who just completed this task. Then, mention only the next upcoming event if there is one, and if the user has a break. All in one coherent paragraph. Calendar data: """${calendarcontext}"""`
-		let custominstructions = `Respond in no more than 30 words, concise as possible. Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let inputtext = `Competed task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}""" Provide a very short personal motivational sentence for the user who just completed this task. Then, mention only the next upcoming event if there is one and if there is a break, in one sentence. Calendar data: """${calendarcontext}"""`
+		let custominstructions = `Respond in no more than 30 words, concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -4494,8 +4494,8 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Calendar data: """${calendarcontext}""" Provide a short morning greeting and a concise morning summary of ONLY the important or unique events today in a personal and helpful style. Finally, you must ask the user in one short sentence for 3 tasks they want to complete today.`
-		let custominstructions = `Respond in no more than 30 words, concise as possible. Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let inputtext = `Calendar data: """${calendarcontext}""" Provide a one sentence morning greeting. Then, provide a concise morning summary of ONLY the important or unique events today in a personal and helpful style. Finally, you must ask the user in one short sentence for 3 tasks they want to complete today.`
+		let custominstructions = `Respond in no more than 30 words, concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -4729,7 +4729,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never mention internal ID of events or tasks data. Never say you will edit user's schedule or tasks without calling the app_action function. Access to your schedule and tasks is granted. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone. Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: Alright! Please let me know what it's called and what time it's for."""`
+			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never mention internal ID of events or tasks data. Access to your schedule and tasks is granted. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone. Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: Alright! Please let me know what it's called and what time it's for."""`
 
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""`
