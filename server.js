@@ -4270,8 +4270,8 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}. Time needed: ${getDHMText(Math.floor((new Date(taskitem.end.year, taskitem.end.month, taskitem.end.day, 0, taskitem.end.minute).getTime() - new Date(taskitem.start.year, taskitem.start.month, taskitem.start.day, 0, taskitem.start.minute).getTime())/60000))}""" Mention task name, and provide short, specific and actionable steps and tips to make real progress and complete this task in one short sentence. Avoid generic or cliche responses. As a personal assistant, mention that the task is starting now and will last how long, as if the user is a boss. Incorporate short motivational tips.`
-		let custominstructions = `Respond in no more than 30 words, concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let inputtext = `Task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}. Time needed: ${getDHMText(Math.floor((new Date(taskitem.end.year, taskitem.end.month, taskitem.end.day, 0, taskitem.end.minute).getTime() - new Date(taskitem.start.year, taskitem.start.month, taskitem.start.day, 0, taskitem.start.minute).getTime())/60000))}""" As a personal assistant, mention which task is starting how long it will last, in a short sentence. In short sentences, provide specific and actionable steps and tips to make real progress to complete this task. Incorporate short motivational tips.`
+		let custominstructions = `Respond in no more than 30 words, concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant, as if the user is a boss. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -4286,7 +4286,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 					content: inputtext,
 				}
 			],
-			max_tokens: 150,
+			max_tokens: 200,
 			temperature: 0.5,
 			top_p: 0.5,
 		})
@@ -4384,7 +4384,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 		//PROMPT
 
 		let inputtext = `Competed task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}""" Provide a very short personal motivational sentence for the user who just completed this task. Then, mention only the next upcoming event if there is one and if there is a break, in one sentence. Calendar data: """${calendarcontext}"""`
-		let custominstructions = `Respond in no more than 30 words, concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let custominstructions = `Respond in no more than 30 words, concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant, as if the user is a boss. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -4399,7 +4399,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 					content: inputtext,
 				}
 			],
-			max_tokens: 150,
+			max_tokens: 200,
 			temperature: 0.5,
 			top_p: 0.5,
 		})
@@ -4495,7 +4495,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 		//PROMPT
 
 		let inputtext = `Calendar data: """${calendarcontext}""" Provide a one sentence morning greeting. Then, provide a concise morning summary of ONLY the important or unique events today in a personal and helpful style. Finally, you must ask the user in one short sentence for 3 tasks they want to complete today.`
-		let custominstructions = `Respond in no more than 30 words, concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let custominstructions = `Respond in no more than 30 words, concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant, as if the user is a boss. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -4510,7 +4510,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 					content: inputtext,
 				}
 			],
-			max_tokens: 150,
+			max_tokens: 200,
 			temperature: 0.5,
 			top_p: 0.5,
 		})
@@ -4709,8 +4709,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							newTitle: { type: 'string', description: '(optional) New task title' },
 							newDueDate: { type: 'string', description: '(optional) New task due date in YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: '(optional) New task duration in HH:MM' },
-							newStartDate: { type: 'string', description: '(optional) New task start date in YYYY-MM-DD HH:MM' },
-							newEndDate: { type: 'string', description: '(optional) New task end date in YYYY-MM-DD HH:MM' },
+							newStartDate: { type: 'string', description: '(optional) New task scheduled start date in YYYY-MM-DD HH:MM' },
+							newEndDate: { type: 'string', description: '(optional) New task scheduled end date in YYYY-MM-DD HH:MM' },
 							newCompleted: { type: 'boolean', description: '(optional) New task completed status' },
 							//errorMessage: { type: 'string', description: '(optional) A error message if tasks are not found or other error' },
 						},
@@ -4729,7 +4729,9 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never mention internal ID of events or tasks data. Access to your schedule and tasks is granted. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone. Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: Alright! Please let me know what it's called and what time it's for."""`
+			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant, as if the user is a boss. Respond in no more than 30 words. Never mention internal ID of events or tasks data. Access to your schedule and tasks is granted. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructionsexamples1 = ` Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: Alright! Please let me know what it's called and what time it's for."""`
+			const systeminstructionsexamples2 = ` Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: [ create_task: { title: "Work on project", dueDate: "YYYY-MM-DD HH:MM" } ] }) }\nUser: Move that to an earlier time\nAssistant: function_call: { name: "app_action", JSON.stringify({ commands: [ modify_event: { ID: "some ID", newStartDate: "YYYY-MM-DD HH:MM" } ] })."""`
 
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""`
@@ -4738,46 +4740,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					messages: [
 						{ 
 							role: 'system', 
-							content: systeminstructions
+							content: systeminstructions + systeminstructionsexamples1
 						},
-						/*...[
-							{
-								role: "user",
-								content: "I need to work on a project by tomorrow 6pm"
-							},
-							{
-								role: "assistant",
-								content: null,
-								function_call: {
-									name: "app_action",
-									arguments: JSON.stringify({
-										commands: ['create_task']
-									})
-								}
-							},
-							{
-								role: "user",
-								content: "Move that to an earlier time, and then add an event to meet with boss tomorrow lunch"
-							},
-							{
-								role: "assistant",
-								content: null,
-								function_call: {
-									name: "app_action",
-									arguments: JSON.stringify({
-										commands: ['modify_event', 'create_event']
-									})
-								}
-							},
-							{
-								role: "user",
-								content: "Book a meeting for me"
-							},
-							{
-								role: "assistant",
-								content: "Alright! Please let me know what it's called and what time it's for."
-							},
-						],*/
 						...conversationhistory,
 						{
 							role: 'user',
@@ -4801,7 +4765,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								  "commands"
 								]
 							},
-							"description": `If there is not enough information, do NOT return command, and ask user for more information. Otherwise, return app commands if detected in prompt. One of the following: ${allfunctions.map(d => d.name).join(', ')}`
+							"description": `If there is not enough information, do NOT trigger function call, and ask user for more information. Otherwise, return app commands if detected in prompt as one of the following: ${allfunctions.map(d => d.name).join(', ')}`
 						}
 					],
 					max_tokens: 200,
@@ -4917,17 +4881,17 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										  "commands"
 										]
 									},
-									"description": `Wisely extract information for the commands.`
+									"description": `Precisely and carefully extract information for the commands.`
 								}
 							]
 		
-							request2input += ` Function call app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}. If there is not enough information, do NOT trigger that command, and work step by step with user to get information.`
+							request2input += ` If there is not enough information, do NOT trigger function call, and ask user for more information. Otherwise, Function call app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
 						}
 		
 						request2options.messages = [
 							{ 
 								role: 'system', 
-								content: systeminstructions
+								content: systeminstructions + systeminstructionsexamples2
 							},
 							...conversationhistory,
 							{

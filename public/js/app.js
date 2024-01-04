@@ -14751,6 +14751,7 @@ async function submitaimessage(optionalinput, dictated){
 								let oldtitle = item.title
 								let oldcompleted = item.completed
 								let oldduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
+								let oldduration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 								
 								let endbeforeminute = getMinute(newduedate?.replace('T', ' ')).value
 								let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(newduedate?.replace('T', ' ')).value
