@@ -515,8 +515,8 @@
 
 
 
-	<div class="absolute backdrop-blur fadetransition hiddenfade top-0 left-0 display-flex border-box z-index-10000 align-center justify-center width-full height-full" id="unsubscribepopupcontainer">
-		<div class="overflow-y-auto display-flex flex-column background-primary-transparent box-shadow border-16px border-box small:border-0 feedbackpopupheight small:max-height-revert max-width-500px height-full width-full">
+	<div class="absolute fadetransition hiddenfade top-0 left-0 display-flex border-box z-index-10000 align-center justify-center width-full height-full" id="unsubscribepopupcontainer">
+		<div class="overflow-y-auto display-flex flex-column background-primary box-shadow border-16px border-box small:border-0 feedbackpopupheight small:max-height-revert max-width-500px height-full width-full">
 			<div class="borderbottom display-flex flex-row justify-space-between padding-12px align-center">
 				<div>
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
@@ -525,10 +525,10 @@
 					</svg>
 				</div>
 				
-				<div class="infotitle text-center">Smart Calendar feedback</div>
+				<div class="infotitle text-center">Update your Smart Calendar emails</div>
 
 				<div class="infotoprightgroup">
-					<div class="infotopright pointer" onclick="closefeedbackpopup(event)">
+					<div class="infotopright pointer" onclick="closeunsubscribepopup(event)">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
 						<g>
 						<g opacity="1">
@@ -543,7 +543,7 @@
 
 
 			<!-- email preferences -->
-			<div class="display-flex flex-column gap-24px">
+			<div class="display-flex flex-column gap-24px padding-12px">
 
 				<div class="infogroup">
 					<div class="display-flex justify-space-between flex-row gap-12px align-center">
@@ -576,8 +576,8 @@
 	</div>
 
 
-	<div class="absolute backdrop-blur fadetransition hiddenfade top-0 left-0 display-flex border-box z-index-10000 align-center justify-center width-full height-full" id="feedbackpopupcontainer">
-		<div class="overflow-y-auto display-flex flex-column background-primary-transparent box-shadow border-16px border-box small:border-0 feedbackpopupheight small:max-height-revert max-width-500px height-full width-full">
+	<div class="absolute fadetransition hiddenfade top-0 left-0 display-flex border-box z-index-10000 align-center justify-center width-full height-full" id="feedbackpopupcontainer">
+		<div class="overflow-y-auto display-flex flex-column background-primary box-shadow border-16px border-box small:border-0 feedbackpopupheight small:max-height-revert max-width-500px height-full width-full">
 			<div class="borderbottom display-flex flex-row justify-space-between padding-12px align-center">
 				<div>
 					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">

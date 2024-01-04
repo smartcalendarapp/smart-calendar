@@ -4179,7 +4179,7 @@ async function getclient() {
 }
 
 async function getextraclientinfo(){
-	if(!clientinfo.discord.id) return
+	if(!clientinfo?.discord?.id) return
 	
 	const response = await fetch('/getdiscordusername', {
 		method: 'POST',
@@ -4191,6 +4191,7 @@ async function getextraclientinfo(){
 	if (response.status == 200) {
 		const data = await response.json()
 		if(data.data){
+			if(!clientinfo.discord) clientinfo.discord = {}
 			clientinfo.discord.username = data.data
 		}
 	}
@@ -4603,6 +4604,7 @@ async function setuseremailpreferences(){
 			})
 		})
 		if (response.status == 200) {
+			updateunsubscribepopup()
 			displayalert('Preferences saved')
 			return true
 		}
@@ -4616,7 +4618,7 @@ async function setuseremailpreferences(){
 function checkquery(){
 	const queryParams = new URLSearchParams(window.location.search)
 
-	if (queryParams.get('to') === 'managenotifications') {
+	if (queryParams.get('to') === 'unsubscribe') {
 		if (queryParams.get('userid')) {
 			unsubscribeuserid = queryParams.get('userid')
 			getuseremailpreferences()
@@ -7199,7 +7201,7 @@ function unsubscribeall(){
 }
 
 
-//unsubscribe logged out email toggles
+//unsubscribe 
 function unsubscribetoggleemailplanning(event){
 	unsubscribeemailpreferences.engagementalerts = event.target.checked
 
@@ -7212,8 +7214,9 @@ function unsubscribetoggleemailimportantupdates(event){
 }
 
 function unsubscribeunsubscribeall(){
-	unsubscribeemailpreferences.engagementalerts = false
-	unsubscribeemailpreferences.importantupdates = false
+	for(let key in unsubscribeemailpreferences){
+		unsubscribeemailpreferences[key] = false
+	}
 
 	setuseremailpreferences()
 }
@@ -7227,8 +7230,12 @@ function updateunsubscribepopup(){
 function openunsubscribepopup(){
 	let unsubscribepopupcontainer = getElement('unsubscribepopupcontainer')
 	unsubscribepopupcontainer.classList.remove('hiddenfade')
-	
+
 	updateunsubscribepopup()
+}
+function closeunsubscribepopup(){
+	let unsubscribepopupcontainer = getElement('unsubscribepopupcontainer')
+	unsubscribepopupcontainer.classList.add('hiddenfade')
 }
 
 

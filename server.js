@@ -678,7 +678,7 @@ async function processReminders(){
 
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=managenotifications" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 									<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 									</div>
 
@@ -696,7 +696,7 @@ async function processReminders(){
 					Stay Productive,
 					Smart Calendar | Where AI Meets Agenda
 
-					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=managenotifications.
+					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
 					(c) 2023 James Tsaggaris. All rights reserved.`
 				})
 
@@ -747,7 +747,7 @@ async function processReminders(){
 
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=managenotifications" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 									<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 									</div>
 
@@ -765,7 +765,7 @@ async function processReminders(){
 					Stay Productive,
 					Smart Calendar | Where AI Meets Agenda
 
-					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=managenotifications.
+					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
 					(c) 2023 James Tsaggaris. All rights reserved.`
 				})
 				
@@ -892,7 +892,7 @@ async function processengagementalerts(){
 			
 					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-								<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=managenotifications" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+								<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 							<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 							</div>
 			
@@ -910,7 +910,7 @@ async function processengagementalerts(){
 				Stay Productive,
 				Smart Calendar | Where AI Meets Agenda
 			
-				You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=managenotifications.
+				You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
 				(c) 2023 James Tsaggaris. All rights reserved.`
 			})
 
@@ -971,7 +971,7 @@ async function processengagementalerts(){
 			
 					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-								<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=managenotifications" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+								<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 							<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 							</div>
 			
@@ -987,7 +987,7 @@ async function processengagementalerts(){
 				Stay Productive,
 				Smart Calendar | Where AI Meets Agenda
 			
-				You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=managenotifications.
+				You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
 				(c) 2023 James Tsaggaris. All rights reserved.`
 			})
 
@@ -3133,7 +3133,7 @@ async function sendwelcomeemail(user){
 
 		<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-					<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=managenotifications" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+					<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 				<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 				</div>
 
@@ -3149,7 +3149,7 @@ async function sendwelcomeemail(user){
 	Stay Productive,
 	Smart Calendar | Where AI Meets Agenda
 
-	You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=managenotifications.
+	You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
 	(c) 2023 James Tsaggaris. All rights reserved.`
 		})
 	}
@@ -3771,7 +3771,7 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 
 					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-								<p>You are receiving this email because a Smart Calendar user sent you an invitation. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=managenotifications" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+								<p>You are receiving this email because a Smart Calendar user sent you an invitation. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 							<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 							</div>
 
@@ -3790,7 +3790,7 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 			Stay Productive,
 			Smart Calendar | Where AI Meets Agenda
 
-			You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=managenotifications.
+			You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
 			(c) 2023 James Tsaggaris. All rights reserved.`
 		})
 
