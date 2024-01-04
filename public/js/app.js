@@ -14072,26 +14072,33 @@ async function submitaimessage(optionalinput, dictated){
 
 				let tempdata = ''
 
-				const decoder = new TextDecoder();
-				for await (const chunk of response.body) {
-					const decodedValue = decoder.decode(chunk)
+				const reader = response.body.getReader()
+				const decoder = new TextDecoder('utf-8')
+
+				while (true) {
+					const { done, value } = await reader.read()
+					console.log(done, value)
+					if (done) break
+
+					const decodedValue = decoder.decode(value)
 					tempdata += decodedValue
 
 					data = { data: { message: tempdata } }
-					
-					//update ui
+
+					// Update UI
 					responsechatmessage.message = data.data.message
-					console.log(chunk)
 					responsechatmessage.displaycontent = responsechatmessage.message
 					let chatmessagebody = getElement(`responsechatmessage-body-${this.id}`)
-					if(chatmessagebody){
+					if (chatmessagebody) {
 						chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(responsechatmessage.displaycontent), responsechatmessage.role)} <span class="aichatcursor"></span>`
 					}
-					
+
 					requestAnimationFrame(function(){
 						scrollaichatY()
 					})
 				}
+
+				await sleep(5000)
 			}else{
 				data = await response.json()
 			}
