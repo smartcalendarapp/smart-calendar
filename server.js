@@ -4826,6 +4826,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				}
 				try {
 					for await (const chunk of response) {	
+						console.warn(chunk)
 						if(chunk.choices[0].delta.function_call && chunk.choices[0].delta.function_call.name == 'app_action'){
 							isfunctioncall = true
 						}
