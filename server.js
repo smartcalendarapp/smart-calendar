@@ -4819,7 +4819,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				}
 				try {
 					for await (const chunk of response) {	
-						console.warn(chunk)
 						if(chunk.choices[0].delta.function_call && chunk.choices[0].delta.function_call.name == 'app_action'){
 							isfunctioncall = true
 						}
@@ -4856,7 +4855,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					console.error(err)
 				}finally{
 					if(!isfunctioncall){
-						return res.end()
+						res.end()
+						return
 					}
 				}
 
@@ -4988,7 +4988,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							console.error(err)
 						}finally{
 							if(!isfunctioncall2){
-								return res.end()
+								res.end()
+								return
 							}
 						}
 
@@ -5130,7 +5131,9 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		//REQUEST
 		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset)
 
-		return res.json({ data: output, idmap: idmap })
+		if(output){
+			return res.json({ data: output, idmap: idmap })
+		}
 	}catch(err){
 		console.error(err)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).' })
