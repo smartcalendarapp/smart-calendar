@@ -4835,21 +4835,19 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							accumulatedresponse.message.function_call.arguments += chunk.choices[0].delta.function_call.arguments
 						}else{
 							//text response
-							console.warn(chunk.choices[0].delta.content)
-
 							if(chunk.choices[0].delta.content){
 								if(!accumulatedresponse.message.content){
 									accumulatedresponse.message.content = ''
 								}
 								accumulatedresponse.message.content += chunk.choices[0].delta.content
-							}
 
-							//send chunk
-							if(!settextresponseheader){
-								res.setHeader('Content-Type', 'text/plain')
-								settextresponseheader = true
+								//send chunk
+								if(!settextresponseheader){
+									res.setHeader('Content-Type', 'text/plain')
+									settextresponseheader = true
+								}
+								res.write(chunk.choices[0].delta.content)
 							}
-							res.write(chunk.choices[0].delta.content)
 						}
 					}
 					console.warn(accumulatedresponse)
