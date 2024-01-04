@@ -13635,14 +13635,16 @@ class ChatMessage {
 
 
 
-		if(this.dictated == true){
-		 	let successful = await aispeakmessage(this.message)
+		if(!this.streamed){
+			if(this.dictated == true){
+				let successful = await aispeakmessage(this.message)
 
-			if(!successful){
+				if(!successful){
+					await processtyping(1)
+				}
+			}else{
 				await processtyping(1)
 			}
-		}else{
-			await processtyping(1)
 		}
 
 
@@ -14069,7 +14071,7 @@ async function submitaimessage(optionalinput, dictated){
 					reader.read().then(({ done, value }) => {
 						if (done) {
 							console.log('Stream complete')
-							processData(tempdata)
+							responsechatmessage.streamed = true
 							return
 						}
 
@@ -14083,6 +14085,10 @@ async function submitaimessage(optionalinput, dictated){
 						responsechatmessage.displaycontent = responsechatmessage.message
 						let chatmessagebody = getElement(`responsechatmessage-body-${this.id}`)
 						chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(responsechatmessage.displaycontent), responsechatmessage.role)} <span class="aichatcursor"></span>`
+						
+						requestAnimationFrame(function(){
+							scrollaichatY()
+						})
 
 						read()
 					})
