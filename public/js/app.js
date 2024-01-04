@@ -13611,7 +13611,9 @@ class ChatMessage {
 			for(let i = 0; i < totalwords; i++){
 				this.displaycontent = splitmessage.slice(0, i + 1).join('')
 				let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-				chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)} <span class="aichatcursor"></span>`
+				if(chatmessagebody){
+					chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)} <span class="aichatcursor"></span>`
+				}
 
 				//delay
 				if(i % 5 == 0){
@@ -13630,7 +13632,9 @@ class ChatMessage {
 			//complete message
 			this.displaycontent = this.message
 			let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-			chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)}`
+			if(chatmessagebody){
+				chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(this.displaycontent), this.role)}`
+			}
 		}
 
 
@@ -14063,38 +14067,45 @@ async function submitaimessage(optionalinput, dictated){
 		if(response.status == 200){
 			let data;
 
-
-			console.log(response)//here3
 			if (response.body instanceof ReadableStream) {
-				async function readStream(reader) {
-					let tempdata = ''
-					while (true) {
-						const { done, value } = await reader.read()
-						if (done) {
-							console.log('Stream complete')
-							responsechatmessage.streamed = true
-							break
-						}
-				
-						let chunk = new TextDecoder().decode(value)
-						tempdata += chunk
-				
-						data = { data: { message: tempdata } }
-						
-						//update
-						responsechatmessage.message = data.data.message
-						responsechatmessage.displaycontent = responsechatmessage.message
-						let chatmessagebody = getElement(`responsechatmessage-body-${this.id}`)
-						chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(responsechatmessage.displaycontent), responsechatmessage.role)} <span class="aichatcursor"></span>`
-						
-						requestAnimationFrame(function(){
-							scrollaichatY()
-						})
+				updateaichat()
+
+				let tempdata = ''
+
+				const reader = response.body.getReader();
+				let receivedLength = 0
+				let chunks = []
+				let decoder = new TextDecoder('utf-8')
+
+				while(true) {
+					const {done, value} = await reader.read()
+					if (done) {
+						break
 					}
-					return
+					chunks.push(value)
+					receivedLength += value.length
+					let chunkText = decoder.decode(value, { stream: true })
+
+					tempdata += chunkText
+
+					data = { data: { message: tempdata } }
+					
+					//update
+					responsechatmessage.message = data.data.message
+					console.log(chunk)
+					responsechatmessage.displaycontent = responsechatmessage.message
+					let chatmessagebody = getElement(`responsechatmessage-body-${this.id}`)
+					if(chatmessagebody){
+						chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(responsechatmessage.displaycontent), responsechatmessage.role)} <span class="aichatcursor"></span>`
+					}
+					
+					requestAnimationFrame(function(){
+						scrollaichatY()
+					})
 				}
-				const reader = response.body.getReader()
-				await readStream(reader)
+
+
+				await sleep(5000)
 			}else{
 				data = await response.json()
 			}
@@ -14103,6 +14114,7 @@ async function submitaimessage(optionalinput, dictated){
 
 			let idmap = data.idmap
 			function getrealid(tempid){
+				if(!idmap) return null
 				if(!tempid) return null
 				if(!Object.keys(idmap).includes(tempid)){
 					return null

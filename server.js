@@ -4270,7 +4270,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}. Time needed: ${getDHMText(Math.floor((new Date(taskitem.end.year, taskitem.end.month, taskitem.end.day, 0, taskitem.end.minute).getTime() - new Date(taskitem.start.year, taskitem.start.month, taskitem.start.day, 0, taskitem.start.minute).getTime())/60000))}""" Provide short, specific and actionable steps and tips to make real progress and complete this task. Avoid generic or cliche responses. As a personal assistant, mention that the task is starting now and will last how long, as if the user is a boss. Incorporate short motivational tips.`
+		let inputtext = `Task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}. Time needed: ${getDHMText(Math.floor((new Date(taskitem.end.year, taskitem.end.month, taskitem.end.day, 0, taskitem.end.minute).getTime() - new Date(taskitem.start.year, taskitem.start.month, taskitem.start.day, 0, taskitem.start.minute).getTime())/60000))}""" Provide short, specific and actionable steps and tips to make real progress and complete this task, ,mention task name. Avoid generic or cliche responses. As a personal assistant, mention that the task is starting now and will last how long, as if the user is a boss. Incorporate short motivational tips.`
 		let custominstructions = `Respond in no more than 30 words, concise as possible. Use a tone and style of a helpful productivty personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
@@ -4844,10 +4844,10 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 								//send chunk
 								if(!settextresponseheader){
-									res.setHeader('Content-Type', 'text/plain')
+									res.writeHead(200, {'Content-Type': 'text/plain'})
 									settextresponseheader = true
 								}
-								res.write(chunk.choices[0].delta.content)
+    							response.body.pipe(res)
 							}
 						}
 					}
