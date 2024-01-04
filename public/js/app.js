@@ -4630,7 +4630,6 @@ function checkquery(){
 	let newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname
 	history.pushState({ path: newUrl }, '', newUrl)
 }
-checkquery()
 
 
 function run() {
@@ -19171,3 +19170,9 @@ function togglePushNotifs(event) {
 	}
 	calendar.updateSettings()
 }
+
+
+
+//QUERY
+//e.g. unsubscribe or feedback
+checkquery()
