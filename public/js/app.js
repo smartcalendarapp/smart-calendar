@@ -5107,7 +5107,7 @@ function clickmonthdate(event, timestamp) {
 let isprompttodotoday = false
 let prompttodotodayadded = []
 function prompttodotoday(){
-	if(clientinfo.betatester) return
+	if(true) return
 	
 	if(isprompttodotoday) return
 	
@@ -13168,7 +13168,7 @@ function updateaiassistanttooltip(){
 
 //get motivational task completed message
 async function promptaiassistanttaskcompleted(item){
-	if(!clientinfo.betatester) return
+
 
 	let now = new Date()
 	let endrange = new Date()
@@ -13225,7 +13225,7 @@ async function promptaiassistanttaskcompleted(item){
 
 //get suggestions message when task started
 async function promptaiassistanttaskstarted(item){
-	if(!clientinfo.betatester) return
+
 
 
 	//typing...
@@ -13281,7 +13281,7 @@ async function promptaiassistanttaskstarted(item){
 
 
 async function promptaiassistantmorningsummary(){
-	if(!clientinfo.betatester) return
+
 
 	if(mobilescreen){
 		calendartabs = [4]
@@ -14042,12 +14042,8 @@ async function submitaimessage(optionalinput, dictated){
 	let tempautoscheduleevents = []
 
 	try{
-		//temporary--vv
-		let path = '/getgptchatinteraction'
-		if(true){
-			path = '/getgptchatinteractionV2'
-		}
-		//-----------^^
+		let path = '/getgptchatinteractionV2'
+
 		const response = await fetch(path, {
 			method: 'POST',
 			headers: {
@@ -14061,8 +14057,41 @@ async function submitaimessage(optionalinput, dictated){
 				chathistory: sendchathistory,
 			})
 		})
+		
 		if(response.status == 200){
-			let data = await response.json()
+			let data;
+
+			if (response.body instanceof ReadableStream) {
+				const reader = response.body.getReader()
+				let tempdata = ''
+
+				function read() {
+					reader.read().then(({ done, value }) => {
+						if (done) {
+							console.log('Stream complete')
+							processData(tempdata)
+							return
+						}
+
+						let chunk = new TextDecoder().decode(value)
+						tempdata += chunk
+
+						data = { data: { message: tempdata } }
+						
+						//update
+						responsechatmessage.message = data.data.message
+						responsechatmessage.displaycontent = responsechatmessage.message
+						let chatmessagebody = getElement(`responsechatmessage-body-${this.id}`)
+						chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(responsechatmessage.displaycontent), responsechatmessage.role)} <span class="aichatcursor"></span>`
+
+						read()
+					})
+				}
+
+				read()
+			}else{
+				data = await response.json()
+			}
 			
 			let output = data.data
 
@@ -14077,7 +14106,7 @@ async function submitaimessage(optionalinput, dictated){
 
 
 			if(clientinfo.betatester){
-				console.log(data.data?.totaltokens, output, idmap)
+				console.log(output, idmap)
 			}
 
 
@@ -14900,12 +14929,12 @@ async function submitaimessage(optionalinput, dictated){
 					}
 				}
 
-			}else if(output.error){
+			}else if(output?.error){
 				responsechatmessage.message = `${output.error}`
-			}else if(!data.data?.message){
+			}else if(!output?.message){
 				responsechatmessage.message = `This is weird, I could not generate a response. Please click the thumbs down button and try again.`
 			}else{
-				responsechatmessage.message = `${data.data?.message}`
+				responsechatmessage.message = `${output?.message}`
 			}
 		}else if(response.status == 401){
 			let data = await response.json()

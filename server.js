@@ -879,7 +879,7 @@ async function processengagementalerts(){
 							</p>
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<p style="font-size: 18px; color: #333;">
-								If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;"><a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a></a>. We're here for you.
+								If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;"></a>. We're here for you.
 							</p>
 							<p style="text-align: center;font-size: 18px; color: #333;">
 								<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
@@ -958,7 +958,7 @@ async function processengagementalerts(){
 							</p>
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<p style="font-size: 18px; color: #333;">
-								If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;"><a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a></a>. We're here for you.
+								If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;"></a>. We're here for you.
 							</p>
 							<p style="text-align: center;font-size: 18px; color: #333;">
 								<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
@@ -1935,7 +1935,7 @@ app.post('/auth/apple/callback', async (req, res) => {
 
 
 //DISCORD BOT INITIALIZATION
-const { Client, GatewayIntentBits, EmbedBuilder, ActivityType } = require('discord.js')
+const { Client, GatewayIntentBits, EmbedBuilder, ActivityType, channelLink } = require('discord.js')
 
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN
 const discordclient = new Client({ intents: [GatewayIntentBits.Guilds] })
@@ -3120,7 +3120,7 @@ async function sendwelcomeemail(user){
 				</p>
 				<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<p style="font-size: 18px; color: #333;">
-						We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;"><a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a></a>. We're here for you.
+						We know you're excited to explore Smart Calendar. If you have any questions or have feedback, please <a href="https://smartcalendar.us/contact" style="color: #2693ff; text-decoration: none;"></a>. We're here for you.
 				</p>
 				<p style="text-align: center;font-size: 18px; color: #333;">
 					<a href="https://smartcalendar.us/app" style="padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
@@ -4729,10 +4729,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never mention internal ID of events or tasks data. Access to your schedule and tasks is granted. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.
-			Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: Alright! Please let me know what it's called and what time it's for."""`
-
-			let totaltokens = 0
+			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never mention internal ID of events or tasks data. Access to your schedule and tasks is granted. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone. Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: Alright! Please let me know what it's called and what time it's for."""`
 
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""`
@@ -4810,17 +4807,56 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					max_tokens: 200,
 					temperature: 0.5,
 					top_p: 0.5,
+					stream: true
 				})
-				totaltokens += response.usage.total_tokens
 
-				if (response.choices[0].finish_reason !== 'function_call' || response.choices[0].message.function_call?.name !== 'app_action') {
-					//no function call, return plain response
-					return { message: response.choices[0].message.content, totaltokens: totaltokens }
+				//stream management
+				let isfunctioncall = false
+				let accumulatedresponse = {
+					message: {}
 				}
-		
-		
-				if (response.choices[0].message.function_call?.name === 'app_action') {
-					const commands = JSON.parse(response.choices[0].message.function_call?.arguments)?.commands
+				try {
+					for await (const chunk of response) {		
+						if(chunk.choices[0].delta.function_call && chunk.choices[0].delta.function_call.name == 'app_action'){
+							isfunctioncall = true
+						}
+						
+						if(isfunctioncall){
+							//function call
+
+							if(!accumulatedresponse.message.function_call){
+								accumulatedresponse.message.function_call = { name: null, arguments: '' }
+							}
+							if(chunk.choices[0].delta.function_call.name){
+								accumulatedresponse.message.function_call.name = chunk.choices[0].delta.function_call.name
+							}
+							accumulatedresponse.message.function_call.arguments += chunk.choices[0].delta.function_call.arguments
+						}else{
+							//text response
+
+							if(chunk.choices[0].delta.content){
+								if(!accumulatedresponse.message.content){
+									accumulatedresponse.message.content = ''
+								}
+								accumulatedresponse.message.content += chunk.choices[0].delta.content
+							}
+
+							//send chunk
+							res.setHeader('Content-Type', 'text/plain')
+							res.write(chunk.choices[0].delta.content)
+						}
+					}
+				}catch(err){
+							
+				}finally{
+					if(!isfunctioncall){
+						return res.end()
+					}
+				}
+
+
+				if (accumulatedresponse.message.function_call?.name === 'app_action') {
+					const commands = JSON.parse(accumulatedresponse.message.function_call?.arguments)?.commands
 					if (commands && commands.length > 0) {
 						const requirescalendardata = calendardataneededfunctions.find(f => commands.find(g => g == f))
 						const requirestododata = tododataneededfunctions.find(f => commands.find(g => g == f))
@@ -4831,6 +4867,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							max_tokens: 500,
 							temperature: 0.5,
 							top_p: 0.5,
+							stream: true
 						}
 						let request2input = ''
 						
@@ -4899,30 +4936,67 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							}
 						]
 						
-						console.warn(request2options)
 						//make request
 						const response2 = await openai.chat.completions.create(request2options)
-						totaltokens += response2.usage.total_tokens
 
-						console.warn(response2.choices[0])
-						if (response2.choices[0].finish_reason !== 'function_call' || response2.choices[0].message.function_call?.name !== 'app_action') { //return plain response if no function detected
-							return { message: response2.choices[0].message.content, totaltokens: totaltokens }
+						//stream management
+						let isfunctioncall2 = false
+						let accumulatedresponse2 = {
+							message: {}
 						}
-						
-						const commands2 = JSON.parse(response2.choices[0].message.function_call?.arguments)?.commands
+						try {
+							for await (const chunk of response) {	
+								if(chunk.choices[0].delta.function_call && chunk.choices[0].delta.function_call.name == 'app_action'){
+									isfunctioncall2 = true
+								}
+								
+								if(isfunctioncall2){
+									//function call
+
+									if(!accumulatedresponse2.message.function_call){
+										accumulatedresponse2.message.function_call = { name: null, arguments: '' }
+									}
+									if(chunk.choices[0].delta.function_call.name){
+										accumulatedresponse2.message.function_call.name = chunk.choices[0].delta.function_call.name
+									}
+									accumulatedresponse2.message.function_call.arguments += chunk.choices[0].delta.function_call.arguments
+								}else{
+									//text response
+
+									if(chunk.choices[0].delta.content){
+										if(!accumulatedresponse2.message.content){
+											accumulatedresponse2.message.content = ''
+										}
+										accumulatedresponse2.message.content += chunk.choices[0].delta.content
+									}
+
+									//send chunk
+									res.setHeader('Content-Type', 'text/plain')
+									res.write(chunk.choices[0].delta.content)
+								}
+							}
+						}catch(err){
+							
+						}finally{
+							if(!isfunctioncall2){
+								return res.end()
+							}
+						}
+
+						const commands2 = JSON.parse(accumulatedresponse2.message.function_call?.arguments)?.commands
 						if (commands2 && commands2.length > 0) {					
-							return { commands: commands2, totaltokens: totaltokens }
+							return { commands: commands2 }
 						}
 	
 					}
 				}
 
-				return { error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).', totaltokens: totaltokens }
+				return { error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).' }
 		
 			} catch (err) {
 				console.error(err)
 
-				return { error: `An unexpected error occurred: ${err.message}, please try again or [https://smartcalendar.us/contact](contact us).`, totaltokens: totaltokens }
+				return { error: `An unexpected error occurred: ${err.message}, please try again or [https://smartcalendar.us/contact](contact us).` }
 			}
 
 		}
