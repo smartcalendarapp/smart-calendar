@@ -4846,6 +4846,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							res.write(chunk.choices[0].delta.content)
 						}
 					}
+					console.warn(accumulatedresponse)
 				}catch(err){
 					console.error(err)
 				}finally{

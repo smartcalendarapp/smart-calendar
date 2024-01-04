@@ -14066,20 +14066,19 @@ async function submitaimessage(optionalinput, dictated){
 
 			console.log(response)//here3
 			if (response.body instanceof ReadableStream) {
-				const reader = response.body.getReader()
-				let tempdata = ''
-
-				function read() {
-					reader.read().then(({ done, value }) => {
+				async function readStream(reader) {
+					let tempdata = ''
+					while (true) {
+						const { done, value } = await reader.read()
 						if (done) {
 							console.log('Stream complete')
 							responsechatmessage.streamed = true
-							return
+							break
 						}
-
+				
 						let chunk = new TextDecoder().decode(value)
 						tempdata += chunk
-
+				
 						data = { data: { message: tempdata } }
 						
 						//update
@@ -14091,12 +14090,11 @@ async function submitaimessage(optionalinput, dictated){
 						requestAnimationFrame(function(){
 							scrollaichatY()
 						})
-
-						read()
-					})
+					}
+					return
 				}
-
-				read()
+				const reader = response.body.getReader()
+				await readStream(reader)
 			}else{
 				data = await response.json()
 			}
