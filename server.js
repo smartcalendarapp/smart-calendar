@@ -4847,7 +4847,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 					}
 				}catch(err){
-							
+					console.error(err)
 				}finally{
 					if(!isfunctioncall){
 						return res.end()
@@ -4945,7 +4945,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							message: {}
 						}
 						try {
-							for await (const chunk of response) {	
+							for await (const chunk of response2) {	
 								if(chunk.choices[0].delta.function_call && chunk.choices[0].delta.function_call.name == 'app_action'){
 									isfunctioncall2 = true
 								}
@@ -4976,7 +4976,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								}
 							}
 						}catch(err){
-							
+							console.error(err)
 						}finally{
 							if(!isfunctioncall2){
 								return res.end()

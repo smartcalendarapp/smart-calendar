@@ -13778,7 +13778,7 @@ function markdowntoHTML(markdown, role) {
         .replace(/^(\>|&gt;) (.*$)/gim, '<blockquote>$2</blockquote>')
         .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
         .replace(/\*(.*?)\*/gim, '<i>$1</i>')
-        .replace(/\[(.*?)\]\((.*?)\)/gim, `<a href='$2' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$1</a>`)
+        .replace(/\[(.*?)\]\((.*?)\)/gim, `<a href='$1' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$2</a>`)
 
 
 	markdown = markdown.replace(/^\d+\.\s+(.+)(\n+\d+\.\s+.+)*/gm, (match) => {
@@ -14063,6 +14063,8 @@ async function submitaimessage(optionalinput, dictated){
 		if(response.status == 200){
 			let data;
 
+
+			console.log(response)//here3
 			if (response.body instanceof ReadableStream) {
 				const reader = response.body.getReader()
 				let tempdata = ''
@@ -14951,7 +14953,7 @@ async function submitaimessage(optionalinput, dictated){
 		if(!navigator.onLine){
 			responsechatmessage.message = `Your internet connection is offline, please reconnect.`
 		}else{
-			responsechatmessage.message = `An unexpected error occurred: ${err.message}, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.`
+			responsechatmessage.message = `An unexpected error occurred: ${err.message}, please try again or [https://smartcalendar.us/contact](contact us).`
 		}
 
 		console.log(err)
