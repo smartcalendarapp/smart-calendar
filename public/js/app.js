@@ -13929,7 +13929,7 @@ function updateaichat(){
 
 			updateaichat()
 		}
-	}, 2000)
+	}, 4000)
 }
 
 function resizeaichatinput(){
@@ -14004,7 +14004,7 @@ async function submitaimessage(optionalinput, dictated){
 		aichatinput = getElement('aichatinput')
 	}
 	let userinput = optionalinput || aichatinput.value
-	userinput = userinput.trim()
+	userinput = userinput?.trim()
 
 	if(userinput.length == 0) return
 
@@ -14065,6 +14065,7 @@ async function submitaimessage(optionalinput, dictated){
 		})
 		
 		if(response.ok){
+			let output = {}
 			let data = {}
 
 			if (response.body instanceof ReadableStream && !response.headers.get('Content-Type')?.includes('application/json')) {
@@ -14074,38 +14075,42 @@ async function submitaimessage(optionalinput, dictated){
 
 				let tempdata = ''
 
-				const reader = response.body.getReader();
+				const reader = response.body.getReader()
 				const decoder = new TextDecoder()
 
-				while (true) {
-					const { value, done } = await reader.read()
-					if (done) {
-						break
+				try{
+					while (true) {
+						const { value, done } = await reader.read()
+						if (done) {
+							break
+						}
+						const decodedChunk = decoder.decode(value, { stream: true })
+						
+						tempdata += decodedChunk
+						
+						data = { data: { message: tempdata } }
+						output = data.data
+
+						responsechatmessage.message = output.message
+						responsechatmessage.displaycontent = responsechatmessage.message
+
+						// Update UI
+						let chatmessagebody = getElement(`chatmessage-body-${responsechatmessage.id}`)
+						if (chatmessagebody) {
+							chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(responsechatmessage.displaycontent), responsechatmessage.role)} <span class="aichatcursor"></span>`
+						}
+
+						requestAnimationFrame(function(){
+							scrollaichatY()
+						})
 					}
-					const decodedChunk = decoder.decode(value, { stream: true })
-					
-					tempdata += decodedChunk
-					
-					data = { data: { message: tempdata } }
-
-					responsechatmessage.message = data.data.message
-					responsechatmessage.displaycontent = responsechatmessage.message
-
-					// Update UI
-					let chatmessagebody = getElement(`chatmessage-body-${responsechatmessage.id}`)
-					if (chatmessagebody) {
-						chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(responsechatmessage.displaycontent), responsechatmessage.role)} <span class="aichatcursor"></span>`
-					}
-
-					requestAnimationFrame(function(){
-						scrollaichatY()
-					})
+				}catch(err){
+					console.log(err)
 				}
 			}else{
 				data = await response.json()
+				output = data.data
 			}
-			
-			let output = data.data
 
 			let idmap = data.idmap
 			function getrealid(tempid){
@@ -14623,7 +14628,7 @@ async function submitaimessage(optionalinput, dictated){
 								aichattemporarydata[responsechatmessage.id] = allitems
 
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`]
-								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] }); simulateaiassistantwithnextaction('Schedule them in my calendar', 'Done! I scheduled ${allitems.length} tasks in your calendar.')">Schedule in calendar</div>`]
+								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] }); simulateaiassistantwithnextaction('Schedule them in my calendar', 'Done! I scheduled ${aichattemporarydata[responsechatmessage.id].length == 1 ? `the task "${Calendar.Event.getRawTitle(firstitem)}"` : `${aichattemporarydata[responsechatmessage.id].length} tasks`} in your calendar.')">Schedule in calendar</div>`]
 							}
 						}else{
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not create a task for you, please try again.`
@@ -14795,7 +14800,7 @@ async function submitaimessage(optionalinput, dictated){
 								}
 
 
-								if(startdate && !isNaN(startdate.getTime())){
+								if(startdate && !isNaN(startdate.getTime()) && Calendar.Event.isEvent(item)){
 									item.start.year = startdate.getFullYear()
 									item.start.month = startdate.getMonth()
 									item.start.day = startdate.getDate()
@@ -14809,7 +14814,7 @@ async function submitaimessage(optionalinput, dictated){
 									lastmovedeventid = item.id
 								}
 
-								if(enddate && !isNaN(enddate.getTime())){
+								if(enddate && !isNaN(enddate.getTime()) && Calendar.Event.isEvent(item)){
 									item.end.year = enddate.getFullYear()
 									item.end.month = enddate.getMonth()
 									item.end.day = enddate.getDate()
@@ -14900,7 +14905,7 @@ async function submitaimessage(optionalinput, dictated){
 								aichattemporarydata[responsechatmessage.id] = items
 								
 								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Just a confirmation, I'll schedule these tasks for you:\n${items.map(d => `- ${d.title}`).join('\n')}`
-								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled ${items.length} tasks in your calendar.')">Yes</div>`,`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule these tasks in your calendar.')">No</div>`]
+								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled ${aichattemporarydata[responsechatmessage.id].length == 1 ? `the task "${Calendar.Event.getRawTitle(items[0])}"` : `${aichattemporarydata[responsechatmessage.id].length} tasks`} tasks in your calendar.')">Yes</div>`,`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule these tasks in your calendar.')">No</div>`]
 							}else{
 								let calendaritems = idList && calendar.events.filter(d => idList.find(g => g == d.id))
 								if(calendaritems && calendaritems.length > 0){
@@ -14926,7 +14931,7 @@ async function submitaimessage(optionalinput, dictated){
 								aichattemporarydata[responsechatmessage.id].push(item)
 								
 								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Just a confirmation, I'll schedule this task for you: ${item.title}`
-								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled this task in your calendar.')">Yes</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule this task in your calendar.')">No</div>`]
+								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction(startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] })); simulateaiassistantwithnextaction('Yes', 'Done! I scheduled ${aichattemporarydata[responsechatmessage.id].length == 1 ? `the task "${Calendar.Event.getRawTitle(item)}"` : `${aichattemporarydata[responsechatmessage.id].length} tasks`} in your calendar.')">Yes</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('No', 'Okay, I will not schedule this task in your calendar.')">No</div>`]
 							}else{
 								let calendaritem = id && calendar.events.find(d => d.id == id)
 								if(calendaritem){
