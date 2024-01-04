@@ -4844,10 +4844,12 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 								//send chunk
 								if(!settextresponseheader){
-									res.writeHead(200, {'Content-Type': 'text/plain'})
+									res.writeHead(200, {
+										"Content-Type": "text/plain; charset=utf-8"
+									})
 									settextresponseheader = true
 								}
-    							response.body.pipe(res)
+    							res.write(content)
 							}
 						}
 					}
