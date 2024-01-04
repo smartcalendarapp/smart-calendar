@@ -14064,25 +14064,28 @@ async function submitaimessage(optionalinput, dictated){
 			})
 		})
 		
-		if(response.status == 200){
+		if(response.ok){
 			let data = {}
 
-			if (response.body instanceof ReadableStream) {
+			if (response.body && response.body instanceof ReadableStream) {
+				responsechatmessage.streamed = true
+				
 				updateaichat()
 
 				let tempdata = ''
 
-				const reader = response.body.getReader()
-				const decoder = new TextDecoder('utf-8')
+				const reader = response.body.getReader();
+				const decoder = new TextDecoder()
 
 				while (true) {
-					const { done, value } = await reader.read()
-					console.log(done, value)
-					if (done) break
-
-					const decodedValue = decoder.decode(value)
-					tempdata += decodedValue
-
+					const { value, done } = await reader.read()
+					if (done) {
+						break
+					}
+					const decodedChunk = decoder.decode(value, { stream: true })
+					
+					tempdata += decodedChunk
+					console.log(decodedChunk)
 					data = { data: { message: tempdata } }
 
 					// Update UI
@@ -14097,8 +14100,6 @@ async function submitaimessage(optionalinput, dictated){
 						scrollaichatY()
 					})
 				}
-
-				await sleep(5000)
 			}else{
 				data = await response.json()
 			}

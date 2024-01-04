@@ -4844,7 +4844,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 								//send chunk
 								if(!settextresponseheader){
-									res.writeHead(200, { "Content-Type": "text/plain" })
 									settextresponseheader = true
 								}
     							res.write(chunk.choices[0].delta.content)
@@ -4977,7 +4976,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 										//send chunk
 										if(!settextresponseheader){
-											res.setHeader('Content-Type', 'text/plain')
 											settextresponseheader = true
 										}
 										res.write(chunk.choices[0].delta.content)
