@@ -4811,8 +4811,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				})
 
 				//stream management
-				let settextresponseheader = false
-
 				let isfunctioncall = false
 				let accumulatedresponse = {
 					message: {}
@@ -4843,9 +4841,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								accumulatedresponse.message.content += chunk.choices[0].delta.content
 
 								//send chunk
-								if(!settextresponseheader){
-									settextresponseheader = true
-								}
     							res.write(chunk.choices[0].delta.content)
 							}
 						}
@@ -4975,9 +4970,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										accumulatedresponse2.message.content += chunk.choices[0].delta.content
 
 										//send chunk
-										if(!settextresponseheader){
-											settextresponseheader = true
-										}
 										res.write(chunk.choices[0].delta.content)
 									}
 								}

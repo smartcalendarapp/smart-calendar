@@ -14067,7 +14067,7 @@ async function submitaimessage(optionalinput, dictated){
 		if(response.ok){
 			let data = {}
 
-			if (response.body && response.body instanceof ReadableStream) {
+			if (response.body instanceof ReadableStream && !response.headers.get('Content-Type')?.includes('application/json')) {
 				responsechatmessage.streamed = true
 				
 				updateaichat()
@@ -14085,13 +14085,14 @@ async function submitaimessage(optionalinput, dictated){
 					const decodedChunk = decoder.decode(value, { stream: true })
 					
 					tempdata += decodedChunk
-					console.log(decodedChunk)
+					
 					data = { data: { message: tempdata } }
 
-					// Update UI
 					responsechatmessage.message = data.data.message
 					responsechatmessage.displaycontent = responsechatmessage.message
-					let chatmessagebody = getElement(`responsechatmessage-body-${this.id}`)
+
+					// Update UI
+					let chatmessagebody = getElement(`chatmessage-body-${responsechatmessage.id}`)
 					if (chatmessagebody) {
 						chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(responsechatmessage.displaycontent), responsechatmessage.role)} <span class="aichatcursor"></span>`
 					}
