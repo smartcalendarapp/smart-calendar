@@ -3660,6 +3660,10 @@ class Calendar {
 		let enableemailplanning = getElement('enableemailplanning')
 		enableemailplanning.checked = calendar.settings.emailpreferences.engagementalerts
 
+		//important update emails
+		let enableemailimportantupdates = getElement('enableemailimportantupdates')
+		enableemailimportantupdates.checked = calendar.settings.emailpreferences.importantupdates
+
 
 		//apple 
 		let connectapple = getElement('connectapple')
@@ -4553,13 +4557,72 @@ function geteventsuggestion(){
 	startAutoSchedule({ eventsuggestiontodos: suggesttodos })
 }
 
+let unsubscribeemailpreferences;
+let unsubscribeuserid;
+async function getuseremailpreferences(){
+	if(!unsubscribeuserid) return
+	try{
+		const response = await fetch('/getuseremailpreferences', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				userid: unsubscribeuserid
+			})
+		})
+		if (response.status == 200) {
+			let data = await response.json()
+
+			unsubscribeemailpreferences = data.data
+			openunsubscribepopup()
+		}else if(response.status == 401){
+			
+		} else {
+			return setTimeout(function (){
+				getuseremailpreferences()
+			}, 3000)
+		}
+	}catch(error){
+		console.log(error)
+	}
+}
+
+async function setuseremailpreferences(){
+	if(!unsubscribeemailpreferences) return false
+	if(!unsubscribeuserid) return false
+	try{
+		const response = await fetch('/setuseremailpreferences', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				userid: unsubscribeuserid,
+				emailpreferences: unsubscribeemailpreferences
+			})
+		})
+		if (response.status == 200) {
+			displayalert('Preferences saved')
+			return true
+		}
+	}catch(error){
+		console.log(error)
+	}
+	return false
+}
 
 
 function checkquery(){
 	const queryParams = new URLSearchParams(window.location.search)
 
-	if (queryParams.get('managenotifications') === 'true') {
-		setStorage('querystate', 'managenotifications')
+	if (queryParams.get('to') === 'managenotifications') {
+		if (queryParams.get('userid')) {
+			unsubscribeuserid = queryParams.get('userid')
+			getuseremailpreferences()
+		}
+	}else if (queryParams.get('to') === 'feedback') {
+		openfeedbackpopup()
 	}
 
 	let newUrl = window.location.protocol + '//' + window.location.host + window.location.pathname
@@ -4577,16 +4640,6 @@ function run() {
 	//calendar
 	calendar.updateTabs()
 	calendar.updateHistory()
-
-	//manage notifications
-	let querystate = getStorage('querystate')
-	if(querystate && querystate == 'managenotifications'){
-		deleteStorage('querystate')
-		
-		calendartabs = [3]
-		settingstab = 4
-		calendar.updateTabs()
-	}
 
 	//input pickers
 	updatetimepicker()
@@ -7126,15 +7179,58 @@ function togglediscordnotifs(event){
 function toggleemailplanning(event){
 	calendar.settings.emailpreferences.engagementalerts = event.target.checked
 	calendar.updateSettings()
+
+	displayalert('Preferences saved')
+}
+function toggleemailimportantupdates(event){
+	calendar.settings.emailpreferences.importantupdates = event.target.checked
+	calendar.updateSettings()
+
+	displayalert('Preferences saved')
 }
 
 function unsubscribeall(){
 	calendar.settings.emailpreferences.engagementalerts = false
+	calendar.settings.emailpreferences.importantupdates = false
 
 	calendar.updateSettings()
 
 	displayalert('Preferences saved')
 }
+
+
+//unsubscribe logged out email toggles
+function unsubscribetoggleemailplanning(event){
+	unsubscribeemailpreferences.engagementalerts = event.target.checked
+
+	setuseremailpreferences()
+}
+function unsubscribetoggleemailimportantupdates(event){
+	unsubscribeemailpreferences.importantupdates = event.target.checked
+
+	setuseremailpreferences()
+}
+
+function unsubscribeunsubscribeall(){
+	unsubscribeemailpreferences.engagementalerts = false
+	unsubscribeemailpreferences.importantupdates = false
+
+	setuseremailpreferences()
+}
+function updateunsubscribepopup(){
+	let unsubscribeenableemailimportantupdates = getElement('unsubscribeenableemailimportantupdates')
+	let unsubscribeenableemailplanning = getElement('unsubscribeenableemailplanning')
+
+	unsubscribeenableemailimportantupdates.checked = unsubscribeemailpreferences.importantupdates
+	unsubscribeenableemailplanning.checked = unsubscribeemailpreferences.engagementalerts
+}
+function openunsubscribepopup(){
+	let unsubscribepopupcontainer = getElement('unsubscribepopupcontainer')
+	unsubscribepopupcontainer.classList.remove('hiddenfade')
+	
+	updateunsubscribepopup()
+}
+
 
 //break per hour
 function inputsettingseventspacing(event){
@@ -8620,7 +8716,6 @@ async function submitfeedbackpopup(){
 	}
 }
 function openfeedbackpopup(event){
-	let button = event.target
 
 	let feedbackpopupinputwrap = getElement('feedbackpopupinputwrap')
 	let feedbackpopupdonewrap = getElement('feedbackpopupdonewrap')

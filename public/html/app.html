@@ -69,7 +69,7 @@
 	
 
 <body>
-	<div class="absolute padding-24px gap-12px left-0 bottom-0 right-0 display-flex flex-column align-center justify-center z-index-2000 pointer-none border-box overflow-hidden" id="allalerts">
+	<div class="absolute padding-24px gap-12px left-0 bottom-0 right-0 display-flex flex-column align-center justify-center z-index-10001 pointer-none border-box overflow-hidden" id="allalerts">
 	</div>
 
 	
@@ -514,7 +514,69 @@
 	</div>
 
 
-	<div class="absolute backdrop-blur fadetransition hiddenfade top-0 left-0 display-flex border-box z-index-1000 align-center justify-center width-full height-full" id="feedbackpopupcontainer">
+
+	<div class="absolute backdrop-blur fadetransition hiddenfade top-0 left-0 display-flex border-box z-index-10000 align-center justify-center width-full height-full" id="unsubscribepopupcontainer">
+		<div class="overflow-y-auto display-flex flex-column background-primary-transparent box-shadow border-16px border-box small:border-0 feedbackpopupheight small:max-height-revert max-width-500px height-full width-full">
+			<div class="borderbottom display-flex flex-row justify-space-between padding-12px align-center">
+				<div>
+					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+					<g>
+					</g>
+					</svg>
+				</div>
+				
+				<div class="infotitle text-center">Smart Calendar feedback</div>
+
+				<div class="infotoprightgroup">
+					<div class="infotopright pointer" onclick="closefeedbackpopup(event)">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+						<g>
+						<g opacity="1">
+						<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+						<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+						</g>
+						</g>
+						</svg>
+					</div>
+				</div>
+			</div>
+
+
+			<!-- email preferences -->
+			<div class="display-flex flex-column gap-24px">
+
+				<div class="infogroup">
+					<div class="display-flex justify-space-between flex-row gap-12px align-center">
+						<div class="infotext text-16px text-bold">Important Updates</div>
+						<label class="switch">
+							<input type="checkbox" oninput="unsubscribetoggleemailimportantupdates(event)" id="unsubscribeenableemailimportantupdates">
+							<span class="slider"></span>
+						</label>
+					</div>
+					<div class="infotext text-14px text-quaternary">We will send you announcements and new features once every few weeks.</div>
+				</div>
+
+				<div class="infogroup">
+					<div class="display-flex justify-space-between flex-row gap-12px align-center">
+						<div class="infotext text-16px text-bold">Engagement Alerts</div>
+						<label class="switch">
+							<input type="checkbox" oninput="unsubscribetoggleemailplanning(event)" id="unsubscribeenableemailplanning">
+							<span class="slider"></span>
+						</label>
+					</div>
+					<div class="infotext text-14px text-quaternary">We'll remind you after some inactivity to get back on track with planning.</div>
+				</div>
+
+
+				<div class="border-8px bordertertiary padding-6px-12px text-primary text-center text-14px hover:background-tint-1 transition-duration-100 pointer" onclick="unsubscribeunsubscribeall()">Unsubscribe from all</div>
+
+			</div>
+
+		</div>
+	</div>
+
+
+	<div class="absolute backdrop-blur fadetransition hiddenfade top-0 left-0 display-flex border-box z-index-10000 align-center justify-center width-full height-full" id="feedbackpopupcontainer">
 		<div class="overflow-y-auto display-flex flex-column background-primary-transparent box-shadow border-16px border-box small:border-0 feedbackpopupheight small:max-height-revert max-width-500px height-full width-full">
 			<div class="borderbottom display-flex flex-row justify-space-between padding-12px align-center">
 				<div>
@@ -541,7 +603,7 @@
 			</div>
 
 			<div class="padding-left-12px padding-right-12px padding-bottom-48px padding-top-48px display-flex flex-column gap-24px overflow-y-auto" id="feedbackpopupinputwrap">
-				<div class="text-primary text-16px white-space-normal break-word">You made it here, so we know We'd love to hear your feedback as an early adopter! Please take only <span class="text-bold">2 min</span> to fill this out. We promise to read your feedback carefully.</div>
+				<div class="text-primary text-16px white-space-normal break-word">We're glad you made it here! We'd love to hear your feedback as an early adopter. Please take <span class="text-bold">2 min</span> to fill this out. We promise to read your feedback carefully.</div>
 
 				<div class="text-primary text-16px white-space-normal break-word">PS people who give constructive feedback will be invited to our exclusive <span class="text-bold">Beta Tester Program</span>!</div>
 
@@ -3399,6 +3461,17 @@
 
 									<!-- emails -->
 									<div class="display-flex flex-column gap-24px">
+
+										<div class="infogroup">
+											<div class="display-flex justify-space-between flex-row gap-12px align-center">
+												<div class="infotext text-16px text-bold">Important Updates</div>
+												<label class="switch">
+													<input type="checkbox" oninput="toggleemailimportantupdates(event)" id="enableemailimportantupdates">
+													<span class="slider"></span>
+												</label>
+											</div>
+											<div class="infotext text-14px text-quaternary">We will send you announcements and new features once every few weeks.</div>
+										</div>
 
 										<div class="infogroup">
 											<div class="display-flex justify-space-between flex-row gap-12px align-center">

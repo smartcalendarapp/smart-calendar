@@ -427,7 +427,7 @@ class User{
 }
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
-const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false, recognitionlanguage: 'en-US' }
+const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true, importantupdates: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false, recognitionlanguage: 'en-US' }
 const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, logindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], gptvoiceusedtimestamps: [], betatester: false, haspremium: false, premium: { referafriendclaimvalue: 0, starttimestamp: null, endtimestamp: null }, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
 const MODELEVENT = { start: {}, end: {}, endbefore: {}, startafter: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0, parentid: null, subtasksuggestions: [], gotsubtasksuggestions: false, iseventsuggestion: false, goteventsuggestion: false, autoschedulelocked: false }
 const MODELTODO = { endbefore: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false }
@@ -678,7 +678,7 @@ async function processReminders(){
 
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=managenotifications" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 									<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 									</div>
 
@@ -696,7 +696,7 @@ async function processReminders(){
 					Stay Productive,
 					Smart Calendar | Where AI Meets Agenda
 
-					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?managenotifications=true.
+					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=managenotifications.
 					(c) 2023 James Tsaggaris. All rights reserved.`
 				})
 
@@ -747,7 +747,7 @@ async function processReminders(){
 
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=managenotifications" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 									<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 									</div>
 
@@ -765,7 +765,7 @@ async function processReminders(){
 					Stay Productive,
 					Smart Calendar | Where AI Meets Agenda
 
-					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?managenotifications=true.
+					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=managenotifications.
 					(c) 2023 James Tsaggaris. All rights reserved.`
 				})
 				
@@ -892,7 +892,7 @@ async function processengagementalerts(){
 			
 					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-								<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+								<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=managenotifications" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 							<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 							</div>
 			
@@ -910,7 +910,7 @@ async function processengagementalerts(){
 				Stay Productive,
 				Smart Calendar | Where AI Meets Agenda
 			
-				You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?managenotifications=true.
+				You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=managenotifications.
 				(c) 2023 James Tsaggaris. All rights reserved.`
 			})
 
@@ -971,7 +971,7 @@ async function processengagementalerts(){
 			
 					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-								<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+								<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=managenotifications" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 							<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 							</div>
 			
@@ -987,7 +987,7 @@ async function processengagementalerts(){
 				Stay Productive,
 				Smart Calendar | Where AI Meets Agenda
 			
-				You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?managenotifications=true.
+				You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=managenotifications.
 				(c) 2023 James Tsaggaris. All rights reserved.`
 			})
 
@@ -3133,7 +3133,7 @@ async function sendwelcomeemail(user){
 
 		<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-					<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+					<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=managenotifications" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 				<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 				</div>
 
@@ -3149,7 +3149,7 @@ async function sendwelcomeemail(user){
 	Stay Productive,
 	Smart Calendar | Where AI Meets Agenda
 
-	You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?managenotifications=true.
+	You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=managenotifications.
 	(c) 2023 James Tsaggaris. All rights reserved.`
 		})
 	}
@@ -3771,7 +3771,7 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 
 					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-								<p>You are receiving this email because a Smart Calendar user sent you an invitation. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?managenotifications=true" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+								<p>You are receiving this email because a Smart Calendar user sent you an invitation. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=managenotifications" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 							<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
 							</div>
 
@@ -3790,7 +3790,7 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 			Stay Productive,
 			Smart Calendar | Where AI Meets Agenda
 
-			You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?managenotifications=true.
+			You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=managenotifications.
 			(c) 2023 James Tsaggaris. All rights reserved.`
 		})
 
@@ -4102,6 +4102,51 @@ app.post('/generatereferafriendinvitelink', async (req, res) => {
 	}
 })
 
+
+
+app.post('/getuseremailpreferences', async (req, res) => {
+	try{
+		let userid = req.body.userid
+		if(!userid){
+			return res.status(401).json({ error: 'User ID not provided.' })
+		}
+		let user = await getUserById(userid)
+		if(!user){
+			return res.status(401).json({ error: 'User not found.' })
+		}
+
+		return res.json({ data: user.calendardata.settings.emailpreferences })
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+	}
+})
+app.post('/setuseremailpreferences', async (req, res) => {
+	try{
+		let userid = req.body.userid
+		if(!userid){
+			return res.status(401).json({ error: 'User ID not provided.' })
+		}
+		let user = await getUserById(userid)
+		if(!user){
+			return res.status(401).json({ error: 'User not found.' })
+		}
+
+		let emailpreferences = req.body.emailpreferences
+
+		if(!emailpreferences || typeof emailpreferences !== 'object' || !Object.values(emailpreferences).every(d => d === true || d === false)){
+			return res.status(401).json({ error: 'Preferences not found or invalid.' })
+		}
+
+		user.calendardata.settings.emailpreferences = emailpreferences
+		await setUser(user)
+
+		return res.end()
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+	}
+})
 
 
 //GPT AI routes
@@ -4678,10 +4723,10 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						type: 'object',
 						properties: {
 							id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
-							newTitle: { type: 'string', description: '(optional) New event title' },
-							newStartDate: { type: 'string', description: '(optional) New event start date in YYYY-MM-DD HH:MM' },
-							newEndDate: { type: 'string', description: '(optional) New event end date in YYYY-MM-DD HH:MM' },
-							newDuration: { type: 'string', description: '(optional) New event duration in HH:MM' },
+							newTitle: { type: 'string', description: '(optional) New title' },
+							newStartDate: { type: 'string', description: '(optional) New start date in YYYY-MM-DD HH:MM' },
+							newEndDate: { type: 'string', description: '(optional) New end date in YYYY-MM-DD HH:MM' },
+							newDuration: { type: 'string', description: '(optional) New duration in HH:MM' },
 							//errorMessage: { type: 'string', description: '(optional) A short message if tasks are not found or other error' },
 						},
 						required: []
@@ -4706,12 +4751,12 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						type: 'object',
 						properties: {
 							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
-							newTitle: { type: 'string', description: '(optional) New task title' },
-							newDueDate: { type: 'string', description: '(optional) New task due date in YYYY-MM-DD HH:MM' },
-							newDuration: { type: 'string', description: '(optional) New task duration in HH:MM' },
-							newStartDate: { type: 'string', description: '(optional) New task scheduled start date in YYYY-MM-DD HH:MM' },
-							newEndDate: { type: 'string', description: '(optional) New task scheduled end date in YYYY-MM-DD HH:MM' },
-							newCompleted: { type: 'boolean', description: '(optional) New task completed status' },
+							newTitle: { type: 'string', description: '(optional) New title' },
+							newDueDate: { type: 'string', description: '(optional) New due date in YYYY-MM-DD HH:MM' },
+							newDuration: { type: 'string', description: '(optional) New duration in HH:MM' },
+							newStartDate: { type: 'string', description: '(optional) New scheduled start date in YYYY-MM-DD HH:MM' },
+							newEndDate: { type: 'string', description: '(optional) New scheduled end date in YYYY-MM-DD HH:MM' },
+							newCompleted: { type: 'boolean', description: '(optional) New completed status' },
 							//errorMessage: { type: 'string', description: '(optional) A error message if tasks are not found or other error' },
 						},
 						required: []
