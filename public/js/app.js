@@ -4561,7 +4561,6 @@ function geteventsuggestion(){
 let unsubscribeemailpreferences;
 let loggedoutuserid;
 async function getuseremailpreferences(){
-	if(!loggedoutuserid) return
 	try{
 		const response = await fetch('/getuseremailpreferences', {
 			method: 'POST',
@@ -4569,7 +4568,7 @@ async function getuseremailpreferences(){
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				userid: loggedoutuserid
+				loggedoutuserid: loggedoutuserid
 			})
 		})
 		if (response.status == 200) {
@@ -4615,16 +4614,13 @@ async function setuseremailpreferences(){
 }
 
 
+const queryParams = new URLSearchParams(window.location.search)
 function checkquery(){
-	const queryParams = new URLSearchParams(window.location.search)
-
 	if (queryParams.get('userid')) {
 		loggedoutuserid = queryParams.get('userid')
 	}
 	if (queryParams.get('to') === 'unsubscribe') {
-		if (loggedoutuserid) {
-			getuseremailpreferences()
-		}
+		getuseremailpreferences()
 	}else if (queryParams.get('to') === 'feedback') {
 		openfeedbackpopup()
 	}
@@ -4639,6 +4635,9 @@ function run() {
 
 	//theme
 	updatetheme()
+
+	//check query
+	checkquery()
 
 	//calendar
 	calendar.updateTabs()

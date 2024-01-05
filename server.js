@@ -457,25 +457,28 @@ const sesclient = new SESClient({
 async function sendEmail({ from, to, subject, htmlbody, textbody }){
 	const params = {
 		Source: from,
-	  Destination: {
+	  	Destination: {
 			ToAddresses: [to]
 		},
-	  Message: {
-	    Body: {
-	      Html: {
-	        Charset: "UTF-8",
-	        Data: htmlbody,
-	      },
-	      Text: {
-	        Charset: "UTF-8",
-	        Data: textbody,
-	      },
-	    },
-	    Subject: {
-	      Charset: 'UTF-8',
-	      Data: subject,
-	    },
-	  },
+	 	Message: {
+			Body: {
+			Html: {
+				Charset: "UTF-8",
+				Data: htmlbody,
+			},
+			Text: {
+				Charset: "UTF-8",
+				Data: textbody,
+			},
+			},
+			Subject: {
+				Charset: 'UTF-8',
+				Data: subject,
+			},
+	  	},
+		Headers: {
+			"List-Unsubscribe": "<mailto:unsubscribe@smartcalendar.us>, <https://smartcalendar.us/app?to=unsubscribe>"
+		}
 	}
 
   try {
@@ -4107,7 +4110,8 @@ app.post('/generatereferafriendinvitelink', async (req, res) => {
 
 app.post('/getuseremailpreferences', async (req, res) => {
 	try{
-		let userid = req.body.userid
+		let userid = req.body?.loggedoutuserid || req.session?.user?.userid
+
 		if(!userid){
 			return res.status(401).json({ error: 'User ID not provided.' })
 		}
