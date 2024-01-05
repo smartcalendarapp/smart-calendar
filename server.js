@@ -3453,10 +3453,11 @@ app.post('/sendcontactus', async (req, res, next) => {
 
 app.post('/sendfeedback', async (req, res, next) => {
 	try {
-		const content = req.body.content
+		const content = req.body?.content
 		const userid = req.session?.user?.userid
+		const loggedoutuserid = req.body?.loggedoutuserid
 
-		const message = new FeedbackObject({ userid: userid, content: content })
+		const message = new FeedbackObject({ userid: userid || loggedoutuserid, content: content })
 		
 		try{
 			await savefeedbackobject(message)

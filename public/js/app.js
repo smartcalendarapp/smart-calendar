@@ -4559,9 +4559,9 @@ function geteventsuggestion(){
 }
 
 let unsubscribeemailpreferences;
-let unsubscribeuserid;
+let loggedoutuserid;
 async function getuseremailpreferences(){
-	if(!unsubscribeuserid) return
+	if(!loggedoutuserid) return
 	try{
 		const response = await fetch('/getuseremailpreferences', {
 			method: 'POST',
@@ -4569,7 +4569,7 @@ async function getuseremailpreferences(){
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				userid: unsubscribeuserid
+				userid: loggedoutuserid
 			})
 		})
 		if (response.status == 200) {
@@ -4591,7 +4591,7 @@ async function getuseremailpreferences(){
 
 async function setuseremailpreferences(){
 	if(!unsubscribeemailpreferences) return false
-	if(!unsubscribeuserid) return false
+	if(!loggedoutuserid) return false
 	try{
 		const response = await fetch('/setuseremailpreferences', {
 			method: 'POST',
@@ -4599,7 +4599,7 @@ async function setuseremailpreferences(){
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				userid: unsubscribeuserid,
+				userid: loggedoutuserid,
 				emailpreferences: unsubscribeemailpreferences
 			})
 		})
@@ -4618,9 +4618,11 @@ async function setuseremailpreferences(){
 function checkquery(){
 	const queryParams = new URLSearchParams(window.location.search)
 
+	if (queryParams.get('userid')) {
+		loggedoutuserid = queryParams.get('userid')
+	}
 	if (queryParams.get('to') === 'unsubscribe') {
-		if (queryParams.get('userid')) {
-			unsubscribeuserid = queryParams.get('userid')
+		if (loggedoutuserid) {
 			getuseremailpreferences()
 		}
 	}else if (queryParams.get('to') === 'feedback') {
@@ -8667,7 +8669,7 @@ async function submitfeedbackpopup(){
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ content: content })
+			body: JSON.stringify({ content: content, loggedoutuserid: loggedoutuserid })
 		})
 		if (response.status == 200) {
 			//reset
