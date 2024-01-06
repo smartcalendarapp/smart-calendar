@@ -12576,10 +12576,16 @@ function geteventfromtodo(item) {
 	enddate.setMinutes(enddate.getMinutes() + item.duration)
 
 	let newitem = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), item.title, item.notes, 1)
+	
 	newitem.endbefore.year = endbeforeyear
 	newitem.endbefore.month = endbeforemonth
 	newitem.endbefore.day = endbeforeday
 	newitem.endbefore.minute = endbeforeminute
+
+	newitem.startafter.year = item.startafter.year
+	newitem.startafter.month = item.startafter.month
+	newitem.startafter.day = item.startafter.day
+	newitem.startafter.minute = item.startafter.minute
 
 
 	newitem.priority = item.priority
@@ -12609,6 +12615,11 @@ function gettodofromevent(item) {
 
 	let newitem = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), duration, item.title, item.notes)
 
+	newitem.startafter.year = item.startafter.year
+	newitem.startafter.month = item.startafter.month
+	newitem.startafter.day = item.startafter.day
+	newitem.startafter.minute = item.startafter.minute
+	
 	newitem.priority = item.priority
 	newitem.completed = item.completed
 	newitem.id = item.id
@@ -14105,9 +14116,12 @@ function updateaichatinput(){
 }
 
 
+//submit message
+
 let aichattemporarydata = {}
 let isgenerating = false
 let isanimating = false
+
 async function submitaimessage(optionalinput, dictated){
 	if(isgenerating || isanimating) return
 	
@@ -14709,6 +14723,7 @@ async function submitaimessage(optionalinput, dictated){
 								let item = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), duration, title)
 								item.duration = duration
 
+
 								let { frequency, interval, byday, count, until } = getRecurrenceData({ recurrence: recurrence ? [ recurrence ] : [] })
 
 								if(frequency != null) item.repeat.frequency = frequency
@@ -14718,6 +14733,7 @@ async function submitaimessage(optionalinput, dictated){
 								if(until != null) item.repeat.until = until
 								if(count != null) item.repeat.count = count
 								
+
 								let startdate;
 								if(startminute != null && startyear != null && startmonth != null && startday != null){
 									startdate = new Date(startyear, startmonth, startday, 0, startminute)
@@ -14953,18 +14969,20 @@ async function submitaimessage(optionalinput, dictated){
 								if(duration != null){
 									if(startdate){
 										enddate = new Date(startdate)
-									}else{
+										enddate.setMinutes(enddate.getMinutes() + duration)
+									}else if(Calendar.Event.isEvent(item)){
 										enddate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+										enddate.setMinutes(enddate.getMinutes() + duration)
 									}
-									enddate.setMinutes(enddate.getMinutes() + duration)
 								}
 								if(!enddate || isNaN(enddate.getTime())){
 									if(startdate){
 										enddate = new Date(startdate)
-									}else{
+										enddate.setTime(enddate.getTime() + oldduration)
+									}else if(Calendar.Event.isEvent(item)){
 										enddate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+										enddate.setTime(enddate.getTime() + oldduration)
 									}
-									enddate.setTime(enddate.getTime() + oldduration)
 								}
 
 
