@@ -14739,7 +14739,6 @@ async function submitaimessage(optionalinput, dictated){
 									startdate = new Date(startyear, startmonth, startday, 0, startminute)
 								}
 								if(startdate && !isNaN(startdate.getTime())){
-									lastmovedeventid = item.id
 									item.startafter.year = startdate.getFullYear()
 									item.startafter.month = startdate.getMonth()
 									item.startafter.day = startdate.getDate()
@@ -16460,11 +16459,6 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				if(lastmoveditem.type == 1){
 					if(conflicts.length > 0){
 						lastmoveditem.autoschedulelocked = true
-
-						lastmoveditem.startafter.year = null
-						lastmoveditem.startafter.month = null
-						lastmoveditem.startafter.day = null
-						lastmoveditem.startafter.minute = null
 					}else{
 						lastmoveditem.autoschedulelocked = false
 					}
