@@ -4861,7 +4861,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								},
 								"required": [ "commands" ]
 							},
-							"description": `If user command is implied or not explicit enough, do NOT return app_action, and ask for clarification. If user did not provide enough information, do NOT return app_action, and ask for more information: ${allfunctions.map(d => d.name).join(', ')}`
+							"description": `If user command is implied or not explicit enough, do NOT return app_action, and ask for clarification. If user did not provide enough information, do NOT return app_action, and ask for more information: Otherwise, return app_action for the following commands: ${allfunctions.map(d => d.name).join(', ')}`
 						}
 					],
 					max_tokens: 200,
@@ -4877,7 +4877,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				}
 				try {
 					for await (const chunk of response) {	
-						console.warn(chunk.choices[0])
 						if(chunk.choices[0].delta?.function_call && chunk.choices[0].delta?.function_call.name == 'app_action'){
 							isfunctioncall = true
 						}
@@ -5003,7 +5002,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 						try {
 							for await (const chunk of response2) {	
-								console.warn(chunk.choices[0])
 								if(chunk.choices[0].delta?.function_call && chunk.choices[0].delta.function_call?.name == 'app_action'){
 									isfunctioncall2 = true
 								}
