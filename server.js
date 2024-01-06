@@ -4455,6 +4455,8 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 			let tempoutput = ''
 			for(let d of tempevents){
 				if(isAllDay(d)) continue
+				
+				//simplified context
 				let newstring = `Event title: ${d.title || 'New Event'}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}.`
 
 				if(tempoutput.length + newstring.length > MAX_CALENDAR_CONTEXT_LENGTH) break
@@ -4480,7 +4482,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Competed task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}""" Provide a very short personal motivational sentence for the user who just completed this task. Then, mention only the next upcoming event (if there is one) and at what time and in how long from now, and mention a break before it (if there is one), in one sentence. Calendar data: """${calendarcontext}"""`
+		let inputtext = `Competed task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}""" Provide a very short personal motivational sentence for the user who just completed this task. Then, mention only the next upcoming event (if there is one) and at what time, and mention if there is a break before it or not, in one sentence. Calendar data: """${calendarcontext}"""`
 		let custominstructions = `Respond in no more than 30 words, concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant, as if the user is a boss. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
@@ -4826,7 +4828,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. Primary function: Detect user's interaction with the app and return function app_action, or detect if user's command is too implicit or unclearly suggested, and ask for more details. Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted. Never say or mention internal ID of events/tasks. Present dates, times, and recurrences in natural language. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively finish messages with a creative following question or suggestion related to user's last command. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. Primary function: Detect user's interaction with the app and return function app_action, or detect if user's command is too implicit or unclearly suggested, and ask for more details. Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted. Never say or mention internal ID of events/tasks. Present dates, times, and recurrences in natural language. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively finish messages with a specific question or suggestion relating to user's last message to promote dialogue. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 			const systeminstructionsexamples1 = ` Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: Alright! Please let me know what it's called and what time it's for.\nUser: I'll read some books tomorrow morning\nAssistant: Would you like me to create a task for that?"""`
 
 			try {
@@ -4875,6 +4877,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				}
 				try {
 					for await (const chunk of response) {	
+						console.warn(chunk.choices[0])
 						if(chunk.choices[0].delta?.function_call && chunk.choices[0].delta?.function_call.name == 'app_action'){
 							isfunctioncall = true
 						}
@@ -5000,6 +5003,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 						try {
 							for await (const chunk of response2) {	
+								console.warn(chunk.choices[0])
 								if(chunk.choices[0].delta?.function_call && chunk.choices[0].delta.function_call?.name == 'app_action'){
 									isfunctioncall2 = true
 								}
