@@ -4740,7 +4740,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							dueDate: { type: 'string', description: 'Task due date in format: YYYY-MM-DDTHH:MM' },
 							startDate: { type: 'string', description: 'Task scheduled in calendar start date in format: YYYY-MM-DDTHH:MM' },
 							duration: { type: 'string', description: 'Task duration in format: HH:MM' },
-							recurrence: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
+							RRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 						},
 						required: ['title']
 					}
@@ -4754,14 +4754,14 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							title: { type: 'string', description: 'Event title' },
 							startDate: { type: 'string', description: 'Event start date in format: YYYY-MM-DDTHH:MM' },
 							endDate: { type: 'string', descrption: 'Event end date in format: YYYY-MM-DDTHH:MM' },
-							recurrence: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
+							RRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 						},
 						required: ['title']
 					}
 				},
 				{
 					name: 'delete_event',
-					description: 'Find event by direct and explicit reference in user prompt. If event not found or unsure, do not return function and reply with a message for clarification.  Returns nothing if the event does not exist.',
+					description: 'Find event by direct and explicit reference in user prompt. Return nothing if the event does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -4780,7 +4780,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							newTitle: { type: 'string', description: 'New title' },
 							newStartDate: { type: 'string', description: 'New start date in format: YYYY-MM-DDTHH:MM' },
 							newEndDate: { type: 'string', description: 'New end date in format: YYYY-MM-DDTHH:MM' },
-							newRecurrence: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
+							newRRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 							newDuration: { type: 'string', description: 'New duration in format: HH:MM' },
 						},
 						required: []
@@ -4788,7 +4788,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				},
 				{
 					name: 'delete_task',
-					description: 'Find task by direct and explicit reference in user prompt. If task not found or unsure, do not return function and reply with a message for clarification. Returns nothing if the task does not exist.',
+					description: 'Find task by direct and explicit reference in user prompt. Return nothing if the task does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -4809,7 +4809,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							newDuration: { type: 'string', description: 'New duration in format: HH:MM' },
 							newStartDate: { type: 'string', description: 'New scheduled start date in format: YYYY-MM-DDTHH:MM' },
 							newEndDate: { type: 'string', description: 'New scheduled end date in format: YYYY-MM-DDTHH:MM' },
-							newRecurrence: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
+							newRRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 							newCompleted: { type: 'boolean', description: 'New completed status' },
 						},
 						required: []
@@ -4828,7 +4828,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			//PROMPT
 
 			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. Primary function: Detect user's interaction with the app and return function app_action, or detect if user's command is too implicit or unclearly suggested, and ask for more details. Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted. Never say or mention internal ID of events/tasks. Present dates, times, and recurrences in natural language. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively finish messages with a specific question or suggestion relating to user's last message to promote dialogue. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
-			const systeminstructionsexamples1 = ` Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: Alright! Please let me know what it's called and what time it's for.\nUser: I'll read some books tomorrow morning\nAssistant: Would you like me to add an event to your calendar?\nUser: [pasted content that contains tasks or events]\nAssistant: Would you like me to add that task/event?"""`
+			const systeminstructionsexamples1 = ` Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: Alright! Please let me know what it's called and what time it's for.\nUser: I'll read some books tomorrow morning\nAssistant: Would you like me to add an event to your calendar?\nUser: [pasted content that contains tasks or events]\nAssistant: Would you like me to add these tasks/events?"""`
 
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""`

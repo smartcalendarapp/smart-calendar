@@ -14250,7 +14250,7 @@ async function submitaimessage(optionalinput, dictated){
 						let endminute = getMinute(arguments?.endDate?.replace('T', ' ')).value
 						let [endyear, endmonth, endday] = getDate(arguments?.endDate?.replace('T', ' ')).value
 						let error = arguments?.errorMessage || ''
-						let recurrence = arguments?.recurrence
+						let recurrence = arguments?.RRULE
 
 						if(error && !title && !startminute && !startyear){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
@@ -14527,7 +14527,7 @@ async function submitaimessage(optionalinput, dictated){
 						let newstartdate = arguments?.newStartDate
 						let newenddate = arguments?.newEndDate
 						let newduration = arguments?.newDuration
-						let newrecurrence = arguments?.newRecurrence
+						let newrecurrence = arguments?.newRRULE
 
 						if(error && !id){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
@@ -14670,7 +14670,7 @@ async function submitaimessage(optionalinput, dictated){
 						let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(arguments?.dueDate?.replace('T', ' ')).value
 						let duration = getDuration(arguments?.duration).value
 						let error = arguments?.errorMessage || ''
-						let recurrence = arguments?.recurrence
+						let recurrence = arguments?.RRULE
 						let startminute = getMinute(arguments?.startDate?.replace('T', ' ')).value || 9*60
 						let [startyear, startmonth, startday] = getDate(arguments?.startDate?.replace('T', ' ')).value
 
@@ -14897,7 +14897,7 @@ async function submitaimessage(optionalinput, dictated){
 						let newcompleted = arguments?.newCompleted
 						let newstartdate = arguments?.newStartDate
 						let newenddate = arguments?.newEndDate
-						let newrecurrence = arguments?.newRecurrence
+						let newrecurrence = arguments?.newRRULE
 
 						if(error && !id){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
