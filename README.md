@@ -1,2 +1,2 @@
 # smart-calendar
-(c) 2023 James Tsaggaris
+(c) 2024 James Tsaggaris

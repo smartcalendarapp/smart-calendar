@@ -444,7 +444,7 @@ webpush.setVapidDetails(
 
 
 //EMAIL SERVICE INITIALIZATION
-const { SESClient, SendEmailCommand } = require("@aws-sdk/client-ses")
+const { SESClient, SendEmailCommand, SendRawEmailCommand } = require("@aws-sdk/client-ses")
 
 const sesclient = new SESClient({ 
 	region: 'us-west-1',
@@ -453,6 +453,53 @@ const sesclient = new SESClient({
 		secretAccessKey: SECRET_ACCESS_KEY
 	}
 })
+
+
+async function sendRawEmail({ from, to, htmlbody, textbody, subject }){
+	//formatting is very careful, newlines and space cannot be messed up
+
+    const unsubscribeLink = 'mailto:unsubscribe@smartcalendar.us'
+    const listUnsubscribePostValue = 'List-Unsubscribe=One-Click'
+
+    const input = {
+        "Destinations": [],
+        "FromArn": "",
+        "RawMessage": {
+            "Data": Buffer.from(`From: <${from}>
+To: <${to}>
+Subject: ${subject}
+MIME-Version: 1.0
+Content-type: Multipart/Alternative; boundary="NextPart"
+List-Unsubscribe: <${unsubscribeLink}>
+List-Unsubscribe-Post: ${listUnsubscribePostValue}
+
+--NextPart
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+${textbody}
+
+--NextPart
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+${htmlbody}
+
+--NextPart--`)
+        },
+        "ReturnPathArn": "",
+        "Source": from,
+        "SourceArn": ""
+    }
+
+    try{
+        const command = new SendRawEmailCommand(input)
+        const response = await sesclient.send(command)
+        return response
+    }catch(err){
+        return err
+    }
+}
 
 async function sendEmail({ from, to, subject, htmlbody, textbody }){
 	const params = {
@@ -682,7 +729,7 @@ async function processReminders(){
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
 										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
-									<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
+									<p>&copy; 2024 James Tsaggaris. All rights reserved.</p>
 									</div>
 
 							</div>
@@ -700,7 +747,7 @@ async function processReminders(){
 					Smart Calendar | Where AI Meets Agenda
 
 					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
-					(c) 2023 James Tsaggaris. All rights reserved.`
+					(c) 2024 James Tsaggaris. All rights reserved.`
 				})
 
 			}else if(item.type == 'task'){
@@ -751,7 +798,7 @@ async function processReminders(){
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
 										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
-									<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
+									<p>&copy; 2024 James Tsaggaris. All rights reserved.</p>
 									</div>
 
 							</div>
@@ -769,7 +816,7 @@ async function processReminders(){
 					Smart Calendar | Where AI Meets Agenda
 
 					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
-					(c) 2023 James Tsaggaris. All rights reserved.`
+					(c) 2024 James Tsaggaris. All rights reserved.`
 				})
 				
 			}
@@ -896,7 +943,7 @@ async function processengagementalerts(){
 					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
 								<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
-							<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
+							<p>&copy; 2024 James Tsaggaris. All rights reserved.</p>
 							</div>
 			
 					</div>
@@ -914,7 +961,7 @@ async function processengagementalerts(){
 				Smart Calendar | Where AI Meets Agenda
 			
 				You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
-				(c) 2023 James Tsaggaris. All rights reserved.`
+				(c) 2024 James Tsaggaris. All rights reserved.`
 			})
 
 
@@ -975,7 +1022,7 @@ async function processengagementalerts(){
 					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
 								<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
-							<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
+							<p>&copy; 2024 James Tsaggaris. All rights reserved.</p>
 							</div>
 			
 					</div>
@@ -991,7 +1038,7 @@ async function processengagementalerts(){
 				Smart Calendar | Where AI Meets Agenda
 			
 				You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
-				(c) 2023 James Tsaggaris. All rights reserved.`
+				(c) 2024 James Tsaggaris. All rights reserved.`
 			})
 
 
@@ -3137,7 +3184,7 @@ async function sendwelcomeemail(user){
 		<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
 					<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
-				<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
+				<p>&copy; 2024 James Tsaggaris. All rights reserved.</p>
 				</div>
 
 		</div>
@@ -3153,7 +3200,7 @@ async function sendwelcomeemail(user){
 	Smart Calendar | Where AI Meets Agenda
 
 	You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
-	(c) 2023 James Tsaggaris. All rights reserved.`
+	(c) 2024 James Tsaggaris. All rights reserved.`
 		})
 	}
 }
@@ -3776,7 +3823,7 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
 								<p>You are receiving this email because a Smart Calendar user sent you an invitation. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
-							<p>&copy; 2023 James Tsaggaris. All rights reserved.</p>
+							<p>&copy; 2024 James Tsaggaris. All rights reserved.</p>
 							</div>
 
 					</div>
@@ -3795,7 +3842,7 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 			Smart Calendar | Where AI Meets Agenda
 
 			You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
-			(c) 2023 James Tsaggaris. All rights reserved.`
+			(c) 2024 James Tsaggaris. All rights reserved.`
 		})
 
 
@@ -4690,7 +4737,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							dueDate: { type: 'string', description: '(optional) Task due date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Task title' },
 							duration: { type: 'string', description: '(optional) Task duration in HH:MM' },
-							errorMessage: { type: 'string', description: '(optional) A short message if tasks are not found or other error' },
+							errorMessage: { type: 'string', description: '(optional) An error message if task is missing title' },
 						},
 						required: ['title']
 					}
@@ -4704,7 +4751,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							startDate: { type: 'string', description: '(optional) Event start date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Event title' },
 							endDate: { type: 'string', descrption: '(optional) Event end date in YYYY-MM-DD HH:MM' },
-							errorMessage: { type: 'string', description: '(optional) A short message if tasks are not found or other error' },
+							errorMessage: { type: 'string', description: '(optional) An error message if event is missing title' },
 						},
 						required: ['title']
 					}
@@ -4780,7 +4827,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			//PROMPT
 
 			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant, as if the user is a boss. Respond in no more than 30 words. Never mention internal ID of events or tasks data. Access to your schedule and tasks is granted. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
-			const systeminstructionsexamples1 = ` Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: Alright! Please let me know what it's called and what time it's for."""`
+			const systeminstructionsexamples1 = ` Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: Alright! Please let me know what it's called and what time it's for.\nUser: I'll read some books tomorrow morning\nAssistant: Would you like me to create a task for that?"""`
 			const systeminstructionsexamples2 = ` Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: [ create_task: { title: "Work on project", dueDate: "YYYY-MM-DD HH:MM" } ] }) }\nUser: Move that to an earlier time\nAssistant: function_call: { name: "app_action", JSON.stringify({ commands: [ modify_event: { ID: "some ID", newStartDate: "YYYY-MM-DD HH:MM" } ] })."""`
 
 			try {
@@ -4815,7 +4862,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								  "commands"
 								]
 							},
-							"description": `If there is not enough information, do NOT trigger function call, and ask user for more information. Otherwise, return app commands if detected in prompt as one of the following: ${allfunctions.map(d => d.name).join(', ')}`
+							"description": `If unsure if user used a command, do NOT trigger function call, and ask for clarification. If there is not enough information, do NOT trigger function call, and ask for more information. Otherwise, return app commands if detected in prompt as one of the following: ${allfunctions.map(d => d.name).join(', ')}`
 						}
 					],
 					max_tokens: 200,
@@ -4831,6 +4878,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				}
 				try {
 					for await (const chunk of response) {	
+						console.warn(chunk.choices[0])
 						if(chunk.choices[0].delta?.function_call && chunk.choices[0].delta?.function_call.name == 'app_action'){
 							isfunctioncall = true
 						}
@@ -4935,7 +4983,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								}
 							]
 		
-							request2input += ` If there is not enough information, do NOT trigger function call, and ask user for more information. Otherwise, Function call app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
+							request2input += ` If there is not enough information, do NOT trigger function call, and ask user for more information. Otherwise, return function call app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
 						}
 		
 						request2options.messages = [
@@ -4960,6 +5008,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 						try {
 							for await (const chunk of response2) {	
+								console.warn(chunk.choices[0])
 								if(chunk.choices[0].delta?.function_call && chunk.choices[0].delta.function_call?.name == 'app_action'){
 									isfunctioncall2 = true
 								}
