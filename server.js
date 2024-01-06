@@ -4761,7 +4761,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				},
 				{
 					name: 'delete_event',
-					description: 'Check for event in calendar to delete by title or direct reference. Need high confidence. Returns nothing if the event does not exist.',
+					description: 'Find event by direct and explicit reference in user prompt. If event not found or unsure, do not return function and reply with a message for clarification.  Returns nothing if the event does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -4772,11 +4772,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				},
 				{
 					name: 'modify_event',
-					description: 'Check for event in calendar to modify by title or direct reference. Need high confidence. Returns nothing if an event does not exist. All fields optional.',
+					description: 'Find event by direct and explicit reference in user prompt. If event not found or unsure, do not return function and reply with a message for clarification. Return nothing if the event does not exist. All fields optional.',
 					parameters: {
 						type: 'object',
 						properties: {
-							id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
+							id: { type: 'string', description: 'Specific ID of event determined by user input. Return nothing if not found.' },
 							newTitle: { type: 'string', description: 'New title' },
 							newStartDate: { type: 'string', description: 'New start date in format: YYYY-MM-DDTHH:MM' },
 							newEndDate: { type: 'string', description: 'New end date in format: YYYY-MM-DDTHH:MM' },
@@ -4788,7 +4788,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				},
 				{
 					name: 'delete_task',
-					description: 'Check for task in to-do list to delete by title or direct reference. Need high confidence. Returns nothing if the task does not exist.',
+					description: 'Find task by direct and explicit reference in user prompt. If task not found or unsure, do not return function and reply with a message for clarification. Returns nothing if the task does not exist.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -4799,7 +4799,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				},
 				{
 					name: 'modify_task',
-					description: 'Check for task in to-do list to modify by title or direct reference. Returns nothing if the task does not exist. All fields optional.',
+					description: 'Find task by direct and explicit reference in user prompt. If task not found or unsure, do not return function and reply with a message for clarification. Return nothing if the task does not exist. All fields optional.',
 					parameters: {
 						type: 'object',
 						properties: {

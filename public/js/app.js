@@ -14713,6 +14713,7 @@ async function submitaimessage(optionalinput, dictated){
 									startdate = new Date(startyear, startmonth, startday, 0, startminute)
 								}
 								if(startdate && !isNaN(startdate.getTime())){
+									lastmovedeventid = item.id
 									item.startafter.year = startdate.getFullYear()
 									item.startafter.month = startdate.getMonth()
 									item.startafter.day = startdate.getDate()
