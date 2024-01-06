@@ -14214,6 +14214,8 @@ async function submitaimessage(optionalinput, dictated){
 				output = data.data
 			}
 
+			responsechatmessage.rawoutput = output
+
 			let idmap = data.idmap
 			function getrealid(tempid){
 				if(!idmap) return null
@@ -14244,6 +14246,7 @@ async function submitaimessage(optionalinput, dictated){
 						let endminute = getMinute(arguments?.endDate?.replace('T', ' ')).value
 						let [endyear, endmonth, endday] = getDate(arguments?.endDate?.replace('T', ' ')).value
 						let error = arguments?.errorMessage || ''
+						let recurrence = arguments?.recurrence
 
 						if(error && !title && !startminute && !startyear){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
@@ -14261,11 +14264,19 @@ async function submitaimessage(optionalinput, dictated){
 								enddate.setMinutes(enddate.getMinutes() + 60)
 							}
 
+							let { frequency, interval, byday, count, until } = getRecurrenceData({ recurrence: recurrence ? [ recurrence ] : [] })
+
+							if(frequency != null) item.repeat.frequency = frequency
+							if(interval != null) item.repeat.interval = interval
+							if(byday != null && byday.length > 0) item.repeat.byday = byday
+							if(until != null) item.repeat.until = until
+							if(count != null) item.repeat.count = count
+
 
 							if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
 								let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title)
-								calendar.events.push(item)
 
+								calendar.events.push(item)
 
 								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created an event "${Calendar.Event.getRawTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
@@ -14323,7 +14334,7 @@ async function submitaimessage(optionalinput, dictated){
 
 								let timeoptions = gettimeoptions(3)
 
-								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `What time do you want "${title}" to take place?`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `What time do you want "${title || 'New Event'}" to take place?`
 								responsechatmessage.nextactions = [...timeoptions.map(d => `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('${d}')">${d}</div>`), `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Auto schedule')">Auto schedule</div>`]
 							}
 						}
@@ -14512,6 +14523,7 @@ async function submitaimessage(optionalinput, dictated){
 						let newstartdate = arguments?.newStartDate
 						let newenddate = arguments?.newEndDate
 						let newduration = arguments?.newDuration
+						let newrecurrence = arguments?.newRecurrence
 
 						if(error && !id){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
@@ -14573,6 +14585,17 @@ async function submitaimessage(optionalinput, dictated){
 									}
 
 									item.title = newtitle || item.title
+
+
+									//recurrence
+									let { frequency, interval, byday, count, until } = getRecurrenceData({ recurrence: newrecurrence ? [ newrecurrence ] : [] })
+
+									if(frequency != null) item.repeat.frequency = frequency
+									if(interval != null) item.repeat.interval = interval
+									if(byday != null && byday.length > 0) item.repeat.byday = byday
+									if(until != null) item.repeat.until = until
+									if(count != null) item.repeat.count = count
+
 
 									//for auto schedule
 									lastmovedeventid = item.id
@@ -14641,6 +14664,7 @@ async function submitaimessage(optionalinput, dictated){
 						let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(arguments?.dueDate?.replace('T', ' ')).value
 						let duration = getDuration(arguments?.duration).value
 						let error = arguments?.errorMessage || ''
+						let recurrence = arguments?.recurrence
 
 						if(error && !title && !endbeforeminute && !endbeforeyear){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
@@ -14663,10 +14687,19 @@ async function submitaimessage(optionalinput, dictated){
 								endbeforedate.setHours(0,1440-1,0,0)
 							}
 
+							let { frequency, interval, byday, count, until } = getRecurrenceData({ recurrence: recurrence ? [ recurrence ] : [] })
+
+							if(frequency != null) item.repeat.frequency = frequency
+							if(interval != null) item.repeat.interval = interval
+							if(byday != null && byday.length > 0) item.repeat.byday = byday
+							if(until != null) item.repeat.until = until
+							if(count != null) item.repeat.count = count
+
 
 							if(endbeforedate && !isNaN(endbeforedate.getTime())){
 								let item = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), duration, title)
 								item.duration = duration
+								
 								calendar.todos.push(item)
 
 								tempautoscheduleevents.push(item)
@@ -14844,6 +14877,7 @@ async function submitaimessage(optionalinput, dictated){
 						let newcompleted = arguments?.newCompleted
 						let newstartdate = arguments?.newStartDate
 						let newenddate = arguments?.newEndDate
+						let newrecurrence = arguments?.newRecurrence
 
 						if(error && !id){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
@@ -14925,6 +14959,15 @@ async function submitaimessage(optionalinput, dictated){
 									item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
 								}
 
+
+								//recurrence
+								let { frequency, interval, byday, count, until } = getRecurrenceData({ recurrence: newrecurrence ? [ newrecurrence ] : [] })
+
+								if(frequency != null) item.repeat.frequency = frequency
+								if(interval != null) item.repeat.interval = interval
+								if(byday != null && byday.length > 0) item.repeat.byday = byday
+								if(until != null) item.repeat.until = until
+								if(count != null) item.repeat.count = count
 
 
 								item.title = newtitle || item.title

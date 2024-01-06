@@ -4737,6 +4737,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							dueDate: { type: 'string', description: '(optional) Task due date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Task title' },
 							duration: { type: 'string', description: '(optional) Task duration in HH:MM' },
+							recurrence: { type: 'string', description: '(optional) Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 							errorMessage: { type: 'string', description: '(optional) An error message if task is missing title' },
 						},
 						required: ['title']
@@ -4751,6 +4752,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							startDate: { type: 'string', description: '(optional) Event start date in YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Event title' },
 							endDate: { type: 'string', descrption: '(optional) Event end date in YYYY-MM-DD HH:MM' },
+							recurrence: { type: 'string', description: '(optional) Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 							errorMessage: { type: 'string', description: '(optional) An error message if event is missing title' },
 						},
 						required: ['title']
@@ -4763,7 +4765,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						type: 'object',
 						properties: {
 							id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
-							//errorMessage: { type: 'string', description: '(optional) A short message if tasks are not found or other error' },
 						},
 						required: []
 					}
@@ -4778,8 +4779,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							newTitle: { type: 'string', description: '(optional) New title' },
 							newStartDate: { type: 'string', description: '(optional) New start date in YYYY-MM-DD HH:MM' },
 							newEndDate: { type: 'string', description: '(optional) New end date in YYYY-MM-DD HH:MM' },
+							newRecurrence: { type: 'string', description: '(optional) Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 							newDuration: { type: 'string', description: '(optional) New duration in HH:MM' },
-							//errorMessage: { type: 'string', description: '(optional) A short message if tasks are not found or other error' },
 						},
 						required: []
 					}
@@ -4791,7 +4792,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						type: 'object',
 						properties: {
 							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
-							//errorMessage: { type: 'string', description: '(optional) A short message if tasks are not found or other error' },
 						},
 						required: []
 					}
@@ -4808,8 +4808,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							newDuration: { type: 'string', description: '(optional) New duration in HH:MM' },
 							newStartDate: { type: 'string', description: '(optional) New scheduled start date in YYYY-MM-DD HH:MM' },
 							newEndDate: { type: 'string', description: '(optional) New scheduled end date in YYYY-MM-DD HH:MM' },
+							newRecurrence: { type: 'string', description: '(optional) Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 							newCompleted: { type: 'boolean', description: '(optional) New completed status' },
-							//errorMessage: { type: 'string', description: '(optional) A error message if tasks are not found or other error' },
 						},
 						required: []
 					}
@@ -4858,11 +4858,9 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 									}
 								  }
 								},
-								"required": [
-								  "commands"
-								]
+								"required": [ "commands" ]
 							},
-							"description": `If unsure if user used a command, do NOT trigger function call, and ask for clarification. If there is not enough information, do NOT trigger function call, and ask for more information. Otherwise, return app commands if detected in prompt as one of the following: ${allfunctions.map(d => d.name).join(', ')}`
+							"description": `If unsure if user implied an app command or not enough information, do NOT trigger app_action, and ask for clarification. Otherwise, return app commands if detected in prompt as one of the following: ${allfunctions.map(d => d.name).join(', ')}`
 						}
 					],
 					max_tokens: 200,
@@ -4878,7 +4876,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				}
 				try {
 					for await (const chunk of response) {	
-						console.warn(chunk.choices[0])
 						if(chunk.choices[0].delta?.function_call && chunk.choices[0].delta?.function_call.name == 'app_action'){
 							isfunctioncall = true
 						}
@@ -4975,15 +4972,13 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 												}
 										  	}
 										},
-										"required": [
-										  "commands"
-										]
+										"required": [ "commands" ]
 									},
 									"description": `Precisely and carefully extract information for the commands.`
 								}
 							]
 		
-							request2input += ` If there is not enough information, do NOT trigger function call, and ask user for more information. Otherwise, return function call app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
+							request2input += ` If unsure if user implied an app command or not enough information, do NOT trigger app_action, and ask for clarification. Otherwise, return app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
 						}
 		
 						request2options.messages = [
@@ -5008,7 +5003,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 						try {
 							for await (const chunk of response2) {	
-								console.warn(chunk.choices[0])
 								if(chunk.choices[0].delta?.function_call && chunk.choices[0].delta.function_call?.name == 'app_action'){
 									isfunctioncall2 = true
 								}
