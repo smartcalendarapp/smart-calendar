@@ -4737,10 +4737,10 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						type: 'object',
 						properties: {
 							title: { type: 'string', description: 'Task title' },
-							dueDate: { type: 'string', description: 'Task due date in format: YYYY-MM-DD HH:MM' },
-							startDate: { type: 'string', description: 'Scheduled start date in format: YYYY-MM-DD HH:MM' },
+							dueDate: { type: 'string', description: 'Task due date/time in format: YYYY-MM-DD HH:MM' },
+							startDate: { type: 'string', description: 'Scheduled start date/time in format: YYYY-MM-DD HH:MM' },
 							duration: { type: 'string', description: 'Task duration in format: HH:MM' },
-							RRULE: { type: 'string', description: 'Recurrence in RRULE format: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
+							RRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 						},
 						required: ['title']
 					}
@@ -4752,8 +4752,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						type: 'object',
 						properties: {
 							title: { type: 'string', description: 'Event title' },
-							startDate: { type: 'string', description: 'Event start date in format: YYYY-MM-DD HH:MM' },
-							endDate: { type: 'string', descrption: 'Event end date in format: YYYY-MM-DD HH:MM' },
+							startDate: { type: 'string', description: 'Event start date/time in format: YYYY-MM-DD HH:MM' },
+							endDate: { type: 'string', descrption: 'Event end date/time in format: YYYY-MM-DD HH:MM' },
 							RRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 						},
 						required: ['title']
@@ -4778,8 +4778,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						properties: {
 							id: { type: 'string', description: 'Specific ID of event determined by user input. Return nothing if not found.' },
 							newTitle: { type: 'string', description: 'New title' },
-							newStartDate: { type: 'string', description: 'New start date in format: YYYY-MM-DD HH:MM' },
-							newEndDate: { type: 'string', description: 'New end date in format: YYYY-MM-DD HH:MM' },
+							newStartDate: { type: 'string', description: 'New start date/time in format: YYYY-MM-DD HH:MM' },
+							newEndDate: { type: 'string', description: 'New end date/time in format: YYYY-MM-DD HH:MM' },
 							newRRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 							newDuration: { type: 'string', description: 'New duration in format: HH:MM' },
 						},
@@ -4805,10 +4805,10 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						properties: {
 							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
 							newTitle: { type: 'string', description: 'New title' },
-							newDueDate: { type: 'string', description: 'New due date in format: YYYY-MM-DD HH:MM' },
+							newDueDate: { type: 'string', description: 'New due date/time in format: YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: 'New duration in format: HH:MM' },
-							newStartDate: { type: 'string', description: 'New scheduled start date in format: YYYY-MM-DD HH:MM' },
-							newEndDate: { type: 'string', description: 'New scheduled end date in format: YYYY-MM-DD HH:MM' },
+							newStartDate: { type: 'string', description: 'New scheduled start date/time in format: YYYY-MM-DD HH:MM' },
+							newEndDate: { type: 'string', description: 'New scheduled end date/time in format: YYYY-MM-DD HH:MM' },
 							newRRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 							newCompleted: { type: 'boolean', description: 'New completed status' },
 						},
