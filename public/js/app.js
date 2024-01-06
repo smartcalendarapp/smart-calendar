@@ -15067,9 +15067,8 @@ async function submitaimessage(optionalinput, dictated){
 							}
 						}
 						
-					}else if(command == 'schedule_task_in_calendar'){
+					}else if(command == 'move_task_to_calendar'){
 						
-
 						let id = getrealid(arguments?.id)
 						let error = arguments?.errorMessage || ''
 

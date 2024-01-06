@@ -4720,7 +4720,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					name: 'get_todo_list_tasks',
 				},
 				{
-					name: 'schedule_task_in_calendar',
+					name: 'move_task_to_calendar',
 					description: `Auto-schedule a task into user's calendar. Not to be confused with create a task or create an event.`,
 					parameters: {
 						type: 'object',
@@ -4818,9 +4818,9 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				},
 			]
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event','create_task', 'delete_task', 'modify_task','schedule_task_in_calendar'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_event', 'delete_event', 'modify_event','create_task', 'delete_task', 'modify_task','move_task_to_calendar'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
-			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'schedule_task_in_calendar'] //a subset of all functions, the functions that need todo data
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'move_task_to_calendar'] //a subset of all functions, the functions that need todo data
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
