@@ -1137,6 +1137,14 @@ class Calendar {
 				day: endbeforeday,
 				minute: endbeforeminute,
 			}
+
+			this.startafter = {
+				year: null,
+				month: null,
+				day: null,
+				minute: null,
+			}
+
 			this.notes = notes
 			this.priority = 0
 			this.duration = duration
@@ -14268,17 +14276,18 @@ async function submitaimessage(optionalinput, dictated){
 								enddate.setMinutes(enddate.getMinutes() + 60)
 							}
 
-							let { frequency, interval, byday, count, until } = getRecurrenceData({ recurrence: recurrence ? [ recurrence ] : [] })
-
-							if(frequency != null) item.repeat.frequency = frequency
-							if(interval != null) item.repeat.interval = interval
-							if(byday != null && byday.length > 0) item.repeat.byday = byday
-							if(until != null) item.repeat.until = until
-							if(count != null) item.repeat.count = count
-
 
 							if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
 								let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title)
+
+								let { frequency, interval, byday, count, until } = getRecurrenceData({ recurrence: recurrence ? [ recurrence ] : [] })
+
+								if(frequency != null) item.repeat.frequency = frequency
+								if(interval != null) item.repeat.interval = interval
+								if(interval == null && frequency != null) item.repeat.interval = 1
+								if(byday != null && byday.length > 0) item.repeat.byday = byday
+								if(until != null) item.repeat.until = until
+								if(count != null) item.repeat.count = count
 
 								calendar.events.push(item)
 
@@ -14596,6 +14605,7 @@ async function submitaimessage(optionalinput, dictated){
 
 									if(frequency != null) item.repeat.frequency = frequency
 									if(interval != null) item.repeat.interval = interval
+									if(interval == null && frequency != null) item.repeat.interval = 1
 									if(byday != null && byday.length > 0) item.repeat.byday = byday
 									if(until != null) item.repeat.until = until
 									if(count != null) item.repeat.count = count
@@ -14663,7 +14673,6 @@ async function submitaimessage(optionalinput, dictated){
 							}
 						}
 					}else if(command == 'create_task'){
-						
 
 						let title = arguments?.title || ''
 						let endbeforeminute = getMinute(arguments?.dueDate?.replace('T', ' ')).value || 0
@@ -14695,19 +14704,20 @@ async function submitaimessage(optionalinput, dictated){
 								endbeforedate.setHours(0,1440-1,0,0)
 							}
 
-							let { frequency, interval, byday, count, until } = getRecurrenceData({ recurrence: recurrence ? [ recurrence ] : [] })
-
-							if(frequency != null) item.repeat.frequency = frequency
-							if(interval != null) item.repeat.interval = interval
-							if(byday != null && byday.length > 0) item.repeat.byday = byday
-							if(until != null) item.repeat.until = until
-							if(count != null) item.repeat.count = count
-
 
 							if(endbeforedate && !isNaN(endbeforedate.getTime())){
 								let item = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), duration, title)
 								item.duration = duration
 
+								let { frequency, interval, byday, count, until } = getRecurrenceData({ recurrence: recurrence ? [ recurrence ] : [] })
+
+								if(frequency != null) item.repeat.frequency = frequency
+								if(interval != null) item.repeat.interval = interval
+								if(interval == null && frequency != null) item.repeat.interval = 1
+								if(byday != null && byday.length > 0) item.repeat.byday = byday
+								if(until != null) item.repeat.until = until
+								if(count != null) item.repeat.count = count
+								
 								let startdate;
 								if(startminute != null && startyear != null && startmonth != null && startday != null){
 									startdate = new Date(startyear, startmonth, startday, 0, startminute)
@@ -14986,6 +14996,7 @@ async function submitaimessage(optionalinput, dictated){
 
 								if(frequency != null) item.repeat.frequency = frequency
 								if(interval != null) item.repeat.interval = interval
+								if(interval == null && frequency != null) item.repeat.interval = 1
 								if(byday != null && byday.length > 0) item.repeat.byday = byday
 								if(until != null) item.repeat.until = until
 								if(count != null) item.repeat.count = count
