@@ -12619,7 +12619,7 @@ function gettodofromevent(item) {
 	newitem.startafter.month = item.startafter.month
 	newitem.startafter.day = item.startafter.day
 	newitem.startafter.minute = item.startafter.minute
-	
+
 	newitem.priority = item.priority
 	newitem.completed = item.completed
 	newitem.id = item.id
@@ -14694,7 +14694,7 @@ async function submitaimessage(optionalinput, dictated){
 						let duration = getDuration(arguments?.duration).value
 						let error = arguments?.errorMessage || ''
 						let recurrence = arguments?.RRULE
-						let startminute = getMinute(arguments?.startDate?.replace('T', ' ')).value || 9*60
+						let startminute = getMinute(arguments?.startDate?.replace('T', ' ')).value
 						let [startyear, startmonth, startday] = getDate(arguments?.startDate?.replace('T', ' ')).value
 
 						if(error && !title && !endbeforeminute && !endbeforeyear){
