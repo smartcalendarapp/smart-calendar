@@ -454,6 +454,12 @@ const sesclient = new SESClient({
 	}
 })
 
+function sleep(time) {
+	return new Promise(resolve => {
+		setTimeout(resolve, time)
+	})
+}
+
 
 async function sendRawEmail({ from, to, htmlbody, textbody, subject }){
 	//formatting is very careful, newlines and space cannot be messed up
@@ -497,7 +503,9 @@ ${htmlbody}
         const response = await sesclient.send(command)
         return response
     }catch(err){
-        return err
+		console.error(err)
+		
+        return null
     }
 }
 
@@ -523,9 +531,6 @@ async function sendEmail({ from, to, subject, htmlbody, textbody }){
 				Data: subject,
 			},
 	  	},
-		Headers: {
-			"List-Unsubscribe": "<mailto:unsubscribe@smartcalendar.us>, <https://smartcalendar.us/app?to=unsubscribe>"
-		}
 	}
 
   try {
@@ -2186,17 +2191,30 @@ app.get('/invite/:code', async (req, res, next) => {
 
 app.get('/blog/:page', (req, res, next) => {
 	let page = req.params.page
-	
-	  const filepath = path.join(__dirname, 'public', 'blog', page)
-	  const htmlfilepath = path.join(__dirname, 'public', 'blog', 'html', `${page}.html`)
-	  
-	  if (fs.existsSync(htmlfilepath)) {
-		  res.sendFile(htmlfilepath)
-	  }else if(fs.existsSync(filepath)){
-		  res.sendFile(filepath)
-	  }else{
-		  next()
-	  }
+
+	if(!page){
+		const filepath = path.join(__dirname, 'public', 'blog')
+		const htmlfilepath = path.join(__dirname, 'public', 'blog', 'html')
+		
+		if (fs.existsSync(htmlfilepath)) {
+			res.sendFile(htmlfilepath)
+		}else if(fs.existsSync(filepath)){
+			res.sendFile(filepath)
+		}else{
+			next()
+		}
+	}else{
+		const filepath = path.join(__dirname, 'public', 'blog', page)
+		const htmlfilepath = path.join(__dirname, 'public', 'blog', 'html', `${page}.html`)
+		
+		if (fs.existsSync(htmlfilepath)) {
+			res.sendFile(htmlfilepath)
+		}else if(fs.existsSync(filepath)){
+			res.sendFile(filepath)
+		}else{
+			next()
+		}
+	}
 })
   
 
@@ -2538,6 +2556,13 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 })
 */
 
+
+app.post('/unsubscribeAWS', async (req, res, next) => {
+	const email = req.body.email
+	console.warn(req)
+	res.end()
+})
+
 const loginwithgoogleclassroomhtml = `<div class="border-8px nowrap width-fit display-flex flex-row gap-6px align-center googlebutton justify-center text-center text-14px padding-8px-16px pointer transition-duration-100" onclick="logingoogle({ scope: ['calendar', 'classroom'], enable: ['classroom'] })">
 <img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png">
 Connect to Google Classroom
@@ -2547,6 +2572,7 @@ const loginwithgooglecalendarhtml = `<div class="border-8px nowrap width-fit dis
 <img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png">
 Connect to Google Calendar
 </div>`
+
 
 app.post('/setclientgooglecalendar', async (req, res, next) => {
 	try{
@@ -3137,7 +3163,7 @@ function getUserEmail(user){
 }
 
 function getUserName(user){
-	return (user.accountdata.google?.firstname || user.accountdata.google?.name || user.google_email) || user.accountdata.apple?.email || user.username
+	return (user.accountdata.google?.firstname || user.accountdata.google?.name || user.google_email?.split('@')[0]) || user.accountdata.apple?.email?.split('@')[0] || user?.username?.split('@')[0]
 }
 
 async function sendwelcomeemail(user){
@@ -4289,7 +4315,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 			return [days, hours, minutes].filter(f => f).join(' ')
 		}
 
-		let gptresponse = await getgptresponse(`Task: """${item.title.slice(0, 50)}""". Takes: ${getDHMText(item.duration)}. Provide: ONLY 3-4 names of subtasks, separated by comma in ONLY 1 line, with time needed for each. Example: Research 30m. No formatting.`)
+		let gptresponse = await getgptresponse(`Task: """${item.title.slice(0, 50)}""". Takes: ${getDHMText(item.duration)}. Provide: ONLY 3-4 names of subtasks, separated by comma in ONLY 1 line, with time needed for each. Example: Research topic 30m. No formatting.`)
 
 		if(!gptresponse){
 			return res.status(401).json({ error: 'Could not get response from AI.' })

@@ -4108,7 +4108,7 @@ function getUserEmail(){
 }
 
 function getUserName(){
-	return (clientinfo?.google?.firstname || clientinfo?.google?.name || clientinfo?.google_email) || clientinfo?.apple?.email || clientinfo?.username
+	return (clientinfo?.google?.firstname || clientinfo?.google?.name || clientinfo?.google_email?.split('@')[0]) || clientinfo?.apple?.email?.split('@')[0] || clientinfo?.username?.split('@')[0]
 }
 
 let isgettingclientdata = false;
@@ -13215,7 +13215,9 @@ function openaichat(){
 		
 		const tempoptions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my agenda for today?')">What's on my agenda today?</div>`,
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, 
-		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Schedule todays tasks in my calendar')">Schedule today's tasks in my calendar</div>`, 
+		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="addaiassistantinputwithnextaction('I need to work on ')">I need to work on [task]</div>`, 
+		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="addaiassistantinputwithnextaction('I have a meeting ')">I have a meeting [title and date]</div>`,
+		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="addaiassistantinputwithnextaction('Create a weekly recurring event for ')">Create a weekly recurring event for [something]</div>`,
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`,
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What are my tasks for today?')">What are my tasks for today?</div>`]
 
@@ -13248,7 +13250,22 @@ function simulateaiassistantwithnextaction(prompt, response){
 		tempinteraction.addMessage(new ChatMessage({ role: 'assistant', message: response}))
 
 		updateaichat()
-	}, 2000)
+	}, 1000)
+}
+
+//add to input
+function addaiassistantinputwithnextaction(text){
+	let aichatinput;
+	if(calendartabs.includes(4)){
+		aichatinput = getElement('aichatinput2')
+	}else{
+		aichatinput = getElement('aichatinput')
+	}
+
+	aichatinput.value = text
+	aichatinput.focus()
+
+	scrollaichatY()
 }
 
 
@@ -13293,8 +13310,6 @@ function updateaiassistanttooltip(){
 
 //get motivational task completed message
 async function promptaiassistanttaskcompleted(item){
-
-
 	let now = new Date()
 	let endrange = new Date()
 	endrange.setHours(0,0,0,0)
