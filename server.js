@@ -464,7 +464,7 @@ function sleep(time) {
 async function sendRawEmail({ from, to, htmlbody, textbody, subject }){
 	//formatting is very careful, newlines and space cannot be messed up
 
-    const unsubscribeLink = 'mailto:unsubscribe@smartcalendar.us'
+    const unsubscribeLink = 'mailto:james.tsaggaris@smartcalendar.us'
     const listUnsubscribePostValue = 'List-Unsubscribe=One-Click'
 
     const input = {
@@ -2556,13 +2556,6 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 })
 */
 
-
-app.post('/unsubscribeAWS', async (req, res, next) => {
-	const email = req.body.email
-	console.warn(req)
-	res.end()
-})
-
 const loginwithgoogleclassroomhtml = `<div class="border-8px nowrap width-fit display-flex flex-row gap-6px align-center googlebutton justify-center text-center text-14px padding-8px-16px pointer transition-duration-100" onclick="logingoogle({ scope: ['calendar', 'classroom'], enable: ['classroom'] })">
 <img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png">
 Connect to Google Classroom
@@ -3690,7 +3683,7 @@ app.post('/dev', async (req, res) => {
 		}
 
 		async function help(){
-			return `<span class="inlinecode">addbetatester(userid or email)</span>\n\n<span class="inlinecode">getuserinfo(userid or email)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">whitelistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>\n\n<span class="inlinecode">displaychat(conversationid)</span>\n<span class="inlinecode">markchatasread(conversationid)</span>`
+			return `<span class="inlinecode">addbetatester(userid or email)</span>\n\n<span class="inlinecode">getuserinfo(userid or email)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">whitelistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>\n\n<span class="inlinecode">displaychat(conversationid)</span>\n<span class="inlinecode">flagchat(conversationid)</span>`
 		}
 
 		async function displaychat(conversationid){
@@ -3698,22 +3691,18 @@ app.post('/dev', async (req, res) => {
 			if(!tempdata) return 'Not found'
 			
 			let tempoutput = []
-			for(let [index, value] of Object.entries(tempdata)){
-				for(let item of value){
-					tempoutput.push(`${item.role == 'assistant' ? 'Athena' : 'User'}: ${item.message} ${item.liked ? '(LIKED)' : ''} ${item.disliked ? '(DISLIKED)' : ''}`)
-
-				}
+			for(let item of tempdata.chatconversation.flat()){
+				tempoutput.push(`${item.role == 'assistant' ? 'Athena' : 'User'}: ${item.message} ${item.liked ? '(LIKED)' : ''} ${item.disliked ? '(DISLIKED)' : ''}`)
 			}
 
-			return tempoutput.join('\n\n')
+			await markchatasread(conversationid)
+
+			return `Chat ID: ${conversationid}\n\n`+tempoutput.join('\n\n')
 		}
 
-		async function markchatasread(conversationid){
+		async function flagchat(conversationid){
 			let tempdata = await getchatconversation(conversationid)
-			if(!tempdata) return 'Not found'
-
-			tempdata.read = true
-
+			tempdata.flagged = true
 			await setchatconversation(tempdata)
 
 			return 'Done'
@@ -4902,7 +4891,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				}
 				try {
 					for await (const chunk of response) {	
-						if(chunk.choices[0].delta?.function_call){
+						if(chunk.choices[0].delta?.function_call && chunk.choices[0].delta?.function_call?.name){
 							isfunctioncall = true
 						}
 						
@@ -4912,8 +4901,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							if(!accumulatedresponse.message.function_call){
 								accumulatedresponse.message.function_call = { name: null, arguments: '' }
 							}
-							if(chunk.choices[0].delta?.function_call.name){
-								accumulatedresponse.message.function_call.name = chunk.choices[0].delta.function_call.name
+							if(chunk.choices[0].delta?.function_call?.name){
+								accumulatedresponse.message.function_call.name = chunk.choices[0].delta.function_call?.name
 							}
 							accumulatedresponse.message.function_call.arguments += chunk.choices[0].delta.function_call.arguments
 						}else{
@@ -5004,7 +4993,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								}
 							]
 						}
-		
+
 						request2options.messages = [
 							{ 
 								role: 'system', 
@@ -5027,7 +5016,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 						try {
 							for await (const chunk of response2) {	
-								if(chunk.choices[0].delta?.function_call){
+								if(chunk.choices[0].delta?.function_call && chunk.choices[0].delta?.function_call?.name){
 									isfunctioncall2 = true
 								}
 								
@@ -5037,8 +5026,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 									if(!accumulatedresponse2.message.function_call){
 										accumulatedresponse2.message.function_call = { name: null, arguments: '' }
 									}
-									if(chunk.choices[0].delta.function_call.name){
-										accumulatedresponse2.message.function_call.name = chunk.choices[0].delta.function_call.name
+									if(chunk.choices[0].delta.function_call?.name){
+										accumulatedresponse2.message.function_call.name = chunk.choices[0].delta.function_call?.name
 									}
 									accumulatedresponse2.message.function_call.arguments += chunk.choices[0].delta.function_call.arguments
 								}else{
