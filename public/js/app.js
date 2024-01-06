@@ -14602,11 +14602,13 @@ async function submitaimessage(optionalinput, dictated){
 
 
 									//for auto schedule
-									lastmovedeventid = item.id
-									item.startafter.year = item.start.year
-									item.startafter.month = item.start.month
-									item.startafter.day = item.start.day
-									item.startafter.minute = item.start.minute
+									if(item.type == 1){
+										lastmovedeventid = item.id
+										item.startafter.year = item.start.year
+										item.startafter.month = item.start.month
+										item.startafter.day = item.start.day
+										item.startafter.minute = item.start.minute
+									}
 
 
 
@@ -14669,6 +14671,8 @@ async function submitaimessage(optionalinput, dictated){
 						let duration = getDuration(arguments?.duration).value
 						let error = arguments?.errorMessage || ''
 						let recurrence = arguments?.recurrence
+						let startminute = getMinute(arguments?.startDate?.replace('T', ' ')).value || 9*60
+						let [startyear, startmonth, startday] = getDate(arguments?.startDate?.replace('T', ' ')).value
 
 						if(error && !title && !endbeforeminute && !endbeforeyear){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
@@ -14703,6 +14707,17 @@ async function submitaimessage(optionalinput, dictated){
 							if(endbeforedate && !isNaN(endbeforedate.getTime())){
 								let item = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), duration, title)
 								item.duration = duration
+
+								let startdate;
+								if(startminute != null && startyear != null && startmonth != null && startday != null){
+									startdate = new Date(startyear, startmonth, startday, 0, startminute)
+								}
+								if(startdate && !isNaN(startdate.getTime())){
+									item.startafter.year = startdate.getFullYear()
+									item.startafter.month = startdate.getMonth()
+									item.startafter.day = startdate.getDate()
+									item.startafter.minute = startdate.getHours() * 60 + startdate.getMinutes()
+								}
 								
 								calendar.todos.push(item)
 
@@ -14948,12 +14963,13 @@ async function submitaimessage(optionalinput, dictated){
 									item.start.day = startdate.getDate()
 									item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
 
+
+									//auto schedule
+									lastmovedeventid = item.id
 									item.startafter.year = startdate.getFullYear()
 									item.startafter.month = startdate.getMonth()
 									item.startafter.day = startdate.getDate()
 									item.startafter.minute = startdate.getHours() * 60 + startdate.getMinutes()
-
-									lastmovedeventid = item.id
 								}
 
 								if(enddate && !isNaN(enddate.getTime()) && Calendar.Event.isEvent(item)){
@@ -14972,6 +14988,16 @@ async function submitaimessage(optionalinput, dictated){
 								if(byday != null && byday.length > 0) item.repeat.byday = byday
 								if(until != null) item.repeat.until = until
 								if(count != null) item.repeat.count = count
+
+
+								//for auto schedule
+								if(Calendar.Event.isEvent(item)){
+									lastmovedeventid = item.id
+									item.startafter.year = item.start.year
+									item.startafter.month = item.start.month
+									item.startafter.day = item.start.day
+									item.startafter.minute = item.start.minute
+								}
 
 
 								item.title = newtitle || item.title
@@ -15067,7 +15093,7 @@ async function submitaimessage(optionalinput, dictated){
 							}
 						}
 						
-					}else if(command == 'move_task_to_calendar'){
+					}else if(command == 'schedule_unscheduled_task_in_calendar'){
 						
 						let id = getrealid(arguments?.id)
 						let error = arguments?.errorMessage || ''

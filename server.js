@@ -4720,8 +4720,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					name: 'get_todo_list_tasks',
 				},
 				{
-					name: 'move_task_to_calendar',
-					description: `Auto-schedule a task into user's calendar. Not to be confused with create a task or create an event.`,
+					name: 'schedule_unscheduled_task_in_calendar',
+					description: `Schedule a task into user's calendar. Task must already exist, this is simply putting it in the calendar.`,
 					parameters: {
 						type: 'object',
 						properties: {
@@ -4736,8 +4736,9 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							dueDate: { type: 'string', description: 'Task due date in format: YYYY-MM-DD HH:MM' },
 							title: { type: 'string', description: 'Task title' },
+							dueDate: { type: 'string', description: 'Task due date in format: YYYY-MM-DDTHH:MM' },
+							startDate: { type: 'string', description: 'Task scheduled in calendar start date in format: YYYY-MM-DDTHH:MM' },
 							duration: { type: 'string', description: 'Task duration in format: HH:MM' },
 							recurrence: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 						},
@@ -4751,8 +4752,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						type: 'object',
 						properties: {
 							title: { type: 'string', description: 'Event title' },
-							startDate: { type: 'string', description: 'Event start date in format: YYYY-MM-DD HH:MM' },
-							endDate: { type: 'string', descrption: 'Event end date in format: YYYY-MM-DD HH:MM' },
+							startDate: { type: 'string', description: 'Event start date in format: YYYY-MM-DDTHH:MM' },
+							endDate: { type: 'string', descrption: 'Event end date in format: YYYY-MM-DDTHH:MM' },
 							recurrence: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 						},
 						required: ['title']
@@ -4777,8 +4778,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						properties: {
 							id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
 							newTitle: { type: 'string', description: 'New title' },
-							newStartDate: { type: 'string', description: 'New start date in format: YYYY-MM-DD HH:MM' },
-							newEndDate: { type: 'string', description: 'New end date in format: YYYY-MM-DD HH:MM' },
+							newStartDate: { type: 'string', description: 'New start date in format: YYYY-MM-DDTHH:MM' },
+							newEndDate: { type: 'string', description: 'New end date in format: YYYY-MM-DDTHH:MM' },
 							newRecurrence: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 							newDuration: { type: 'string', description: 'New duration in format: HH:MM' },
 						},
@@ -4804,10 +4805,10 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						properties: {
 							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
 							newTitle: { type: 'string', description: 'New title' },
-							newDueDate: { type: 'string', description: 'New due date in format: YYYY-MM-DD HH:MM' },
+							newDueDate: { type: 'string', description: 'New due date in format: YYYY-MM-DDTHH:MM' },
 							newDuration: { type: 'string', description: 'New duration in format: HH:MM' },
-							newStartDate: { type: 'string', description: 'New scheduled start date in format: YYYY-MM-DD HH:MM' },
-							newEndDate: { type: 'string', description: 'New scheduled end date in format: YYYY-MM-DD HH:MM' },
+							newStartDate: { type: 'string', description: 'New scheduled start date in format: YYYY-MM-DDTHH:MM' },
+							newEndDate: { type: 'string', description: 'New scheduled end date in format: YYYY-MM-DDTHH:MM' },
 							newRecurrence: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 							newCompleted: { type: 'boolean', description: 'New completed status' },
 						},
@@ -4816,9 +4817,9 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				},
 			]
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event','create_task', 'delete_task', 'modify_task','move_task_to_calendar'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_event', 'delete_event', 'modify_event','create_task', 'delete_task', 'modify_task','schedule_unscheduled_task_in_calendar'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
-			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'move_task_to_calendar'] //a subset of all functions, the functions that need todo data
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'schedule_unscheduled_task_in_calendar'] //a subset of all functions, the functions that need todo data
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
@@ -5254,7 +5255,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							dueDate: { type: 'string', description: 'Task due date in format: YYYY-MM-DD HH:MM' },
+							dueDate: { type: 'string', description: 'Task due date in format: YYYY-MM-DDTHH:MM' },
 							title: { type: 'string', description: 'Task title' },
 							duration: { type: 'string', description: 'Task duration in format: HH:MM' },
 						},
@@ -5267,9 +5268,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 					parameters: {
 						type: 'object',
 						properties: {
-							startDate: { type: 'string', description: 'Event start date in format: YYYY-MM-DD HH:MM' },
+							startDate: { type: 'string', description: 'Event start date in format: YYYY-MM-DDTHH:MM' },
 							title: { type: 'string', description: 'Event title' },
-							endDate: { type: 'string', descrption: 'Event end date in format: YYYY-MM-DD HH:MM' },
+							endDate: { type: 'string', descrption: 'Event end date in format: YYYY-MM-DDTHH:MM' },
 						},
 						required: ['title']
 					}
@@ -5285,9 +5286,9 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								items: {
 									type: 'object',
 									properties: {
-										startDate: { type: 'string', description: 'Event start date in format: YYYY-MM-DD HH:MM' },
+										startDate: { type: 'string', description: 'Event start date in format: YYYY-MM-DDTHH:MM' },
 										title: { type: 'string', description: 'Event title' },
-										endDate: { type: 'string', descrption: 'Event end date in format: YYYY-MM-DD HH:MM' },
+										endDate: { type: 'string', descrption: 'Event end date in format: YYYY-MM-DDTHH:MM' },
 									},
 									required: ['title']
 								}
@@ -5316,8 +5317,8 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						properties: {
 							id: { type: 'string', description: 'Specific ID of event.' },
 							newTitle: { type: 'string', description: 'New event title' },
-							newStartDate: { type: 'string', description: 'New event start date in format: YYYY-MM-DD HH:MM' },
-							newEndDate: { type: 'string', description: 'New event end date in format: YYYY-MM-DD HH:MM' },
+							newStartDate: { type: 'string', description: 'New event start date in format: YYYY-MM-DDTHH:MM' },
+							newEndDate: { type: 'string', description: 'New event end date in format: YYYY-MM-DDTHH:MM' },
 							newDuration: { type: 'string', description: 'New event duration in format: HH:MM' },
 							errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
 						},
@@ -5337,8 +5338,8 @@ app.post('/getgptchatinteraction', async (req, res) => {
 									properties: {
 										id: { type: 'string', description: 'Specific ID of event.' },
 										newTitle: { type: 'string', description: 'New event title' },
-										newStartDate: { type: 'string', description: 'New event start date in format: YYYY-MM-DD HH:MM' },
-										newEndDate: { type: 'string', description: 'New event end date in format: YYYY-MM-DD HH:MM' },
+										newStartDate: { type: 'string', description: 'New event start date in format: YYYY-MM-DDTHH:MM' },
+										newEndDate: { type: 'string', description: 'New event end date in format: YYYY-MM-DDTHH:MM' },
 										newDuration: { type: 'string', description: 'New event duration in format: HH:MM' },
 										errorMessage: { type: 'string', description: 'An error message if event is not found or other error.' },
 									},
@@ -5360,7 +5361,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 								items: {
 									type: 'object',
 									properties: {
-										dueDate: { type: 'string', description: 'Task due date in format: YYYY-MM-DD HH:MM' },
+										dueDate: { type: 'string', description: 'Task due date in format: YYYY-MM-DDTHH:MM' },
 										title: { type: 'string', description: 'Task title' },
 										duration: { type: 'string', description: 'Task duration in format: HH:MM' },
 									},
@@ -5391,7 +5392,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						properties: {
 							id: { type: 'string', description: 'Specific ID of task.' },
 							newTitle: { type: 'string', description: 'New task title' },
-							newDueDate: { type: 'string', description: 'New task due date in format: YYYY-MM-DD HH:MM' },
+							newDueDate: { type: 'string', description: 'New task due date in format: YYYY-MM-DDTHH:MM' },
 							newDuration: { type: 'string', description: 'New task duration in format: HH:MM' },
 							newCompleted: { type: 'boolean', description: 'New task completed status' },
 							errorMessage: { type: 'string', description: 'An error message if task is not found or other error.' },
@@ -5412,7 +5413,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 									properties: {
 										id: { type: 'string', description: 'Specific ID of task.' },
 										newTitle: { type: 'string', description: 'New task title' },
-										newDueDate: { type: 'string', description: 'New task due date in format: YYYY-MM-DD HH:MM' },
+										newDueDate: { type: 'string', description: 'New task due date in format: YYYY-MM-DDTHH:MM' },
 										newDuration: { type: 'string', description: 'New task duration in format: HH:MM' },
 										newCompleted: { type: 'boolean', description: 'New task completed status' },
 										errorMessage: { type: 'string', description: 'An error message if task is not found or other error.' },
