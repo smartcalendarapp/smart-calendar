@@ -14917,7 +14917,7 @@ async function submitaimessage(optionalinput, dictated){
 								let oldtitle = item.title
 								let oldcompleted = item.completed
 								let oldduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
-								let oldduration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
+								let oldduration = Calendar.Event.isEvent(item) ? new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() : item.duration*60000
 								
 								let endbeforeminute = getMinute(newduedate?.replace('T', ' ')).value
 								let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(newduedate?.replace('T', ' ')).value
@@ -14989,7 +14989,6 @@ async function submitaimessage(optionalinput, dictated){
 									item.end.day = enddate.getDate()
 									item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
 								}
-
 
 								//recurrence
 								let { frequency, interval, byday, count, until } = getRecurrenceData({ recurrence: newrecurrence ? [ newrecurrence ] : [] })
