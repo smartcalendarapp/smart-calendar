@@ -4877,7 +4877,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				}
 				try {
 					for await (const chunk of response) {	
-						if(chunk.choices[0].delta?.function_call && chunk.choices[0].delta?.function_call.name == 'app_action'){
+						if(chunk.choices[0].delta?.function_call){
 							isfunctioncall = true
 						}
 						
@@ -4915,7 +4915,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				}
 
 
-				if (accumulatedresponse.message?.function_call?.name === 'app_action') {
+				if (isfunctioncall) {
 					const commands = JSON.parse(accumulatedresponse.message.function_call?.arguments)?.commands
 					if (commands && commands.length > 0) {
 						const requirescalendardata = calendardataneededfunctions.find(f => commands.find(g => g == f))
@@ -5002,7 +5002,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 						try {
 							for await (const chunk of response2) {	
-								if(chunk.choices[0].delta?.function_call && chunk.choices[0].delta.function_call?.name == 'app_action'){
+								if(chunk.choices[0].delta?.function_call){
 									isfunctioncall2 = true
 								}
 								
