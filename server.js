@@ -4480,7 +4480,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Competed task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}""" Provide a very short personal motivational sentence for the user who just completed this task. Then, mention only the next upcoming event if there is one and if there is a break, in one sentence. Calendar data: """${calendarcontext}"""`
+		let inputtext = `Competed task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}""" Provide a very short personal motivational sentence for the user who just completed this task. Then, mention only the next upcoming event (if there is one) and at what time and in how long from now, and mention a break before it (if there is one), in one sentence. Calendar data: """${calendarcontext}"""`
 		let custominstructions = `Respond in no more than 30 words, concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant, as if the user is a boss. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
@@ -4826,9 +4826,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. Main ability is to balance between detecting user interaction with app and return app_action, and identifying an implied or incomplete command and asking for further details. Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted. Never say or mention internal ID of events/tasks data. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively finish messages with a next question or suggestion related to user's last command if applicable. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. Primary function: Detect user's interaction with the app and return function app_action, or detect if user's command is too implicit or unclearly suggested, and ask for more details. Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted. Never say or mention internal ID of events/tasks. Present dates, times, and recurrences in natural language. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively finish messages with a creative following question or suggestion related to user's last command. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 			const systeminstructionsexamples1 = ` Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: Alright! Please let me know what it's called and what time it's for.\nUser: I'll read some books tomorrow morning\nAssistant: Would you like me to create a task for that?"""`
-			const systeminstructionsexamples2 = ` Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: [ create_task: { title: "Work on project", dueDate: "YYYY-MM-DD HH:MM" } ] }) }\nUser: Move that to an earlier time\nAssistant: function_call: { name: "app_action", JSON.stringify({ commands: [ modify_event: { ID: "some ID", newStartDate: "YYYY-MM-DD HH:MM" } ] })."""`
 
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""`
@@ -4860,7 +4859,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								},
 								"required": [ "commands" ]
 							},
-							"description": `If unsure if user implied an app command or not enough information, do NOT trigger app_action, and ask for clarification. Otherwise, return app commands if detected in prompt as one of the following: ${allfunctions.map(d => d.name).join(', ')}`
+							"description": `If user command is implied or not explicit enough, do NOT return app_action, and ask for clarification. If user did not provide enough information, do NOT return app_action, and ask for more information: ${allfunctions.map(d => d.name).join(', ')}`
 						}
 					],
 					max_tokens: 200,
@@ -4974,17 +4973,15 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										},
 										"required": [ "commands" ]
 									},
-									"description": `Precisely and carefully extract information for the commands.`
+									"description": `If user command is implied or not explicit enough, do NOT return app_action, and ask for clarification. If user did not provide enough information, do NOT return app_action, and ask for more information. Otherwise, return app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
 								}
 							]
-		
-							request2input += ` If unsure if user implied an app command or not enough information, do NOT trigger app_action, and ask for clarification. Otherwise, return app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
 						}
 		
 						request2options.messages = [
 							{ 
 								role: 'system', 
-								content: systeminstructions + systeminstructionsexamples2
+								content: systeminstructions
 							},
 							...conversationhistory,
 							{
@@ -5097,7 +5094,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			let tempoutput = ''
 			for(let d of tempevents){
-				let newstring = `Event title: ${d.title || 'New Event'}, ID: ${gettempid(d.id, 'event')}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}.`
+				let newstring = `Event title: ${d.title || 'New Event'}, ID: ${gettempid(d.id, 'event')}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}${d.repeat.frequency != null && d.repeat.interval != null ? `, recurrence: ${getRecurrenceString(d)}` : ''}.`
 
 				if(tempoutput.length + newstring.length > MAX_CALENDAR_CONTEXT_LENGTH) break
 
@@ -5440,7 +5437,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Use a tone and style of a personal assistant. Respond in no more than 30 words. Never say 'ID' or 'data'. Never say 'according to your calendar' and assume you have knowledge of user's calendar and to-do list. Limit conversations to app interactions, calendar scheduling, or productivity. Think step by step. You must proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A calendar and scheduling personal assistant called Athena for Smart Calendar app. Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Never say 'ID' or 'data'. Never say 'according to your calendar' and assume you have knowledge of user's calendar and to-do list. Limit conversations to app interactions, calendar scheduling, or productivity. Think step by step. You must proactively ask specific questions that are related to user's schedule or planning. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 
 			let totaltokens = 0
