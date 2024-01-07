@@ -4846,12 +4846,12 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			//PROMPT
 
 			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. Primary function: Detect user's interaction with the app and return function app_action, or detect if user's command is too implicit or unclearly suggested, and ask for more details. Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted. Never say or mention internal ID of events/tasks. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively finish messages with a specific question or suggestion relating to user's last message to promote dialogue. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
-			const systeminstructionsexamples1 = ` Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: Alright! Please let me know what it's called and what time it's for.\nUser: I'll read some books tomorrow morning\nAssistant: Would you like me to add an event to your calendar?\nUser: [pasted content that contains tasks or events]\nAssistant: Would you like me to add these tasks/events?"""`
+			const systeminstructionsexamples1 = ` Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: Book a meeting for me\nAssistant: content: 'Alright! Please let me know what it's called and what time it's for.'\nUser: I'll read some books tomorrow morning\nAssistant: content: 'Would you like me to add an event to your calendar?'\nUser: [pasted content that contains tasks or events]\nAssistant: content: 'Would you like me to add these tasks/events?'"""`
 
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""`
 				const response = await openai.chat.completions.create({
-					model: 'gpt-3.5-turbo-1106',
+					model: 'gpt-3.5-turbo',
 					messages: [
 						{ 
 							role: 'system', 
@@ -4942,7 +4942,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						const requirescustomfunction = customfunctions.find(f => commands.find(g => g == f))
 		
 						let request2options = {
-							model: 'gpt-3.5-turbo-1106',
+							model: 'gpt-3.5-turbo',
 							max_tokens: 500,
 							temperature: 0.5,
 							top_p: 0.5,
@@ -5065,12 +5065,12 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							return { commands: commands2 }
 						}
 
-						console.warn('ERRORED RESPONSE 2: ' + accumulatedresponse2)
+						console.warn('ERRORED RESPONSE 2: ' + accumulatedresponse2.toString())
 	
 					}
 				}
 
-				console.warn('ERRORED RESPONSE 1: ' + accumulatedresponse)
+				console.warn('ERRORED RESPONSE 1: ' + accumulatedresponse.toString())
 
 				return { error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).' }
 		
