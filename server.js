@@ -4845,7 +4845,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. Primary function: Detect user's interaction with the app and return function app_action. Detect if user's command is too implicit, unclearly suggested, or missing details, and do NOT return function app_action, and instead ask for more details. Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted. Never say or mention internal ID of events/tasks. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively finish messages with a specific question or suggestion relating to user's last message to promote dialogue. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. Primary function: Detect user's interaction with the app and return function app_action. Detect if user's command is too implicit/suggested, unclear, or missing details, and do NOT return function app_action, and instead ask for more details. Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted. Never say or mention internal ID of events/tasks. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively finish messages with a specific question or suggestion relating to user's last message to promote dialogue. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 			const systeminstructionsexamples1 = ` Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: [pasted content that contains tasks or events]\nAssistant: content: 'Would you like me to add these tasks/events?'"""`
 
 			try {
@@ -4878,7 +4878,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								},
 								"required": [ "commands" ]
 							},
-							"description": `If user command is implied or not explicit enough, do NOT return app_action, and ask for clarification. If user did not provide enough information for the action, do NOT return app_action, and ask for more information: Otherwise, return app_action for the following commands in array: ${allfunctions.map(d => d.name).join(', ')}`
+							"description": `If user command is too implicit/suggested, unclear, or missing details, do NOT return app_action, and instead ask for clarification. Otherwise, return app_action for the following commands: ${allfunctions.map(d => d.name).join(', ')}. Commands is an array.`
 						}
 					],
 					max_tokens: 200,
@@ -4994,7 +4994,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										},
 										"required": [ "commands" ]
 									},
-									"description": `If user command is implied or not explicit enough, do NOT return app_action, and ask for clarification. If user did not provide enough information for the action, do NOT return app_action, and ask for more information. Otherwise, return app_action for the following commands in array: ${commands.filter(d => customfunctions.find(g => g == d))}.`
+									"description": `If user command is too implicit/suggested, unclear, or missing details, do NOT return app_action, and instead ask for clarification. Otherwise, return app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}. Commands is an array..`
 								}
 							]
 						}
