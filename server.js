@@ -4851,7 +4851,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""`
 				const response = await openai.chat.completions.create({
-					model: 'gpt-3.5-turbo',
+					model: 'gpt-3.5-turbo-1106',
 					messages: [
 						{ 
 							role: 'system', 
@@ -4942,7 +4942,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						const requirescustomfunction = customfunctions.find(f => commands.find(g => g == f))
 		
 						let request2options = {
-							model: 'gpt-3.5-turbo',
+							model: 'gpt-3.5-turbo-1106',
 							max_tokens: 500,
 							temperature: 0.5,
 							top_p: 0.5,
