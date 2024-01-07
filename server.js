@@ -4878,7 +4878,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								},
 								"required": [ "commands" ]
 							},
-							"description": `If user command is implied or not explicit enough, do NOT return app_action, and ask for clarification. If user did not provide enough information, do NOT return app_action, and ask for more information: Otherwise, return app_action for the following commands: ${allfunctions.map(d => d.name).join(', ')}`
+							"description": `If user command is implied or not explicit enough, do NOT return app_action, and ask for clarification. If user did not provide enough information, do NOT return app_action, and ask for more information: Otherwise, return app_action for the following commands in array: ${allfunctions.map(d => d.name).join(', ')}`
 						}
 					],
 					max_tokens: 200,
@@ -4994,7 +4994,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										},
 										"required": [ "commands" ]
 									},
-									"description": `If user command is implied or not explicit enough, do NOT return app_action, and ask for clarification. If user did not provide enough information, do NOT return app_action, and ask for more information. Otherwise, return app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
+									"description": `If user command is implied or not explicit enough, do NOT return app_action, and ask for clarification. If user did not provide enough information, do NOT return app_action, and ask for more information. Otherwise, return app_action for the following commands in array: ${commands.filter(d => customfunctions.find(g => g == d))}.`
 								}
 							]
 						}
@@ -5059,7 +5059,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								return
 							}
 						}
-						console.warn(accumulatedresponse2)
 
 						const commands2 = JSON.parse(accumulatedresponse2.message.function_call?.arguments)?.commands
 						if (commands2 && commands2.length > 0) {					
