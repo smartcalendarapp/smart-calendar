@@ -5064,9 +5064,13 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						if (commands2 && commands2.length > 0) {					
 							return { commands: commands2 }
 						}
+
+						console.warn('ERRORED RESPONSE 2: ' + accumulatedresponse2)
 	
 					}
 				}
+
+				console.warn('ERRORED RESPONSE 1: ' + accumulatedresponse)
 
 				return { error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).' }
 		
