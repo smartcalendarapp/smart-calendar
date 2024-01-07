@@ -4934,7 +4934,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				}
 
 
-				console.warn(accumulatedresponse, isfunctioncall)
 				if (isfunctioncall) {
 					const commands = JSON.parse(accumulatedresponse.message.function_call?.arguments)?.commands
 					if (commands && commands.length > 0) {
@@ -5060,6 +5059,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								return
 							}
 						}
+						console.warn(accumulatedresponse2)
 
 						const commands2 = JSON.parse(accumulatedresponse2.message.function_call?.arguments)?.commands
 						if (commands2 && commands2.length > 0) {					
