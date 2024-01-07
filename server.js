@@ -733,7 +733,7 @@ async function processReminders(){
 
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe&userid=${item.user.userid}" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 									<p>&copy; 2024 James Tsaggaris. All rights reserved.</p>
 									</div>
 
@@ -751,7 +751,7 @@ async function processReminders(){
 					Stay Productive,
 					Smart Calendar | Where AI Meets Agenda
 
-					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
+					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe&userid=${item.user.userid}.
 					(c) 2024 James Tsaggaris. All rights reserved.`
 				})
 
@@ -802,7 +802,7 @@ async function processReminders(){
 
 							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe&userid=${item.user.userid}" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 									<p>&copy; 2024 James Tsaggaris. All rights reserved.</p>
 									</div>
 
@@ -820,7 +820,7 @@ async function processReminders(){
 					Stay Productive,
 					Smart Calendar | Where AI Meets Agenda
 
-					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
+					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe&userid=${item.user.userid}.
 					(c) 2024 James Tsaggaris. All rights reserved.`
 				})
 				
@@ -947,7 +947,7 @@ async function processengagementalerts(){
 			
 					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-								<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+								<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe&userid=${value.user.userid}" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 							<p>&copy; 2024 James Tsaggaris. All rights reserved.</p>
 							</div>
 			
@@ -965,7 +965,7 @@ async function processengagementalerts(){
 				Stay Productive,
 				Smart Calendar | Where AI Meets Agenda
 			
-				You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
+				You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe&userid=${value.user.userid}.
 				(c) 2024 James Tsaggaris. All rights reserved.`
 			})
 
@@ -1026,7 +1026,7 @@ async function processengagementalerts(){
 			
 					<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 							<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-								<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+								<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe&userid=${value.user.userid}" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 							<p>&copy; 2024 James Tsaggaris. All rights reserved.</p>
 							</div>
 			
@@ -1042,7 +1042,7 @@ async function processengagementalerts(){
 				Stay Productive,
 				Smart Calendar | Where AI Meets Agenda
 			
-				You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
+				You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe&userid=${value.user.userid}.
 				(c) 2024 James Tsaggaris. All rights reserved.`
 			})
 
@@ -1215,6 +1215,7 @@ function cacheReminders(user){
 					name: name,
 					email: email,
 					discordid: discordid,
+					userid: user.userid
 				},
 				event: {
 					id: item.id,
@@ -1249,6 +1250,7 @@ function cacheReminders(user){
 					name: name,
 					email: email,
 					discordid: discordid,
+					userid: user.userid
 				},
 				event: {
 					id: item.id,
@@ -1281,6 +1283,7 @@ function cacheReminders(user){
 				name: name,
 				email: email,
 				discordid: discordid,
+				userid: user.userid
 			},
 			createddate: user.accountdata.createddate,
 			lastmodified: user.calendardata.lastmodified,
@@ -3202,7 +3205,7 @@ async function sendwelcomeemail(user){
 
 		<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
 				<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-					<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+					<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe&userid=${user.userid}" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
 				<p>&copy; 2024 James Tsaggaris. All rights reserved.</p>
 				</div>
 
@@ -3218,7 +3221,7 @@ async function sendwelcomeemail(user){
 	Stay Productive,
 	Smart Calendar | Where AI Meets Agenda
 
-	You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe.
+	You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe&userid=${user.userid}.
 	(c) 2024 James Tsaggaris. All rights reserved.`
 		})
 	}
@@ -4218,13 +4221,13 @@ app.post('/setuseremailpreferences', async (req, res) => {
 
 //GPT AI routes
 
-const MAX_GPT_CHAT_PER_DAY = 50 //10
-const MAX_GPT_CHAT_PER_DAY_BETA_TESTER = 100 //30
-const MAX_GPT_CHAT_PER_DAY_PREMIUM = 100
+const MAX_GPT_CHAT_PER_DAY = 200 //10
+const MAX_GPT_CHAT_PER_DAY_BETA_TESTER = 200 //50
+const MAX_GPT_CHAT_PER_DAY_PREMIUM = 200 //100
 
-const MAX_GPT_VOICE_PER_DAY = 50 //10
-const MAX_GPT_VOICE_PER_DAY_BETA_TESTER = 100 //30
-const MAX_GPT_VOICE_PER_DAY_PREMIUM = 100
+const MAX_GPT_VOICE_PER_DAY = 200 //10
+const MAX_GPT_VOICE_PER_DAY_BETA_TESTER = 200 //50
+const MAX_GPT_VOICE_PER_DAY_PREMIUM = 200 //100
 
 const MAX_GPT_COMPLETION_PER_DAY = 30 //10
 const MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
@@ -4904,7 +4907,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							if(chunk.choices[0].delta?.function_call?.name){
 								accumulatedresponse.message.function_call.name = chunk.choices[0].delta.function_call?.name
 							}
-							accumulatedresponse.message.function_call.arguments += chunk.choices[0].delta.function_call.arguments
+							accumulatedresponse.message.function_call.arguments += chunk.choices[0].delta.function_call?.arguments
 						}else{
 							//text response
 
@@ -5029,7 +5032,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 									if(chunk.choices[0].delta.function_call?.name){
 										accumulatedresponse2.message.function_call.name = chunk.choices[0].delta.function_call?.name
 									}
-									accumulatedresponse2.message.function_call.arguments += chunk.choices[0].delta.function_call.arguments
+									accumulatedresponse2.message.function_call.arguments += chunk.choices[0].delta.function_call?.arguments
 								}else{
 									//text response
 
