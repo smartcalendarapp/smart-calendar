@@ -4828,12 +4828,12 @@ function run() {
 	}, 100)
 
 	setInterval(async function(){
-		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && Date.now() - calendar.lastgotsubtasksuggestion > 60000 && selectededittodoid == null){ //every min
+		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && Date.now() - calendar.lastgotsubtasksuggestion > 60000*3 && selectededittodoid == null){ //every 3 min
 			calendar.lastgotsubtasksuggestion = Date.now()
 			getsubtasksuggestions()
 		}
 
-		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && Date.now() - calendar.lastgottasksuggestion > 60000*15 && selectededittodoid == null){ //every 15 min
+		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && Date.now() - calendar.lastgottasksuggestion > 60000*5 && selectededittodoid == null){ //every 5 min
 			calendar.lastgottasksuggestion = Date.now()
 			gettasksuggestions()
 		}

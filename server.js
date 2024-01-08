@@ -4289,7 +4289,7 @@ app.post('/gettasksuggestions', async (req, res) => {
 
 
 		//prepare prompt
-		let gptresponse = await getgptresponse(`User's existing tasks: """${items.map(d => d.title).join(', ')}""" Provide: ONLY 3 names of specific tasks that naturally follow or add onto the existing tasks, separated by comma in ONLY 1 line, with time needed for each. Example: Research topic 30m, Prepare presentation 1h. No formatting.`)
+		let gptresponse = await getgptresponse(`User's existing tasks: """${items.map(d => d.title).join(', ')}""" Provide: ONLY 1 name of a specific task that naturally follows or adds onto the existing tasks, separated by comma in ONLY 1 line, with time needed for each. Example: Research topic 30m, Prepare presentation 1h. No formatting.`)
 
 		if(!gptresponse){
 			return res.status(401).json({ error: 'Could not get response from AI.' })
