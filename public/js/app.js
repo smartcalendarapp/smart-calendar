@@ -3005,7 +3005,7 @@ class Calendar {
 		
 		if(output.length > 0){
 			if(!mobilescreen){
-				output.push(`<div class="text-14px text-secondary">Tip: drag a task into your calendar to make sure you get it done</div>`)
+				output.push(`<div class="text-14px text-center text-secondary">Tip: drag a task into your calendar to make sure you get it done</div>`)
 			}
 		}
 
@@ -4352,12 +4352,18 @@ function getsubtasksuggestiontodos(){
 	)
 }
 async function getsubtasksuggestions(inputitem){
+	const MAX_SUBTASK_SUGGESTIONS = 2
+
 	function getcalculatedweight(tempitem){
 		let currentdate = new Date()
 		let timedifference = new Date(tempitem.endbefore.year, tempitem.endbefore.month, tempitem.endbefore.day, 0, tempitem.endbefore.minute).getTime() - currentdate.getTime()
 		return currentdate.getTime() * (tempitem.priority + 1) / Math.max(timedifference, 1) * tempitem.duration
 	}
 
+	let existingsuggestedtodocount = calendar.todos.filter(d => !d.completed && d.subtasksuggestions.length > 0)
+	if(existingsuggestedtodocount >= MAX_SUBTASK_SUGGESTIONS){
+		return
+	}
 
 	let suggesttodo;
 	if(inputitem){
@@ -4535,6 +4541,7 @@ async function gettasksuggestions(){
 				if(temptext){
 					let endbeforedate = new Date()
 					endbeforedate.setHours(24,-1,0,0)
+					endbeforedate.setDate(endbeforedate.getDate() + 1)
 
 					let temptodo = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), myduration, temptext)
 					temptodo.issuggestion = true
@@ -4828,7 +4835,7 @@ function run() {
 	}, 100)
 
 	setInterval(async function(){
-		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && Date.now() - calendar.lastgotsubtasksuggestion > 60000*3 && selectededittodoid == null){ //every 3 min
+		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && Date.now() - calendar.lastgotsubtasksuggestion > 60000*5 && selectededittodoid == null){ //every 5 min
 			calendar.lastgotsubtasksuggestion = Date.now()
 			getsubtasksuggestions()
 		}
@@ -5546,6 +5553,8 @@ function continueonboarding(key){
 		if(!calendar.settings.issyncingtogooglecalendar || calendar.calendars.length == 1){
 			continueonboarding('connecttodolists')
 		}
+	}else if(key == 'addtask'){
+		startAutoSchedule({eventsuggestiontodos: calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id)) })
 	}
 }
 function backonboarding(key){
@@ -11475,6 +11484,8 @@ function hidesubtasksuggestions(id){
 
 	item.subtasksuggestions = []
 
+	delaysubtasksuggestion()
+
 	calendar.updateTodo()
 	calendar.updateHistory()
 }
@@ -12072,10 +12083,10 @@ function dragtodo(event, id) {
 
 	if(selectededittodoid) return
 
+	if(!calendar.onboarding.addtask) return
+
 	let item = [...calendar.todos].find(x => x.id == id)
 	if (!item) return
-
-	item.issuggestion = false
 
 	let children = Calendar.Todo.getSubtasks(item)
 	if(children.length > 0){
@@ -12133,6 +12144,8 @@ function dragtodo(event, id) {
 				item.endbefore.day = tempdate.getDate()
 				item.endbefore.minute = tempdate.getHours() * 60 + tempdate.getMinutes()
 			}
+
+			item.issuggestion = false
 
 			fixsubandparenttask(item)
 
@@ -12306,7 +12319,7 @@ async function accepteventsuggestion(event, id){
 
 //accept suggested task
 function accepttasksuggestion(id){
-	let item = [...calendar.events].find(x => x.id == id)
+	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
 
 	item.issuggestion = false
@@ -12512,10 +12525,20 @@ function startnow(id){
 	calendar.updateInfo()
 }
 
+function delaytasksuggestion(){
+	calendar.lastgottasksuggestion = Math.max(calendar.lastgottasksuggestion, Date.now()) + 60000*30 //delay 30 min
+}
+function delaysubtasksuggestion(){
+	calendar.lastgotsubtasksuggestion = Math.max(calendar.lastgotsubtasksuggestion, Date.now()) + 60000*30 //delay 30 min
+}
 
 function deletetodo(id) {
 	let item = [...calendar.events, ...calendar.todos].find(d => d.id == id)
 	if(!item) return
+
+	if(item.issuggestion){
+		delaytasksuggestion()
+	}
 
 	//get children
 	let children = [...calendar.todos, ...calendar.events].filter(d => d.parentid == item.id)
@@ -13393,7 +13416,7 @@ function openaichat(){
 		const tempoptions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my agenda for today?')">What's on my agenda today?</div>`,
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me book a meeting')">Help me book a meeting</div>`, 
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="addaiassistantinputwithnextaction('I need to work on ')">I need to work on [task]</div>`, 
-		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="addaiassistantinputwithnextaction('Create a weekly recurring event for ')">Create a recurring event for [something]</div>`,
+		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="addaiassistantinputwithnextaction('Create a weekly recurring event for ')">Create a weekly recurring event for [something]</div>`,
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`,
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What are my tasks for today?')">What are my tasks for today?</div>`]
 
@@ -14885,7 +14908,7 @@ async function submitaimessage(optionalinput, dictated){
 						let duration = getDuration(arguments?.duration).value
 						let error = arguments?.errorMessage || ''
 						let recurrence = arguments?.RRULE
-						let startminute = getMinute(arguments?.startDate?.replace('T', ' ')).value
+						let startminute = getMinute(arguments?.startDate?.replace('T', ' ')).value || 0
 						let [startyear, startmonth, startday] = getDate(arguments?.startDate?.replace('T', ' ')).value
 
 						if(error && !title && !endbeforeminute && !endbeforeyear){
@@ -16648,7 +16671,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 				//lock tasks that are moved to conflict
 				if(lastmoveditem.type == 1){
-					if(conflicts.length > 0){
+					if(conflicts.length > 0 || isoutofrange(lastmoveditem)){
 						lastmoveditem.autoschedulelocked = true
 					}else{
 						lastmoveditem.autoschedulelocked = false
