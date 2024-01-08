@@ -2965,7 +2965,9 @@ class Calendar {
 					output.push(`<div class="display-flex flex-column gap-12px">
 						${tempoutput.join('')}
 				
-						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.sort((a, b) => a.issuggestion - b.issuggestion).map(d => d.data).join('')}</div>
+						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.filter(d => !d.issuggestion).map(d => d.data).join('')}</div>
+						${tempoutput2.filter(d => d.issuggestion).length > 0 ? `
+						<div class="display-flex flex-column gap-12px">${tempoutput2.filter(d => d.issuggestion).map(d => d.data).join('')}</div>`: ''}
 					</div>`)
 					tempoutput = []
 					tempoutput2 = []
@@ -2989,7 +2991,9 @@ class Calendar {
 					output.push(`
 					<div class="display-flex flex-column gap-12px">
 						${tempoutput.join('')}
-						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.sort((a, b) => a.issuggestion - b.issuggestion).map(d => d.data).join('')}</div>
+						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.filter(d => !d.issuggestion).map(d => d.data).join('')}</div>
+						${tempoutput2.filter(d => d.issuggestion).length > 0 ? `
+						<div class="display-flex flex-column gap-12px">${tempoutput2.filter(d => d.issuggestion).map(d => d.data).join('')}</div>`: ''}
 					</div>`)
 					tempoutput = []
 					tempoutput2 = []
@@ -4338,7 +4342,7 @@ function getsubtasksuggestiontodos(){
 		&&
 		!d.completed
 		&&
-		((Calendar.Event.isEvent(d) && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() - new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() > 30*60000) || (Calendar.Todo.isTodo(d) && d.duration > 30))
+		((Calendar.Event.isEvent(d) && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() - new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() >= 60*60000) || (Calendar.Todo.isTodo(d) && d.duration >= 60))
 		&&
 		d.title.length > 5
 		&&
@@ -4352,7 +4356,7 @@ function getsubtasksuggestiontodos(){
 	)
 }
 async function getsubtasksuggestions(inputitem){
-	const MAX_SUBTASK_SUGGESTIONS = 2
+	const MAX_SUBTASK_SUGGESTIONS = 1
 
 	function getcalculatedweight(tempitem){
 		let currentdate = new Date()
@@ -4396,7 +4400,7 @@ async function getsubtasksuggestions(inputitem){
 			
 			let rawtext = data.data
 			if (rawtext.includes('\n')) {
-				rawtext = rawtext.replace(/,|-/g, '').split(/\n/g)
+				rawtext = rawtext.replace(/,/g, '').split(/\n/g)
 			} else {
 				rawtext = rawtext.split(/,/g)
 			}
@@ -4409,7 +4413,7 @@ async function getsubtasksuggestions(inputitem){
 				let duration = getDuration(temptext)
 				if(duration.value != null){
 					myduration = duration.value
-					temptext = temptext.replace(duration.match, '').replace(/^(\d+\.|-)/, '').replace(/\.+$/, '').trim()
+					temptext = temptext.replace(duration.match, '').replace(/^(\d+\.|-)/, '').trim().replace(/(\.|-)$/, '').trim()
 				}
 
 				if(myduration == null){
@@ -4516,10 +4520,11 @@ async function gettasksuggestions(){
 			let data = await response.json()
 
 			//parse and import subtasks
+			console.log(data)
 			
 			let rawtext = data.data
 			if (rawtext.includes('\n')) {
-				rawtext = rawtext.replace(/,|-/g, '').split(/\n/g)
+				rawtext = rawtext.replace(/,/g, '').split(/\n/g)
 			} else {
 				rawtext = rawtext.split(/,/g)
 			}
@@ -4531,7 +4536,7 @@ async function gettasksuggestions(){
 				let duration = getDuration(temptext)
 				if(duration.value != null){
 					myduration = duration.value
-					temptext = temptext.replace(duration.match, '').replace(/^(\d+\.|-)/, '').replace(/\.+$/, '').trim()
+					temptext = temptext.replace(duration.match, '').replace(/^(\d+\.|-)/, '').replace(/(\.|-)$/, '').trim()
 				}
 
 				if(myduration == null){
@@ -4608,7 +4613,7 @@ async function createtodogetsubtasksuggestions(inputtext){
 				let duration = getDuration(temptext)
 				if(duration.value != null){
 					myduration = duration.value
-					temptext = temptext.replace(duration.match, '').replace(/^(\d+\.|-)/, '').replace(/\.+$/, '').trim()
+					temptext = temptext.replace(duration.match, '').replace(/^(\d+\.|-)/, '').trim().replace(/(\.|-)$/, '').trim()
 				}
 
 				if(myduration == null){
