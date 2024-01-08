@@ -13419,7 +13419,7 @@ function openaichat(){
 		}
 		
 		const tempoptions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my agenda for today?')">What's on my agenda today?</div>`,
-		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me book a meeting')">Help me book a meeting</div>`, 
+		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, 
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="addaiassistantinputwithnextaction('I need to work on ')">I need to work on [task]</div>`, 
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="addaiassistantinputwithnextaction('Create a weekly recurring event for ')">Create a weekly recurring event for [something]</div>`,
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`,
