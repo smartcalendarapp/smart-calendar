@@ -3005,7 +3005,7 @@ class Calendar {
 		
 		if(output.length > 0){
 			if(!mobilescreen){
-				output.push(`<div class="text-secondary">Tip: drag a task into your calendar to make sure you get it done</div>`)
+				output.push(`<div class="text-14px text-secondary">Tip: drag a task into your calendar to make sure you get it done</div>`)
 			}
 		}
 
@@ -4492,7 +4492,7 @@ async function gettasksuggestions(){
 	let suggestabletasks = gettasksuggestiontodos()
 
 	let existingsuggestions = calendar.todos.filter(d => !d.completed && d.issuggestion == true)
-	if(suggestabletasks.length + existingsuggestions.length > MAX_TODO_SUGGESTIONS) return
+	if(3 + existingsuggestions.length > MAX_TODO_SUGGESTIONS) return
 
 	//api call
 
@@ -4536,7 +4536,9 @@ async function gettasksuggestions(){
 					let endbeforedate = new Date()
 					endbeforedate.setHours(24,-1,0,0)
 
-					calendar.todos.push(new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), myduration, temptext))
+					let temptodo = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), myduration, temptext)
+					temptodo.issuggestion = true
+					calendar.todos.push(temptodo)
 				}
 			}
 
@@ -4824,7 +4826,7 @@ function run() {
 			updateinteractivetour()
 		}
 	}, 100)
-
+//here3
 
 	lastgetsubtasksuggestionsdate = Date.now()
 	lastgettasksuggestionsdate = Date.now()
