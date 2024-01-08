@@ -4827,7 +4827,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						properties: {
 							title: { type: 'string', description: 'Task title' },
 							dueDate: { type: 'string', description: 'Task due date/time in format: YYYY-MM-DD HH:MM' },
-							startDate: { type: 'string', description: 'User stated schedule start after date/time in format: YYYY-MM-DD HH:MM' },
+							startDate: { type: 'string', description: '(optional) Task to be scheduled in calendar no earlier than this date/time in format: YYYY-MM-DD HH:MM' },
 							duration: { type: 'string', description: 'Task duration in format: HH:MM' },
 							RRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 						},
@@ -4896,8 +4896,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							newTitle: { type: 'string', description: 'New title' },
 							newDueDate: { type: 'string', description: 'New due date/time in format: YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: 'New duration in format: HH:MM' },
-							newStartDate: { type: 'string', description: 'New scheduled start date/time in format: YYYY-MM-DD HH:MM' },
-							newEndDate: { type: 'string', description: 'New scheduled end date/time in format: YYYY-MM-DD HH:MM' },
+							newStartDate: { type: 'string', description: 'New scheduled in calendar start date/time in format: YYYY-MM-DD HH:MM' },
+							newEndDate: { type: 'string', description: 'New scheduled in calendar end date/time in format: YYYY-MM-DD HH:MM' },
 							newRRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 							newCompleted: { type: 'boolean', description: 'New completed status' },
 						},
@@ -4930,7 +4930,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						...[
 							{
 								role: "user",
-								content: "(sample message, not real) I need to work on my project by tomorrow 6pm"
+								content: "(sample message, not from user) I need to work on my project by tomorrow 6pm"
 							},
 							{
 								role: "assistant",
@@ -4944,7 +4944,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							{
 								role: "user",
-								content: "(sample message, not real) Move that to an earlier time, and then add an event to meet with boss tomorrow lunch"
+								content: "(sample message, not from user) Move that to an earlier time, and then add an event to meet with boss tomorrow lunch"
 							},
 							{
 								role: "assistant",
@@ -4958,11 +4958,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							{
 								role: "user",
-								content: "(sample message, not real) [pasted content that contains tasks or events]"
+								content: "(sample message, not from user) [pasted content that contains tasks or events]"
 							},
 							{
 								role: "assistant",
-								content: "Would you like me to schedule these in your calendar?",
+								content: "Just to confirm, would you like me to schedule these in your calendar?",
 							},
 						],
 						...conversationhistory,
