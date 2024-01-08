@@ -2965,7 +2965,8 @@ class Calendar {
 					output.push(`<div class="display-flex flex-column gap-12px">
 						${tempoutput.join('')}
 				
-						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.filter(d => !d.issuggestion).map(d => d.data).join('')}</div>
+						${tempoutput2.filter(d => !d.issuggestion).length > 0 ? `
+						<div class="display-flex flex-column border-8px bordertertiary">${tempoutput2.filter(d => !d.issuggestion).map(d => d.data).join('')}</div>`: ''}
 						${tempoutput2.filter(d => d.issuggestion).length > 0 ? `
 						<div class="display-flex flex-column gap-12px">${tempoutput2.filter(d => d.issuggestion).map(d => d.data).join('')}</div>`: ''}
 					</div>`)
@@ -2991,7 +2992,8 @@ class Calendar {
 					output.push(`
 					<div class="display-flex flex-column gap-12px">
 						${tempoutput.join('')}
-						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.filter(d => !d.issuggestion).map(d => d.data).join('')}</div>
+						${tempoutput2.filter(d => !d.issuggestion).length > 0 ? `
+						<div class="display-flex flex-column border-8px bordertertiary">${tempoutput2.filter(d => !d.issuggestion).map(d => d.data).join('')}</div>`: ''}
 						${tempoutput2.filter(d => d.issuggestion).length > 0 ? `
 						<div class="display-flex flex-column gap-12px">${tempoutput2.filter(d => d.issuggestion).map(d => d.data).join('')}</div>`: ''}
 					</div>`)

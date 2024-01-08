@@ -4949,7 +4949,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								},
 								"required": [ "commands" ]
 							},
-							"description": `If user command is too implicit/suggested, unclear, or missing details, do NOT return app_action, and instead ask for clarification. Otherwise, return app_action for the following commands: ${allfunctions.map(d => d.name).join(', ')}. Commands is an array.`
+							"description": `If user command is too implicit/suggested, unclear, or missing details, do NOT return app_action, and instead ask for clarification. Otherwise, return app_action for the following commands: ${allfunctions.map(d => d.name).join(', ')}.`
 						}
 					],
 					max_tokens: 200,
@@ -5065,7 +5065,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										},
 										"required": [ "commands" ]
 									},
-									"description": `If user command is too implicit/suggested, unclear, or missing details, do NOT return app_action, and instead ask for clarification. Otherwise, return app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}. Commands is an array.`
+									"description": `If user command is too implicit/suggested, unclear, or missing details, do NOT return app_action, and instead ask for clarification. Otherwise, return app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
 								}
 							]
 						}
@@ -5131,7 +5131,10 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							}
 						}
 
-						const commands2 = JSON.parse(accumulatedresponse2.message.function_call?.arguments)?.commands
+						let commands2 = JSON.parse(accumulatedresponse2.message.function_call?.arguments)?.commands
+						if(!Array.isArray(commands2) && typeof commands2 == 'object'){
+							return { commands: Object.keys(commands2).map(key => { return { [key]: commands2[key] } })}
+						}
 						if (commands2 && commands2.length > 0) {					
 							return { commands: commands2 }
 						}
