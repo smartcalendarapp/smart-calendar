@@ -4917,7 +4917,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			//PROMPT
 
 			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. If you detect app_action function call, you must follow these procedures: """1. If user prompt is not explicitly stating the command but is implied or unclear, do NOT return function call and instead ask for clarification. 2. If user prompt mentions no details, e.g. user is implicitly requesting you to guide them in an app action, do NOT return function call and instead ask for more details.""" Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted and assumed. Never say or mention internal ID of events/tasks. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively finish messages with a specific question or suggestion relating to user's last message to promote dialogue. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
-			const systeminstructionsexamples1 = ` Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: [pasted content that contains tasks or events]\nAssistant: content: 'Would you like me to add these tasks/events?'"""`
 
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""`
@@ -4926,8 +4925,46 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					messages: [
 						{ 
 							role: 'system', 
-							content: systeminstructions + systeminstructionsexamples1
+							content: systeminstructions
 						},
+						...[
+							{
+								role: "user",
+								content: "(sample message, not real) I need to work on my project by tomorrow 6pm"
+							},
+							{
+								role: "assistant",
+								content: null,
+								function_call: {
+									name: "app_action",
+									arguments: JSON.stringify({
+										commands: ['create_task']
+									})
+								}
+							},
+							{
+								role: "user",
+								content: "(sample message, not real) Move that to an earlier time, and then add an event to meet with boss tomorrow lunch"
+							},
+							{
+								role: "assistant",
+								content: null,
+								function_call: {
+									name: "app_action",
+									arguments: JSON.stringify({
+										commands: ['modify_task', 'create_event']
+									})
+								}
+							},
+							{
+								role: "user",
+								content: "(sample message, not real) [pasted content that contains tasks or events]"
+							},
+							{
+								role: "assistant",
+								content: "Would you like me to schedule these in your calendar?",
+							},
+						],
 						...conversationhistory,
 						{
 							role: 'user',
@@ -5006,15 +5043,15 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 
 				if (isfunctioncall) {
-					const commands = JSON.parse(accumulatedresponse.message.function_call?.arguments)?.commands
-					if (commands && commands.length > 0) {
+					let commands = JSON.parse(accumulatedresponse.message.function_call?.arguments)?.commands
+					if (commands && commands?.length > 0) {
 						const requirescalendardata = calendardataneededfunctions.find(f => commands.find(g => g == f))
 						const requirestododata = tododataneededfunctions.find(f => commands.find(g => g == f))
 						const requirescustomfunction = customfunctions.find(f => commands.find(g => g == f))
 		
 						let request2options = {
 							model: 'gpt-3.5-turbo',
-							max_tokens: 500,
+							max_tokens: Math.min(Math.max(200, 150*commands.length), 1000), //auto scale tokens so long requests work. min 200, max 1000
 							temperature: 0.5,
 							top_p: 0.5,
 							stream: true
@@ -5132,10 +5169,10 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 
 						let commands2 = JSON.parse(accumulatedresponse2.message.function_call?.arguments)?.commands
-						if(!Array.isArray(commands2) && typeof commands2 == 'object'){
-							return { commands: Object.keys(commands2).map(key => { return { [key]: commands2[key] } })}
+						if(!Array.isArray(commands2) && typeof commands2 == 'object'){ //if gpt is weird and decides to return object and not array
+							commands2 = Object.keys(commands2).map(key => { return { [key]: commands2[key] } })
 						}
-						if (commands2 && commands2.length > 0) {					
+						if (commands2 && commands2?.length > 0) {					
 							return { commands: commands2 }
 						}
 

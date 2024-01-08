@@ -14520,7 +14520,7 @@ async function submitaimessage(optionalinput, dictated){
 								if(frequency != null) item.repeat.frequency = frequency
 								if(interval != null) item.repeat.interval = interval
 								if(interval == null && frequency != null) item.repeat.interval = 1
-								if(byday != null && byday.length > 0) item.repeat.byday = byday
+								if(byday != null && byday.length > 1) item.repeat.byday = byday
 								if(until != null) item.repeat.until = until
 								if(count != null) item.repeat.count = count
 
@@ -14841,7 +14841,7 @@ async function submitaimessage(optionalinput, dictated){
 									if(frequency != null) item.repeat.frequency = frequency
 									if(interval != null) item.repeat.interval = interval
 									if(interval == null && frequency != null) item.repeat.interval = 1
-									if(byday != null && byday.length > 0) item.repeat.byday = byday
+									if(byday != null && byday.length > 1) item.repeat.byday = byday
 									if(until != null) item.repeat.until = until
 									if(count != null) item.repeat.count = count
 
@@ -14950,7 +14950,7 @@ async function submitaimessage(optionalinput, dictated){
 								if(frequency != null) item.repeat.frequency = frequency
 								if(interval != null) item.repeat.interval = interval
 								if(interval == null && frequency != null) item.repeat.interval = 1
-								if(byday != null && byday.length > 0) item.repeat.byday = byday
+								if(byday != null && byday.length > 1) item.repeat.byday = byday
 								if(until != null) item.repeat.until = until
 								if(count != null) item.repeat.count = count
 								
@@ -15234,7 +15234,7 @@ async function submitaimessage(optionalinput, dictated){
 								if(frequency != null) item.repeat.frequency = frequency
 								if(interval != null) item.repeat.interval = interval
 								if(interval == null && frequency != null) item.repeat.interval = 1
-								if(byday != null && byday.length > 0) item.repeat.byday = byday
+								if(byday != null && byday.length > 1) item.repeat.byday = byday
 								if(until != null) item.repeat.until = until
 								if(count != null) item.repeat.count = count
 
@@ -16161,7 +16161,9 @@ function getevents(startrange, endrange, filterevents) {
 					counter++
 
 					//until or count
-					if ((item.repeat.count && counter >= item.repeat.count) || (item.repeat.until && repeatstartdate.getTime() > new Date(item.repeat.until).getTime())) {
+					let repeatstartdateday = new Date(repeatstartdate)
+					repeatstartdateday.setHours(0,0,0,0)
+					if ((item.repeat.count && counter >= item.repeat.count) || (item.repeat.until && repeatstartdateday.getTime() > new Date(item.repeat.until).getTime())) {
 						break
 					}
 
