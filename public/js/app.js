@@ -4330,10 +4330,10 @@ function updatetime() {
 
 
 //AI suggestions
-let lastgettasksuggestionsdate;
-let lastgetsubtasksuggestionsdate;
 function getsubtasksuggestiontodos(){
 	return [...calendar.events.filter(d => d.type == 1), ...calendar.todos].filter(d => 
+		!d.issuggestion
+		&&
 		calendar.settings.gettasksuggestions == true
 		&&
 		!d.completed
@@ -4492,7 +4492,7 @@ async function gettasksuggestions(){
 	let suggestabletasks = gettasksuggestiontodos()
 
 	let existingsuggestions = calendar.todos.filter(d => !d.completed && d.issuggestion == true)
-	if(3 + existingsuggestions.length > MAX_TODO_SUGGESTIONS) return
+	if(existingsuggestions.length >= MAX_TODO_SUGGESTIONS) return
 
 	//api call
 
@@ -4826,18 +4826,15 @@ function run() {
 			updateinteractivetour()
 		}
 	}, 100)
-//here3
 
-	lastgetsubtasksuggestionsdate = Date.now()
-	lastgettasksuggestionsdate = Date.now()
 	setInterval(async function(){
-		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && Date.now() - lastgetsubtasksuggestionsdate > 30000 && selectededittodoid == null){
-			lastgetsubtasksuggestionsdate = Date.now()
+		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && Date.now() - calendar.lastgotsubtasksuggestion > 60000 && selectededittodoid == null){ //every min
+			calendar.lastgotsubtasksuggestion = Date.now()
 			getsubtasksuggestions()
 		}
 
-		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && Date.now() - lastgettasksuggestionsdate > 30000 && selectededittodoid == null){
-			lastgettasksuggestionsdate = Date.now()
+		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && Date.now() - calendar.lastgottasksuggestion > 60000*15 && selectededittodoid == null){ //every 15 min
+			calendar.lastgottasksuggestion = Date.now()
 			gettasksuggestions()
 		}
 	}, 3000)
@@ -11273,7 +11270,7 @@ function gettododata(item) {
 										}
 
 										${!item.completed && item.issuggestion ? `
-										<span class="margin-right-6px text-12px hover:background-purple-hover pointer-auto tooltip gap-6px text-red background-purple text-white pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">Suggestion</span>
+										<span class="margin-right-6px text-12px bordertertiary pointer pointer-auto hover:background-tint-1 tooltip gap-6px text-purple transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="accepttasksuggestion('${item.id}')">Suggestion</span>
 										` : ''}
 
 										${Calendar.Todo.getTitle(item)}
@@ -11466,7 +11463,7 @@ function regeneratesubtasksuggestions(id){
 	item.gotsubtasksuggestions = false
 
 	//send request
-	lastgetsubtasksuggestionsdate = Date.now()
+	calendar.lastgotsubtasksuggestion = Date.now()
 	getsubtasksuggestions(item)
 
 	calendar.updateTodo()
@@ -12304,6 +12301,18 @@ async function accepteventsuggestion(event, id){
 
 		myconfetti.reset()
 	}catch(e){}
+}
+
+
+//accept suggested task
+function accepttasksuggestion(id){
+	let item = [...calendar.events].find(x => x.id == id)
+	if (!item) return
+
+	item.issuggestion = false
+
+	calendar.updateTodo()
+	calendar.updateHistory()
 }
 
 
