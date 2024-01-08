@@ -430,7 +430,7 @@ const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true, importantupdates: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, connecttodolists: false, eventreminders: false, sleeptime: false, addtask: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false, recognitionlanguage: 'en-US' }
 const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, logindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], gptvoiceusedtimestamps: [], betatester: false, haspremium: false, premium: { referafriendclaimvalue: 0, starttimestamp: null, endtimestamp: null }, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
 const MODELEVENT = { start: {}, end: {}, endbefore: {}, startafter: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0, parentid: null, subtasksuggestions: [], gotsubtasksuggestions: false, iseventsuggestion: false, goteventsuggestion: false, autoschedulelocked: false }
-const MODELTODO = { endbefore: {}, startafter: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false }
+const MODELTODO = { endbefore: {}, startafter: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false, issuggestion: false }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#18a4f5', isprimary: false, subscriptionurl: null, lastmodified: 0  }
 
 
@@ -4234,7 +4234,7 @@ const MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
 const MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
 
 
-app.post('/getsubtasksuggestions', async (req, res) => {
+app.post('/gettasksuggestions', async (req, res) => {
 	async function getgptresponse(prompt) {
 
 		try {
@@ -4244,6 +4244,77 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 					role: 'user',
 					content: prompt
 				}],
+				max_tokens: 150,
+			})
+
+			return res.choices[0].message.content
+		} catch (error) {
+			console.error(error)
+			return null
+		}
+	}
+
+
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		let user = await getUserById(userid)
+		if (!user) {
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+
+		let appliedratelimit = MAX_GPT_COMPLETION_PER_DAY
+		if(user.accountdata.betatester){
+			appliedratelimit = MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER
+		}
+
+
+		let currenttime = Date.now()
+
+		//check ratelimit
+		if(user.accountdata.gptsuggestionusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
+			return res.status(401).json({ error: 'Daily AI limit reached.' })
+		}
+
+		//set ratelimit
+		user.accountdata.gptsuggestionusedtimestamps.push(currenttime)
+		await setUser(user)
+		
+		let items = req.body.items
+
+
+		//prepare prompt
+		let gptresponse = await getgptresponse(`User's existing tasks: """${items.map(d => d.title).join(', ')}""" Provide: ONLY 3 names of specific tasks that naturally follow or add onto the existing tasks, separated by comma in ONLY 1 line, with time needed for each. Example: Research topic 30m, Prepare presentation 1h. No formatting.`)
+
+		if(!gptresponse){
+			return res.status(401).json({ error: 'Could not get response from AI.' })
+		}
+
+		return res.json({ data: gptresponse })
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+	}
+})
+
+
+app.post('/getsubtasksuggestions', async (req, res) => {
+	async function getgptresponse(prompt) {
+
+		try {
+			const res = await openai.chat.completions.create({
+				model: 'gpt-3.5-turbo',
+				messages: [
+					{
+						role: 'user',
+						content: prompt
+					}
+				],
 				max_tokens: 150,
 			})
 
@@ -4307,7 +4378,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 			return [days, hours, minutes].filter(f => f).join(' ')
 		}
 
-		let gptresponse = await getgptresponse(`Task: """${item.title.slice(0, 50)}""". Takes: ${getDHMText(item.duration)}. Provide: ONLY 3-4 names of subtasks, separated by comma in ONLY 1 line, with time needed for each. Example: Research topic 30m. No formatting.`)
+		let gptresponse = await getgptresponse(`Task: """${item.title.slice(0, 50)}""". Takes: ${getDHMText(item.duration)}. Provide: ONLY 3-4 names of subtasks, separated by comma in ONLY 1 line, with time needed for each. Example: Research topic 30m, Prepare presentation 1h. No formatting.`)
 
 		if(!gptresponse){
 			return res.status(401).json({ error: 'Could not get response from AI.' })
@@ -4845,7 +4916,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. Primary function: Detect user's interaction with the app and return function app_action. Detect if user's command is too implicit/suggested, unclear, or missing details, and do NOT return function app_action, and instead ask for more details. Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted. Never say or mention internal ID of events/tasks. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively finish messages with a specific question or suggestion relating to user's last message to promote dialogue. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. Primary function: Detect user's interaction with the app and return function app_action. Also, you must detect if user's command is too implicit/suggested, unclear, or missing details, and do NOT return function app_action, and instead ask for more details. Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted and assumed. Never say or mention internal ID of events/tasks. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively finish messages with a specific question or suggestion relating to user's last message to promote dialogue. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 			const systeminstructionsexamples1 = ` Sample chat functionality: """User: I need to work on a project by tomorrow 6pm\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['create_task'] }) }\nUser: Move that to an earlier time, and then add an event to meet with boss tomorrow lunch\nAssistant: function_call: { name: "app_action", arguments: JSON.stringify({ commands: ['modify_event', 'create_event'] }) }\nUser: [pasted content that contains tasks or events]\nAssistant: content: 'Would you like me to add these tasks/events?'"""`
 
 			try {
@@ -4994,7 +5065,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										},
 										"required": [ "commands" ]
 									},
-									"description": `If user command is too implicit/suggested, unclear, or missing details, do NOT return app_action, and instead ask for clarification. Otherwise, return app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}. Commands is an array..`
+									"description": `If user command is too implicit/suggested, unclear, or missing details, do NOT return app_action, and instead ask for clarification. Otherwise, return app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}. Commands is an array.`
 								}
 							]
 						}

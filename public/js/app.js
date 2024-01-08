@@ -1176,6 +1176,8 @@ class Calendar {
 			this.subtasksuggestions = []
 			this.gotsubtasksuggestions = false
 			this.goteventsuggestion = false
+
+			this.issuggestion = false
 		}
 
 		static getTitle(item){
@@ -2955,7 +2957,7 @@ class Calendar {
 					tempoutput.push(`<div class="text-16px text-bold text-primary">Due ${getDMDYText(tempduedate)} ${showrelative ? `<span class="text-secondary">${getRelativeYMWDText(difference)}</span>` : ''}</div>`)
 				}
 
-				tempoutput2.push(gettododata(item))
+				tempoutput2.push({ issuggestion: item.issuggestion, data: gettododata(item) })
 
 				let nextitem = duetodos[i + 1]
 				let nextduedate = nextitem ? new Date(nextitem.endbefore.year, nextitem.endbefore.month, nextitem.endbefore.day, 0, nextitem.endbefore.minute) : null
@@ -2963,7 +2965,7 @@ class Calendar {
 					output.push(`<div class="display-flex flex-column gap-12px">
 						${tempoutput.join('')}
 				
-						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
+						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.sort((a, b) => a.issuggestion - b.issuggestion).map(d => d.data).join('')}</div>
 					</div>`)
 					tempoutput = []
 					tempoutput2 = []
@@ -2982,12 +2984,12 @@ class Calendar {
 				if (i == 0) {
 					tempoutput.push(`<div class="text-16px text-primary text-bold">No due date</div>`)
 				}
-				tempoutput2.push(gettododata(item))
+				tempoutput2.push({ issuggestion: item.issuggestion, data: gettododata(item) })
 				if (i == notduetodos.length - 1) {
 					output.push(`
 					<div class="display-flex flex-column gap-12px">
 						${tempoutput.join('')}
-						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.join('')}</div>
+						<div class="display-flex flex-column bordertertiary border-8px">${tempoutput2.sort((a, b) => a.issuggestion - b.issuggestion).map(d => d.data).join('')}</div>
 					</div>`)
 					tempoutput = []
 					tempoutput2 = []
@@ -2999,6 +3001,13 @@ class Calendar {
 
 
 		let completedtodos = [ ...calendar.events.filter(d => d.type == 1 && d.completed && !Calendar.Todo.isSubtask(d)), ...calendar.todos.filter(d => d.completed && !Calendar.Todo.isSubtask(d))]
+
+		
+		if(output.length > 0){
+			if(!mobilescreen){
+				output.push(`<div class="text-secondary">Tip: drag a task into your calendar to make sure you get it done</div>`)
+			}
+		}
 
 		if(showcompleted){
 			let tempoutput = []
@@ -3050,9 +3059,7 @@ class Calendar {
 		}
 		
 
-		let notasks = output.length == 0
-
-		if(notasks){
+		if(output.length == 0){
 			output.push(`<div class="padding-top-192px display-flex flex-column align-center justify-center">
 				<div class="text-18px text-secondary">No tasks yet. <span class="text-blue hover:text-decoration-underline pointer pointer-auto" onclick="clickaddonetask()">Add one</span>.</div>
 			</div>`)
@@ -4324,6 +4331,7 @@ function updatetime() {
 
 //AI suggestions
 let lastgettasksuggestionsdate;
+let lastgetsubtasksuggestionsdate;
 function getsubtasksuggestiontodos(){
 	return [...calendar.events.filter(d => d.type == 1), ...calendar.todos].filter(d => 
 		calendar.settings.gettasksuggestions == true
@@ -4382,7 +4390,7 @@ async function getsubtasksuggestions(inputitem){
 			
 			let rawtext = data.data
 			if (rawtext.includes('\n')) {
-				rawtext = rawtext.replace(/,/g, '').split(/\n/g)
+				rawtext = rawtext.replace(/,|-/g, '').split(/\n/g)
 			} else {
 				rawtext = rawtext.split(/,/g)
 			}
@@ -4399,7 +4407,7 @@ async function getsubtasksuggestions(inputitem){
 				}
 
 				if(myduration == null){
-					myduration = 60
+					myduration = 30
 				}
 
 				if(temptext){
@@ -4417,6 +4425,129 @@ async function getsubtasksuggestions(inputitem){
 	}
 
 }
+
+function gettasksuggestiontodos(){
+	function shuffleArray(array) {
+		for (let i = array.length - 1; i > 0; i--) {
+		  const j = Math.floor(Math.random() * (i + 1));
+		  [array[i], array[j]] = [array[j], array[i]]
+		}
+		return array
+	}
+
+	let finished = [...calendar.events.filter(d => d.type == 1), ...calendar.todos].filter(d => 
+		d.completed
+		&&
+		calendar.settings.gettasksuggestions == true
+		&&
+		d.title.length > 5
+		&&
+		new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*30 //due within 1 month
+		&&
+		new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() > -86400*1000*30 //due within the past 1 month
+		&&
+		!Calendar.Todo.isSubtask(d)
+		&&
+		d.repeat.frequency == null && d.repeat.interval == null
+		&&
+		d.repeatid == null //filter out repeating
+	)
+	let uniquefinished = []
+	for(let item of finished){
+		if(!uniquefinished.find(d => d.title == item.title)){
+			uniquefinished.push(item)
+		}
+	}
+
+	let unfinished = [...calendar.events.filter(d => d.type == 1), ...calendar.todos].filter(d => 
+		!d.completed
+		&&
+		calendar.settings.gettasksuggestions == true
+		&&
+		d.title.length > 5
+		&&
+		new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() < 86400*1000*30
+		&&
+		new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute) - Date.now() > -86400*1000*30
+		&&
+		!Calendar.Todo.isSubtask(d)
+		&&
+		d.repeat.frequency == null && d.repeat.interval == null
+	)
+	let uniqueunfinished = []
+	for(let item of unfinished){
+		if(!uniqueunfinished.find(d => d.title == item.title)){
+			uniqueunfinished.push(item)
+		}
+	}
+
+	uniquefinished = sortduedate(shuffleArray(uniquefinished).slice(0, 5)).reverse() //earlier completed first, although its random selected anyway
+	uniqueunfinished = sortduedate(shuffleArray(uniqueunfinished).slice(0, 10))
+
+	return [...calendar.events, ...calendar.todos].filter(d => uniqueunfinished.find(g => g.id == d.id) || uniqueunfinished.find(g => g.id == d.id))
+}
+async function gettasksuggestions(){
+	const MAX_TODO_SUGGESTIONS = 3
+
+	let suggestabletasks = gettasksuggestiontodos()
+
+	let existingsuggestions = calendar.todos.filter(d => !d.completed && d.issuggestion == true)
+	if(suggestabletasks.length + existingsuggestions.length > MAX_TODO_SUGGESTIONS) return
+
+	//api call
+
+	try{
+		const response = await fetch('/gettasksuggestions', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				items: suggestabletasks
+			})
+		})
+		if(response.status == 200){
+			let data = await response.json()
+
+			//parse and import subtasks
+			
+			let rawtext = data.data
+			if (rawtext.includes('\n')) {
+				rawtext = rawtext.replace(/,|-/g, '').split(/\n/g)
+			} else {
+				rawtext = rawtext.split(/,/g)
+			}
+			rawtext = rawtext.map(d => d.trim()).filter(d => d)
+
+			for(let temptext of rawtext){
+				let myduration;
+				
+				let duration = getDuration(temptext)
+				if(duration.value != null){
+					myduration = duration.value
+					temptext = temptext.replace(duration.match, '').replace(/^(\d+\.|-)/, '').replace(/\.+$/, '').trim()
+				}
+
+				if(myduration == null){
+					myduration = 30
+				}
+
+				if(temptext){
+					let endbeforedate = new Date()
+					endbeforedate.setHours(24,-1,0,0)
+
+					calendar.todos.push(new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), myduration, temptext))
+				}
+			}
+
+			calendar.updateTodo()
+		}
+	}catch(err){
+		console.log(err)
+	}
+
+}
+
 
 async function createtodogetsubtasksuggestions(inputtext){
 	let tempitem = {
@@ -4694,13 +4825,20 @@ function run() {
 		}
 	}, 100)
 
+
+	lastgetsubtasksuggestionsdate = Date.now()
 	lastgettasksuggestionsdate = Date.now()
 	setInterval(async function(){
-		if(document.visibilityState === 'visible' && Date.now() - lastgettasksuggestionsdate > 10000 && selectededittodoid == null){
-			lastgettasksuggestionsdate = Date.now()
+		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && Date.now() - lastgetsubtasksuggestionsdate > 30000 && selectededittodoid == null){
+			lastgetsubtasksuggestionsdate = Date.now()
 			getsubtasksuggestions()
 		}
-	}, 1000)
+
+		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && Date.now() - lastgettasksuggestionsdate > 30000 && selectededittodoid == null){
+			lastgettasksuggestionsdate = Date.now()
+			gettasksuggestions()
+		}
+	}, 3000)
 
 	/*
 	setInterval(async function(){
@@ -11099,7 +11237,7 @@ function gettododata(item) {
 	} else {
 		//view
 
-		output = `<div class="relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''} id="todo-${item.id}">
+		output = `<div class="${!item.completed && item.issuggestion ? 'suggestionborder border-8px' : ''} relative todoitem todoitemwrap" ${!schedulemytasksenabled ? `${Calendar.Todo.isSchedulable(item) ? `draggable="true" ondragstart="dragtodo(event, '${item.id}')"` : ''}` : ''} id="todo-${item.id}">
 
 		 		<div class="todoitemcontainer padding-top-12px padding-bottom-12px margin-left-12px margin-right-12px relative">
 		 
@@ -11131,6 +11269,10 @@ function gettododata(item) {
 											:
 											``
 										}
+
+										${!item.completed && item.issuggestion ? `
+										<span class="margin-right-6px text-12px hover:background-purple-hover pointer-auto tooltip gap-6px text-red background-purple text-white pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">Suggestion</span>
+										` : ''}
 
 										${Calendar.Todo.getTitle(item)}
 
@@ -11197,28 +11339,41 @@ function gettododata(item) {
 			
 								<span class="tooltiptextcenter">Edit</span>
 							</div>
-				
+
 							<div class="backdrop-blur popupbutton tooltip infotopright hover:background-tint-1 pointer-auto transition-duration-100 border-8px pointer" onclick="deletetodo('${item.id}');if(gtag){gtag('event', 'button_click', { useraction: 'Delete - task' })}">
-								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-								<g>
-								<path d="M207.414 223.445L207.414 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M71.3433 246L184.657 246" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M207.414 223.445C207.414 235.902 197.226 246 184.657 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M238 57.6433L18 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M48.5864 223.445L48.5864 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M48.5864 223.445C48.5864 235.902 58.775 246 71.3433 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M96.1228 10L159.881 10" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M173.737 23.7283C173.737 16.1464 167.534 10 159.881 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M82.2668 23.7283C82.2668 16.1464 88.4703 10 96.1228 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M82.2668 23.7283L82.2668 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M173.737 23.7283L173.737 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M165.379 101.49L165.379 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
-								<path d="M90.6212 101.49L90.6212 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
-								<path d="M128 101.49L128 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
-								</g>
-								</svg>
-		
-								<span class="tooltiptextcenter">Delete</span>
+								${!item.completed && item.issuggestion ? 
+									`<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+									<g>
+									<g opacity="1">
+									<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+									<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+									</g>
+									</g>
+									</svg>
+			
+									<span class="tooltiptextcenter">Reject</span>`
+									: 
+									`<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+									<g>
+									<path d="M207.414 223.445L207.414 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+									<path d="M71.3433 246L184.657 246" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+									<path d="M207.414 223.445C207.414 235.902 197.226 246 184.657 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+									<path d="M238 57.6433L18 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+									<path d="M48.5864 223.445L48.5864 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+									<path d="M48.5864 223.445C48.5864 235.902 58.775 246 71.3433 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+									<path d="M96.1228 10L159.881 10" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+									<path d="M173.737 23.7283C173.737 16.1464 167.534 10 159.881 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+									<path d="M82.2668 23.7283C82.2668 16.1464 88.4703 10 96.1228 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+									<path d="M82.2668 23.7283L82.2668 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+									<path d="M173.737 23.7283L173.737 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+									<path d="M165.379 101.49L165.379 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+									<path d="M90.6212 101.49L90.6212 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+									<path d="M128 101.49L128 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+									</g>
+									</svg>
+			
+									<span class="tooltiptextcenter">Delete</span>`
+								}
 							</div>
 		
 						</div>
@@ -11309,7 +11464,7 @@ function regeneratesubtasksuggestions(id){
 	item.gotsubtasksuggestions = false
 
 	//send request
-	lastgettasksuggestionsdate = Date.now()
+	lastgetsubtasksuggestionsdate = Date.now()
 	getsubtasksuggestions(item)
 
 	calendar.updateTodo()
@@ -11424,6 +11579,8 @@ let inputtodoid;
 function clicktodoitemduedate(event, id) {
 	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
+
+	item.issuggestion = false
 
 	//ui
 	let button = event.target
@@ -11739,6 +11896,8 @@ function clicktodoitempriority(event, id) {
 	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
 
+	item.issuggestion = false
+
 	//ui
 	let button = event.target
 	let todoitempriority = getElement('todoitempriority')
@@ -11793,6 +11952,9 @@ function inputtodoitempriority(event, index) {
 function clicktodoitemduration(event, id) {
 	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
+
+	item.issuggestion = false
+	
 
 	//ui
 	let button = event.target
@@ -11913,6 +12075,8 @@ function dragtodo(event, id) {
 
 	let item = [...calendar.todos].find(x => x.id == id)
 	if (!item) return
+
+	item.issuggestion = false
 
 	let children = Calendar.Todo.getSubtasks(item)
 	if(children.length > 0){
@@ -12368,6 +12532,8 @@ function deletetodo(id) {
 function edittodo(id) {
 	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
+
+	item.issuggestion = false
 
 	selectededittodoid = id
 
@@ -13214,10 +13380,9 @@ function openaichat(){
 		}
 		
 		const tempoptions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my agenda for today?')">What's on my agenda today?</div>`,
-		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Book a meeting for me')">Book a meeting for me</div>`, 
+		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me book a meeting')">Help me book a meeting</div>`, 
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="addaiassistantinputwithnextaction('I need to work on ')">I need to work on [task]</div>`, 
-		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="addaiassistantinputwithnextaction('Book a meeting ')">Book a meeting [title and date]</div>`,
-		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="addaiassistantinputwithnextaction('Create a weekly recurring event for ')">Create a weekly recurring event for [something]</div>`,
+		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="addaiassistantinputwithnextaction('Create a weekly recurring event for ')">Create a recurring event for [something]</div>`,
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`,
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What are my tasks for today?')">What are my tasks for today?</div>`]
 
@@ -14855,7 +15020,7 @@ async function submitaimessage(optionalinput, dictated){
 										let oldcompleted = item.completed
 										let oldduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 										
-										let endbeforeminute = getMinute(newduedate?.replace('T', ' ')).value
+										let endbeforeminute = getMinute(newduedate?.replace('T', ' ')).value || 1440-1
 										let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(newduedate?.replace('T', ' ')).value
 										
 										let endbeforedate;
