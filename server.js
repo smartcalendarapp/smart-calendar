@@ -461,11 +461,12 @@ function sleep(time) {
 }
 
 
-async function sendRawEmail({ from, to, htmlbody, textbody, subject }){
+async function sendRawEmail({ from, to, htmlbody, textbody, subject, configurationset }){
 	//formatting is very careful, newlines and space cannot be messed up
 
     const unsubscribeLink = 'mailto:james.tsaggaris@smartcalendar.us'
     const listUnsubscribePostValue = 'List-Unsubscribe=One-Click'
+	const configurationsetname = configurationset || 'smart-calendar-user-sending'
 
     const input = {
         "Destinations": [],
@@ -495,7 +496,8 @@ ${htmlbody}
         },
         "ReturnPathArn": "",
         "Source": from,
-        "SourceArn": ""
+        "SourceArn": "",
+		"ConfigurationSetName": configurationsetname
     }
 
     try{
@@ -509,7 +511,9 @@ ${htmlbody}
     }
 }
 
-async function sendEmail({ from, to, subject, htmlbody, textbody }){
+async function sendEmail({ from, to, subject, htmlbody, textbody, configurationset }){
+	const configurationsetname = configurationset || 'smart-calendar-user-sending'
+
 	const params = {
 		Source: from,
 	  	Destination: {
@@ -517,20 +521,25 @@ async function sendEmail({ from, to, subject, htmlbody, textbody }){
 		},
 	 	Message: {
 			Body: {
-			Html: {
-				Charset: "UTF-8",
-				Data: htmlbody,
-			},
-			Text: {
-				Charset: "UTF-8",
-				Data: textbody,
-			},
 			},
 			Subject: {
 				Charset: 'UTF-8',
 				Data: subject,
 			},
 	  	},
+		ConfigurationSetName: configurationsetname
+	}
+	if(htmlbody){
+		params.Message.Body.Html = {
+			Charset: "UTF-8",
+			Data: htmlbody,
+		}
+	}
+	if(textbody){
+		params.Message.Body.Text = {
+			Charset: "UTF-8",
+			Data: textbody,
+		}
 	}
 
   try {
@@ -4916,7 +4925,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. If you detect app_action function call, you must follow these procedures: """1. If user prompt is not explicitly stating the command but is implied or unclear, do NOT return function call and instead ask for clarification. 2. If user prompt mentions no details, e.g. user is implicitly requesting you to guide them in an app action, do NOT return function call and instead ask for more details.""" Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted and assumed. Never say or mention internal ID of events/tasks. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively finish messages with a specific question or suggestion relating to user's last message to promote dialogue. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. If you detect app_action function call, you must follow these procedures: """1. If user prompt is not explicitly stating the command but is implied or unclear, do NOT return function call and instead ask for clarification. 2. If user prompt has no details at all, and user is implicitly requesting you to guide them in an app action, do NOT return function call and instead ask for more details.""" Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted and assumed. Never say or mention internal ID of events/tasks. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively finish messages with a specific question or suggestion relating to user's last message to promote dialogue. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""`

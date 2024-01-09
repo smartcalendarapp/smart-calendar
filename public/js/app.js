@@ -15163,7 +15163,7 @@ async function submitaimessage(optionalinput, dictated){
 									endbeforedate = new Date(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute)
 								}
 
-								let startminute = getMinute(newstartdate?.replace('T', ' ')).value
+								let startminute = getMinute(newstartdate?.replace('T', ' ')).value || item.start?.minute
 								let [startyear, startmonth, startday] = getDate(newstartdate?.replace('T', ' ')).value
 								let endminute = getMinute(newenddate?.replace('T', ' ')).value
 								let [endyear, endmonth, endday] = getDate(newenddate?.replace('T', ' ')).value
