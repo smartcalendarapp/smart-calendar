@@ -13845,8 +13845,10 @@ class ChatMessage {
 					for(let [index, div] of Object.entries(chatmessagebody?.children[0])){
 						if(displayindex == index){
 							div.classList.remove('hiddenfade')
+							div.classList.remove('chatmultiloaderitemdown')
 						}else{
 							div.classList.add('hiddenfade')
+							div.classList.add('chatmultiloaderitemup')
 						}
 					}
 				}, 100)
@@ -13856,9 +13858,9 @@ class ChatMessage {
 		let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
 		chatmessagebody.innerHTML = `<div class="relative">
 			<div class="text-16px fadetransition hiddenfade text-quaternary"><div class="typingdots"><span></span><span></span><span></span></div></div>
-			<div class="absolute chatmultiloaderitemfadetransition hiddenfade top-0 left-0 bottom-0 display-flex flex-row align-center"><span class="text-16px text-purple">Looking at your calendar</span></div>
-			<div class="absolute chatmultiloaderitemfadetransition hiddenfade top-0 left-0 bottom-0 display-flex flex-row align-center"><span class="text-16px text-green">Making some changes</span></div>
-			<div class="absolute chatmultiloaderitemfadetransition hiddenfade top-0 left-0 bottom-0 display-flex flex-row align-center"><span class="text-16px text-quaternary">Sorry for taking so long</span></div>
+			<div class="absolute chatmultiloaderitemdown chatmultiloaderitem hiddenfade top-0 left-0 bottom-0 display-flex flex-row align-center"><span class="text-16px text-purple">Looking at your calendar</span></div>
+			<div class="absolute chatmultiloaderitemdown chatmultiloaderitem hiddenfade top-0 left-0 bottom-0 display-flex flex-row align-center"><span class="text-16px text-green">Making some changes</span></div>
+			<div class="absolute chatmultiloaderitemdown chatmultiloaderitem hiddenfade top-0 left-0 bottom-0 display-flex flex-row align-center"><span class="text-16px text-quaternary">Sorry for taking so long</span></div>
 		</div>`
 		
 		await waitforload()

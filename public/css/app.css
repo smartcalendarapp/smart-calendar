@@ -4730,6 +4730,13 @@ max-width:1000px;
 .chatmultiloaderitem{
 	animation: typingbreathefade 1.5s infinite;
 	animation-fill-mode: forwards;
+	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s, transform 0.2s;
+}
+.chatmultiloaderitemup{
+	transform:translateY(-100%)
+}
+.chatmultiloaderitemdown{
+	transform:translateY(100%)
 }
 
 
