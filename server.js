@@ -521,6 +521,14 @@ async function sendEmail({ from, to, subject, htmlbody, textbody, configurations
 		},
 	 	Message: {
 			Body: {
+				Html: {
+					Charset: "UTF-8",
+					Data: htmlbody,
+				},
+				Text: {
+					Charset: "UTF-8",
+					Data: textbody,
+				},
 			},
 			Subject: {
 				Charset: 'UTF-8',
@@ -528,18 +536,6 @@ async function sendEmail({ from, to, subject, htmlbody, textbody, configurations
 			},
 	  	},
 		ConfigurationSetName: configurationsetname
-	}
-	if(htmlbody){
-		params.Message.Body.Html = {
-			Charset: "UTF-8",
-			Data: htmlbody,
-		}
-	}
-	if(textbody){
-		params.Message.Body.Text = {
-			Charset: "UTF-8",
-			Data: textbody,
-		}
 	}
 
   try {
@@ -4580,7 +4576,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Competed task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}""" Provide a very short personal motivational sentence for the user who just completed this task. Then, mention only the next upcoming event (if there is one) and at what time, and mention if there is a break before it or not, in one sentence. Calendar data: """${calendarcontext}"""`
+		let inputtext = `Competed task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}""" Provide a very short personal motivational sentence for the user who just completed this task. Then, mention only the next upcoming event (if there is one) and at what time, and how long from now, in one sentence. Calendar data: """${calendarcontext}"""`
 		let custominstructions = `Respond in no more than 30 words, concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant, as if the user is a boss. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
@@ -4925,7 +4921,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. If you detect app_action function call, you must follow these procedures: """1. If user prompt is not explicitly stating the command but is implied or unclear, do NOT return function call and instead ask for clarification. 2. If user prompt has no details at all, and user is implicitly requesting you to guide them in an app action, do NOT return function call and instead ask for more details.""" Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted and assumed. Never say or mention internal ID of events/tasks. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively finish messages with a specific question or suggestion relating to user's last message to promote dialogue. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. If you detect app_action function call, you must follow these procedures: """1. If user prompt does not explicitly state the command but instead implies it or is unclear, do NOT return function call and instead ask for clarification. 2. If user prompt has no details at all and user is implicitly requesting you to guide them in an app action (e.g. 'Book a meeting for me'), do NOT return function call and instead ask for more details.""" Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted and assumed. Never say or mention internal ID of events/tasks. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively finish messages with a specific question or suggestion relating to user's last message to promote dialogue. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""`

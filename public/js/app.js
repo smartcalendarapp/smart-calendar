@@ -13812,6 +13812,59 @@ class ChatMessage {
 
 		chathistory.chatmessagescounter++
 	}
+
+	async animateLoader(){
+		if(this.role != 'assistant') return
+		if(this.message) return
+
+		const getthismessage = () => {
+			return this.message
+		}
+
+		const waitforload = () => {
+			return new Promise((resolve) => {
+				const interval = setInterval(() => {
+					if (getthismessage()) {
+						clearInterval(interval)
+						resolve()
+					}
+
+					//update ui
+					let secondspassed = (Date.now() - this.timestamp)/1000
+					let displayindex;
+					if(secondspassed < 2){
+						displayindex = 0
+					}else if(secondspassed < 5){
+						displayindex = 1
+					}else if(secondspassed < 10){
+						displayindex = 2
+					}else{
+						displayindex = 3
+					}
+
+					for(let [index, div] of Object.entries(chatmessagebody?.children[0])){
+						if(displayindex == index){
+							div.classList.remove('hiddenfade')
+						}else{
+							div.classList.add('hiddenfade')
+						}
+					}
+				}, 100)
+			})
+		}
+
+		let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
+		chatmessagebody.innerHTML = `<div class="relative">
+			<div class="text-16px fadetransition hiddenfade text-quaternary"><div class="typingdots"><span></span><span></span><span></span></div></div>
+			<div class="absolute chatmultiloaderitemfadetransition hiddenfade top-0 left-0 bottom-0 display-flex flex-row align-center"><span class="text-16px text-purple">Looking at your calendar</span></div>
+			<div class="absolute chatmultiloaderitemfadetransition hiddenfade top-0 left-0 bottom-0 display-flex flex-row align-center"><span class="text-16px text-green">Making some changes</span></div>
+			<div class="absolute chatmultiloaderitemfadetransition hiddenfade top-0 left-0 bottom-0 display-flex flex-row align-center"><span class="text-16px text-quaternary">Sorry for taking so long</span></div>
+		</div>`
+		
+		await waitforload()
+
+		return
+	}
 	
 	async animateTyping(){
 		if(this.role != 'assistant') return
@@ -14197,7 +14250,8 @@ function updateaichat(){
 				</div>
 				<div class="flex-1 overflow-hidden display-flex flex-column gap-12px">
 					<div class="display-flex flex-column gap-6px">
-						<div class="padding-12px align-self-center background-tint-1 border-12px selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message && !waitingforvoice ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : `<div class="typingdots"><span></span><span></span><span></span></div>`}</div>
+						<div class="padding-12px align-self-center background-tint-1 border-12px selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message && !waitingforvoice ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : `
+						<div class="aichatmultiloader"></div>`}</div>
 
 						${actions ? `<div class="hoverchatmessagebuttons justify-center display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${actions.join('')}</div>` : ''}
 
@@ -14241,6 +14295,9 @@ function updateaichat(){
 			for(let chatmessage of chatinteraction.getMessages()){
 				if(!chatmessage.startedanimating){
 					chatmessage.animateTyping()
+				}
+				if(!chatmessage.message){
+					chatmessage.animateLoader()
 				}
 			}
 		}

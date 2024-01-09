@@ -4716,6 +4716,22 @@ max-width:1000px;
 }
 
 
+@keyframes typingbreathefade {
+	0% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.7;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+.chatmultiloaderitem{
+	animation: typingbreathefade 1.5s infinite;
+	animation-fill-mode: forwards;
+}
+
 
 @keyframes typingblink {
 	0% {
