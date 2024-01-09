@@ -5054,6 +5054,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						const requirestododata = tododataneededfunctions.find(f => commands.find(g => g == f))
 						const requirescustomfunction = customfunctions.find(f => commands.find(g => g == f))
 		
+						console.warn(commands.length, Math.min(Math.max(200, 150*commands.length), 1000))
 						let request2options = {
 							model: 'gpt-3.5-turbo',
 							max_tokens: Math.min(Math.max(200, 150*commands.length), 1000), //auto scale tokens so long requests work. min 200, max 1000
