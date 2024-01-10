@@ -13823,7 +13823,12 @@ class ChatMessage {
 
 		const waitforload = () => {
 			return new Promise((resolve) => {
-				const interval = setInterval(() => {
+				let lastdisplayindex;
+				let isanimating = false;
+
+				const interval = setInterval(async () => {
+					if(isanimating) return
+					
 					if (getthismessage()) {
 						clearInterval(interval)
 						resolve()
@@ -13842,28 +13847,57 @@ class ChatMessage {
 						displayindex = 3
 					}
 
-					for(let [index, div] of Object.entries(chatmessagebody?.children[0])){
-						if(displayindex == index){
-							div.classList.remove('hiddenfade')
-							div.classList.remove('chatmultiloaderitemdown')
-						}else{
-							div.classList.add('hiddenfade')
-							div.classList.add('chatmultiloaderitemup')
-						}
+					let loadoptions = [
+						`<div class="chatmultiloaderitem display-flex flex-row align-center justify-center"><span class="nowrap text-16px text-quaternary">Typing...</span></div>`,
+						`<div class="chatmultiloaderitem display-flex flex-row align-center justify-center"><span class="nowrap text-16px text-purple">Looking at your calendar...</span></div>`,
+						`<div class="chatmultiloaderitem display-flex flex-row align-center justify-center"><span class="nowrap text-16px text-green">Making some changes...</span></div>`,
+						`<div class="chatmultiloaderitem display-flex flex-row align-center justify-center"><span class="nowrap text-16px text-quaternary">Sorry for taking so long...</span></div>`
+					]
+
+					let chatmessageloader = getElement(`chatmessage-loader-${this.id}`)
+					if(!chatmessageloader) return
+
+					if(lastdisplayindex != displayindex){
+						chatmessageloader.children[0].classList.add('hiddenfade')
+						chatmessageloader.children[0].classList.add('chatmultiloaderwrapup')
+						isanimating = true
+
+						await sleep(200)
+
+						chatmessageloader.children[0].innerHTML = loadoptions[displayindex]
+
+						chatmessageloader.children[0].classList.remove('chatmultiloaderwrap')
+						chatmessageloader.children[0].classList.add('chatmultiloaderwrapdown')
+						chatmessageloader.children[0].classList.remove('chatmultiloaderwrapup')
+
+						await sleep(1)
+
+						chatmessageloader.children[0].classList.add('chatmultiloaderwrap')
+
+						await sleep(1)
+
+						chatmessageloader.children[0].classList.remove('chatmultiloaderwrapdown')
+						chatmessageloader.children[0].classList.remove('hiddenfade')
+
+						await sleep(200)
+
+						isanimating = false
 					}
+					
 				}, 100)
 			})
 		}
 
 		let chatmessagebody = getElement(`chatmessage-body-${this.id}`)
-		chatmessagebody.innerHTML = `<div class="relative">
-			<div class="text-16px fadetransition hiddenfade text-quaternary"><div class="typingdots"><span></span><span></span><span></span></div></div>
-			<div class="absolute chatmultiloaderitemdown chatmultiloaderitem hiddenfade top-0 left-0 bottom-0 display-flex flex-row align-center"><span class="text-16px text-purple">Looking at your calendar</span></div>
-			<div class="absolute chatmultiloaderitemdown chatmultiloaderitem hiddenfade top-0 left-0 bottom-0 display-flex flex-row align-center"><span class="text-16px text-green">Making some changes</span></div>
-			<div class="absolute chatmultiloaderitemdown chatmultiloaderitem hiddenfade top-0 left-0 bottom-0 display-flex flex-row align-center"><span class="text-16px text-quaternary">Sorry for taking so long</span></div>
-		</div>`
+		chatmessagebody.classList.add('display-none')
+
+		let chatmessageloader = getElement(`chatmessage-loader-${this.id}`)
+		chatmessageloader.classList.remove('display-none')
 		
 		await waitforload()
+
+		chatmessagebody.classList.remove('display-none')
+		chatmessageloader.classList.add('display-none')
 
 		return
 	}
@@ -14252,8 +14286,9 @@ function updateaichat(){
 				</div>
 				<div class="flex-1 overflow-hidden display-flex flex-column gap-12px">
 					<div class="display-flex flex-column gap-6px">
-						<div class="padding-12px align-self-center background-tint-1 border-12px selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message && !waitingforvoice ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : `
-						<div class="aichatmultiloader"></div>`}</div>
+						<div class="padding-12px align-self-center background-tint-1 border-12px selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message && !waitingforvoice ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : ``}</div>
+
+						<div class="display-none padding-12px align-self-center background-tint-1 border-12px selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-loader-${id}"><div class="display-flex flex-row chatmultiloaderwrap fadetransition"></div></div>
 
 						${actions ? `<div class="hoverchatmessagebuttons justify-center display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${actions.join('')}</div>` : ''}
 
