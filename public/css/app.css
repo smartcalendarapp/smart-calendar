@@ -4735,12 +4735,20 @@ max-width:1000px;
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, opacity 0.2s, visibility 0.2s, transform 0.2s;
 }
 .chatmultiloaderwrapup{
-	transform:translateY(-100%)
+	transform:translateY(-50%)
 }
 .chatmultiloaderwrapdown{
-	transform:translateY(100%)
+	transform:translateY(50%)
 }
 
+
+.buttonfillpurple{
+	fill: var(--purple);
+	height: 18px;
+	width: 18px;
+	display: block;
+	pointer-events: none;
+}
 
 @keyframes typingblink {
 	0% {

@@ -13848,16 +13848,42 @@ class ChatMessage {
 					}
 
 					let loadoptions = [
-						`<div class="chatmultiloaderitem display-flex flex-row align-center justify-center"><span class="nowrap text-16px text-quaternary">Typing...</span></div>`,
-						`<div class="chatmultiloaderitem display-flex flex-row align-center justify-center"><span class="nowrap text-16px text-purple">Looking at your calendar...</span></div>`,
-						`<div class="chatmultiloaderitem display-flex flex-row align-center justify-center"><span class="nowrap text-16px text-green">Making some changes...</span></div>`,
-						`<div class="chatmultiloaderitem display-flex flex-row align-center justify-center"><span class="nowrap text-16px text-quaternary">Sorry for taking so long...</span></div>`
+						`<div class="chatmultiloaderitem display-flex flex-row align-center justify-center"><div class="typingdots"><span></span><span></span><span></span></div></div>`,
+						`<div class="chatmultiloaderitem display-flex gap-6px flex-row align-center justify-center">
+							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonfillpurple">
+							<g>
+							<path d="M46-4.10783e-15C20.5949-4.10783e-15 0 20.4899 0 45.7654L0 65.6633L0 85.5613L0 210.235C0 235.51 20.5949 256 46 256L210 256C235.405 256 256 235.51 256 210.235L256 85.5613L256 65.6633L256 45.7654C256 20.4899 235.405-1.01206e-05 210-4.10783e-15L46-4.10783e-15ZM46 59.694L210 59.694C224.359 59.694 236 71.2752 236 85.5613L236 210.235C236 224.521 224.359 236.102 210 236.102L46 236.102C31.6406 236.102 20 224.521 20 210.235L20 85.5613C20 71.2752 31.6406 59.694 46 59.694Z" fill-rule="nonzero" opacity="1"></path>
+							<path d="M56.4316 90.9174L80.4316 90.9174C84.8499 90.9174 88.4316 94.4991 88.4316 98.9174L88.4316 122.917C88.4316 127.336 84.8499 130.917 80.4316 130.917L56.4316 130.917C52.0134 130.917 48.4316 127.336 48.4316 122.917L48.4316 98.9174C48.4316 94.4991 52.0134 90.9174 56.4316 90.9174Z" fill-rule="nonzero" opacity="1"></path>
+							<path d="M116 90.9174L140 90.9174C144.418 90.9174 148 94.4991 148 98.9174L148 122.917C148 127.336 144.418 130.917 140 130.917L116 130.917C111.582 130.917 108 127.336 108 122.917L108 98.9174C108 94.4991 111.582 90.9174 116 90.9174Z" fill-rule="nonzero" opacity="1"></path>
+							<path d="M173.596 90.9174L197.596 90.9174C202.014 90.9174 205.596 94.4991 205.596 98.9174L205.596 122.917C205.596 127.336 202.014 130.917 197.596 130.917L173.596 130.917C169.178 130.917 165.596 127.336 165.596 122.917L165.596 98.9174C165.596 94.4991 169.178 90.9174 173.596 90.9174Z" fill-rule="nonzero" opacity="1"></path>
+							<path d="M56.4316 147.412L80.4316 147.412C84.8499 147.412 88.4316 150.994 88.4316 155.412L88.4316 179.412C88.4316 183.83 84.8499 187.412 80.4316 187.412L56.4316 187.412C52.0134 187.412 48.4316 183.83 48.4316 179.412L48.4316 155.412C48.4316 150.994 52.0134 147.412 56.4316 147.412Z" fill-rule="nonzero" opacity="1"></path>
+							<path d="M116 147.412L140 147.412C144.418 147.412 148 150.994 148 155.412L148 179.412C148 183.83 144.418 187.412 140 187.412L116 187.412C111.582 187.412 108 183.83 108 179.412L108 155.412C108 150.994 111.582 147.412 116 147.412Z" fill-rule="nonzero" opacity="1"></path>
+							</g>
+							</svg>
+							<div class="nowrap text-15px text-purple">Looking at your calendar</div>
+						</div>`,
+						`<div class="chatmultiloaderitem display-flex gap-6px flex-row align-center justify-center">
+							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonfillgreen">
+							<g>
+							<path d="M46-4.10783e-15C20.5949-4.10783e-15 0 20.4899 0 45.7654L0 65.6633L0 85.5613L0 210.235C0 235.51 20.5949 256 46 256L210 256C235.405 256 256 235.51 256 210.235L256 85.5613L256 65.6633L256 45.7654C256 20.4899 235.405-1.01206e-05 210-4.10783e-15L46-4.10783e-15ZM46 59.694L210 59.694C224.359 59.694 236 71.2752 236 85.5613L236 210.235C236 224.521 224.359 236.102 210 236.102L46 236.102C31.6406 236.102 20 224.521 20 210.235L20 85.5613C20 71.2752 31.6406 59.694 46 59.694Z" fill-rule="nonzero" opacity="1"></path>
+							<path d="M56.4316 90.9174L80.4316 90.9174C84.8499 90.9174 88.4316 94.4991 88.4316 98.9174L88.4316 122.917C88.4316 127.336 84.8499 130.917 80.4316 130.917L56.4316 130.917C52.0134 130.917 48.4316 127.336 48.4316 122.917L48.4316 98.9174C48.4316 94.4991 52.0134 90.9174 56.4316 90.9174Z" fill-rule="nonzero" opacity="1"></path>
+							<path d="M116 90.9174L140 90.9174C144.418 90.9174 148 94.4991 148 98.9174L148 122.917C148 127.336 144.418 130.917 140 130.917L116 130.917C111.582 130.917 108 127.336 108 122.917L108 98.9174C108 94.4991 111.582 90.9174 116 90.9174Z" fill-rule="nonzero" opacity="1"></path>
+							<path d="M173.596 90.9174L197.596 90.9174C202.014 90.9174 205.596 94.4991 205.596 98.9174L205.596 122.917C205.596 127.336 202.014 130.917 197.596 130.917L173.596 130.917C169.178 130.917 165.596 127.336 165.596 122.917L165.596 98.9174C165.596 94.4991 169.178 90.9174 173.596 90.9174Z" fill-rule="nonzero" opacity="1"></path>
+							<path d="M56.4316 147.412L80.4316 147.412C84.8499 147.412 88.4316 150.994 88.4316 155.412L88.4316 179.412C88.4316 183.83 84.8499 187.412 80.4316 187.412L56.4316 187.412C52.0134 187.412 48.4316 183.83 48.4316 179.412L48.4316 155.412C48.4316 150.994 52.0134 147.412 56.4316 147.412Z" fill-rule="nonzero" opacity="1"></path>
+							<path d="M116 147.412L140 147.412C144.418 147.412 148 150.994 148 155.412L148 179.412C148 183.83 144.418 187.412 140 187.412L116 187.412C111.582 187.412 108 183.83 108 179.412L108 155.412C108 150.994 111.582 147.412 116 147.412Z" fill-rule="nonzero" opacity="1"></path>
+							</g>
+							</svg>
+							<div class="nowrap text-15px text-green">Making some changes...</div>
+						</div>`,
+						`<div class="chatmultiloaderitem display-flex gap-6px flex-row align-center justify-center"><span class="nowrap text-16px text-quaternary">Sorry for taking so long...</span></div>`
 					]
 
 					let chatmessageloader = getElement(`chatmessage-loader-${this.id}`)
 					if(!chatmessageloader) return
 
 					if(lastdisplayindex != displayindex){
+						lastdisplayindex = displayindex
+						
 						chatmessageloader.children[0].classList.add('hiddenfade')
 						chatmessageloader.children[0].classList.add('chatmultiloaderwrapup')
 						isanimating = true
