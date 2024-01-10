@@ -4728,7 +4728,7 @@ max-width:1000px;
 	}
 }
 .chatmultiloaderitem{
-	animation: typingbreathefade 1.5s infinite;
+	animation: typingbreathefade 3s infinite;
 	animation-fill-mode: forwards;
 }
 .chatmultiloaderwrap{
@@ -4767,7 +4767,8 @@ max-width:1000px;
 	position: relative;
 	align-content:center;
 	flex-direction:row;
-	gap:6px
+	gap:6px;
+	padding:4px 0;
 }
 .typingdots span {
 	content: '';
