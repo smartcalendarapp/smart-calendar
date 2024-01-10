@@ -4762,6 +4762,7 @@ max-width:1000px;
 	}
 }
 .typingdots {
+	height:16px;
 	pointer-events: none;
 	display:inline-flex;
 	position: relative;
