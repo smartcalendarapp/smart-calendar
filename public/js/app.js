@@ -16039,6 +16039,11 @@ function eventtype(type) {
 			item.end.day = tempdate.getDate()
 			item.end.minute = tempdate.getHours() * 60 + tempdate.getMinutes()
 		}
+
+		item.startafter.year = item.start.year
+		item.startafter.month = item.start.month
+		item.startafter.day = item.start.day
+		item.startafter.minute = 0
 	}
 
 	calendar.updateInfo(true)
@@ -17380,7 +17385,9 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			calendar.updateEvents()
 
 			calendar.updateHistory()
-			calendar.updateInfo(true)
+			if(!editinfo){
+				calendar.updateInfo()
+			}
 			calendar.updateTodo()
 
 			isautoscheduling = false
@@ -17394,7 +17401,9 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		calendar.updateEvents()
 		calendar.updateAnimatedEvents()
 
-		calendar.updateInfo()
+		if(!editinfo){
+			calendar.updateInfo()
+		}
 
 		//animate
 		let sortedmodifiedevents =  sortstartdate(modifiedevents)
