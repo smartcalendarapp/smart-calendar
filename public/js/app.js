@@ -4835,7 +4835,11 @@ function run() {
 		if (document.visibilityState === 'visible') {
 			if (needtoautoschedule && !movingevent) {
 				needtoautoschedule = false
-				startAutoSchedule({})
+				if(autoschedulequeue[0]){
+					startAutoSchedule(autoschedulequeue[0])
+				}else{
+					startAutoSchedule({})
+				}
 			}
 
 			updatetime()
@@ -8622,9 +8626,13 @@ function submitschedulemytasks() {
 }
 
 
-
+let autoschedulequeue = []
 async function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], moveditemtimestamp, moveditem}) {
-	if (isautoscheduling == true) return
+	if (isautoscheduling == true){
+		autoschedulequeue.push({ scheduletodos: scheduletodos, eventsuggestiontodos: eventsuggestiontodos, moveditemtimestamp: moveditemtimestamp, moveditem: moveditem })
+		needtoautoschedule = true
+		return
+	}
 
 	let oldcalendartabs = [...calendartabs]
 
