@@ -1879,7 +1879,7 @@ class Calendar {
 
 
 	updateAnimatedEvents() {
-		requestAnimationFrame(function(){
+
 			if (calendarmode == 0 || calendarmode == 1) {
 				for (let i = 0; i < [3, 21][calendarmode]; i++) {
 					let currentdate = new Date(calendar.getDate())
@@ -1922,7 +1922,7 @@ class Calendar {
 				}
 
 			}
-		})
+
 	}
 
 
@@ -13868,7 +13868,7 @@ class ChatMessage {
 								<path d="M116 147.412L140 147.412C144.418 147.412 148 150.994 148 155.412L148 179.412C148 183.83 144.418 187.412 140 187.412L116 187.412C111.582 187.412 108 183.83 108 179.412L108 155.412C108 150.994 111.582 147.412 116 147.412Z" fill-rule="nonzero" opacity="1"></path>
 								</g>
 								</svg>
-								<div class="nowrap text-15px text-primary">Looking at your calendar</div>
+								<div class="nowrap text-15px text-purple">Looking at your calendar</div>
 							</div>`,
 							`<div class="chatmultiloaderitem display-flex gap-6px flex-row align-center justify-center">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonfillgreen">
@@ -13881,7 +13881,7 @@ class ChatMessage {
 								<path d="M116 147.412L140 147.412C144.418 147.412 148 150.994 148 155.412L148 179.412C148 183.83 144.418 187.412 140 187.412L116 187.412C111.582 187.412 108 183.83 108 179.412L108 155.412C108 150.994 111.582 147.412 116 147.412Z" fill-rule="nonzero" opacity="1"></path>
 								</g>
 								</svg>
-								<div class="nowrap text-15px text-primary">Making some changes</div>
+								<div class="nowrap text-15px text-green">Making some changes</div>
 							</div>`,
 							`<div class="chatmultiloaderitem display-flex gap-6px flex-row align-center justify-center">
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="flex-shrink-0 buttonfillblue">
@@ -13894,7 +13894,7 @@ class ChatMessage {
 								<path d="M116 147.412L140 147.412C144.418 147.412 148 150.994 148 155.412L148 179.412C148 183.83 144.418 187.412 140 187.412L116 187.412C111.582 187.412 108 183.83 108 179.412L108 155.412C108 150.994 111.582 147.412 116 147.412Z" fill-rule="nonzero" opacity="1"></path>
 								</g>
 								</svg>
-								<div class="nowrap text-15px text-primary">Thinking</div>
+								<div class="nowrap text-15px text-blue">Thinking</div>
 							</div>`
 						]
 	
