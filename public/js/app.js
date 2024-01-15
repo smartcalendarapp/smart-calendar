@@ -4833,7 +4833,7 @@ function run() {
 
 	//tick
 	setInterval(async function(){
-		if(!issettingclientgooglecalendar && !isgettingclientdata && calendar.settings.issyncingtogooglecalendar && !movingevent && !isautoscheduling){
+		if(Date.now - calendar.lastmodified > 5000 && !issettingclientgooglecalendar && !isgettingclientdata && calendar.settings.issyncingtogooglecalendar && !movingevent && !isautoscheduling){
 			if(lastsetgoogledata != JSON.stringify({ events: calendar.events, calendars: calendar.calendars })){
 
 				let parsed = JSON.parse(lastsetgoogledata)
@@ -4843,7 +4843,7 @@ function run() {
 				let requestchanges = []
 				for (let item of calendar.events) {
 					let olditem = oldeventsdata.find(d => d.id == item.id)
-					if (!olditem || !item.googleeventid) { //create event
+					if (!olditem) { //create event
 						requestchanges.push({ type: 'createevent', item: item, requestid: generateID() })
 					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit event
 						//check for change
@@ -4860,7 +4860,7 @@ function run() {
 
 				for (let item of calendar.calendars) {
 					let olditem = oldcalendarsdata.find(d => d.id == item.id)
-					if (!olditem || !olditem.googleid) { //create calendar
+					if (!olditem) { //create calendar
 						requestchanges.push({ type: 'createcalendar', item: item, requestid: generateID() })
 					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit calendar
 						//check for change
@@ -4873,6 +4873,17 @@ function run() {
 					if (!calendar.calendars.find(d => d.id == item.id)) { //delete calendar
 						requestchanges.push({ type: 'deletecalendar', googleid: item.googleid, requestid: generateID() })
 					}
+				}
+
+				//fix
+				let temp = requestchanges.filter(d => d.type == 'deleteevent')
+				for(let item of temp){
+					requestchanges = requestchanges.filter(d => d.type != 'deleteevent' && d.googleeventid != item.googleeventid && d.item?.id != item.id)
+				}
+
+				let temp2 = requestchanges.filter(d => d.type == 'deletecalendar')
+				for(let item of temp2){
+					requestchanges = requestchanges.filter(d => d.type != 'deletecalendar' && d.googleid != item.googleid && d.item?.id != item.id)
 				}
 
 				setclientgooglecalendar(requestchanges)
