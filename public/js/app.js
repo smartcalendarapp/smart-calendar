@@ -4833,9 +4833,9 @@ function run() {
 	//tick
 	setInterval(async function(){
 		if (document.visibilityState === 'visible') {
-			if (needtoautoschedule && !movingevent) {
+			if (needtoautoschedule && !movingevent && !isautoscheduling) {
 				needtoautoschedule = false
-				if(autoschedulequeue[0]){
+				if(autoschedulequeue.length > 0){
 					startAutoSchedule(autoschedulequeue[0])
 				}else{
 					startAutoSchedule({})
@@ -8629,8 +8629,10 @@ function submitschedulemytasks() {
 let autoschedulequeue = []
 async function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [], moveditemtimestamp, moveditem}) {
 	if (isautoscheduling == true){
-		autoschedulequeue.push({ scheduletodos: scheduletodos, eventsuggestiontodos: eventsuggestiontodos, moveditemtimestamp: moveditemtimestamp, moveditem: moveditem })
+		if(scheduletodos.length > 0 || eventsuggestiontodos.length > 0 || moveditem || moveditemtimestamp){
+			autoschedulequeue.push({ scheduletodos: scheduletodos, eventsuggestiontodos: eventsuggestiontodos, moveditemtimestamp: moveditemtimestamp, moveditem: moveditem })
 		needtoautoschedule = true
+		}
 		return
 	}
 
