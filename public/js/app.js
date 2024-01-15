@@ -1441,11 +1441,11 @@ class Calendar {
 
 
 				//google calendar changes
-				/*if (syncgoogle != false && calendar.settings.issyncingtogooglecalendar) {
+				if (syncgoogle != false && calendar.settings.issyncingtogooglecalendar) {
 					let requestchanges = []
 					for (let item of calendar.events) {
 						let olditem = oldeventsdata.find(d => d.id == item.id)
-						if (!olditem) { //create event
+						if (!olditem || !olditem.googleeventid) { //create event
 							requestchanges.push({ type: 'createevent', item: item, requestid: generateID() })
 						} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit event
 							//check for change
@@ -1462,7 +1462,7 @@ class Calendar {
 
 					for (let item of calendar.calendars) {
 						let olditem = oldcalendarsdata.find(d => d.id == item.id)
-						if (!olditem) { //create calendar
+						if (!olditem || !olditem.googleid) { //create calendar
 							requestchanges.push({ type: 'createcalendar', item: item, requestid: generateID() })
 						} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit calendar
 							//check for change
@@ -1478,7 +1478,7 @@ class Calendar {
 					}
 
 					setclientgooglecalendar(requestchanges)
-				}*/
+				}
 
 			}
 
@@ -4833,6 +4833,7 @@ function run() {
 
 	//tick
 	setInterval(async function(){
+		/*
 		if(Date.now - calendar.lastmodified > 5000 && !issettingclientgooglecalendar && !isgettingclientdata && calendar.settings.issyncingtogooglecalendar && !movingevent && !isautoscheduling){
 			if(lastsetgoogledata != JSON.stringify({ events: calendar.events, calendars: calendar.calendars })){
 
@@ -4892,6 +4893,7 @@ function run() {
 
 			}
 		}
+		*/
 
 		if (document.visibilityState === 'visible') {
 			if (needtoautoschedule && !movingevent && !isautoscheduling) {
