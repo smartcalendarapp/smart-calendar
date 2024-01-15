@@ -4836,8 +4836,8 @@ function run() {
 			if (needtoautoschedule && !movingevent && !isautoscheduling) {
 				needtoautoschedule = false
 				if(autoschedulequeue.length > 0){
-					autoschedulequeue.shift()
 					startAutoSchedule(autoschedulequeue[0])
+					autoschedulequeue.shift()
 				}else{
 					startAutoSchedule({})
 				}
@@ -8632,7 +8632,7 @@ async function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [],
 	if (isautoscheduling == true){
 		if(scheduletodos.length > 0 || eventsuggestiontodos.length > 0 || moveditem || moveditemtimestamp){
 			autoschedulequeue.push({ scheduletodos: scheduletodos, eventsuggestiontodos: eventsuggestiontodos, moveditemtimestamp: moveditemtimestamp, moveditem: moveditem })
-		needtoautoschedule = true
+			needtoautoschedule = true
 		}
 		return
 	}
