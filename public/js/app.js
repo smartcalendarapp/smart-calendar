@@ -1393,7 +1393,6 @@ class Calendar {
 				let oldcalendarsdata = JSON.parse(historydata[historydata.length - 1]).calendars
 				let oldtodosdata = JSON.parse(historydata[historydata.length - 1]).todos
 
-
 				//auto schedule
 				if (smartschedule != false) {
 					if (JSON.stringify(neweventsdata) != JSON.stringify(oldeventsdata)) {
@@ -1442,7 +1441,7 @@ class Calendar {
 
 
 				//google calendar changes
-				if (syncgoogle != false && calendar.settings.issyncingtogooglecalendar) {
+				/*if (syncgoogle != false && calendar.settings.issyncingtogooglecalendar) {
 					let requestchanges = []
 					for (let item of calendar.events) {
 						let olditem = oldeventsdata.find(d => d.id == item.id)
@@ -1479,7 +1478,7 @@ class Calendar {
 					}
 
 					setclientgooglecalendar(requestchanges)
-				}
+				}*/
 
 			}
 
@@ -2601,7 +2600,7 @@ class Calendar {
 							}
 
 							${!Calendar.Event.isReadOnly(item) && item.type == 1 ? 
-								`<span class="text-primary display-inline-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-tint-1 hover:background-tint-2 pointer-auto transition-duration-100 border-round pointer" onclick="eventcompleted(event, selectedeventid)">
+								`<span class="text-primary display-inline-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-tint-1 hover:background-tint-2 pointer-auto transition-duration-100 border-round pointer" onclick="eventcompleted(selectedeventid)">
 									<div class="pointer-none nowrap text-primary text-14px">${item.completed ? `Mark uncomplete` : 'Mark complete'}</div>
 								</span>` : ''
 							}
@@ -4787,7 +4786,7 @@ function checkquery(){
 	history.pushState({ path: newUrl }, '', newUrl)
 }
 
-
+let lastsetgoogledata;
 function run() {
 	//ONCE
 
@@ -4814,8 +4813,10 @@ function run() {
 	updateAvatar()
 	updateuserinfo()
 
-	//set initial save data
+	//set initial data
 	lastbodydata = calendar.getChangedJSON()
+
+	lastsetgoogledata = JSON.stringify({ events: calendar.events, calendars: calendar.calendars })
 	
 	//hide loading screen
 	hideloadingscreen()
@@ -4832,6 +4833,55 @@ function run() {
 
 	//tick
 	setInterval(async function(){
+		if(!isgettingclientdata && calendar.settings.issyncingtogooglecalendar && !movingevent && !isautoscheduling){
+			if(lastsetgoogledata != JSON.stringify({ events: calendar.events, calendars: calendar.calendars })){
+				needtosetgoogledata = false
+
+				let oldeventsdata = JSON.parse(lastsetgoogledata.events)
+				let oldcalendarsdata = JSON.parse(lastsetgoogledata.calendars)
+
+				let requestchanges = []
+				for (let item of calendar.events) {
+					let olditem = oldeventsdata.find(d => d.id == item.id)
+					if (!olditem) { //create event
+						requestchanges.push({ type: 'createevent', item: item, requestid: generateID() })
+					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit event
+						//check for change
+						if (new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() != new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute).getTime() || new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() != new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute).getTime() || item.title != olditem.title || item.notes != olditem.notes || getRecurrenceString(item) != getRecurrenceString(olditem) || Calendar.Event.getCalendar(item)?.googleid != olditem.googlecalendarid) {
+							requestchanges.push({ type: 'editevent', item: item, oldgooglecalendarid: olditem.googlecalendarid, newgooglecalendarid: Calendar.Event.getCalendar(item)?.googleid, requestid: generateID() })
+						}
+					}
+				}
+				for (let item of oldeventsdata) {
+					if (!calendar.events.find(d => d.id == item.id)) { //delete event
+						requestchanges.push({ type: 'deleteevent', googleeventid: item.googleeventid, googlecalendarid: item.googlecalendarid, requestid: generateID() })
+					}
+				}
+
+				for (let item of calendar.calendars) {
+					let olditem = oldcalendarsdata.find(d => d.id == item.id)
+					if (!olditem) { //create calendar
+						requestchanges.push({ type: 'createcalendar', item: item, requestid: generateID() })
+					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit calendar
+						//check for change
+						if (olditem.title != item.title || olditem.notes != item.notes) {
+							requestchanges.push({ type: 'editcalendar', item: item, requestid: generateID() })
+						}
+					}
+				}
+				for (let item of oldcalendarsdata) {
+					if (!calendar.calendars.find(d => d.id == item.id)) { //delete calendar
+						requestchanges.push({ type: 'deletecalendar', googleid: item.googleid, requestid: generateID() })
+					}
+				}
+
+				setclientgooglecalendar(requestchanges)
+
+				lastsetgoogledata = JSON.stringify({ events: calendar.events, calendars: calendar.calendars })
+
+			}
+		}
+
 		if (document.visibilityState === 'visible') {
 			if (needtoautoschedule && !movingevent && !isautoscheduling) {
 				needtoautoschedule = false
@@ -4859,7 +4909,7 @@ function run() {
 			calendar.lastgottasksuggestion = Date.now()
 			gettasksuggestions()
 		}
-	}, 3000)
+	}, 10000)
 
 	/*
 	setInterval(async function(){
@@ -4966,13 +5016,13 @@ function run() {
 			}
 
 			//get google calendar
-			if (!isgettingclientdata && !isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 60000 && issettingclientgooglecalendar == false && Date.now() - lasttriedsyncgooglecalendardate > 60000) {
+			if (!isgettingclientdata && !isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 30000 && issettingclientgooglecalendar == false && Date.now() - lasttriedsyncgooglecalendardate > 30000) {
 				lasttriedsyncgooglecalendardate = Date.now()
 				getclientgooglecalendar()
 			}
 
 			//get google classroom
-			if (document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgoogleclassroomdate > 60000 && Date.now() - lasttriedsyncgoogleclassroomdate > 60000) {
+			if (document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgoogleclassroomdate > 30000 && Date.now() - lasttriedsyncgoogleclassroomdate > 30000) {
 				lasttriedsyncgoogleclassroomdate = Date.now()
 				getclientgoogleclassroom()
 			}
@@ -8827,6 +8877,7 @@ function updatefeedbackpopup(submit){
 	}
 }
 
+
 async function submitfeedbackpopup(){
 	let feedbackpopuperrorwrap = getElement('feedbackpopuperrorwrap')
 
@@ -11278,7 +11329,7 @@ function gettododata(item) {
 						<div class="display-flex flex-row gap-12px">
 						
 						${!schedulemytasksenabled ? `
-							<div class="scalebutton todoitemcheckbox tooltip display-flex" onclick="todocompleted(event, '${item.id}');if(gtag){gtag('event', 'button_click', { useraction: '${item.completed ? 'Mark uncomplete - task' : 'Mark complete - task'}' })}">
+							<div class="scalebutton todoitemcheckbox tooltip display-flex" onclick="todocompleted('${item.id}');if(gtag){gtag('event', 'button_click', { useraction: '${item.completed ? 'Mark uncomplete - task' : 'Mark complete - task'}' })}">
 								${getcheckcircle(item.completed, item.completed ? '<span class="tooltiptextright">Mark uncomplete</span>' : '<span class="tooltiptextright">Mark complete</span>')}
 							</div>` : ''}
 		
@@ -12382,7 +12433,7 @@ async function playsound(name){
 
 
 //check completed
-async function todocompleted(event, id) {
+async function todocompleted(id) {
 	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
 	item.completed = !item.completed
@@ -15984,7 +16035,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 				<div class="eventtextdisplay ${itemclasses2.join(' ')}">
 					
 					${item.type == 1 ? 
-						`<span class="scalebutton todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="eventcompleted(event, '${item.id}')">
+						`<span class="scalebutton todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="eventcompleted('${item.id}')">
 							${myheight <= 15 ? `${getwhitecheckcirclesmall(item.completed)}` : `${getwhitecheckcircle(item.completed)}`}
 						</span>` 
 						: ''
@@ -16844,7 +16895,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 				if(complete){
 					if(tempitem){
-						tempitem.completed = true
+						todocompleted(tempitem)
 						fixrecurringtodo(tempitem)
 						fixsubandparenttask(tempitem)
 
@@ -17397,8 +17448,8 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			oldautoscheduleeventslist = []
 			newautoscheduleeventslist = []
 
-			calendar.updateAnimatedEvents()
 			calendar.updateEvents()
+			calendar.updateAnimatedEvents()
 
 			calendar.updateHistory()
 			if(!editinfo){
@@ -17499,6 +17550,10 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		let confettievents = modifiedevents.filter(d => !eventsuggestiontodos.find(g => g.id == d.id)).filter(d => {
 			let newitem = newcalendarevents.find(f => f.id == d.id)
 			let olditem = oldcalendarevents.find(f => f.id == d.id)
+
+			if(!olditem || !newitem){
+				return true
+			}
 
 			let oldstartdate = new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute)
 			let newstartdate = new Date(newitem.start.year, newitem.start.month, newitem.start.day, 0, newitem.start.minute)
@@ -18855,7 +18910,7 @@ function synctoautoschedule(id){
 
 
 //event completed
-async function eventcompleted(event, id) {
+async function eventcompleted(id) {
 	let item = calendar.events.find(f => f.id == id)
 	if (!item) return
 	item.completed = !item.completed

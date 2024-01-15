@@ -2676,7 +2676,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 						responsechanges.push({ type: 'editevent', id: item.id, googlecalendarid: requestchange.newgooglecalendarid })
 					}
 				}catch(error){
-					console.error(error)
+					//console.error(error)
 				}
 				
 			}else if(requestchange.type == 'createevent'){
@@ -2710,7 +2710,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 
 					responsechanges.push({ type: 'createevent', id: item.id, googleeventid: response.data.id })
 				}catch(error){
-					console.error(error)
+					//console.error(error)
 				}
 				
 			}else if(requestchange.type == 'deleteevent'){
@@ -2725,7 +2725,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 						throw new Error(response.data?.error?.message)
 					}
 				}catch(error){
-					console.error(error)
+					//console.error(error)
 				}
 					
 			}else if(requestchange.type == 'editcalendar'){
@@ -2745,7 +2745,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 						throw new Error(response.data?.error?.message)
 					}
 				}catch(error){
-					console.error(error)
+					//console.error(error)
 				}
 					
 			}else if(requestchange.type == 'createcalendar'){
@@ -2766,7 +2766,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 					
 					responsechanges.push({ type: 'createcalendar', id: item.id, googleid: response.data.id })
 				}catch(error){
-					console.error(error)
+					//console.error(error)
 				}
 				
 			}else if(requestchange.type == 'deletecalendar'){
@@ -2780,7 +2780,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 						throw new Error(response.data?.error?.message)
 					}
 				}catch(error){
-					console.error(error)
+					//console.error(error)
 				}
 				
 			}
