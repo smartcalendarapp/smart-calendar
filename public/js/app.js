@@ -4836,6 +4836,7 @@ function run() {
 			if (needtoautoschedule && !movingevent && !isautoscheduling) {
 				needtoautoschedule = false
 				if(autoschedulequeue.length > 0){
+					autoschedulequeue.shift()
 					startAutoSchedule(autoschedulequeue[0])
 				}else{
 					startAutoSchedule({})
@@ -9137,6 +9138,11 @@ function fixrecurringtodo(item){
 			}else{
 				newitem = deepCopy(lasttodo)
 			}
+
+			newitem.startafter.year = lasttododuedate.getFullYear()
+			newitem.startafter.month = lasttododuedate.getMonth()
+			newitem.startafter.day = lasttododuedate.getDate()
+			newitem.startafter.minute = lasttododuedate.getHours() * 60 + lasttododuedate.getMinutes()
 
 			newitem.endbefore.year = newtododuedate.getFullYear()
 			newitem.endbefore.month = newtododuedate.getMonth()
