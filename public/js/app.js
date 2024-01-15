@@ -1445,7 +1445,7 @@ class Calendar {
 					let requestchanges = []
 					for (let item of calendar.events) {
 						let olditem = oldeventsdata.find(d => d.id == item.id)
-						if (!olditem || !olditem.googleeventid) { //create event
+						if (!olditem) { //create event
 							requestchanges.push({ type: 'createevent', item: item, requestid: generateID() })
 						} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit event
 							//check for change
@@ -1462,7 +1462,7 @@ class Calendar {
 
 					for (let item of calendar.calendars) {
 						let olditem = oldcalendarsdata.find(d => d.id == item.id)
-						if (!olditem || !olditem.googleid) { //create calendar
+						if (!olditem) { //create calendar
 							requestchanges.push({ type: 'createcalendar', item: item, requestid: generateID() })
 						} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit calendar
 							//check for change
