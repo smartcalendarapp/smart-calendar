@@ -1401,11 +1401,6 @@ class Calendar {
 					}
 				}
 
-				//google calendar sync
-				if(syncgoogle){
-					needtosetgoogledata = true
-				}
-
 				//last modified
 				if(setlastmodified != false){
 					if(JSON.stringify(this.events) != JSON.stringify(oldeventsdata) || JSON.stringify(oldtodosdata) != JSON.stringify(this.todos) || JSON.stringify(this.calendars) != JSON.stringify(oldcalendarsdata)){
@@ -4792,7 +4787,6 @@ function checkquery(){
 }
 
 let lastsetgoogledata;
-let needtosetgoogledata = false
 function run() {
 	//ONCE
 
@@ -4839,9 +4833,8 @@ function run() {
 
 	//tick
 	setInterval(async function(){
-		if(!issettingclientgooglecalendar && needtosetgoogledata && !isgettingclientdata && calendar.settings.issyncingtogooglecalendar && !movingevent && !isautoscheduling){
+		if(!issettingclientgooglecalendar && !isgettingclientdata && calendar.settings.issyncingtogooglecalendar && !movingevent && !isautoscheduling){
 			if(lastsetgoogledata != JSON.stringify({ events: calendar.events, calendars: calendar.calendars })){
-				needtosetgoogledata = false
 
 				let parsed = JSON.parse(lastsetgoogledata)
 				let oldeventsdata = parsed.events
@@ -5041,7 +5034,6 @@ function run() {
 	setTimeout(function(){
 		needtoautoschedule = true
 		needtoupdateeventstatus = true
-		needtosetgoogledata
 	}, 3000)
 
 
