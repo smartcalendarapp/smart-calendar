@@ -4837,13 +4837,14 @@ function run() {
 			if(lastsetgoogledata != JSON.stringify({ events: calendar.events, calendars: calendar.calendars })){
 				needtosetgoogledata = false
 
-				let oldeventsdata = JSON.parse(lastsetgoogledata.events)
-				let oldcalendarsdata = JSON.parse(lastsetgoogledata.calendars)
+				let parsed = JSON.parse(lastsetgoogledata)
+				let oldeventsdata = parsed.events
+				let oldcalendarsdata = parsed.calendars
 
 				let requestchanges = []
 				for (let item of calendar.events) {
 					let olditem = oldeventsdata.find(d => d.id == item.id)
-					if (!olditem) { //create event
+					if (!olditem || !item.googleeventid) { //create event
 						requestchanges.push({ type: 'createevent', item: item, requestid: generateID() })
 					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit event
 						//check for change
@@ -4860,7 +4861,7 @@ function run() {
 
 				for (let item of calendar.calendars) {
 					let olditem = oldcalendarsdata.find(d => d.id == item.id)
-					if (!olditem) { //create calendar
+					if (!olditem || !olditem.googleid) { //create calendar
 						requestchanges.push({ type: 'createcalendar', item: item, requestid: generateID() })
 					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit calendar
 						//check for change
