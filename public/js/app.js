@@ -4792,6 +4792,7 @@ function checkquery(){
 }
 
 let lastsetgoogledata;
+let needtosetgoogledata = false
 function run() {
 	//ONCE
 
@@ -4838,7 +4839,7 @@ function run() {
 
 	//tick
 	setInterval(async function(){
-		if(needtosetgoogledata && !isgettingclientdata && calendar.settings.issyncingtogooglecalendar && !movingevent && !isautoscheduling){
+		if(!issettingclientgooglecalendar && needtosetgoogledata && !isgettingclientdata && calendar.settings.issyncingtogooglecalendar && !movingevent && !isautoscheduling){
 			if(lastsetgoogledata != JSON.stringify({ events: calendar.events, calendars: calendar.calendars })){
 				needtosetgoogledata = false
 
