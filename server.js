@@ -4826,13 +4826,13 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				},
 				{
 					name: 'create_task',
-					description: 'Create a task to be auto-scheduled by the app in the calendar. Return nothing for options not provided. All fields optional.',
+					description: 'Create a task to be auto-scheduled by the app in the calendar. Return nothing for options not provided. All fields optional. startDate is optional, only include if user mentions after when to start working on task.',
 					parameters: {
 						type: 'object',
 						properties: {
 							title: { type: 'string', description: 'Task title' },
 							dueDate: { type: 'string', description: 'Task due date/time in format: YYYY-MM-DD HH:MM' },
-							startDate: { type: 'string', description: '(optional) Task to be scheduled in calendar no earlier than this date/time in format: YYYY-MM-DD HH:MM' },
+							startDate: { type: 'string', description: '(optional) After when to start working on task date/time in format: YYYY-MM-DD HH:MM' },
 							duration: { type: 'string', description: 'Task duration in format: HH:MM' },
 							RRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 						},
@@ -4921,7 +4921,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. If you detect app_action function call, you must follow these procedures: """1. If user prompt does not explicitly state the command but instead implies it or is unclear, do NOT return function call and instead ask for clarification. 2. If user is implicitly requesting you to guide them through an app action (e.g. 'Book a meeting for me') and not giving a solid command (e.g. 'I need to get A, B, C done by tomorrow'), do NOT return function call and instead ask for more details.""" Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted and assumed. Never say or mention internal ID of events/tasks. Limit conversations to app interactions, calendar scheduling, or productivity. Proactively finish messages with a specific question or suggestion relating to user's last message to promote dialogue and help. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. If you detect app_action function call, you must follow these procedures: """1. If user prompt does not explicitly state the command but instead implies it or is unclear, do NOT return function call and instead ask for clarification. 2. If user is implicitly requesting you to guide them through an app action (e.g. 'Book a meeting for me') and not giving a solid command (e.g. 'I need to get A, B, C done by tomorrow'), do NOT return function call and instead ask for more details.""" Respond with tone and style of a subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted and assumed. Never say or mention internal ID of events/tasks. Limit conversations to app interactions, calendar scheduling, productivity, or mental wellness. Proactively finish messages with a specific question or suggestion relating to user's last message to promote dialogue and help. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""`

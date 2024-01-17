@@ -1450,7 +1450,11 @@ class Calendar {
 						} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit event
 							//check for change
 							if (new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() != new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute).getTime() || new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() != new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute).getTime() || item.title != olditem.title || item.notes != olditem.notes || getRecurrenceString(item) != getRecurrenceString(olditem) || Calendar.Event.getCalendar(item)?.googleid != olditem.googlecalendarid) {
-								requestchanges.push({ type: 'editevent', item: item, oldgooglecalendarid: olditem.googlecalendarid, newgooglecalendarid: Calendar.Event.getCalendar(item)?.googleid, requestid: generateID() })
+								if(!item.googleeventid){
+									requestchanges.push({ type: 'createevent', item: item, requestid: generateID() })
+								}else{
+									requestchanges.push({ type: 'editevent', item: item, oldgooglecalendarid: olditem.googlecalendarid, newgooglecalendarid: Calendar.Event.getCalendar(item)?.googleid, requestid: generateID() })
+								}
 							}
 						}
 					}
@@ -1467,7 +1471,11 @@ class Calendar {
 						} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit calendar
 							//check for change
 							if (olditem.title != item.title || olditem.notes != item.notes) {
-								requestchanges.push({ type: 'editcalendar', item: item, requestid: generateID() })
+								if(!item.googleid){
+									requestchanges.push({ type: 'createcalendar', item: item, requestid: generateID() })
+								}else{
+									requestchanges.push({ type: 'editcalendar', item: item, requestid: generateID() })
+								}
 							}
 						}
 					}
@@ -11353,7 +11361,7 @@ function gettododata(item) {
 				 
 									<div class="todoitemtext text-16px ${itemclasses.join(' ')}">
 										${Calendar.Event.isEvent(item) ? 
-											`<span class="${!item.iseventsuggestion ? 'margin-right-6px' : ''} text-12px hover:text-red-hover pointer-auto tooltip gap-6px text-red todoscheduleddate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">
+											`<span class="margin-right-6px text-12px hover:text-red-hover pointer-auto tooltip gap-6px text-red todoscheduleddate pointer transition-duration-100 badgepadding border-8px display-inline-flex flex-row align-center width-fit todoitemtext nowrap ${itemclasses.join(' ')}" onclick="gototaskincalendar('${item.id}')">
 												${Calendar.Event.getStartText(item)}
 												<span class="tooltiptextcenter">Show calendar event</span>
 											</span>
@@ -16908,7 +16916,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 				if(complete){
 					if(tempitem){
-						todocompleted(tempitem)
+						todocompleted(tempitem.id)
 						fixrecurringtodo(tempitem)
 						fixsubandparenttask(tempitem)
 
