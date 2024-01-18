@@ -15109,8 +15109,8 @@ async function submitaimessage(optionalinput, dictated){
 						let duration = getDuration(arguments?.duration).value
 						let error = arguments?.errorMessage || ''
 						let recurrence = arguments?.RRULE
-						let startminute = getMinute(arguments?.startDate?.replace('T', ' ')).value || 0
-						let [startyear, startmonth, startday] = getDate(arguments?.startDate?.replace('T', ' ')).value
+						let startminute = getMinute(arguments?.startAfterDate?.replace('T', ' ')).value || 0
+						let [startyear, startmonth, startday] = getDate(arguments?.startAfterDate?.replace('T', ' ')).value
 
 						if(error && !title && !endbeforeminute && !endbeforeyear){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
@@ -16869,11 +16869,11 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				
 				let conflicts = getconflictingevent(iteratedevents, lastmoveditem, true)
 
-				for(let tempdata of conflicts){
+				/*for(let tempdata of conflicts){
 					if(tempdata[0].type == 1){
 						tempdata[0].autoschedulelocked = false
 					}
-				}
+				}*/
 
 
 
@@ -17862,7 +17862,7 @@ function editschedulemoveevent(id, timestamp){
 
 	let movedate = new Date(timestamp)
 
-	lastmovedeventid = item.id;
+
 	item.autoschedulelocked = true
 	item.startafter.year = movedate.getFullYear();
 	item.startafter.month = movedate.getMonth();

@@ -4832,7 +4832,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						properties: {
 							title: { type: 'string', description: 'Task title' },
 							dueDate: { type: 'string', description: 'Task due date/time in format: YYYY-MM-DD HH:MM' },
-							startDate: { type: 'string', description: '(optional) After when to start working on task date/time in format: YYYY-MM-DD HH:MM' },
+							startAfterDate: { type: 'string', description: '(optional) After when to start working on task date/time in format: YYYY-MM-DD HH:MM' },
 							duration: { type: 'string', description: 'Task duration in format: HH:MM' },
 							RRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 						},
