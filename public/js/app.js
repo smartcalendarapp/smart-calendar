@@ -6203,15 +6203,15 @@ function openfocus() {
 window.addEventListener('keydown', keydowndocument, false)
 function keydowndocument(event) {
 	if (!document.activeElement || document.activeElement === document.body) {
-		if (event.key.toLowerCase() == 'd' && calendartabs.includes(0)) { //D
+		if (event?.key?.toLowerCase() == 'd' && calendartabs.includes(0)) { //D
 			selectedeventid = null
 			calendarmode = 0
 			calendar.updateCalendar()
-		} else if (event.key.toLowerCase() == 'w' && calendartabs.includes(0)) { //W
+		} else if (event?.key?.toLowerCase() == 'w' && calendartabs.includes(0)) { //W
 			selectedeventid = null
 			calendarmode = 1
 			calendar.updateCalendar()
-		} else if (event.key.toLowerCase() == 'm' && calendartabs.includes(0)) { //M
+		} else if (event?.key?.toLowerCase() == 'm' && calendartabs.includes(0)) { //M
 			selectedeventid = null
 			calendarmode = 2
 			calendar.updateCalendar()
@@ -6232,7 +6232,7 @@ function keydowndocument(event) {
 			calendar.updateTodo()
 			calendar.updateEvents()
 			calendar.updateHistory()
-		} else if (event.key.toLowerCase() == 'c' && (event.ctrlKey || event.metaKey) && calendartabs.includes(0)) { //ctrl C
+		} else if (event?.key?.toLowerCase() == 'c' && (event.ctrlKey || event.metaKey) && calendartabs.includes(0)) { //ctrl C
 			let item = calendar.events.find(d => d.id == selectedeventid)
 			if (!item) return
 
@@ -6242,7 +6242,7 @@ function keydowndocument(event) {
 			if (Calendar.Event.isReadOnly(item)) return
 
 			copiedevent = JSON.stringify(item)
-		} else if (event.key.toLowerCase() == 'v' && (event.ctrlKey || event.metaKey) && calendartabs.includes(0)) { //ctrl V
+		} else if (event?.key?.toLowerCase() == 'v' && (event.ctrlKey || event.metaKey) && calendartabs.includes(0)) { //ctrl V
 			if (copiedevent) {
 				event.stopPropagation()
 				event.preventDefault()
@@ -6259,7 +6259,7 @@ function keydowndocument(event) {
 				calendar.updateEvents()
 				calendar.updateHistory()
 			}
-		} else if (event.key.toLowerCase() == 'z' && !event.shiftKey && (event.ctrlKey || event.metaKey)) { //ctrl Z
+		} else if (event?.key?.toLowerCase() == 'z' && !event.shiftKey && (event.ctrlKey || event.metaKey)) { //ctrl Z
 			event.stopPropagation()
 			event.preventDefault()
 
@@ -6274,7 +6274,7 @@ function keydowndocument(event) {
 			calendar.updateEvents()
 			calendar.updateTodo()
 			calendar.updateInfo()
-		} else if (((event.key.toLowerCase() == 'z' && event.shiftKey) || event.key.toLowerCase() == 'y') && (event.ctrlKey || event.metaKey)) { //ctrl shift Z or ctrl Y
+		} else if (((event?.key?.toLowerCase() == 'z' && event.shiftKey) || event?.key?.toLowerCase() == 'y') && (event.ctrlKey || event.metaKey)) { //ctrl shift Z or ctrl Y
 			event.stopPropagation()
 			event.preventDefault()
 
@@ -6293,7 +6293,7 @@ function keydowndocument(event) {
 			prevcalendar()
 		} else if (event.key == 'ArrowRight' && calendartabs.includes(0)) { //right arrow
 			nextcalendar()
-		} else if (event.key.toLowerCase() == 't' && calendartabs.includes(0)) { //T
+		} else if (event?.key?.toLowerCase() == 't' && calendartabs.includes(0)) { //T
 			todaycalendar()
 		}
 
@@ -8956,7 +8956,7 @@ async function submitfeedbackpopup(){
 					}
 				})
 
-				myconfetti.reset()
+				if(myconfetti) myconfetti.reset()
 			}catch(e){}
 		}else{
 			let data = await response.json()
@@ -12410,7 +12410,7 @@ async function accepteventsuggestion(event, id){
 			}
 		})
 
-		myconfetti.reset()
+		if(myconfetti) myconfetti.reset()
 	}catch(e){}
 }
 
@@ -12507,7 +12507,7 @@ async function todocompleted(id) {
 				}
 			})
 
-			myconfetti.reset()
+			if(myconfetti) myconfetti.reset()
 		}catch(e){}
 	}
 }
@@ -13240,7 +13240,7 @@ async function referafriendgeneratelink(generate){
 						}
 					})
 
-					myconfetti.reset()
+					if(myconfetti) myconfetti.reset()
 				}catch(e){}
 			}else if(clientinfo.referafriend.acceptedcount > oldacceptedcount){
 				let confetticanvas = getElement('confetticanvas')
@@ -13264,7 +13264,7 @@ async function referafriendgeneratelink(generate){
 						}
 					})
 
-					myconfetti.reset()
+					if(myconfetti) myconfetti.reset()
 				}catch(e){}
 			}
 
@@ -14981,7 +14981,7 @@ async function submitaimessage(optionalinput, dictated){
 
 									let oldduration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 
-									let startminute = getMinute(newstartdate?.replace('T', ' ')).value
+									let startminute = getMinute(newstartdate?.replace('T', ' ')).value || item.start?.minute
 									let [startyear, startmonth, startday] = getDate(newstartdate?.replace('T', ' ')).value
 									let endminute = getMinute(newenddate?.replace('T', ' ')).value
 									let [endyear, endmonth, endday] = getDate(newenddate?.replace('T', ' ')).value
@@ -15109,8 +15109,8 @@ async function submitaimessage(optionalinput, dictated){
 						let duration = getDuration(arguments?.duration).value
 						let error = arguments?.errorMessage || ''
 						let recurrence = arguments?.RRULE
-						let startminute = getMinute(arguments?.startAfterDate?.replace('T', ' ')).value || 0
-						let [startyear, startmonth, startday] = getDate(arguments?.startAfterDate?.replace('T', ' ')).value
+						let startminute = getMinute(arguments?.delayStartDate?.replace('T', ' ')).value || 0
+						let [startyear, startmonth, startday] = getDate(arguments?.delayStartDate?.replace('T', ' ')).value
 
 						if(error && !title && !endbeforeminute && !endbeforeyear){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
@@ -15153,7 +15153,7 @@ async function submitaimessage(optionalinput, dictated){
 								if(startminute != null && startyear != null && startmonth != null && startday != null){
 									startdate = new Date(startyear, startmonth, startday, 0, startminute)
 								}
-								if(startdate && !isNaN(startdate.getTime())){
+								if(startdate && !isNaN(startdate.getTime()) && startdate.getTime() > Date.now()){
 									item.startafter.year = startdate.getFullYear()
 									item.startafter.month = startdate.getMonth()
 									item.startafter.day = startdate.getDate()
@@ -17568,7 +17568,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			useWorker: true
 		})
 
-		let confettievents = modifiedevents.filter(d => !eventsuggestiontodos.find(g => g.id == d.id)).filter(d => {
+		let confettievents = modifiedevents.filter(d => {
 			let newitem = newcalendarevents.find(f => f.id == d.id)
 			let olditem = oldcalendarevents.find(f => f.id == d.id)
 
@@ -17579,7 +17579,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			let oldstartdate = new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute)
 			let newstartdate = new Date(newitem.start.year, newitem.start.month, newitem.start.day, 0, newitem.start.minute)
 
-			return Math.abs(newstartdate.getTime() - oldstartdate.getTime()) > 30*1000*60
+			return Math.abs(newstartdate.getTime() - oldstartdate.getTime()) > 60*1000*60
 		})
 		let promises = []
 		for (let item of confettievents) {
@@ -17603,7 +17603,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		try{
 			await Promise.all(promises)
 
-			myconfetti.reset()
+			if(myconfetti) myconfetti.reset()
 		}catch(e){}
 	}catch(err){
 		isautoscheduling = false
@@ -18979,7 +18979,7 @@ async function eventcompleted(id) {
 				}
 			})
 
-			myconfetti.reset()
+			if(myconfetti) myconfetti.reset()
 		}catch(e){}
 
 	}
@@ -19200,7 +19200,6 @@ function clickborder(event, id, timestamp) {
 let updatedeventsaftermove = false
 let lastmovedeventid;
 function moveevent(event) {
-	editeventid = selectedeventid
 	movingevent = true
 
 	let barcolumngroup = getElement('barcolumngroup')
@@ -19255,6 +19254,8 @@ function moveevent(event) {
 	//min delta y 15 minutes
 	let oldtempdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 	if (Math.abs(tempdate1.getTime() - oldtempdate.getTime()) < 900000) return
+
+	editeventid = selectedeventid
 
 	//accept suggestion
 	item.iseventsuggestion = false
@@ -19494,7 +19495,6 @@ function clickeventtop(event, timestamp) {
 
 //move event bottom
 function moveeventbottom(event) {
-	editeventid = selectedeventid
 	movingevent = true
 	event.stopPropagation()
 	let barcolumngroup = getElement('barcolumngroup')
@@ -19540,6 +19540,8 @@ function moveeventbottom(event) {
 	let oldtempdate = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute)
 	if (Math.abs(tempdate1.getTime() - oldtempdate.getTime()) < 900000) return
 
+	editeventid = selectedeventid
+
 	//accept suggestion
 	item.iseventsuggestion = false
 
@@ -19580,7 +19582,6 @@ function moveeventbottom(event) {
 
 //move event top
 function moveeventtop(event) {
-	editeventid = selectedeventid
 	movingevent = true
 	event.stopPropagation()
 	let barcolumngroup = getElement('barcolumngroup')
@@ -19626,6 +19627,8 @@ function moveeventtop(event) {
 	let oldtempdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 	if (Math.abs(tempdate1.getTime() - oldtempdate.getTime()) < 900000) return
 
+	editeventid = selectedeventid
+	
 	//accept suggestion
 	item.iseventsuggestion = false
 
