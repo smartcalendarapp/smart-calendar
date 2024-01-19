@@ -6891,7 +6891,7 @@ function getmontheventdata(item, currentdate, timestamp) {
 
 	let output = ''
 	output = `
-	<div style="${!item.iseventsuggestion ? `background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`}` : ''}" class="popupbutton monthcontainerwrap ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickmonthcontainer(event, ${timestamp})">
+	<div style="background-color:${selectedeventid == item.id ? `${item.hexcolor}` : `${item.hexcolor + '80'}`}" class="popupbutton monthcontainerwrap ${itemclasses.join(' ')}" id="${item.id}" onmousedown="clickmonthcontainer(event, ${timestamp})">
 		<div class="monthcontainerwraptextgroup">
 			<div class="monthcontainerwraptext">
 				<div class="monthcontainerwraptextdisplay ${itemclasses2.join(' ')}">
@@ -13606,6 +13606,7 @@ function updateaiassistanttooltip(){
 }
 
 //get motivational task completed message
+let ispromptingaitaskcompleted = false
 async function promptaiassistanttaskcompleted(item){
 	let now = new Date()
 	let endrange = new Date()
@@ -13619,6 +13620,9 @@ async function promptaiassistanttaskcompleted(item){
 	let tempinteraction = new ChatInteraction([tempmessage])
 	chathistory.addInteraction(tempinteraction)
 	updateaichat()
+
+	if(ispromptingaitaskcompleted) return
+	ispromptingaitaskcompleted = true
 
 	try{
 		const response = await fetch('/getgptchatresponsetaskcompleted', {
@@ -13658,6 +13662,8 @@ async function promptaiassistanttaskcompleted(item){
 		chathistory.removeInteraction(tempinteraction)
 		updateaichat()
 	}
+
+	ispromptingaitaskcompleted = false
 }
 
 //get suggestions message when task started
@@ -16848,7 +16854,6 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		
 
 		//unlock tasks that are locked but no conflict
-		/*
 		let lockedtasks = smartevents.filter(d => d.autoschedulelocked)
 		for(let tempitem of lockedtasks){
 			let conflictitem = getconflictingevent(iteratedevents, tempitem)
@@ -16856,7 +16861,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				tempitem.autoschedulelocked = false
 			}
 		}
-		*/
+
 
 		//last moved event business
 		if(lastmovedeventid){
@@ -17025,7 +17030,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 					let dayendbeforedate = new Date(endbeforedate)
 					dayendbeforedate.setHours(0,0,0,0)
 
-					let dayindex = Math.round((dayendbeforedate.getTime() - daystartafterdate.getTime()) * percentrange/86400000)
+					let dayindex = Math.floor((dayendbeforedate.getTime() - daystartafterdate.getTime()) * percentrange/86400000)
 
 					startdate = new Date(daystartafterdate.getTime())
 					startdate.setDate(startdate.getDate() + dayindex)
