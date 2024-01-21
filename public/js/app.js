@@ -15134,7 +15134,7 @@ async function submitaimessage(optionalinput, dictated){
 								duration = 30
 							}
 
-							if(!endbeforedate || isNaN(endbeforedate.getTime())){
+							if(!endbeforedate || isNaN(endbeforedate.getTime()) || endbeforedate.getTime() < Date.now()){
 								endbeforedate = new Date()
 								endbeforedate.setHours(0,1440-1,0,0)
 							}
@@ -15171,7 +15171,7 @@ async function submitaimessage(optionalinput, dictated){
 								tempautoscheduleevents.push(item)
 
 
-								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" and added it to your calendar.`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" due ${Calendar.Event.getDueText(item)} and scheduled it in your calendar.`
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 
 								if(!mobilescreen)gototaskincalendar(item.id)
@@ -16874,11 +16874,11 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				
 				let conflicts = getconflictingevent(iteratedevents, lastmoveditem, true)
 
-				/*for(let tempdata of conflicts){
+				for(let tempdata of conflicts){
 					if(tempdata[0].type == 1){
 						tempdata[0].autoschedulelocked = false
 					}
-				}*/
+				}
 
 
 

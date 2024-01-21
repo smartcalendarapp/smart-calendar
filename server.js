@@ -2652,7 +2652,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 							description: item.notes,
 							start: start,
 							end: end,
-							recurrence: recurrence = item.repeat.frequency != null && item.repeat.interval != null ? [ getRecurrenceString(item) ] : []
+							recurrence: recurrence = item.type != 1 && item.repeat.frequency != null && item.repeat.interval != null ? [ getRecurrenceString(item) ] : []
 						}
 					})
 					
@@ -2700,7 +2700,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 							description: item.notes,
 							start: start,
 							end: end,
-							recurrence: item.repeat.frequency != null && item.repeat.interval != null ? [ getRecurrenceString(item) ] : []
+							recurrence: item.type != 1 && item.repeat.frequency != null && item.repeat.interval != null ? [ getRecurrenceString(item) ] : []
 						},
 					})
 	
