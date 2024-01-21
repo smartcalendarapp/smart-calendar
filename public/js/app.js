@@ -11126,7 +11126,7 @@ function submitcreatetodo(event) {
 	
 	//auto schedule
 	if(calendar.onboarding.addtask && !isprompttodotoday){
-		if(calendar.settings.geteventsuggestions){
+		if(calendar.settings.geteventsuggestions && (duedate.getTime() - Date.now() < 86400*1000*30)){ //schedule it if due within 30 days
 			if(Calendar.Todo.getSubtasks(item).length > 0){
 				startAutoSchedule({eventsuggestiontodos: [...Calendar.Todo.getSubtasks(item)]})
 			}else{
