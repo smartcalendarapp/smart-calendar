@@ -140,6 +140,26 @@ img{
 	background-image: linear-gradient(to right, #faac2f, #fca519);
 }
 
+.gradienttext5{
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(to right, #3bdd0e, #11a213);
+}
+
+.gradienttext6{
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(to right, #5183e6, #187bfb);
+}
+
+.underlinetitle {
+  background-image: linear-gradient(#fb8ea4 0%, #d26565 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 0.2em;
+  background-position: 0 85%;
+}
 
 
 .buttonlogo{

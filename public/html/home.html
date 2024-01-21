@@ -1,205 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Smart Calendar | AI Productivity App That Builds Your Schedule</title>
-	<meta name="description" content="Automatically plan tasks into your calendar, schedule meetings, and resolve conflicts with Smart Calendar. Now with a powerful AI assistant you can talk to.">
-	<meta name="keywords" content="SmartCalendar,SmartCal,AI Calendar,AI Scheduling,Automatic Planner,To-Do List,Automatic Scheduling,ChatGPT Assistant,Google Calendar Integration,Productivity Tool,Time Management">
-	<meta name="author" content="Smart Calendar">
-	<link rel="canonical" href="https://smartcalendar.us/">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Smart Calendar | The World's Most Powerful AI Calendar</title>
+  <meta name="description"
+    content="Automatically plan tasks into your calendar, schedule meetings, and resolve conflicts with Smart Calendar. Now with a powerful AI assistant you can talk to.">
+  <meta name="keywords"
+    content="SmartCalendar,SmartCal,AI Calendar,AI Scheduling,Automatic Planner,To-Do List,Automatic Scheduling,ChatGPT Assistant,Google Calendar Integration,Productivity Tool,Time Management">
+  <meta name="author" content="Smart Calendar">
+  <link rel="canonical" href="https://smartcalendar.us/">
 
-	<!-- google search console -->
-	<meta name="google-site-verification" content="LEuDpsWFVr4nkQgy6R8JDy53S_Q782v9B3NHXgd4rK8" />
+  <!-- google search console -->
+  <meta name="google-site-verification" content="LEuDpsWFVr4nkQgy6R8JDy53S_Q782v9B3NHXgd4rK8" />
 
-	<!-- open graph -->
-	<meta property="og:type" content="website">
+  <!-- open graph -->
+  <meta property="og:type" content="website">
   <meta property="og:url" content="https://smartcalendar.us/">
   <meta property="og:title" content="Smart Calendar | AI Productivity App That Builds Your Schedule">
-  <meta property="og:description" content="Automatically plan tasks into your calendar, schedule meetings, and resolve conflicts with Smart Calendar. Now with a powerful AI assistant you can talk to.">
-	<meta property="og:image" content="https://smartcalendar.us/images/embedimage.png">
+  <meta property="og:description"
+    content="Automatically plan tasks into your calendar, schedule meetings, and resolve conflicts with Smart Calendar. Now with a powerful AI assistant you can talk to.">
+  <meta property="og:image" content="https://smartcalendar.us/images/embedimage.png">
 
-	<!-- twitter -->
-	<meta name="twitter:card" content="summary_large_image">
+  <!-- twitter -->
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://smartcalendar.us/">
   <meta name="twitter:title" content="Smart Calendar | AI Productivity App That Builds Your Schedule">
-  <meta name="twitter:description" content="Automatically plan tasks into your calendar, schedule meetings, and resolve conflicts with Smart Calendar. Now with a powerful AI assistant you can talk to.">
+  <meta name="twitter:description"
+    content="Automatically plan tasks into your calendar, schedule meetings, and resolve conflicts with Smart Calendar. Now with a powerful AI assistant you can talk to.">
   <meta name="twitter:image" content="https://smartcalendar.us/images/embedimage.png">
 
-	<!-- files -->
-	<link rel="icon" type="image/x-icon" href="../logo.png">
-	<link href="../home.css" rel="stylesheet" type="text/css"/>
-	<link href="../base.css" rel="stylesheet" type="text/css"/>
-	<link href="../base-hover.css" rel="stylesheet" type="text/css"/>
-	<link href="../base-media.css" rel="stylesheet" type="text/css"/>
+  <!-- files -->
+  <link rel="icon" type="image/x-icon" href="../logo.png">
+  <link href="/home.css" rel="stylesheet" type="text/css" />
+  <link href="/base.css" rel="stylesheet" type="text/css" />
+  <link href="/base-hover.css" rel="stylesheet" type="text/css" />
+  <link href="/base-media.css" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 
-	<!-- fonts -->
-	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+  <!-- fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap"
+    rel="stylesheet">
 
-	<!-- Hotjar Tracking Code for https://smartcalendar.us -->
-	<script>
-		if(localStorage.getItem('noanalytics')!=JSON.stringify(true)){
-			
-			(function(h,o,t,j,a,r){
-					h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-					h._hjSettings={hjid:3548463,hjsv:6};
-					a=o.getElementsByTagName('head')[0];
-					r=o.createElement('script');r.async=1;
-					r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-					a.appendChild(r);
-			})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-			
-		}
-	</script>
+  <!-- Hotjar Tracking Code for https://smartcalendar.us -->
+  <script>
+    if (localStorage.getItem('noanalytics') != JSON.stringify(true)) {
 
-	<!-- Google one tap login -->
-	<script async defer src="https://accounts.google.com/gsi/client"></script>
+      (function (h, o, t, j, a, r) {
+        h.hj = h.hj || function () {(h.hj.q = h.hj.q || []).push(arguments)};
+        h._hjSettings = {hjid: 3548463, hjsv: 6};
+        a = o.getElementsByTagName('head')[0];
+        r = o.createElement('script'); r.async = 1;
+        r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+        a.appendChild(r);
+      })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+
+    }
+  </script>
+
+  <!-- Google one tap login -->
+  <script async defer src="https://accounts.google.com/gsi/client"></script>
 </head>
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YNYSBZ76C2"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+  function gtag() {dataLayer.push(arguments);}
   gtag('js', new Date());
 
   gtag('config', 'G-YNYSBZ76C2');
 </script>
 
 <body>
-	<div
-		id="g_id_onload"
-		data-client_id="469742766371-epr4i5o29h0gajtb8cp765qj49b2b9q4.apps.googleusercontent.com"
-		data-login_uri="https://smartcalendar.us/auth/google/onetap"
-		data-prompt_parent_id="g_id_onload"
-		data-auto_prompt="false"
-		style="position: fixed; top: 70px; right: 30px; z-index: 99999;">
-	</div>
+  <div id="g_id_onload" data-client_id="469742766371-epr4i5o29h0gajtb8cp765qj49b2b9q4.apps.googleusercontent.com"
+    data-login_uri="https://smartcalendar.us/auth/google/onetap" data-prompt_parent_id="g_id_onload"
+    data-auto_prompt="false" style="position: fixed; top: 70px; right: 30px; z-index: 99999;">
+  </div>
 
 
-	<div id="backgroundeffect" class="fixed fadetransitionslow hiddenfadeslow pointer-none homebackground border-box z-index-100 top-0 left-0 width-full height-full"></div>
+  <div id="backgroundeffect"
+    class="fixed fadetransitionslow hiddenfadeslow pointer-none homebackground border-box z-index-100 top-0 left-0 width-full height-full">
+  </div>
 
-	<div class="border-box fixed top-0 left-0 width-full height-full fadetransitionslow hiddenfadeslow z-index-2000" id="backgroundeffectnavbar">
-		<div class="border-box padding-left-60px small:padding-left-24px padding-top-12px padding-bottom-12px padding-right-60px small:padding-right-24px width-full homebackground">
-			<a href="/" class="navtitle">
-				<img src="../logo.png" class="buttonlogo"></img>
-	
-				<span class="text-24px text-primary pointer-none nowrap text-bold">Smart Calendar</span>
-			</a>
-		</div>
-	</div>
-	
+  <div class="border-box fixed top-0 left-0 width-full height-full fadetransitionslow hiddenfadeslow z-index-2000"
+    id="backgroundeffectnavbar">
+    <div
+      class="border-box padding-left-60px small:padding-left-24px padding-top-12px padding-bottom-12px padding-right-60px small:padding-right-24px width-full homebackground">
+      <a href="/" class="navtitle">
+        <img src="../logo.png" class="buttonlogo"></img>
 
-	<div class="z-index-10000 small:padding-0 backdrop-blur fixed top-0 left-0 bottom-0 right-0 display-flex display-none padding-60px border-box" id="videopopup" onclick="if(event.target === getElement('videopopup'))closedemovideo()">
-		<div class="relative gap-12px flex-1 display-flex flex-column justify-center">
-			<div class="small:display-none infotopright pointer absolute top-0 left-full margin-left-12px" onclick="closedemovideo()">
-				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-				<g>
-				<g opacity="1">
-				<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-				<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-				</g>
-				</g>
-				</svg>
-			</div>
+        <span class="text-24px text-primary pointer-none nowrap text-bold">Smart Calendar</span>
+      </a>
+    </div>
+  </div>
 
-			<iframe id="videoframe" class="border-box width-full demovideoaspectratio" src="" frameborder="0"></iframe>
 
-			<div class="margin-left-12px margin-right-12px pointer text-14px border-box display-none small:display-block border-8px padding-8px-12px background-tint-1 text-center hover:background-tint-2 text-primary" onclick="closedemovideo()">Close</div>
-		</div>
-	</div>
+  <div
+    class="z-index-10000 small:padding-0 backdrop-blur fixed top-0 left-0 bottom-0 right-0 display-flex display-none padding-60px border-box"
+    id="videopopup" onclick="if(event.target === getElement('videopopup'))closedemovideo()">
+    <div class="relative gap-12px flex-1 display-flex flex-column justify-center">
+      <div class="small:display-none infotopright pointer absolute top-0 left-full margin-left-12px"
+        onclick="closedemovideo()">
+        <svg height="100%" stroke-miterlimit="10"
+          style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256"
+          width="100%" class="buttonlarge">
+          <g>
+            <g opacity="1">
+              <path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round"
+                stroke-linejoin="miter" stroke-width="20"></path>
+              <path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round"
+                stroke-linejoin="miter" stroke-width="20"></path>
+            </g>
+          </g>
+        </svg>
+      </div>
 
-	<canvas id="dynamicbackground" class="filterblureffect z-index--1 fixed top-0 left-0 width-full height-full"></canvas>
-	
-	<header class="navbar padding-top-12px padding-bottom-12px z-index-2000 fadetransitionslow" id="navbar">
-		<div class="navbarspace"></div>
+      <iframe id="videoframe" class="border-box width-full demovideoaspectratio" src="" frameborder="0"></iframe>
 
-		<div class="display-flex flex-column width-full">
-			<!-- top of navbar -->
-			<div class="display-flex flex-row justify-space-between flex-1 gap-12px align-center">
-				<!-- left side -->
-				<div class="display-flex flex-row align-center gap-6px">
-					<a href="/" class="navtitle">
-						<img src="../logo.png" class="buttonlogo"></img>
+      <div
+        class="margin-left-12px margin-right-12px pointer text-14px border-box display-none small:display-block border-8px padding-8px-12px background-tint-1 text-center hover:background-tint-2 text-primary"
+        onclick="closedemovideo()">Close</div>
+    </div>
+  </div>
 
-						<span class="text-24px text-primary pointer-none nowrap text-bold">Smart Calendar</span>
-					</a>
-				</div>
+  <canvas id="dynamicbackground" class="filterblureffect z-index--1 fixed top-0 left-0 width-full height-full"></canvas>
 
-				<!-- right side -->
-				<div class="display-flex flex-row align-center gap-12px">
-					<div class="padding-12px hover:background-tint-1 border-8px pointer display-none small:display-block" onclick="clickmenu()" id="menubutton">
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
-						<g>
-						<path d="M20 128L236 128" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-						<path d="M20 30L236 30" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-						<path d="M20 226L236 226" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
-						</g>
-						</svg>
-					</div>
-					
-					<div class="display-flex flex-row gap-12px small:display-none">
-						<a href="../contact" class="navbutton small:display-none">Contact us</a>
+  <header class="navbar padding-top-12px padding-bottom-12px z-index-2000 fadetransitionslow" id="navbar">
+    <div class="navbarspace"></div>
 
-						<a href="../download" class="navbutton small:display-none">Download app</a>
+    <div class="display-flex flex-column width-full">
+      <!-- top of navbar -->
+      <div class="display-flex flex-row justify-space-between flex-1 gap-12px align-center">
+        <!-- left side -->
+        <div class="display-flex flex-row align-center gap-6px">
+          <a href="/" class="navtitle">
+            <img src="../logo.png" class="buttonlogo"></img>
 
-						<div class="display-flex flex-row gap-12px" id="navbuttonsloggedout">
-							<a href="../login" class="navbutton">Log in</a>
-							<a href="../signup" class="navbuttonblue">Sign up</a>
-						</div>
-						<div class="display-flex flex-row gap-12px display-none" id="navbuttonsloggedin">
-							<a href="../app" class="navbuttonblue">Open app</a>
-						</div>
-					</div>
-				</div>
-			</div>
-	
-			<!-- mobile menu -->
-			<div class="menu hiddenheight overflow-hidden display-none small:display-flex flex-row width-full" id="menu">
-				<div class="padding-top-12px width-full">
-					<div class="display-flex flex-column flex-1 gap-12px">
-						<a href="../contact" class="border-8px padding-12px text-16px text-decoration-none text-primary hover:background-tint-1">Contact us</a>
-						<a href="../download" class="border-8px padding-12px text-16px text-decoration-none text-primary hover:background-tint-1">Download app</a>
-						<div class="display-flex flex-row gap-12px" id="navbuttonsloggedout2">
-							<a href="../login" class="flex-1 text-center border-8px padding-12px text-16px text-decoration-none text-primary background-tint-1 hover:background-tint-2">Log in</a>
-							<a href="../signup" class="flex-1 text-center border-8px padding-12px text-16px text-decoration-none text-white background-blue hover:background-blue-hover">Sign up</a>
-						</div>
+            <span class="text-24px text-primary pointer-none nowrap text-bold">Smart Calendar</span>
+          </a>
+        </div>
 
-						<div class="display-flex flex-column gap-12px display-none" id="navbuttonsloggedin2">
-							<a href="../signup" class="flex-1 text-center border-8px padding-12px text-16px text-decoration-none text-primary background-tint-1 hover:background-tint-2">Sign up</a>
-							<a href="../app" class="flex-1 text-center border-8px padding-12px text-16px text-decoration-none text-white background-blue hover:background-blue-hover">Open app</a>
-						</div>
+        <!-- right side -->
+        <div class="display-flex flex-row align-center gap-12px">
+          <div class="padding-12px hover:background-tint-1 border-8px pointer display-none small:display-block"
+            onclick="clickmenu()" id="menubutton">
+            <svg height="100%" stroke-miterlimit="10"
+              style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+              viewBox="0 0 256 256" width="100%" class="buttonlarge">
+              <g>
+                <path d="M20 128L236 128" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20">
+                </path>
+                <path d="M20 30L236 30" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20">
+                </path>
+                <path d="M20 226L236 226" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20">
+                </path>
+              </g>
+            </svg>
+          </div>
 
-					</div>
-				</div>
-			</div>
-		</div>
+          <div class="display-flex flex-row gap-12px small:display-none">
+            <a href="../contact" class="navbutton small:display-none">Contact us</a>
 
-		<div class="navbarspace"></div>
-	</header>
+            <a href="../download" class="navbutton small:display-none">Download app</a>
 
-	
-	<div class="text-primary text-14px display-flex flex-column align-center gap-192px">
-		<!-- front page -->
-		<main class="overflow-hidden padding-left-60px padding-right-60px small:padding-left-24px small:padding-right-24px border-box display-flex flex-column gap-192px">
-			<!-- social icons -->
-			<div class="fixed bottom-0 right-0 padding-right-24px display-flex flex-row z-index-1000 gap-12px padding-bottom-24px" id="socialicons">
-				<a href="https://twitter.com/SmartCalendarUS" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
-				  <i class="text-24px fab fa-twitter" style="color:#1DA1F2;"></i>
-				</a>
-				<a href="https://www.facebook.com/profile.php?id=61553949300945" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
-				  <i class="text-24px fab fa-facebook" style="color:#3b5998;"></i>
-				</a>
-				<a href="https://www.instagram.com/smartcalendarus/" target="_blank" rel="noopener noreferrer" class="text-decoration-none">
-				  <i class="text-24px fab fa-instagram" style="color:#C13584;"></i>
-				</a>
-			</div>
+            <div class="display-flex flex-row gap-12px" id="navbuttonsloggedout">
+              <a href="../login" class="navbutton">Log in</a>
+              <a href="../signup" class="navbuttonblue">Sign up</a>
+            </div>
+            <div class="display-flex flex-row gap-12px display-none" id="navbuttonsloggedin">
+              <a href="../app" class="navbuttonblue">Open app</a>
+            </div>
+          </div>
+        </div>
+      </div>
 
-			<!-- front screen -->
-			<!--
+      <!-- mobile menu -->
+      <div class="menu hiddenheight overflow-hidden display-none small:display-flex flex-row width-full" id="menu">
+        <div class="padding-top-12px width-full">
+          <div class="display-flex flex-column flex-1 gap-12px">
+            <a href="../contact"
+              class="border-8px padding-12px text-16px text-decoration-none text-primary hover:background-tint-1">Contact
+              us</a>
+            <a href="../download"
+              class="border-8px padding-12px text-16px text-decoration-none text-primary hover:background-tint-1">Download
+              app</a>
+            <div class="display-flex flex-row gap-12px" id="navbuttonsloggedout2">
+              <a href="../login"
+                class="flex-1 text-center border-8px padding-12px text-16px text-decoration-none text-primary background-tint-1 hover:background-tint-2">Log
+                in</a>
+              <a href="../signup"
+                class="flex-1 text-center border-8px padding-12px text-16px text-decoration-none text-white background-blue hover:background-blue-hover">Sign
+                up</a>
+            </div>
+
+            <div class="display-flex flex-column gap-12px display-none" id="navbuttonsloggedin2">
+              <a href="../signup"
+                class="flex-1 text-center border-8px padding-12px text-16px text-decoration-none text-primary background-tint-1 hover:background-tint-2">Sign
+                up</a>
+              <a href="../app"
+                class="flex-1 text-center border-8px padding-12px text-16px text-decoration-none text-white background-blue hover:background-blue-hover">Open
+                app</a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="navbarspace"></div>
+  </header>
+
+
+  <div class="text-primary text-14px display-flex flex-column align-center gap-192px">
+    <!-- front page -->
+    <main
+      class="overflow-hidden padding-left-60px padding-right-60px small:padding-left-24px small:padding-right-24px border-box display-flex flex-column gap-192px">
+      <!-- social icons -->
+      <div
+        class="fixed bottom-0 right-0 padding-right-24px display-flex flex-row z-index-1000 gap-12px padding-bottom-24px"
+        id="socialicons">
+        <a href="https://twitter.com/SmartCalendarUS" target="_blank" rel="noopener noreferrer"
+          class="text-decoration-none">
+          <i class="text-24px fab fa-twitter" style="color:#1DA1F2;"></i>
+        </a>
+        <a href="https://www.facebook.com/profile.php?id=61553949300945" target="_blank" rel="noopener noreferrer"
+          class="text-decoration-none">
+          <i class="text-24px fab fa-facebook" style="color:#3b5998;"></i>
+        </a>
+        <a href="https://www.instagram.com/smartcalendarus/" target="_blank" rel="noopener noreferrer"
+          class="text-decoration-none">
+          <i class="text-24px fab fa-instagram" style="color:#C13584;"></i>
+        </a>
+      </div>
+
+      <!-- front screen -->
+      <!--
 			<div class="relative height-100vh display-flex flex-column align-center justify-space-between padding-top-60px padding-bottom-60px border-box">
 				<div></div>
 				<div class="display-flex flex-column gap-48px align-center">
@@ -234,90 +274,145 @@
 			-->
 
 
-			<div class="relative height-100vh gap-12px display-flex flex-column align-center justify-space-between padding-top-60px small:padding-bottom-60px border-box">
-				<div></div>
-				<div class="display-flex flex-column gap-48px align-center">
-					<div class="display-flex flex-column gap-24px align-center">
-						<h1 class="text-60px small:text-36px text-bold text-primary text-center transition-none">The World's Most<br>Powerful AI Calendar</h1>
-						<p class="text-24px small:text-18px small:text-left text-primary text-center transition-none"><span class="text-bold gradienttext2">AI-powered calendar</span> for productivity that turns your to-do list into an optimal <span class="gradienttext1 text-bold">calendar schedule</span>.<br>Now with a GPT-powered personal assistant. Save 3 hours every week.</p>
-					</div>
-					<div class="small:flex-column justify-center align-center display-flex flex-row gap-12px">
-						<a href="../signup" class="border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
-							<div class="pointer-none nowrap text-16px text-white text-bold">Get started free</div>
-							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
-								<g>
-								<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								</g>
-							</svg>
-						</a>
+      <div
+        class="relative height-100vh gap-12px display-flex flex-column align-center justify-space-between padding-top-60px small:padding-bottom-60px border-box">
+        <div></div>
+        <div class="display-flex flex-column gap-48px align-center">
+          <div class="display-flex flex-column gap-24px align-center">
+            <h1 class="text-60px small:text-36px text-bold text-primary text-center transition-none">The World's
+              Most <span class="underlinetitle">Powerful</span> <br>AI Calendar</h1>
+            <p class="text-24px small:text-18px small:text-left text-primary text-center transition-none">An <span
+                class="text-bold gradienttext2">AI calendar</span> for productivity that turns your to-do list
+              into an optimal calendar schedule.<br>Now with a <span class="gradienttext5 text-bold">GPT-powered</span>
+              personal assistant that saves you <span class="gradienttext6 text-bold">3 hours</span> every week.</p>
+          </div>
+          <div class="small:flex-column justify-center align-center display-flex flex-row gap-12px">
+            <a href="../signup"
+              class="border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
+              <div class="pointer-none nowrap text-16px text-white text-bold">Get started for free</div>
+              <svg height="100%" stroke-miterlimit="10"
+                style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+                viewBox="0 0 256 256" width="100%" class="buttonwhite">
+                <g>
+                  <path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="20"></path>
+                  <path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="20"></path>
+                  <path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="20"></path>
+                </g>
+              </svg>
+            </a>
 
-						<div class="nowrap text-bold border-round display-flex flex-row align-center justify-center gap-6px googlebutton text-center text-16px padding-8px-12px pointer transition-duration-100" onclick="logingoogle({ scope: ['calendar'], enable: [] })">
-							<svg viewBox="0 0 24 24" width="100%" height="100%" class="buttongoogle"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path><path d="M1 1h22v22H1z" fill="none"></path></svg> Sign up with Google
+            <div
+              class="nowrap text-bold border-round display-flex flex-row align-center justify-center gap-6px googlebutton text-center text-16px padding-8px-12px pointer transition-duration-100"
+              onclick="logingoogle({ scope: ['calendar'], enable: [] })">
+              <svg viewBox="0 0 24 24" width="100%" height="100%" class="buttongoogle">
+                <path
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  fill="#4285F4"></path>
+                <path
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  fill="#34A853"></path>
+                <path
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                  fill="#FBBC05" />
+                <path
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  fill="#EA4335"></path>
+                <path d="M1 1h22v22H1z" fill="none"></path>
+              </svg> Continue with Google
 
-							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonblack">
-								<g>
-								<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								</g>
-							</svg>
-						</div>
-					</div>
-				</div>
+              <svg height="100%" stroke-miterlimit="10"
+                style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+                viewBox="0 0 256 256" width="100%" class="buttonblack">
+                <g>
+                  <path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="20"></path>
+                  <path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="20"></path>
+                  <path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="20"></path>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <p></p>
+        <!-- watch demo (mobile) -->
+        <div class="z-index-1 demobutton display-none small:display-flex flex-row align-center gap-6px pointer"
+          onclick="clickdemo()">
+          <svg height="100%" stroke-miterlimit="10"
+            style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+            viewBox="0 0 256 256" width="100%" class="buttonlarge buttonblue">
+            <g>
+              <path d="M95.2253 68.1992L95.2253 187.801" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                stroke-width="20"></path>
+              <path d="M194.449 128L95.2253 187.801" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                stroke-width="20"></path>
+              <path d="M194.449 128L95.2253 68.1992" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                stroke-width="20"></path>
+              <path
+                d="M10 128C10 62.8304 62.8304 10 128 10C193.17 10 246 62.8304 246 128C246 193.17 193.17 246 128 246C62.8304 246 10 193.17 10 128Z"
+                opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+            </g>
+          </svg>
+
+          <div class="text-blue text-16px pointer-none">Watch a demo video (2 min)</div>
+        </div>
+
+        <div
+          class="absolute bottom-0 padding-bottom-60px z-index-1 pointer-none left-0 right-0 display-flex flex-row justify-center">
+          <div class="pointer-auto display-flex flex-column gap-12px pointer learnmoregroup" onclick="clicklearnmore()">
+            <div class="text-18px text-center nowrap text-white pointer-none small:text-primary">Learn more about Smart
+              Calendar</div>
+            <svg height="100%" stroke-miterlimit="10"
+              style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+              viewBox="0 0 256 256" width="100%" class="buttonwhite learnmorebutton">
+              <g>
+                <path d="M226.201 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M29.7992 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div class="width-full relative small:display-none">
+
+          <!-- watch demo (desktop) -->
+          <div
+            class="z-index-1 absolute display-flex flex-row align-center gap-6px pointer demobutton demobuttonposition"
+            onclick="clickdemo()">
+            <svg height="100%" stroke-miterlimit="10"
+              style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+              viewBox="0 0 256 256" width="100%" class="buttonlarge buttonblue">
+              <g>
+                <path d="M95.2253 68.1992L95.2253 187.801" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M194.449 128L95.2253 187.801" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M194.449 128L95.2253 68.1992" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path
+                  d="M10 128C10 62.8304 62.8304 10 128 10C193.17 10 246 62.8304 246 128C246 193.17 193.17 246 128 246C62.8304 246 10 193.17 10 128Z"
+                  opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+              </g>
+            </svg>
+
+            <div class="text-blue text-16px pointer-none">Watch a demo video (2 min)</div>
+          </div>
+
+          <img src="../finalsplash.png" width="1024" height="380"
+            alt="In-app interface showing calendar and to-do list." id="finalsplash" class="width-full height-full">
+        </div>
+
+        <div class="display-none small:display-block"></div>
+      </div>
 
 
-				<!-- watch demo (mobile) -->
-				<div class="z-index-1 demobutton display-none small:display-flex flex-row align-center gap-6px pointer" onclick="clickdemo()">
-					<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge buttonblue">
-						<g>
-						<path d="M95.2253 68.1992L95.2253 187.801" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M194.449 128L95.2253 187.801" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M194.449 128L95.2253 68.1992" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M10 128C10 62.8304 62.8304 10 128 10C193.17 10 246 62.8304 246 128C246 193.17 193.17 246 128 246C62.8304 246 10 193.17 10 128Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-						</g>
-					</svg>
-						
-					<div class="text-blue text-16px pointer-none">Watch a demo (2 min)</div>
-				</div>
-
-				<div class="absolute bottom-0 padding-bottom-60px z-index-1 pointer-none left-0 right-0 display-flex flex-row justify-center">
-					<div class="pointer-auto display-flex flex-column gap-12px pointer learnmoregroup" onclick="clicklearnmore()">
-						<div class="text-18px text-center nowrap text-white pointer-none small:text-primary">Learn more about Smart Calendar</div>
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite learnmorebutton">
-						<g>
-						<path d="M226.201 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-						<path d="M29.7992 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-						</g>
-						</svg>
-					</div>
-				</div>
-
-				<div class="width-full relative small:display-none">
-
-					<!-- watch demo (desktop) -->
-					<div class="z-index-1 absolute display-flex flex-row align-center gap-6px pointer demobutton demobuttonposition" onclick="clickdemo()">
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge buttonblue">
-							<g>
-							<path d="M95.2253 68.1992L95.2253 187.801" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M194.449 128L95.2253 187.801" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M194.449 128L95.2253 68.1992" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M10 128C10 62.8304 62.8304 10 128 10C193.17 10 246 62.8304 246 128C246 193.17 193.17 246 128 246C62.8304 246 10 193.17 10 128Z" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
-							</g>
-						</svg>
-							
-						<div class="text-blue text-16px pointer-none">Watch a demo (1 min)</div>
-					</div>
-
-					<img src="../finalsplash.png" width="1024" height="380" alt="In-app interface showing calendar and to-do list." id="finalsplash" class="width-full height-full">
-				</div>
-
-				<div class="display-none small:display-block"></div>
-			</div>
-
-
-			<!--
+      <!--
 			<div class="relative gap-60px small:flex-column height-100vh display-flex flex-row padding-top-60px border-box">
 				<div class="display-flex justify-space-between flex-column flex-1">
 					<div></div>
@@ -366,303 +461,475 @@
 			-->
 
 
-			<!-- intro -->
-			<div class="relative z-index-1000 border-box border-box display-flex gap-60px width-full flex-column">
-				<div id="firstbackgroundeffect" class="showbackgroundeffect display-flex flex-row padding-top-96px ">
-					<p class="flex-1 small:text-center text-right text-24px text-primary fadeslidebeforeslow">Ever feel that your day controls you?</p>
-					<div class="flex-1 small:display-none"></div>
-				</div>
+      <!-- intro -->
+      <div class="relative z-index-1000 border-box border-box display-flex gap-60px width-full flex-column">
+        <div id="firstbackgroundeffect" class="showbackgroundeffect display-flex flex-row padding-top-96px ">
+          <p class="flex-1 small:text-center text-right text-24px text-primary fadeslidebeforeslow">Ever feel that your
+            day controls you?</p>
+          <div class="flex-1 small:display-none"></div>
+        </div>
 
-				<div class="showbackgroundeffect display-flex flex-row padding-top-96px ">
-					<div class="flex-1 small:display-none"></div>
-					<p class="flex-1 small:text-center text-24px text-primary fadeslidebeforeslow">Or that there's never enough time...</p>
-				</div>
+        <div class="showbackgroundeffect display-flex flex-row padding-top-96px ">
+          <div class="flex-1 small:display-none"></div>
+          <p class="flex-1 small:text-center text-24px text-primary fadeslidebeforeslow">Or that there's never enough
+            time...</p>
+        </div>
 
-				<div class="showbackgroundeffect display-flex flex-row padding-top-96px ">
-					<p class="flex-1 small:text-center text-24px text-right text-primary fadeslidebeforeslow">With Smart Calendar, take back control of your time.</p>
-					<div class="flex-1 small:display-none"></div>
-				</div>
+        <div class="showbackgroundeffect display-flex flex-row padding-top-96px ">
+          <p class="flex-1 small:text-center text-24px text-right text-primary fadeslidebeforeslow">With Smart Calendar,
+            take back control of your time.</p>
+          <div class="flex-1 small:display-none"></div>
+        </div>
 
-				<div class="showbackgroundeffect display-flex flex-row padding-top-96px ">
-					<div class="flex-1 small:display-none"></div>
-					<p class="flex-1 small:text-center text-24px text-primary fadeslidebeforeslow">Using our research-backed algorithm, we automatically build your schedule, so you won't have to waste time prioritizing or stressing over your to-do list, and actually get things done.</p>
-				</div>
+        <div class="showbackgroundeffect display-flex flex-row padding-top-96px ">
+          <div class="flex-1 small:display-none"></div>
+          <p class="flex-1 small:text-center text-24px text-primary fadeslidebeforeslow">Using our research-backed
+            algorithm, we automatically build your schedule, so you won't have to waste time stressing
+            over your to-do list and instead actually getting things done.</p>
+        </div>
 
+        <div
+          class="pointer-none fadetransition left-0 right-0 height-100vh fixed border-box padding-60px top-0 display-flex flex-row justify-center align-flex-end"
+          id="keepscrolling">
+          <div
+            class="pointer fadetransition pointer-auto hiddenfade display-flex flex-column gap-12px align-center learnmoregroup"
+            id="keepscrollingtext" onclick="clickkeepscrolling()">
+            <div class="text-14px text-center text-primary pointer-none">Keep scrolling</div>
+            <svg height="100%" stroke-miterlimit="10"
+              style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+              viewBox="0 0 256 256" width="100%" class="buttonlarge learnmorebutton">
+              <g>
+                <path d="M226.201 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M29.7992 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+              </g>
+            </svg>
+          </div>
+        </div>
 
-				<div class="pointer-none fadetransition left-0 right-0 height-100vh fixed border-box padding-60px top-0 display-flex flex-row justify-center align-flex-end" id="keepscrolling">
-					<div class="pointer fadetransition pointer-auto hiddenfade display-flex flex-column gap-12px align-center learnmoregroup" id="keepscrollingtext" onclick="clickkeepscrolling()">
-						<div class="text-14px text-center text-primary pointer-none">Keep scrolling</div>
-							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge learnmorebutton">
-							<g>
-							<path d="M226.201 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M29.7992 79.7318L128 176.268" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							</g>
-							</svg>
-					</div>
-				</div>
-
-			</div>
-
-
-			<!-- features -->
-			<div id="firstfeature" class="border-box display-flex flex-row gap-60px width-full small:flex-column">
-				<div class="relative flex-1 small:order-1 padding-left-48px padding-right-48px small:padding-0">
-					<img src="../taskplanner.gif" height="360" width="480" class="fadeslidebefore border-16px width-full box-shadow height-auto"  alt="Tasks are planned on your calendar automatically"/>
-				</div>
-				<div class="display-flex flex-column gap-24px flex-1">
-					<h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue2">Automatic Schedule Builder</span></h2>
-					<h3 class="text-24px text-primary fadeslidebefore">Give us your tasks, get a master plan.</h3>
-					<p class="text-18px text-primary fadeslidebefore">Simply add your tasks and projects to your to-do list, and Smart Calendar will <span class="gradienttextgreen text-bold">schedule them</span> in your calendar. We find the best times to do each task based on their due dates and priorities, so you don't have to juggle them in your head.</p>
-
-					<a href="../signup" class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
-						<div class="pointer-none text-16px text-white text-bold">Try it now</div>
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
-							<g>
-							<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							</g>
-						</svg>
-					</a>
-
-				</div>
-			</div>
-			
-			<div class="border-box display-flex flex-row gap-60px width-full small:flex-column">
-				<div class="display-flex flex-column gap-24px flex-1">
-					<h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue">Automatic Rescheduling</span></h2>
-					<h3 class="text-24px text-primary fadeslidebefore">Stay on track, even when your plans change.</h3>
-					<p class="text-18px text-primary fadeslidebefore">Life can be unpredictable, and plans could change unexpectedly. If any unexpected changes take place, Smart Calendar automatically <span class="gradienttextblue text-bold">resolves conflicts</span> and rearranges your schedule to keep you on track.</p>
-
-					<a href="../signup" class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
-						<div class="pointer-none text-16px text-white text-bold">Try it now</div>
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
-							<g>
-							<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							</g>
-						</svg>
-					</a>
-				</div>
-				<div class="relative flex-1 padding-left-48px padding-right-48px small:padding-0">
-					<img src="../instantreschedule.gif" height="480" width="435" class="fadeslidebefore border-16px width-full box-shadow height-auto" alt="Events are automatically re-scheduled when changes take place"/>
-				</div>
-			</div>
-
-			<div class="border-box display-flex flex-row gap-60px width-full small:flex-column">
-				<div class="relative flex-1 small:order-1">
-					<img src="../poweredbygpt.png" height="360" width="480" class="fadeslidebefore border-16px width-full box-shadow height-auto" alt="Get AI task suggestions"/>
-				</div>
-				<div class="display-flex flex-column gap-24px flex-1">
-					<h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue">AI Assistant</span> <span class="newbadge">NEW</span></h2>
-					<div class="text-24px text-primary fadeslidebefore">Harness ChatGPT for your calendar</div>
-					<p class="text-18px text-primary fadeslidebefore">Meet your personal assistant Athena! Whenever you have something on your mind, just tell her, and she'll <span class="gradienttextpink text-bold">plan your tasks, meetings</span>, appointments, and more. You'll be on your way to complete your goals before you even know it. And we're adding more capabilities every day.</p>
-
-					<a href="../signup" class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
-						<div class="pointer-none text-16px text-white text-bold">Try it now</div>
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
-							<g>
-							<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							</g>
-						</svg>
-					</a>
-				</div>
-			</div>
-
-			<div class="border-box display-flex flex-row gap-60px width-full small:flex-column">
-				<div class="display-flex flex-column gap-24px flex-1">
-					<h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue">Real-time alerts</span></h2>
-					<h3 class="text-24px text-primary fadeslidebefore">Stay on top of every event and task deadline.</h3>
-					<p class="text-18px text-primary fadeslidebefore">Receive real-time alerts in your email inbox and browser for events and task deadlines. We've also made a <span class="gradienttextblue text-bold">Discord bot</span> that reminds you in your <span class="gradienttextblue text-bold">DMs</span>!</p>
-
-					<a href="../signup" class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
-						<div class="pointer-none text-16px text-white text-bold">Try it now</div>
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
-							<g>
-							<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							</g>
-						</svg>
-					</a>
-				</div>
-				<div class="relative flex-1">
-					<img src="../notifications.png" height="480" width="435" class="fadeslidebefore border-16px width-full box-shadow height-auto" alt="Get notifications into your email inbox or browser"/>
-				</div>
-			</div>
+      </div>
 
 
-			<div class="border-box display-flex flex-row gap-60px width-full small:flex-column">
-				<div class="relative flex-1 small:order-1">
-					<img src="../aisuggestion.png" height="360" width="480" class="fadeslidebefore border-16px width-full box-shadow height-auto" alt="Get AI task suggestions"/>
-				</div>
-				<div class="display-flex flex-column gap-24px flex-1">
-					<h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue">AI Task Suggestions</span></h2>
-					<div class="text-24px text-primary fadeslidebefore">Get projects done, stress-free</div>
-					<p class="text-18px text-primary fadeslidebefore">Got a big project coming up? Smart Calendar suggests you subtasks for your projects so you can work on more <span class="gradienttextgreen text-bold">manageable pieces</span>. Powered by GPT.</p>
+      <!-- features -->
+      <div id="firstfeature" class="border-box display-flex flex-row gap-60px width-full small:flex-column">
+        <div class="relative flex-1 small:order-1 padding-left-48px padding-right-48px small:padding-0">
+          <img src="../taskplanner.gif" height="360" width="480"
+            class="fadeslidebefore border-16px width-full box-shadow height-auto"
+            alt="Tasks are planned on your calendar automatically" />
+        </div>
+        <div class="display-flex flex-column gap-24px flex-1">
+          <h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue2">Automatic
+              Schedule Builder</span></h2>
+          <h3 class="text-24px text-primary fadeslidebefore">Give us your tasks, get a master plan</h3>
+          <p class="text-18px text-primary fadeslidebefore">Simply add your tasks and projects to your to-do list, and
+            Smart Calendar will <span class="gradienttextgreen text-bold">schedule them in your calendar.</span> We find
+            the best times to do each task based on their due dates and priorities, so you don't have to juggle them in
+            your head.</p>
 
-					<a href="../signup" class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
-						<div class="pointer-none text-16px text-white text-bold">Try it now</div>
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
-							<g>
-							<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							</g>
-						</svg>
-					</a>
-				</div>
-			</div>
+          <a href="../signup"
+            class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
+            <div class="pointer-none text-16px text-white text-bold">Try it out</div>
+            <svg height="100%" stroke-miterlimit="10"
+              style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+              viewBox="0 0 256 256" width="100%" class="buttonwhite">
+              <g>
+                <path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+              </g>
+            </svg>
+          </a>
+
+        </div>
+      </div>
+
+      <div class="border-box display-flex flex-row gap-60px width-full small:flex-column">
+        <div class="display-flex flex-column gap-24px flex-1">
+          <h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue">Automatic
+              Rescheduling</span></h2>
+          <h3 class="text-24px text-primary fadeslidebefore">Stay on track, even when your plans change</h3>
+          <p class="text-18px text-primary fadeslidebefore">Life can be unpredictable, and plans could change
+            unexpectedly. If any unexpected changes take place, Smart Calendar automatically <span
+              class="gradienttextblue text-bold">resolves conflicts and rearranges your schedule</span> to keep you on
+            track.</p>
+
+          <a href="../signup"
+            class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
+            <div class="pointer-none text-16px text-white text-bold">Try it out</div>
+            <svg height="100%" stroke-miterlimit="10"
+              style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+              viewBox="0 0 256 256" width="100%" class="buttonwhite">
+              <g>
+                <path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+              </g>
+            </svg>
+          </a>
+        </div>
+        <div class="relative flex-1 padding-left-48px padding-right-48px small:padding-0">
+          <img src="../instantreschedule.gif" height="480" width="435"
+            class="fadeslidebefore border-16px width-full box-shadow height-auto"
+            alt="Events are automatically re-scheduled when changes take place" />
+        </div>
+      </div>
+
+      <div class="border-box display-flex flex-row gap-60px width-full small:flex-column">
+        <div class="relative flex-1 small:order-1">
+          <img src="../poweredbygpt.png" height="360" width="480"
+            class="fadeslidebefore border-16px width-full box-shadow height-auto" alt="Get AI task suggestions" />
+        </div>
+        <div class="display-flex flex-column gap-24px flex-1">
+          <h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue">AI
+              Assistant</span> <span class="newbadge">NEW</span></h2>
+          <div class="text-24px text-primary fadeslidebefore">Harness artificial intelligence for your calendar</div>
+          <p class="text-18px text-primary fadeslidebefore">Meet your personal assistant, Athena! Whenever you have
+            something on your mind, just tell her, and she'll <span class="gradienttextpink text-bold">plan your tasks,
+              meetings, appointments, and more.</span> You'll be on your way to complete your goals before you even know
+            it.</p>
+
+          <a href="../signup"
+            class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
+            <div class="pointer-none text-16px text-white text-bold">Try it out</div>
+            <svg height="100%" stroke-miterlimit="10"
+              style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+              viewBox="0 0 256 256" width="100%" class="buttonwhite">
+              <g>
+                <path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+              </g>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="border-box display-flex flex-row gap-60px width-full small:flex-column">
+        <div class="display-flex flex-column gap-24px flex-1">
+          <h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue">Real-time
+              alerts</span></h2>
+          <h3 class="text-24px text-primary fadeslidebefore">Stay on top of every event and task deadline</h3>
+          <p class="text-18px text-primary fadeslidebefore">Receive real-time alerts in your email inbox and browser for
+            events and task deadlines. We've also made a <span class="gradienttextblue text-bold">Discord bot</span>
+            that reminds you in your <span class="gradienttextblue text-bold">DMs</span>!</p>
+
+          <a href="../signup"
+            class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
+            <div class="pointer-none text-16px text-white text-bold">Try it out</div>
+            <svg height="100%" stroke-miterlimit="10"
+              style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+              viewBox="0 0 256 256" width="100%" class="buttonwhite">
+              <g>
+                <path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+              </g>
+            </svg>
+          </a>
+        </div>
+        <div class="relative flex-1">
+          <img src="../notifications.png" height="480" width="435"
+            class="fadeslidebefore border-16px width-full box-shadow height-auto"
+            alt="Get notifications into your email inbox or browser" />
+        </div>
+      </div>
 
 
-			<div class="border-box display-flex flex-row gap-60px width-full small:flex-column">
-				<div class="display-flex flex-column gap-24px flex-1">
-					<h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue3">Sync with Google Calendar</span></h2>
-					<div class="text-24px text-primary fadeslidebefore">Simply sign in with Google</div>
-					<p class="text-18px text-primary fadeslidebefore">Seamlessly integrate your Google Calendar with Smart Calendar. Simply sign up with Google to keep all your calendars in one place.</p>
+      <div class="border-box display-flex flex-row gap-60px width-full small:flex-column">
+        <div class="relative flex-1 small:order-1">
+          <img src="../aisuggestion.png" height="360" width="480"
+            class="fadeslidebefore border-16px width-full box-shadow height-auto" alt="Get AI task suggestions" />
+        </div>
+        <div class="display-flex flex-column gap-24px flex-1">
+          <h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue">AI Task
+              Suggestions</span></h2>
+          <div class="text-24px text-primary fadeslidebefore">Get projects done, stress-free</div>
+          <p class="text-18px text-primary fadeslidebefore">Got a big project coming up? Smart Calendar suggests you
+            subtasks for your projects so you can work on more <span class="gradienttextgreen text-bold">manageable
+              pieces</span>. Powered by GPT.</p>
 
-					<a href="../signup" class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
-						<div class="pointer-none text-16px text-white text-bold">Try it now</div>
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
-							<g>
-							<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							</g>
-						</svg>
-					</a>
-				</div>
-				<div class="relative flex-1">
-					<img src="../syncgoogle.png" height="360" width="480" class="fadeslidebefore border-16px width-full box-shadow height-auto" alt="Sync events with your Google Calendar"/>
-				</div>
-			</div>
-
-			<div class="border-box display-flex flex-row gap-60px width-full small:flex-column">
-				<div class="relative flex-1 small:order-1">
-					<img src="../timereport.png" height="360" width="480" class="fadeslidebefore border-16px width-full box-shadow height-auto" alt="View your time report and see how to improve your time management"/>
-				</div>
-				<div class="display-flex flex-column gap-24px flex-1">
-					<h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue4">Time Report</span></h2>
-					<h3 class="text-24px text-primary fadeslidebefore">Manage your time like a pro.</h3>
-					<p class="text-18px text-primary fadeslidebefore">See how you're managing your time in real time, and make improvements right away. Improving your time management is now easier than ever.</p>
-
-					<a href="../signup" class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
-						<div class="pointer-none text-16px text-white text-bold">Try it now</div>
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
-							<g>
-							<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-							</g>
-						</svg>
-					</a>
-				</div>
-			</div>
+          <a href="../signup"
+            class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
+            <div class="pointer-none text-16px text-white text-bold">Try it out</div>
+            <svg height="100%" stroke-miterlimit="10"
+              style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+              viewBox="0 0 256 256" width="100%" class="buttonwhite">
+              <g>
+                <path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+              </g>
+            </svg>
+          </a>
+        </div>
+      </div>
 
 
-			<div class="border-box display-flex flex-row gap-60px width-full small:flex-column">
-                <div class="display-flex flex-column gap-24px flex-1">
-                    <h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue3">Get the Mobile App</span></h2>
-					<h3 class="text-24px text-primary fadeslidebefore">Powerful productivity on the go</h3>
-                    <p class="text-18px text-primary fadeslidebefore">With Smart Calendar's <span class="gradienttextblue text-bold">iOS app</span>, you can plan and stay productive anywhere. Receive app reminders for events and tasks right in your phone.</p>
-                    <a href="https://apps.apple.com/us/app/smart-calendar-app/id6468529887" target="_blank" rel="noopener noreferrer" class="fadeslidebefore">
-                        <svg xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 119.66407 40" class="iosappbutton">
-                            <title>Download_on_the_App_Store_Badge_US-UK_RGB_blk_4SVG_092917</title>
-                            <g>
-                            <g>
-                                <g>
-                                <path d="M110.13477,0H9.53468c-.3667,0-.729,0-1.09473.002-.30615.002-.60986.00781-.91895.0127A13.21476,13.21476,0,0,0,5.5171.19141a6.66509,6.66509,0,0,0-1.90088.627A6.43779,6.43779,0,0,0,1.99757,1.99707,6.25844,6.25844,0,0,0,.81935,3.61816a6.60119,6.60119,0,0,0-.625,1.90332,12.993,12.993,0,0,0-.1792,2.002C.00587,7.83008.00489,8.1377,0,8.44434V31.5586c.00489.3105.00587.6113.01515.9219a12.99232,12.99232,0,0,0,.1792,2.0019,6.58756,6.58756,0,0,0,.625,1.9043A6.20778,6.20778,0,0,0,1.99757,38.001a6.27445,6.27445,0,0,0,1.61865,1.1787,6.70082,6.70082,0,0,0,1.90088.6308,13.45514,13.45514,0,0,0,2.0039.1768c.30909.0068.6128.0107.91895.0107C8.80567,40,9.168,40,9.53468,40H110.13477c.3594,0,.7246,0,1.084-.002.3047,0,.6172-.0039.9219-.0107a13.279,13.279,0,0,0,2-.1768,6.80432,6.80432,0,0,0,1.9082-.6308,6.27742,6.27742,0,0,0,1.6172-1.1787,6.39482,6.39482,0,0,0,1.1816-1.6143,6.60413,6.60413,0,0,0,.6191-1.9043,13.50643,13.50643,0,0,0,.1856-2.0019c.0039-.3106.0039-.6114.0039-.9219.0078-.3633.0078-.7246.0078-1.0938V9.53613c0-.36621,0-.72949-.0078-1.09179,0-.30664,0-.61426-.0039-.9209a13.5071,13.5071,0,0,0-.1856-2.002,6.6177,6.6177,0,0,0-.6191-1.90332,6.46619,6.46619,0,0,0-2.7988-2.7998,6.76754,6.76754,0,0,0-1.9082-.627,13.04394,13.04394,0,0,0-2-.17676c-.3047-.00488-.6172-.01074-.9219-.01269-.3594-.002-.7246-.002-1.084-.002Z" style="fill: #a6a6a6"/>
-                                <path d="M8.44483,39.125c-.30468,0-.602-.0039-.90429-.0107a12.68714,12.68714,0,0,1-1.86914-.1631,5.88381,5.88381,0,0,1-1.65674-.5479,5.40573,5.40573,0,0,1-1.397-1.0166,5.32082,5.32082,0,0,1-1.02051-1.3965,5.72186,5.72186,0,0,1-.543-1.6572,12.41351,12.41351,0,0,1-.1665-1.875c-.00634-.2109-.01464-.9131-.01464-.9131V8.44434S.88185,7.75293.8877,7.5498a12.37039,12.37039,0,0,1,.16553-1.87207,5.7555,5.7555,0,0,1,.54346-1.6621A5.37349,5.37349,0,0,1,2.61183,2.61768,5.56543,5.56543,0,0,1,4.01417,1.59521a5.82309,5.82309,0,0,1,1.65332-.54394A12.58589,12.58589,0,0,1,7.543.88721L8.44532.875H111.21387l.9131.0127a12.38493,12.38493,0,0,1,1.8584.16259,5.93833,5.93833,0,0,1,1.6709.54785,5.59374,5.59374,0,0,1,2.415,2.41993,5.76267,5.76267,0,0,1,.5352,1.64892,12.995,12.995,0,0,1,.1738,1.88721c.0029.2832.0029.5874.0029.89014.0079.375.0079.73193.0079,1.09179V30.4648c0,.3633,0,.7178-.0079,1.0752,0,.3252,0,.6231-.0039.9297a12.73126,12.73126,0,0,1-.1709,1.8535,5.739,5.739,0,0,1-.54,1.67,5.48029,5.48029,0,0,1-1.0156,1.3857,5.4129,5.4129,0,0,1-1.3994,1.0225,5.86168,5.86168,0,0,1-1.668.5498,12.54218,12.54218,0,0,1-1.8692.1631c-.2929.0068-.5996.0107-.8974.0107l-1.084.002Z"/>
-                                </g>
-                                <g id="_Group_" data-name="&lt;Group&gt;">
-                                <g id="_Group_2" data-name="&lt;Group&gt;">
-                                    <g id="_Group_3" data-name="&lt;Group&gt;">
-                                    <path id="_Path_" data-name="&lt;Path&gt;" d="M24.76888,20.30068a4.94881,4.94881,0,0,1,2.35656-4.15206,5.06566,5.06566,0,0,0-3.99116-2.15768c-1.67924-.17626-3.30719,1.00483-4.1629,1.00483-.87227,0-2.18977-.98733-3.6085-.95814a5.31529,5.31529,0,0,0-4.47292,2.72787c-1.934,3.34842-.49141,8.26947,1.3612,10.97608.9269,1.32535,2.01018,2.8058,3.42763,2.7533,1.38706-.05753,1.9051-.88448,3.5794-.88448,1.65876,0,2.14479.88448,3.591.8511,1.48838-.02416,2.42613-1.33124,3.32051-2.66914a10.962,10.962,0,0,0,1.51842-3.09251A4.78205,4.78205,0,0,1,24.76888,20.30068Z" style="fill: #fff"/>
-                                    <path id="_Path_2" data-name="&lt;Path&gt;" d="M22.03725,12.21089a4.87248,4.87248,0,0,0,1.11452-3.49062,4.95746,4.95746,0,0,0-3.20758,1.65961,4.63634,4.63634,0,0,0-1.14371,3.36139A4.09905,4.09905,0,0,0,22.03725,12.21089Z" style="fill: #fff"/>
-                                    </g>
-                                </g>
-                                <g>
-                                    <path d="M42.30227,27.13965h-4.7334l-1.13672,3.35645H34.42727l4.4834-12.418h2.083l4.4834,12.418H43.438ZM38.0591,25.59082h3.752l-1.84961-5.44727h-.05176Z" style="fill: #fff"/>
-                                    <path d="M55.15969,25.96973c0,2.81348-1.50586,4.62109-3.77832,4.62109a3.0693,3.0693,0,0,1-2.84863-1.584h-.043v4.48438h-1.8584V21.44238H48.4302v1.50586h.03418a3.21162,3.21162,0,0,1,2.88281-1.60059C53.645,21.34766,55.15969,23.16406,55.15969,25.96973Zm-1.91016,0c0-1.833-.94727-3.03809-2.39258-3.03809-1.41992,0-2.375,1.23047-2.375,3.03809,0,1.82422.95508,3.0459,2.375,3.0459C52.30227,29.01563,53.24953,27.81934,53.24953,25.96973Z" style="fill: #fff"/>
-                                    <path d="M65.12453,25.96973c0,2.81348-1.50586,4.62109-3.77832,4.62109a3.0693,3.0693,0,0,1-2.84863-1.584h-.043v4.48438h-1.8584V21.44238H58.395v1.50586h.03418A3.21162,3.21162,0,0,1,61.312,21.34766C63.60988,21.34766,65.12453,23.16406,65.12453,25.96973Zm-1.91016,0c0-1.833-.94727-3.03809-2.39258-3.03809-1.41992,0-2.375,1.23047-2.375,3.03809,0,1.82422.95508,3.0459,2.375,3.0459C62.26711,29.01563,63.21438,27.81934,63.21438,25.96973Z" style="fill: #fff"/>
-                                    <path d="M71.71047,27.03613c.1377,1.23145,1.334,2.04,2.96875,2.04,1.56641,0,2.69336-.80859,2.69336-1.91895,0-.96387-.67969-1.541-2.28906-1.93652l-1.60937-.3877c-2.28027-.55078-3.33887-1.61719-3.33887-3.34766,0-2.14258,1.86719-3.61426,4.51855-3.61426,2.624,0,4.42285,1.47168,4.4834,3.61426h-1.876c-.1123-1.23926-1.13672-1.9873-2.63379-1.9873s-2.52148.75684-2.52148,1.8584c0,.87793.6543,1.39453,2.25488,1.79l1.36816.33594c2.54785.60254,3.60645,1.626,3.60645,3.44238,0,2.32324-1.85059,3.77832-4.79395,3.77832-2.75391,0-4.61328-1.4209-4.7334-3.667Z" style="fill: #fff"/>
-                                    <path d="M83.34621,19.2998v2.14258h1.72168v1.47168H83.34621v4.99121c0,.77539.34473,1.13672,1.10156,1.13672a5.80752,5.80752,0,0,0,.61133-.043v1.46289a5.10351,5.10351,0,0,1-1.03223.08594c-1.833,0-2.54785-.68848-2.54785-2.44434V22.91406H80.16262V21.44238H81.479V19.2998Z" style="fill: #fff"/>
-                                    <path d="M86.065,25.96973c0-2.84863,1.67773-4.63867,4.29395-4.63867,2.625,0,4.29492,1.79,4.29492,4.63867,0,2.85645-1.66113,4.63867-4.29492,4.63867C87.72609,30.6084,86.065,28.82617,86.065,25.96973Zm6.69531,0c0-1.9541-.89551-3.10742-2.40137-3.10742s-2.40039,1.16211-2.40039,3.10742c0,1.96191.89453,3.10645,2.40039,3.10645S92.76027,27.93164,92.76027,25.96973Z" style="fill: #fff"/>
-                                    <path d="M96.18606,21.44238h1.77246v1.541h.043a2.1594,2.1594,0,0,1,2.17773-1.63574,2.86616,2.86616,0,0,1,.63672.06934v1.73828a2.59794,2.59794,0,0,0-.835-.1123,1.87264,1.87264,0,0,0-1.93652,2.083v5.37012h-1.8584Z" style="fill: #fff"/>
-                                    <path d="M109.3843,27.83691c-.25,1.64355-1.85059,2.77148-3.89844,2.77148-2.63379,0-4.26855-1.76465-4.26855-4.5957,0-2.83984,1.64355-4.68164,4.19043-4.68164,2.50488,0,4.08008,1.7207,4.08008,4.46582v.63672h-6.39453v.1123a2.358,2.358,0,0,0,2.43555,2.56445,2.04834,2.04834,0,0,0,2.09082-1.27344Zm-6.28223-2.70215h4.52637a2.1773,2.1773,0,0,0-2.2207-2.29785A2.292,2.292,0,0,0,103.10207,25.13477Z" style="fill: #fff"/>
-                                </g>
-                                </g>
-                            </g>
-                            <g id="_Group_4" data-name="&lt;Group&gt;">
-                                <g>
-                                <path d="M37.82619,8.731a2.63964,2.63964,0,0,1,2.80762,2.96484c0,1.90625-1.03027,3.002-2.80762,3.002H35.67092V8.731Zm-1.22852,5.123h1.125a1.87588,1.87588,0,0,0,1.96777-2.146,1.881,1.881,0,0,0-1.96777-2.13379h-1.125Z" style="fill: #fff"/>
-                                <path d="M41.68068,12.44434a2.13323,2.13323,0,1,1,4.24707,0,2.13358,2.13358,0,1,1-4.24707,0Zm3.333,0c0-.97607-.43848-1.54687-1.208-1.54687-.77246,0-1.207.5708-1.207,1.54688,0,.98389.43457,1.55029,1.207,1.55029C44.57522,13.99463,45.01369,13.42432,45.01369,12.44434Z" style="fill: #fff"/>
-                                <path d="M51.57326,14.69775h-.92187l-.93066-3.31641h-.07031l-.92676,3.31641h-.91309l-1.24121-4.50293h.90137l.80664,3.436h.06641l.92578-3.436h.85254l.92578,3.436h.07031l.80273-3.436h.88867Z" style="fill: #fff"/>
-                                <path d="M53.85354,10.19482H54.709v.71533h.06641a1.348,1.348,0,0,1,1.34375-.80225,1.46456,1.46456,0,0,1,1.55859,1.6748v2.915h-.88867V12.00586c0-.72363-.31445-1.0835-.97168-1.0835a1.03294,1.03294,0,0,0-1.0752,1.14111v2.63428h-.88867Z" style="fill: #fff"/>
-                                <path d="M59.09377,8.437h.88867v6.26074h-.88867Z" style="fill: #fff"/>
-                                <path d="M61.21779,12.44434a2.13346,2.13346,0,1,1,4.24756,0,2.1338,2.1338,0,1,1-4.24756,0Zm3.333,0c0-.97607-.43848-1.54687-1.208-1.54687-.77246,0-1.207.5708-1.207,1.54688,0,.98389.43457,1.55029,1.207,1.55029C64.11232,13.99463,64.5508,13.42432,64.5508,12.44434Z" style="fill: #fff"/>
-                                <path d="M66.4009,13.42432c0-.81055.60352-1.27783,1.6748-1.34424l1.21973-.07031v-.38867c0-.47559-.31445-.74414-.92187-.74414-.49609,0-.83984.18213-.93848.50049h-.86035c.09082-.77344.81836-1.26953,1.83984-1.26953,1.12891,0,1.76563.562,1.76563,1.51318v3.07666h-.85547v-.63281h-.07031a1.515,1.515,0,0,1-1.35254.707A1.36026,1.36026,0,0,1,66.4009,13.42432Zm2.89453-.38477v-.37646l-1.09961.07031c-.62012.0415-.90137.25244-.90137.64941,0,.40527.35156.64111.835.64111A1.0615,1.0615,0,0,0,69.29543,13.03955Z" style="fill: #fff"/>
-                                <path d="M71.34816,12.44434c0-1.42285.73145-2.32422,1.86914-2.32422a1.484,1.484,0,0,1,1.38086.79h.06641V8.437h.88867v6.26074h-.85156v-.71143h-.07031a1.56284,1.56284,0,0,1-1.41406.78564C72.0718,14.772,71.34816,13.87061,71.34816,12.44434Zm.918,0c0,.95508.4502,1.52979,1.20313,1.52979.749,0,1.21191-.583,1.21191-1.52588,0-.93848-.46777-1.52979-1.21191-1.52979C72.72121,10.91846,72.26613,11.49707,72.26613,12.44434Z" style="fill: #fff"/>
-                                <path d="M79.23,12.44434a2.13323,2.13323,0,1,1,4.24707,0,2.13358,2.13358,0,1,1-4.24707,0Zm3.333,0c0-.97607-.43848-1.54687-1.208-1.54687-.77246,0-1.207.5708-1.207,1.54688,0,.98389.43457,1.55029,1.207,1.55029C82.12453,13.99463,82.563,13.42432,82.563,12.44434Z" style="fill: #fff"/>
-                                <path d="M84.66945,10.19482h.85547v.71533h.06641a1.348,1.348,0,0,1,1.34375-.80225,1.46456,1.46456,0,0,1,1.55859,1.6748v2.915H87.605V12.00586c0-.72363-.31445-1.0835-.97168-1.0835a1.03294,1.03294,0,0,0-1.0752,1.14111v2.63428h-.88867Z" style="fill: #fff"/>
-                                <path d="M93.51516,9.07373v1.1416h.97559v.74854h-.97559V13.2793c0,.47168.19434.67822.63672.67822a2.96657,2.96657,0,0,0,.33887-.02051v.74023a2.9155,2.9155,0,0,1-.4834.04541c-.98828,0-1.38184-.34766-1.38184-1.21582v-2.543h-.71484v-.74854h.71484V9.07373Z" style="fill: #fff"/>
-                                <path d="M95.70461,8.437h.88086v2.48145h.07031a1.3856,1.3856,0,0,1,1.373-.80664,1.48339,1.48339,0,0,1,1.55078,1.67871v2.90723H98.69v-2.688c0-.71924-.335-1.0835-.96289-1.0835a1.05194,1.05194,0,0,0-1.13379,1.1416v2.62988h-.88867Z" style="fill: #fff"/>
-                                <path d="M104.76125,13.48193a1.828,1.828,0,0,1-1.95117,1.30273A2.04531,2.04531,0,0,1,100.73,12.46045a2.07685,2.07685,0,0,1,2.07617-2.35254c1.25293,0,2.00879.856,2.00879,2.27V12.688h-3.17969v.0498a1.1902,1.1902,0,0,0,1.19922,1.29,1.07934,1.07934,0,0,0,1.07129-.5459Zm-3.126-1.45117h2.27441a1.08647,1.08647,0,0,0-1.1084-1.1665A1.15162,1.15162,0,0,0,101.63527,12.03076Z" style="fill: #fff"/>
-                                </g>
-                            </g>
-                            </g>
-                        </svg>
-                    </a>
-                </div>
+      <div class="border-box display-flex flex-row gap-60px width-full small:flex-column">
+        <div class="display-flex flex-column gap-24px flex-1">
+          <h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue3">Sync with Google
+              Calendar</span></h2>
+          <div class="text-24px text-primary fadeslidebefore">Simply sign in with Google</div>
+          <p class="text-18px text-primary fadeslidebefore">Seamlessly integrate your Google Calendar with Smart
+            Calendar. Simply sign up with Google to keep all your calendars in one place.</p>
 
-                <div class="display-flex flex-row justify-center relative flex-1 padding-left-48px padding-right-48px small:padding-0">
-                    <img src="../iosapp.png" height="360" width="480" class="fadeslidebefore border-16px iphoneimage width-full height-auto"  alt="iOS app to do list"/>
-                </div>
+          <a href="../signup"
+            class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
+            <div class="pointer-none text-16px text-white text-bold">Try it out</div>
+            <svg height="100%" stroke-miterlimit="10"
+              style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+              viewBox="0 0 256 256" width="100%" class="buttonwhite">
+              <g>
+                <path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+              </g>
+            </svg>
+          </a>
+        </div>
+        <div class="relative flex-1">
+          <img src="../syncgoogle.png" height="360" width="480"
+            class="fadeslidebefore border-16px width-full box-shadow height-auto"
+            alt="Sync events with your Google Calendar" />
+        </div>
+      </div>
+
+      <div class="border-box display-flex flex-row gap-60px width-full small:flex-column">
+        <div class="relative flex-1 small:order-1">
+          <img src="../timereport.png" height="360" width="480"
+            class="fadeslidebefore border-16px width-full box-shadow height-auto"
+            alt="View your time report and see how to improve your time management" />
+        </div>
+        <div class="display-flex flex-column gap-24px flex-1">
+          <h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue4">Time
+              Report</span></h2>
+          <h3 class="text-24px text-primary fadeslidebefore">Manage your time like a pro.</h3>
+          <p class="text-18px text-primary fadeslidebefore">See how you're managing your time in real time, and make
+            improvements right away. Improving your time management is now easier than ever.</p>
+
+          <a href="../signup"
+            class="fadeslidebefore align-self-center border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
+            <div class="pointer-none text-16px text-white text-bold">Try it out</div>
+            <svg height="100%" stroke-miterlimit="10"
+              style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+              viewBox="0 0 256 256" width="100%" class="buttonwhite">
+              <g>
+                <path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+                <path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="20"></path>
+              </g>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+
+      <div class="border-box display-flex flex-row gap-60px width-full small:flex-column">
+        <div class="display-flex flex-column gap-24px flex-1">
+          <h2 class="text-36px text-primary text-bold fadeslidebefore"><span class="gradienttextblue3">Get the Mobile
+              App</span></h2>
+          <h3 class="text-24px text-primary fadeslidebefore">Powerful productivity on the go</h3>
+          <p class="text-18px text-primary fadeslidebefore">With Smart Calendar's <span
+              class="gradienttextblue text-bold">iOS app</span>, you can plan and stay productive anywhere. Receive app
+            reminders for events and tasks right in your phone.</p>
+          <a href="https://apps.apple.com/us/app/smart-calendar-app/id6468529887" target="_blank"
+            rel="noopener noreferrer" class="fadeslidebefore">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 119.66407 40" class="iosappbutton">
+              <title>Download_on_the_App_Store_Badge_US-UK_RGB_blk_4SVG_092917</title>
+              <g>
+                <g>
+                  <g>
+                    <path
+                      d="M110.13477,0H9.53468c-.3667,0-.729,0-1.09473.002-.30615.002-.60986.00781-.91895.0127A13.21476,13.21476,0,0,0,5.5171.19141a6.66509,6.66509,0,0,0-1.90088.627A6.43779,6.43779,0,0,0,1.99757,1.99707,6.25844,6.25844,0,0,0,.81935,3.61816a6.60119,6.60119,0,0,0-.625,1.90332,12.993,12.993,0,0,0-.1792,2.002C.00587,7.83008.00489,8.1377,0,8.44434V31.5586c.00489.3105.00587.6113.01515.9219a12.99232,12.99232,0,0,0,.1792,2.0019,6.58756,6.58756,0,0,0,.625,1.9043A6.20778,6.20778,0,0,0,1.99757,38.001a6.27445,6.27445,0,0,0,1.61865,1.1787,6.70082,6.70082,0,0,0,1.90088.6308,13.45514,13.45514,0,0,0,2.0039.1768c.30909.0068.6128.0107.91895.0107C8.80567,40,9.168,40,9.53468,40H110.13477c.3594,0,.7246,0,1.084-.002.3047,0,.6172-.0039.9219-.0107a13.279,13.279,0,0,0,2-.1768,6.80432,6.80432,0,0,0,1.9082-.6308,6.27742,6.27742,0,0,0,1.6172-1.1787,6.39482,6.39482,0,0,0,1.1816-1.6143,6.60413,6.60413,0,0,0,.6191-1.9043,13.50643,13.50643,0,0,0,.1856-2.0019c.0039-.3106.0039-.6114.0039-.9219.0078-.3633.0078-.7246.0078-1.0938V9.53613c0-.36621,0-.72949-.0078-1.09179,0-.30664,0-.61426-.0039-.9209a13.5071,13.5071,0,0,0-.1856-2.002,6.6177,6.6177,0,0,0-.6191-1.90332,6.46619,6.46619,0,0,0-2.7988-2.7998,6.76754,6.76754,0,0,0-1.9082-.627,13.04394,13.04394,0,0,0-2-.17676c-.3047-.00488-.6172-.01074-.9219-.01269-.3594-.002-.7246-.002-1.084-.002Z"
+                      style="fill: #a6a6a6" />
+                    <path
+                      d="M8.44483,39.125c-.30468,0-.602-.0039-.90429-.0107a12.68714,12.68714,0,0,1-1.86914-.1631,5.88381,5.88381,0,0,1-1.65674-.5479,5.40573,5.40573,0,0,1-1.397-1.0166,5.32082,5.32082,0,0,1-1.02051-1.3965,5.72186,5.72186,0,0,1-.543-1.6572,12.41351,12.41351,0,0,1-.1665-1.875c-.00634-.2109-.01464-.9131-.01464-.9131V8.44434S.88185,7.75293.8877,7.5498a12.37039,12.37039,0,0,1,.16553-1.87207,5.7555,5.7555,0,0,1,.54346-1.6621A5.37349,5.37349,0,0,1,2.61183,2.61768,5.56543,5.56543,0,0,1,4.01417,1.59521a5.82309,5.82309,0,0,1,1.65332-.54394A12.58589,12.58589,0,0,1,7.543.88721L8.44532.875H111.21387l.9131.0127a12.38493,12.38493,0,0,1,1.8584.16259,5.93833,5.93833,0,0,1,1.6709.54785,5.59374,5.59374,0,0,1,2.415,2.41993,5.76267,5.76267,0,0,1,.5352,1.64892,12.995,12.995,0,0,1,.1738,1.88721c.0029.2832.0029.5874.0029.89014.0079.375.0079.73193.0079,1.09179V30.4648c0,.3633,0,.7178-.0079,1.0752,0,.3252,0,.6231-.0039.9297a12.73126,12.73126,0,0,1-.1709,1.8535,5.739,5.739,0,0,1-.54,1.67,5.48029,5.48029,0,0,1-1.0156,1.3857,5.4129,5.4129,0,0,1-1.3994,1.0225,5.86168,5.86168,0,0,1-1.668.5498,12.54218,12.54218,0,0,1-1.8692.1631c-.2929.0068-.5996.0107-.8974.0107l-1.084.002Z" />
+                  </g>
+                  <g id="_Group_" data-name="&lt;Group&gt;">
+                    <g id="_Group_2" data-name="&lt;Group&gt;">
+                      <g id="_Group_3" data-name="&lt;Group&gt;">
+                        <path id="_Path_" data-name="&lt;Path&gt;"
+                          d="M24.76888,20.30068a4.94881,4.94881,0,0,1,2.35656-4.15206,5.06566,5.06566,0,0,0-3.99116-2.15768c-1.67924-.17626-3.30719,1.00483-4.1629,1.00483-.87227,0-2.18977-.98733-3.6085-.95814a5.31529,5.31529,0,0,0-4.47292,2.72787c-1.934,3.34842-.49141,8.26947,1.3612,10.97608.9269,1.32535,2.01018,2.8058,3.42763,2.7533,1.38706-.05753,1.9051-.88448,3.5794-.88448,1.65876,0,2.14479.88448,3.591.8511,1.48838-.02416,2.42613-1.33124,3.32051-2.66914a10.962,10.962,0,0,0,1.51842-3.09251A4.78205,4.78205,0,0,1,24.76888,20.30068Z"
+                          style="fill: #fff" />
+                        <path id="_Path_2" data-name="&lt;Path&gt;"
+                          d="M22.03725,12.21089a4.87248,4.87248,0,0,0,1.11452-3.49062,4.95746,4.95746,0,0,0-3.20758,1.65961,4.63634,4.63634,0,0,0-1.14371,3.36139A4.09905,4.09905,0,0,0,22.03725,12.21089Z"
+                          style="fill: #fff" />
+                      </g>
+                    </g>
+                    <g>
+                      <path
+                        d="M42.30227,27.13965h-4.7334l-1.13672,3.35645H34.42727l4.4834-12.418h2.083l4.4834,12.418H43.438ZM38.0591,25.59082h3.752l-1.84961-5.44727h-.05176Z"
+                        style="fill: #fff" />
+                      <path
+                        d="M55.15969,25.96973c0,2.81348-1.50586,4.62109-3.77832,4.62109a3.0693,3.0693,0,0,1-2.84863-1.584h-.043v4.48438h-1.8584V21.44238H48.4302v1.50586h.03418a3.21162,3.21162,0,0,1,2.88281-1.60059C53.645,21.34766,55.15969,23.16406,55.15969,25.96973Zm-1.91016,0c0-1.833-.94727-3.03809-2.39258-3.03809-1.41992,0-2.375,1.23047-2.375,3.03809,0,1.82422.95508,3.0459,2.375,3.0459C52.30227,29.01563,53.24953,27.81934,53.24953,25.96973Z"
+                        style="fill: #fff" />
+                      <path
+                        d="M65.12453,25.96973c0,2.81348-1.50586,4.62109-3.77832,4.62109a3.0693,3.0693,0,0,1-2.84863-1.584h-.043v4.48438h-1.8584V21.44238H58.395v1.50586h.03418A3.21162,3.21162,0,0,1,61.312,21.34766C63.60988,21.34766,65.12453,23.16406,65.12453,25.96973Zm-1.91016,0c0-1.833-.94727-3.03809-2.39258-3.03809-1.41992,0-2.375,1.23047-2.375,3.03809,0,1.82422.95508,3.0459,2.375,3.0459C62.26711,29.01563,63.21438,27.81934,63.21438,25.96973Z"
+                        style="fill: #fff" />
+                      <path
+                        d="M71.71047,27.03613c.1377,1.23145,1.334,2.04,2.96875,2.04,1.56641,0,2.69336-.80859,2.69336-1.91895,0-.96387-.67969-1.541-2.28906-1.93652l-1.60937-.3877c-2.28027-.55078-3.33887-1.61719-3.33887-3.34766,0-2.14258,1.86719-3.61426,4.51855-3.61426,2.624,0,4.42285,1.47168,4.4834,3.61426h-1.876c-.1123-1.23926-1.13672-1.9873-2.63379-1.9873s-2.52148.75684-2.52148,1.8584c0,.87793.6543,1.39453,2.25488,1.79l1.36816.33594c2.54785.60254,3.60645,1.626,3.60645,3.44238,0,2.32324-1.85059,3.77832-4.79395,3.77832-2.75391,0-4.61328-1.4209-4.7334-3.667Z"
+                        style="fill: #fff" />
+                      <path
+                        d="M83.34621,19.2998v2.14258h1.72168v1.47168H83.34621v4.99121c0,.77539.34473,1.13672,1.10156,1.13672a5.80752,5.80752,0,0,0,.61133-.043v1.46289a5.10351,5.10351,0,0,1-1.03223.08594c-1.833,0-2.54785-.68848-2.54785-2.44434V22.91406H80.16262V21.44238H81.479V19.2998Z"
+                        style="fill: #fff" />
+                      <path
+                        d="M86.065,25.96973c0-2.84863,1.67773-4.63867,4.29395-4.63867,2.625,0,4.29492,1.79,4.29492,4.63867,0,2.85645-1.66113,4.63867-4.29492,4.63867C87.72609,30.6084,86.065,28.82617,86.065,25.96973Zm6.69531,0c0-1.9541-.89551-3.10742-2.40137-3.10742s-2.40039,1.16211-2.40039,3.10742c0,1.96191.89453,3.10645,2.40039,3.10645S92.76027,27.93164,92.76027,25.96973Z"
+                        style="fill: #fff" />
+                      <path
+                        d="M96.18606,21.44238h1.77246v1.541h.043a2.1594,2.1594,0,0,1,2.17773-1.63574,2.86616,2.86616,0,0,1,.63672.06934v1.73828a2.59794,2.59794,0,0,0-.835-.1123,1.87264,1.87264,0,0,0-1.93652,2.083v5.37012h-1.8584Z"
+                        style="fill: #fff" />
+                      <path
+                        d="M109.3843,27.83691c-.25,1.64355-1.85059,2.77148-3.89844,2.77148-2.63379,0-4.26855-1.76465-4.26855-4.5957,0-2.83984,1.64355-4.68164,4.19043-4.68164,2.50488,0,4.08008,1.7207,4.08008,4.46582v.63672h-6.39453v.1123a2.358,2.358,0,0,0,2.43555,2.56445,2.04834,2.04834,0,0,0,2.09082-1.27344Zm-6.28223-2.70215h4.52637a2.1773,2.1773,0,0,0-2.2207-2.29785A2.292,2.292,0,0,0,103.10207,25.13477Z"
+                        style="fill: #fff" />
+                    </g>
+                  </g>
+                </g>
+                <g id="_Group_4" data-name="&lt;Group&gt;">
+                  <g>
+                    <path
+                      d="M37.82619,8.731a2.63964,2.63964,0,0,1,2.80762,2.96484c0,1.90625-1.03027,3.002-2.80762,3.002H35.67092V8.731Zm-1.22852,5.123h1.125a1.87588,1.87588,0,0,0,1.96777-2.146,1.881,1.881,0,0,0-1.96777-2.13379h-1.125Z"
+                      style="fill: #fff" />
+                    <path
+                      d="M41.68068,12.44434a2.13323,2.13323,0,1,1,4.24707,0,2.13358,2.13358,0,1,1-4.24707,0Zm3.333,0c0-.97607-.43848-1.54687-1.208-1.54687-.77246,0-1.207.5708-1.207,1.54688,0,.98389.43457,1.55029,1.207,1.55029C44.57522,13.99463,45.01369,13.42432,45.01369,12.44434Z"
+                      style="fill: #fff" />
+                    <path
+                      d="M51.57326,14.69775h-.92187l-.93066-3.31641h-.07031l-.92676,3.31641h-.91309l-1.24121-4.50293h.90137l.80664,3.436h.06641l.92578-3.436h.85254l.92578,3.436h.07031l.80273-3.436h.88867Z"
+                      style="fill: #fff" />
+                    <path
+                      d="M53.85354,10.19482H54.709v.71533h.06641a1.348,1.348,0,0,1,1.34375-.80225,1.46456,1.46456,0,0,1,1.55859,1.6748v2.915h-.88867V12.00586c0-.72363-.31445-1.0835-.97168-1.0835a1.03294,1.03294,0,0,0-1.0752,1.14111v2.63428h-.88867Z"
+                      style="fill: #fff" />
+                    <path d="M59.09377,8.437h.88867v6.26074h-.88867Z" style="fill: #fff" />
+                    <path
+                      d="M61.21779,12.44434a2.13346,2.13346,0,1,1,4.24756,0,2.1338,2.1338,0,1,1-4.24756,0Zm3.333,0c0-.97607-.43848-1.54687-1.208-1.54687-.77246,0-1.207.5708-1.207,1.54688,0,.98389.43457,1.55029,1.207,1.55029C64.11232,13.99463,64.5508,13.42432,64.5508,12.44434Z"
+                      style="fill: #fff" />
+                    <path
+                      d="M66.4009,13.42432c0-.81055.60352-1.27783,1.6748-1.34424l1.21973-.07031v-.38867c0-.47559-.31445-.74414-.92187-.74414-.49609,0-.83984.18213-.93848.50049h-.86035c.09082-.77344.81836-1.26953,1.83984-1.26953,1.12891,0,1.76563.562,1.76563,1.51318v3.07666h-.85547v-.63281h-.07031a1.515,1.515,0,0,1-1.35254.707A1.36026,1.36026,0,0,1,66.4009,13.42432Zm2.89453-.38477v-.37646l-1.09961.07031c-.62012.0415-.90137.25244-.90137.64941,0,.40527.35156.64111.835.64111A1.0615,1.0615,0,0,0,69.29543,13.03955Z"
+                      style="fill: #fff" />
+                    <path
+                      d="M71.34816,12.44434c0-1.42285.73145-2.32422,1.86914-2.32422a1.484,1.484,0,0,1,1.38086.79h.06641V8.437h.88867v6.26074h-.85156v-.71143h-.07031a1.56284,1.56284,0,0,1-1.41406.78564C72.0718,14.772,71.34816,13.87061,71.34816,12.44434Zm.918,0c0,.95508.4502,1.52979,1.20313,1.52979.749,0,1.21191-.583,1.21191-1.52588,0-.93848-.46777-1.52979-1.21191-1.52979C72.72121,10.91846,72.26613,11.49707,72.26613,12.44434Z"
+                      style="fill: #fff" />
+                    <path
+                      d="M79.23,12.44434a2.13323,2.13323,0,1,1,4.24707,0,2.13358,2.13358,0,1,1-4.24707,0Zm3.333,0c0-.97607-.43848-1.54687-1.208-1.54687-.77246,0-1.207.5708-1.207,1.54688,0,.98389.43457,1.55029,1.207,1.55029C82.12453,13.99463,82.563,13.42432,82.563,12.44434Z"
+                      style="fill: #fff" />
+                    <path
+                      d="M84.66945,10.19482h.85547v.71533h.06641a1.348,1.348,0,0,1,1.34375-.80225,1.46456,1.46456,0,0,1,1.55859,1.6748v2.915H87.605V12.00586c0-.72363-.31445-1.0835-.97168-1.0835a1.03294,1.03294,0,0,0-1.0752,1.14111v2.63428h-.88867Z"
+                      style="fill: #fff" />
+                    <path
+                      d="M93.51516,9.07373v1.1416h.97559v.74854h-.97559V13.2793c0,.47168.19434.67822.63672.67822a2.96657,2.96657,0,0,0,.33887-.02051v.74023a2.9155,2.9155,0,0,1-.4834.04541c-.98828,0-1.38184-.34766-1.38184-1.21582v-2.543h-.71484v-.74854h.71484V9.07373Z"
+                      style="fill: #fff" />
+                    <path
+                      d="M95.70461,8.437h.88086v2.48145h.07031a1.3856,1.3856,0,0,1,1.373-.80664,1.48339,1.48339,0,0,1,1.55078,1.67871v2.90723H98.69v-2.688c0-.71924-.335-1.0835-.96289-1.0835a1.05194,1.05194,0,0,0-1.13379,1.1416v2.62988h-.88867Z"
+                      style="fill: #fff" />
+                    <path
+                      d="M104.76125,13.48193a1.828,1.828,0,0,1-1.95117,1.30273A2.04531,2.04531,0,0,1,100.73,12.46045a2.07685,2.07685,0,0,1,2.07617-2.35254c1.25293,0,2.00879.856,2.00879,2.27V12.688h-3.17969v.0498a1.1902,1.1902,0,0,0,1.19922,1.29,1.07934,1.07934,0,0,0,1.07129-.5459Zm-3.126-1.45117h2.27441a1.08647,1.08647,0,0,0-1.1084-1.1665A1.15162,1.15162,0,0,0,101.63527,12.03076Z"
+                      style="fill: #fff" />
+                  </g>
+                </g>
+              </g>
+            </svg>
+          </a>
+        </div>
+
+        <div
+          class="display-flex flex-row justify-center relative flex-1 padding-left-48px padding-right-48px small:padding-0">
+          <img src="../iosapp.png" height="360" width="480"
+            class="fadeslidebefore border-16px iphoneimage width-full height-auto" alt="iOS app to do list" />
+        </div>
+      </div>
+
+      <!-- call to action -->
+      <div id="get-started" class="display-flex flex-column align-center gap-24px">
+        <h2 class="text-36px small:text-24px text-primary fadeslidebefore text-center">Welcome to the future of time
+          management — it starts here.</h2>
+        <div class="fadeslidebefore">
+          <div class="small:flex-column align-center justify-center display-flex flex-row gap-12px">
+            <a href="../signup"
+              class="border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
+              <div class="nowrap pointer-none text-16px text-white text-bold">Get started for free</div>
+              <svg height="100%" stroke-miterlimit="10"
+                style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+                viewBox="0 0 256 256" width="100%" class="buttonwhite">
+                <g>
+                  <path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="20"></path>
+                  <path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="20"></path>
+                  <path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="20"></path>
+                </g>
+              </svg>
+            </a>
+
+            <div
+              class="nowrap border-round display-flex flex-row align-center justify-center gap-6px googlebutton text-center text-16px text-bold padding-8px-12px pointer transition-duration-100"
+              onclick="logingoogle({ scope: ['calendar'], enable: [] })">
+              <svg viewBox="0 0 24 24" width="100%" height="100%" class="buttongoogle">
+                <path
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                  fill="#4285F4"></path>
+                <path
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                  fill="#34A853"></path>
+                <path
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                  fill="#FBBC05" />
+                <path
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                  fill="#EA4335"></path>
+                <path d="M1 1h22v22H1z" fill="none"></path>
+              </svg> Continue with Google
+              <svg height="100%" stroke-miterlimit="10"
+                style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;"
+                viewBox="0 0 256 256" width="100%" class="buttonblack">
+                <g>
+                  <path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="20"></path>
+                  <path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="20"></path>
+                  <path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="20"></path>
+                </g>
+              </svg>
+
             </div>
+          </div>
+        </div>
+      </div>
+    </main>
 
-			<!-- call to action -->
-			<div id="get-started" class="display-flex flex-column align-center gap-24px">
-				<h2 class="text-36px small:text-24px text-primary fadeslidebefore text-center">Welcome to the future of time management — it starts here.</h2>
-				<div class="fadeslidebefore">
-					<div class="small:flex-column align-center justify-center display-flex flex-row gap-12px">
-						<a href="../signup" class="border-round background-blue display-flex flex-row align-center gap-6px hover:background-blue-hover pointer padding-8px-16px text-decoration-none width-fit">
-							<div class="nowrap pointer-none text-16px text-white text-bold">Get started free</div>
-							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
-								<g>
-								<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								</g>
-							</svg>
-						</a>
+    <!-- footer -->
+    <footer
+      class="backdrop-blur background-tint-1 width-full display-flex flex-column gap-24px padding-60px border-box">
+      <div class="text-secondary text-14px">&copy; 2024 James Tsaggaris. All rights reserved.</div>
+      <div class="text-secondary text-14px">View our <a href="../privacy"
+          class="text-secondary hover:text-decoration-underline">Privacy Policy</a> and <a href="../terms"
+          class="text-secondary hover:text-decoration-underline">Terms of Use</a>.</div>
+    </footer>
+  </div>
 
-						<div class="nowrap border-round display-flex flex-row align-center justify-center gap-6px googlebutton text-center text-16px text-bold padding-8px-12px pointer transition-duration-100" onclick="logingoogle({ scope: ['calendar'], enable: [] })">
-							<svg viewBox="0 0 24 24" width="100%" height="100%" class="buttongoogle"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path><path d="M1 1h22v22H1z" fill="none"></path></svg> Sign up with Google
-							<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonblack">
-								<g>
-								<path d="M245.127 128L11.2962 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M157.392 204.44L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								<path d="M157.392 51.5604L245.127 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-								</g>
-							</svg>
-
-						</div>
-					</div>
-				</div>
-			</div>
-		</main>
-
-		<!-- footer -->
-		<footer class="backdrop-blur background-tint-1 width-full display-flex flex-column gap-24px padding-60px border-box">
-			<div class="text-secondary text-14px">&copy; 2024 James Tsaggaris. All rights reserved.</div>
-			<div class="text-secondary text-14px">View our <a href="../privacy" class="text-secondary hover:text-decoration-underline">Privacy Policy</a> and <a href="../terms" class="text-secondary hover:text-decoration-underline">Terms of Use</a>.</div>
-		</footer>
-	</div>
-
-	<script src="../home.js"></script>
+  <script src="/home.js"></script>
 
 </body>
 
