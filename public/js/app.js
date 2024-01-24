@@ -15341,6 +15341,7 @@ async function submitaimessage(optionalinput, dictated){
 						let newduedate = arguments?.newDueDate
 						let newduration = arguments?.newDuration
 						let newcompleted = arguments?.newCompleted
+						let newdelaystartdate = arguments?.newDelayStartDate
 						let newstartdate = arguments?.newStartDate
 						let newenddate = arguments?.newEndDate
 						let newrecurrence = arguments?.newRRULE
@@ -15367,13 +15368,22 @@ async function submitaimessage(optionalinput, dictated){
 								let [startyear, startmonth, startday] = getDate(newstartdate?.replace('T', ' ')).value
 								let endminute = getMinute(newenddate?.replace('T', ' ')).value
 								let [endyear, endmonth, endday] = getDate(newenddate?.replace('T', ' ')).value
+								
+								let delaystartminute = getMinute(newdelaystartdate?.replace('T', ' ')).value
+								let [delaystartyear, delaystartmonth, delaystartday] = getDate(newenddate?.replace('T', ' ')).value
 
-								let startdate, enddate;
+								let startdate, enddate, delaystartdate;
 								if(startminute != null && startyear != null && startmonth != null && startday != null){
 									startdate = new Date(startyear, startmonth, startday, 0, startminute)
 								}
 								if(endminute != null && endyear != null && endmonth != null && endday != null){
 									enddate = new Date(endyear, endmonth, endday, 0, endminute)
+								}
+								if(endminute != null && endyear != null && endmonth != null && endday != null){
+									enddate = new Date(endyear, endmonth, endday, 0, endminute)
+								}
+								if(delaystartminute != null && delaystartyear != null && delaystartmonth != null && delaystartday != null){
+									delaystartdate = new Date(delaystartyear, delaystartmonth, delaystartday, delaystartminute)
 								}
 								
 
@@ -15384,6 +15394,13 @@ async function submitaimessage(optionalinput, dictated){
 									item.endbefore.month = endbeforedate.getMonth()
 									item.endbefore.day = endbeforedate.getDate()
 									item.endbefore.minute = endbeforedate.getHours() * 60 + endbeforedate.getMinutes()
+								}
+
+								if(delaystartdate && !isNaN(delaystartdate.getTime())){
+									item.startafter.year = delaystartdate.getFullYear()
+									item.startafter.month = delaystartdate.getMonth()
+									item.startafter.day = delaystartdate.getDate()
+									item.startafter.minute = delaystartdate.getHours() * 60 + delaystartdate.getMinutes()
 								}
 
 								if(duration != null){
