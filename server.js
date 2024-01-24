@@ -4456,7 +4456,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 
 		//time
 		const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
-		const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
+		const localdatestring = `${DAYLIST[localdate.getDay()]} ${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
 
 		//PROMPT
@@ -4571,7 +4571,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 
 		//time
 		const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
-		const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
+		const localdatestring = `${DAYLIST[localdate.getDay()]} ${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
 
 		//PROMPT
@@ -4682,7 +4682,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 
 		//time
 		const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
-		const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
+		const localdatestring = `${DAYLIST[localdate.getDay()]} ${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
 
 		//PROMPT
@@ -4766,6 +4766,8 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
+
+const DAYLIST = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 app.post('/getgptchatinteractionV2', async (req, res) => {
 	try{
@@ -4916,7 +4918,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'schedule_unscheduled_task_in_calendar'] //a subset of all functions, the functions that need todo data
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
-			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
+			const localdatestring = `${DAYLIST[localdate.getDay()]} ${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
 
 			//PROMPT
@@ -5575,7 +5577,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'modify_multiple_tasks', 'get_todo_list_tasks', 'schedule_tasks_in_calendar'] //a subset of all functions, the functions that need todo data
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
-			const localdatestring = `${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
+			const localdatestring = `${DAYLIST[localdate.getDay()]} ${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
 
 			//PROMPT
