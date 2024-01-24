@@ -5037,7 +5037,7 @@ function run() {
 			}
 
 			//get google calendar
-			if (!isgettingclientdata && !isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 30000 && issettingclientgooglecalendar == false && Date.now() - lasttriedsyncgooglecalendardate > 30000) {
+			if (!isgettingclientdata && !isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 30000 && issettingclientgooglecalendar == false && Date.now() - lasttriedsyncgooglecalendardate > 30000 && Date.now() - calendar.lastmodified > 10000) {
 				lasttriedsyncgooglecalendardate = Date.now()
 				getclientgooglecalendar()
 			}
