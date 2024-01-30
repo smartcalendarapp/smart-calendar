@@ -15369,7 +15369,7 @@ async function submitaimessage(optionalinput, dictated){
 								let endminute = getMinute(newenddate?.replace('T', ' ')).value
 								let [endyear, endmonth, endday] = getDate(newenddate?.replace('T', ' ')).value
 								
-								let delaystartminute = getMinute(newdelaystartdate?.replace('T', ' ')).value
+								let delaystartminute = getMinute(newdelaystartdate?.replace('T', ' ')).value || 0
 								let [delaystartyear, delaystartmonth, delaystartday] = getDate(newenddate?.replace('T', ' ')).value
 
 								let startdate, enddate, delaystartdate;
@@ -16680,7 +16680,7 @@ function getavailabletime(item, startrange, endrange, isschedulebuilder) {
 
 //auto schedule V2
 
-function getconflictingevent(data, item1, allresults) {
+function getconflictingevent(data, item1, allresults, forceoverlap) {
 	let sortdata = data.sort((a, b) => {
 		return new Date(b.start.year, b.start.month, b.start.day, 0, b.start.minute).getTime() - new Date(a.start.year, a.start.month, a.start.day, 0, a.start.minute).getTime()
 	})
@@ -16695,7 +16695,7 @@ function getconflictingevent(data, item1, allresults) {
 		let tempstartdate2 = new Date(item2.start.year, item2.start.month, item2.start.day, 0, item2.start.minute)
 		let tempenddate2 = new Date(item2.end.year, item2.end.month, item2.end.day, 0, item2.end.minute)
 
-		let spacing = getbreaktime(tempstartdate1.getTime() > tempstartdate2.getTime() ? item2 : item1)
+		let spacing = forceoverlap ? 0 : getbreaktime(tempstartdate1.getTime() > tempstartdate2.getTime() ? item2 : item1)
 
 		if (tempstartdate1.getTime() < tempenddate2.getTime() + spacing && tempenddate1.getTime() + spacing > tempstartdate2.getTime()) {
 			tempoutput.push([item2, spacing])
@@ -16893,7 +16893,10 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 				for(let tempdata of conflicts){
 					if(tempdata[0].type == 1){
-						tempdata[0].autoschedulelocked = false
+						let tempconflicts = getconflictingevent(iteratedevents.filter(d => d.type == 0 && d.id != lastmoveditem.id), tempdata[0], true, true)
+						if(tempconflicts.length == 0){
+							tempdata[0].autoschedulelocked = false
+						}
 					}
 				}
 

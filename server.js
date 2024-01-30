@@ -192,15 +192,43 @@ async function getchatconversation(conversationid){
 	  }
 	  const data = await dynamoclient.send(new GetItemCommand(params))
 		if(data.Item){
-			return addmissingpropertiestouser(unmarshall(data.Item))
+			return (unmarshall(data.Item))
 		}
 		return null
 }
+
+async function getfeedback(id){
+	const params = {
+		TableName: 'smartcalendarfeedback',
+		Key: {
+		  'id': { S: id }
+		}
+	  }
+	  const data = await dynamoclient.send(new GetItemCommand(params))
+		if(data.Item){
+			return (unmarshall(data.Item))
+		}
+		return null
+}
+
 
 async function setchatconversation(tempdata){
 	try{
 		const params2 = {
 			TableName: 'smartcalendarchatconversations',
+			Item: marshall(tempdata, { convertClassInstanceToMap: true, removeUndefinedValues: true })
+		}
+		
+		await dynamoclient.send(new PutItemCommand(params2))
+	}catch(error){
+		console.error(error)
+	}
+}
+
+async function setfeedback(tempdata){
+	try{
+		const params2 = {
+			TableName: 'smartcalendarfeedback',
 			Item: marshall(tempdata, { convertClassInstanceToMap: true, removeUndefinedValues: true })
 		}
 		
@@ -3641,7 +3669,7 @@ app.post('/dev', async (req, res) => {
 				console.error(error)
 			}
 
-			return allitems.length > 0 ? allitems.filter(d => d.pending.length > 0).map(d => `Invite code: ${d.invitelink}\nInvite user ID: ${d.userid}\nInvite date: ${getlocaldate(d.logindata?.timestamp)}\nInvite IP: ${d.logindata?.ip}\nInvite user agent: ${d.logindata?.useragent}\nInvite IOS app: ${d.logindata?.iosapp}\nInvite Hotjar ID: ${d.logindata?.hotjarid}\n\nAccepted: ${d.accepted?.length}\nRejected: ${d.rejected?.length}\n\n\nPending:\n\n${d.pending?.map(f => `User ID: ${f.userid}\nDate: ${getlocaldate(f.logindata?.timestamp)}\nIP: ${f.logindata?.ip}\nUser agent: ${f.logindata?.useragent}\nIOS app: ${f.logindata?.iosapp}\nHotjar ID: ${f.logindata?.hotjarid}\nTo accept: <span class="inlinecode">await acceptreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo reject: <span class="inlinecode">await rejectreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo whitelist: <span class="inlinecode">await setwhitelistreferafriendinvitecode('${d.invitelink}', true)</span>`).join('\n\n')}`).join('\n\n\n') : 'None'
+			return allitems.length > 0 && allitems.find(d => d.pending.length > 0) ? allitems.filter(d => d.pending.length > 0).map(d => `Invite code: ${d.invitelink}\nInvite user ID: ${d.userid}\nInvite date: ${getlocaldate(d.logindata?.timestamp)}\nInvite IP: ${d.logindata?.ip}\nInvite user agent: ${d.logindata?.useragent}\nInvite IOS app: ${d.logindata?.iosapp}\nInvite Hotjar ID: ${d.logindata?.hotjarid}\n\nAccepted: ${d.accepted?.length}\nRejected: ${d.rejected?.length}\n\n\nPending:\n\n${d.pending?.map(f => `User ID: ${f.userid}\nDate: ${getlocaldate(f.logindata?.timestamp)}\nIP: ${f.logindata?.ip}\nUser agent: ${f.logindata?.useragent}\nIOS app: ${f.logindata?.iosapp}\nHotjar ID: ${f.logindata?.hotjarid}\nTo accept: <span class="inlinecode">await acceptreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo reject: <span class="inlinecode">await rejectreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo whitelist: <span class="inlinecode">await setwhitelistreferafriendinvitecode('${d.invitelink}', true)</span>`).join('\n\n')}`).join('\n\n\n') : 'None'
 		}
 		
 		async function getstats(){
@@ -3691,7 +3719,7 @@ app.post('/dev', async (req, res) => {
 		}
 
 		async function help(){
-			return `<span class="inlinecode">addbetatester(userid or email)</span>\n\n<span class="inlinecode">getuserinfo(userid or email)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">whitelistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>\n\n<span class="inlinecode">displaychat(conversationid)</span>\n<span class="inlinecode">flagchat(conversationid)</span>`
+			return `<span class="inlinecode">addbetatester(userid or email)</span>\n\n<span class="inlinecode">getuserinfo(userid or email)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">whitelistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>\n\n<span class="inlinecode">displaychat(conversationid)</span>\n<span class="inlinecode">flagchat(conversationid)</span>\n\n<span class="inlinecode">displayfeedback(id)</span>\n<span class="inlinecode">flagfeedback(id)</span>`
 		}
 
 		async function displaychat(conversationid){
@@ -3703,9 +3731,14 @@ app.post('/dev', async (req, res) => {
 				tempoutput.push(`${item.role == 'assistant' ? 'Athena' : 'User'}: ${item.message} ${item.liked ? '(LIKED)' : ''} ${item.disliked ? '(DISLIKED)' : ''}`)
 			}
 
-			await markchatasread(conversationid)
+			tempdata.read = true
+			await setchatconversation(tempdata)
 
-			return `Chat ID: ${conversationid}\n\n`+tempoutput.join('\n\n')
+			function getlocaldate(date){
+				return new Date(date).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', hour12: true })
+			}
+
+			return `Chat ID: ${conversationid}\nUser ID: ${tempdata.userid}\nTime: ${getlocaldate(tempdata.timestamp)}\n\n`+tempoutput.join('\n\n')
 		}
 
 		async function flagchat(conversationid){
@@ -3715,6 +3748,29 @@ app.post('/dev', async (req, res) => {
 
 			return 'Done'
 		}
+
+		async function displayfeedback(feedbackid){
+			function getlocaldate(date){
+				return new Date(date).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', hour12: true })
+			}
+
+			let tempdata = await getfeedback(feedbackid)
+			if(!tempdata) return 'Not found'
+			
+			tempdata.read = true
+			await setfeedback(tempdata)
+
+			return `Feedback ID: ${feedbackid}\nUser ID: ${tempdata.userid}\nTime: ${getlocaldate(tempdata.timestamp)}\n\n${typeof tempdata.content === 'string' ? tempdata.content : JSON.stringify(tempdata.content)}`
+		}
+
+		async function flagfeedback(feedbackid){
+			let tempdata = await getfeedback(feedbackid)
+			tempdata.flagged = true
+			await setfeedback(tempdata)
+
+			return 'Done'
+		}
+		
 
 		//eval
 		let input = req.body.input
