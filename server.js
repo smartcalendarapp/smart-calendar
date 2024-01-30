@@ -4957,9 +4957,9 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						properties: {
 							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
 							newTitle: { type: 'string', description: 'New title' },
+							newDelayStartDate: { type: 'string', description: '(optional) Delay start working on task after date/time in format: YYYY-MM-DD HH:MM' },
 							newDueDate: { type: 'string', description: 'New due date/time in format: YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: 'New duration in format: HH:MM' },
-							newDelayStartDate: { type: 'string', description: '(optional) Delay start working on task after date/time in format: YYYY-MM-DD HH:MM' },
 							newStartDate: { type: 'string', description: 'New scheduled in calendar start date/time in format: YYYY-MM-DD HH:MM' },
 							newEndDate: { type: 'string', description: 'New scheduled in calendar end date/time in format: YYYY-MM-DD HH:MM' },
 							newRRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
@@ -5008,7 +5008,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							{
 								role: "user",
-								content: "(sample message not from user) Move that to an earlier time, and then add an event to meet with boss tomorrow lunch"
+								content: "(sample message not from user) Move it to tomorrow morning. Add an event to meet with boss tomorrow lunch"
 							},
 							{
 								role: "assistant",
