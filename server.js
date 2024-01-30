@@ -4895,7 +4895,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				},
 				{
 					name: 'modify_task',
-					description: 'Find task by direct and explicit reference in user prompt. If task not found or unsure, do not return function and reply with a message for clarification. Return nothing if the task does not exist. All fields optional.',
+					description: 'Find task by direct and explicit reference in user prompt. If task not found or unsure, do not return function and reply with a message for clarification. Return nothing if the task does not exist. All fields optional. If user asks to move task, return newStartDate or newDelayStartDate.',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -4960,7 +4960,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								function_call: {
 									name: "app_action",
 									arguments: JSON.stringify({
-										commands: ['modify_task', 'create_event']
+										commands: ['modify_event', 'create_event']
 									})
 								}
 							},
