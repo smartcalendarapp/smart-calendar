@@ -5634,9 +5634,9 @@ function updateonboardingscreen(){
 	}else if(currentonboarding == 'eventreminders'){
 		calendar.updateSettings()
 	}else if(currentonboarding == 'finished'){
-		let onboardingfinished = getElement('onboardingfinished')
+		let onboardingfinishedtext = getElement('onboardingfinishedtext')
 		let tasklen = calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id)).length
-		onboardingfinished.innerHTML = tasklen == 0 ? `Your Smart Calendar is ready for you. Now, let's tackle your tasks and free up your schedule!` : `Your Smart Calendar is ready for you. Now, let's schedule the ${tasklen == 1 ? '' : `${tasklen} `}task${tasklen == 1 ? '' : 's'} you created in your calendar! You'll be able to adjust them afterwards.`
+		onboardingfinishedtext.innerHTML = tasklen == 0 ? `Your Smart Calendar is ready for you. Now, let's tackle your tasks and free up your schedule!` : `Your Smart Calendar is ready for you. Now, let's schedule the ${tasklen == 1 ? '' : `${tasklen} `}task${tasklen == 1 ? '' : 's'} you created in your calendar! You'll be able to adjust them afterwards.`
 	}
 }
 
