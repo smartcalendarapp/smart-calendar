@@ -5498,6 +5498,8 @@ function updateonboardingscreen(){
 		currentonboarding = 'sleeptime'
 	}else if(!calendar.onboarding.addtask){
 		currentonboarding = 'addtask'
+	}else if(!calendar.onboarding.finished){
+		currentonboarding = 'finished'
 	}
 
 	if(currentonboarding){

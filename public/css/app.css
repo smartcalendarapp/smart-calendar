@@ -4272,6 +4272,12 @@ max-width:1000px;
 }
 
 
+.challengetodossize{
+	max-width:300px;
+	width:100%;
+	max-height:300px;
+	height:auto;
+}
 
 .aichattooltip{
 	max-width:200px;
@@ -4427,6 +4433,7 @@ max-width:1000px;
 	left: 50%;
 	transform: translateX(-50%);
 }
+
 
 
 
