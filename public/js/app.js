@@ -242,7 +242,7 @@ function getOrdinal(n) {
 
 function getRepeatText(item, lowercase) {
 	let repeattext = REPEAT_OPTION_DATA.find(f => f.interval == item.repeat.interval && f.frequency == item.repeat.frequency && isEqualArray(item.repeat.byday, f.byday))
-	repeattext = ((repeattext && (lowercase ? repeattext.text.toLowerCase() : repeattext.text)) || `${lowercase ? 'every' : 'Every'}${item.repeat.interval == 1 ? '' : ` ${getOrdinal(item.repeat.interval)}`} ${['day', item.repeat.byday.length == 0 ? 'week' : `${item.repeat.byday.sort((a, b) => a - b).map(d => DAYLIST[d]).join(', ')}`, 'month', 'year'][item.repeat.frequency]}`) + `${item.repeat.until ? ` until ${getDMDYText(new Date(item.repeat.until))}` : ''}${item.repeat.count ? ` for ${item.repeat.count} times` : ''}`
+	repeattext = ((repeattext && (lowercase ? repeattext.text?.toLowerCase() : repeattext.text)) || `${lowercase ? 'every' : 'Every'}${item.repeat.interval == 1 ? '' : ` ${getOrdinal(item.repeat.interval)}`} ${['day', item.repeat.byday.length == 0 ? 'week' : `${item.repeat.byday.sort((a, b) => a - b).map(d => DAYLIST[d]).join(', ')}`, 'month', 'year'][item.repeat.frequency]}`) + `${item.repeat.until ? ` until ${getDMDYText(new Date(item.repeat.until))}` : ''}${item.repeat.count ? ` for ${item.repeat.count} times` : ''}`
 	return repeattext
 }
 
@@ -3959,6 +3959,9 @@ if(calendartabsstorage != null){
 	}else{
 		if(calendartabsstorage.includes(0)){
 			calendartabs = calendartabsstorage
+			if(calendartabs.length == 1){
+				calendartabs = [0, 1]
+			}
 		}
 	}
 }
@@ -5487,8 +5490,8 @@ function updateonboardingscreen(){
 		currentonboarding = 'start'
 	}else if(!calendar.onboarding.connectcalendars){
 		currentonboarding = 'connectcalendars'
-	}else if(!calendar.onboarding.connecttodolists){
-		currentonboarding = 'connecttodolists'
+	}else if(!calendar.onboarding.choosecalendars){
+		currentonboarding = 'choosecalendars'
 	}else if(!calendar.onboarding.eventreminders){
 		currentonboarding = 'eventreminders'
 	}else if(!calendar.onboarding.sleeptime){
@@ -5595,7 +5598,7 @@ function updateonboardingscreen(){
 
 		let onboardingconnectcalendarsoutlookcalendar = getElement('onboardingconnectcalendarsoutlookcalendar')
 		onboardingconnectcalendarsoutlookcalendar.innerHTML = ``
-	}else if(currentonboarding == 'connecttodolists'){
+	}else if(currentonboarding == 'choosecalendars'){
 		let settingscalendarlist = getElement('settingscalendarlist')
 		
 		let pickyourcalendarslist = getElement('pickyourcalendarslist')
@@ -5637,9 +5640,11 @@ function continueonboarding(key){
 
 	if(key == 'connectcalendars'){
 		if(!calendar.settings.issyncingtogooglecalendar || calendar.calendars.length == 1){
-			continueonboarding('connecttodolists')
+			continueonboarding('choosecalendars') //skip
 		}
-	}else if(key == 'addtask'){
+	}
+
+	if(key == 'finished'){
 		startAutoSchedule({eventsuggestiontodos: calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id)) })
 	}
 }
@@ -5648,6 +5653,7 @@ function backonboarding(key){
 
 	updateonboardingscreen()
 }
+
 
 
 //ACCOUNT CONNECTIONS
@@ -14726,11 +14732,12 @@ async function submitaimessage(optionalinput, dictated){
 
 								calendar.events.push(item)
 
-								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created an event "${Calendar.Event.getRawTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created an event "${Calendar.Event.getRawTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}${item.repeat.frequency != null && item.repeat.interval != null ? `, repeating ${getRepeatText(item, true)}` : ''}.`
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 
 								if(!mobilescreen)gototaskincalendar(item.id)
 							}else{
+								//UI to ask for time if not provided
 
 								function gettimeoptions(amount){
 									function gettextfromavailabletime(timestamp){
@@ -14786,182 +14793,6 @@ async function submitaimessage(optionalinput, dictated){
 								responsechatmessage.nextactions = [...timeoptions.map(d => `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('${d}')">${d}</div>`), `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Auto schedule')">Auto schedule</div>`]
 							}
 						}
-					}else if(command == 'create_multiple_events'){
-						
-						if(arguments.events && Array.isArray(arguments.events) && arguments.events.length > 0){
-
-							let tempoutput = []
-							let firstitem;
-
-							for(let tempitem of arguments.events){
-								let title = tempitem?.title
-								let startminute = getMinute(tempitem?.startDate?.replace('T', ' ')).value || 9*60
-								let [startyear, startmonth, startday] = getDate(tempitem?.startDate?.replace('T', ' ')).value
-								let endminute = getMinute(tempitem?.endDate?.replace('T', ' ')).value
-								let [endyear, endmonth, endday] = getDate(tempitem?.endDate?.replace('T', ' ')).value
-
-								let startdate, enddate;
-								if(startminute != null && startyear != null && startmonth != null && startday != null){
-									startdate = new Date(startyear, startmonth, startday, 0, startminute)
-								}
-								if(endminute != null && endyear != null && endmonth != null && endday != null){
-									enddate = new Date(endyear, endmonth, endday, 0, endminute)
-								}
-								if(!enddate || isNaN(enddate.getTime())){
-									enddate = new Date(startdate)
-									enddate.setMinutes(enddate.getMinutes() + 60)
-								}
-
-
-								if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
-									let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title)
-									calendar.events.push(item)
-
-
-									tempoutput.push(`Done! I created the event "${Calendar.Todo.getRawTitle(item)}" in your calendar for ${Calendar.Event.getStartText(item)}.`)
-
-									if(!firstitem){
-										firstitem = item
-									}
-
-								}else{
-									tempoutput.push(`When is your event event "${title}" going to start?`)
-
-								}
-							}
-
-
-							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + tempoutput.join('\n')
-							if(firstitem){
-								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${firstitem.id}')">Show me</div>`]
-
-								if(!mobilescreen)gototaskincalendar(firstitem.id)
-							}
-
-						}else{
-							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not create an event for you, please try again.`
-						}
-
-					}else if(command == 'modify_multiple_events'){
-						
-						if(arguments.events && Array.isArray(arguments.events) && arguments.events.length > 0){
-
-							let tempoutput = []
-							let firstitem;
-
-							for(let tempitem of arguments.events){
-								let id = getrealid(tempitem?.id)
-								let error = tempitem?.errorMessage || ''
-								let newtitle = tempitem?.newTitle
-								let newstartdate = tempitem?.newStartDate
-								let newenddate = tempitem?.newEndDate
-								let newduration = tempitem?.newDuration
-								
-								if(error && !id){
-									tempoutput.push(error)
-								}else{
-									let item = id && calendar.events.find(d => d.id == id)
-									if(item){
-										if(Calendar.Event.isReadOnly(item)){
-											tempoutput.push(`I could not edit the event ${Calendar.Event.getRawTitle(item)} as it is read-only (it may be part of a calendar you cannot edit).`)
-										}else{
-											let oldstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-											let oldtitle = item.title
-			
-			
-											let oldduration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
-			
-											let startminute = getMinute(newstartdate?.replace('T', ' ')).value
-											let [startyear, startmonth, startday] = getDate(newstartdate?.replace('T', ' ')).value
-											let endminute = getMinute(newenddate?.replace('T', ' ')).value
-											let [endyear, endmonth, endday] = getDate(newenddate?.replace('T', ' ')).value
-			
-											let startdate, enddate;
-											if(startminute != null && startyear != null && startmonth != null && startday != null){
-												startdate = new Date(startyear, startmonth, startday, 0, startminute)
-											}
-											if(endminute != null && endyear != null && endmonth != null && endday != null){
-												enddate = new Date(endyear, endmonth, endday, 0, endminute)
-											}
-											let duration = getDuration(newduration).value
-											if(duration != null){
-												if(startdate){
-													enddate = new Date(startdate)
-												}else{
-													enddate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-												}
-												enddate.setMinutes(enddate.getMinutes() + duration)
-											}
-											if(!enddate || isNaN(enddate.getTime())){
-												if(startdate){
-													enddate = new Date(startdate)
-												}else{
-													enddate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-												}
-												enddate.setTime(enddate.getTime() + oldduration)
-											}
-			
-			
-											if(startdate && !isNaN(startdate.getTime())){
-												item.start.year = startdate.getFullYear()
-												item.start.month = startdate.getMonth()
-												item.start.day = startdate.getDate()
-												item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
-											}
-			
-											if(enddate && !isNaN(enddate.getTime())){
-												item.end.year = enddate.getFullYear()
-												item.end.month = enddate.getMonth()
-												item.end.day = enddate.getDate()
-												item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
-											}
-			
-											item.title = newtitle || item.title
-			
-											lastmovedeventid = item.id;
-											item.startafter.year = item.start.year;
-											item.startafter.month = item.start.month;
-											item.startafter.day = item.start.day;
-											item.startafter.minute = item.start.minute;
-			
-			
-											let tempmsg;
-											if(!!newtitle && newtitle != oldtitle){
-												if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
-													tempmsg = `Done! I renamed your event to "${Calendar.Event.getRawTitle(item)}", and moved it to ${Calendar.Event.getStartText(item)}`
-												}else{
-													tempmsg = `Done! I renamed your event to "${Calendar.Event.getRawTitle(item)}".`
-												}
-											}else{
-												if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
-													tempmsg = `Done! I moved your event "${Calendar.Event.getRawTitle(item)}" to ${Calendar.Event.getStartText(item)}`
-												}else{
-													tempmsg = `Done! I modified your event "${Calendar.Event.getRawTitle(item)}" to be from ${Calendar.Event.getNaturalStartEndText(item)}`
-												}
-											}
-											tempoutput.push(tempmsg)
-			
-											if(!mobilescreen)gototaskincalendar(item.id)
-										}
-									}else{
-										tempoutput.push(`I could not find that event, could you please try again?`)
-									}
-								}
-								
-							}
-
-
-							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + tempoutput.join('\n')
-							if(firstitem){
-								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${firstitem.id}')">Show me</div>`]
-
-								if(!mobilescreen) gototaskincalendar(firstitem.id)
-							}
-
-						}else{
-							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not modify an event for you, please try again.`
-						}
-
 					}else if(command == 'modify_event'){
 						
 
@@ -14983,6 +14814,8 @@ async function submitaimessage(optionalinput, dictated){
 								}else{
 									let oldstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 									let oldtitle = item.title
+
+									let oldrepeat = JSON.stringify(item.repeat)
 
 
 									let oldduration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
@@ -15064,6 +14897,8 @@ async function submitaimessage(optionalinput, dictated){
 										}else{
 											tempmsg = `Done! I renamed your event to "${Calendar.Event.getRawTitle(item)}".`
 										}
+									}else if(JSON.stringify(item.repeat) != oldrepeat){
+										tempmsg = `Done! I modified your event "${Calendar.Event.getRawTitle(item)}"${item.repeat.frequency != null && item.repeat.interval != null ? ` to repeat ${getRepeatText(item, true)}` : ''}.`
 									}else{
 										if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
 											tempmsg = `Done! I moved your event "${Calendar.Event.getRawTitle(item)}" to ${Calendar.Event.getStartText(item)}`
@@ -15171,7 +15006,7 @@ async function submitaimessage(optionalinput, dictated){
 								tempautoscheduleevents.push(item)
 
 
-								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" due ${Calendar.Event.getDueText(item)} and scheduled it in your calendar.`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" due ${Calendar.Event.getDueText(item)} and scheduled it in your calendar${item.repeat.frequency != null && item.repeat.interval != null ? `, repeating ${getRepeatText(item, true)}` : ''}.`
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 
 								if(!mobilescreen)gototaskincalendar(item.id)
@@ -15179,159 +15014,6 @@ async function submitaimessage(optionalinput, dictated){
 								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `What time do you want ${title} to be due?`
 								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('In 1 week')">In 1 week</div>`]
 							}
-						}
-					}else if(command == 'create_multiple_tasks'){
-						
-						if(arguments.tasks && Array.isArray(arguments.tasks) && arguments.tasks.length > 0){
-
-							let tempoutput = []
-							let firstitem;
-							let allitems = []
-
-							for(let tempitem of arguments.tasks){
-								let title = tempitem?.title
-								let endbeforeminute = getMinute(tempitem?.dueDate?.replace('T', ' ')).value || 0
-								let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(tempitem?.dueDate?.replace('T', ' ')).value
-								let duration = getDuration(tempitem?.duration).value
-			
-								let endbeforedate;
-								if(endbeforeminute != null && endbeforeyear != null && endbeforemonth != null && endbeforeday != null){
-									endbeforedate = new Date(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute)
-								}else{
-									endbeforedate = new Date()
-									endbeforedate.setHours(0,0,0,0)
-									endbeforedate.setMinutes(1440-1)
-								}
-								if(duration == null){
-									duration = 30
-								}
-			
-			
-								if(endbeforedate && !isNaN(endbeforedate.getTime())){
-									let item = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), duration, title)
-									item.duration = duration
-									calendar.todos.push(item)
-
-									tempoutput.push(`Done! I added the task "${Calendar.Todo.getRawTitle(item)}" to your to-do list, due ${Calendar.Event.getDueText(item)}.`)
-
-									if(!firstitem){
-										firstitem = item
-									}
-
-									allitems.push(item)
-
-								}else{
-									tempoutput.push(`When is your task "${title}" due?`)
-								}
-							}
-
-							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + tempoutput.join('\n')
-							if(firstitem){
-								aichattemporarydata[responsechatmessage.id] = allitems
-
-								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`]
-								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="startAutoSchedule({ scheduletodos: aichattemporarydata['${responsechatmessage.id}'] }); simulateaiassistantwithnextaction('Schedule them in my calendar', 'Done! I scheduled ${aichattemporarydata[responsechatmessage.id].length == 1 ? `the task "${Calendar.Event.getRawTitle(firstitem)}"` : `${aichattemporarydata[responsechatmessage.id].length} tasks`} in your calendar.')">Schedule in calendar</div>`]
-							}
-						}else{
-							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not create a task for you, please try again.`
-						}
-
-
-					}else if(command == 'modify_multiple_tasks'){
-						
-						if(arguments.tasks && Array.isArray(arguments.tasks) && arguments.tasks.length > 0){
-
-							let tempoutput = []
-							let firstitem;
-
-							for(let tempitem of arguments.tasks){
-								let id = getrealid(tempitem?.id)
-								let error = tempitem?.errorMessage || ''
-								let newtitle = tempitem?.newTitle
-								let newduedate = tempitem?.newDueDate
-								let newduration = tempitem?.newDuration
-								let newcompleted = tempitem?.newCompleted
-			
-								if(error && !id){
-									tempoutput.push(`${error}`)
-								}else{
-									let item = id && [...calendar.todos, ...calendar.events].find(d => d.id == id)
-									if(item){
-										let oldtitle = item.title
-										let oldcompleted = item.completed
-										let oldduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
-										
-										let endbeforeminute = getMinute(newduedate?.replace('T', ' ')).value || 1440-1
-										let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(newduedate?.replace('T', ' ')).value
-										
-										let endbeforedate;
-										if(endbeforeminute != null && endbeforeyear != null && endbeforemonth != null && endbeforeday != null){
-											endbeforedate = new Date(endbeforeyear, endbeforemonth, endbeforeday, 0, endbeforeminute)
-										}
-			
-										let duration = getDuration(newduration).value
-			
-										if(endbeforedate && !isNaN(endbeforedate.getTime())){
-											item.endbefore.year = endbeforedate.getFullYear()
-											item.endbefore.month = endbeforedate.getMonth()
-											item.endbefore.day = endbeforedate.getDate()
-											item.endbefore.minute = endbeforedate.getHours() * 60 + endbeforedate.getMinutes()
-										}
-			
-										item.title = newtitle || item.title
-			
-										if(duration != null){
-											if(Calendar.Event.isEvent(item)){
-												let tempdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
-												tempdate.setMinutes(tempdate.getMinutes() + duration)
-			
-												item.end.year = tempdate.getFullYear()
-												item.end.month = tempdate.getMonth()
-												item.end.day = tempdate.getDate()
-												item.end.minute = tempdate.getHours() * 60 + tempdate.getMinutes()
-											}else{
-												item.duration = duration
-											}
-										}
-			
-										if(newcompleted !== null){
-											item.completed = !!newcompleted
-										}
-		
-			
-			
-										let tempmsg;
-										if(!!newtitle && newtitle != oldtitle){
-											if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
-												tempmsg = `Done! I renamed your task to "${Calendar.Event.getRawTitle(item)}", and set it to be due ${Calendar.Event.getDueText(item)}`
-											}else{
-												tempmsg = `Done! I renamed your task to "${Calendar.Event.getRawTitle(item)}".`
-											}
-										}else{
-											if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
-												tempmsg = `Done! I set your task "${Calendar.Event.getRawTitle(item)}" to be due ${Calendar.Event.getDueText(item)}.`
-											}else{
-												tempmsg = `Done! I modified your task "${Calendar.Event.getRawTitle(item)}".`
-											}
-										}
-										if(newcompleted != null && newcompleted != oldcompleted){
-											tempmsg = `Done! I marked your task "${Calendar.Event.getRawTitle(item)}" as complete. Good job!`
-										}
-			
-										tempoutput.push(tempmsg)
-			
-									}else{
-										tempoutput.push(`I could not find that task, could you please try again?`)
-									}
-								}
-							}
-
-							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + tempoutput.join('\n')
-							if(firstitem){
-								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${firstitem.id}')">Show me</div>`]
-							}
-						}else{
-							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not modify a task for you, please try again.`
 						}
 					}else if(command == 'modify_task'){
 
@@ -15355,6 +15037,7 @@ async function submitaimessage(optionalinput, dictated){
 								let oldcompleted = item.completed
 								let oldduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 								let oldduration = Calendar.Event.isEvent(item) ? new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() : item.duration*60000
+								let oldrepeat = JSON.stringify(item.repeat)
 								
 								let endbeforeminute = getMinute(newduedate?.replace('T', ' ')).value || item.endbefore.minute
 								let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(newduedate?.replace('T', ' ')).value
@@ -15494,6 +15177,8 @@ async function submitaimessage(optionalinput, dictated){
 									}else{
 										tempmsg = `Done! I renamed your task to "${Calendar.Event.getRawTitle(item)}".`
 									}
+								}else if(JSON.stringify(item.repeat) != oldrepeat){
+									tempmsg = `Done! I modified your task "${Calendar.Event.getRawTitle(item)}"${item.repeat.frequency != null && item.repeat.interval != null ? ` to repeat ${getRepeatText(item, true)}` : ''}.`
 								}else{
 									if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
 										tempmsg = `Done! I set your task "${Calendar.Event.getRawTitle(item)}" to be due ${Calendar.Event.getDueText(item)}.`
@@ -15534,7 +15219,7 @@ async function submitaimessage(optionalinput, dictated){
 								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find that task, could you please try again?`
 							}
 						}
-					}else if(command == 'schedule_tasks_in_calendar'){
+					}else if(command == 'schedule_tasks_in_calendar'){ //disabled for now
 						
 
 						let idList = (arguments?.idList || []).map(d => getrealid(d))

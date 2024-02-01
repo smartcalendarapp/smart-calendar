@@ -1273,6 +1273,7 @@
 	</div>
 
 
+	
 	<div class="absolute fadetransitionslow top-0 left-0 width-full height-full display-flex flex-column align-center z-index-1000 darkbackdropblur hiddenfadeslow" id="prompttodotodaywrap">
 		<div class="todowidth display-flex padding-96px gap-48px small:padding-24px border-box flex-column flex-1 justify-space-between">
 
@@ -1424,12 +1425,12 @@
 			</div>
 
 
-			<div class="absolute top-0 left-0 width-full height-full display-flex flex-column align-center " id="onboardingconnecttodolists">
+			<div class="absolute top-0 left-0 width-full height-full display-flex flex-column align-center " id="onboardingchoosecalendars">
 				
 				<div class="height-full todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
 					<div class="display-flex flex-column gap-12px">
 						<div class="text-24px text-primary text-ultra-bold">Pick your calendars</div>
-						<div class="text-18px text-quaternary">Pick which calendars you want Smart Calendar to show, and plan your day around.</div>
+						<div class="text-18px text-quaternary">Pick which calendars you want to see. Find these later in the Settings tab.</div>
 					</div>
 
 					<div id="pickyourcalendarslist" class="overflow-x-hidden overflow-y-auto display-flex flex-column gap-6px"></div>
@@ -1437,7 +1438,7 @@
 
 					<div class="display-flex flex-row gap-24px justify-center align-center">
 						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="backonboarding('connectcalendars')">Back</div>
-						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('connecttodolists')">Continue</div>
+						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('choosecalendars')">Continue</div>
 					</div>
 
 				</div>
@@ -1450,7 +1451,7 @@
 				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px  border-box flex-column flex-1 justify-space-between">
 					<div class="display-flex flex-column gap-12px">
 						<div class="text-24px text-primary text-ultra-bold">Stay on track with reminders</div>
-						<div class="text-18px text-quaternary">Get notified when events start, tasks are due, and more. We strongly recommend choosing <span class="text-bold gradienttextgreen">Email</span> and <span class="text-bold gradienttextgreen">Discord</span> (if you use it).</div>
+						<div class="text-18px text-quaternary">Get notified when events start, tasks are due, and more. We strongly recommend choosing <span class="text-bold gradienttextpink">Email</span> and <span class="text-bold gradienttextpink">Discord</span> (if you use it).</div>
 					</div>
 
 					<div class="display-flex align-self-center flex-column gap-24px">
@@ -1505,7 +1506,7 @@
 					</div>
 
 					<div class="display-flex flex-row gap-24px justify-center align-center">
-						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="backonboarding('connecttodolists')">Back</div>
+						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="backonboarding('choosecalendars')">Back</div>
 						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('eventreminders')">Continue</div>
 					</div>
 
@@ -1548,7 +1549,7 @@
 				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px border-box flex-column flex-1 justify-space-between">
 					<div class="display-flex flex-column gap-12px">
 						<div class="text-24px text-primary text-ultra-bold">Add your first task</div>
-						<div class="text-18px text-quaternary">Add your tasks and projects here, then Smart Calendar will turn your to-do list into an organized schedule.</div>
+						<div class="text-18px text-quaternary">Whenever you got something to do, quickly jot it down here. The app will add the task to your calendar so you'll get it done.</div>
 					</div>
 
 
@@ -1608,7 +1609,25 @@
 
 					<div class="display-flex flex-row gap-24px justify-center align-center">
 						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="backonboarding('sleeptime')">Back</div>
-						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('addtask')" id="onboardingaddtasksubmit">Finish</div>
+						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('addtask')" id="onboardingaddtasksubmit">Continue</div>
+					</div>
+
+				</div>
+			</div>
+
+			<div class="absolute top-0 left-0 height-full width-full display-flex align-center flex-column " id="onboardingfinished">
+				<div class="todowidth display-flex padding-96px gap-48px  small:padding-24px border-box flex-column flex-1 justify-space-between">
+					<div class="display-flex flex-column gap-12px">
+						<div class="text-24px text-primary text-ultra-bold text-center">You're all set!</div>
+						<div class="text-18px text-primary">Your Smart Calendar is ready for you. Now, let's tackle your tasks and free up your schedule!</div>
+						<div class="text-16px text-quaternary">PS: Try our 21 day challenge – use Smart Calendar for 3 weeks and see your productivity soar.</div>
+					</div>
+
+
+
+					<div class="display-flex flex-row gap-24px justify-center align-center">
+						<div class="text-14px pointer pointer-auto transition-duration-100 hover:text-decoration-underline text-primary" onclick="backonboarding('addtask')">Back</div>
+						<div class="text-18px pointer pointer-auto padding-8px-16px background-blue hover:background-blue-hover transition-duration-100 border-8px text-white" onclick="continueonboarding('finished')">Finish</div>
 					</div>
 
 				</div>
