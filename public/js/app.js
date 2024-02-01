@@ -5565,6 +5565,7 @@ function updateonboardingscreen(){
 	getElement('todoitemduedate').classList.remove('z-index-10001')
 	getElement('todoitemduration').classList.remove('z-index-10001')
 	getElement('timepicker').classList.remove('z-index-10001')
+	getElement('todorepeatoptionmenu').classList.remove('z-index-10001')
 
 
 	if(currentonboarding == 'addtask'){
@@ -5629,8 +5630,13 @@ function updateonboardingscreen(){
 		getElement('todoitempriority').classList.add('z-index-10001')
 		getElement('todoitemduedate').classList.add('z-index-10001')
 		getElement('todoitemduration').classList.add('z-index-10001')
+		getElement('todorepeatoptionmenu').classList.add('z-index-10001')
 	}else if(currentonboarding == 'eventreminders'){
 		calendar.updateSettings()
+	}else if(currentonboarding == 'finished'){
+		let onboardingfinished = getElement('onboardingfinished')
+		let tasklen = calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id)).length
+		onboardingfinished.innerHTML = tasklen == 0 ? `Your Smart Calendar is ready for you. Now, let's tackle your tasks and free up your schedule!` : `Your Smart Calendar is ready for you. Now, let's schedule the ${tasklen == 1 ? '' : `${tasklen} `}task${tasklen == 1 ? '' : 's'} you created in your calendar! You'll be able to adjust them afterwards.`
 	}
 }
 
@@ -5648,6 +5654,10 @@ function continueonboarding(key){
 
 	if(key == 'finished'){
 		startAutoSchedule({eventsuggestiontodos: calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id)) })
+	}
+
+	if(key == 'sleeptime'){
+		resetcreatetodo()
 	}
 }
 function backonboarding(key){
