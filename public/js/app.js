@@ -4082,7 +4082,7 @@ function scrolltodoY(targetminute) {
 	cancelAnimationFrame(scrolltodoYAnimationFrameId)
 
 	let todocontainer;
-	if(!calendar.onboarding.addtask){
+	if(!calendar.onboarding.finished){
 		todocontainer = getElement('onboardingaddtasktodolist')
 	}else if(isprompttodotoday){
 		todocontainer = getElement('prompttodotodayaddtasktodolist')
@@ -4334,12 +4334,12 @@ function updatetime() {
 	}
 
 	//show social media
-	if(calendar.todos.length > 2 && Date.now() - clientinfo.createddate > 1000*3600 && new Date().getMinutes() % 3 == 0 && calendar.onboarding.addtask == true){
+	if(calendar.todos.length > 2 && Date.now() - clientinfo.createddate > 1000*3600 && new Date().getMinutes() % 3 == 0 && calendar.onboarding.finished == true){
 		//showsocialmediapopup = true
 	}
 
 	//show feedback
-	if(Date.now() - clientinfo.createddate > 1000*86400 && calendar.onboarding.addtask == true && calendar.todos.length > 0){
+	if(Date.now() - clientinfo.createddate > 1000*86400 && calendar.onboarding.finished == true && calendar.todos.length > 0){
 		showfeedbackpopup = true
 	}
 }
@@ -5572,7 +5572,7 @@ function updateonboardingscreen(){
 		if(!isonboardingaddtask){
 			isonboardingaddtask = true
 
-			onboardingaddtasktodolist = []
+			resetcreatetodo()
 		}
 	}else{
 		isonboardingaddtask = false
@@ -5654,10 +5654,6 @@ function continueonboarding(key){
 
 	if(key == 'finished'){
 		startAutoSchedule({eventsuggestiontodos: calendar.todos.filter(d => onboardingaddtasktodolist.find(g => g == d.id)) })
-	}
-
-	if(key == 'sleeptime'){
-		resetcreatetodo()
 	}
 }
 function backonboarding(key){
@@ -9799,6 +9795,8 @@ function updatecreatetodo() {
 		createtodoaisuggestionsubtasksdiv.classList.add('display-none')
 	}
 	createtodoaisuggestionsubtasksdiv.innerHTML = tempoutput2.join('')
+
+	resizeaddtask()
 }
 
 function regeneratecreatetodoaisubtasksuggestions(){
@@ -10444,7 +10442,7 @@ function closecreatetodoitemavailability() {
 
 
 function clicktypeaddtask(event){
-	if(!calendar.onboarding.addtask){
+	if(!calendar.onboarding.finished){
 		let addtodooptionspopuponboarding = getElement('addtodooptionspopuponboarding')
 		addtodooptionspopuponboarding.classList.remove('hiddenpopup')
 	}else if(isprompttodotoday){
@@ -10457,7 +10455,7 @@ function clicktypeaddtask(event){
 }
 
 function clickaddonetask(){
-	if(!calendar.onboarding.addtask){
+	if(!calendar.onboarding.finished){
 		getElement('todoinputtitleonboarding').focus()
 	}else if(isprompttodotoday){
 		getElement('todoinputtitleprompttodotoday').focus()
@@ -11143,7 +11141,7 @@ function submitcreatetodo(event) {
 
 	
 	//auto schedule
-	if(calendar.onboarding.addtask && !isprompttodotoday){
+	if(calendar.onboarding.finished && !isprompttodotoday){
 		if(calendar.settings.geteventsuggestions && (duedate.getTime() - Date.now() < 86400*1000*30)){ //schedule it if due within 30 days
 			if(Calendar.Todo.getSubtasks(item).length > 0){
 				startAutoSchedule({eventsuggestiontodos: [...Calendar.Todo.getSubtasks(item)]})
@@ -12199,7 +12197,7 @@ function dragtodo(event, id) {
 
 	if(selectededittodoid) return
 
-	if(!calendar.onboarding.addtask) return
+	if(!calendar.onboarding.finished) return
 
 	let item = [...calendar.todos].find(x => x.id == id)
 	if (!item) return
