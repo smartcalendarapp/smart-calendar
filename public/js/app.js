@@ -10832,6 +10832,8 @@ function updaterecognitionui(close){
 	}
 }
 
+
+
 function togglerecognition(type){
 	if(recognition){
 		if(!isspeaking){
@@ -10843,7 +10845,7 @@ function togglerecognition(type){
 
 			let aichatinputwrap = getElement('aichatinputwrap')
 			let aichatcontent2 = getElement('aichatcontent2')
-			
+
 			if(recognitionoutputtype == 'task'){
 				addtododictationpopup.classList.remove('hiddenpopup')
 			}else if(recognitionoutputtype == 'event'){
@@ -13468,7 +13470,9 @@ function closeaichat(){
 
 function newaichat(){
 	closerecognitionpopup()
-	stopplayingvoice = true
+	if(isspeakingvoice){
+		stopplayingvoice = true
+	}
 
 	chathistory = new ChatConversation()
 	openaichat()
@@ -13896,6 +13900,7 @@ if ('speechSynthesis' in window) {
 */
 
 let stopplayingvoice = false
+let isspeakingvoice = false
 
 class ChatMessage {
 	constructor({ role, message, actions, nextactions, unread, dictated }){
@@ -14131,13 +14136,19 @@ class ChatMessage {
 					})
 		
 					try{
+						isspeakingvoice = true
+
 						await aiassistantaudio.play()
 					}catch(err){
+						isspeakingvoice = false
+
 						clearInterval(checkstopplayinginterval)
 						return resolve(false)
 					}
 		
 					aiassistantaudio.addEventListener('error', () => {
+						isspeakingvoice = false
+
 						clearInterval(checkstopplayinginterval)
 						return resolve(false)
 					})
@@ -14146,6 +14157,8 @@ class ChatMessage {
 						aiassistantaudio.pause()
 						aiassistantaudio.src = ''
 						aiassistantaudio.load()
+
+						isspeakingvoice = false
 
 						clearInterval(checkstopplayinginterval)
 						return resolve(true)
@@ -14215,6 +14228,15 @@ class ChatMessage {
 					await waitforload2()
 				}
 
+				this.finishedanimating = true
+				isanimating = false
+
+				if(isspeakingvoice){
+					stopplayingvoice = true
+				}
+				
+				updateaichatinput()//here2
+
 				let successful = await aispeakmessage(this.message)
 			}
 		}else{
@@ -14227,6 +14249,9 @@ class ChatMessage {
 			}else{
 				await processtyping(1)
 			}
+
+			this.finishedanimating = true
+			isanimating = false
 		}
 
 
@@ -14234,16 +14259,15 @@ class ChatMessage {
 			scrollaichatY()
 		})
 
-		this.finishedanimating = true
-		isanimating = false
 		updateaichat()
 
 
 		//continuous speak for conversation!
 		if(this.dictated){
-			await sleep(200)
-
-			togglerecognition('aichat')
+			if(!isspeaking){
+				await sleep(200)
+				togglerecognition('aichat')
+			}
 		}else{
 			setTimeout(function(){
 				showaichatfeedback()
@@ -14593,6 +14617,7 @@ async function submitaimessage(optionalinput, dictated){
 
 	if(userinput.length == 0) return
 
+
 	//chat history
 	let chatinteraction = new ChatInteraction()
 	chatinteraction.addMessage(new ChatMessage({
@@ -14633,6 +14658,9 @@ async function submitaimessage(optionalinput, dictated){
 	let tempautoscheduleevents = []
 
 	try{
+		isgenerating = true
+		updateaichatinput()
+		
 		let path = '/getgptchatinteractionV2'
 
 		const response = await fetch(path, {
@@ -14699,8 +14727,12 @@ async function submitaimessage(optionalinput, dictated){
 					console.log(err)
 				}
 
+				isgenerating = false
+
 				responsechatmessage.streamfinished = true
 			}else{
+				isgenerating = false
+				
 				data = await response.json()
 				output = data.data
 			}
@@ -15320,6 +15352,8 @@ async function submitaimessage(optionalinput, dictated){
 				responsechatmessage.message = `${output?.message}`
 			}
 		}else if(response.status == 401){
+			isgenerating = false
+
 			let data = await response.json()
 
 			responsechatmessage.message = `${data.error}`
