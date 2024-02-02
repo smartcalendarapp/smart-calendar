@@ -1321,10 +1321,7 @@ class Calendar {
 		})
 
 		
-		if (calendartabs.includes(1)) {
-			resetcreatetodo()
-			updatecreatetodo()
-			
+		if (calendartabs.includes(1)) {			
 			this.updateTodo()
 			todowrap.classList.remove('display-none')
 			todowrap.style.flex = '1'
@@ -1333,6 +1330,9 @@ class Calendar {
 			todolisttab2.classList.add('selectedbutton2')
 
 			paneldivider.classList.remove('display-none')
+
+			resetcreatetodo()
+			updatecreatetodo()
 		}
 
 		if (calendartabs.includes(0)) {

@@ -898,7 +898,7 @@ async function processReminders(){
 
 //here2
 async function processengagementalerts(){
-	return
+	//return
 	let sendengagementalerts = []
 	for(let [key, value] of Object.entries(engagementcache)){
 		if(!value.finishedonboarding && currentdate - value.createddate > 86400*1000*2){
@@ -909,24 +909,24 @@ async function processengagementalerts(){
 				if(value.engagementalerts.onboardingtries <= 2){ //stop after 3
 					sendengagementalerts.push({ value: value, type: 0 })
 
-					/*let tempuser = await getUserById(key)
+					let tempuser = await getUserById(key)
 					tempuser.accountdata.engagementalerts.onboardingtries++
 					tempuser.accountdata.engagementalerts.lastsentdate = currentdate
-					await setUser(tempuser)*/
+					await setUser(tempuser)
 				}
 			}
 		}else if(currentdate - value.lastmodified > 86400*1000*7){
 			//inactive for 7 days
-			//send email on day 7, 14, 28, 56...
+			//send email on day 7, 14, 28, 56
 
 			if(currentdate - value.engagementalerts.lastsentdate > 86400*1000*7 * (Math.pow(2, value.engagementalerts.activitytries || 0) - 1)){
 				if(value.engagementalerts.activitytries <= 3){ //stop after 4
 					sendengagementalerts.push({ value: value, type: 1 })
 
-					/*let tempuser = await getUserById(key)
+					let tempuser = await getUserById(key)
 					tempuser.accountdata.engagementalerts.activitytries++
 					tempuser.accountdata.engagementalerts.lastsentdate = currentdate
-					await setUser(tempuser)*/
+					await setUser(tempuser)
 				}
 			}
 		}
@@ -1311,6 +1311,9 @@ function cacheReminders(user){
 
 	//engagement cache
 	if(user.calendardata.settings.emailpreferences.engagementalerts == true){
+		if(email != 'smartcalendartester@gmail.com' || !email.includes('azhao20')){
+			return
+		}
 		engagementcache[user.userid] = {
 			user: {
 				name: name,
@@ -1320,7 +1323,7 @@ function cacheReminders(user){
 			},
 			createddate: user.accountdata.createddate,
 			lastmodified: user.calendardata.lastmodified,
-			finishedonboarding: user.calendardata.onboarding.addtask == true,
+			finishedonboarding: user.calendardata.onboarding.finished == true,
 			engagementalerts: user.accountdata.engagementalerts,
 			iosdevicetoken: user.accountdata.iosdevicetoken
 		}
