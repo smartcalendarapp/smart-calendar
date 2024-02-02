@@ -720,7 +720,7 @@ async function processReminders(){
 		//email
 		if(item.emailreminderenabled){
 			if(item.type == 'event'){
-				await sendEmail({
+				await sendRawEmail({
 					from: 'Smart Calendar <reminders@smartcalendar.us>',
 					to: item.user.email,
 					subject: `Friendly reminder: ${item.event.title || 'New Event'} (starts ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))})`,
@@ -790,7 +790,7 @@ async function processReminders(){
 
 			}else if(item.type == 'task'){
 
-				await sendEmail({
+				await sendRawEmail({
 					from: 'Smart Calendar <reminders@smartcalendar.us>',
 					to: item.user.email,
 					subject: `Friendly reminder: ${item.event.title || 'New Event'} (due ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.duedate)/60000))})`,
@@ -939,7 +939,7 @@ async function processengagementalerts(){
 
 		if(type == 0){
 			//email
-			await sendEmail({
+			await sendRawEmail({
 				from: 'Smart Calendar <reminders@smartcalendar.us>',
 				to: email,
 				subject: `Let's complete your setup for Smart Calendar`,
@@ -1021,7 +1021,7 @@ async function processengagementalerts(){
 
 		}else if(type == 1){
 			//email
-			await sendEmail({
+			await sendRawEmail({
 				from: 'Smart Calendar <reminders@smartcalendar.us>',
 				to: email,
 				subject: `Let's get back on track for your Smart Calendar`,
@@ -3203,7 +3203,7 @@ async function sendwelcomeemail(user){
 	let name = getUserName(user)
 
 	if(isEmail(email)){
-		await sendEmail({
+		await sendRawEmail({
 			from: 'Smart Calendar <welcome@smartcalendar.us>',
 			to: email,
 			subject: `Welcome to Smart Calendar!`,
@@ -3861,7 +3861,7 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 		}
 
 
-		let response = await sendEmail({
+		let response = await sendRawEmail({
 			from: 'Smart Calendar <reminders@smartcalendar.us>',
 			to: inviteemail,
 			subject: `${getUserName(inviteuser)} invited you to Smart Calendar`,

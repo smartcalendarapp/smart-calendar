@@ -14225,7 +14225,7 @@ class ChatMessage {
 				this.finishedanimating = true
 				isanimating = false
 				
-				updateaichatinput()//here2
+				updateaichatinput()
 
 				let successful = await aispeakmessage(this.message)
 			}else{
