@@ -1313,7 +1313,7 @@ function cacheReminders(user){
 	if(user.calendardata.settings.emailpreferences.engagementalerts == true){
 		if(email != 'smartcalendartester@gmail.com' || !email.includes('azhao20')){
 			return
-		}
+		}//here2
 		engagementcache[user.userid] = {
 			user: {
 				name: name,
