@@ -14068,7 +14068,7 @@ class ChatMessage {
 					}
 		
 					stopplayingvoice = false
-					
+
 					const response = await fetch('/getgptvoiceinteraction', {
 						method: 'POST',
 						headers: {
@@ -14224,12 +14224,13 @@ class ChatMessage {
 
 				this.finishedanimating = true
 				isanimating = false
-
-				stopplayingvoice = true
 				
 				updateaichatinput()//here2
 
 				let successful = await aispeakmessage(this.message)
+			}else{
+				this.finishedanimating = true
+				isanimating = false
 			}
 		}else{
 			if(this.dictated == true){
@@ -14596,6 +14597,8 @@ let isgenerating = false
 let isanimating = false
 
 async function submitaimessage(optionalinput, dictated){
+	stopplayingvoice = true
+
 	if(isgenerating || isanimating) return
 	
 	let aichatinput;
@@ -14608,8 +14611,6 @@ async function submitaimessage(optionalinput, dictated){
 	userinput = userinput?.trim()
 
 	if(userinput.length == 0) return
-
-	stopplayingvoice = true
 
 
 	//chat history
