@@ -13945,12 +13945,12 @@ class ChatMessage {
 					let istransitioning = false;
 	
 					const interval = setInterval(async () => {
-						if(istransitioning) return
-						
 						if (this.message) {
 							clearInterval(interval)
-							resolve()
+							return resolve()
 						}
+
+						if(istransitioning) return
 	
 						//update ui
 						let secondspassed = (Date.now() - this.timestamp)/1000
@@ -14010,7 +14010,7 @@ class ChatMessage {
 	
 						let chatmessageloader = getElement(`chatmessage-loader-${this.id}`)
 						if(!chatmessageloader) return
-	
+
 						if(lastdisplayindex != displayindex){
 							lastdisplayindex = displayindex
 							
@@ -14085,7 +14085,9 @@ class ChatMessage {
 						return resolve(false)
 					}
 		
-					processtyping(0.5)
+					if(!this.streamed){
+						processtyping(0.5)
+					}
 
 					checkstopplayinginterval = setInterval(function(){
 						if(stopplayingvoice == true){
@@ -14196,8 +14198,26 @@ class ChatMessage {
 		}
 
 
+		if(this.streamed){
+			if(this.dictated == true){
+				const waitforload2 = () => {
+					return new Promise((resolve) => {
+						const interval2 = setInterval(async () => {
+							if(this.streamfinished){
+								clearInterval(interval2)
+								return resolve(true)
+							}
+						}, 100)
+					})
+				}
 
-		if(!this.streamed){
+				if(!this.streamfinished){
+					await waitforload2()
+				}
+
+				let successful = await aispeakmessage(this.message)
+			}
+		}else{
 			if(this.dictated == true){
 				let successful = await aispeakmessage(this.message)
 
@@ -14221,7 +14241,7 @@ class ChatMessage {
 
 		//continuous speak for conversation!
 		if(this.dictated){
-			await sleep(500)
+			await sleep(200)
 
 			togglerecognition('aichat')
 		}else{
@@ -14413,9 +14433,9 @@ function updateaichat(){
 				</div>
 				<div class="flex-1 overflow-hidden display-flex flex-column gap-12px">
 					<div class="display-flex flex-column gap-6px">
-						<div class="${message && !waitingforvoice ? '' : 'display-none'} padding-12px align-self-center background-tint-1 border-12px selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message && !waitingforvoice ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : ''}</div>
+						<div class="${message ? '' : 'display-none'} padding-12px align-self-center background-tint-1 border-12px selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : ''}</div>
 
-						<div class="${message && !waitingforvoice ? 'display-none' : ''} padding-12px align-self-center background-tint-1 border-12px selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-loader-${id}"><div class="display-flex flex-row chatmultiloaderwrap fadetransition"><div class="typingdots"><span></span><span></span><span></span></div></div></div>
+						<div class="${message ? 'display-none' : ''} padding-12px align-self-center background-tint-1 border-12px selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-loader-${id}"><div class="display-flex flex-row chatmultiloaderwrap fadetransition"><div class="typingdots"><span></span><span></span><span></span></div></div></div>
 
 						${actions ? `<div class="hoverchatmessagebuttons justify-center display-flex flex-row gap-12px flex-wrap-wrap ${!finishedanimating ? 'display-none' : ''}">${actions.join('')}</div>` : ''}
 
@@ -14634,9 +14654,9 @@ async function submitaimessage(optionalinput, dictated){
 			let data = {}
 
 			if (response.body instanceof ReadableStream && !response.headers.get('Content-Type')?.includes('application/json')) {
-				updateaichat()
-
 				responsechatmessage.streamed = true
+				
+				updateaichat()
 
 				let tempdata = ''
 
@@ -14662,7 +14682,13 @@ async function submitaimessage(optionalinput, dictated){
 						// Update UI
 						let chatmessagebody = getElement(`chatmessage-body-${responsechatmessage.id}`)
 						if (chatmessagebody) {
+							chatmessagebody.classList.remove('display-none')
 							chatmessagebody.innerHTML = `${markdowntoHTML(cleanInput(responsechatmessage.displaycontent), responsechatmessage.role)} <span class="aichatcursor"></span>`
+
+							let chatmessageloader = getElement(`chatmessage-loader-${responsechatmessage.id}`)
+							if(chatmessageloader){
+								chatmessageloader.classList.add('display-none')
+							}
 						}
 
 						requestAnimationFrame(function(){
@@ -14672,6 +14698,8 @@ async function submitaimessage(optionalinput, dictated){
 				}catch(err){
 					console.log(err)
 				}
+
+				responsechatmessage.streamfinished = true
 			}else{
 				data = await response.json()
 				output = data.data
