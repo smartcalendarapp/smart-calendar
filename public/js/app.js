@@ -13470,9 +13470,7 @@ function closeaichat(){
 
 function newaichat(){
 	closerecognitionpopup()
-	if(isspeakingvoice){
-		stopplayingvoice = true
-	}
+	stopplayingvoice = true
 
 	chathistory = new ChatConversation()
 	openaichat()
@@ -13900,7 +13898,6 @@ if ('speechSynthesis' in window) {
 */
 
 let stopplayingvoice = false
-let isspeakingvoice = false
 
 class ChatMessage {
 	constructor({ role, message, actions, nextactions, unread, dictated }){
@@ -14070,6 +14067,8 @@ class ChatMessage {
 						console.log(this.message.length)
 					}
 		
+					stopplayingvoice = false
+					
 					const response = await fetch('/getgptvoiceinteraction', {
 						method: 'POST',
 						headers: {
@@ -14134,20 +14133,16 @@ class ChatMessage {
 		
 						appendNextChunk()
 					})
-		
-					try{
-						isspeakingvoice = true
 
+					try{
 						await aiassistantaudio.play()
 					}catch(err){
-						isspeakingvoice = false
 
 						clearInterval(checkstopplayinginterval)
 						return resolve(false)
 					}
 		
 					aiassistantaudio.addEventListener('error', () => {
-						isspeakingvoice = false
 
 						clearInterval(checkstopplayinginterval)
 						return resolve(false)
@@ -14158,7 +14153,6 @@ class ChatMessage {
 						aiassistantaudio.src = ''
 						aiassistantaudio.load()
 
-						isspeakingvoice = false
 
 						clearInterval(checkstopplayinginterval)
 						return resolve(true)
@@ -14231,9 +14225,7 @@ class ChatMessage {
 				this.finishedanimating = true
 				isanimating = false
 
-				if(isspeakingvoice){
-					stopplayingvoice = true
-				}
+				stopplayingvoice = true
 				
 				updateaichatinput()//here2
 
@@ -14616,6 +14608,8 @@ async function submitaimessage(optionalinput, dictated){
 	userinput = userinput?.trim()
 
 	if(userinput.length == 0) return
+
+	stopplayingvoice = true
 
 
 	//chat history
