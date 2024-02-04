@@ -1153,6 +1153,7 @@ class Calendar {
 			this.googleclassroomid = null
 			this.googleclassroomlink = null
 			this.completed = false
+			this.hexcolor = '#18a4f5'
 			this.reminder = [{ timebefore: 6*3600*1000, timebefore: 0 }]
 			this.lastmodified = 0
 			this.parentid = null
@@ -1178,6 +1179,7 @@ class Calendar {
 			this.goteventsuggestion = false
 
 			this.issuggestion = false
+
 		}
 
 		static getTitle(item){
@@ -12920,6 +12922,8 @@ function geteventfromtodo(item) {
 
 	newitem.timewindow = deepCopy(item.timewindow)
 
+	newitem.hexcolor = item.hexcolor
+
 	return newitem
 }
 
@@ -12951,6 +12955,8 @@ function gettodofromevent(item) {
 	newitem.repeatid = item.repeatid
 
 	newitem.timewindow = deepCopy(item.timewindow)
+
+	newitem.hexcolor = item.hexcolor
 
 	return newitem
 }
@@ -14765,11 +14771,13 @@ async function submitaimessage(optionalinput, dictated){
 						let [endyear, endmonth, endday] = getDate(arguments?.endDate?.replace('T', ' ')).value
 						let error = arguments?.errorMessage || ''
 						let recurrence = arguments?.RRULE
+						let hexcolor = arguments?.hexColor
 
 						if(error && !title && !startminute && !startyear){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
 						}else{
 
+							
 							let startdate, enddate;
 							if(startminute != null && startyear != null && startmonth != null && startday != null){
 								startdate = new Date(startyear, startmonth, startday, 0, startminute)
@@ -14782,6 +14790,10 @@ async function submitaimessage(optionalinput, dictated){
 								enddate.setMinutes(enddate.getMinutes() + 60)
 							}
 
+
+							if(hexcolor && new RegExp(/^#([0-9a-fA-F]{6})$/).test(hexcolor)){
+								item.hexcolor = hexcolor
+							}
 
 							if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
 								let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title)
@@ -14868,6 +14880,7 @@ async function submitaimessage(optionalinput, dictated){
 						let newenddate = arguments?.newEndDate
 						let newduration = arguments?.newDuration
 						let newrecurrence = arguments?.newRRULE
+						let newhexcolor = arguments?.newHexColor
 
 						if(error && !id){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
@@ -14881,6 +14894,8 @@ async function submitaimessage(optionalinput, dictated){
 									let oldtitle = item.title
 
 									let oldrepeat = JSON.stringify(item.repeat)
+									
+									let oldhexcolor = item.hexcolor
 
 
 									let oldduration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
@@ -14930,6 +14945,10 @@ async function submitaimessage(optionalinput, dictated){
 										item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
 									}
 
+									if(newhexcolor && new RegExp(/^#([0-9a-fA-F]{6})$/).test(newhexcolor)){
+										item.hexcolor = newhexcolor
+									}
+
 									item.title = newtitle || item.title
 
 
@@ -14964,6 +14983,8 @@ async function submitaimessage(optionalinput, dictated){
 										}
 									}else if(JSON.stringify(item.repeat) != oldrepeat){
 										tempmsg = `Done! I modified your event "${Calendar.Event.getRawTitle(item)}"${item.repeat.frequency != null && item.repeat.interval != null ? ` to repeat ${getRepeatText(item, true)}` : ''}.`
+									}else if(newhexcolor != oldhexcolor){
+										tempmsg = `Done! I changed the color of your event "${Calendar.Event.getRawTitle(item)}".`
 									}else{
 										if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
 											tempmsg = `Done! I moved your event "${Calendar.Event.getRawTitle(item)}" to ${Calendar.Event.getStartText(item)}`
@@ -15017,6 +15038,7 @@ async function submitaimessage(optionalinput, dictated){
 						let recurrence = arguments?.RRULE
 						let startminute = getMinute(arguments?.delayStartDate?.replace('T', ' ')).value || 0
 						let [startyear, startmonth, startday] = getDate(arguments?.delayStartDate?.replace('T', ' ')).value
+						let hexcolor = arguments?.hexColor
 
 						if(error && !title && !endbeforeminute && !endbeforeyear){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
@@ -15032,6 +15054,10 @@ async function submitaimessage(optionalinput, dictated){
 							}
 							if(duration == null){
 								duration = 30
+							}
+
+							if(hexcolor && new RegExp(/^#([0-9a-fA-F]{6})$/).test(hexcolor)){
+								item.hexcolor = hexcolor
 							}
 
 							if(!endbeforedate || isNaN(endbeforedate.getTime()) || endbeforedate.getTime() < Date.now()){
@@ -15092,6 +15118,7 @@ async function submitaimessage(optionalinput, dictated){
 						let newstartdate = arguments?.newStartDate
 						let newenddate = arguments?.newEndDate
 						let newrecurrence = arguments?.newRRULE
+						let newhexcolor = arguments?.newHexColor
 
 						if(error && !id){
 							responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `${error}`
@@ -15104,6 +15131,8 @@ async function submitaimessage(optionalinput, dictated){
 								let oldduration = Calendar.Event.isEvent(item) ? new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() : item.duration*60000
 								let oldrepeat = JSON.stringify(item.repeat)
 								
+								let oldhexcolor = item.hexcolor
+
 								let endbeforeminute = getMinute(newduedate?.replace('T', ' ')).value || item.endbefore.minute
 								let [endbeforeyear, endbeforemonth, endbeforeday] = getDate(newduedate?.replace('T', ' ')).value
 								
@@ -15134,6 +15163,9 @@ async function submitaimessage(optionalinput, dictated){
 									delaystartdate = new Date(delaystartyear, delaystartmonth, delaystartday, delaystartminute)
 								}
 								
+								if(newhexcolor && new RegExp(/^#([0-9a-fA-F]{6})$/).test(newhexcolor)){
+									item.hexcolor = newhexcolor
+								}
 
 								let duration = getDuration(newduration).value
 
@@ -15244,6 +15276,8 @@ async function submitaimessage(optionalinput, dictated){
 									}
 								}else if(JSON.stringify(item.repeat) != oldrepeat){
 									tempmsg = `Done! I modified your task "${Calendar.Event.getRawTitle(item)}"${item.repeat.frequency != null && item.repeat.interval != null ? ` to repeat ${getRepeatText(item, true)}` : ''}.`
+								}else if(newhexcolor != oldhexcolor){
+									tempmsg = `Done! I changed the color of your task "${Calendar.Event.getRawTitle(item)}".`
 								}else{
 									if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
 										tempmsg = `Done! I set your task "${Calendar.Event.getRawTitle(item)}" to be due ${Calendar.Event.getDueText(item)}.`
