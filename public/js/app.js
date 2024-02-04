@@ -15131,7 +15131,11 @@ async function submitaimessage(optionalinput, dictated){
 								
 								calendar.todos.push(item)
 
-								tempautoscheduleevents.push(startAutoSchedule({ eventsuggestiontodos: [item], moveditemtimestamp: startdate.getTime(), moveditem: item }))
+								if(startdate && !isNaN(startdate.getTime()) && startdate.getTime() > Date.now()){
+									tempautoscheduleevents.push(startAutoSchedule({ eventsuggestiontodos: [item], moveditemtimestamp: startdate.getTime(), moveditem: item }))
+								}else{
+									tempautoscheduleevents.push(startAutoSchedule({ eventsuggestiontodos: [item] }))
+								}
 
 
 								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" due ${Calendar.Event.getDueText(item)} and scheduled it in your calendar${item.repeat.frequency != null && item.repeat.interval != null ? `, repeating ${getRepeatText(item, true)}` : ''}.`
@@ -17366,7 +17370,9 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		}
 		
 		if(moveditem){
-			displayalert(`Task "${Calendar.Event.getTitle(moveditem).slice(0, 10)}${Calendar.Event.getTitle(moveditem).length > 10 ? '...' : ''}" rescheduled for ${Calendar.Event.getStartText(moveditem)}`)
+			if(!addedtodos.find(d => d.id == moveditem.id)){
+				displayalert(`Task "${Calendar.Event.getTitle(moveditem).slice(0, 10)}${Calendar.Event.getTitle(moveditem).length > 10 ? '...' : ''}" rescheduled for ${Calendar.Event.getStartText(moveditem)}`)
+			}
 		}
 
 
