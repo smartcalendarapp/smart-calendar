@@ -15066,8 +15066,8 @@ async function submitaimessage(optionalinput, dictated){
 						let duration = getDuration(arguments?.duration).value
 						let error = arguments?.errorMessage || ''
 						let recurrence = arguments?.RRULE
-						let startminute = getMinute(arguments?.delayStartDate?.replace('T', ' ')).value || 0
-						let [startyear, startmonth, startday] = getDate(arguments?.delayStartDate?.replace('T', ' ')).value
+						let startminute = getMinute(arguments?.startAfterDate?.replace('T', ' ')).value || 0
+						let [startyear, startmonth, startday] = getDate(arguments?.startAfterDate?.replace('T', ' ')).value
 						let hexcolor = arguments?.hexColor
 
 						if(error && !title && !endbeforeminute && !endbeforeyear){
@@ -15120,6 +15120,9 @@ async function submitaimessage(optionalinput, dictated){
 									startdate = new Date(startyear, startmonth, startday, 0, startminute)
 								}
 								if(startdate && !isNaN(startdate.getTime()) && startdate.getTime() > Date.now()){
+									//auto schedule
+									lastmovedeventid = item.id
+
 									item.startafter.year = startdate.getFullYear()
 									item.startafter.month = startdate.getMonth()
 									item.startafter.day = startdate.getDate()
@@ -15128,7 +15131,7 @@ async function submitaimessage(optionalinput, dictated){
 								
 								calendar.todos.push(item)
 
-								tempautoscheduleevents.push(item)
+								tempautoscheduleevents.push(startAutoSchedule({ eventsuggestiontodos: [item], moveditemtimestamp: startdate.getTime(), moveditem: item }))
 
 
 								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" due ${Calendar.Event.getDueText(item)} and scheduled it in your calendar${item.repeat.frequency != null && item.repeat.interval != null ? `, repeating ${getRepeatText(item, true)}` : ''}.`
@@ -15148,7 +15151,7 @@ async function submitaimessage(optionalinput, dictated){
 						let newduedate = arguments?.newDueDate
 						let newduration = arguments?.newDuration
 						let newcompleted = arguments?.newCompleted
-						let newdelaystartdate = arguments?.newDelayStartDate
+						let newStartAfterDate = arguments?.newStartAfterDate
 						let newstartdate = arguments?.newStartDate
 						let newenddate = arguments?.newEndDate
 						let newrecurrence = arguments?.newRRULE
@@ -15180,8 +15183,8 @@ async function submitaimessage(optionalinput, dictated){
 								let endminute = getMinute(newenddate?.replace('T', ' ')).value
 								let [endyear, endmonth, endday] = getDate(newenddate?.replace('T', ' ')).value
 								
-								let delaystartminute = getMinute(newdelaystartdate?.replace('T', ' ')).value || 0
-								let [delaystartyear, delaystartmonth, delaystartday] = getDate(newenddate?.replace('T', ' ')).value
+								let delaystartminute = getMinute(newStartAfterDate?.replace('T', ' ')).value || 0
+								let [delaystartyear, delaystartmonth, delaystartday] = getDate(newStartAfterDate?.replace('T', ' ')).value
 
 								let startdate, enddate, delaystartdate;
 								if(startminute != null && startyear != null && startmonth != null && startday != null){
@@ -15194,7 +15197,7 @@ async function submitaimessage(optionalinput, dictated){
 									enddate = new Date(endyear, endmonth, endday, 0, endminute)
 								}
 								if(delaystartminute != null && delaystartyear != null && delaystartmonth != null && delaystartday != null){
-									delaystartdate = new Date(delaystartyear, delaystartmonth, delaystartday, delaystartminute)
+									delaystartdate = new Date(delaystartyear, delaystartmonth, delaystartday, 0, delaystartminute)
 								}
 								
 								if(newhexcolor && new RegExp(/^#([0-9a-fA-F]{6})$/).test(newhexcolor)){
@@ -15213,12 +15216,30 @@ async function submitaimessage(optionalinput, dictated){
 									item.endbefore.day = endbeforedate.getDate()
 									item.endbefore.minute = endbeforedate.getHours() * 60 + endbeforedate.getMinutes()
 								}
+							
 
 								if(delaystartdate && !isNaN(delaystartdate.getTime())){
 									item.startafter.year = delaystartdate.getFullYear()
 									item.startafter.month = delaystartdate.getMonth()
 									item.startafter.day = delaystartdate.getDate()
 									item.startafter.minute = delaystartdate.getHours() * 60 + delaystartdate.getMinutes()
+
+									startdate = delaystartdate
+								}
+
+								if(startdate && !isNaN(startdate.getTime()) && Calendar.Event.isEvent(item)){
+									//auto schedule
+									item.start.year = startdate.getFullYear()
+									item.start.month = startdate.getMonth()
+									item.start.day = startdate.getDate()
+									item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
+
+									lastmovedeventid = item.id
+
+									item.startafter.year = startdate.getFullYear()
+									item.startafter.month = startdate.getMonth()
+									item.startafter.day = startdate.getDate()
+									item.startafter.minute = startdate.getHours() * 60 + startdate.getMinutes()
 								}
 
 								if(duration != null){
@@ -15239,22 +15260,7 @@ async function submitaimessage(optionalinput, dictated){
 										enddate.setTime(enddate.getTime() + oldduration)
 									}
 								}
-
-
-								if(startdate && !isNaN(startdate.getTime()) && Calendar.Event.isEvent(item)){
-									item.start.year = startdate.getFullYear()
-									item.start.month = startdate.getMonth()
-									item.start.day = startdate.getDate()
-									item.start.minute = startdate.getHours() * 60 + startdate.getMinutes()
-
-
-									//auto schedule
-									lastmovedeventid = item.id
-									item.startafter.year = startdate.getFullYear()
-									item.startafter.month = startdate.getMonth()
-									item.startafter.day = startdate.getDate()
-									item.startafter.minute = startdate.getHours() * 60 + startdate.getMinutes()
-								}
+								
 
 								if(enddate && !isNaN(enddate.getTime()) && Calendar.Event.isEvent(item)){
 									item.end.year = enddate.getFullYear()
@@ -15436,7 +15442,7 @@ async function submitaimessage(optionalinput, dictated){
 	}
 
 	if(tempautoscheduleevents.length > 0){
-		startAutoSchedule({eventsuggestiontodos: tempautoscheduleevents})
+		Promise.all(tempautoscheduleevents)
 	}
 
 
