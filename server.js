@@ -197,6 +197,7 @@ async function getchatconversation(conversationid){
 		return null
 }
 
+
 async function getfeedback(id){
 	const params = {
 		TableName: 'smartcalendarfeedback',
@@ -898,7 +899,7 @@ async function processReminders(){
 
 //here2
 async function processengagementalerts(){
-	//return
+	return
 	let sendengagementalerts = []
 	for(let [key, value] of Object.entries(engagementcache)){
 		if(!value.finishedonboarding && currentdate - value.createddate > 86400*1000*2){
@@ -1311,9 +1312,6 @@ function cacheReminders(user){
 
 	//engagement cache
 	if(user.calendardata.settings.emailpreferences.engagementalerts == true){
-		if(email != 'smartcalendartester@gmail.com' || !email.includes('azhao20')){
-			return
-		}//here2
 		engagementcache[user.userid] = {
 			user: {
 				name: name,
@@ -5011,7 +5009,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							{
 								role: "user",
-								content: "(sample message not from user) Move it to tomorrow morning. Add an event to meet with boss tomorrow lunch"
+								content: "(sample message not from user) Reschedule/Move it to tomorrow morning. Add an event to meet with boss tomorrow lunch"
 							},
 							{
 								role: "assistant",
