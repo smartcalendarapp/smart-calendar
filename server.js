@@ -513,13 +513,13 @@ List-Unsubscribe-Post: ${listUnsubscribePostValue}
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-${textbody}
+${textbody.trim()}
 
 --NextPart
 Content-Type: text/html; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-${htmlbody}
+${htmlbody.trim()}
 
 --NextPart--`)
         },
