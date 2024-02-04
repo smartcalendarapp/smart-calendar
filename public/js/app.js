@@ -852,6 +852,20 @@ function getDate(string = '') {
 	return { value: [myyear, mymonth, myday], match: match }
 }
 
+function getHexColor(data){
+	data = data.toLowerCase()
+	const colormap = {
+		red: '#ff2e2e',
+		orange: '#ff932e',
+		yellow: '#ffe32e',
+		green: '#2ad143',
+		blue: '#18a4f5',
+		purple: '#8138ff',
+	}
+	if(colormap[data]){
+		return colormap[data]
+	}
+}
 
 
 //CALENDAR
@@ -14793,6 +14807,10 @@ async function submitaimessage(optionalinput, dictated){
 
 							if(hexcolor && new RegExp(/^#([0-9a-fA-F]{6})$/).test(hexcolor)){
 								item.hexcolor = hexcolor
+							}else{
+								if(getHexColor(hexcolor)){
+									item.hexcolor = getHexColor(hexcolor)
+								}
 							}
 
 							if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
@@ -14947,6 +14965,10 @@ async function submitaimessage(optionalinput, dictated){
 
 									if(newhexcolor && new RegExp(/^#([0-9a-fA-F]{6})$/).test(newhexcolor)){
 										item.hexcolor = newhexcolor
+									}else{
+										if(getHexColor(newhexcolor)){
+											item.hexcolor = getHexColor(newhexcolor)
+										}
 									}
 
 									item.title = newtitle || item.title
@@ -15058,6 +15080,10 @@ async function submitaimessage(optionalinput, dictated){
 
 							if(hexcolor && new RegExp(/^#([0-9a-fA-F]{6})$/).test(hexcolor)){
 								item.hexcolor = hexcolor
+							}else{
+								if(getHexColor(hexcolor)){
+									item.hexcolor = getHexColor(hexcolor)
+								}
 							}
 
 							if(!endbeforedate || isNaN(endbeforedate.getTime()) || endbeforedate.getTime() < Date.now()){
@@ -15165,6 +15191,10 @@ async function submitaimessage(optionalinput, dictated){
 								
 								if(newhexcolor && new RegExp(/^#([0-9a-fA-F]{6})$/).test(newhexcolor)){
 									item.hexcolor = newhexcolor
+								}else{
+									if(getHexColor(newhexcolor)){
+										item.hexcolor = getHexColor(newhexcolor)
+									}
 								}
 
 								let duration = getDuration(newduration).value
