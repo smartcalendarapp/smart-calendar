@@ -860,11 +860,18 @@ function getHexColor(data){
 		yellow: '#ffe32e',
 		green: '#2ad143',
 		blue: '#18a4f5',
+		indigo: '#185bf5',
 		purple: '#8138ff',
+		pink: '#f022d8',
+		black: '#000000'
 	}
 	if(colormap[data]){
 		return colormap[data]
+	}else if(Object.keys(colormap).find(d => data.includes(d))){
+		return colormap[Object.keys(colormap).find(d => data.includes(d))]
+
 	}
+	return null
 }
 
 
