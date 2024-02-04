@@ -14805,16 +14805,16 @@ async function submitaimessage(optionalinput, dictated){
 							}
 
 
-							if(hexcolor && new RegExp(/^#([0-9a-fA-F]{6})$/).test(hexcolor)){
-								item.hexcolor = hexcolor
-							}else{
-								if(getHexColor(hexcolor)){
-									item.hexcolor = getHexColor(hexcolor)
-								}
-							}
-
 							if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
 								let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title)
+
+								if(hexcolor && new RegExp(/^#([0-9a-fA-F]{6})$/).test(hexcolor)){
+									item.hexcolor = hexcolor
+								}else{
+									if(getHexColor(hexcolor)){
+										item.hexcolor = getHexColor(hexcolor)
+									}
+								}
 
 								let { frequency, interval, byday, count, until } = getRecurrenceData({ recurrence: recurrence ? [ recurrence ] : [] })
 
@@ -15005,7 +15005,7 @@ async function submitaimessage(optionalinput, dictated){
 										}
 									}else if(JSON.stringify(item.repeat) != oldrepeat){
 										tempmsg = `Done! I modified your event "${Calendar.Event.getRawTitle(item)}"${item.repeat.frequency != null && item.repeat.interval != null ? ` to repeat ${getRepeatText(item, true)}` : ''}.`
-									}else if(newhexcolor != oldhexcolor){
+									}else if(item.hexcolor != oldhexcolor){
 										tempmsg = `Done! I changed the color of your event "${Calendar.Event.getRawTitle(item)}".`
 									}else{
 										if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
@@ -15078,14 +15078,6 @@ async function submitaimessage(optionalinput, dictated){
 								duration = 30
 							}
 
-							if(hexcolor && new RegExp(/^#([0-9a-fA-F]{6})$/).test(hexcolor)){
-								item.hexcolor = hexcolor
-							}else{
-								if(getHexColor(hexcolor)){
-									item.hexcolor = getHexColor(hexcolor)
-								}
-							}
-
 							if(!endbeforedate || isNaN(endbeforedate.getTime()) || endbeforedate.getTime() < Date.now()){
 								endbeforedate = new Date()
 								endbeforedate.setHours(0,1440-1,0,0)
@@ -15095,6 +15087,14 @@ async function submitaimessage(optionalinput, dictated){
 							if(endbeforedate && !isNaN(endbeforedate.getTime())){
 								let item = new Calendar.Todo(endbeforedate.getFullYear(), endbeforedate.getMonth(), endbeforedate.getDate(), endbeforedate.getHours() * 60 + endbeforedate.getMinutes(), duration, title)
 								item.duration = duration
+
+								if(hexcolor && new RegExp(/^#([0-9a-fA-F]{6})$/).test(hexcolor)){
+									item.hexcolor = hexcolor
+								}else{
+									if(getHexColor(hexcolor)){
+										item.hexcolor = getHexColor(hexcolor)
+									}
+								}
 
 
 								let { frequency, interval, byday, count, until } = getRecurrenceData({ recurrence: recurrence ? [ recurrence ] : [] })
@@ -15306,7 +15306,7 @@ async function submitaimessage(optionalinput, dictated){
 									}
 								}else if(JSON.stringify(item.repeat) != oldrepeat){
 									tempmsg = `Done! I modified your task "${Calendar.Event.getRawTitle(item)}"${item.repeat.frequency != null && item.repeat.interval != null ? ` to repeat ${getRepeatText(item, true)}` : ''}.`
-								}else if(newhexcolor != oldhexcolor){
+								}else if(item.hexcolor != oldhexcolor){
 									tempmsg = `Done! I changed the color of your task "${Calendar.Event.getRawTitle(item)}".`
 								}else{
 									if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
