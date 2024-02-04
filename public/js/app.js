@@ -853,6 +853,7 @@ function getDate(string = '') {
 }
 
 function getHexColor(data){
+	if(!data) return null
 	data = data.toLowerCase()
 	const colormap = {
 		red: '#ff2e2e',
