@@ -4894,7 +4894,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							delayStartDate: { type: 'string', description: '(optional) Delay start working on task after date/time in format: YYYY-MM-DD HH:MM' },
 							duration: { type: 'string', description: 'Task duration in format: HH:MM' },
 							RRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
-							hexColor: { type: 'string', description: '(optional) Task hex color. Preset options: #ff2e2e,#ff932e,#ffe32e,#2ad143,#18a4f5,#185bf5,#8138ff,#f022d8' },
+							hexColor: { type: 'string', description: '(optional) Task hex color. Preset options: red=#ff2e2e,orange=#ff932e,yellow=#ffe32e,green=#2ad143,blue=#18a4f5,indigo=#185bf5,purple=#8138ff' },
 						},
 						required: ['title']
 					}
@@ -4909,7 +4909,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							startDate: { type: 'string', description: 'Event start date/time in format: YYYY-MM-DD HH:MM' },
 							endDate: { type: 'string', descrption: 'Event end date/time in format: YYYY-MM-DD HH:MM' },
 							RRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
-							hexColor: { type: 'string', description: '(optional) Event hex color. Preset options: #ff2e2e,#ff932e,#ffe32e,#2ad143,#18a4f5,#185bf5,#8138ff,#f022d8' }
+							hexColor: { type: 'string', description: '(optional) Event hex color. Preset options: red=#ff2e2e,orange=#ff932e,yellow=#ffe32e,green=#2ad143,blue=#18a4f5,indigo=#185bf5,purple=#8138ff' }
 						},
 						required: ['title']
 					}
@@ -4937,7 +4937,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							newEndDate: { type: 'string', description: 'New end date/time in format: YYYY-MM-DD HH:MM' },
 							newRRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 							newDuration: { type: 'string', description: 'New duration in format: HH:MM' },
-							newHexColor: { type: 'string', description: '(optional) Event hex color. Preset options: #ff2e2e,#ff932e,#ffe32e,#2ad143,#18a4f5,#185bf5,#8138ff,#f022d8' },
+							newHexColor: { type: 'string', description: '(optional) Event hex color. Preset options: red=#ff2e2e,orange=#ff932e,yellow=#ffe32e,green=#2ad143,blue=#18a4f5,indigo=#185bf5,purple=#8138ff' },
 						},
 						required: []
 					}
@@ -4968,7 +4968,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							newEndDate: { type: 'string', description: 'New scheduled in calendar end date/time in format: YYYY-MM-DD HH:MM' },*/
 							newRRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 							newCompleted: { type: 'boolean', description: 'New completed status' },
-							newHexColor: { type: 'string', description: '(optional) Task hex color. Preset options: #ff2e2e,#ff932e,#ffe32e,#2ad143,#18a4f5,#185bf5,#8138ff,#f022d8' },
+							newHexColor: { type: 'string', description: '(optional) Task hex color. Preset options: red=#ff2e2e,orange=#ff932e,yellow=#ffe32e,green=#2ad143,blue=#18a4f5,indigo=#185bf5,purple=#8138ff' },
 						},
 						required: []
 					}
