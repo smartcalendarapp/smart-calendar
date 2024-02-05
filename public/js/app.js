@@ -15035,9 +15035,18 @@ async function submitaimessage(optionalinput, dictated){
 											}
 										}
 
-										//hmm weird nothing was changed
+										let newduration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
+										if(oldduration != newduration){
+											if(tempmsg.length > 0){
+												tempmsg.push(`made it ${getDHMText(Math.floor(newduration/60000))} long`)
+											}else{
+												tempmsg.push(`Done! I made your event "${Calendar.Event.getRawTitle(item)}" ${getDHMText(Math.floor(newduration/60000))} long`)
+											}
+										}
+
+										//other
 										if(tempmsg.length == 0){
-											tempmsg.push(`Hmm, I tried to modify your event "${Calendar.Event.getStartText(item)}" but nothing was changed`)
+											tempmsg.push(`Done! I modified your event "${Calendar.Event.getStartText(item)}".`)
 										}
 									}
 
@@ -15363,6 +15372,16 @@ async function submitaimessage(optionalinput, dictated){
 										}
 									}
 
+									//duration
+									let newduration = Calendar.Event.isEvent(item) ? new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() : item.duration*60000
+									if(oldduration != newduration){
+										if(tempmsg.length > 0){
+											tempmsg.push(`made it ${getDHMText(Math.floor(newduration/60000))} long`)
+										}else{
+											tempmsg.push(`Done! I made your task "${Calendar.Event.getRawTitle(item)}" ${getDHMText(Math.floor(newduration/60000))} long`)
+										}
+									}
+
 									//color
 									if(item.hexcolor != oldhexcolor){
 										if(tempmsg.length > 0){
@@ -15381,9 +15400,9 @@ async function submitaimessage(optionalinput, dictated){
 										}
 									}
 
-									//hmm weird nothing was changed
+									//other
 									if(tempmsg.length == 0){
-										tempmsg.push(`Hmm, I tried to modify your task "${Calendar.Event.getStartText(item)}" but nothing was changed`)
+										tempmsg.push(`Done! I modified your task "${Calendar.Event.getStartText(item)}".`)
 									}
 								}
 
