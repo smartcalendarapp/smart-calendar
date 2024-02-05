@@ -15168,7 +15168,7 @@ async function submitaimessage(optionalinput, dictated){
 								}
 
 
-								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" due ${Calendar.Event.getDueText(item)} and scheduled it in your calendar${startdate && !isNaN(startdate.getTime()) ? ` for ${Calendar.Event.getStartText(item)}` : ''}${item.repeat.frequency != null && item.repeat.interval != null ? `, repeating ${getRepeatText(item, true)}` : ''}.`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" due ${Calendar.Event.getDueText(item)} and scheduled it in your calendar${startdate && !isNaN(startdate.getTime()) ? ` for ${getDMDYText(startdate)} ${getHMText(startdate.getHours() * 60 + startdate.getMinutes())}` : ''}${item.repeat.frequency != null && item.repeat.interval != null ? `, repeating ${getRepeatText(item, true)}` : ''}.`
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 
 								if(!mobilescreen)gototaskincalendar(item.id)

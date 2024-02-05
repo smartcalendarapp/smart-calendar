@@ -5170,7 +5170,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				if (isfunctioncall) {
 					let commands = JSON.parse(accumulatedresponse.message.function_call?.arguments)?.commands
 					if (commands && commands?.length > 0) {
-						console.warn(commands)
 						const requirescalendardata = calendardataneededfunctions.find(f => commands.find(g => g == f))
 						const requirestododata = tododataneededfunctions.find(f => commands.find(g => g == f))
 						const requirescustomfunction = customfunctions.find(f => commands.find(g => g == f))
