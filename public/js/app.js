@@ -17791,6 +17791,7 @@ function editschedulemoveevent(id, timestamp){
 	let movedate = new Date(timestamp)
 
 
+	item.autoschedulelocked = true
 	lastmovedeventid = item.id
 	item.startafter.year = movedate.getFullYear();
 	item.startafter.month = movedate.getMonth();

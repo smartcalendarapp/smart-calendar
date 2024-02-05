@@ -495,7 +495,7 @@ async function sendRawEmail({ from, to, htmlbody, textbody, subject, configurati
 
     const unsubscribeLink = 'mailto:james.tsaggaris@smartcalendar.us'
     const listUnsubscribePostValue = 'List-Unsubscribe=One-Click'
-	const configurationsetname = configurationset || 'smart-calendar-user-sending'
+	const configurationsetname = configurationset || 'smart-calendar-dedicated-sending'
 
     const input = {
         "Destinations": [],
@@ -541,7 +541,7 @@ ${htmlbody.trim()}
 }
 
 async function sendEmail({ from, to, subject, htmlbody, textbody, configurationset }){
-	const configurationsetname = configurationset || 'smart-calendar-user-sending'
+	const configurationsetname = configurationset || 'smart-calendar-dedicated-sending'
 
 	const params = {
 		Source: from,
