@@ -14465,7 +14465,7 @@ function updateaichat(){
 
 
 	for(let chatinteraction of chathistory.getInteractions()){
-		for(let { role, message, displaycontent, actions, id, liked, disliked, finishedanimating, waitingforvoice, nextactions, unread } of chatinteraction.getMessages()){
+		for(let { role, message, displaycontent, actions, id, liked, disliked, finishedanimating, waitingforvoice, nextactions, unread, iscommand } of chatinteraction.getMessages()){
 			if(unread){
 				unread = false
 			}
@@ -14478,7 +14478,7 @@ function updateaichat(){
 				</div>
 				<div class="flex-1 overflow-hidden display-flex flex-column gap-12px">
 					<div class="display-flex flex-column gap-6px">
-						<div class="${message ? '' : 'display-none'} padding-12px align-self-center background-tint-1 border-12px selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message ? `${markdowntoHTML(cleanInput(displaycontent), role)}` : ''}</div>
+						<div class="${message ? '' : 'display-none'} padding-12px align-self-center background-tint-1 border-12px selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-body-${id}">${message ? `${role == 'assistant' && iscommand ? markdowntoHTML(displaycontent, role) : markdowntoHTML(cleanInput(displaycontent), role)}` : ''}</div>
 
 						<div class="${message ? 'display-none' : ''} padding-12px align-self-center background-tint-1 border-12px selecttext pre-wrap break-word text-primary text-16px" id="chatmessage-loader-${id}"><div class="display-flex flex-row chatmultiloaderwrap fadetransition"><div class="typingdots"><span></span><span></span><span></span></div></div></div>
 
@@ -14780,6 +14780,8 @@ async function submitaimessage(optionalinput, dictated){
 
 			//process
 			if(output.commands && output.commands.length > 0){
+				responsechatmessage.iscommand = true
+
 				for(let tempcommand of output.commands){
 					let command = Object.keys(tempcommand)[0]
 					let arguments = Object.values(tempcommand)[0]
@@ -14892,7 +14894,7 @@ async function submitaimessage(optionalinput, dictated){
 
 								let timeoptions = gettimeoptions(3)
 
-								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `What time do you want "${title || 'New Event'}" to take place?`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I'm sorry I did not catch that, what time do you want "${title || 'this event'}" to take place?`
 								responsechatmessage.nextactions = [...timeoptions.map(d => `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('${d}')">${d}</div>`), `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Auto schedule')">Auto schedule</div>`]
 							}
 						}
@@ -14918,12 +14920,8 @@ async function submitaimessage(optionalinput, dictated){
 								}else{
 									let oldstartdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
 									let oldtitle = item.title
-
 									let oldrepeat = JSON.stringify(item.repeat)
-									
 									let oldhexcolor = item.hexcolor
-
-
 									let oldduration = new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime()
 
 									let startminute = getMinute(newstartdate?.replace('T', ' ')).value || item.start?.minute
@@ -15002,26 +15000,49 @@ async function submitaimessage(optionalinput, dictated){
 										item.startafter.minute = item.start.minute
 									}
 
-
-
-									let tempmsg;
-									if(!!newtitle && newtitle != oldtitle){
-										if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
-											tempmsg = `Done! I renamed your event to "${Calendar.Event.getRawTitle(item)}", and moved it to ${Calendar.Event.getStartText(item)}`
-										}else{
-											tempmsg = `Done! I renamed your event to "${Calendar.Event.getRawTitle(item)}".`
+									
+									let tempmsg = []
+									if(true){
+										//rename
+										if(!!newtitle && newtitle != oldtitle){
+											tempmsg.push(`Done! I renamed your event to "${Calendar.Event.getRawTitle(item)}"`)
 										}
-									}else if(JSON.stringify(item.repeat) != oldrepeat){
-										tempmsg = `Done! I modified your event "${Calendar.Event.getRawTitle(item)}"${item.repeat.frequency != null && item.repeat.interval != null ? ` to repeat ${getRepeatText(item, true)}` : ''}.`
-									}else if(item.hexcolor != oldhexcolor){
-										tempmsg = `Done! I changed the color of your event "${Calendar.Event.getRawTitle(item)}".`
-									}else{
+
+										//repeat
+										if(JSON.stringify(item.repeat) != oldrepeat && item.repeat.frequency != null && item.repeat.interval != null){
+											if(tempmsg.length > 0){
+												tempmsg.push(`set it to repeat ${getRepeatText(item, true)}`)
+											}else{
+												tempmsg.push(`Done! I set your event "${Calendar.Event.getRawTitle(item)}" to repeat ${getRepeatText(item, true)}`)
+											}
+										}
+
+										//color
+										if(item.hexcolor != oldhexcolor){
+											if(tempmsg.length > 0){
+												tempmsg.push(`changed its color to <span class="colorpreview" style="background-color:${item.hexcolor}"></span>`)
+											}else{
+												tempmsg.push(`Done! I changed the color of your event "${Calendar.Event.getRawTitle(item)}" to <span class="colorpreview" style="background-color:${item.hexcolor}"></span>`)
+											}
+										}
+										
+										//start
 										if(startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
-											tempmsg = `Done! I moved your event "${Calendar.Event.getRawTitle(item)}" to ${Calendar.Event.getStartText(item)}`
-										}else{
-											tempmsg = `Done! I modified your event "${Calendar.Event.getRawTitle(item)}" to be from ${Calendar.Event.getNaturalStartEndText(item)}`
+											if(tempmsg.length > 0){
+												tempmsg.push(`moved it to ${Calendar.Event.getStartText(item)}`)
+											}else{
+												tempmsg.push(`Done! I moved your event "${Calendar.Event.getRawTitle(item)}" to ${Calendar.Event.getStartText(item)}`)
+											}
+										}
+
+										//hmm weird nothing was changed
+										if(tempmsg.length == 0){
+											tempmsg.push(`Hmm, I tried to modify your event "${Calendar.Event.getStartText(item)}" but nothing was changed`)
 										}
 									}
+
+									tempmsg = `${tempmsg.length > 2 ? `${tempmsg.slice(0, tempmsg.length - 1).join(', ')}, and ${tempmsg.slice(tempmsg.length - 1)}` : tempmsg.join(' and ')}.`
+									
 
 									if(item.type == 1){
 										fixrecurringtodo(item)
@@ -15138,12 +15159,12 @@ async function submitaimessage(optionalinput, dictated){
 								}
 
 
-								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" due ${Calendar.Event.getDueText(item)} and scheduled it in your calendar${item.repeat.frequency != null && item.repeat.interval != null ? `, repeating ${getRepeatText(item, true)}` : ''}.`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" due ${Calendar.Event.getDueText(item)} and scheduled it in your calendar${startdate && !isNaN(startdate.getTime()) ? ` for ${Calendar.Event.getStartText(item)}` : ''}${item.repeat.frequency != null && item.repeat.interval != null ? `, repeating ${getRepeatText(item, true)}` : ''}.`
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 
 								if(!mobilescreen)gototaskincalendar(item.id)
 							}else{
-								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `What time do you want ${title} to be due?`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I'm sorry I did not catch that, what time do you want ${title || 'this task'} to be due?`
 								responsechatmessage.nextactions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Today')">Today</div>`, `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Tomorrow')">Tomorrow</div>`,`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('In 1 week')">In 1 week</div>`]
 							}
 						}
@@ -15171,7 +15192,7 @@ async function submitaimessage(optionalinput, dictated){
 								let oldduedate = new Date(item.endbefore.year, item.endbefore.month, item.endbefore.day, 0, item.endbefore.minute)
 								let oldduration = Calendar.Event.isEvent(item) ? new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() : item.duration*60000
 								let oldrepeat = JSON.stringify(item.repeat)
-								
+								let oldstartdate = Calendar.Event.isEvent(item) ? new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute) : null
 								let oldhexcolor = item.hexcolor
 
 								let endbeforeminute = getMinute(newduedate?.replace('T', ' ')).value || item.endbefore.minute
@@ -15315,27 +15336,59 @@ async function submitaimessage(optionalinput, dictated){
 								}
 
 
-								let tempmsg;
-								if(!!newtitle && newtitle != oldtitle){
-									if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
-										tempmsg = `Done! I renamed your task to "${Calendar.Event.getRawTitle(item)}", and set it to be due ${Calendar.Event.getDueText(item)}`
-									}else{
-										tempmsg = `Done! I renamed your task to "${Calendar.Event.getRawTitle(item)}".`
-									}
-								}else if(JSON.stringify(item.repeat) != oldrepeat){
-									tempmsg = `Done! I modified your task "${Calendar.Event.getRawTitle(item)}"${item.repeat.frequency != null && item.repeat.interval != null ? ` to repeat ${getRepeatText(item, true)}` : ''}.`
-								}else if(item.hexcolor != oldhexcolor){
-									tempmsg = `Done! I changed the color of your task "${Calendar.Event.getRawTitle(item)}".`
-								}else{
-									if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
-										tempmsg = `Done! I set your task "${Calendar.Event.getRawTitle(item)}" to be due ${Calendar.Event.getDueText(item)}.`
-									}else{
-										tempmsg = `Done! I modified your task "${Calendar.Event.getRawTitle(item)}".`
-									}
-								}
+								let tempmsg = []
 								if(newcompleted != null && newcompleted != oldcompleted){
-									tempmsg = `Done! I marked your task "${Calendar.Event.getRawTitle(item)}" as complete. Good job!`
+									tempmsg.push(`Done! I marked your task "${Calendar.Event.getRawTitle(item)}" as complete. Good job!`)
+								}else{
+									//rename
+									if(!!newtitle && newtitle != oldtitle){
+										tempmsg.push(`Done! I renamed your task to "${Calendar.Event.getRawTitle(item)}"`)
+									}
+
+									//repeat
+									if(JSON.stringify(item.repeat) != oldrepeat && item.repeat.frequency != null && item.repeat.interval != null){
+										if(tempmsg.length > 0){
+											tempmsg.push(`set it to repeat ${getRepeatText(item, true)}`)
+										}else{
+											tempmsg.push(`Done! I set your task "${Calendar.Event.getRawTitle(item)}" to repeat ${getRepeatText(item, true)}`)
+										}
+									}
+
+									//due date
+									if(endbeforedate && !isNaN(endbeforedate.getTime()) && oldduedate.getTime() != endbeforedate.getTime()){
+										if(tempmsg.length > 0){
+											tempmsg.push(`set it to be due ${Calendar.Event.getDueText(item)}`)
+										}else{
+											tempmsg.push(`Done! I set your task "${Calendar.Event.getRawTitle(item)}" to be due ${Calendar.Event.getDueText(item)}`)
+										}
+									}
+
+									//color
+									if(item.hexcolor != oldhexcolor){
+										if(tempmsg.length > 0){
+											tempmsg.push(`changed its color to <span class="colorpreview" style="background-color:${item.hexcolor}"></span>`)
+										}else{
+											tempmsg.push(`Done! I changed the color of your task "${Calendar.Event.getRawTitle(item)}" to <span class="colorpreview" style="background-color:${item.hexcolor}"></span>`)
+										}
+									}
+									
+									//start after
+									if(oldstartdate && !isNaN(oldstartdate.getTime()) && startdate && !isNaN(startdate.getTime()) && oldstartdate.getTime() != startdate.getTime()){
+										if(tempmsg.length > 0){
+											tempmsg.push(`moved it to ${Calendar.Event.getStartText(item)}`)
+										}else{
+											tempmsg.push(`Done! I moved your task "${Calendar.Event.getRawTitle(item)}" to ${Calendar.Event.getStartText(item)}`)
+										}
+									}
+
+									//hmm weird nothing was changed
+									if(tempmsg.length == 0){
+										tempmsg.push(`Hmm, I tried to modify your task "${Calendar.Event.getStartText(item)}" but nothing was changed`)
+									}
 								}
+
+								tempmsg = `${tempmsg.length > 2 ? `${tempmsg.slice(0, tempmsg.length - 1).join(', ')}, and ${tempmsg.slice(tempmsg.length - 1)}` : tempmsg.join(' and ')}.`
+
 
 								fixrecurringtodo(item)
 								fixsubandparenttask(item)
@@ -16718,9 +16771,6 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		if(lastmovedeventid){
 			let lastmoveditem = calendar.events.find(d => d.id == lastmovedeventid)
 			if(lastmoveditem){
-				//detect if moved event/task conflicts with an event or locked task?
-
-
 				//unlock tasks that conflict with moved event
 				
 				let conflicts = getconflictingevent(iteratedevents, lastmoveditem, true)
@@ -16733,8 +16783,6 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 						}
 					}
 				}
-
-
 
 				//lock tasks that are moved to conflict
 				if(lastmoveditem.type == 1){
@@ -17724,7 +17772,7 @@ function editschedulemoveevent(id, timestamp){
 	let movedate = new Date(timestamp)
 
 
-	item.autoschedulelocked = true
+	lastmovedeventid = item.id
 	item.startafter.year = movedate.getFullYear();
 	item.startafter.month = movedate.getMonth();
 	item.startafter.day = movedate.getDate();

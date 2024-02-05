@@ -4885,7 +4885,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				},*/
 				{
 					name: 'create_task',
-					description: 'Create a task to be auto-scheduled by the app in the calendar. Return nothing for options not provided. All fields optional. Do NOT include startAfterDate if user does not mention they want to work on a task after a certain date',
+					description: 'Create a task to be auto-scheduled by the app in the calendar. Return nothing for options not provided. All fields optional. Only include startAfterDate IF user requests to work on a task after a certain date (not immediately)',
 					parameters: {
 						type: 'object',
 						properties: {
@@ -4915,17 +4915,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					}
 				},
 				{
-					name: 'delete_event',
-					description: 'Find event by direct and explicit reference in user prompt. Return nothing if the event does not exist.',
-					parameters: {
-						type: 'object',
-						properties: {
-							id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
-						},
-						required: []
-					}
-				},
-				{
 					name: 'modify_event',
 					description: 'Find event by direct and explicit reference in user prompt. If event not found or unsure, do not return function and reply with a message for clarification. Return nothing if the event does not exist. All fields optional.',
 					parameters: {
@@ -4943,25 +4932,14 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					}
 				},
 				{
-					name: 'delete_task',
-					description: 'Find task by direct and explicit reference in user prompt. Return nothing if the task does not exist.',
-					parameters: {
-						type: 'object',
-						properties: {
-							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
-						},
-						required: []
-					}
-				},
-				{
 					name: 'modify_task',
-					description: 'Find task by direct and explicit reference in user prompt. If task not found or unsure, do not return function and reply with a message for clarification. Return nothing if the task does not exist. All fields optional.',
+					description: 'Find task by direct and explicit reference in user prompt. If task not found or unsure, do not return function and reply with a message for clarification. Return nothing if the task does not exist. All fields optional. Only include newStartAfterDate IF user requests to work on a task after a certain date (not immediately)',
 					parameters: {
 						type: 'object',
 						properties: {
 							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
 							newTitle: { type: 'string', description: 'New title' },
-							newStartAfterDate: { type: 'string', description: '(optional) Delay start working on task after date/time in format: YYYY-MM-DD HH:MM' },
+							newStartAfterDate: { type: 'string', description: '(optional) Start task after date/time in format: YYYY-MM-DD HH:MM' },
 							newDueDate: { type: 'string', description: 'New due date/time in format: YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: 'New duration in format: HH:MM' },
 							/*newStartDate: { type: 'string', description: 'New scheduled in calendar start date/time in format: YYYY-MM-DD HH:MM' },
@@ -4973,14 +4951,92 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						required: []
 					}
 				},
+				{
+					name: 'delete_event',
+					description: 'Find event by direct and explicit reference in user prompt. Return nothing if the event does not exist.',
+					parameters: {
+						type: 'object',
+						properties: {
+							id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
+						},
+						required: []
+					}
+				},
+				{
+					name: 'delete_task',
+					description: 'Find task by direct and explicit reference in user prompt. Return nothing if the task does not exist.',
+					parameters: {
+						type: 'object',
+						properties: {
+							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
+						},
+						required: []
+					}
+				},
 			]
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event','create_task', 'delete_task', 'modify_task','schedule_unscheduled_task_in_calendar'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
-			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks', 'schedule_unscheduled_task_in_calendar'] //a subset of all functions, the functions that need todo data
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${DAYLIST[localdate.getDay()]} ${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
+
+			function formatdateyyyymmddhhmm(inputdate){
+				return `${inputdate.getFullYear()}-${(inputdate.getMonth() + 1).toString().padStart(2, '0')}-${inputdate.getDate().toString().padStart(2, '0')} ${inputdate.getHours().toString().padStart(2, '0')}:${inputdate.getMinutes().toString().padStart(2, '0')}`
+			}
+
+
+			const functioncallcontext = {
+				'create_task': [
+					{
+						role: "user",
+						content: "(sample message not from user) I need to do some goal planning tomorrow afternoon due within a week"
+					},
+					{
+						role: "assistant",
+						content: null,
+						function_call: {
+							name: "app_action",
+							arguments: JSON.stringify({
+								commands: [
+									{
+										'create_task': {
+											title: 'Goal Planning',
+											dueDate: formatdateyyyymmddhhmm(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7, 0, 0)),
+											startAfterDate: formatdateyyyymmddhhmm(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 12, 0))
+										}
+									}
+								]
+							})
+						}
+					}
+				],
+				'modify_task': [
+					{
+						role: "user",
+						content: `(sample message not from user) Move buy groceries to tomorrow morning, and make it due within a week`
+					},
+					{
+						role: "assistant",
+						content: null,
+						function_call: {
+							name: "app_action",
+							arguments: JSON.stringify({
+								commands: [
+									{
+										'modify_task': {
+											id: 'sample id',
+											newStartAfterDate: formatdateyyyymmddhhmm(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 9, 0)),
+											newDueDate: formatdateyyyymmddhhmm(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7, 0, 0))
+										}
+									}
+								]
+							})
+						}
+					}
+				]
+			}
 
 
 			//PROMPT
@@ -5181,6 +5237,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								role: 'system', 
 								content: systeminstructions
 							},
+							...Object.entries(functioncallcontext).filter(([key, value]) => commands.includes(key)).map(([key, value]) => value).flat(),
 							...conversationhistory,
 							{
 								role: 'user',
@@ -5637,6 +5694,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			const customfunctions = ['create_multiple_events', 'create_event', 'delete_event', 'modify_event', 'modify_multiple_events', 'create_multiple_tasks','create_task', 'delete_task', 'modify_task', 'modify_multiple_tasks', 'schedule_tasks_in_calendar'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'modify_multiple_events', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'modify_multiple_tasks', 'get_todo_list_tasks', 'schedule_tasks_in_calendar'] //a subset of all functions, the functions that need todo data
+
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${DAYLIST[localdate.getDay()]} ${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`

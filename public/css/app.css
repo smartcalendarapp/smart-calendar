@@ -4909,3 +4909,11 @@ input:checked+.slider:before {
 	left: 50%;
 	transform: translateX(-50%);
 }
+
+.colorpreview{
+	height:16px;
+	width:16px;
+	border-radius:4px;
+	display:inline-block;
+	vertical-align:middle;
+}
