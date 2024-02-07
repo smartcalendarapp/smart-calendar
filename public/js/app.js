@@ -15046,7 +15046,7 @@ async function submitaimessage(optionalinput, dictated){
 
 										//other
 										if(tempmsg.length == 0){
-											tempmsg.push(`Done! I modified your event "${Calendar.Event.getStartText(item)}".`)
+											tempmsg.push(`Done! I modified your event "${Calendar.Event.getStartText(item)}"`)
 										}
 									}
 
@@ -15402,7 +15402,7 @@ async function submitaimessage(optionalinput, dictated){
 
 									//other
 									if(tempmsg.length == 0){
-										tempmsg.push(`Done! I modified your task "${Calendar.Event.getStartText(item)}".`)
+										tempmsg.push(`Done! I modified your task "${Calendar.Event.getStartText(item)}"`)
 									}
 								}
 
