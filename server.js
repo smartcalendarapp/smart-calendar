@@ -4284,19 +4284,19 @@ app.post('/setuseremailpreferences', async (req, res) => {
 
 //GPT AI routes
 
-const MAX_GPT_CHAT_PER_DAY = 200 //10
-const MAX_GPT_CHAT_PER_DAY_BETA_TESTER = 200 //50
-const MAX_GPT_CHAT_PER_DAY_PREMIUM = 200 //100
+let MAX_GPT_CHAT_PER_DAY = 200 //10
+let MAX_GPT_CHAT_PER_DAY_BETA_TESTER = 200 //50
+let MAX_GPT_CHAT_PER_DAY_PREMIUM = 200 //100
 
-const MAX_GPT_VOICE_PER_DAY = 200 //10
-const MAX_GPT_VOICE_PER_DAY_BETA_TESTER = 200 //50
-const MAX_GPT_VOICE_PER_DAY_PREMIUM = 200 //100
+let MAX_GPT_VOICE_PER_DAY = 200 //10
+let MAX_GPT_VOICE_PER_DAY_BETA_TESTER = 200 //50
+let MAX_GPT_VOICE_PER_DAY_PREMIUM = 200 //100
 
-const MAX_GPT_COMPLETION_PER_DAY = 30 //10
-const MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
-const MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
+let MAX_GPT_COMPLETION_PER_DAY = 30 //10
+let MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
+let MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
 
-const GPT_MODEL = 'gpt-3.5-turbo-0125'
+let GPT_MODEL = 'gpt-3.5-turbo-0125'
 
 app.post('/gettasksuggestions', async (req, res) => {
 	async function getgptresponse(prompt) {
@@ -4944,8 +4944,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							newStartAfterDate: { type: 'string', description: '(optional) Start task after date/time in format: YYYY-MM-DD HH:MM' },
 							newDueDate: { type: 'string', description: 'New due date/time in format: YYYY-MM-DD HH:MM' },
 							newDuration: { type: 'string', description: 'New duration in format: HH:MM' },
-							/*newStartDate: { type: 'string', description: 'New scheduled in calendar start date/time in format: YYYY-MM-DD HH:MM' },
-							newEndDate: { type: 'string', description: 'New scheduled in calendar end date/time in format: YYYY-MM-DD HH:MM' },*/
 							newRRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
 							newCompleted: { type: 'boolean', description: 'New completed status' },
 							newHexColor: { type: 'string', description: '(optional) Task HEX color. Example: #18a4f5' },
@@ -5043,7 +5041,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. If you detect app_action function call, you must follow these procedures: """1. If user prompt does not explicitly state a command (e.g. 'Book a meeting for me with John') but instead implies it (e.g. 'I need to meet with John') or is unclear, do NOT return function call and instead ask for clarification. 2. If user is implicitly requesting you to guide them through an app action (e.g. 'Book a meeting for me') and not giving a solid command (e.g. 'I need to get A, B, C done by tomorrow'), do NOT return function call and instead ask for more details. 3. Otherwise, return function call""" Respond with tone and style of a conversational subservient assistant, prioritizing the user's satisfaction. Respond in no more than 30 words. Access to schedule and tasks is granted and assumed. Never say or mention internal ID of events/tasks. Limit conversations to app interactions, calendar scheduling, or productive work. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = `A scheduling personal assistant called Athena for Smart Calendar app. If you detect app_action function call, you must follow these procedures: """1. If user prompt does not explicitly state a command (e.g. 'Book a meeting for me with John') but instead implies it (e.g. 'I need to meet with John') or is unclear, do NOT return function call and instead ask for clarification. 2. If user is implicitly requesting you to guide them through an app action (e.g. 'Book a meeting for me') and not giving a solid command (e.g. 'I need to get A, B, C done by tomorrow'), do NOT return function call and instead ask for more details. 3. Otherwise, return function call""" Respond with tone and style of a conversational subservient assistant, prioritizing the user's satisfaction. Respond concise as possible. Access to schedule and tasks is granted and assumed. Never say or mention internal ID of events/tasks. Limit conversations to app interactions, calendar scheduling, or productive work. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""`
@@ -5055,6 +5053,20 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							content: systeminstructions
 						},
 						...[
+							{
+								role: "user",
+								content: "(sample message not from user) What are my tasks today?"
+							},
+							{
+								role: "assistant",
+								content: null,
+								function_call: {
+									name: "app_action",
+									arguments: JSON.stringify({
+										commands: ['get_todo_list_tasks']
+									})
+								}
+							},
 							{
 								role: "user",
 								content: "(sample message not from user) I need to work on my project by tomorrow 6pm"
