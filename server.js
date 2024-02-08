@@ -4296,13 +4296,14 @@ const MAX_GPT_COMPLETION_PER_DAY = 30 //10
 const MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
 const MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
 
+const GPT_MODEL = 'gpt-3.5-turbo-0125'
 
 app.post('/gettasksuggestions', async (req, res) => {
 	async function getgptresponse(prompt) {
 
 		try {
 			const res = await openai.chat.completions.create({
-				model: 'gpt-3.5-turbo',
+				model: GPT_MODEL,
 				messages: [{
 					role: 'user',
 					content: prompt
@@ -4371,7 +4372,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 
 		try {
 			const res = await openai.chat.completions.create({
-				model: 'gpt-3.5-turbo',
+				model: GPT_MODEL,
 				messages: [
 					{
 						role: 'user',
@@ -4524,7 +4525,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
-			model: 'gpt-3.5-turbo',
+			model: GPT_MODEL,
 			messages: [
 				{ 
 					role: 'system', 
@@ -4639,7 +4640,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
-			model: 'gpt-3.5-turbo',
+			model: GPT_MODEL,
 			messages: [
 				{ 
 					role: 'system', 
@@ -4750,7 +4751,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
-			model: 'gpt-3.5-turbo',
+			model: GPT_MODEL,
 			messages: [
 				{ 
 					role: 'system', 
@@ -5047,7 +5048,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""`
 				const response = await openai.chat.completions.create({
-					model: 'gpt-3.5-turbo',
+					model: GPT_MODEL,
 					messages: [
 						{ 
 							role: 'system', 
@@ -5176,7 +5177,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						const requirescustomfunction = customfunctions.find(f => commands.find(g => g == f))
 
 						let request2options = {
-							model: 'gpt-3.5-turbo',
+							model: GPT_MODEL,
 							max_tokens: commands.length > 0 ? 1000 : 200,
 							temperature: 0.5,
 							top_p: 0.5,
@@ -5711,7 +5712,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""`
 				const response = await openai.chat.completions.create({
-					model: 'gpt-3.5-turbo',
+					model: GPT_MODEL,
 					messages: [
 						{ 
 							role: 'system', 
@@ -5803,7 +5804,7 @@ app.post('/getgptchatinteraction', async (req, res) => {
 						const requirescustomfunction = customfunctions.includes(command)
 		
 						let request2options = {
-							model: 'gpt-3.5-turbo',
+							model: GPT_MODEL,
 							max_tokens: 200,
 							temperature: 0.5,
 							top_p: 0.5,

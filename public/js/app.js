@@ -7934,7 +7934,7 @@ let issettingclientgooglecalendar = false
 let lastsetclientgooglecalendar = 0
 async function setclientgooglecalendar(requestchanges) {
 	//solutions: accumulate all changes and only set if been 5 sec since last set and 5 sec since edit calendar. need to cancel out aka create + delete = none, create + edit = edit, and edit + delete = delete
-	
+
 	let importgooglecalendarerror = getElement('importgooglecalendarerror')
 	importgooglecalendarerror.classList.add('display-none')
 	let importgooglecalendarerror2 = getElement('importgooglecalendarerror2')
@@ -13503,6 +13503,8 @@ function newaichat(){
 	closerecognitionpopup()
 	stopplayingvoice = true
 
+	isgenerating = false
+
 	chathistory = new ChatConversation()
 	openaichat()
 }
@@ -15171,7 +15173,7 @@ async function submitaimessage(optionalinput, dictated){
 								}
 
 
-								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" due ${Calendar.Event.getDueText(item)} and scheduled it in your calendar${startdate && !isNaN(startdate.getTime()) ? ` for ${getDMDYText(startdate)} ${getHMText(startdate.getHours() * 60 + startdate.getMinutes())}` : ''}${item.repeat.frequency != null && item.repeat.interval != null ? `, repeating ${getRepeatText(item, true)}` : ''}.`
+								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `Done! I created a task "${Calendar.Event.getRawTitle(item)}" due ${Calendar.Event.getDueText(item)} and scheduled it in your calendar${item.repeat.frequency != null && item.repeat.interval != null ? `, repeating ${getRepeatText(item, true)}` : ''}.`
 								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskincalendar('${item.id}')">Show me</div>`]
 
 								if(!mobilescreen)gototaskincalendar(item.id)
@@ -15511,6 +15513,8 @@ async function submitaimessage(optionalinput, dictated){
 			responsechatmessage.message = `${data.error}`
 		}
 	}catch(err){
+		isgenerating = false
+
 		if(!navigator.onLine){
 			responsechatmessage.message = `Your internet connection is offline, please reconnect.`
 		}else{
