@@ -197,6 +197,30 @@ async function getchatconversation(conversationid){
 		return null
 }
 
+async function getallchatconversations(){
+	let allitems = []
+	try{
+		let ExclusiveStartKey;
+		do {
+			const command = new ScanCommand({
+				TableName: 'smartcalendarchatconversations',
+				ExclusiveStartKey
+			})
+
+			const response = await dynamoclient.send(command)
+			const items = response.Items.map(item => unmarshall(item))
+			allitems.push(...items)
+
+			ExclusiveStartKey = response.LastEvaluatedKey
+		} while (ExclusiveStartKey)
+
+		return allitems
+	}catch(err){
+		console.error(err)
+		return null
+	}
+}
+
 
 async function getfeedback(id){
 	const params = {
@@ -212,6 +236,30 @@ async function getfeedback(id){
 		return null
 }
 
+
+async function getallfeedback(){
+	let allitems = []
+	try{
+		let ExclusiveStartKey;
+		do {
+			const command = new ScanCommand({
+				TableName: 'smartcalendarfeedback',
+				ExclusiveStartKey
+			})
+
+			const response = await dynamoclient.send(command)
+			const items = response.Items.map(item => unmarshall(item))
+			allitems.push(...items)
+
+			ExclusiveStartKey = response.LastEvaluatedKey
+		} while (ExclusiveStartKey)
+
+		return allitems
+	}catch(err){
+		console.error(err)
+		return null
+	}
+}
 
 async function setchatconversation(tempdata){
 	try{
@@ -3721,7 +3769,7 @@ app.post('/dev', async (req, res) => {
 		}
 
 		async function help(){
-			return `<span class="inlinecode">addbetatester(userid or email)</span>\n\n<span class="inlinecode">getuserinfo(userid or email)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">whitelistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>\n\n<span class="inlinecode">displaychat(conversationid)</span>\n<span class="inlinecode">flagchat(conversationid)</span>\n\n<span class="inlinecode">displayfeedback(id)</span>\n<span class="inlinecode">flagfeedback(id)</span>`
+			return `<span class="inlinecode">addbetatester(userid or email)</span>\n\n<span class="inlinecode">getuserinfo(userid or email)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">whitelistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>\n\n<span class="inlinecode">displaychat(conversationid)</span>\n<span class="inlinecode">displayallchats()</span>\n<span class="inlinecode">flagchat(conversationid)</span>\n\n<span class="inlinecode">displayfeedback(id)</span>\n<span class="inlinecode">displayallfeedback()</span>\n<span class="inlinecode">flagfeedback(id)</span>`
 		}
 
 		async function displaychat(conversationid){
@@ -3743,6 +3791,32 @@ app.post('/dev', async (req, res) => {
 			return `Chat ID: ${conversationid}\nUser ID: ${tempdata.userid}\nTime: ${getlocaldate(tempdata.timestamp)}\n\n`+tempoutput.join('\n\n')
 		}
 
+		async function displayallchats(){
+			let alltempdata = await getallchatconversations()
+			alltempdata = alltempdata.filter(d => !d.read)
+			if(alltempdata.length == 0) return 'None unread'
+
+
+			let finaloutput = []
+
+			for(let tempdata of alltempdata){
+				let tempoutput = []
+				for(let item of tempdata.chatconversation.flat()){
+					tempoutput.push(`${item.role == 'assistant' ? 'Athena' : 'User'}: ${item.message} ${item.liked ? '(LIKED)' : ''} ${item.disliked ? '(DISLIKED)' : ''}`)
+				}
+
+				tempdata.read = true
+				await setchatconversation(tempdata)
+
+				function getlocaldate(date){
+					return new Date(date).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', hour12: true })
+				}
+
+				finaloutput.push(`Chat ID: ${tempdata.conversationid}\nUser ID: ${tempdata.userid}\nTime: ${getlocaldate(tempdata.timestamp)}\n\n`+tempoutput.join('\n\n'))
+			}
+			return finaloutput.join('\n\n———————————————————————————————————\n\n')
+		}
+
 		async function flagchat(conversationid){
 			let tempdata = await getchatconversation(conversationid)
 			tempdata.flagged = true
@@ -3762,7 +3836,27 @@ app.post('/dev', async (req, res) => {
 			tempdata.read = true
 			await setfeedback(tempdata)
 
-			return `Feedback ID: ${feedbackid}\nUser ID: ${tempdata.userid}\nTime: ${getlocaldate(tempdata.timestamp)}\n\n${typeof tempdata.content === 'string' ? tempdata.content : JSON.stringify(tempdata.content)}`
+			return `Feedback ID: ${feedbackid}\nUser ID: ${tempdata.userid}\nTime: ${getlocaldate(tempdata.timestamp)}\n\n${typeof tempdata.content === 'string' ? tempdata.content : JSON.stringify(tempdata.content, null, 4)}`
+		}
+
+		async function displayallfeedback(){
+			function getlocaldate(date){
+				return new Date(date).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', hour12: true })
+			}
+
+			let alltempdata = await getallfeedback()
+			alltempdata = alltempdata.filter(d => !d.read)
+			if(alltempdata.length == 0) return 'None unread'
+			
+			let finaloutput = []
+			for(let tempdata of alltempdata){
+				tempdata.read = true
+				await setfeedback(tempdata)
+
+				finaloutput.push(`Feedback ID: ${tempdata.id}\nUser ID: ${tempdata.userid}\nTime: ${getlocaldate(tempdata.timestamp)}\n\n${typeof tempdata.content === 'string' ? tempdata.content : JSON.stringify(tempdata.content, null, 4)}`)
+			}
+
+			return finaloutput.join('\n\n———————————————————————————————————\n\n')
 		}
 
 		async function flagfeedback(feedbackid){
