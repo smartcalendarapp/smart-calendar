@@ -7933,6 +7933,8 @@ function closeloginwithgooglepopup(){
 let issettingclientgooglecalendar = false
 let lastsetclientgooglecalendar = 0
 async function setclientgooglecalendar(requestchanges) {
+	//solutions: accumulate all changes and only set if been 5 sec since last set and 5 sec since edit calendar. need to cancel out aka create + delete = none, create + edit = edit, and edit + delete = delete
+	
 	let importgooglecalendarerror = getElement('importgooglecalendarerror')
 	importgooglecalendarerror.classList.add('display-none')
 	let importgooglecalendarerror2 = getElement('importgooglecalendarerror2')
@@ -7942,6 +7944,7 @@ async function setclientgooglecalendar(requestchanges) {
 	loginwithgooglescreen.classList.add('hiddenfade')
 
 	if (!calendar.settings.issyncingtogooglecalendar) return
+
 	if (requestchanges.length == 0) return
 
 	issettingclientgooglecalendar = true

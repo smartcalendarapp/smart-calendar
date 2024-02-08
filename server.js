@@ -2879,7 +2879,8 @@ app.post('/getclientgooglecalendar', async (req, res, next) => {
 		    calendarId: calendaritem.id,
 		    timeMin: timeMin,
 				timeMax: timeMax,
-				maxResults:2500
+				maxResults:2500,
+				eventTypes: ["default", "focusTime", "outOfOffice"]
 		  })
 
 			if(calendarevents.status != 200){
