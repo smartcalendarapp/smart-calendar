@@ -571,6 +571,17 @@ function getDuration(string = '') {
 
 	}
 
+	let timeFormatMatch = string.match(/\b(\d{1,2}):(\d{2})(?::(\d{2}))?\b/)
+	if (timeFormatMatch) {
+		match = timeFormatMatch[0]
+		
+		let hours = parseInt(timeFormatMatch[1], 10)
+		let minutes = parseInt(timeFormatMatch[2], 10)
+
+		myduration = (myduration || 0) + hours * 60 + minutes
+	}
+
+
 	if(myduration != null){
 		myduration = Math.floor(myduration)
 	}
@@ -15051,7 +15062,7 @@ async function submitaimessage(optionalinput, dictated){
 
 										//other
 										if(tempmsg.length == 0){
-											tempmsg.push(`Done! I modified your event "${Calendar.Event.getStartText(item)}"`)
+											tempmsg.push(`Done! I modified your event "${Calendar.Event.getRawTitle(item)}"`)
 										}
 									}
 
@@ -15407,7 +15418,7 @@ async function submitaimessage(optionalinput, dictated){
 
 									//other
 									if(tempmsg.length == 0){
-										tempmsg.push(`Done! I modified your task "${Calendar.Event.getStartText(item)}"`)
+										tempmsg.push(`Done! I modified your task "${Calendar.Event.getRawTitle(item)}"`)
 									}
 								}
 

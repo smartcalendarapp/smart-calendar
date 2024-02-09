@@ -5322,7 +5322,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										},
 										"required": [ "commands" ]
 									},
-									"description": `If user command is not explicit, is unclear, or is asking for a conversational assistance (e.g. Help me book a meeting), do NOT return this function, and instead ask for clarification. Otherwise, return this function for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
+									"description": `If user command is not explicit (e.g. I maybe need to do reading sometime), is unclear, or is asking for a conversational assistance (e.g. Help me book a meeting), do NOT return this function, and instead ask for clarification. Otherwise, return this function for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
 								}
 							]
 						}
