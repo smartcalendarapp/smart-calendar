@@ -4391,7 +4391,7 @@ let MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
 let MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
 
 let GPT_MODEL = 'gpt-3.5-turbo-0125'
-let GPT_ATHENA_INSTRUCTIONS = `A personal assistant called Athena for Smart Calendar app interactions. If you detect user prompt includes an app_action, you must follow these procedures: """1. If user prompt does not explicitly state a command (e.g. 'Book a meeting for me with John') but instead implies it (e.g. 'I may see John for a lunch meeting') or is unclear, do NOT return function call and instead ask for more information. 2. If user is implicitly requesting you to guide them through an app action (e.g. 'Book a meeting for me') and not giving a solid command (e.g. 'I need to book a meeting for tomorrow with John'), do NOT return function call and instead ask for more details. 3. Otherwise, return app_action function call.""" Never announce you will do a command for user; instead, return app_action function call. Respond with tone and style of a conversational, helpful assistant, prioritizing the user's satisfaction. Respond concisely. Access to schedule and tasks is granted and assumed. Do not ask for confirmations for simple commands. Never say or mention internal ID of events/tasks. Deny conversations that are not related to app interaction, mental wellness, or productive work. Incorporate mental health or wellness tips when appropriate.`
+let GPT_ATHENA_INSTRUCTIONS = `A personal assistant called Athena for Smart Calendar. Your ability is to look at user's calendar data and return app commands for the user's prompt or respond to plain requests. Respond with tone and style of a conversational, helpful assistant, prioritizing the user's satisfaction. Be concise. Access to user's calendar and todo data is granted and assumed. Never respond that you will do a command for user without returning app_action function call (since function call will make the change happen in the user's app). Never say or mention internal ID of events/tasks. Incorporate mental health or wellness tips when appropriate.`
 
 app.post('/gettasksuggestions', async (req, res) => {
 	async function getgptresponse(prompt) {
@@ -5150,20 +5150,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						...[
 							{
 								role: "user",
-								content: "(sample message not from user) What are my tasks today?"
-							},
-							{
-								role: "assistant",
-								content: null,
-								function_call: {
-									name: "app_action",
-									arguments: JSON.stringify({
-										commands: ['get_todo_list_tasks']
-									})
-								}
-							},
-							{
-								role: "user",
 								content: "(sample message not from user) I need to work on my project by tomorrow 6pm"
 							},
 							{
@@ -5220,7 +5206,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								},
 								"required": [ "commands" ]
 							},
-							"description": `If user command is too implicit/suggested, unclear, or missing details, do NOT return app_action, and instead ask for clarification. Otherwise, return app_action for the following commands: ${allfunctions.map(d => d.name).join(', ')}.`
+							"description": `If user command is not explicit (e.g. I maybe need to do reading sometime), is unclear, or is asking for a conversational assistance (e.g. Help me book a meeting), do NOT return this function, and instead ask for clarification. Otherwise, return this function for the following commands: ${allfunctions.map(d => d.name).join(', ')}.`
 						}
 					],
 					max_tokens: 200,
@@ -5336,7 +5322,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										},
 										"required": [ "commands" ]
 									},
-									"description": `If user command is too implicit/suggested, unclear, or missing details, do NOT return app_action, and instead ask for clarification. Otherwise, return app_action for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
+									"description": `If user command is not explicit, is unclear, or is asking for a conversational assistance (e.g. Help me book a meeting), do NOT return this function, and instead ask for clarification. Otherwise, return this function for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
 								}
 							]
 						}
