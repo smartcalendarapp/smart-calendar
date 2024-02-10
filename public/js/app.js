@@ -6582,8 +6582,9 @@ function inputeventstartdate(event, id) {
 		calendar.updateCalendar()
 	}else{
 		calendar.updateEvents()
-		calendar.updateInfo()
 	}
+
+	calendar.updateInfo()
 
 	calendar.updateHistory()
 }
@@ -6608,6 +6609,8 @@ function inputeventstartminute(event, id) {
 	}
 
 	calendar.updateHistory()
+
+	calendar.updateInfo()
 
 	if(oldminute != item.start.minute){
 		scrollcalendarY(item.start.minute)
@@ -6647,8 +6650,9 @@ function inputeventenddate(event, id) {
 		calendar.updateCalendar()
 	}else{
 		calendar.updateEvents()
-		calendar.updateInfo()
 	}
+
+	calendar.updateInfo()
 
 	calendar.updateHistory()
 }
@@ -15424,12 +15428,14 @@ async function submitaimessage(optionalinput, dictated){
 
 								tempmsg = `${tempmsg.length > 2 ? `${tempmsg.slice(0, tempmsg.length - 1).join(', ')}, and ${tempmsg.slice(tempmsg.length - 1)}` : tempmsg.join(' and ')}.`
 
+								if(!mobilescreen)gototaskincalendar(item.id)
+
 
 								fixrecurringtodo(item)
 								fixsubandparenttask(item)
 
 								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + tempmsg
-								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="gototaskintodolist('${item.id}')">Show me</div>`]
+								responsechatmessage.actions = [`<div class="background-blue hover:background-blue-hover border-round transition-duration-100 pointer text-white text-14px padding-6px-12px" onclick="${Calendar.Event.isEvent(item) ? `gototaskincalendar('${item.id}')` : `gototaskintodolist('${item.id}')`}">Show me</div>`]
 
 							}else{
 								responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `I could not find that task, could you please try again?`
@@ -16795,7 +16801,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		
 
 		//unlock tasks that are locked but no conflict
-		let lockedtasks = smartevents.filter(d => d.autoschedulelocked)
+		let lockedtasks = smartevents.filter(d => d.autoschedulelocked && (!moveditem || d.id != moveditem.id))
 		for(let tempitem of lockedtasks){
 			let conflictitem = getconflictingevent(iteratedevents, tempitem)
 			if(!conflictitem){
@@ -17514,9 +17520,14 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			useWorker: true
 		})
 
+
 		let confettievents = modifiedevents.filter(d => {
 			let newitem = newcalendarevents.find(f => f.id == d.id)
 			let olditem = oldcalendarevents.find(f => f.id == d.id)
+
+			if(addedtodos.find(g => g.id == d.id)){
+				return true
+			}
 
 			if(!olditem || !newitem){
 				return true
@@ -17527,30 +17538,37 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 			return Math.abs(newstartdate.getTime() - oldstartdate.getTime()) > 60*1000*60
 		})
-		let promises = []
-		for (let item of confettievents) {
-			let itemelement = getElement(item.id)
-			if (!itemelement) continue
-			let itemrect = itemelement.getBoundingClientRect()
 
-			promises.push(myconfetti({
-				spread: 30,
-				particleCount: 30,
-				gravity: 0.8,
-				startVelocity: 20,
-				decay: 0.94,
-				ticks: 150,
-				origin: {
-					x: (itemrect.x + itemrect.width / 2) / (window.innerWidth || document.body.clientWidth),
-					y: (itemrect.y + itemrect.height / 2) / (window.innerHeight || document.body.clientHeight)
-				}
-			}))
+		if(!calendartabs.includes(0)){
+			return
 		}
-		try{
-			await Promise.all(promises)
 
-			if(myconfetti) myconfetti.reset()
-		}catch(e){}
+		requestAnimationFrame(async function(){
+			let promises = []
+			for (let item of confettievents) {
+				let itemelement = getElement(item.id)
+				if (!itemelement) continue
+				let itemrect = itemelement.getBoundingClientRect()
+	
+				promises.push(myconfetti({
+					spread: 30,
+					particleCount: 30,
+					gravity: 0.8,
+					startVelocity: 20,
+					decay: 0.94,
+					ticks: 150,
+					origin: {
+						x: (itemrect.x + itemrect.width / 2) / (window.innerWidth || document.body.clientWidth),
+						y: (itemrect.y + itemrect.height / 2) / (window.innerHeight || document.body.clientHeight)
+					}
+				}))
+			}
+			try{
+				await Promise.all(promises)
+	
+				if(myconfetti) myconfetti.reset()
+			}catch(e){}
+		})
 	}catch(err){
 		isautoscheduling = false
 		console.log(err)
@@ -17810,7 +17828,7 @@ function editschedulemoveevent(id, timestamp){
 
 
 	item.autoschedulelocked = true
-	lastmovedeventid = item.id
+
 	item.startafter.year = movedate.getFullYear();
 	item.startafter.month = movedate.getMonth();
 	item.startafter.day = movedate.getDate();
@@ -17900,7 +17918,7 @@ function editschedulepopupcustom(event, id){
 
 	let scheduleeditorpopupcustom = getElement('scheduleeditorpopupcustom')
 	scheduleeditorpopupcustom.classList.toggle('hiddenpopup')
-	scheduleeditorpopupcustom.style.top = fixtop(button.getBoundingClientRect().top + button.offsetHeight, scheduleeditorpopupcustom) + 'px'
+	scheduleeditorpopupcustom.style.top = fixtop(button.getBoundingClientRect().top - scheduleeditorpopupcustom.offsetHeight, scheduleeditorpopupcustom) + 'px'
 	scheduleeditorpopupcustom.style.left = fixleft(button.getBoundingClientRect().left + button.offsetWidth/2 - scheduleeditorpopupcustom.offsetWidth/2, scheduleeditorpopupcustom) + 'px'
 
 

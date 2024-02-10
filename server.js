@@ -4391,7 +4391,7 @@ let MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
 let MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
 
 let GPT_MODEL = 'gpt-3.5-turbo-0125'
-let GPT_ATHENA_INSTRUCTIONS = `A personal assistant called Athena for Smart Calendar. Your ability is to look at user's calendar data and return app commands for the user's prompt or respond to plain requests. Respond with tone and style of a conversational, helpful assistant, prioritizing the user's satisfaction. Be concise. Access to user's calendar and todo data is granted and assumed. Never respond that you will do a command for user without returning app_action function call (since function call will make the change happen in the user's app). Never say or mention internal ID of events/tasks. Incorporate mental health or wellness tips when appropriate.`
+let GPT_ATHENA_INSTRUCTIONS = `A personal assistant called Athena for Smart Calendar. Your ability is to look at user's calendar data and return app commands for the user's prompt or respond to plain requests. Respond with tone and style of a conversational, helpful assistant, prioritizing the user's satisfaction. Be concise. Access to user's calendar and todo data is granted and assumed. Never respond that you will do a command for user without returning app_action function call (since function call will make the change happen in the user's app). Never say or mention internal ID of events/tasks. Incorporate mental health or wellness tips when appropriate. Always look at past messages in conversation history for context.`
 
 app.post('/gettasksuggestions', async (req, res) => {
 	async function getgptresponse(prompt) {
@@ -4616,7 +4616,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 		//PROMPT
 
 		let inputtext = `Task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}. Time needed: ${getDHMText(Math.floor((new Date(taskitem.end.year, taskitem.end.month, taskitem.end.day, 0, taskitem.end.minute).getTime() - new Date(taskitem.start.year, taskitem.start.month, taskitem.start.day, 0, taskitem.start.minute).getTime())/60000))}""" As a personal assistant, mention which task is starting how long it will last, in a short sentence. In short sentences, provide specific and actionable steps and tips to make real progress to complete this task. Incorporate short motivational tips.`
-		let custominstructions = `Respond in no more than 30 words, concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant, as if the user is a boss. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let custominstructions = `Respond concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant, as if the user is a boss. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -4731,7 +4731,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 		//PROMPT
 
 		let inputtext = `Competed task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}""" Provide a very short personal motivational sentence for the user who just completed this task. Then, mention only the next upcoming event (if there is one) and at what time, and how long from now, in one sentence. Calendar data: """${calendarcontext}"""`
-		let custominstructions = `Respond in no more than 30 words, concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant, as if the user is a boss. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let custominstructions = `Respond concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant, as if the user is a boss. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -4842,7 +4842,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 		//PROMPT
 
 		let inputtext = `Calendar data: """${calendarcontext}""" Provide a one sentence morning greeting. Then, provide a concise morning summary of ONLY the important or unique events today in a personal and helpful style. Finally, you must ask the user in one short sentence for 3 tasks they want to complete today.`
-		let custominstructions = `Respond in no more than 30 words, concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant, as if the user is a boss. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let custominstructions = `Respond concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant, as if the user is a boss. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -5088,7 +5088,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				'create_task': [
 					{
 						role: "user",
-						content: "(sample message not from user) I need to do some goal planning tomorrow afternoon due within a week"
+						content: "(sample message not from user) I need to do some goal planning tomorrow afternoon due in a week"
 					},
 					{
 						role: "assistant",
@@ -5112,7 +5112,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				'modify_task': [
 					{
 						role: "user",
-						content: `(sample message not from user) Move buy groceries to tomorrow morning, and make it due within a week`
+						content: `(sample message not from user) Move buy groceries to tomorrow morning, and make it due in a week`
 					},
 					{
 						role: "assistant",
