@@ -9198,7 +9198,7 @@ function fixrecurringtodo(item){
 		}
 
 		//if deleted todo, adjust repeatids
-		if(![...calendar.todos, ...calendar.events].find(d => d.id == item.id)){
+		if(![...calendar.todos, ...calendar.events].find(d => d.id == item.id) && !item.completed){
 			let filteredtodos = relatedtodos.filter(d => d.id != item.id)
 			if(filteredtodos[0]){
 				for(let tempitem of relatedtodos){
@@ -9206,6 +9206,8 @@ function fixrecurringtodo(item){
 				}
 				item.repeatid = null
 			}
+		}else{
+			return
 		}
 
 		if(!originaltodo){
