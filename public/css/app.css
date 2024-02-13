@@ -4272,11 +4272,15 @@ max-width:1000px;
 }
 
 
-.challengetodossize{
-	max-width:200px;
-	width:100%;
-	max-height:200px;
-	height:auto;
+.aiassistantonboarding{
+	width:auto;
+	max-height:400px;
+	height:100%;
+}
+.checkgreensvg{
+	height:30px;
+	width:30px;
+	display:block;
 }
 
 .aichattooltip{

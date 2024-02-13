@@ -5032,7 +5032,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				},
 				{
 					name: 'modify_task',
-					description: 'Find task by direct and explicit reference in user prompt. If task not found or unsure, do not return function and reply with a message for clarification. Return nothing if the task does not exist. All fields optional. Only include newStartAfterDate IF user requests to work on a task after a certain date (not immediately)',
+					description: 'Find task by direct and explicit reference in user prompt. If task not found or unsure, do not return function and reply with a message for clarification. Return nothing if the task does not exist. If user wants to move/reschedule a task to a different time, return newStartAfterDate, not newDueDate. All fields optional.',
 					parameters: {
 						type: 'object',
 						properties: {
