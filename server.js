@@ -342,6 +342,32 @@ async function setreferafriendinvitelinkobject(data){
 	return data
 }
 
+
+async function setstatistic(data){
+	const params = {
+	  TableName: 'smartcalendarstatistics',
+	  Item: marshall(data, { convertClassInstanceToMap: true, removeUndefinedValues: true })
+	}
+	
+	await dynamoclient.send(new PutItemCommand(params))
+	return data
+}
+
+async function getstatistic(id){
+	const params = {
+		TableName: 'smartcalendarstatistics',
+		Key: {
+		  'id': { S: id }
+		}
+	}
+	
+	const data = await dynamoclient.send(new GetItemCommand(params))
+	if(data.Item){
+		return unmarshall(data.Item)
+	}
+	return null
+}
+
 //DATABASE CLASSES
 function addmissingproperties(model, current) {
   for (let prop in model) {
@@ -2267,6 +2293,22 @@ app.get('/login', async (req, res, next) => {
 	} else{
 		next()
 	}
+})
+
+app.get('/edu', async (req, res, next) => {
+	try{
+		let statistic = await getstatistic('coldemailclicks-2-2024')
+		if(!statistic){
+			statistic = {}
+		}
+		statistic.clicks = (statistic.clicks || 0) + 1
+		statistic.timestamps = (statistic.timestamps || []).push(Date.now())
+		await setstatistic(statistic)
+	}catch(err){
+
+	}
+
+	res.redirect(301, '')
 })
 
 app.get('/invite/:code', async (req, res, next) => {
