@@ -2296,6 +2296,7 @@ app.get('/login', async (req, res, next) => {
 })
 
 app.get('/edu', async (req, res, next) => {
+	console.warn('huh')
 	try{
 		let statistic = await getstatistic('coldemailclicks-2-2024')
 		if(!statistic){
@@ -2306,6 +2307,7 @@ app.get('/edu', async (req, res, next) => {
 			statistic.timestamps = []
 		}
 		statistic.timestamps.push(Date.now())
+		console.warn(statistic)
 		await setstatistic(statistic)
 	}catch(err){
 		console.error(err)
