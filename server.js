@@ -2299,10 +2299,13 @@ app.get('/edu', async (req, res, next) => {
 	try{
 		let statistic = await getstatistic('coldemailclicks-2-2024')
 		if(!statistic){
-			statistic = {}
+			statistic = { id: 'coldemailclicks-2-2024' }
 		}
 		statistic.clicks = (statistic.clicks || 0) + 1
-		statistic.timestamps = (statistic.timestamps || []).push(Date.now())
+		if(!statistic.timestamps){
+			statistic.timestamps = []
+		}
+		statistic.timestamps.push(Date.now())
 		await setstatistic(statistic)
 	}catch(err){
 		console.error(err)
