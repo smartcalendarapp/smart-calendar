@@ -2308,7 +2308,7 @@ app.get('/edu', async (req, res, next) => {
 		console.error(err)
 	}
 
-	res.redirect(301, '')
+	res.redirect(301, '/')
 })
 
 app.get('/invite/:code', async (req, res, next) => {
