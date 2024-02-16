@@ -2305,7 +2305,7 @@ app.get('/edu', async (req, res, next) => {
 		statistic.timestamps = (statistic.timestamps || []).push(Date.now())
 		await setstatistic(statistic)
 	}catch(err){
-
+		console.error(err)
 	}
 
 	res.redirect(301, '')
