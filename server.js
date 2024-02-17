@@ -1853,6 +1853,8 @@ app.get('/auth/google/callback', async (req, res, next) => {
 
 			await sendwelcomeemail(newUser)
 
+			await managecustomfrom(req, newUser.userid)
+
 			return res.redirect(301, getfinalredirect())
 		}
 
@@ -1972,6 +1974,9 @@ app.post('/auth/google/onetap', async (req, res, next) => {
 			}
 
 			await sendwelcomeemail(newUser)
+
+			await managecustomfrom(req, newUser.userid)
+
 			return res.redirect(301, '/app')
 		}
 	}catch(error){
@@ -2089,6 +2094,8 @@ app.post('/auth/apple/callback', async (req, res) => {
 			}
 
 			await sendwelcomeemail(newuser)
+
+			await managecustomfrom(req, newuser.userid)
 
 			return res.redirect(301, '/app')
 		}
@@ -2296,19 +2303,23 @@ app.get('/login', async (req, res, next) => {
 })
 
 app.get('/edu', async (req, res, next) => {
-	console.warn('huh')
 	try{
-		let statistic = await getstatistic('coldemailclicks-2-2024')
+		const STATISTIC = `coldemailclicks-2-2024`
+		let statistic = await getstatistic(STATISTIC)
 		if(!statistic){
-			statistic = { id: 'coldemailclicks-2-2024' }
+			statistic = { id: STATISTIC }
 		}
 		statistic.clicks = (statistic.clicks || 0) + 1
 		if(!statistic.timestamps){
 			statistic.timestamps = []
 		}
 		statistic.timestamps.push(Date.now())
-		console.warn(statistic)
 		await setstatistic(statistic)
+
+		if(!req.session.user){
+			req.session.user = {}
+		}
+		req.session.user.customfrom = 'edu'
 	}catch(err){
 		console.error(err)
 	}
@@ -3264,6 +3275,7 @@ app.post('/signup', async (req, res, next) => {
 		
 		const user = addmissingpropertiestouser(new User({ username: username, password: password}))
 		user.accountdata.logindata.push(getLoginData(req))
+
 		await createUser(user)
 
 		if(!req.session.user){
@@ -3277,12 +3289,34 @@ app.post('/signup', async (req, res, next) => {
 
 		await sendwelcomeemail(user)
 
+		await managecustomfrom(req, user.userid)
+
 		return res.redirect(301, '/app')
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
+
+async function managecustomfrom(req, userid){
+	try{
+		if(req.session.user?.customfrom == 'edu'){
+			const STATISTIC = `coldemailsignups-2-2024`
+			let statistic = await getstatistic(STATISTIC)
+			if(!statistic){
+				statistic = { id: STATISTIC }
+			}
+			statistic.signups = (statistic.signups || 0) + 1
+			if(!statistic.userids){
+				statistic.userids = []
+			}
+			statistic.userids.push(userid)
+			await setstatistic(statistic)
+		}
+	}catch(err){
+		
+	}
+}
 
 function getUserEmail(user){
 	return user.google_email || user.accountdata.apple?.email || user.username
