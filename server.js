@@ -2309,7 +2309,7 @@ app.get('/edu', async (req, res, next) => {
 		if(!statistic){
 			statistic = { id: STATISTIC }
 		}
-		statistic.clicks = (statistic.clicks || 0) + 1
+		statistic.value = (statistic.value || 0) + 1
 		if(!statistic.timestamps){
 			statistic.timestamps = []
 		}
@@ -3306,7 +3306,7 @@ async function managecustomfrom(req, userid){
 			if(!statistic){
 				statistic = { id: STATISTIC }
 			}
-			statistic.signups = (statistic.signups || 0) + 1
+			statistic.value = (statistic.value || 0) + 1
 			if(!statistic.userids){
 				statistic.userids = []
 			}
@@ -3850,7 +3850,32 @@ app.post('/dev', async (req, res) => {
 		}
 
 		async function help(){
-			return `<span class="inlinecode">addbetatester(userid or email)</span>\n\n<span class="inlinecode">getuserinfo(userid or email)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">whitelistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>\n\n<span class="inlinecode">displaychat(conversationid)</span>\n<span class="inlinecode">displayallchats()</span>\n<span class="inlinecode">flagchat(conversationid)</span>\n\n<span class="inlinecode">displayfeedback(id)</span>\n<span class="inlinecode">displayallfeedback()</span>\n<span class="inlinecode">flagfeedback(id)</span>`
+			return `<span class="inlinecode">addbetatester(userid or email)</span>\n\n<span class="inlinecode">getuserinfo(userid or email)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">whitelistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>n<span class="inlinecode">getstatistics()</span>\n\n<span class="inlinecode">displaychat(conversationid)</span>\n<span class="inlinecode">displayallchats()</span>\n<span class="inlinecode">flagchat(conversationid)</span>\n\n<span class="inlinecode">displayfeedback(id)</span>\n<span class="inlinecode">displayallfeedback()</span>\n<span class="inlinecode">flagfeedback(id)</span>`
+		}
+
+		async function getstatistics(){
+			let allitems = []
+			try{
+				let ExclusiveStartKey;
+				do {
+					const command = new ScanCommand({
+						TableName: 'smartcalendarstatistics',
+						ExclusiveStartKey
+					})
+
+					const response = await dynamoclient.send(command)
+					const items = response.Items.map(item => unmarshall(item))
+					allitems.push(...items)
+
+					ExclusiveStartKey = response.LastEvaluatedKey
+				} while (ExclusiveStartKey)
+
+				return allitems
+			}catch(err){
+				console.error(err)
+				return null
+			}
+			return JSON.stringify(allitems, null, 4)
 		}
 
 		async function displaychat(conversationid){
