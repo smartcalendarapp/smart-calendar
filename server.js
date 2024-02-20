@@ -977,7 +977,7 @@ async function processengagementalerts(){
 	for(let [key, value] of Object.entries(engagementcache)){
 		if(value.iosdevicetoken){
 			if(!value.finishedonboarding){
-				if(Date.now() - createddate > 86400*1000 && value.engagementalerts.lastsentdate - Date.now() > 86400*1000){
+				if(Date.now() - value.createddate > 86400*1000 && (!value.engagementalerts.lastsentdate || value.engagementalerts.lastsentdate - Date.now() > 86400*1000)){
 					let note = new apn.Notification({
 						alert: `📅 ✨ ${item.name}, Tap here to finish your setup!`,
 						title: `Your AI task manager awaits you`,
@@ -995,7 +995,7 @@ async function processengagementalerts(){
 					tempuser.accountdata.engagementalerts.lastsentdate = Date.now()
 					await setUser(tempuser)
 				}
-			}else if(value.lastmodified - Date.now() > 86400*1000*5 && value.engagementalerts.lastsentdate - Date.now() > 86400*1000*5){
+			}else if(value.lastmodified - Date.now() > 86400*1000*3 && (!value.engagementalerts.lastsentdate || value.engagementalerts.lastsentdate - Date.now() > 86400*1000*3)){
 				let note = new apn.Notification({
 					alert: `📅 ✨ ${item.name}, Tap here to plan your day with Athena!`,
 					  title: `Your AI assistant awaits you 🌟`,
