@@ -995,7 +995,7 @@ async function processengagementalerts(){
 					tempuser.accountdata.engagementalerts.lastsentdate = Date.now()
 					await setUser(tempuser)
 				}
-			}else if(Date.now() - (value.lastmodified || 0) > 86400*1000*3 && Date.now() - (value.engagementalerts.lastsentdate || 0) > 86400*1000*3){
+			}else if(Date.now() - (value.lastmodified || 0) > 86400*1000*5 && Date.now() - (value.engagementalerts.lastsentdate || 0) > 86400*1000*5){
 				let note = new apn.Notification({
 					alert: `📅 ✨ ${value.user.name}, Tap here to plan your day with Athena!`,
 					  title: `Your AI assistant awaits you 🌟`,
@@ -1440,7 +1440,8 @@ function cacheReminders(user){
 			lastmodified: user.calendardata.lastmodified,
 			finishedonboarding: user.calendardata.onboarding.finished == true,
 			engagementalerts: user.accountdata.engagementalerts,
-			iosdevicetoken: user.accountdata.iosdevicetoken
+			iosdevicetoken: user.accountdata.iosdevicetoken,
+			engagementalerts: user.accountdata.engagementalerts
 		}
 	}
 }
