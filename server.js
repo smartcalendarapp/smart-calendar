@@ -979,14 +979,14 @@ async function processengagementalerts(){
 			if(!value.finishedonboarding){
 				if(Date.now() - value.createddate > 86400*1000 && Date.now() - (value.engagementalerts.lastsentdate || 0) > 86400*1000){
 					let note = new apn.Notification({
-						alert: `📅 ✨ ${item.name}, Tap here to finish your setup!`,
+						alert: `📅 ✨ ${value.user.name}, Tap here to finish your setup!`,
 						title: `Your AI task manager awaits you`,
 						topic: APPLE_BUNDLE_ID,
 						sound: 'default',
 						badge: 1,
 					})
 					try{
-						let result = await apnProvider.send(note, item.ios)
+						let result = await apnProvider.send(note, value.iosdevicetoken)
 					}catch(err){}
 
 					//set sent date
@@ -997,14 +997,14 @@ async function processengagementalerts(){
 				}
 			}else if(Date.now() - (value.lastmodified || 0) > 86400*1000*3 && Date.now() - (value.engagementalerts.lastsentdate || 0) > 86400*1000*3){
 				let note = new apn.Notification({
-					alert: `📅 ✨ ${item.name}, Tap here to plan your day with Athena!`,
+					alert: `📅 ✨ ${value.user.name}, Tap here to plan your day with Athena!`,
 					  title: `Your AI assistant awaits you 🌟`,
 					  topic: APPLE_BUNDLE_ID,
 					  sound: 'default',
 					  badge: 1,
 				  })
 				try{
-			  		let result = await apnProvider.send(note, item.ios)
+			  		let result = await apnProvider.send(note, value.iosdevicetoken)
 				}catch(err){}
 
 				//set sent date
