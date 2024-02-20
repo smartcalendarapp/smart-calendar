@@ -4,7 +4,7 @@ try {
 } catch (e) {}
 
 //DATABASE INITIALIZATION
-const { DynamoDBClient, CreateTableCommand, PutItemCommand, GetItemCommand, ScanCommand, QueryCommand, UpdateItemCommand, DeleteItemCommand, BatchWriteCommand } = require('@aws-sdk/client-dynamodb')
+const { DynamoDBClient, CreateTableCommand, PutItemCommand, GetItemCommand, ScanCommand, DescribeTableCommand, QueryCommand, UpdateItemCommand, DeleteItemCommand, BatchWriteCommand } = require('@aws-sdk/client-dynamodb')
 const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb')
 
 const ACCESS_KEY_ID = process.env.ACCESS_KEY_ID
@@ -973,7 +973,50 @@ async function processReminders(){
 
 //here2
 async function processengagementalerts(){
+	//ios quick reminder
+	for(let [key, value] of Object.entries(engagementcache)){
+		if(value.iosdevicetoken){
+			if(!value.finishedonboarding){
+				if(Date.now() - createddate > 86400*1000 && value.engagementalerts.lastsentdate - Date.now() > 86400*1000){
+					let note = new apn.Notification({
+						alert: `📅 ✨ ${item.name}, Tap here to finish your setup!`,
+						title: `Your AI task manager awaits you`,
+						topic: APPLE_BUNDLE_ID,
+						sound: 'default',
+						badge: 1,
+					})
+					try{
+						let result = await apnProvider.send(note, item.ios)
+					}catch(err){}
+
+					//set sent date
+					value.engagementalerts.lastsentdate = Date.now()
+					let tempuser = await getUserById(key)
+					tempuser.accountdata.engagementalerts.lastsentdate = Date.now()
+					await setUser(tempuser)
+				}
+			}else if(value.lastmodified - Date.now() > 86400*1000*5 && value.engagementalerts.lastsentdate - Date.now() > 86400*1000*5){
+				let note = new apn.Notification({
+					alert: `📅 ✨ ${item.name}, Tap here to plan your day with Athena!`,
+					  title: `Your AI assistant awaits you 🌟`,
+					  topic: APPLE_BUNDLE_ID,
+					  sound: 'default',
+					  badge: 1,
+				  })
+				try{
+			  		let result = await apnProvider.send(note, item.ios)
+				}catch(err){}
+
+				//set sent date
+				value.engagementalerts.lastsentdate = Date.now()
+				let tempuser = await getUserById(key)
+				tempuser.accountdata.engagementalerts.lastsentdate = Date.now()
+				await setUser(tempuser)
+			}
+		}
+	}
 	return
+	//real engagement reminder
 	let sendengagementalerts = []
 	for(let [key, value] of Object.entries(engagementcache)){
 		if(!value.finishedonboarding && currentdate - value.createddate > 86400*1000*2){
@@ -3854,6 +3897,13 @@ app.post('/dev', async (req, res) => {
 		}
 
 		async function getstatistics(){
+			function bytestosize(bytes) {
+				if (bytes < 1024) return bytes + " bytes"
+				else if (bytes < 1024 ** 2) return (bytes / 1024).toFixed(0) + " KB"
+				else if (bytes < 1024 ** 3) return (bytes / 1024 ** 2).toFixed(0) + " MB"
+				return (bytes / 1024 ** 3).toFixed(0) + " GB"
+			}
+
 			let allitems = []
 			try{
 				let ExclusiveStartKey;
@@ -3870,12 +3920,29 @@ app.post('/dev', async (req, res) => {
 					ExclusiveStartKey = response.LastEvaluatedKey
 				} while (ExclusiveStartKey)
 
-				return allitems
 			}catch(err){
 				console.error(err)
 				return null
 			}
-			return JSON.stringify(allitems, null, 4)
+
+			let tableinfo = {}
+			try{
+				const command = new DescribeTableCommand({
+					TableName: 'smartcalendarusers',
+				})
+
+				const response = await dynamoclient.send(command)
+
+				tableinfo.name = response.Table.TableName
+				tableinfo.ItemCount = response.Table.ItemCount
+				tableinfo.TableSizeBytes = bytestosize(response.Table.TableSizeBytes)
+				tableinfo.GlobalSecondaryIndexes = response.Table.GlobalSecondaryIndexes.map(d => { return { IndexName: d.IndexName, ItemCount: d.ItemCount } })
+			}catch(err){
+				console.error(err)
+				return null
+			}
+
+			return `${JSON.stringify(allitems)}\n\n${JSON.stringify(tableinfo, null, 4)}`
 		}
 
 		async function displaychat(conversationid){
