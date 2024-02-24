@@ -5093,7 +5093,7 @@ function run() {
 			}
 
 			//get google calendar
-			if (!isgettingclientdata && !iswaitingforsetclientgooglecalendar && !isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 30000 && !issettingclientgooglecalendar && Date.now() - lasttriedsyncgooglecalendardate > 30000) {
+			if (!isgettingclientdata && !iswaitingforsetclientgooglecalendar && !movingevent && !isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 30000 && !issettingclientgooglecalendar && Date.now() - lasttriedsyncgooglecalendardate > 30000) {
 				lasttriedsyncgooglecalendardate = Date.now()
 				getclientgooglecalendar()
 			}
@@ -8108,7 +8108,7 @@ async function getclientgooglecalendar() {
 		} else if (response.status == 200) {
 			const data = await response.json()
 
-			if(calendar.lastmodified + 5000 > tempstartgetclientgooglecalendardate || isautoscheduling || issettingclientgooglecalendar || lastsetclientgooglecalendar + 5000 > tempstartgetclientgooglecalendardate){
+			if(calendar.lastmodified > tempstartgetclientgooglecalendardate || isautoscheduling || movingevent || issettingclientgooglecalendar || lastsetclientgooglecalendar > tempstartgetclientgooglecalendardate || iswaitingforsetclientgooglecalendar){
 				isgettingclientgooglecalendar = false
 				return
 			}
