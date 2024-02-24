@@ -998,7 +998,7 @@ class Calendar {
 			if(this.isSubtask(item)){
 				return `${cleanInput(this.getTitle(this.getMainTask(item)))} (part ${this.getSubtaskIndex(item) + 1})`
 			}
-			return `New Event`
+			return [`New Event`, 'New Task'][item.type]
 		}
 
 		static getRawTitle(item){
@@ -1007,7 +1007,7 @@ class Calendar {
 			if(this.isSubtask(item)){
 				return `${this.getTitle(this.getMainTask(item))} (part ${this.getSubtaskIndex(item) + 1})`
 			}
-			return `New Event`
+			return [`New Event`, 'New Task'][item.type]
 		}
 
 		static getMainTask(item){
@@ -4351,23 +4351,41 @@ function updatetime() {
 		lastupdatedate = currentdate.getDate()
 	}
 
-	//morning todo prompt
+	//morning/evening todo prompt
 	let createddate = new Date(clientinfo.createddate)
 	let lastprompttodotodaydate = new Date(calendar.lastprompttodotodaydate)
+	let lastprompteveningsummarydate = new Date(calendar.lastprompteveningsummarydate)
+
 	let sleependdate = new Date(currentdate)
 	sleependdate.setHours(0, calendar.settings.sleep.endminute, 0, 0)
 	let sleependdatelater = new Date(sleependdate)
 	sleependdatelater.setHours(sleependdatelater.getHours() + 3) //only prompt within first 3 hours after wake up
 
-	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) && lastprompttodotodaydate.getTime() < sleependdate.getTime() && currentdate.getTime() >= sleependdate.getTime() && currentdate.getTime() < sleependdatelater.getTime()){
+	let sleepstartdate = new Date(currentdate)
+	sleepstartdate.setHours(0, calendar.settings.sleep.startminute, 0, 0)
+	sleepstartdate.setHours(sleepstartdate.getHours() + 2)
+	if(sleepstartdate.getTime() < currentdate.getTime()){
+		sleepstartdate.setDate(sleepstartdate.getDate() + 1) //for post midnight sleep start
+	}
+	let sleepstartdatebefore = new Date(sleepstartdate)
+	sleepstartdatebefore.setHours(sleepstartdatebefore.getHours() - 3) //3 hour range, from 1 hour before sleep to 2 hours after sleep
+
+	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) && lastprompteveningsummarydate.getTime() < sleependdate.getTime() && currentdate.getTime() >= sleependdate.getTime() && currentdate.getTime() < sleependdatelater.getTime()){
 		if(document.visibilityState == 'visible'){
-			prompttodotoday()
+			//prompttodotoday()
 			promptaiassistantmorningsummary()
 		}
 	}else{
-		closeprompttodotoday()
+		//closeprompttodotoday()
 	}
 
+	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) && lastprompttodotodaydate.getTime() < sleepstartdate.getTime() && currentdate.getTime() >= sleepstartdatebefore.getTime() && currentdate.getTime() < sleepstartdate.getTime()){
+		if(document.visibilityState == 'visible'){
+			promptaiassistanteveningsummary()
+		}
+	}
+
+	
 	//show social media
 	if(calendar.todos.length > 2 && Date.now() - clientinfo.createddate > 1000*3600 && new Date().getMinutes() % 3 == 0 && calendar.onboarding.finished == true){
 		//showsocialmediapopup = true
@@ -13738,7 +13756,6 @@ async function promptaiassistanttaskcompleted(item){
 async function promptaiassistanttaskstarted(item){
 
 
-
 	//typing...
 	let tempmessage = new ChatMessage({ role: 'assistant', message: null, unread: true })
 	let tempinteraction = new ChatInteraction([tempmessage])
@@ -13789,6 +13806,77 @@ async function promptaiassistanttaskstarted(item){
 	}
 }
 
+
+async function promptaiassistanteveningsummary(){
+
+	if(mobilescreen){
+		calendartabs = [4]
+	}else{
+		calendartabs = [0, 4]
+	}
+	calendar.updateTabs()
+
+	calendar.lastprompteveningsummarydate = Date.now()
+
+	let today = new Date()
+	today.setHours(0,0,0,0)
+	let endrange = new Date(today)
+	endrange.setDate(endrange.getDate() + 1)
+	let completedtodos = sortduedate([...getevents(today, endrange).filter(d => !Calendar.Event.isHidden(d) && d.completed && d.type == 1), ...gettodos(today, endrange).filter(d => d.completed && !Calendar.Event.isEvent(d))])
+
+	if(completedtodos.length == 0) return
+	//here3
+
+
+	//typing...
+	let tempmessage = new ChatMessage({ role: 'assistant', message: null, unread: true })
+	let tempinteraction = new ChatInteraction([tempmessage])
+	chathistory.addInteraction(tempinteraction)
+	updateaichat()
+
+	try{
+		const response = await fetch('/getgptchatresponseeveningsummary', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				timezoneoffset: new Date().getTimezoneOffset(),
+				completedtodos: completedtodos
+			})
+		})
+
+		if(response.status == 200){
+			let data = await response.json()
+
+			let output = data.data
+
+			if(clientinfo.betatester){
+				console.log(data.data?.totaltokens, output)
+			}
+
+			tempmessage.message = output.message
+			updateaichat()
+
+			//sound
+			if(document.visibilityState != 'visible' || !calendartabs.includes(4)){
+				playsound('incoming')
+			}
+		}else if(response.status == 401){
+			let data = await response.json()
+
+			console.log(data.error)
+
+			chathistory.removeInteraction(tempinteraction)
+			updateaichat()
+		}
+	}catch(error){
+		console.log(error)
+
+		chathistory.removeInteraction(tempinteraction)
+		updateaichat()
+	}
+}
 
 
 async function promptaiassistantmorningsummary(){
@@ -16568,7 +16656,6 @@ function getavailabletime(item, startrange, endrange, isschedulebuilder) {
 			if(sleepend.getTime() > sleepstart.getTime()){
 				tempnewranges.push({ start: Math.max(tempstartdate.getTime(), range.start), end: Math.min(sleepstart.getTime(), range.end) })
 				tempnewranges.push({ start: Math.max(sleepend.getTime(), range.start), end: Math.min(tempenddate.getTime(), range.end) })
-				console.log(new Date(tempnewranges[0].start),new Date(tempnewranges[0].end))
 			}else{
 				tempnewranges.push({ start: Math.max(sleepend.getTime(), range.start), end: Math.min(sleepstart.getTime(), range.end) })
 			}

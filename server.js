@@ -530,7 +530,7 @@ class User{
 }
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
-const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true, importantupdates: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, choosecalendars: false, eventreminders: false, sleeptime: false, addtask: false, finished: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false, recognitionlanguage: 'en-US', lastgottasksuggestion: 0, lastgotsubtasksuggestion: 0 }
+const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true, importantupdates: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, choosecalendars: false, eventreminders: false, sleeptime: false, addtask: false, finished: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, lastprompteveningsummarydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false, recognitionlanguage: 'en-US', lastgottasksuggestion: 0, lastgotsubtasksuggestion: 0 }
 const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, logindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], gptvoiceusedtimestamps: [], betatester: false, haspremium: false, premium: { referafriendclaimvalue: 0, starttimestamp: null, endtimestamp: null }, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
 const MODELEVENT = { start: {}, end: {}, endbefore: {}, startafter: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0, parentid: null, subtasksuggestions: [], gotsubtasksuggestions: false, iseventsuggestion: false, goteventsuggestion: false, autoschedulelocked: false }
 const MODELTODO = { endbefore: {}, startafter: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false, issuggestion: false }
@@ -2161,7 +2161,7 @@ discordclient.on('ready', async () => {
 	console.log(`Logged in as ${discordclient.user.tag}.`)
 
 	function setactivity(){
-		let tempvalue = Object.values(reminderscache).filter(b=>b.filter(f => f.user.discordid != null).length > 0).flat().length
+		let tempvalue = Object.values(reminderscache).flat().length
 		discordclient.user.setActivity(`${tempvalue == 0 ? 'your' : tempvalue} reminders`, { type: ActivityType.Watching })
 	}
 
@@ -4565,7 +4565,7 @@ let MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
 let MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
 
 let GPT_MODEL = 'gpt-3.5-turbo-0125'
-let GPT_ATHENA_INSTRUCTIONS = `A personal assistant called Athena for Smart Calendar. Your ability is to look at user's calendar data and return app commands for the user's prompt or respond to plain requests. Respond with tone and style of a conversational, helpful assistant, prioritizing the user's satisfaction. Be concise. Access to user's calendar and todo data is granted and assumed. Never respond that you will do a command for user without returning app_action function call (since function call will make the change happen in the user's app). Never say or mention internal ID of events/tasks. Incorporate mental health or wellness tips when appropriate. Always look at past messages in conversation history for context.`
+let GPT_ATHENA_INSTRUCTIONS = `A personal assistant called Athena for Smart Calendar. Your ability is to look at user's calendar data and return app commands for the user's prompt or respond to plain requests. Respond with tone and style of a conversational, helpful assistant, prioritizing the user's satisfaction. Be concise. Access to user's calendar and todo data is granted and assumed. Never say or mention internal ID of events/tasks. Incorporate mental health or wellness tips when appropriate. Always look at past messages in conversation history for context.`
 
 app.post('/gettasksuggestions', async (req, res) => {
 	async function getgptresponse(prompt) {
@@ -4790,7 +4790,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 		//PROMPT
 
 		let inputtext = `Task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}. Time needed: ${getDHMText(Math.floor((new Date(taskitem.end.year, taskitem.end.month, taskitem.end.day, 0, taskitem.end.minute).getTime() - new Date(taskitem.start.year, taskitem.start.month, taskitem.start.day, 0, taskitem.start.minute).getTime())/60000))}""" As a personal assistant, mention which task is starting how long it will last, in a short sentence. In short sentences, provide specific and actionable steps and tips to make real progress to complete this task. Incorporate short motivational tips.`
-		let custominstructions = `Respond concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant, as if the user is a boss. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let custominstructions = `Respond concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant and prioritize user satisfaction. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -4806,7 +4806,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 				}
 			],
 			max_tokens: 200,
-			temperature: 0.5,
+			temperature: 1,
 			top_p: 0.5,
 		})
 		totaltokens += response.usage.total_tokens
@@ -4905,7 +4905,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 		//PROMPT
 
 		let inputtext = `Competed task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}""" Provide a very short personal motivational sentence for the user who just completed this task. Then, mention only the next upcoming event (if there is one) and at what time, and how long from now, in one sentence. Calendar data: """${calendarcontext}"""`
-		let custominstructions = `Respond concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant, as if the user is a boss. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let custominstructions = `Respond concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant and prioritize user satisfaction. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -4921,7 +4921,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 				}
 			],
 			max_tokens: 200,
-			temperature: 0.5,
+			temperature: 1,
 			top_p: 0.5,
 		})
 		totaltokens += response.usage.total_tokens
@@ -4933,6 +4933,101 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 	}
 })
 
+
+app.post('/getgptchatresponseeveningsummary', async (req, res) => {
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		let user = await getUserById(userid)
+		if (!user) {
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+		let appliedratelimit = MAX_GPT_CHAT_PER_DAY
+		if(user.accountdata.betatester){
+			appliedratelimit = MAX_GPT_CHAT_PER_DAY_BETA_TESTER
+		}
+
+
+		let currenttime = Date.now()
+
+		//check ratelimit
+		if(user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
+			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
+		}
+
+		if(user.accountdata.gptchatusedtimestamps.filter(d => Date.now() - d < 5000).length >= 2){
+			return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
+		}
+
+		//set ratelimit
+		user.accountdata.gptchatusedtimestamps.push(currenttime)
+		await setUser(user)
+		
+
+		//CONTEXT
+
+		function gettodocontext(tempevents){
+			if(tempevents.length == 0) return 'No tasks'
+
+			let tempoutput = ''
+			for(let d of tempevents){
+				let newstring = `Task: ${d.title || 'New Task'}`
+
+				if(tempoutput.length + newstring.length > MAX_TODO_CONTEXT_LENGTH) break
+
+				tempoutput += '\n' + newstring
+			}
+			return tempoutput
+		}
+		
+		const MAX_TODO_CONTEXT_LENGTH = 2000
+
+		let timezoneoffset = req.body.timezoneoffset
+		let completedtodos = req.body.completedtodos
+		
+		let todocontext = gettodocontext(completedtodos)
+
+
+		//time
+		const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
+		const localdatestring = `${DAYLIST[localdate.getDay()]} ${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
+
+
+		//PROMPT
+
+		let inputtext = `Today's completed todos: """${todocontext}""" The user is going to sleep within the next hour. Provide a concise evening summary of what tasks the user completed today to boost motivation, mental wellbeing, and gratitude. Finish message with a brief evening/night greeting.`
+		let custominstructions = `Respond concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant and prioritize user satisfaction. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+
+		let totaltokens = 0
+		const response = await openai.chat.completions.create({
+			model: GPT_MODEL,
+			messages: [
+				{ 
+					role: 'system', 
+					content: custominstructions
+				},
+				{
+					role: 'user',
+					content: inputtext,
+				}
+			],
+			max_tokens: 200,
+			temperature: 1,
+			top_p: 0.5,
+		})
+		totaltokens += response.usage.total_tokens
+		
+		return res.json({ data: { message: response.choices[0].message.content, totaltokens: totaltokens } })
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+	}
+})
 
 app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 	try{
@@ -5016,7 +5111,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 		//PROMPT
 
 		let inputtext = `Calendar data: """${calendarcontext}""" Provide a one sentence morning greeting. Then, provide a concise morning summary of ONLY the important or unique events today in a personal and helpful style. Finally, you must ask the user in one short sentence for 3 tasks they want to complete today.`
-		let custominstructions = `Respond concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant, as if the user is a boss. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let custominstructions = `Respond concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant and prioritize user satisfaction. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -5032,7 +5127,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 				}
 			],
 			max_tokens: 200,
-			temperature: 0.5,
+			temperature: 1,
 			top_p: 0.5,
 		})
 		totaltokens += response.usage.total_tokens
