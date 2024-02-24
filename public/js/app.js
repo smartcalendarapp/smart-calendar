@@ -16764,6 +16764,7 @@ function getbreaktime(item) {
 	
 }
 
+
 let animatenextitem;
 let isautoscheduling = false;
 let iseditingschedule = false;
@@ -17006,6 +17007,13 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 			let rescheduletaskpopup = getElement('rescheduletaskpopup')
 			rescheduletaskpopup.classList.remove('hiddenpopup')
+
+			let checkinterval = setInterval(function(){
+				if(!calendar.events.find(d => d.id == overdueitem.id)){
+					clearInterval(checkinterval)
+					rescheduletaskfunction()
+				}
+			}, 1000)
 			return
 		}
 
