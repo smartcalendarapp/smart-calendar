@@ -4370,7 +4370,7 @@ function updatetime() {
 	let sleepstartdatebefore = new Date(sleepstartdate)
 	sleepstartdatebefore.setHours(sleepstartdatebefore.getHours() - 3) //3 hour range, from 1 hour before sleep to 2 hours after sleep
 
-	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) && lastprompteveningsummarydate.getTime() < sleependdate.getTime() && currentdate.getTime() >= sleependdate.getTime() && currentdate.getTime() < sleependdatelater.getTime()){
+	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) && lastprompttodotodaydate.getTime() < sleependdate.getTime() && currentdate.getTime() >= sleependdate.getTime() && currentdate.getTime() < sleependdatelater.getTime()){
 		if(document.visibilityState == 'visible'){
 			//prompttodotoday()
 			promptaiassistantmorningsummary()
@@ -4379,7 +4379,7 @@ function updatetime() {
 		//closeprompttodotoday()
 	}
 
-	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) && lastprompttodotodaydate.getTime() < sleepstartdate.getTime() && currentdate.getTime() >= sleepstartdatebefore.getTime() && currentdate.getTime() < sleepstartdate.getTime()){
+	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) && lastprompteveningsummarydate.getTime() < sleepstartdate.getTime() && currentdate.getTime() >= sleepstartdatebefore.getTime() && currentdate.getTime() < sleepstartdate.getTime()){
 		if(document.visibilityState == 'visible'){
 			promptaiassistanteveningsummary()
 		}
