@@ -5093,7 +5093,7 @@ function run() {
 			}
 
 			//get google calendar
-			if (!isgettingclientdata && !isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 30000 && issettingclientgooglecalendar == false && Date.now() - lasttriedsyncgooglecalendardate > 30000 && Date.now() - calendar.lastmodified > 10000) {
+			if (!isgettingclientdata && !iswaitingforsetclientgooglecalendar && !isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 30000 && !issettingclientgooglecalendar && Date.now() - lasttriedsyncgooglecalendardate > 30000) {
 				lasttriedsyncgooglecalendardate = Date.now()
 				getclientgooglecalendar()
 			}
@@ -7965,8 +7965,33 @@ function closeloginwithgooglepopup(){
 //set google calendar
 let issettingclientgooglecalendar = false
 let lastsetclientgooglecalendar = 0
+let iswaitingforsetclientgooglecalendar = false
 async function setclientgooglecalendar(requestchanges) {
-	//solutions: accumulate all changes and only set if been 5 sec since last set and 5 sec since edit calendar. need to cancel out aka create + delete = none, create + edit = edit, and edit + delete = delete
+	//solution: accumulate all changes and only set if been 5 sec since last set and 5 sec since edit calendar. need to cancel out aka create + delete = none, create + edit = edit, and edit + delete = delete
+
+	//other solution: wait until previous requests are done (less conflict management and simpler)
+
+	if (!calendar.settings.issyncingtogooglecalendar) return
+	if (requestchanges.length == 0) return
+
+	if(issettingclientgooglecalendar){
+		async function waitforready(){
+			iswaitingforsetclientgooglecalendar = true
+
+			return new Promise((resolve) => {
+				let myinterval = setInterval(function(){
+					if(!issettingclientgooglecalendar){
+						iswaitingforsetclientgooglecalendar = false
+						clearInterval(myinterval)
+						resolve()
+						return
+					}
+				}, 100)
+			})
+		}
+		await waitforready()
+	}
+
 
 	let importgooglecalendarerror = getElement('importgooglecalendarerror')
 	importgooglecalendarerror.classList.add('display-none')
@@ -7975,10 +8000,6 @@ async function setclientgooglecalendar(requestchanges) {
 
 	let loginwithgooglescreen = getElement('loginwithgooglescreen')
 	loginwithgooglescreen.classList.add('hiddenfade')
-
-	if (!calendar.settings.issyncingtogooglecalendar) return
-
-	if (requestchanges.length == 0) return
 
 	issettingclientgooglecalendar = true
 

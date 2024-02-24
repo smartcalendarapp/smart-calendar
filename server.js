@@ -5542,7 +5542,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 						let request2options = {
 							model: GPT_MODEL,
-							max_tokens: commands.length > 0 ? 2000 : 300,
+							max_tokens: commands.length > 0 ? 1500 : 300, //more tokens for functions
 							temperature: 0.5,
 							top_p: 0.5,
 							stream: true
