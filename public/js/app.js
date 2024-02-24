@@ -13808,6 +13808,13 @@ async function promptaiassistanttaskstarted(item){
 
 
 async function promptaiassistanteveningsummary(){
+	let today = new Date()
+	today.setHours(0,0,0,0)
+	let endrange = new Date(today)
+	endrange.setDate(endrange.getDate() + 1)
+	let completedtodos = sortduedate([...getevents(today, endrange).filter(d => !Calendar.Event.isHidden(d) && d.completed && d.type == 1), ...gettodos(today, endrange).filter(d => d.completed && !Calendar.Event.isEvent(d))])
+
+	if(completedtodos.length == 0) return
 
 	if(mobilescreen){
 		calendartabs = [4]
@@ -13817,14 +13824,6 @@ async function promptaiassistanteveningsummary(){
 	calendar.updateTabs()
 
 	calendar.lastprompteveningsummarydate = Date.now()
-
-	let today = new Date()
-	today.setHours(0,0,0,0)
-	let endrange = new Date(today)
-	endrange.setDate(endrange.getDate() + 1)
-	let completedtodos = sortduedate([...getevents(today, endrange).filter(d => !Calendar.Event.isHidden(d) && d.completed && d.type == 1), ...gettodos(today, endrange).filter(d => d.completed && !Calendar.Event.isEvent(d))])
-
-	if(completedtodos.length == 0) return
 	//here3
 
 
