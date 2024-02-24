@@ -4577,7 +4577,7 @@ app.post('/gettasksuggestions', async (req, res) => {
 					role: 'user',
 					content: prompt
 				}],
-				max_tokens: 150,
+				max_tokens: 200,
 			})
 
 			return res.choices[0].message.content
@@ -4648,7 +4648,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 						content: prompt
 					}
 				],
-				max_tokens: 150,
+				max_tokens: 200,
 			})
 
 			return res.choices[0].message.content
@@ -5000,8 +5000,8 @@ app.post('/getgptchatresponseeveningsummary', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Today's completed todos: """${todocontext}""" The user is going to sleep within the next hour. Provide a concise evening summary of what tasks the user completed today to boost motivation, mental wellbeing, and gratitude. Finish message with a brief evening/night greeting.`
-		let custominstructions = `Respond concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant and prioritize user satisfaction. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let inputtext = `Today's completed todos: """${todocontext}""" The user is going to sleep within the next hour. Provide a personal, concise evening message of what tasks the user completed today to boost motivation and gratitude. Finish message with a brief and personal bedtime greeting.`
+		let custominstructions = `Respond concise as possible. Avoid generic or cliche responses. Use a tone and style of a friendly and kind personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -5542,7 +5542,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 						let request2options = {
 							model: GPT_MODEL,
-							max_tokens: commands.length > 0 ? 1000 : 200,
+							max_tokens: commands.length > 0 ? 2000 : 300,
 							temperature: 0.5,
 							top_p: 0.5,
 							stream: true
