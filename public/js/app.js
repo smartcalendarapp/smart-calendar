@@ -4379,7 +4379,7 @@ function updatetime() {
 		//closeprompttodotoday()
 	}
 
-	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) && lastprompteveningsummarydate.getTime() < sleepstartdate.getTime() && currentdate.getTime() >= sleepstartdatebefore.getTime() && currentdate.getTime() < sleepstartdate.getTime()){
+	if(Math.floor(currentdate.getTime()/86400000) > Math.floor(createddate.getTime()/86400000) && lastprompteveningsummarydate.getTime() < sleepstartdatebefore.getTime() && currentdate.getTime() >= sleepstartdatebefore.getTime() && currentdate.getTime() < sleepstartdate.getTime()){
 		if(document.visibilityState == 'visible'){
 			promptaiassistanteveningsummary()
 		}
@@ -13824,7 +13824,6 @@ async function promptaiassistanteveningsummary(){
 	calendar.updateTabs()
 
 	calendar.lastprompteveningsummarydate = Date.now()
-	//here3
 
 
 	//typing...
