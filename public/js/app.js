@@ -1495,7 +1495,7 @@ class Calendar {
 					}
 					for (let item of oldeventsdata) {
 						if (!calendar.events.find(d => d.id == item.id)) { //delete event
-							requestchanges.push({ type: 'deleteevent', googleeventid: item.googleeventid, googlecalendarid: item.googlecalendarid, requestid: generateID() })
+							requestchanges.push({ type: 'deleteevent', item: item, googleeventid: item.googleeventid, googlecalendarid: item.googlecalendarid, requestid: generateID() })
 						}
 					}
 
@@ -1516,11 +1516,11 @@ class Calendar {
 					}
 					for (let item of oldcalendarsdata) {
 						if (!calendar.calendars.find(d => d.id == item.id)) { //delete calendar
-							requestchanges.push({ type: 'deletecalendar', googleid: item.googleid, requestid: generateID() })
+							requestchanges.push({ type: 'deletecalendar', item: item, googleid: item.googleid, requestid: generateID() })
 						}
 					}
 
-					setclientgooglecalendar(requestchanges)
+					setclientgooglecalendar(requestchanges, true)
 				}
 
 			}
@@ -4897,67 +4897,11 @@ function run() {
 
 	//tick
 	setInterval(async function(){
-		/*
-		if(Date.now - calendar.lastmodified > 5000 && !issettingclientgooglecalendar && !isgettingclientdata && calendar.settings.issyncingtogooglecalendar && !movingevent && !isautoscheduling){
-			if(lastsetgoogledata != JSON.stringify({ events: calendar.events, calendars: calendar.calendars })){
-
-				let parsed = JSON.parse(lastsetgoogledata)
-				let oldeventsdata = parsed.events
-				let oldcalendarsdata = parsed.calendars
-
-				let requestchanges = []
-				for (let item of calendar.events) {
-					let olditem = oldeventsdata.find(d => d.id == item.id)
-					if (!olditem) { //create event
-						requestchanges.push({ type: 'createevent', item: item, requestid: generateID() })
-					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit event
-						//check for change
-						if (new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() != new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute).getTime() || new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() != new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute).getTime() || item.title != olditem.title || item.notes != olditem.notes || getRecurrenceString(item) != getRecurrenceString(olditem) || Calendar.Event.getCalendar(item)?.googleid != olditem.googlecalendarid) {
-							requestchanges.push({ type: 'editevent', item: item, oldgooglecalendarid: olditem.googlecalendarid, newgooglecalendarid: Calendar.Event.getCalendar(item)?.googleid, requestid: generateID() })
-						}
-					}
-				}
-				for (let item of oldeventsdata) {
-					if (!calendar.events.find(d => d.id == item.id)) { //delete event
-						requestchanges.push({ type: 'deleteevent', googleeventid: item.googleeventid, googlecalendarid: item.googlecalendarid, requestid: generateID() })
-					}
-				}
-
-				for (let item of calendar.calendars) {
-					let olditem = oldcalendarsdata.find(d => d.id == item.id)
-					if (!olditem) { //create calendar
-						requestchanges.push({ type: 'createcalendar', item: item, requestid: generateID() })
-					} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit calendar
-						//check for change
-						if (olditem.title != item.title || olditem.notes != item.notes) {
-							requestchanges.push({ type: 'editcalendar', item: item, requestid: generateID() })
-						}
-					}
-				}
-				for (let item of oldcalendarsdata) {
-					if (!calendar.calendars.find(d => d.id == item.id)) { //delete calendar
-						requestchanges.push({ type: 'deletecalendar', googleid: item.googleid, requestid: generateID() })
-					}
-				}
-
-				//fix
-				let temp = requestchanges.filter(d => d.type == 'deleteevent')
-				for(let item of temp){
-					requestchanges = requestchanges.filter(d => d.type != 'deleteevent' && d.googleeventid != item.googleeventid && d.item?.id != item.id)
-				}
-
-				let temp2 = requestchanges.filter(d => d.type == 'deletecalendar')
-				for(let item of temp2){
-					requestchanges = requestchanges.filter(d => d.type != 'deletecalendar' && d.googleid != item.googleid && d.item?.id != item.id)
-				}
-
-				setclientgooglecalendar(requestchanges)
-
-				lastsetgoogledata = JSON.stringify({ events: calendar.events, calendars: calendar.calendars })
-
+		if (calendar.settings.issyncingtogooglecalendar){
+			if(setclientdataqueue.length > 0 && !issettingclientgooglecalendar){
+				performsetclientgooglecalendar()
 			}
 		}
-		*/
 
 		if (document.visibilityState === 'visible') {
 			if (needtoautoschedule && !movingevent && !isautoscheduling) {
@@ -4975,6 +4919,7 @@ function run() {
 			updateinteractivetour()
 		}
 	}, 100)
+
 
 	setInterval(async function(){
 		if(document.visibilityState === 'visible' && Date.now() - calendar.lastmodified > 5000 && Date.now() - calendar.lastgotsubtasksuggestion > 60000*5 && selectededittodoid == null){ //every 5 min
@@ -5093,7 +5038,7 @@ function run() {
 			}
 
 			//get google calendar
-			if (!isgettingclientdata && !iswaitingforsetclientgooglecalendar && !movingevent && !isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 30000 && !issettingclientgooglecalendar && Date.now() - lasttriedsyncgooglecalendardate > 30000) {
+			if (!isgettingclientdata && setclientdataqueue.length == 0 && !movingevent && !isautoscheduling && document.visibilityState === 'visible' && Date.now() - calendar.lastsyncedgooglecalendardate > 30000 && !issettingclientgooglecalendar && Date.now() - lasttriedsyncgooglecalendardate > 30000) {
 				lasttriedsyncgooglecalendardate = Date.now()
 				getclientgooglecalendar()
 			}
@@ -7965,38 +7910,46 @@ function closeloginwithgooglepopup(){
 //set google calendar
 let issettingclientgooglecalendar = false
 let lastsetclientgooglecalendar = 0
-let iswaitingforsetclientgooglecalendar = false
-async function setclientgooglecalendar(requestchanges) {
-	//solution: accumulate all changes and only set if been 5 sec since last set and 5 sec since edit calendar. need to cancel out aka create + delete = none, create + edit = edit, and edit + delete = delete
-
-	//other solution: wait until previous requests are done (less conflict management and simpler)
-
+let setclientdataqueue = []
+function setclientgooglecalendar(requestchanges){
 	if (!calendar.settings.issyncingtogooglecalendar) return
 	if (requestchanges.length == 0) return
 
-	if(issettingclientgooglecalendar){
-		async function waitforready(){
-			iswaitingforsetclientgooglecalendar = true
+	setclientdataqueue.push(requestchanges)
+}
+async function performsetclientgooglecalendar() {
+	//solution: add to queue and do request 1 by 1 not parallel (less conflict management and in sequential order)
 
-			console.log('Waiting...', requestchanges.map(d => `${d.type}: ${d.item.title}`).join(', '))
+	let requestchanges = setclientdataqueue[0]
+	if(requestchanges.length == 0){
+		setclientdataqueue.shift()
+		return
+	}
 
+	function getloadingevents(){
+		return requestchanges.filter(d => (d.type == 'deleteevent' && !d.googleeventid) || (d.type == 'editevent' && !d.item.googleeventid) ||  (d.type == 'deletecalendar' && !d.googleid) || (d.type == 'editcalendar' && !d.item.googleid))
+	}
+
+	if(getloadingevents().length > 0){
+		function waitforevents(){
+			let tempstart = Date.now()
 			return new Promise((resolve) => {
-				let x = Date.now()
-				let myinterval = setInterval(function(){
-					if(!issettingclientgooglecalendar){
-						iswaitingforsetclientgooglecalendar = false
-						clearInterval(myinterval)
-						resolve()
-
-						console.log('waiting done', requestchanges.map(d => `${d.type}: ${d.item?.title || 'deleted'}`).join(', '))
-						return
+				let waitinterval = setInterval(function(){
+					if(getloadingevents().length == 0){
+						clearInterval(waitinterval)
+						return resolve()
+					}
+					if(!issettingclientgooglecalendar && Date.now() - tempstart > 5000){ //just continue if it didnt load id for 5s
+						clearInterval(waitinterval)
+						return resolve()
 					}
 				}, 100)
 			})
 		}
-		await waitforready()
+		await waitforevents()
 	}
 
+	issettingclientgooglecalendar = true
 
 	let importgooglecalendarerror = getElement('importgooglecalendarerror')
 	importgooglecalendarerror.classList.add('display-none')
@@ -8005,8 +7958,6 @@ async function setclientgooglecalendar(requestchanges) {
 
 	let loginwithgooglescreen = getElement('loginwithgooglescreen')
 	loginwithgooglescreen.classList.add('hiddenfade')
-
-	issettingclientgooglecalendar = true
 
 	try {
 		//request
@@ -8039,16 +7990,34 @@ async function setclientgooglecalendar(requestchanges) {
 		} else if (response.status == 200) {
 			const data = await response.json()
 
+			function fixdeletedrequest(item, responsechange){
+				for(let temprequestchanges of setclientdataqueue){
+					for(let temprequestchange of temprequestchanges){
+						if(temprequestchange.type == 'deleteevent' && !temprequestchange.googleeventid && item.id == temprequestchange.item.id){
+							temprequestchange.googleeventid = responsechange.id
+						}else if(temprequestchange.type == 'deletecalendar' && !temprequestchange.googleid && item.id == temprequestchange.item.id){
+							temprequestchange.googleid = responsechange.id
+						}
+					}
+				}
+			}
+
 			//make changes
 			let responsechanges = data.data
 			for (let responsechange of responsechanges) {
 				if (responsechange.type == 'createevent') {
 					let item = calendar.events.find(d => d.id == responsechange.id)
+
+					fixdeletedrequest(item, responsechange)
+
 					if (!item) continue
 
 					item.googleeventid = responsechange.googleeventid
 				} else if (responsechange.type == 'createcalendar') {
 					let item = calendar.calendars.find(d => d.id == responsechange.id)
+
+					fixdeletedrequest(item, responsechange)
+
 					if (!item) continue
 
 					item.googleid = responsechange.googleid
@@ -8070,6 +8039,8 @@ async function setclientgooglecalendar(requestchanges) {
 	} catch (err) {
 		console.log(err)
 	}
+
+	setclientdataqueue.shift()
 
 	issettingclientgooglecalendar = false
 }
@@ -8113,7 +8084,7 @@ async function getclientgooglecalendar() {
 		} else if (response.status == 200) {
 			const data = await response.json()
 
-			if(calendar.lastmodified > tempstartgetclientgooglecalendardate || isautoscheduling || movingevent || issettingclientgooglecalendar || lastsetclientgooglecalendar > tempstartgetclientgooglecalendardate || iswaitingforsetclientgooglecalendar){
+			if(calendar.lastmodified > tempstartgetclientgooglecalendardate || isautoscheduling || movingevent || issettingclientgooglecalendar || lastsetclientgooglecalendar > tempstartgetclientgooglecalendardate || setclientdataqueue.length != 0){
 				isgettingclientgooglecalendar = false
 				return
 			}
