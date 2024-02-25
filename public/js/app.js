@@ -7978,12 +7978,17 @@ async function setclientgooglecalendar(requestchanges) {
 		async function waitforready(){
 			iswaitingforsetclientgooglecalendar = true
 
+			console.log('Waiting...', requestchanges.map(d => `${d.type}: ${d.item.title}`).join(', '))
+
 			return new Promise((resolve) => {
+				let x = Date.now()
 				let myinterval = setInterval(function(){
 					if(!issettingclientgooglecalendar){
 						iswaitingforsetclientgooglecalendar = false
 						clearInterval(myinterval)
 						resolve()
+
+						console.log('waiting done', requestchanges.map(d => `${d.type}: ${d.item?.title || 'deleted'}`).join(', '))
 						return
 					}
 				}, 100)

@@ -2855,7 +2855,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 						responsechanges.push({ type: 'editevent', id: item.id, googlecalendarid: requestchange.newgooglecalendarid })
 					}
 				}catch(error){
-					//console.error(error)
+					console.error(error)
 				}
 				
 			}else if(requestchange.type == 'createevent'){
@@ -2889,7 +2889,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 
 					responsechanges.push({ type: 'createevent', id: item.id, googleeventid: response.data.id })
 				}catch(error){
-					//console.error(error)
+					console.error(error)
 				}
 				
 			}else if(requestchange.type == 'deleteevent'){
@@ -2904,7 +2904,7 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 						throw new Error(response.data?.error?.message)
 					}
 				}catch(error){
-					//console.error(error)
+					console.error(error)
 				}
 					
 			}else if(requestchange.type == 'editcalendar'){
@@ -4789,7 +4789,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}. Time needed: ${getDHMText(Math.floor((new Date(taskitem.end.year, taskitem.end.month, taskitem.end.day, 0, taskitem.end.minute).getTime() - new Date(taskitem.start.year, taskitem.start.month, taskitem.start.day, 0, taskitem.start.minute).getTime())/60000))}""" As a personal assistant, mention which task is starting how long it will last, in a short sentence. In short sentences, provide specific and actionable steps and tips to make real progress to complete this task. Incorporate short motivational tips.`
+		let inputtext = `Task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}. Time needed: ${getDHMText(Math.floor((new Date(taskitem.end.year, taskitem.end.month, taskitem.end.day, 0, taskitem.end.minute).getTime() - new Date(taskitem.start.year, taskitem.start.month, taskitem.start.day, 0, taskitem.start.minute).getTime())/60000))}""" In a conversational and friendly style, mention which task is starting how long it will last, in a short sentence. Then, provide specific and actionable steps and tips to make real progress to complete this task. Incorporate short motivational tips.`
 		let custominstructions = `Respond concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant and prioritize user satisfaction. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
