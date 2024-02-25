@@ -1485,7 +1485,7 @@ class Calendar {
 						} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit event
 							//check for change
 							if (new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime() != new Date(olditem.start.year, olditem.start.month, olditem.start.day, 0, olditem.start.minute).getTime() || new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() != new Date(olditem.end.year, olditem.end.month, olditem.end.day, 0, olditem.end.minute).getTime() || item.title != olditem.title || item.notes != olditem.notes || getRecurrenceString(item) != getRecurrenceString(olditem) || Calendar.Event.getCalendar(item)?.googleid != olditem.googlecalendarid) {
-								if(!item.googleeventid){
+								if(!item.googleeventid && !setclientdataqueue.flat().find(d => d.type == 'createevent' && d.item.id == item.id)){
 									requestchanges.push({ type: 'createevent', item: item, requestid: generateID() })
 								}else{
 									requestchanges.push({ type: 'editevent', item: item, oldgooglecalendarid: olditem.googlecalendarid, newgooglecalendarid: Calendar.Event.getCalendar(item)?.googleid, requestid: generateID() })
@@ -1506,7 +1506,7 @@ class Calendar {
 						} else if (JSON.stringify(olditem) != JSON.stringify(item)) { //edit calendar
 							//check for change
 							if (olditem.title != item.title || olditem.notes != item.notes) {
-								if(!item.googleid){
+								if(!item.googleid && !setclientdataqueue.flat().find(d => d.type == 'createcalendar' && d.item.id == item.id)){
 									requestchanges.push({ type: 'createcalendar', item: item, requestid: generateID() })
 								}else{
 									requestchanges.push({ type: 'editcalendar', item: item, requestid: generateID() })
@@ -7931,11 +7931,13 @@ async function performsetclientgooglecalendar() {
 	}
 
 	if(getloadingevents().length > 0){
+		console.log('WAITING', requestchanges[0].type)
 		function waitforevents(){
 			let tempstart = Date.now()
 			return new Promise((resolve) => {
 				let waitinterval = setInterval(function(){
 					if(getloadingevents().length == 0){
+						console.log('FIXED')
 						clearInterval(waitinterval)
 						return resolve()
 					}

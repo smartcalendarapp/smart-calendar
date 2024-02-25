@@ -3812,7 +3812,7 @@ app.post('/dev', async (req, res) => {
 				if(!tempuser) return false
 			}
 			
-			return `User ID: ${tempuser.userid}\nUsername: ${tempuser.username || ''}\nGoogle email: ${tempuser.google_email || ''}\nApple ID: ${tempuser.appleid || ''}\nCreated date: ${getlocaldate(tempuser.accountdata.createddate)} (UTC)\nLast logged in date: ${getlocaldate(tempuser.accountdata.lastloggedindate)} (UTC)\n\nAccount data size: ${charstosize(JSON.stringify(user))}\nCalendar data size: ${charstosize(JSON.stringify(tempuser.calendardata))}\n\nEvents: ${tempuser.calendardata.events.length}\nTasks: ${tempuser.calendardata.todos.length}\nFixed events: ${tempuser.calendardata.events.filter(d => d.type == 0).length}\nFlexible events: ${tempuser.calendardata.events.filter(d => d.type == 1).length}\n\n\nGPT chat uses: ${tempuser.accountdata.gptchatusedtimestamps.length}`
+			return `User ID: ${tempuser.userid}\nUsername: ${tempuser.username || ''}\nGoogle email: ${tempuser.google_email || ''}\nApple ID: ${tempuser.appleid || ''}\nCreated date: ${getlocaldate(tempuser.accountdata.createddate)} (UTC)\nLast logged in date: ${getlocaldate(tempuser.accountdata.lastloggedindate)} (UTC)\n\nTotal data size: ${charstosize(JSON.stringify(tempuser))}\nCalendar data size: ${charstosize(JSON.stringify(tempuser.calendardata))}\n\nEvents: ${tempuser.calendardata.events.length}\nTasks: ${tempuser.calendardata.todos.length}\nFixed events: ${tempuser.calendardata.events.filter(d => d.type == 0).length}\nFlexible events: ${tempuser.calendardata.events.filter(d => d.type == 1).length}\n\n\nGPT chat uses: ${tempuser.accountdata.gptchatusedtimestamps.length}`
 		}
 
 		async function getdiscorduserid(tempdiscordid){
