@@ -7990,13 +7990,13 @@ async function performsetclientgooglecalendar() {
 		} else if (response.status == 200) {
 			const data = await response.json()
 
-			function fixdeletedrequest(item, responsechange){
+			function fixdeletedrequest(itemid, responsechange){
 				for(let temprequestchanges of setclientdataqueue){
 					for(let temprequestchange of temprequestchanges){
-						if(temprequestchange.type == 'deleteevent' && !temprequestchange.googleeventid && item.id == temprequestchange.item.id){
-							temprequestchange.googleeventid = responsechange.id
-						}else if(temprequestchange.type == 'deletecalendar' && !temprequestchange.googleid && item.id == temprequestchange.item.id){
-							temprequestchange.googleid = responsechange.id
+						if(temprequestchange.type == 'deleteevent' && !temprequestchange.googleeventid && itemid == temprequestchange.item.id){
+							temprequestchange.googleeventid = responsechange.googleeventid
+						}else if(temprequestchange.type == 'deletecalendar' && !temprequestchange.googleid && itemid == temprequestchange.item.id){
+							temprequestchange.googleid = responsechange.googleid
 						}
 					}
 				}
@@ -8008,24 +8008,24 @@ async function performsetclientgooglecalendar() {
 				if (responsechange.type == 'createevent') {
 					let item = calendar.events.find(d => d.id == responsechange.id)
 
-					fixdeletedrequest(item, responsechange)
+					if(item){
+						item.googleeventid = responsechange.googleeventid
+					}
 
-					if (!item) continue
-
-					item.googleeventid = responsechange.googleeventid
+					fixdeletedrequest(responsechange.id, responsechange)
 				} else if (responsechange.type == 'createcalendar') {
 					let item = calendar.calendars.find(d => d.id == responsechange.id)
 
-					fixdeletedrequest(item, responsechange)
+					if(item){
+						item.googleid = responsechange.googleid
+					}
 
-					if (!item) continue
-
-					item.googleid = responsechange.googleid
+					fixdeletedrequest(responsechange.id, responsechange)
 				}else if(responsechange.type == 'editevent'){
 					let item = calendar.events.find(d => d.id == responsechange.id)
-					if (!item) continue
-
-					item.googlecalendarid = responsechange.googlecalendarid
+					if (item){
+						item.googlecalendarid = responsechange.googlecalendarid
+					}
 				}
 			}
 
