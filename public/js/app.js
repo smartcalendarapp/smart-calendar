@@ -7918,7 +7918,7 @@ function setclientgooglecalendar(requestchanges){
 	setclientdataqueue.push(requestchanges)
 }
 async function performsetclientgooglecalendar() {
-	//solution: add to queue and do request 1 by 1 not parallel (less conflict management and in sequential order)
+	if(issettingclientgooglecalendar) return
 
 	let requestchanges = setclientdataqueue[0]
 	if(requestchanges.length == 0){
@@ -7931,13 +7931,11 @@ async function performsetclientgooglecalendar() {
 	}
 
 	if(getloadingevents().length > 0){
-		console.log('WAITING', requestchanges[0].type)
 		function waitforevents(){
 			let tempstart = Date.now()
 			return new Promise((resolve) => {
 				let waitinterval = setInterval(function(){
 					if(getloadingevents().length == 0){
-						console.log('FIXED')
 						clearInterval(waitinterval)
 						return resolve()
 					}
