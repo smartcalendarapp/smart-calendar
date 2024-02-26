@@ -13811,8 +13811,6 @@ async function promptaiassistanteveningsummary(){
 	endrange.setDate(endrange.getDate() + 1)
 	let completedtodos = sortduedate([...getevents(today, endrange).filter(d => !Calendar.Event.isHidden(d) && d.completed && d.type == 1), ...gettodos(today, endrange).filter(d => d.completed && !Calendar.Event.isEvent(d))])
 
-	if(completedtodos.length == 0) return
-
 	if(mobilescreen){
 		calendartabs = [4]
 	}else{

@@ -4972,7 +4972,7 @@ app.post('/getgptchatresponseeveningsummary', async (req, res) => {
 		//CONTEXT
 
 		function gettodocontext(tempevents){
-			if(tempevents.length == 0) return 'No tasks'
+			if(tempevents.length == 0) return ``
 
 			let tempoutput = ''
 			for(let d of tempevents){
@@ -5000,7 +5000,7 @@ app.post('/getgptchatresponseeveningsummary', async (req, res) => {
 
 		//PROMPT
 
-		let inputtext = `Today's completed todos: """${todocontext}""" The user is going to sleep within the next hour. Provide a personal, concise evening message of what tasks the user completed today to boost motivation and gratitude. Finish message with a brief and personal bedtime greeting.`
+		let inputtext = todocontext ? `Today's completed tasks: """${todocontext}""" The user is going to sleep within the next hour. Provide a personal, concise evening message of what tasks the user completed today to boost feelings of accomplishment and gratitude. Finish message with a brief and personal bedtime greeting.` : `The user is going to sleep within the next hour. Provide a personal, concise evening message to boost feelings of accomplishment and gratitude, and bedtime greeting.`
 		let custominstructions = `Respond concise as possible. Avoid generic or cliche responses. Use a tone and style of a friendly and kind personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
