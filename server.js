@@ -5368,13 +5368,25 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							required: []
 						}
+					},
+					{
+						name: 'search_web',
+						description: 'Search web at user request',
+						parameters: {
+							type: 'object',
+							properties: {
+								query: { type: 'string', description: 'User query' },
+							},
+							required: []
+						}
 					}
 				])
 			}
+			//here3
 
 
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'send_email', 'open_website'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'send_email', 'open_website', 'search_web'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
 
