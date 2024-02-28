@@ -4565,7 +4565,7 @@ let MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
 let MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
 
 let GPT_MODEL = 'gpt-3.5-turbo-0125'
-let GPT_ATHENA_INSTRUCTIONS = `A personal assistant called Athena for Smart Calendar. Your ability is to look at user's calendar data and return app commands for the user's prompt or respond to plain requests. Respond with tone and style of a conversational, helpful assistant, prioritizing the user's satisfaction. Be concise. Access to user's calendar and todo data is granted and assumed. Never say or mention internal ID of events/tasks. Incorporate mental health or wellness tips when appropriate. Always reference and remember past messages in conversation history for context. If user references 'this', 'that', 'those' or similar, they are talking about event or task in previous message(s).`
+let GPT_ATHENA_INSTRUCTIONS = `A personal assistant called Athena for Smart Calendar that can answer any request. Your ability is to look at user's calendar data and return app commands for the user's prompt or respond to plain requests. Respond with tone and style of a conversational, helpful assistant, prioritizing the user's satisfaction. Be concise. Access to user's calendar and todo data is granted and assumed. Never say or mention internal ID of events/tasks. Incorporate mental health or wellness tips when appropriate. Always reference and remember past messages in conversation history for context. If user references 'this', 'that', 'those' or similar, they are talking about event or task in previous message(s).`
 
 app.post('/gettasksuggestions', async (req, res) => {
 	async function getgptresponse(prompt) {
@@ -5360,7 +5360,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					},
 					{
 						name: 'open_website',
-						description: 'Open a website at user request',
+						description: 'Open a website at user request. Supports Google search if needed.',
 						parameters: {
 							type: 'object',
 							properties: {
@@ -5369,17 +5369,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							required: []
 						}
 					},
-					{
-						name: 'search_web',
-						description: 'Search web at user request',
-						parameters: {
-							type: 'object',
-							properties: {
-								query: { type: 'string', description: 'User query' },
-							},
-							required: []
-						}
-					}
 				])
 			}
 			//here3
