@@ -15628,6 +15628,15 @@ async function submitaimessage(optionalinput, dictated){
 						}else{
 							responsechatmessage.message = `Please tell me the link you want to open.`
 						}
+					}else if(command == 'search_web'){
+						let query = arguments?.query
+
+						if(query){
+							responsechatmessage.message = `Done!`
+							responsechatmessage.link = { url: `https://www.google.com/search?q=${encodeURIComponent(query)}`, text: 'Search Google' }
+						}else{
+							responsechatmessage.message = `Please tell me what you want to search.`
+						}
 					}else if(command == 'open_website'){
 						let url = arguments?.url
 						if(url){
