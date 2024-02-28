@@ -4565,7 +4565,7 @@ let MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
 let MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
 
 let GPT_MODEL = 'gpt-3.5-turbo-0125'
-let GPT_ATHENA_INSTRUCTIONS = `A personal assistant called Athena for Smart Calendar. Your ability is to look at user's calendar data and return app commands for the user's prompt or respond to plain requests. Respond with tone and style of a conversational, helpful assistant, prioritizing the user's satisfaction. Be concise. Access to user's calendar and todo data is granted and assumed. Never say or mention internal ID of events/tasks. Incorporate mental health or wellness tips when appropriate. Always look at past messages in conversation history for context.`
+let GPT_ATHENA_INSTRUCTIONS = `A personal assistant called Athena for Smart Calendar. Your ability is to look at user's calendar data and return app commands for the user's prompt or respond to plain requests. Respond with tone and style of a conversational, helpful assistant, prioritizing the user's satisfaction. Be concise. Access to user's calendar and todo data is granted and assumed. Never say or mention internal ID of events/tasks. Incorporate mental health or wellness tips when appropriate. Always reference and remember past messages in conversation history for context. If user references 'this', 'that', 'those' or similar, they are talking about event or task in previous message(s).`
 
 app.post('/gettasksuggestions', async (req, res) => {
 	async function getgptresponse(prompt) {
@@ -4790,7 +4790,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 		//PROMPT
 
 		let inputtext = `Task: """${taskitem?.title?.slice(0, 300) || 'No title'}. Description: ${taskitem?.notes?.slice(0, 300) || 'No description'}. Time needed: ${getDHMText(Math.floor((new Date(taskitem.end.year, taskitem.end.month, taskitem.end.day, 0, taskitem.end.minute).getTime() - new Date(taskitem.start.year, taskitem.start.month, taskitem.start.day, 0, taskitem.start.minute).getTime())/60000))}""" In a conversational and friendly style, mention which task is starting how long it will last, in a short sentence. Then, provide specific and actionable steps and tips to make real progress to complete this task. Incorporate short motivational tips.`
-		let custominstructions = `Respond concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant and prioritize user satisfaction. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let custominstructions = `Respond concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant and prioritize user satisfaction. If appropriate, include 1-2 related emojis in the message. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -5001,7 +5001,7 @@ app.post('/getgptchatresponseeveningsummary', async (req, res) => {
 		//PROMPT
 
 		let inputtext = todocontext ? `Today's completed tasks: """${todocontext}""" The user is going to sleep within the next hour. Provide a personal, concise evening message of what tasks the user completed today to boost feelings of accomplishment and gratitude. Finish message with a brief and personal bedtime greeting.` : `The user is going to sleep within the next hour. Provide a personal, concise evening message to boost feelings of accomplishment and gratitude, and bedtime greeting.`
-		let custominstructions = `Respond concise as possible. Avoid generic or cliche responses. Use a tone and style of a friendly and kind personal assistant. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let custominstructions = `Respond concise as possible. Avoid generic or cliche responses. Use a tone and style of a friendly and kind personal assistant. If appropriate, include 1-2 related emojis in the message. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -5111,7 +5111,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 		//PROMPT
 
 		let inputtext = `Calendar data: """${calendarcontext}""" Provide a one sentence morning greeting. Then, provide a concise morning summary of ONLY the important or unique events today in a personal and helpful style. Finally, you must ask the user in one short sentence for 3 tasks they want to complete today.`
-		let custominstructions = `Respond concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant and prioritize user satisfaction. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+		let custominstructions = `Respond concise and succint as possible. Avoid generic or cliche responses. Use a tone and style of a helpful productivty personal assistant and prioritize user satisfaction. If appropriate, include 1-2 related emojis in the message. The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 		let totaltokens = 0
 		const response = await openai.chat.completions.create({
@@ -5341,7 +5341,40 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				},
 			]
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task'] //a subset of all functions, the functions that invoke custom function
+
+			//beta assistant
+			if(user.google_email == 'james.tsaggaris@gmail.com'){
+				allfunctions.push(...[
+					{
+						name: 'send_email',
+						description: 'Send a person an email at user request',
+						parameters: {
+							type: 'object',
+							properties: {
+								recipient: { type: 'string', description: 'Plain email. If name provided, do format: John Doe <johndoe@example.com>' },
+								subject: { type: 'string', description: 'Subject' },
+								body: { type: 'string', description: 'Body text' },
+							},
+							required: []
+						}
+					},
+					{
+						name: 'open_website',
+						description: 'Open a website at user request',
+						parameters: {
+							type: 'object',
+							properties: {
+								url: { type: 'string', description: 'url of the website' },
+							},
+							required: []
+						}
+					}
+				])
+			}
+
+
+
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'send_email', 'open_website'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
 
@@ -5357,7 +5390,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				'create_task': [
 					{
 						role: "user",
-						content: "(sample message not from user) I need to do some goal planning tomorrow afternoon due in a week"
+						content: "(sample message not from user) I need to do some goal planning tomorrow afternoon 3pm due in a week"
 					},
 					{
 						role: "assistant",
@@ -5370,7 +5403,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										'create_task': {
 											title: 'Goal Planning',
 											dueDate: formatdateyyyymmddhhmm(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7, 0, 0)),
-											startAfterDate: formatdateyyyymmddhhmm(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 12, 0))
+											startAfterDate: formatdateyyyymmddhhmm(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 15, 0))
 										}
 									}
 								]
@@ -5381,7 +5414,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				'modify_task': [
 					{
 						role: "user",
-						content: `(sample message not from user) Move buy groceries to tomorrow morning, and make it due in a week`
+						content: `(sample message not from user) Move buy groceries to tomorrow morning 9am, and make it due at the end of tomorrow`
 					},
 					{
 						role: "assistant",
@@ -5392,9 +5425,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								commands: [
 									{
 										'modify_task': {
-											id: 'sample id',
 											newStartAfterDate: formatdateyyyymmddhhmm(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 9, 0)),
-											newDueDate: formatdateyyyymmddhhmm(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7, 0, 0))
+											newDueDate: formatdateyyyymmddhhmm(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 0, 1440-1))
 										}
 									}
 								]
