@@ -5359,23 +5359,13 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 					},
 					{
-						name: 'open_website',
-						description: 'Open a website at user request',
-						parameters: {
-							type: 'object',
-							properties: {
-								url: { type: 'string', description: 'url of the website' },
-							},
-							required: []
-						}
-					},
-					{
-						name: 'search_web',
-						description: 'Search Google at user request',
+						name: 'search_web_or_link',
+						description: 'Search Google or open link at user request',
 						parameters: {
 							type: 'object',
 							properties: {
 								query: { type: 'string', description: 'User query' },
+								link: { type: 'string', description: 'Link to open' },
 							},
 							required: []
 						}
