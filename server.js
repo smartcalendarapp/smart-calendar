@@ -5493,7 +5493,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					},
 					{
 						name: 'read_emails',
-						description: 'A summary of the email',
+						description: 'Be friendly, personal, and conversational as if a personal assistant talking. Summarize in 2-3 sentences the email subject, who it is from, and date sent. Then, a sentence format summary of the email content highlighting most important things. Prompt the user on what to do with the email or to move on to next email. If email requires follow up, give user suggestions on how to reply.',
 						parameters: {
 							type: 'object',
 							properties: {
