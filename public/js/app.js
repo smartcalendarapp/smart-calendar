@@ -15642,6 +15642,11 @@ async function submitaimessage(optionalinput, dictated){
 							responsechatmessage.skiptyping = true
 						}
 
+						let message = arguments?.message
+						if(message){
+							responsechatmessage.message = message
+						}
+
 						let summary = arguments?.summary
 						if(summary){
 							responsechatmessage.message = summary
