@@ -5252,10 +5252,10 @@ async function getgmailemails(req){
 		
 		const { threads } = res.data
 
+		console.warn(res, res.data)
 		if (!threads) {
 			return { emails: [] }
 		}
-		console.warn('HAAAAAAAA',threads)
 
 		let outputmsgs = []
 		await threads.forEach(async (thread) => {
