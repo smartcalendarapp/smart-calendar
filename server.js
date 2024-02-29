@@ -5668,8 +5668,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				if (isfunctioncall) {
 					let commands = JSON.parse(accumulatedresponse.message.function_call?.arguments)?.commands
 
-					if(!Array.isArray(commands) && typeof commands == 'object'){ //if gpt is weird and decides to return object and not array
-						commands = Object.keys(commands).map(key => { return { [key]: commands[key] } })
+					if(!Array.isArray(JSON.parse(accumulatedresponse.message.function_call?.arguments)?.commands) && accumulatedresponse.message.function_call?.name && accumulatedresponse.message.function_call?.arguments){ //if gpt is weird and decides to return object and not array
+						commands = [{ [accumulatedresponse.message.function_call.name]: JSON.parse(accumulatedresponse.message.function_call.arguments) }]
 					}
 
 					if (commands && commands?.length > 0) {
@@ -5696,7 +5696,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							}
 
 							gmailcontext = tempcontext
-							console.warn(gmailcontext)
+							console.warn(item.date, gmailcontext)
 						}
 						//here3
 
