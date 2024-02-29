@@ -5261,7 +5261,7 @@ async function getgmailemails(req){
 			await gmail.users.messages.get({
 				userId: 'me',
 				id: message.id,
-			}, (err, res) => {
+			}, async (err, res) => {
 				if (err) {
 					console.error(err)
 				}
@@ -5285,17 +5285,17 @@ async function getgmailemails(req){
 				}
 
 				outputmsgs.push({ from, to, subject, content, date })
-			})
 
-			//mark read
-			await gmail.users.messages.modify({
-				userId: 'me',
-				id: message.id,
-				requestBody: { removeLabelIds: ['UNREAD'] },
-			}, (err, res) => {
-				if (err) {
-				  console.error(err)
-				}
+				//mark read
+				await gmail.users.messages.modify({
+					userId: 'me',
+					id: message.id,
+					requestBody: { removeLabelIds: ['UNREAD'] },
+				}, (err, res) => {
+					if (err) {
+					console.error(err)
+					}
+				})
 			})
 		})
 
