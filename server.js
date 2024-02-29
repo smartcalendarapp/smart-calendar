@@ -5287,6 +5287,18 @@ async function getgmailemails(req){
 					content = htmlToText(tempcontent)
 				}
 
+
+				//modify content for presentation
+				function removeLongUrls(inputText, maxLength) {
+					const urlRegex = /https?:\/\/\S+/g
+					
+					return inputText.replace(urlRegex, (url) => {
+					  return url.length > maxLength ? '' : url
+					})
+				}
+				content = removeLongUrls(content, 50)
+				
+
 				outputmsgs.push({ from, to, subject, content, date })
 
 				//mark read
