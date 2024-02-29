@@ -5685,7 +5685,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							}
 
 							let tempcontext = ''
-							tempcontext += `Unread emails: ${emails.unreadcount}`
+							tempcontext += `Unread emails: ${emails.unreadcount}. Respond with number of unread emails, and finish response with a question to move onto next email.`
 							for(let item of emails.emails){
 								tempcontext += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${item.date}, Snippet: """${item.snippet}"""`
 							}
