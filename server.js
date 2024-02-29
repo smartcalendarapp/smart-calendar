@@ -530,7 +530,7 @@ class User{
 }
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
-const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true, importantupdates: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, choosecalendars: false, eventreminders: false, sleeptime: false, addtask: false, finished: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, lastprompteveningsummarydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false, recognitionlanguage: 'en-US', lastgottasksuggestion: 0, lastgotsubtasksuggestion: 0 }
+const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, connectedgmail: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true, importantupdates: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, choosecalendars: false, eventreminders: false, sleeptime: false, addtask: false, finished: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, lastprompteveningsummarydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false, recognitionlanguage: 'en-US', lastgottasksuggestion: 0, lastgotsubtasksuggestion: 0 }
 const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, logindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], gptvoiceusedtimestamps: [], betatester: false, haspremium: false, premium: { referafriendclaimvalue: 0, starttimestamp: null, endtimestamp: null }, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
 const MODELEVENT = { start: {}, end: {}, endbefore: {}, startafter: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0, parentid: null, subtasksuggestions: [], gotsubtasksuggestions: false, iseventsuggestion: false, goteventsuggestion: false, autoschedulelocked: false }
 const MODELTODO = { endbefore: {}, startafter: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false, issuggestion: false }
@@ -1664,15 +1664,18 @@ app.post('/auth/google', async (req, res, next) => {
 			authoptions.state = 'iosapp'
 		}
 
+		const CALENDAR_SCOPES = ['https://www.googleapis.com/auth/calendar']
+		const CLASSROOM_SCOPES = ['https://www.googleapis.com/auth/classroom.courses.readonly', 'https://www.googleapis.com/auth/classroom.coursework.me.readonly']
+		const GMAIL_SCOPES = ['https://www.googleapis.com/auth/gmail.modify']
 
 		if(options?.scope?.includes('calendar')){
-			authoptions.scope.push('https://www.googleapis.com/auth/calendar')
-		}
-		if(options?.scope?.includes('gmail')){
-			authoptions.scope.push('https://www.googleapis.com/auth/gmail.modify')
+			authoptions.scope.push(...CALENDAR_SCOPES)
 		}
 		if(options?.scope?.includes('classroom')){
-			authoptions.scope.push('https://www.googleapis.com/auth/classroom.courses.readonly', 'https://www.googleapis.com/auth/classroom.coursework.me.readonly')
+			authoptions.scope.push(...CLASSROOM_SCOPES)
+		}
+		if(options?.scope?.includes('gmail')){
+			authoptions.scope.push(...GMAIL_SCOPES)
 		}
 
 		if(req.session.user){
@@ -1687,6 +1690,18 @@ app.post('/auth/google', async (req, res, next) => {
 					}
 				}
 
+				
+				if(!options?.scope?.includes('calendar') && user.calendardata.settings.issyncingtogooglecalendar){
+					authoptions.scope.push(...CALENDAR_SCOPES)
+				}
+				if(!options?.scope?.includes('classroom') && user.calendardata.settings.issyncingtogoogleclassroom){
+					authoptions.scope.push(...CLASSROOM_SCOPES)
+				}
+				if(!options?.scope?.includes('gmail') && user.calendardata.settings.connectedgmail){
+					authoptions.scope.push(...GMAIL_SCOPES)
+				}
+
+
 				let modifieduser = false
 				if(!user.calendardata.settings.issyncingtogooglecalendar && options?.enable?.includes('calendar')){
 					modifieduser = true
@@ -1695,6 +1710,10 @@ app.post('/auth/google', async (req, res, next) => {
 				if(!user.calendardata.settings.issyncingtogoogleclassroom && options?.enable?.includes('classroom')){
 					modifieduser = true
 					user.calendardata.settings.issyncingtogoogleclassroom = true
+				}
+				if(!user.calendardata.settings.connectedgmail && options?.enable?.includes('gmail')){
+					modifieduser = true
+					user.calendardata.settings.connectedgmail = true
 				}
 				if(modifieduser){
 					await setUser(user)
@@ -5448,14 +5467,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					},
 					{
 						name: 'read_emails',
-						description: 'Read user email inbox at user request',
-						parameters: {
-							type: 'object',
-							properties: {
-								link: { type: 'string', description: 'Link to open' },
-							},
-							required: []
-						}
 					}
 				])
 			}

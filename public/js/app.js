@@ -14336,44 +14336,49 @@ class ChatMessage {
 		}
 
 
-		if(this.streamed){
-			if(this.dictated == true){
-				const waitforload2 = () => {
-					return new Promise((resolve) => {
-						const interval2 = setInterval(async () => {
-							if(this.streamfinished){
-								clearInterval(interval2)
-								return resolve(true)
-							}
-						}, 100)
-					})
+		if(!this.skiptyping){
+			if(this.streamed){
+				if(this.dictated == true){
+					const waitforload2 = () => {
+						return new Promise((resolve) => {
+							const interval2 = setInterval(async () => {
+								if(this.streamfinished){
+									clearInterval(interval2)
+									return resolve(true)
+								}
+							}, 100)
+						})
+					}
+
+					if(!this.streamfinished){
+						await waitforload2()
+					}
+
+					this.finishedanimating = true
+					isanimating = false
+					
+					updateaichatinput()
+
+					let successful = await aispeakmessage(this.message)
+				}else{
+					this.finishedanimating = true
+					isanimating = false
 				}
-
-				if(!this.streamfinished){
-					await waitforload2()
-				}
-
-				this.finishedanimating = true
-				isanimating = false
-				
-				updateaichatinput()
-
-				let successful = await aispeakmessage(this.message)
 			}else{
+				if(this.dictated == true){
+					let successful = await aispeakmessage(this.message)
+
+					if(!successful){
+						await processtyping(1)
+					}
+				}else{
+					await processtyping(1)
+				}
+
 				this.finishedanimating = true
 				isanimating = false
 			}
 		}else{
-			if(this.dictated == true){
-				let successful = await aispeakmessage(this.message)
-
-				if(!successful){
-					await processtyping(1)
-				}
-			}else{
-				await processtyping(1)
-			}
-
 			this.finishedanimating = true
 			isanimating = false
 		}
@@ -15633,6 +15638,7 @@ async function submitaimessage(optionalinput, dictated){
 						let message = arguments?.message
 						if(message){
 							responsechatmessage.message = message
+							responsechatmessage.skiptyping = true
 						}
 						//here3
 					}else if(command == 'google_maps'){
