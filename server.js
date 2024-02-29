@@ -5255,6 +5255,7 @@ async function getgmailemails(req){
 		if (!threads) {
 			return { emails: [] }
 		}
+		console.warn('FIRST', threads.length)
 
 		let outputmsgs = []
 		await threads.forEach(async (thread) => {
@@ -5266,7 +5267,7 @@ async function getgmailemails(req){
 				if (err) {
 					console.error(err)
 				}
-				console.warn(res3.data.messages)
+				console.warn(res3.data)
 
 				const msgs = res3.data.messages.sort((a, b) => a.internalDate - b.internalDate)
 				const msg = msgs[msgs.length - 1]
