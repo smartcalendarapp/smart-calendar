@@ -14379,6 +14379,7 @@ class ChatMessage {
 				isanimating = false
 			}
 		}else{
+			this.displaycontent = this.message
 			this.finishedanimating = true
 			isanimating = false
 		}
