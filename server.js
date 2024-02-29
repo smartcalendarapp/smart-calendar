@@ -5243,9 +5243,11 @@ async function getgmailemails(req){
 		const res = await gmail.users.messages.list({
 			userId: 'me',
 			q: `is:unread`,
-			maxResults: 1,
+			maxResults: 10,
 		})
 		const { messages } = res.data
+
+		console.warn(res)
 
 		if (!messages) {
 			return { emails: [] }
@@ -5760,6 +5762,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							gmailcontext = tempcontext
 						}
 						//here3
+						//need to send the function call data rather than the text output?
 
 
 						let request2options = {

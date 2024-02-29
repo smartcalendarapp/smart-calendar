@@ -15624,11 +15624,11 @@ async function submitaimessage(optionalinput, dictated){
 						responsechatmessage.link = { url: `mailto:${recipient}${subject ? `?subject=${encodeURIComponent(subject)}` : ''}${body ? `${subject ? '&' : '?'}body=${encodeURIComponent(body)}` : ''}`, text: 'Draft email' }
 					}else if(command == 'search_web_or_link'){
 						let query = arguments?.query
-						let link = arguments?.query
+						let link = arguments?.link
 
 						if(link){
 							responsechatmessage.message = `Done!`
-							responsechatmessage.link = { url: link, text: 'Search Google' }
+							responsechatmessage.link = { url: link, text: 'Open link' }
 						}else if(query){
 							responsechatmessage.message = `Done!`
 							responsechatmessage.link = { url: `https://www.google.com/search?q=${encodeURIComponent(query)}`, text: 'Search Google' }
@@ -15651,9 +15651,9 @@ async function submitaimessage(optionalinput, dictated){
 						if(summary){
 							responsechatmessage.message = summary
 						}
-						//here3
 					}else if(command == 'google_maps'){
 						//maps distance, time to leave, time between 2 places, visualize route, visualize place
+						//here3
 
 					}else{
 						responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `This is weird, I could not determine your command. Please click the thumbs down button and try again.`
