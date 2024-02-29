@@ -5696,7 +5696,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							}
 
 							gmailcontext = tempcontext
-							console.warn(item.date, gmailcontext)
+							console.warn(emails.emails[0].date, gmailcontext)
 						}
 						//here3
 
