@@ -5493,8 +5493,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						parameters: {
 							type: 'object',
 							properties: {
-								metasummary: { type: 'string', description: 'A short conversational summary of the email subject, who it is from, and date sent.' },
-								contentsummary: { type: 'string', description: 'A short conversational summary of the email. Prompt the user on what to do with the email or to move on to next email. If email requires follow up, give user suggestions on how to reply.' },
+								metasummary: { type: 'string', description: 'A personal, conversational sentence format summary of the email subject, who it is from, and date sent.' },
+								contentsummary: { type: 'string', description: 'A personal, conversational sentence format summary of the email content. Prompt the user on what to do with the email or to move on to next email. If email requires follow up, give user suggestions on how to reply.' },
 							},
 							required: []
 						}
@@ -5729,7 +5729,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							const MAX_EMAIL_CONTENT_LENGTH = 500
 
 							let tempcontext = ''
-							tempcontext += `Viewing ${emails.unreadcount} unread emails. Respond with number of unread emails, and finish response with a question to move onto next email.`
+							tempcontext += `Viewing ${emails.emails.length} of ${emails.unreadcount} unread emails.`
 							for(let item of emails.emails){
 								tempcontext += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${item.date?.value}, Content: """${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}"""`
 							}
