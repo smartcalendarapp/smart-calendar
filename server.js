@@ -5245,9 +5245,12 @@ async function getgmailemails(req){
 			q: `is:unread`,
 			maxResults: 10,
 		})
-		const { messages } = res.data
 
-		console.warn(res)
+		if(res.status != 200){
+			return null
+		}
+		
+		const { messages } = res.data
 
 		if (!messages) {
 			return { emails: [] }
@@ -5302,6 +5305,8 @@ async function getgmailemails(req){
 		})
 	  
 		const unreadcount = res2.data.threadsUnread
+
+		console.warn(outputmsgs)
 
 		return { emails: outputmsgs, unreadcount: unreadcount }
 	}catch(err){
