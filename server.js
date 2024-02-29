@@ -4593,7 +4593,7 @@ let MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
 let MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
 
 let GPT_MODEL = 'gpt-3.5-turbo-0125'
-let GPT_ATHENA_INSTRUCTIONS = `A personal assistant called Athena for Smart Calendar that assists with any request. Your ability is to look at user's calendar data and return app commands for the user's prompt or respond to plain requests. Respond with tone and style of a conversational, helpful assistant, prioritizing the user's satisfaction. Access to user's calendar and todo data is granted and assumed. Never say or mention internal ID of events/tasks. Incorporate mental health or wellness tips when appropriate. Always reference and remember past messages in conversation history for context. If user references 'this', 'that', 'those' or similar, they are talking about event or task in previous message(s).`
+let GPT_ATHENA_INSTRUCTIONS = `A personal assistant called Athena for Smart Calendar that assists with any request. Your ability is to look at user's calendar data and return app commands for the user's prompt or respond to plain requests. Respond with tone and style of a conversational, helpful assistant, prioritizing the user's satisfaction. Access to user's calendar and todo data is granted and assumed. Never say or mention internal ID of events/tasks. Incorporate mental health or wellness tips when appropriate. Always reference and remember past messages in conversation history for context. If user references 'this', 'that', 'those' or similar, they are talking about event or task in previous message(s). If something is out of your capabilities, say it.`
 
 app.post('/gettasksuggestions', async (req, res) => {
 	async function getgptresponse(prompt) {
@@ -5250,22 +5250,27 @@ async function getgmailemails(req){
 			return null
 		}
 		
-		const { messages } = res.data
+		const { threads } = res.data
 
-		if (!messages) {
+		if (!threads) {
 			return { emails: [] }
 		}
+		console.warn('HAAAAAAAA',threads)
 
 		let outputmsgs = []
-		await messages.forEach(async (message) => {
+		await threads.forEach(async (thread) => {
 			await gmail.users.threads.get({
 				userId: 'me',
-				id: message.id,
+				id: thread.id,
 			}, async (err, res) => {
 				if (err) {
 					console.error(err)
 				}
-				const msg = res.data
+
+				const msgs = res.data.sort((a, b) => a.internalDate - b.internalDate)
+				const msg = msgs[msgs.length - 1]
+				//here3
+
 				const headers = msg.payload.headers
 				const from = headers.find(header => header.name === 'From')?.value
 				const to = headers.find(header => header.name === 'To')?.value
@@ -5284,16 +5289,17 @@ async function getgmailemails(req){
 					content = htmlToText(tempcontent)
 				}
 
+				console.warn(msg)
 				outputmsgs.push({ from, to, subject, content, date })
 
 				//mark read
 				await gmail.users.threads.modify({
 					userId: 'me',
-					id: message.id,
+					id: thread.id,
 					requestBody: { removeLabelIds: ['UNREAD'] },
 				}, (err, res) => {
 					if (err) {
-					console.error(err)
+						console.error(err)
 					}
 				})
 			})
