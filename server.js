@@ -5254,7 +5254,14 @@ async function getgmailemails(req){
 		})
 		//here3
 
-		return { emails: outputmsgs }
+		const res2 = await gmail.users.labels.get({
+			userId: 'me',
+			id: 'INBOX',
+		  })
+	  
+		const unreadcount = res2.data.threadsUnread
+
+		return { emails: outputmsgs, unreadcount: unreadcount }
 	}catch(err){
 		return { error: loginwithgooglegmailhtml }
 	}
@@ -5659,14 +5666,15 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						if(commands.includes('read_emails')){
 							let emails = await getgmailemails(req)
 							if(!emails || emails.error || !emails.emails){
-								return { message: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' }
+								return { commands: [ { 'read_emails': { arguments: { message: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' }} } ] }
 							}
 
 							if(emails.emails.length == 0){
-								return { message: 'You have no unread emails!' }
+								return { commands: [ { 'read_emails': { arguments: { message: emails?.error || 'You have no unread emails!' }} } ] }
 							}
 
 							let tempcontext = ''
+							tempcontext += `Unread emails: ${emails.unreadcount}`
 							for(let item of emails.emails){
 								tempcontext += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${item.date}, Snippet: """${item.snippet}"""`
 							}
@@ -5699,7 +5707,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 						if(gmailcontext){
 							//yes todo data
-							request2input += ` Gmail emails (recent and unread): """${gmailcontext}"""`
+							request2input += ` Gmail emails (most recent unread): """${gmailcontext}"""`
 						}
 		
 						if(requirescustomfunction){

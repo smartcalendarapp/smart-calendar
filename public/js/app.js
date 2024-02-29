@@ -15630,10 +15630,11 @@ async function submitaimessage(optionalinput, dictated){
 							responsechatmessage.message = `Please tell me what you want to search.`
 						}
 					}else if(command == 'read_emails'){
-						let error = arguments?.error
-						if(error){
-							responsechatmessage.message = error
+						let message = arguments?.message
+						if(message){
+							responsechatmessage.message = message
 						}
+						//here3
 					}else if(command == 'google_maps'){
 						//maps distance, time to leave, time between 2 places, visualize route, visualize place
 
