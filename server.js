@@ -5667,6 +5667,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 				if (isfunctioncall) {
 					let commands = JSON.parse(accumulatedresponse.message.function_call?.arguments)?.commands
+
+					if(!Array.isArray(commands) && typeof commands == 'object'){ //if gpt is weird and decides to return object and not array
+						commands = Object.keys(commands).map(key => { return { [key]: commands[key] } })
+					}
+
 					if (commands && commands?.length > 0) {
 						const requirescalendardata = calendardataneededfunctions.find(f => commands.find(g => g == f))
 						const requirestododata = tododataneededfunctions.find(f => commands.find(g => g == f))
@@ -5819,9 +5824,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 
 						let commands2 = JSON.parse(accumulatedresponse2.message.function_call?.arguments)?.commands
+						
 						if(!Array.isArray(commands2) && typeof commands2 == 'object'){ //if gpt is weird and decides to return object and not array
 							commands2 = Object.keys(commands2).map(key => { return { [key]: commands2[key] } })
 						}
+						
 						if (commands2 && commands2?.length > 0) {					
 							return { commands: commands2 }
 						}
