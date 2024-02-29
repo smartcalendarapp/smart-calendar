@@ -5255,11 +5255,9 @@ async function getgmailemails(req){
 		if (!threads) {
 			return { emails: [] }
 		}
-		console.warn('FIRST', threads.length)
 
 		let outputmsgs = []
-		await threads.forEach(async (thread) => {
-			
+		for(let thread of threads){			
 			await gmail.users.threads.get({
 				userId: 'me',
 				id: thread.id,
@@ -5267,11 +5265,9 @@ async function getgmailemails(req){
 				if (err) {
 					console.error(err)
 				}
-				console.warn(res3.data)
 
 				const msgs = res3.data.messages.sort((a, b) => a.internalDate - b.internalDate)
 				const msg = msgs[msgs.length - 1]
-				//here3
 
 				const headers = msg.payload.headers
 				const from = headers.find(header => header.name === 'From')?.value
@@ -5304,7 +5300,7 @@ async function getgmailemails(req){
 					}
 				})
 			})
-		})
+		}
 
 		const res2 = await gmail.users.labels.get({
 			userId: 'me',
@@ -5487,12 +5483,22 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 					},
 					{
-						name: 'search_web_or_link',
-						description: 'Search Google or open link at user request',
+						name: 'search_web',
+						description: 'Search Google for user request',
 						parameters: {
 							type: 'object',
 							properties: {
 								query: { type: 'string', description: 'User query' },
+							},
+							required: []
+						}
+					},
+					{
+						name: 'open_link',
+						description: 'Open link at user request',
+						parameters: {
+							type: 'object',
+							properties: {
 								link: { type: 'string', description: 'Link to open' },
 							},
 							required: []
@@ -5506,7 +5512,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'send_email', 'search_web_or_link'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'send_email', 'search_web', 'open_link'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
 

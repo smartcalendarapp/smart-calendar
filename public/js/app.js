@@ -15622,18 +15622,23 @@ async function submitaimessage(optionalinput, dictated){
 
 						responsechatmessage.message = `Done!`
 						responsechatmessage.link = { url: `mailto:${recipient}${subject ? `?subject=${encodeURIComponent(subject)}` : ''}${body ? `${subject ? '&' : '?'}body=${encodeURIComponent(body)}` : ''}`, text: 'Draft email' }
-					}else if(command == 'search_web_or_link'){
+					}else if(command == 'search_web'){
 						let query = arguments?.query
+
+						if(query){
+							responsechatmessage.message = `Done!`
+							responsechatmessage.link = { url: `https://www.google.com/search?q=${encodeURIComponent(query)}`, text: 'Search Google' }
+						}else{
+							responsechatmessage.message = `Please tell me what you want to search.`
+						}
+					}else if(command == 'open_website'){
 						let link = arguments?.link
 
 						if(link){
 							responsechatmessage.message = `Done!`
 							responsechatmessage.link = { url: link, text: 'Open link' }
-						}else if(query){
-							responsechatmessage.message = `Done!`
-							responsechatmessage.link = { url: `https://www.google.com/search?q=${encodeURIComponent(query)}`, text: 'Search Google' }
 						}else{
-							responsechatmessage.message = `Please tell me what you want to search.`
+							responsechatmessage.message = `Please tell me what link you want to open.`
 						}
 					}else if(command == 'read_emails'){
 						let error = arguments?.error
