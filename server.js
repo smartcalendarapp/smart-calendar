@@ -5252,22 +5252,23 @@ async function getgmailemails(req){
 		
 		const { threads } = res.data
 
-		console.warn(res, res.data)
 		if (!threads) {
 			return { emails: [] }
 		}
 
 		let outputmsgs = []
 		await threads.forEach(async (thread) => {
+			
 			await gmail.users.threads.get({
 				userId: 'me',
 				id: thread.id,
-			}, async (err, res) => {
+			}, async (err, res3) => {
 				if (err) {
 					console.error(err)
 				}
+				console.warn(res3.data.messages)
 
-				const msgs = res.data.sort((a, b) => a.internalDate - b.internalDate)
+				const msgs = res3.data.messages.sort((a, b) => a.internalDate - b.internalDate)
 				const msg = msgs[msgs.length - 1]
 				//here3
 
@@ -5289,7 +5290,6 @@ async function getgmailemails(req){
 					content = htmlToText(tempcontent)
 				}
 
-				console.warn(msg)
 				outputmsgs.push({ from, to, subject, content, date })
 
 				//mark read
@@ -5297,7 +5297,7 @@ async function getgmailemails(req){
 					userId: 'me',
 					id: thread.id,
 					requestBody: { removeLabelIds: ['UNREAD'] },
-				}, (err, res) => {
+				}, (err, res4) => {
 					if (err) {
 						console.error(err)
 					}
