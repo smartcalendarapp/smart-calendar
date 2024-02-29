@@ -5242,8 +5242,8 @@ async function getgmailemails(req){
 		const gmail = google.gmail({ version: 'v1', auth: googleclient })
 		const res = await gmail.users.messages.list({
 			userId: 'me',
-			q: `is:unread`,
-			maxResults: 10,
+			labelIds: 'UNREAD',
+			maxResults: 1,
 		})
 
 		if(res.status != 200){
@@ -5305,8 +5305,6 @@ async function getgmailemails(req){
 		})
 	  
 		const unreadcount = res2.data.threadsUnread
-
-		console.warn(outputmsgs)
 
 		return { emails: outputmsgs, unreadcount: unreadcount }
 	}catch(err){
