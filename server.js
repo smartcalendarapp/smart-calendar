@@ -5201,63 +5201,63 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 })
 
 async function getgmailemails(req){
-	let user = await getUserById(req.session?.user?.userid)
-	if(!user) return null
-	
-	if(!req.session.tokens || !req.session.tokens.access_token){
-		let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
-		if(!accesstoken){
-			return { error: loginwithgooglegmailhtml }
-		}
-		req.session.tokens = req.session.tokens || {}
-		req.session.tokens.access_token = accesstoken
-	}
-
-
-	const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
-	googleclient.setCredentials(req.session.tokens)
-
-
-	const afterDate = new Date()
-	afterDate.setDate(afterDate.getDate() - 7)
-	const afterDateText = afterDate.toISOString().split('T')[0].replace(/-/g, '/')
-
-	const gmail = google.gmail({ version: 'v1', auth: googleclient })
-	const res = await gmail.users.messages.list({
-		userId: 'me',
-		q: `is:unread`,
-		maxResults: 1
-	})
-	const { messages } = res.data
-
-    if (!messages) {
-      	return { emails: [] }
-    }
-
-	let outputmsgs = []
-	messages.forEach((message) => {
-		gmail.users.messages.get({
-		  userId: 'me',
-		  id: message.id,
-		}, (err, res) => {
-			if (err) {
-				console.error(err)
-				return null
+	try{
+		let user = await getUserById(req.session?.user?.userid)
+		if(!user) return null
+		
+		if(!req.session.tokens || !req.session.tokens.access_token){
+			let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
+			if(!accesstoken){
+				return { error: loginwithgooglegmailhtml }
 			}
-			const msg = res.data;
-			const headers = msg.payload.headers;
-			const from = headers.find(header => header.name === 'From')?.value;
-			const to = headers.find(header => header.name === 'To')?.value;
-			const subject = headers.find(header => header.name === 'Subject')?.value;
-			const snippet = msg.snippet;
-			const date = headers.find(header => header.name.toLowerCase() === 'date')
+			req.session.tokens = req.session.tokens || {}
+			req.session.tokens.access_token = accesstoken
+		}
 
-			outputmsgs.push({ from, to, subject, snippet, date })
+
+		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
+		googleclient.setCredentials(req.session.tokens)
+
+
+		const gmail = google.gmail({ version: 'v1', auth: googleclient })
+		const res = await gmail.users.messages.list({
+			userId: 'me',
+			q: `is:unread`,
+			maxResults: 1,
 		})
-	})
-	//here3
+		const { messages } = res.data
 
-	return { emails: outputmsgs }
+		if (!messages) {
+			return { emails: [] }
+		}
+
+		let outputmsgs = []
+		messages.forEach((message) => {
+			gmail.users.messages.get({
+			userId: 'me',
+			id: message.id,
+			}, (err, res) => {
+				if (err) {
+					console.error(err)
+					return null
+				}
+				const msg = res.data;
+				const headers = msg.payload.headers;
+				const from = headers.find(header => header.name === 'From')?.value;
+				const to = headers.find(header => header.name === 'To')?.value;
+				const subject = headers.find(header => header.name === 'Subject')?.value;
+				const snippet = msg.snippet;
+				const date = headers.find(header => header.name.toLowerCase() === 'date')
+
+				outputmsgs.push({ from, to, subject, snippet, date })
+			})
+		})
+		//here3
+
+		return { emails: outputmsgs }
+	}catch(err){
+		return { error: loginwithgooglegmailhtml }
+	}
 
 }
 
@@ -5673,6 +5673,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 							gmailcontext = tempcontext
 						}
+						//here3
 
 
 						let request2options = {
