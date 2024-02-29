@@ -15642,10 +15642,9 @@ async function submitaimessage(optionalinput, dictated){
 							responsechatmessage.skiptyping = true
 						}
 
-						let metasummary = arguments?.metasummary
-						let contentsummary = arguments?.contentsummary
-						if(metasummary || contentsummary){
-							responsechatmessage.message = [metasummary, contentsummary].filter(d => d).join('\n\n')
+						let summary = arguments?.summary
+						if(summary){
+							responsechatmessage.message = summary
 						}
 						//here3
 					}else if(command == 'google_maps'){

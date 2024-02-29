@@ -5489,12 +5489,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					},
 					{
 						name: 'read_emails',
-						description: 'Provide summarized information about email',
+						description: 'Be cohesive and conversational as if a personal assistant talking. Summarize  the email subject, who it is from, and date sent. Then, a sentence format summary of the email content highlighting most important things. Prompt the user on what to do with the email or to move on to next email. If email requires follow up, give user suggestions on how to reply.',
 						parameters: {
 							type: 'object',
 							properties: {
-								metasummary: { type: 'string', description: 'A personal, conversational sentence format summary of the email subject, who it is from, and date sent.' },
-								contentsummary: { type: 'string', description: 'A personal, conversational sentence format summary of the email content. Prompt the user on what to do with the email or to move on to next email. If email requires follow up, give user suggestions on how to reply.' },
+								summary: { type: 'string' },
 							},
 							required: []
 						}
@@ -5717,6 +5716,32 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						//other custom behavior, api, etc
 						let gmailcontext;
 						if(commands.includes('read_emails')){
+							function getFullRelativeDHMText(input){
+								let temp = Math.abs(input)
+								let days = Math.floor(temp / 1440)
+								temp -= days * 1440
+							  
+								let hours = Math.floor(temp / 60)
+								temp -= hours * 60
+							  
+								let minutes = temp
+							  
+								if (days) days += ` day${days == 1 ? '' : 's'}`
+								if (hours) hours += ` hour${hours == 1 ? '' : 's'}`
+								if (minutes) minutes += ` minute${hours == 1 ? '' : 's'}`
+							  
+								if (days == 0 && hours == 0 && minutes == 0){
+								  return 'now'
+								}
+							  
+								if(input < 0){
+									return `in ${[days, hours, minutes].filter(v => v)[0]}`
+								}else{
+									return `${[days, hours, minutes].filter(v => v)[0]} ago`
+								}
+							}
+
+
 							let emails = await getgmailemails(req)
 							if(!emails || emails.error || !emails.emails){
 								return { commands: [ { 'read_emails': { error: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' } } ] }
@@ -5731,7 +5756,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							let tempcontext = ''
 							tempcontext += `Viewing ${emails.emails.length} of ${emails.unreadcount} unread emails.`
 							for(let item of emails.emails){
-								tempcontext += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${item.date?.value}, Content: """${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}"""`
+								tempcontext += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${item.date?.value ? getFullRelativeDHMText(Math.floor((Date.now() - item.date?.value)/60000)): ''}, Content: """${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}"""`
 							}
 
 							gmailcontext = tempcontext
