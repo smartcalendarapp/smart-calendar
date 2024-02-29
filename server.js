@@ -1668,6 +1668,9 @@ app.post('/auth/google', async (req, res, next) => {
 		if(options?.scope?.includes('calendar')){
 			authoptions.scope.push('https://www.googleapis.com/auth/calendar')
 		}
+		if(options?.scope?.includes('gmail')){
+			authoptions.scope.push('https://www.googleapis.com/auth/gmail.modify')
+		}
 		if(options?.scope?.includes('classroom')){
 			authoptions.scope.push('https://www.googleapis.com/auth/classroom.courses.readonly', 'https://www.googleapis.com/auth/classroom.coursework.me.readonly')
 		}
@@ -2751,6 +2754,11 @@ Connect to Google Classroom
 const loginwithgooglecalendarhtml = `<div class="border-8px nowrap width-fit display-flex flex-row gap-6px align-center googlebutton justify-center text-center text-14px padding-8px-16px pointer transition-duration-100" onclick="logingoogle({ scope: ['calendar'], enable: ['calendar'] })">
 <img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Google_Calendar_icon_%282020%29.svg/2048px-Google_Calendar_icon_%282020%29.svg.png">
 Connect to Google Calendar
+</div>`
+
+const loginwithgooglegmailhtml = `<div class="border-8px nowrap width-fit display-flex flex-row gap-6px align-center googlebutton justify-center text-center text-14px padding-8px-16px pointer transition-duration-100" onclick="logingoogle({ scope: ['gmail'], enable: [] })">
+<img class="logopng" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Gmail_icon_%282020%29.svg/400px-Gmail_icon_%282020%29.svg.png">
+Connect to Gmail
 </div>`
 
 
@@ -5192,6 +5200,67 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 	}
 })
 
+async function getgmailemails(req){
+	let user = await getUserById(req.session?.user?.userid)
+	if(!user) return null
+	
+	if(!req.session.tokens || !req.session.tokens.access_token){
+		let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
+		if(!accesstoken){
+			return { error: loginwithgooglegmailhtml }
+		}
+		req.session.tokens = req.session.tokens || {}
+		req.session.tokens.access_token = accesstoken
+	}
+
+
+	const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
+	googleclient.setCredentials(req.session.tokens)
+
+
+	const afterDate = new Date()
+	afterDate.setDate(afterDate.getDate() - 7)
+	const afterDateText = afterDate.toISOString().split('T')[0].replace(/-/g, '/')
+
+	const gmail = google.gmail({ version: 'v1', auth: googleclient })
+	const res = await gmail.users.messages.list({
+		userId: 'me',
+		q: `is:unread`,
+		maxResults: 1
+	})
+	const { messages } = res.data
+
+    if (!messages) {
+      	return { emails: [] }
+    }
+
+	let outputmsgs = []
+	messages.forEach((message) => {
+		gmail.users.messages.get({
+		  userId: 'me',
+		  id: message.id,
+		}, (err, res) => {
+			if (err) {
+				console.error(err)
+				return null
+			}
+			const msg = res.data;
+			const headers = msg.payload.headers;
+			const from = headers.find(header => header.name === 'From')?.value;
+			const to = headers.find(header => header.name === 'To')?.value;
+			const subject = headers.find(header => header.name === 'Subject')?.value;
+			const snippet = msg.snippet;
+			const date = headers.find(header => header.name.toLowerCase() === 'date')
+
+			outputmsgs.push({ from, to, subject, snippet, date })
+		})
+	})
+	//here3
+
+	return { emails: outputmsgs }
+
+}
+
 const DAYLIST = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 app.post('/getgptchatinteractionV2', async (req, res) => {
@@ -5369,6 +5438,17 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							required: []
 						}
+					},
+					{
+						name: 'read_emails',
+						description: 'Read user email inbox at user request',
+						parameters: {
+							type: 'object',
+							properties: {
+								link: { type: 'string', description: 'Link to open' },
+							},
+							required: []
+						}
 					}
 				])
 			}
@@ -5376,7 +5456,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'send_email', 'open_website', 'search_web'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'send_email', 'search_web_or_link'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
 
@@ -5574,6 +5654,27 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						const requirestododata = tododataneededfunctions.find(f => commands.find(g => g == f))
 						const requirescustomfunction = customfunctions.find(f => commands.find(g => g == f))
 
+						//other custom behavior, api, etc
+						let gmailcontext;
+						if(commands.includes('read_emails')){
+							let emails = await getgmailemails(req)
+							if(!emails || emails.error || !emails.emails){
+								return { message: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' }
+							}
+
+							if(emails.emails.length == 0){
+								return { message: 'You have no unread emails!' }
+							}
+
+							let tempcontext = ''
+							for(let item of emails.emails){
+								tempcontext += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${item.date}, Snippet: """${item.snippet}"""`
+							}
+
+							gmailcontext = tempcontext
+						}
+
+
 						let request2options = {
 							model: GPT_MODEL,
 							max_tokens: commands.length > 0 ? 1500 : 300, //more tokens for functions
@@ -5587,15 +5688,17 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 						if(requirescalendardata){
 							//yes calendar data
-		
 							request2input += ` Calendar events: """${calendarcontext}"""`
 						}
 
 						if(requirestododata){
 							//yes todo data
-		
-							
 							request2input += ` To-do list tasks: """${todocontext}"""`
+						}
+
+						if(gmailcontext){
+							//yes todo data
+							request2input += ` Gmail emails (recent and unread): """${gmailcontext}"""`
 						}
 		
 						if(requirescustomfunction){

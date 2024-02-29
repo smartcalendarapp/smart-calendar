@@ -15629,6 +15629,14 @@ async function submitaimessage(optionalinput, dictated){
 						}else{
 							responsechatmessage.message = `Please tell me what you want to search.`
 						}
+					}else if(command == 'read_emails'){
+						let error = arguments?.error
+						if(error){
+							responsechatmessage.message = error
+						}
+					}else if(command == 'google_maps'){
+						//maps distance, time to leave, time between 2 places, visualize route, visualize place
+
 					}else{
 						responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `This is weird, I could not determine your command. Please click the thumbs down button and try again.`
 					}
