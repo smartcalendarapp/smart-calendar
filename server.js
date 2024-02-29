@@ -1515,6 +1515,7 @@ const RRule = require('rrule').RRule
 const jwt = require('jsonwebtoken')
 const crypto = require('crypto')
 const jwkToPem = require('jwk-to-pem')
+const { htmlToText } = require('html-to-text')
 
 
 //GOOGLE INITIALIZATION
@@ -5242,7 +5243,7 @@ async function getgmailemails(req){
 		const res = await gmail.users.messages.list({
 			userId: 'me',
 			q: `is:unread`,
-			maxResults: 10,
+			maxResults: 1,
 		})
 		const { messages } = res.data
 
@@ -5251,24 +5252,45 @@ async function getgmailemails(req){
 		}
 
 		let outputmsgs = []
-		messages.forEach((message) => {
-			gmail.users.messages.get({
-			userId: 'me',
-			id: message.id,
+		await messages.forEach(async (message) => {
+			await gmail.users.messages.get({
+				userId: 'me',
+				id: message.id,
 			}, (err, res) => {
 				if (err) {
 					console.error(err)
-					return null
 				}
-				const msg = res.data;
-				const headers = msg.payload.headers;
-				const from = headers.find(header => header.name === 'From')?.value;
-				const to = headers.find(header => header.name === 'To')?.value;
-				const subject = headers.find(header => header.name === 'Subject')?.value;
-				const snippet = msg.snippet;
+				const msg = res.data
+				const headers = msg.payload.headers
+				const from = headers.find(header => header.name === 'From')?.value
+				const to = headers.find(header => header.name === 'To')?.value
+				const subject = headers.find(header => header.name === 'Subject')?.value
 				const date = headers.find(header => header.name.toLowerCase() === 'date')
 
-				outputmsgs.push({ from, to, subject, snippet, date })
+				let content = ''
+				if (msg.payload.parts) {
+					const part = msg.payload.parts.find(part => part.mimeType === 'text/plain' || part.mimeType === 'text/html')
+					if (part?.body?.data) {
+						let tempcontent = Buffer.from(part.body.data, 'base64').toString('utf8')
+						content = htmlToText(tempcontent)
+					}
+				} else if (msg.payload.body.data) {
+					let tempcontent = Buffer.from(msg.payload.body.data, 'base64').toString('utf8')
+					content = htmlToText(tempcontent)
+				}
+
+				outputmsgs.push({ from, to, subject, content, date })
+			})
+
+			//mark read
+			await gmail.users.messages.modify({
+				userId: 'me',
+				id: message.id,
+				requestBody: { removeLabelIds: ['UNREAD'] },
+			}, (err, res) => {
+				if (err) {
+				  console.error(err)
+				}
 			})
 		})
 		//here3
@@ -5276,7 +5298,7 @@ async function getgmailemails(req){
 		const res2 = await gmail.users.labels.get({
 			userId: 'me',
 			id: 'INBOX',
-		  })
+		})
 	  
 		const unreadcount = res2.data.threadsUnread
 
@@ -5467,6 +5489,15 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					},
 					{
 						name: 'read_emails',
+						description: 'Provide summarized information about email',
+						parameters: {
+							type: 'object',
+							properties: {
+								metasummary: { type: 'string', description: 'A short conversational summary of the email subject, who it is from, and date sent.' },
+								contentsummary: { type: 'string', description: 'A short conversational summary of the email. Prompt the user on what to do with the email or to move on to next email. If email requires follow up, give user suggestions on how to reply.' },
+							},
+							required: []
+						}
 					}
 				])
 			}
@@ -5474,7 +5505,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'send_email', 'search_web_or_link'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'send_email', 'search_web_or_link', 'read_emails'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
 
@@ -5585,7 +5616,13 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							{
 								role: "assistant",
-								content: "Just to confirm, would you like me to schedule these in your calendar?",
+								content: null,
+								function_call: {
+									name: "app_action",
+									arguments: JSON.stringify({
+										commands: ['create_task', 'create_task']
+									})
+								}
 							},
 						],
 						...conversationhistory,
@@ -5682,21 +5719,22 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						if(commands.includes('read_emails')){
 							let emails = await getgmailemails(req)
 							if(!emails || emails.error || !emails.emails){
-								return { commands: [ { 'read_emails': { message: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' } } ] }
+								return { commands: [ { 'read_emails': { error: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' } } ] }
 							}
 
 							if(emails.emails.length == 0){
-								return { commands: [ { 'read_emails': { message: emails?.error || 'You have no unread emails!' } } ] }
+								return { commands: [ { 'read_emails': { error: emails?.error || 'You have no unread emails!' } } ] }
 							}
+
+							const MAX_EMAIL_CONTENT_LENGTH = 500
 
 							let tempcontext = ''
 							tempcontext += `Viewing ${emails.unreadcount} unread emails. Respond with number of unread emails, and finish response with a question to move onto next email.`
 							for(let item of emails.emails){
-								tempcontext += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${item.date}, Snippet: """${item.snippet}"""`
+								tempcontext += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${item.date?.value}, Content: """${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}"""`
 							}
 
 							gmailcontext = tempcontext
-							console.warn(emails.emails[0].date, gmailcontext)
 						}
 						//here3
 
@@ -5828,6 +5866,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						if(!Array.isArray(commands2) && typeof commands2 == 'object'){ //if gpt is weird and decides to return object and not array
 							commands2 = Object.keys(commands2).map(key => { return { [key]: commands2[key] } })
 						}
+
 						
 						if (commands2 && commands2?.length > 0) {					
 							return { commands: commands2 }

@@ -15636,10 +15636,16 @@ async function submitaimessage(optionalinput, dictated){
 							responsechatmessage.message = `Please tell me what you want to search.`
 						}
 					}else if(command == 'read_emails'){
-						let message = arguments?.message
-						if(message){
-							responsechatmessage.message = message
+						let error = arguments?.error
+						if(error){
+							responsechatmessage.message = error
 							responsechatmessage.skiptyping = true
+						}
+
+						let metasummary = arguments?.metasummary
+						let contentsummary = arguments?.contentsummary
+						if(metasummary || contentsummary){
+							responsechatmessage.message = [metasummary, contentsummary].filter(d => d).join('\n\n')
 						}
 						//here3
 					}else if(command == 'google_maps'){
