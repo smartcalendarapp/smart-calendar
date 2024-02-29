@@ -5499,7 +5499,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						parameters: {
 							type: 'object',
 							properties: {
-								summary: { type: 'string' },
+								content: { type: 'string', description: 'Be friendly, personal, and conversational as if a personal assistant talking. Summarize in 2-3 sentences the email subject, who it is from, and date sent. Then, a sentence format summary of the email content highlighting most important things. Prompt the user on what to do with the email or to move on to next email. If email requires follow up, give user suggestions on how to reply.' },
 							},
 							required: []
 						}
@@ -5759,7 +5759,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							const MAX_EMAIL_CONTENT_LENGTH = 500
 
 							let tempcontext = ''
-							tempcontext += `Viewing ${emails.emails.length} of ${emails.unreadcount} unread emails. Prompt: """Be friendly, personal, and conversational as if a personal assistant talking. Summarize in 2-3 sentences the email subject, who it is from, and date sent. Then, a sentence format summary of the email content highlighting most important things. Prompt the user on what to do with the email or to move on to next email. If email requires follow up, give user suggestions on how to reply."""`
+							tempcontext += `${emails.emails.length} of ${emails.unreadcount} unread emails.`
 							for(let item of emails.emails){
 								tempcontext += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${item.date?.value ? getFullRelativeDHMText(Math.floor((Date.now() - item.date?.value)/60000)): ''}, Content: """${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}"""`
 							}
