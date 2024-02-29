@@ -5240,7 +5240,7 @@ async function getgmailemails(req){
 
 
 		const gmail = google.gmail({ version: 'v1', auth: googleclient })
-		const res = await gmail.users.messages.list({
+		const res = await gmail.users.threads.list({
 			userId: 'me',
 			labelIds: 'UNREAD',
 			maxResults: 1,
@@ -5258,7 +5258,7 @@ async function getgmailemails(req){
 
 		let outputmsgs = []
 		await messages.forEach(async (message) => {
-			await gmail.users.messages.get({
+			await gmail.users.threads.get({
 				userId: 'me',
 				id: message.id,
 			}, async (err, res) => {
@@ -5287,7 +5287,7 @@ async function getgmailemails(req){
 				outputmsgs.push({ from, to, subject, content, date })
 
 				//mark read
-				await gmail.users.messages.modify({
+				await gmail.users.threads.modify({
 					userId: 'me',
 					id: message.id,
 					requestBody: { removeLabelIds: ['UNREAD'] },
@@ -5492,22 +5492,14 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 					},
 					{
-						name: 'read_emails',
-						description: 'Read user email inbox at user request',
-						parameters: {
-							type: 'object',
-							properties: {
-								content: { type: 'string', description: 'Be friendly, personal, and conversational as if a personal assistant talking. Summarize in 2-3 sentences the email subject, who it is from, and date sent. Then, a sentence format summary of the email content highlighting most important things. Prompt the user on what to do with the email or to move on to next email. If email requires follow up, give user suggestions on how to reply.' },
-							},
-							required: []
-						}
+						name: 'read_emails'
 					}
 				])
 			}
 
 
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'send_email', 'search_web_or_link', 'read_emails'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'send_email', 'search_web_or_link'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
 
@@ -5757,7 +5749,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							const MAX_EMAIL_CONTENT_LENGTH = 500
 
 							let tempcontext = ''
-							tempcontext += `${emails.emails.length} of ${emails.unreadcount} unread emails.`
+							tempcontext += `1 out of ${emails.unreadcount} unread emails. In a conversational, assistant-like, and cohesive manner, summarize in 2-3 sentences the email subject, who it is from, and how long ago it was sent. Then, brief user on the email content highlighting most important things. Prompt the user on what to do with the email or to move on to next email. If email requires follow up, give user suggestions on how to reply.`
 							for(let item of emails.emails){
 								tempcontext += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${item.date?.value ? getFullRelativeDHMText(Math.floor((Date.now() - item.date?.value)/60000)): ''}, Content: """${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}"""`
 							}

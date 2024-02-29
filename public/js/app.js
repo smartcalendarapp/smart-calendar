@@ -15646,11 +15646,6 @@ async function submitaimessage(optionalinput, dictated){
 						if(message){
 							responsechatmessage.message = message
 						}
-
-						let content = arguments?.content
-						if(content){
-							responsechatmessage.message = content
-						}
 					}else if(command == 'google_maps'){
 						//maps distance, time to leave, time between 2 places, visualize route, visualize place
 					}else{
