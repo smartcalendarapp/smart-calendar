@@ -5666,11 +5666,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						if(commands.includes('read_emails')){
 							let emails = await getgmailemails(req)
 							if(!emails || emails.error || !emails.emails){
-								return { commands: [ { 'read_emails': { arguments: { message: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' }} } ] }
+								return { commands: [ { 'read_emails': { message: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' } } ] }
 							}
 
 							if(emails.emails.length == 0){
-								return { commands: [ { 'read_emails': { arguments: { message: emails?.error || 'You have no unread emails!' }} } ] }
+								return { commands: [ { 'read_emails': { message: emails?.error || 'You have no unread emails!' } } ] }
 							}
 
 							let tempcontext = ''
