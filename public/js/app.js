@@ -15654,7 +15654,6 @@ async function submitaimessage(optionalinput, dictated){
 					}else if(command == 'google_maps'){
 						//maps distance, time to leave, time between 2 places, visualize route, visualize place
 						//here3
-
 					}else{
 						responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `This is weird, I could not determine your command. Please click the thumbs down button and try again.`
 					}

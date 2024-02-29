@@ -4593,7 +4593,7 @@ let MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
 let MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
 
 let GPT_MODEL = 'gpt-3.5-turbo-0125'
-let GPT_ATHENA_INSTRUCTIONS = `A personal assistant called Athena for Smart Calendar that assists with any request. Your ability is to look at user's calendar data and return app commands for the user's prompt or respond to plain requests. Respond with tone and style of a conversational, helpful assistant, prioritizing the user's satisfaction. Be concise. Access to user's calendar and todo data is granted and assumed. Never say or mention internal ID of events/tasks. Incorporate mental health or wellness tips when appropriate. Always reference and remember past messages in conversation history for context. If user references 'this', 'that', 'those' or similar, they are talking about event or task in previous message(s).`
+let GPT_ATHENA_INSTRUCTIONS = `A personal assistant called Athena for Smart Calendar that assists with any request. Your ability is to look at user's calendar data and return app commands for the user's prompt or respond to plain requests. Respond with tone and style of a conversational, helpful assistant, prioritizing the user's satisfaction. Access to user's calendar and todo data is granted and assumed. Never say or mention internal ID of events/tasks. Incorporate mental health or wellness tips when appropriate. Always reference and remember past messages in conversation history for context. If user references 'this', 'that', 'those' or similar, they are talking about event or task in previous message(s).`
 
 app.post('/gettasksuggestions', async (req, res) => {
 	async function getgptresponse(prompt) {
@@ -4835,7 +4835,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 			],
 			max_tokens: 200,
 			temperature: 1,
-			top_p: 0.5,
+			top_p: 1,
 		})
 		totaltokens += response.usage.total_tokens
 		
@@ -4950,7 +4950,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 			],
 			max_tokens: 200,
 			temperature: 1,
-			top_p: 0.5,
+			top_p: 1,
 		})
 		totaltokens += response.usage.total_tokens
 		
@@ -5046,7 +5046,7 @@ app.post('/getgptchatresponseeveningsummary', async (req, res) => {
 			],
 			max_tokens: 200,
 			temperature: 1,
-			top_p: 0.5,
+			top_p: 1,
 		})
 		totaltokens += response.usage.total_tokens
 		
@@ -5156,7 +5156,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 			],
 			max_tokens: 200,
 			temperature: 1,
-			top_p: 0.5,
+			top_p: 1,
 		})
 		totaltokens += response.usage.total_tokens
 		
@@ -5493,7 +5493,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					},
 					{
 						name: 'read_emails',
-						description: 'Be friendly, personal, and conversational as if a personal assistant talking. Summarize in 2-3 sentences the email subject, who it is from, and date sent. Then, a sentence format summary of the email content highlighting most important things. Prompt the user on what to do with the email or to move on to next email. If email requires follow up, give user suggestions on how to reply.',
+						description: 'Read user email inbox at user request',
 						parameters: {
 							type: 'object',
 							properties: {
@@ -5653,7 +5653,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					],
 					max_tokens: 200,
 					temperature: 0.5,
-					top_p: 0.5,
+					top_p: 1,
 					stream: true
 				})
 
@@ -5772,7 +5772,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							model: GPT_MODEL,
 							max_tokens: commands.length > 0 ? 1500 : 300, //more tokens for functions
 							temperature: 0.5,
-							top_p: 0.5,
+							top_p: 1,
 							stream: true
 						}
 						let request2input = ''
