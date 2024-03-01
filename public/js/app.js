@@ -10772,6 +10772,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		if(calendar.recognitionalwayson && !wanttostoprecognition){
 			function checkended(){
 				if(!isspeaking && !wanttostoprecognition){
+					isspeaking = true
 					togglerecognition(recognitionoutputtype)
 				}
 			}
@@ -10960,8 +10961,8 @@ function updaterecognitionui(close){
 }
 
 
-let recognitionstartedtimestamp;
-function togglerecognition(type){
+
+function togglerecognition(type, useraction){
 	if(recognition){
 		if(!isspeaking){
 			recognitionoutputtype = type
@@ -10992,15 +10993,25 @@ function togglerecognition(type){
 
 			recognition.lang = calendar.recognitionlanguage
 
-			recognitionstartedtimestamp = Date.now()
-
+			isspeaking = true
 			recognition.start()
 
-			if(!recognitionidle){
-				playsound('dictation')
+			if(useraction){
+				if(!recognitionidle){
+					playsound('dictation')
+				}
 			}
 		}else{
-			stoprecognition(true)
+			if(useraction && recognitionidle){
+				recognitionidle = false
+
+				//restart it
+				resetSpeechEndTimeout()
+				updaterecognitionui()
+				playsound('dictation')
+			}else{
+				stoprecognition(true)
+			}
 		}
 	}
 }
@@ -11016,6 +11027,7 @@ function stoprecognition(doplaysound, useraction){
 		}
 
 		recognition.stop()
+		isspeaking = false
 		
 		if(doplaysound){
 			playsound('dictationend')
@@ -11069,7 +11081,7 @@ function submitdictation(useraction){
 	}else{
 		ispaused = true
 
-		togglerecognition(recognitionoutputtype)
+		togglerecognition(recognitionoutputtype, useraction)
 
 		updaterecognitionui()
 	}
