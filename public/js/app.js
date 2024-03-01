@@ -10619,6 +10619,9 @@ function resetSpeechEndTimeout() {
 		let oldtext2 = totalTranscriptCopy
 		clearTimeout(speechEndTimeout2)
 		speechEndTimeout2 = setTimeout(() => {
+			if(!isspeaking){
+				togglerecognition(recognitionoutputtype)
+			}
 			if (totalTranscriptCopy == oldtext2) {
 				recognitionidle = true
 				
@@ -10627,12 +10630,6 @@ function resetSpeechEndTimeout() {
 			}
 		}, SPEECH_ALWAYS_ON_TIMEOUT_DURATION)
 	}
-}
-
-document.addEventListener('mousemove', refreshrecognitionidle)
-document.addEventListener('click', refreshrecognitionidle)
-function refreshrecognitionidle(){
-	recognitionidle = false
 }
 
 
@@ -10679,6 +10676,7 @@ const aichatlanguagemap = {
 	'ru-RU': 'Russian',
 	'es-ES': 'Spanish',
 }
+
 
 if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
@@ -10759,8 +10757,14 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		resetSpeechEndTimeout()
 
 		//always on feature
-		if(calendar.recognitionalwayson && recognitionerror){
-			togglerecognition(recognitionoutputtype)
+		if(calendar.recognitionalwayson){
+			recognitionalwaysoninterval = setInterval(function(){
+				if(!isspeaking){
+					togglerecognition(recognitionoutputtype)
+				}
+			}, 1000)
+		}else{
+			clearInterval(recognitionalwaysoninterval)
 		}
 	})
 }else{
@@ -10790,6 +10794,7 @@ function updaterecognitionui(close){
 	addeventdictationbutton.classList.remove('recognitionredanimation')
 	addtododictationbutton.classList.remove('recognitionredanimation')
 	aichatdictationbutton.classList.remove('recognitionredanimation')
+	aichatdictationbutton.classList.remove('recognitionblue')
 
 	let addeventdictationtext2 = getElement('addeventdictationtext2')
 	let addtododictationtext2 = getElement('addtododictationtext2')
@@ -10871,7 +10876,11 @@ function updaterecognitionui(close){
 
 			stopaichatrecognitionbutton.classList.remove('hiddenfaderelative')
 
-			aichatdictationbutton.classList.add('recognitionredanimation')
+			if(recognitionidle){
+				aichatdictationbutton.classList.add('recognitionblue')
+			}else{
+				aichatdictationbutton.classList.add('recognitionredanimation')
+			}
 
 			if(totalTranscriptCopy){
 				aichatdictationtext.innerHTML =  `<span class="text-primary">${totalTranscriptCopy}</span>`
@@ -10964,22 +10973,29 @@ function togglerecognition(type){
 
 			recognition.lang = calendar.recognitionlanguage
 
-			recognitionidle = false
 			recognitionstartedtimestamp = Date.now()
 
 			recognition.start()
 
-			playsound('dictation')
+			if(!recognitionidle){
+				playsound('dictation')
+			}
 		}else{
 			stoprecognition(true)
 		}
 	}
 }
-function stoprecognition(doplaysound){
+
+function stoprecognition(doplaysound, useraction){
 	if(isspeaking){
 		recognition.stop()
+		
 		if(doplaysound){
 			playsound('dictationend')
+		}
+
+		if(useraction){
+			clearInterval(recognitionalwaysoninterval)
 		}
 	}
 }
@@ -10990,7 +11006,12 @@ function closerecognitionpopup(){
 
 	updaterecognitionui(true)
 }
-function submitdictation(){
+let recognitionalwaysoninterval;
+function submitdictation(useraction){
+	if(useraction){
+		clearInterval(recognitionalwaysoninterval)
+	}
+
 	if(totalTranscriptCopy){
 		ispaused = false
 
@@ -11019,7 +11040,7 @@ function submitdictation(){
 			submitaimessage(totalTranscriptCopy, true)
 		}
 
-		stoprecognition(true)
+		stoprecognition(useraction)
 	}else{
 		ispaused = true
 

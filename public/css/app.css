@@ -1508,7 +1508,7 @@ ol{
 .dictationbutton{
 	position:relative;
 }
-.recognitionredanimation svg{
+.recognitionredanimation svg, .recognitionblue svg{
 	fill:var(--white) !important;
 }
 
