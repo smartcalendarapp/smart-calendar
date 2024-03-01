@@ -10790,7 +10790,6 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 function checkrecognitionended(){
 	if(!isspeaking && !wanttostoprecognition){
-		recognitionidle = true
 		togglerecognition(recognitionoutputtype)
 	}
 }
@@ -10971,8 +10970,6 @@ function togglerecognition(type, useraction){
 		if(!isspeaking){
 			recognitionoutputtype = type
 
-			isspeaking = true
-
 			let addtododictationpopup = getElement('addtododictationpopup')
 			let addeventdictationpopup = getElement('addeventdictationpopup')
 			let aichatdictationpopup = getElement('aichatdictationpopup')
@@ -10999,6 +10996,7 @@ function togglerecognition(type, useraction){
 
 			recognition.lang = calendar.recognitionlanguage
 
+			isspeaking = true
 			recognition.start()
 
 			if(useraction){
@@ -11046,7 +11044,7 @@ function closerecognitionpopup(){
 	updaterecognitionui(true)
 }
 function submitdictation(useraction){
-	if(isspeaking && useraction){
+	if(useraction){
 		wanttostoprecognition = true
 		clearTimeout(speechEndTimeout2)
 	}
