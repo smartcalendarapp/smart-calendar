@@ -10733,9 +10733,9 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 		wanttostoprecognition = false
 
-		console.log("Recognition started")
-
 		resetSpeechEndTimeout()
+
+		console.log("Recognition started")
 	})
 
 	recognition.addEventListener('error', (event) => {
@@ -10746,6 +10746,9 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		isspeaking = false
 
 		recognitionerror = event.error
+		
+		processrecognitionend()
+
 		updaterecognitionui()
 
 		console.log("Recognition error occurred: " + event.error)
@@ -10758,9 +10761,14 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 		isspeaking = false
 
-		console.log("Recognition ended")
+		processrecognitionend()
 
-		//always on feature
+		updaterecognitionui()
+
+		console.log("Recognition ended")
+	})
+
+	function processrecognitionend(){
 		if(calendar.recognitionalwayson && !wanttostoprecognition){
 			function checkended(){
 				if(!isspeaking && !wanttostoprecognition){
@@ -10775,9 +10783,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 			clearTimeout(speechEndTimeout2)
 			clearInterval(recognitionalwaysoninterval)
 		}
-
-		updaterecognitionui()
-	})
+	}
 }else{
 	getElement('todorecognitionwrap').classList.add('display-none')
 	getElement('eventrecognitionwrap').classList.add('display-none')
