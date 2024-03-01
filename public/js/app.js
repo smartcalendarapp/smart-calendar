@@ -10688,6 +10688,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	let finalTranscript = ''
 	let interimTranscript = ''
 	totalTranscriptCopy = ''
+	let recognitionremovetext = ''
 	
 
 	recognition.addEventListener('result', event => {
@@ -10703,12 +10704,17 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 		let totalTranscript = (finalTranscript.trim() + ' ' + interimTranscript.trim()).trim()
 
+		//idle and rewake
 		if(recognitionidle){
 			if(totalTranscript.toLowerCase().includes(RECOGNITION_CALL_PHRASE)){
 				recognitionidle = false
 				playsound('dictation')
+
+				recognitionremovetext = totalTranscript
 			}
 		}
+		totalTranscript = totalTranscript.replace(recognitionremovetext, '').trim()
+
 		if(!recognitionidle){
 			totalTranscriptCopy = totalTranscript
 
