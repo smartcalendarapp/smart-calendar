@@ -10760,8 +10760,6 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 		console.log("Recognition ended")
 
-		resetSpeechEndTimeout()
-
 		//always on feature
 		if(calendar.recognitionalwayson && !wanttostoprecognition){
 			function checkended(){
