@@ -10757,11 +10757,14 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		resetSpeechEndTimeout()
 
 		//always on feature
-		if(calendar.recognitionalwayson){
-			recognitionalwaysoninterval = setInterval(function(){
+		if(calendar.recognitionalwayson && wanttostoprecognition){
+			function checkended(){
 				if(!isspeaking){
 					togglerecognition(recognitionoutputtype)
 				}
+			}
+			recognitionalwaysoninterval = setInterval(function(){
+				checkended()
 			}, 1000)
 		}else{
 			clearInterval(recognitionalwaysoninterval)
@@ -10986,16 +10989,19 @@ function togglerecognition(type){
 	}
 }
 
+let wanttostoprecognition;
 function stoprecognition(doplaysound, useraction){
+	recognitionidle = false
 	if(isspeaking){
+		if(useraction){
+			wanttostoprecognition = true
+			clearInterval(recognitionalwaysoninterval)
+		}
+
 		recognition.stop()
 		
 		if(doplaysound){
 			playsound('dictationend')
-		}
-
-		if(useraction){
-			clearInterval(recognitionalwaysoninterval)
 		}
 	}
 }
@@ -11009,6 +11015,7 @@ function closerecognitionpopup(){
 let recognitionalwaysoninterval;
 function submitdictation(useraction){
 	if(useraction){
+		wanttostoprecognition = true
 		clearInterval(recognitionalwaysoninterval)
 	}
 
