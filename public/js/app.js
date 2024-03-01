@@ -10592,6 +10592,7 @@ let totalTranscriptCopy;
 let recognitionidle = false
 
 let speechEndTimeout = null
+let speechEndTimeout2 = null
 
 const SPEECH_END_TIMEOUT_DURATION = 2000
 
@@ -10616,8 +10617,8 @@ function resetSpeechEndTimeout() {
 	//turn to idle for always on
 	if(isspeaking){
 		let oldtext2 = totalTranscriptCopy
-		clearTimeout(speechEndTimeout)
-		speechEndTimeout = setTimeout(() => {
+		clearTimeout(speechEndTimeout2)
+		speechEndTimeout2 = setTimeout(() => {
 			if (totalTranscriptCopy == oldtext2) {
 				recognitionidle = true
 				
@@ -10970,14 +10971,14 @@ function togglerecognition(type){
 
 			playsound('dictation')
 		}else{
-			recognition.stop()
+			stoprecognition(true)
 		}
 	}
 }
-function stoprecognition(playsound){
+function stoprecognition(doplaysound){
 	if(isspeaking){
 		recognition.stop()
-		if(playsound){
+		if(doplaysound){
 			playsound('dictationend')
 		}
 	}
@@ -11018,7 +11019,7 @@ function submitdictation(){
 			submitaimessage(totalTranscriptCopy, true)
 		}
 
-		stoprecognition()
+		stoprecognition(true)
 	}else{
 		ispaused = true
 

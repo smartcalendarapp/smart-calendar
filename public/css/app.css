@@ -1514,6 +1514,7 @@ ol{
 
 
 
+
 @keyframes recognitionredanimationbefore {
 	0% {
 		transform:scale(1);
@@ -1546,6 +1547,16 @@ ol{
 	transform: scale(1);
 }
 
+
+.recognitionblue::before{
+	opacity:0 !important;
+}
+.recognitionblue{
+	background-color:var(--blue) !important
+}
+.recognitionblue:hover{
+	background-color:var(--blue-hover) !important
+}
 
 .fillbuttonwhite{
 	height: 18px;

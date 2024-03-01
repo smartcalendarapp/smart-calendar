@@ -5792,7 +5792,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							const MAX_EMAIL_CONTENT_LENGTH = 500
 
 							let tempcontext = ''
-							tempcontext += `Reading 1 unread email thread. ${emails.unreadcount} unread emails remaining. In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent. Then, in 2-3 sentences brief user on the email(s) content highlighting most important things and what they need to do, action items. If email requires follow up, give user suggestions on how to reply. Finally, Prompt the user on what to do with the email or to move on to next email (if at least 1 unread).`
+							tempcontext += `Reading 1 unread email thread. ${emails.unreadcount} unread emails remaining. In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent. Then, in 2-3 sentences brief user on the email(s) content highlighting most important things and what they need to do, action items. Provide any important links for quick access. If email requires follow up, give user suggestions on how to reply. Finally, Prompt the user on what to do with the email or to move on to next email (if at least 1 unread).`
 							for(let item of emails.emails){
 								tempcontext += '\n' + `'''From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${(item.date && getFullRelativeDHMText(Math.floor((Date.now() - item.date)/60000))) || ''}, Content: ${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}'''`
 							}
