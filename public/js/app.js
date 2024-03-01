@@ -10763,7 +10763,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		resetSpeechEndTimeout()
 
 		//always on feature
-		if(calendar.recognitionalwayson && wanttostoprecognition){
+		if(calendar.recognitionalwayson && !wanttostoprecognition){
 			function checkended(){
 				if(!isspeaking){
 					togglerecognition(recognitionoutputtype)
@@ -10775,6 +10775,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		}else{
 			clearInterval(recognitionalwaysoninterval)
 		}
+		wanttostoprecognition = false
 	})
 }else{
 	getElement('todorecognitionwrap').classList.add('display-none')
@@ -10880,7 +10881,9 @@ function updaterecognitionui(close){
 
 			aichatdictationpopup.classList.remove('hiddenfade')
 
-			aichatinputwrap.classList.add('hiddenfaderelative')
+			if(!recognitionidle){
+				aichatinputwrap.classList.add('hiddenfaderelative')
+			}
 			aichatcontent2.classList.add('padding-bottom-192px')
 
 			stopaichatrecognitionbutton.classList.remove('hiddenfaderelative')
