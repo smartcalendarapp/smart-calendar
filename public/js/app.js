@@ -10608,21 +10608,21 @@ function resetSpeechEndTimeout() {
 		speechEndTimeout = setTimeout(() => {
 			if (totalTranscriptCopy.length > 0 && totalTranscriptCopy == oldtext && aichatlanguagepopup.classList.contains('hiddenpopup')) {
 				submitdictation()
-				recognition.stop()
+				stoprecognition(true)
 			}
 		}, SPEECH_END_TIMEOUT_DURATION)
 	}
 
 	//turn to idle for always on
 	if(isspeaking){
-		let oldtext = totalTranscriptCopy
+		let oldtext2 = totalTranscriptCopy
 		clearTimeout(speechEndTimeout)
 		speechEndTimeout = setTimeout(() => {
-			if (totalTranscriptCopy.length == 0 || (totalTranscriptCopy == oldtext && aichatlanguagepopup.classList.contains('hiddenpopup'))) {
+			if (totalTranscriptCopy == oldtext2) {
+				recognitionidle = true
+				
 				totalTranscriptCopy = ''
 				updaterecognitionui()
-				
-				recognitionidle = true
 			}
 		}, SPEECH_ALWAYS_ON_TIMEOUT_DURATION)
 	}
@@ -10875,7 +10875,7 @@ function updaterecognitionui(close){
 			if(totalTranscriptCopy){
 				aichatdictationtext.innerHTML =  `<span class="text-primary">${totalTranscriptCopy}</span>`
 			}else{
-				aichatdictationtext.innerHTML = `<span class="text-quaternary">Listening...</span>`
+				aichatdictationtext.innerHTML = `<span class="text-quaternary">${recognitionidle ? `Say "Hey Athena" to wake me up` : 'Listening...'}</span>`
 			}
 		}
 	}else{
@@ -10974,9 +10974,12 @@ function togglerecognition(type){
 		}
 	}
 }
-function stoprecognition(){
+function stoprecognition(playsound){
 	if(isspeaking){
 		recognition.stop()
+		if(playsound){
+			playsound('dictationend')
+		}
 	}
 }
 
