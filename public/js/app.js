@@ -10677,7 +10677,6 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 
 	let finalTranscript = ''
-	let interimTranscript = ''
 	totalTranscriptCopy = ''
 	let recognitionreplacetext = ''
 	
@@ -10685,7 +10684,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	recognition.addEventListener('result', event => {
 		let oldtotaltranscript = totalTranscriptCopy
 
-		interimTranscript = ''
+		let interimTranscript = ''
 		for (let i = event.resultIndex; i < event.results.length; ++i) {
 			const transcriptPart = event.results[i][0].transcript
 			if (event.results[i].isFinal) {
@@ -10707,9 +10706,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 			}
 		}
 
-		console.log(totalTranscript, recognitionreplacetext)
 		totalTranscript = totalTranscript.replace(new RegExp(recognitionreplacetext, 'i'), '').trim()
-		console.log(totalTranscript)
 
 		if(totalTranscript != oldtotaltranscript){
 			resetSpeechEndTimeout2()
@@ -10742,9 +10739,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 	recognition.addEventListener('error', (event) => {
 		finalTranscript = ''
-		interimTranscript = ''
 		totalTranscriptCopy = ''
-		recognitionreplacetext = ''
 
 		isspeaking = false
 
@@ -10759,9 +10754,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	
 	recognition.addEventListener('end', () => {
 		finalTranscript = ''
-		interimTranscript = ''
 		totalTranscriptCopy = ''
-		recognitionreplacetext = ''
 
 		isspeaking = false
 
@@ -11062,6 +11055,8 @@ function submitdictation(useraction){
 	if(useraction){
 		wanttostoprecognition = true
 		canrecognitionidle = false
+
+		recognitionreplacetext = ''
 	}
 
 	if(totalTranscriptCopy){
