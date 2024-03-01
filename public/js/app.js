@@ -10709,11 +10709,12 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 				recognitionidle = false
 				playsound('dictation')
 
-				recognitionreplacetext = oldtotaltranscript
+				recognitionreplacetext = finalTranscript.trim()
 			}
 		}
 
-		totalTranscript = totalTranscript.replace(new RegExp(recognitionreplacetext, 'i'), '').trim()
+		console.log(recognitionreplacetext)
+		totalTranscript = totalTranscript.replace(recognitionreplacetext, '').trim()
 
 		if(totalTranscript != oldtotaltranscript){
 			resetSpeechEndTimeout2()
