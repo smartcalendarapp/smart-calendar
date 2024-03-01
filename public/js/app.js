@@ -10774,6 +10774,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 				checkended()
 			}, 1000)
 		}else{
+			clearTimeout(speechEndTimeout2)
 			clearInterval(recognitionalwaysoninterval)
 		}
 
@@ -11006,6 +11007,7 @@ function stoprecognition(doplaysound, useraction){
 	if(isspeaking){
 		if(useraction){
 			wanttostoprecognition = true
+			clearTimeout(speechEndTimeout2)
 			clearInterval(recognitionalwaysoninterval)
 		}
 
@@ -11027,6 +11029,7 @@ let recognitionalwaysoninterval;
 function submitdictation(useraction){
 	if(useraction){
 		wanttostoprecognition = true
+		clearTimeout(speechEndTimeout2)
 		clearInterval(recognitionalwaysoninterval)
 	}
 
@@ -15369,6 +15372,19 @@ async function submitaimessage(optionalinput, dictated){
 									item.startafter.month = startdate.getMonth()
 									item.startafter.day = startdate.getDate()
 									item.startafter.minute = startdate.getHours() * 60 + startdate.getMinutes()
+
+
+									//set due date after start date if no due date provided
+									if(endbeforeminute != null && endbeforeyear != null && endbeforemonth != null && endbeforeday != null){
+
+									}else{
+										if(endbeforedate.getTime() < startdate.getTime()){
+											item.endbefore.year = item.startafter.year
+											item.endbefore.month = item.startafter.month
+											item.endbefore.day = item.startafter.day
+											item.endbefore.minute = 1440-1
+										}
+									}
 								}
 								
 								calendar.todos.push(item)
