@@ -10707,7 +10707,9 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 			}
 		}
 
+		console.log(totalTranscript, recognitionreplacetext)
 		totalTranscript = totalTranscript.replace(new RegExp(recognitionreplacetext, 'i'), '').trim()
+		console.log(totalTranscript)
 
 		if(totalTranscript != oldtotaltranscript){
 			resetSpeechEndTimeout2()
