@@ -10629,7 +10629,9 @@ function resetSpeechEndTimeout2() {
 
 		speechEndTimeout2 = setTimeout(() => {
 			if(!isspeaking){
-				togglerecognition(recognitionoutputtype)
+				togglerecognition(recognitionoutputtype, true)
+
+				resetSpeechEndTimeout2()
 			}
 			if (totalTranscriptCopy == oldtext2) {
 				recognitionidle = true
@@ -11010,7 +11012,7 @@ function togglerecognition(type, useraction){
 
 			if(useraction){
 				resetSpeechEndTimeout2()
-				
+
 				if(!recognitionidle){
 					playsound('dictation')
 				}
