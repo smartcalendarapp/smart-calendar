@@ -5220,113 +5220,132 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 	}
 })
 
-async function getgmailemails(req){
-	try{
-		let user = await getUserById(req.session?.user?.userid)
-		if(!user) return null
-		
-		if(!req.session.tokens || !req.session.tokens.access_token){
-			let accesstoken = await getNewAccessToken(user.accountdata.refreshtoken)
-			if(!accesstoken){
-				return { error: loginwithgooglegmailhtml }
-			}
-			req.session.tokens = req.session.tokens || {}
-			req.session.tokens.access_token = accesstoken
-		}
+//here3
+async function getgmailemails(req) {
+    try {
+        let user = await getUserById(req.session?.user?.userid);
+        if (!user) return null;
 
+        if (!req.session.tokens || !req.session.tokens.access_token) {
+            let accessToken = await getNewAccessToken(user.accountdata.refreshtoken);
+            if (!accessToken) {
+                return { error: loginwithgooglegmailhtml };
+            }
+            req.session.tokens = req.session.tokens || {};
+            req.session.tokens.access_token = accessToken;
+        }
 
-		const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI)
-		googleclient.setCredentials(req.session.tokens)
+        const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI);
+        googleclient.setCredentials(req.session.tokens);
 
+        const gmail = google.gmail({ version: 'v1', auth: googleclient });
+        const res = await gmail.users.threads.list({
+            userId: 'me',
+            labelIds: 'UNREAD',
+            maxResults: 1,
+            includeSpamTrash: false,
+        });
 
-		const gmail = google.gmail({ version: 'v1', auth: googleclient })
-		const res = await gmail.users.threads.list({
-			userId: 'me',
-			labelIds: 'UNREAD',
-			maxResults: 1,
-		})
+        if (res.status != 200) {
+            return null;
+        }
 
-		if(res.status != 200){
-			return null
-		}
-		
-		const { threads } = res.data
+        const { threads } = res.data;
+        if (!threads || threads.length === 0) {
+            return { emails: [] };
+        }
 
-		if (!threads) {
-			return { emails: [] }
-		}
 
 		let outputmsgs = []
-		for(let thread of threads){			
-			await gmail.users.threads.get({
+
+		//parallel
+        const threadPromises = threads.map(thread => new Promise((resolve, reject) => {
+            gmail.users.threads.get({ userId: 'me', id: thread.id, format: 'full' }, (err, res3) => {
+                if (err) {
+                    console.error(err);
+                    return reject();
+                }
+
+                const msgs = res3.data.messages.sort((a, b) => a.internalDate - b.internalDate).filter(d => d.labelIds.includes('UNREAD'))
+				for(const msg of msgs){
+					const headers = msg.payload.headers;
+					const from = headers.find(header => header.name === 'From')?.value;
+					const to = headers.find(header => header.name === 'To')?.value;
+					const subject = headers.find(header => header.name === 'Subject')?.value;
+					const date = headers.find(header => header.name.toLowerCase() === 'date');
+					const datevalue = date?.value && !isNaN(new Date(date.value).getTime()) && new Date(date.value).getTime()
+
+					let content = '';
+					if (msg.payload.parts) {
+						const part = msg.payload.parts.find(part => part.mimeType === 'text/plain' || part.mimeType === 'text/html');
+						if (part?.body?.data) {
+							let tempcontent = Buffer.from(part.body.data, 'base64').toString('utf8');
+							content = htmlToText(tempcontent);
+						}
+					} else if (msg.payload.body.data) {
+						let tempcontent = Buffer.from(msg.payload.body.data, 'base64').toString('utf8');
+						content = htmlToText(tempcontent);
+					}
+
+					function removeLongUrls(inputText, maxLength) {
+						const urlRegex = /https?:\/\/\S+/g
+						
+						return inputText.replace(urlRegex, (url) => {
+						return url.length > maxLength ? '' : url
+						})
+					}
+
+					content = removeLongUrls(content, 50)
+
+					outputmsgs.push({ from, to, subject, content, date: datevalue })
+				}
+
+				resolve()
+            })
+        }))
+
+        await Promise.all(threadPromises)
+
+        // Modify threads to mark as read
+        for (const msg of outputmsgs) {
+            await new Promise((resolve, reject) => {
+                gmail.users.threads.modify({
+                    userId: 'me',
+                    id: msg.id,
+                    requestBody: { removeLabelIds: ['UNREAD'] },
+                }, (err, res) => {
+                    if (err) {
+                        console.error(err);
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                });
+            });
+        }
+
+        // Fetch updated unread count
+        const res2 = await new Promise((resolve, reject) => {
+            gmail.users.labels.get({
 				userId: 'me',
-				id: thread.id,
-			}, async (err, res3) => {
-				if (err) {
-					console.error(err)
-				}
+				id: 'INBOX'
+			}, (err, res) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                } else {
+                    resolve(res);
+                }
+            });
+        });
 
-				const msgs = res3.data.messages.sort((a, b) => a.internalDate - b.internalDate)
-				const msg = msgs[msgs.length - 1]
-
-				const headers = msg.payload.headers
-				const from = headers.find(header => header.name === 'From')?.value
-				const to = headers.find(header => header.name === 'To')?.value
-				const subject = headers.find(header => header.name === 'Subject')?.value
-				const date = headers.find(header => header.name.toLowerCase() === 'date')
-
-				let content = ''
-				if (msg.payload.parts) {
-					const part = msg.payload.parts.find(part => part.mimeType === 'text/plain' || part.mimeType === 'text/html')
-					if (part?.body?.data) {
-						let tempcontent = Buffer.from(part.body.data, 'base64').toString('utf8')
-						content = htmlToText(tempcontent)
-					}
-				} else if (msg.payload.body.data) {
-					let tempcontent = Buffer.from(msg.payload.body.data, 'base64').toString('utf8')
-					content = htmlToText(tempcontent)
-				}
-
-
-				//modify content for presentation
-				function removeLongUrls(inputText, maxLength) {
-					const urlRegex = /https?:\/\/\S+/g
-					
-					return inputText.replace(urlRegex, (url) => {
-					  return url.length > maxLength ? '' : url
-					})
-				}
-				content = removeLongUrls(content, 50)
-				//t
-
-				outputmsgs.push({ from, to, subject, content, date })
-
-				//mark read
-				await gmail.users.threads.modify({
-					userId: 'me',
-					id: thread.id,
-					requestBody: { removeLabelIds: ['UNREAD'] },
-				}, (err, res4) => {
-					if (err) {
-						console.error(err)
-					}
-				})
-			})
-		}
-
-		const res2 = await gmail.users.labels.get({
-			userId: 'me',
-			id: 'INBOX',
-		})
-	  
-		const unreadcount = res2.data.threadsUnread
-
-		return { emails: outputmsgs, unreadcount: unreadcount }
-	}catch(err){
-		return { error: loginwithgooglegmailhtml }
-	}
-
+        return { emails: outputmsgs, unreadcount: res2.data.threadsUnread };
+    } catch (err) {
+        console.error(err);
+        return { error: loginwithgooglegmailhtml };
+    }
 }
+
 
 const DAYLIST = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
@@ -5774,15 +5793,20 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							const MAX_EMAIL_CONTENT_LENGTH = 500
 
 							let tempcontext = ''
-							tempcontext += `1 out of ${emails.unreadcount} unread emails. In a conversational, assistant-like, and cohesive manner, summarize in 2-3 sentences the email subject, who it is from, and how long ago it was sent. Then, brief user on the email content highlighting most important things. Prompt the user on what to do with the email or to move on to next email. If email requires follow up, give user suggestions on how to reply.`
+							tempcontext += `Reading 1 unread email thread. ${emails.unreadcount} unread emails remaining. In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent. Then, in 2-3 sentences brief user on the email(s) content highlighting most important things and what they need to do, action items. If email requires follow up, give user suggestions on how to reply. Finally, Prompt the user on what to do with the email or to move on to next email (if at least 1 unread).`
 							for(let item of emails.emails){
-								tempcontext += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${item.date?.value ? getFullRelativeDHMText(Math.floor((Date.now() - item.date?.value)/60000)): ''}, Content: """${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}"""`
+								tempcontext += '\n' + `'''From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${(item.date && getFullRelativeDHMText(Math.floor((Date.now() - item.date)/60000))) || ''}, Content: ${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}'''`
 							}
 
 							gmailcontext = tempcontext
 						}
 						//here3
 						//need to send the function call data rather than the text output?
+
+						//IMPORTANT: need to adjust the T1, T2... ids of the past items to be of the current data map. so when send raw data, need to replace T1, T2 with actual id, then convert that ID on server side back to the NEW T1, T2... and if not there add a new one. (make get id function to either get T1, T2 for id or create new T3)
+						//should we also inject in "raw data" property the title of the event? to do latest title, do on server side (ideal i think-)
+
+						//for gmail context, need to display full links for unsubscribe so we can automate that. VERY powerful use case
 
 
 						let request2options = {
@@ -5808,7 +5832,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 						if(gmailcontext){
 							//yes todo data
-							request2input += ` Gmail emails (most recent unread): """${gmailcontext}"""`
+							request2input += ` Emails: """${gmailcontext}"""`
 						}
 		
 						if(requirescustomfunction){
