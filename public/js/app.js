@@ -10688,7 +10688,6 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	let finalTranscript = ''
 	let interimTranscript = ''
 	totalTranscriptCopy = ''
-	let recognitionremovetext = ''
 	
 
 	recognition.addEventListener('result', event => {
@@ -10710,10 +10709,11 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 				recognitionidle = false
 				playsound('dictation')
 
-				recognitionremovetext = totalTranscript
+				totalTranscript = ''
+				interimTranscript = ''
+				totalTranscriptCopy = ''
 			}
 		}
-		totalTranscript = totalTranscript.replace(recognitionremovetext, '').trim()
 
 		if(!recognitionidle){
 			totalTranscriptCopy = totalTranscript
@@ -10730,6 +10730,8 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 		recognitionerror = null
 		updaterecognitionui()
+
+		wanttostoprecognition = false
 
 		console.log("Recognition started")
 
@@ -10756,8 +10758,6 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 		isspeaking = false
 
-		updaterecognitionui()
-
 		console.log("Recognition ended")
 
 		resetSpeechEndTimeout()
@@ -10765,17 +10765,19 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		//always on feature
 		if(calendar.recognitionalwayson && !wanttostoprecognition){
 			function checkended(){
-				if(!isspeaking){
+				if(!isspeaking && !wanttostoprecognition){
 					togglerecognition(recognitionoutputtype)
 				}
 			}
+			checkended()
 			recognitionalwaysoninterval = setInterval(function(){
 				checkended()
 			}, 1000)
 		}else{
 			clearInterval(recognitionalwaysoninterval)
 		}
-		wanttostoprecognition = false
+
+		updaterecognitionui()
 	})
 }else{
 	getElement('todorecognitionwrap').classList.add('display-none')
@@ -15716,7 +15718,7 @@ async function submitaimessage(optionalinput, dictated){
 						}else{
 							responsechatmessage.message = `Please tell me what you want to search.`
 						}
-					}else if(command == 'open_website'){
+					}else if(command == 'open_link'){
 						let link = arguments?.link
 
 						if(link){
