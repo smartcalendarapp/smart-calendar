@@ -10617,11 +10617,16 @@ function resetSpeechEndTimeout() {
 			}
 		}, SPEECH_END_TIMEOUT_DURATION)
 	}
+}
+
+function resetSpeechEndTimeout2() {
+	let aichatlanguagepopup = getElement('aichatlanguagepopup')
 
 	//turn to idle for always on
 	if(isspeaking){
 		let oldtext2 = totalTranscriptCopy
 		clearTimeout(speechEndTimeout2)
+
 		speechEndTimeout2 = setTimeout(() => {
 			if(!isspeaking){
 				togglerecognition(recognitionoutputtype)
@@ -10724,6 +10729,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 			totalTranscriptCopy = totalTranscript
 
 			resetSpeechEndTimeout()
+			resetSpeechEndTimeout2()
 		}
 
 		recognitionerror = null
@@ -10781,6 +10787,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 			checkrecognitionended()
 		}else{
 			clearTimeout(speechEndTimeout2)
+			canrecognitionidle = false
 		}
 	}
 }else{
@@ -10971,6 +10978,7 @@ function togglerecognition(type, useraction){
 	if(recognition){
 		if(!isspeaking){
 			recognitionoutputtype = type
+			isspeaking = true
 
 			let addtododictationpopup = getElement('addtododictationpopup')
 			let addeventdictationpopup = getElement('addeventdictationpopup')
@@ -10998,10 +11006,11 @@ function togglerecognition(type, useraction){
 
 			recognition.lang = calendar.recognitionlanguage
 
-			isspeaking = true
 			recognition.start()
 
 			if(useraction){
+				resetSpeechEndTimeout2()
+				
 				if(!recognitionidle){
 					playsound('dictation')
 				}
@@ -11012,6 +11021,8 @@ function togglerecognition(type, useraction){
 
 				//restart it
 				resetSpeechEndTimeout()
+				resetSpeechEndTimeout2()
+
 				updaterecognitionui()
 				playsound('dictation')
 			}else{
