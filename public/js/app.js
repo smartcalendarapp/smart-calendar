@@ -10647,6 +10647,9 @@ function updateaichatrecognitionlanguage(){
 
 	let aichatlanguagetext = getElement('aichatlanguagetext')
 	aichatlanguagetext.innerHTML = aichatlanguagemap[calendar.recognitionlanguage]
+
+	let togglerecognitionalwaysoninput = getElement('togglerecognitionalwaysoninput')
+	togglerecognitionalwaysoninput.checked = calendar.recognitionalwayson
 }
 function clickaichatlanguagebutton(){
 	let aichatlanguagebutton = getElement('aichatlanguagebutton')
@@ -10654,8 +10657,8 @@ function clickaichatlanguagebutton(){
 
 	aichatlanguagepopup.classList.toggle('hiddenpopup')
 
-	aichatlanguagepopup.style.top = fixtop(aichatlanguagebutton.getBoundingClientRect().top + aichatlanguagebutton.offsetHeight, aichatlanguagepopup) + 'px'
-	aichatlanguagepopup.style.left = fixleft(aichatlanguagebutton.getBoundingClientRect().left, repeatoptionmenu) + 'px'
+	aichatlanguagepopup.style.top = fixtop(aichatlanguagebutton.getBoundingClientRect().top - aichatlanguagepopup.offsetHeight, aichatlanguagepopup) + 'px'
+	aichatlanguagepopup.style.left = fixleft(aichatlanguagebutton.getBoundingClientRect().left - aichatlanguagepopup.offsetWidth/2 + aichatlanguagebutton.offsetWidth/2, repeatoptionmenu) + 'px'
 }
 
 const aichatlanguagemap = {
@@ -10666,6 +10669,10 @@ const aichatlanguagemap = {
 	'ja-JP': 'Japanese',
 	'ru-RU': 'Russian',
 	'es-ES': 'Spanish',
+}
+
+function togglerecognitionalwayson(event){
+	calendar.recognitionalwayson = event.target.checked
 }
 
 let lastrecognitionresultdate = 0;
@@ -10702,7 +10709,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 				recognitionidle = false
 				playsound('dictation')
 
-				recognitionreplacetext = totalTranscript
+				recognitionreplacetext = oldtotaltranscript
 			}
 		}
 
@@ -14512,7 +14519,7 @@ class ChatMessage {
 		if(this.dictated){
 			if(!isspeaking){
 				await sleep(200)
-				togglerecognition('aichat')
+				togglerecognition('aichat', true)
 			}
 		}else{
 			setTimeout(function(){

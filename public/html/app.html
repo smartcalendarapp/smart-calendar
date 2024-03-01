@@ -303,14 +303,27 @@
 	</div>
 
 	
-	<div class="helpmenu hiddenpopup popup z-index-2000 max-height-240px" id="aichatlanguagepopup">
-		<div class="helpitem padding-8px-12px" onclick="chooseaichatlanguage('en-US')">English</div>
-		<div class="helpitem padding-8px-12px" onclick="chooseaichatlanguage('zh-CN')">Chinese</div>
-		<div class="helpitem padding-8px-12px" onclick="chooseaichatlanguage('fr-FR')">French</div>
-		<div class="helpitem padding-8px-12px" onclick="chooseaichatlanguage('hi-IN')">Hindi</div>
-		<div class="helpitem padding-8px-12px" onclick="chooseaichatlanguage('ja-JP')">Japanese</div>
-		<div class="helpitem padding-8px-12px" onclick="chooseaichatlanguage('ru-RU')">Russian</div>
-		<div class="helpitem padding-8px-12px" onclick="chooseaichatlanguage('es-ES')">Spanish</div>
+	<div class="helpmenu hiddenpopup popup z-index-2000 gap-12px padding-12px max-height-240px" id="aichatlanguagepopup">
+		<div class="display-flex flex-row gap-12px align-center">
+			<div class="infotext text-14px text-bold">Listen for "Hey Athena"</div>
+			<label class="switch">
+				<input type="checkbox" oninput="togglerecognitionalwayson(event)" id="togglerecognitionalwaysoninput">
+				<span class="slider"></span>
+			</label>
+		</div>
+
+		<div class="infogroup overflow-y-auto">
+			<div class="infotext text-14px text-bold">Language</div>
+			<div class="display-flex flex-column overflow-y-auto bordertertiary border-8px">
+				<div class="helpitem padding-8px-12px" onclick="chooseaichatlanguage('en-US')">English</div>
+				<div class="helpitem padding-8px-12px" onclick="chooseaichatlanguage('zh-CN')">Chinese</div>
+				<div class="helpitem padding-8px-12px" onclick="chooseaichatlanguage('fr-FR')">French</div>
+				<div class="helpitem padding-8px-12px" onclick="chooseaichatlanguage('hi-IN')">Hindi</div>
+				<div class="helpitem padding-8px-12px" onclick="chooseaichatlanguage('ja-JP')">Japanese</div>
+				<div class="helpitem padding-8px-12px" onclick="chooseaichatlanguage('ru-RU')">Russian</div>
+				<div class="helpitem padding-8px-12px" onclick="chooseaichatlanguage('es-ES')">Spanish</div>
+			</div>
+		</div>
 	</div>
 
 	<div class="helpmenu hiddenpopup popup z-index-2000 padding-12px gap-12px" id="todoitemduration">
@@ -2257,10 +2270,17 @@
 											<div class="flex-1 display-flex pointer-none flex-row">
 												<div class="popupbutton pointer display-flex flex-row gap-6px align-center pointer pointer-auto aichatlanguagebutton" onclick="clickaichatlanguagebutton()" id="aichatlanguagebutton">
 													<div id="aichatlanguagetext" class="pointer-none transition-duration-100 text-quaternary text-14px">English</div>
-													<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="transition-duration-100 buttoninline buttonquaternary rotate90">
+													<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge buttonquaternary pointer-none">
 														<g>
-														<path d="M88.6229 47.8879L167.377 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
-														<path d="M88.6229 208.112L167.377 128" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+														<path d="M88.6333 128C88.6333 106.258 106.258 88.6333 128 88.6333C149.742 88.6333 167.367 106.258 167.367 128C167.367 149.742 149.742 167.367 128 167.367C106.258 167.367 88.6333 149.742 88.6333 128Z" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+														<path d="M101.521 40.8836L106.742 18.8719C106.742 18.8719 107.824 15.3158 109.952 13.0978C112.08 10.8799 115.254 10 115.254 10L139.987 10C139.987 10 144.189 10.9478 146.546 13.0941C148.903 15.2404 149.416 18.5853 149.416 18.5853L155.745 40.8618L167.367 46.9222" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+														<path d="M154.479 215.119L149.258 237.13C149.258 237.13 148.176 240.686 146.048 242.904C143.92 245.122 140.746 246.002 140.746 246.002L116.013 246.002C116.013 246.002 111.811 245.054 109.454 242.908C107.097 240.762 106.584 237.417 106.584 237.417L100.255 215.14L88.6333 209.08" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+														<path d="M215.118 101.522L237.129 106.743C237.129 106.743 240.685 107.825 242.903 109.953C245.121 112.081 246.001 115.255 246.001 115.255L246.001 139.988C246.001 139.988 245.053 144.19 242.907 146.547C240.761 148.904 237.416 149.417 237.416 149.417L215.139 155.746L209.079 167.368" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+														<path d="M40.8825 154.48L18.8708 149.259C18.8708 149.259 15.3147 148.177 13.0967 146.049C10.8788 143.921 9.9989 140.747 9.9989 140.747L9.9989 116.014C9.9989 116.014 10.9467 111.812 13.093 109.455C15.2393 107.098 18.5842 106.585 18.5842 106.585L40.8607 100.257L46.9211 88.6344" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+														<path d="M208.325 170.879L220.198 190.135C220.198 190.135 221.947 193.415 222.011 196.488C222.075 199.561 220.452 202.428 220.452 202.428L202.963 219.916C202.963 219.916 199.322 222.217 196.137 222.367C192.953 222.516 190.225 220.513 190.225 220.513L169.998 209.236L157.495 213.169" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+														<path d="M47.675 85.1233L35.802 65.867C35.802 65.867 34.0526 62.5874 33.989 59.5143C33.9254 56.4412 35.5477 53.5747 35.5477 53.5747L53.0366 36.0857C53.0366 36.0857 56.678 33.7847 59.8625 33.6356C63.0471 33.4864 65.7747 35.489 65.7747 35.489L86.0015 46.766L98.505 42.8332" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+														<path d="M85.1222 208.326L65.8659 220.199C65.8659 220.199 62.5863 221.948 59.5132 222.012C56.4401 222.076 53.5736 220.453 53.5736 220.453L36.0846 202.965C36.0846 202.965 33.7836 199.323 33.6345 196.139C33.4853 192.954 35.4879 190.226 35.4879 190.226L46.7649 170L42.8321 157.496" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+														<path d="M170.878 47.6761L190.134 35.8031C190.134 35.8031 193.414 34.0537 196.487 33.9901C199.56 33.9265 202.426 35.5488 202.426 35.5488L219.915 53.0377C219.915 53.0377 222.216 56.6791 222.366 59.8636C222.515 63.0482 220.512 65.7758 220.512 65.7758L209.235 86.0026L213.168 98.5061" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
 														</g>
 													</svg>
 												</div>
