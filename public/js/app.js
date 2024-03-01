@@ -4918,6 +4918,10 @@ function run() {
 
 			updateinteractivetour()
 		}
+		
+		if(calendar.recognitionalwayson){
+			checkrecognitionended()
+		}
 	}, 100)
 
 
@@ -10688,6 +10692,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	let finalTranscript = ''
 	let interimTranscript = ''
 	totalTranscriptCopy = ''
+	let recognitionreplacetext = ''
 	
 
 	recognition.addEventListener('result', event => {
@@ -10709,11 +10714,11 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 				recognitionidle = false
 				playsound('dictation')
 
-				totalTranscript = ''
-				interimTranscript = ''
-				totalTranscriptCopy = ''
+				recognitionreplacetext = totalTranscript
 			}
 		}
+
+		totalTranscript = totalTranscript.replace(recognitionreplacetext, '').trim()
 
 		if(!recognitionidle){
 			totalTranscriptCopy = totalTranscript
@@ -10742,6 +10747,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		finalTranscript = ''
 		interimTranscript = ''
 		totalTranscriptCopy = ''
+		recognitionreplacetext = ''
 
 		isspeaking = false
 
@@ -10758,6 +10764,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		finalTranscript = ''
 		interimTranscript = ''
 		totalTranscriptCopy = ''
+		recognitionreplacetext = ''
 
 		isspeaking = false
 
@@ -10770,25 +10777,22 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 	function processrecognitionend(){
 		if(calendar.recognitionalwayson && !wanttostoprecognition){
-			function checkended(){
-				if(!isspeaking && !wanttostoprecognition){
-					isspeaking = true
-					togglerecognition(recognitionoutputtype)
-				}
-			}
-			checkended()
-			recognitionalwaysoninterval = setInterval(function(){
-				checkended()
-			}, 1000)
+			checkrecognitionended()
 		}else{
 			clearTimeout(speechEndTimeout2)
-			clearInterval(recognitionalwaysoninterval)
 		}
 	}
 }else{
 	getElement('todorecognitionwrap').classList.add('display-none')
 	getElement('eventrecognitionwrap').classList.add('display-none')
 	getElement('aichatrecognitionwrap').classList.add('display-none')
+}
+
+function checkrecognitionended(){
+	if(!isspeaking && !wanttostoprecognition){
+		recognitionidle = true
+		togglerecognition(recognitionoutputtype)
+	}
 }
 
 let retryrecognitiontimeout;
@@ -10967,6 +10971,8 @@ function togglerecognition(type, useraction){
 		if(!isspeaking){
 			recognitionoutputtype = type
 
+			isspeaking = true
+
 			let addtododictationpopup = getElement('addtododictationpopup')
 			let addeventdictationpopup = getElement('addeventdictationpopup')
 			let aichatdictationpopup = getElement('aichatdictationpopup')
@@ -10993,7 +10999,6 @@ function togglerecognition(type, useraction){
 
 			recognition.lang = calendar.recognitionlanguage
 
-			isspeaking = true
 			recognition.start()
 
 			if(useraction){
@@ -11010,7 +11015,7 @@ function togglerecognition(type, useraction){
 				updaterecognitionui()
 				playsound('dictation')
 			}else{
-				stoprecognition(true)
+				stoprecognition(useraction)
 			}
 		}
 	}
@@ -11023,7 +11028,6 @@ function stoprecognition(doplaysound, useraction){
 		if(useraction){
 			wanttostoprecognition = true
 			clearTimeout(speechEndTimeout2)
-			clearInterval(recognitionalwaysoninterval)
 		}
 
 		recognition.stop()
@@ -11036,17 +11040,15 @@ function stoprecognition(doplaysound, useraction){
 }
 
 function closerecognitionpopup(){
-	stoprecognition()
+	stoprecognition(false, true)
 	ispaused = false
 
 	updaterecognitionui(true)
 }
-let recognitionalwaysoninterval;
 function submitdictation(useraction){
-	if(useraction){
+	if(isspeaking && useraction){
 		wanttostoprecognition = true
 		clearTimeout(speechEndTimeout2)
-		clearInterval(recognitionalwaysoninterval)
 	}
 
 	if(totalTranscriptCopy){
