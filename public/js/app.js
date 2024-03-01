@@ -10737,6 +10737,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		updaterecognitionui()
 
 		wanttostoprecognition = false
+		canrecognitionidle = true
 
 		resetSpeechEndTimeout()
 
@@ -10788,8 +10789,9 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	getElement('aichatrecognitionwrap').classList.add('display-none')
 }
 
+let canrecognitionidle = false
 function checkrecognitionended(){
-	if(!isspeaking && !wanttostoprecognition){
+	if(!isspeaking && !wanttostoprecognition && canrecognitionidle){
 		togglerecognition(recognitionoutputtype)
 	}
 }
@@ -11025,6 +11027,7 @@ function stoprecognition(doplaysound, useraction){
 	if(isspeaking){
 		if(useraction){
 			wanttostoprecognition = true
+			canrecognitionidle = false
 			clearTimeout(speechEndTimeout2)
 		}
 
@@ -11046,6 +11049,7 @@ function closerecognitionpopup(){
 function submitdictation(useraction){
 	if(useraction){
 		wanttostoprecognition = true
+		canrecognitionidle = false
 		clearTimeout(speechEndTimeout2)
 	}
 
