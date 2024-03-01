@@ -10589,12 +10589,19 @@ let recognitionoutputtype;
 let recognitionerror;
 let totalTranscriptCopy;
 
-let SPEECH_END_TIMEOUT_DURATION = 2000
+let recognitionidle = false
+
 let speechEndTimeout = null
+
+const SPEECH_END_TIMEOUT_DURATION = 2000
+
+const SPEECH_ALWAYS_ON_TIMEOUT_DURATION = 10000
+const RECOGNITION_CALL_PHRASE = 'athena'
 
 function resetSpeechEndTimeout() {
 	let aichatlanguagepopup = getElement('aichatlanguagepopup')
 
+	//auto submit
 	if(isspeaking){
 		let oldtext = totalTranscriptCopy
 		clearTimeout(speechEndTimeout)
@@ -10605,8 +10612,27 @@ function resetSpeechEndTimeout() {
 			}
 		}, SPEECH_END_TIMEOUT_DURATION)
 	}
+
+	//turn to idle for always on
+	if(isspeaking){
+		let oldtext = totalTranscriptCopy
+		clearTimeout(speechEndTimeout)
+		speechEndTimeout = setTimeout(() => {
+			if (totalTranscriptCopy.length == 0 || (totalTranscriptCopy == oldtext && aichatlanguagepopup.classList.contains('hiddenpopup'))) {
+				totalTranscriptCopy = ''
+				updaterecognitionui()
+				
+				recognitionidle = true
+			}
+		}, SPEECH_ALWAYS_ON_TIMEOUT_DURATION)
+	}
 }
 
+document.addEventListener('mousemove', refreshrecognitionidle)
+document.addEventListener('click', refreshrecognitionidle)
+function refreshrecognitionidle(){
+	recognitionidle = false
+}
 
 
 
@@ -10678,12 +10704,20 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 		let totalTranscript = (finalTranscript.trim() + ' ' + interimTranscript.trim()).trim()
 
-		totalTranscriptCopy = totalTranscript
+		if(recognitionidle){
+			if(totalTranscript.toLowerCase().includes(RECOGNITION_CALL_PHRASE)){
+				recognitionidle = false
+				playsound('dictation')
+			}
+		}
+		if(!recognitionidle){
+			totalTranscriptCopy = totalTranscript
+
+			resetSpeechEndTimeout()
+		}
 
 		recognitionerror = null
 		updaterecognitionui()
-
-		resetSpeechEndTimeout()
 	})
 
 	recognition.addEventListener('start', () => {
@@ -10722,6 +10756,11 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 		console.log("Recognition ended")
 
 		resetSpeechEndTimeout()
+
+		//always on feature
+		if(calendar.recognitionalwayson && recognitionerror){
+			togglerecognition(recognitionoutputtype)
+		}
 	})
 }else{
 	getElement('todorecognitionwrap').classList.add('display-none')
@@ -10892,7 +10931,7 @@ function updaterecognitionui(close){
 }
 
 
-
+let recognitionstartedtimestamp;
 function togglerecognition(type){
 	if(recognition){
 		if(!isspeaking){
@@ -10924,7 +10963,12 @@ function togglerecognition(type){
 
 			recognition.lang = calendar.recognitionlanguage
 
+			recognitionidle = false
+			recognitionstartedtimestamp = Date.now()
+
 			recognition.start()
+
+			playsound('dictation')
 		}else{
 			recognition.stop()
 		}
@@ -15651,6 +15695,7 @@ async function submitaimessage(optionalinput, dictated){
 						if(message){
 							responsechatmessage.message = message
 						}
+						//here3
 					}else if(command == 'google_maps'){
 						//maps distance, time to leave, time between 2 places, visualize route, visualize place
 					}else{

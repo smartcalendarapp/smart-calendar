@@ -530,7 +530,7 @@ class User{
 }
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
-const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, connectedgmail: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true, importantupdates: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, choosecalendars: false, eventreminders: false, sleeptime: false, addtask: false, finished: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, lastprompteveningsummarydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false, recognitionlanguage: 'en-US', lastgottasksuggestion: 0, lastgotsubtasksuggestion: 0 }
+const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, connectedgmail: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true, importantupdates: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, choosecalendars: false, eventreminders: false, sleeptime: false, addtask: false, finished: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, lastprompteveningsummarydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false, recognitionlanguage: 'en-US', recognitionalwayson: false, lastgottasksuggestion: 0, lastgotsubtasksuggestion: 0 }
 const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, logindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], gptvoiceusedtimestamps: [], betatester: false, haspremium: false, premium: { referafriendclaimvalue: 0, starttimestamp: null, endtimestamp: null }, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
 const MODELEVENT = { start: {}, end: {}, endbefore: {}, startafter: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0, parentid: null, subtasksuggestions: [], gotsubtasksuggestions: false, iseventsuggestion: false, goteventsuggestion: false, autoschedulelocked: false }
 const MODELTODO = { endbefore: {}, startafter: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false, issuggestion: false }
@@ -5307,22 +5307,21 @@ async function getgmailemails(req) {
         await Promise.all(threadPromises)
 
         // Modify threads to mark as read
-        for (const msg of outputmsgs) {
-            await new Promise((resolve, reject) => {
-                gmail.users.threads.modify({
-                    userId: 'me',
-                    id: msg.id,
-                    requestBody: { removeLabelIds: ['UNREAD'] },
-                }, (err, res) => {
-                    if (err) {
-                        console.error(err);
-                        reject(err);
-                    } else {
-                        resolve(res);
-                    }
-                });
-            });
-        }
+		const threadPromises2 = threads.map(thread => new Promise((resolve, reject) => {
+			gmail.users.threads.modify({
+				userId: 'me',
+				id: thread.id,
+				requestBody: { removeLabelIds: ['UNREAD'] },
+			}, (err, res) => {
+				if (err) {
+					console.error(err);
+					reject(err);
+				} else {
+					resolve(res);
+				}
+			})
+		}))
+		await Promise.all(threadPromises2)
 
         // Fetch updated unread count
         const res2 = await new Promise((resolve, reject) => {
@@ -5801,12 +5800,18 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							gmailcontext = tempcontext
 						}
 						//here3
+
+						//*****NOTES*****\\
+
 						//need to send the function call data rather than the text output?
+
+						//then need M1, M2 for mail id?? or not for now
 
 						//IMPORTANT: need to adjust the T1, T2... ids of the past items to be of the current data map. so when send raw data, need to replace T1, T2 with actual id, then convert that ID on server side back to the NEW T1, T2... and if not there add a new one. (make get id function to either get T1, T2 for id or create new T3)
 						//should we also inject in "raw data" property the title of the event? to do latest title, do on server side (ideal i think-)
 
 						//for gmail context, need to display full links for unsubscribe so we can automate that. VERY powerful use case
+
 
 
 						let request2options = {
