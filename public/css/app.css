@@ -2940,8 +2940,6 @@ max-width:1000px;
 
 .eventinfo {
 	overflow: hidden;
-	left: 60%;
-	top: 20%;
 	height: auto;
 	transition: background-color 0.5s, color 0.5s, border-color 0.5s, transform 0.2s, opacity 0.2s;
 	position: absolute;
