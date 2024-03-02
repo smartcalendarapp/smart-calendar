@@ -2203,13 +2203,13 @@
 								<!-- input wrap -->
 								<div class="display-flex fadetransition flex-row flex-1 border-box bordertertiary border-12px relative" id="aichatinputwrap">
 									<div class="display-flex flex-row flex-1">
-										<textarea rows="1" oninput="updateaichatinput();resizeaichatinput()" class="createtodotextarea infoinput text-14px padding-top-16px padding-bottom-16px padding-left-16px padding-right-48px transparentinput" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitaimessage() }" placeholder="Message Athena..." maxlength="500" id="aichatinput2"></textarea>
+										<textarea rows="1" oninput="updateaichatinput();resizeaichatinput()" class="createtodotextarea infoinput text-14px padding-top-16px padding-bottom-16px padding-left-16px small:padding-top-14px small:padding-bottom-14px padding-right-48px transparentinput" onkeydown="if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitaimessage() }" placeholder="Message Athena..." maxlength="500" id="aichatinput2"></textarea>
 										<span class="inputlinewrap"><span class="inputline"></span></span>
 									</div>
 
 									
 									<!-- submit button -->
-									<div class="right-0 bottom-0 padding-right-12px padding-bottom-12px absolute display-flex flex-row gap-12px">
+									<div class="right-0 bottom-0 padding-right-12px padding-bottom-12px small:padding-bottom-8px absolute display-flex flex-row gap-12px">
 										<div class="display-flex height-fit overflow-hidden pointer aichatsend border-8px transition-duration-100" onclick="submitaimessage()" id="submitaichatbutton2">
 											<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="sendbuttonsvg transition-duration-100">
 												<g opacity="1">
