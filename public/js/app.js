@@ -10717,7 +10717,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 			}
 		}
 
-		totalTranscript = totalTranscript.replace(new RegExp(`.+?${RECOGNITION_CALL_PHRASE}`, 'i'), '').trim()
+		totalTranscript = totalTranscript.replace(new RegExp(`.*?${RECOGNITION_CALL_PHRASE}`, 'i'), '').trim()
 
 		if(totalTranscript != oldtotaltranscript){
 			resetSpeechEndTimeout2()
@@ -10778,6 +10778,10 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 
 	function processrecognitionend(){
 		if(calendar.recognitionalwaysonenabled && !wanttostoprecognition){
+			if(recognitionerror && permanentrecognitionerrors.includes(recognitionerror)){
+				canrecognitionidle = false
+				return
+			}
 			checkrecognitionended()
 		}else{
 			canrecognitionidle = false
@@ -14362,7 +14366,7 @@ class ChatMessage {
 					}, 100)
 					
 					const reader = response.body.getReader()
-					const mediaSource = new MediaSource()
+					const mediaSource = typeof ManagedMediaSource !== 'undefined' ? new MediaSourceManaged() : new MediaSource()
 					let aiassistantaudio = getElement('aiassistantaudio')
 					aiassistantaudio.src = URL.createObjectURL(mediaSource)
 		
@@ -14861,6 +14865,10 @@ function updateaichatinput(){
 		}else{
 			aichatrecognitionwrap.classList.remove('hiddenfade')
 		}
+	}
+	if(recognitionidle){
+		aichatdictationpopup.classList.remove('hiddenfade')
+		aichatcontent2.classList.add('padding-bottom-192px')
 	}
 
 	ispaused = false
