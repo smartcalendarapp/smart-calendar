@@ -14684,11 +14684,11 @@ function updateaichat(){
 
 
 	const avataricon = `<div style="background-color: ${nameToColor(getUserName())}" class="border-round avatarimage pointer display-flex flex-row align-center justify-center"><div class="text-20px text-white text-bold">${getUserName().slice(0, 1).toUpperCase()}</div></div>`
-	const useravatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimage" height="36" width="36" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : avataricon}` : avataricon
+	const useravatar = clientinfo.google_email ? `${clientinfo.google.profilepicture ? `<img class="border-round avatarimagelarge" height="50" width="50" src="${clientinfo.google.profilepicture}" alt="Profile picture"></img>` : avataricon}` : avataricon
 	const username = getUserName()
 
 	const ainame = 'Athena'
-	const aiavatar = `<img class="border-round avatarimage" height="36" width="36" src="athena.png" alt="Profile picture"></img>`
+	const aiavatar = `<img class="border-round avatarimagelarge" height="50" width="50" src="athena_new.png" alt="Profile picture"></img>`
 
 
 	let aichatcontent2 = getElement('aichatcontent2')

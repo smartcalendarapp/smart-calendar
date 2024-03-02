@@ -3008,6 +3008,10 @@ max-width:1000px;
 	height: 36px;
 	width: 36px;
 }
+.avatarimagelarge{
+	height: 50px;
+	width: 50px;
+}
 
 .smallavatarimage {
 	height: 18px;
