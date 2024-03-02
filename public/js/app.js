@@ -14366,7 +14366,7 @@ class ChatMessage {
 					}, 100)
 					
 					const reader = response.body.getReader()
-					const mediaSource = typeof ManagedMediaSource !== 'undefined' ? new MediaSourceManaged() : new MediaSource()
+					const mediaSource = typeof ManagedMediaSource !== 'undefined' ? new ManagedMediaSource() : new MediaSource()
 					let aiassistantaudio = getElement('aiassistantaudio')
 					aiassistantaudio.src = URL.createObjectURL(mediaSource)
 		
