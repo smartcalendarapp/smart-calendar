@@ -4922,7 +4922,7 @@ function run() {
 			updateinteractivetour()
 		}
 		
-		if(calendar.recognitionalwayson){
+		if(calendar.recognitionalwaysonenabled){
 			checkrecognitionended()
 		}
 	}, 100)
@@ -10652,7 +10652,7 @@ function updateaichatrecognitionlanguage(){
 	aichatlanguagetext.innerHTML = aichatlanguagemap[calendar.recognitionlanguage]
 
 	let togglerecognitionalwaysoninput = getElement('togglerecognitionalwaysoninput')
-	togglerecognitionalwaysoninput.checked = calendar.recognitionalwayson
+	togglerecognitionalwaysoninput.checked = calendar.recognitionalwaysonenabled
 }
 function clickaichatlanguagebutton(){
 	let aichatlanguagebutton = getElement('aichatlanguagebutton')
@@ -10675,7 +10675,7 @@ const aichatlanguagemap = {
 }
 
 function togglerecognitionalwayson(event){
-	calendar.recognitionalwayson = event.target.checked
+	calendar.recognitionalwaysonenabled = event.target.checked
 }
 
 let lastrecognitionresultdate = 0;
@@ -10777,7 +10777,7 @@ if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
 	})
 
 	function processrecognitionend(){
-		if(calendar.recognitionalwayson && !wanttostoprecognition){
+		if(calendar.recognitionalwaysonenabled && !wanttostoprecognition){
 			checkrecognitionended()
 		}else{
 			canrecognitionidle = false
