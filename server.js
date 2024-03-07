@@ -5965,6 +5965,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		let idmaptaskcounter = 1
 		function gettempid(currentid, type){
 			if(!type){
+				console.warn(currentid, calendartodos.map(d =>d.id))
 				if(calendartodos.find(d => d.id == currentid)){
 					type = 'task'
 				}else if(calendarevents.find(d => d.id == currentid)){
@@ -6077,7 +6078,10 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								let commandarguments = Object.values(tempcommand)[0]
 								if(commandarguments.id){
 									console.warn('step 3')
-									commandarguments.id = gettempid(commandarguments.id)
+									let newid = gettempid(commandarguments.id)
+									if(newid){
+										commandarguments.id = newid
+									}
 									console.warn(commandarguments)
 								}
 							}
