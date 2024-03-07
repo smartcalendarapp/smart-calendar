@@ -15024,15 +15024,6 @@ async function submitaimessage(optionalinput, dictated){
 				output1 = data.data1
 			}
 
-
-			if(output?.commands?.length > 0){
-				if(output1?.commands?.length > 0){
-					responsechatmessage.rawoutput1 = { function_call: { name: 'app_action', arguments: JSON.stringify(output1) } }
-				}
-				responsechatmessage.rawoutput = { function_call: { name: 'app_action', arguments: JSON.stringify(output) } }
-			}
-			
-
 			let idmap = data.idmap
 			function getrealid(tempid){
 				if(!idmap) return null
@@ -15043,11 +15034,27 @@ async function submitaimessage(optionalinput, dictated){
 				return idmap[tempid]
 			}
 
-
 			if(clientinfo.betatester){
 				console.log(output, idmap)
 			}
 
+
+			//replace ids
+			for(let tempcommand of output.commands){
+				let arguments = Object.values(tempcommand)[0]
+				if(arguments?.id){
+					arguments.id = getrealid(arguments.id)
+				}
+			}
+
+			//set raw data
+			if(output?.commands?.length > 0){
+				if(output1?.commands?.length > 0){
+					responsechatmessage.rawoutput1 = { function_call: { name: 'app_action', arguments: JSON.stringify(output1) } }
+				}
+				responsechatmessage.rawoutput = { function_call: { name: 'app_action', arguments: JSON.stringify(output) } }
+			}
+		
 
 			//process
 			if(output.commands && output.commands.length > 0){
@@ -15172,7 +15179,7 @@ async function submitaimessage(optionalinput, dictated){
 					}else if(command == 'modify_event'){
 						
 
-						let id = getrealid(arguments?.id)
+						let id = arguments?.id
 						let error = arguments?.errorMessage || ''
 						let newtitle = arguments?.newTitle
 						let newstartdate = arguments?.newStartDate
@@ -15340,7 +15347,7 @@ async function submitaimessage(optionalinput, dictated){
 						}
 					}else if(command == 'delete_event'){
 
-						let id = getrealid(arguments?.id)
+						let id = arguments?.id
 						let error = arguments?.errorMessage || ''
 
 						if(error && !id){
@@ -15463,7 +15470,7 @@ async function submitaimessage(optionalinput, dictated){
 						}
 					}else if(command == 'modify_task'){
 
-						let id = getrealid(arguments?.id)
+						let id = arguments?.id
 						let error = arguments?.errorMessage || ''
 						let newtitle = arguments?.newTitle
 						let newduedate = arguments?.newDueDate
@@ -15708,7 +15715,7 @@ async function submitaimessage(optionalinput, dictated){
 					}else if(command == 'delete_task'){
 						
 
-						let id = getrealid(arguments?.id)
+						let id = arguments?.id
 						let error = arguments?.errorMessage || ''
 
 						if(error && !id){
@@ -15727,7 +15734,7 @@ async function submitaimessage(optionalinput, dictated){
 					}else if(command == 'schedule_tasks_in_calendar'){ //disabled for now
 						
 
-						let idList = (arguments?.idList || []).map(d => getrealid(d))
+						let idList = arguments?.idList || []
 						let error = arguments?.errorMessage || ''
 
 						if(error){
@@ -15751,7 +15758,7 @@ async function submitaimessage(optionalinput, dictated){
 						
 					}else if(command == 'schedule_unscheduled_task_in_calendar'){
 						
-						let id = getrealid(arguments?.id)
+						let id = arguments?.id
 						let error = arguments?.errorMessage || ''
 
 						if(error && !id){

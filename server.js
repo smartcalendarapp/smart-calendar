@@ -5964,6 +5964,18 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		let idmapeventcounter = 1
 		let idmaptaskcounter = 1
 		function gettempid(currentid, type){
+			if(!type){
+				if(calendartodos.find(d => d.id == currentid)){
+					type = 'task'
+				}else if(calendarevents.find(d => d.id == currentid)){
+					type = 'event'
+				}
+			}
+			let existingitem = Object.entries(idmap).find(([key, value]) => value == currentid)
+			if(existingitem){
+				return Object.keys(existingitem)[0]
+			}
+
 			let newid;
 			if(type == 'event'){
 				newid = `E${idmapeventcounter}`
@@ -6054,6 +6066,23 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 				if(counter > MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH) break //max X messages
 
+				for(let interactionmessage of interactionmessages){
+					if(interactionmessage?.function_call?.arguments){
+						let temparguments = JSON.parse(interactionmessage.function_call.arguments)
+						let tempcommands = temparguments.tempcommands
+						if(tempcommands){
+							for(let tempcommand of tempcommands){
+								let commandarguments = Object.values(tempcommand)[0]
+								if(commandarguments.id){
+									commandarguments.id = gettempid(commandarguments.id)
+								}
+							}
+						}
+						interactionmessage.function_call.arguments = JSON.stringify(temparguments)
+
+					}
+				}
+
 				tempoutput.push(...interactionmessages.reverse())
 				counter++
 			}
@@ -6078,7 +6107,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		let todocontext = gettodocontext(calendartodos)
 		let conversationhistory1 = getconversationhistory(rawconversationhistory1)
 		let conversationhistory = getconversationhistory(rawconversationhistory)
-		console.warn(conversationhistory1, conversationhistory)
+		console.warn(conversationhistory)
 
 		//REQUEST
 		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory1, conversationhistory, timezoneoffset)
