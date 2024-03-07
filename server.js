@@ -5386,7 +5386,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 		//CONTEXT
 
-		async function queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset) {
+		async function queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory1, conversationhistory, timezoneoffset) {
 			const allfunctions = [
 				{
 					name: 'get_calendar_events',
@@ -5657,7 +5657,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								}
 							},
 						],
-						...conversationhistory,
+						...conversationhistory1,
 						{
 							role: 'user',
 							content: modifiedinput,
@@ -5777,11 +5777,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 							let emails = await getgmailemails(req)
 							if(!emails || emails.error || !emails.emails){
-								return { commands: [ { 'read_emails': { error: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' } } ] }
+								return { data: { commands: [ { 'read_emails': { error: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' } } ] }, data1: { commands: commands } }
 							}
 
 							if(emails.emails.length == 0){
-								return { commands: [ { 'read_emails': { message: emails?.error || 'You have no unread emails!' } } ] }
+								return { data: { commands: [ { 'read_emails': { message: emails?.error || 'You have no unread emails!' } } ] }, data1: { commands: commands } }
 							}
 
 							const MAX_EMAIL_CONTENT_LENGTH = 500
@@ -5939,7 +5939,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 						
 						if (commands2 && commands2?.length > 0) {					
-							return { commands: commands2 }
+							return { data: { commands: commands2 }, data1: { commands: commands } }
 						}
 
 						console.warn('ERRORED RESPONSE 2: ' + JSON.stringify(accumulatedresponse2))
@@ -5949,12 +5949,12 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 				console.warn('ERRORED RESPONSE 1: ' + JSON.stringify(accumulatedresponse))
 
-				return { error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).' }
+				return { data: { error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).' } }
 		
 			} catch (err) {
 				console.error(err)
 
-				return { error: `An unexpected error occurred: ${err.message}, please try again or [https://smartcalendar.us/contact](contact us).` }
+				return { data: { error: `An unexpected error occurred: ${err.message}, please try again or [https://smartcalendar.us/contact](contact us).` } }
 			}
 
 		}
@@ -6052,7 +6052,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			for(let interactionmessages of temphistory.reverse()){
 				if(JSON.stringify(interactionmessages).length + JSON.stringify(tempoutput).length > MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH) break //max X characters
 
-				if(counter > 5) break //max X messages
+				if(counter > MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH) break //max X messages
 
 				tempoutput.push(...interactionmessages.reverse())
 				counter++
@@ -6064,24 +6064,27 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		const MAX_CALENDAR_CONTEXT_LENGTH = 2000
 		const MAX_TODO_CONTEXT_LENGTH = 2000
 		const MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH = 2000
+		const MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH = 7
 
 		
 		let userinput = req.body.userinput.slice(0, 300)
 		let calendarevents = req.body.calendarevents
 		let calendartodos = req.body.calendartodos
 		let timezoneoffset = req.body.timezoneoffset
+		let rawconversationhistory1 = req.body.chathistory1
 		let rawconversationhistory = req.body.chathistory
 
 		let calendarcontext = getcalendarcontext(calendarevents)
 		let todocontext = gettodocontext(calendartodos)
+		let conversationhistory1 = getconversationhistory(rawconversationhistory1)
 		let conversationhistory = getconversationhistory(rawconversationhistory)
-		console.warn(conversationhistory)
+		console.warn(conversationhistory1, conversationhistory)
 
 		//REQUEST
-		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset)
+		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory1, conversationhistory, timezoneoffset)
 
 		if(output){
-			return res.json({ data: output, idmap: idmap })
+			return res.json({ ...output, idmap: idmap })
 		}
 	}catch(err){
 		console.error(err)

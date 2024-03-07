@@ -14936,6 +14936,7 @@ async function submitaimessage(optionalinput, dictated){
 	let calendarevents = sortstartdate(getevents(now, endrange).filter(d => !Calendar.Event.isHidden(d)))
 	let calendartodos = sortduedate([...gettodos(null, endrange), ...getevents().filter(d => d.type == 1 && !d.completed && ((new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() < endrange.getTime() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > now.getTime()) || (new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute).getTime() < endrange.getTime())))].filter(d => !d.completed))
 	//let sendchathistory = chathistory.getInteractions().filter(d => d.getMessages().length > 1 && !d.getMessages().find(g => g.message == null)).map(d => d.getMessages().map(f => { return { role: f.role, content: f.message } }))
+	let sendchathistory1 = chathistory.getInteractions().filter(d => d.getMessages().length > 1 && !d.getMessages().find(g => g.role == 'assistant' && !g.rawoutput)).map(d => d.getMessages().map(f => { return f.role == 'assistant' ? { role: f.role, ...(f.rawoutput1 ? f.rawoutput1 : f.rawoutput) } : { role: f.role, content: f.message } }))
 	let sendchathistory = chathistory.getInteractions().filter(d => d.getMessages().length > 1 && !d.getMessages().find(g => g.role == 'assistant' && !g.rawoutput)).map(d => d.getMessages().map(f => { return f.role == 'assistant' ? { role: f.role, ...f.rawoutput } : { role: f.role, content: f.message } }))
 
 	let tempautoscheduleevents = []
@@ -14956,12 +14957,14 @@ async function submitaimessage(optionalinput, dictated){
 				calendartodos: calendartodos,
 				userinput: userinput,
 				timezoneoffset: new Date().getTimezoneOffset(),
+				chathistory1: sendchathistory1,
 				chathistory: sendchathistory,
 			})
 		})
 		
 		if(response.ok){
 			let output = {}
+			let output1 = {}
 			let data = {}
 
 			if (response.body instanceof ReadableStream && !response.headers.get('Content-Type')?.includes('application/json')) {
@@ -15018,9 +15021,16 @@ async function submitaimessage(optionalinput, dictated){
 				
 				data = await response.json()
 				output = data.data
+				output1 = data.data1
 			}
 
-			responsechatmessage.rawoutput = { function_call: { name: 'app_action', arguments: JSON.stringify(output) } }
+
+			if(output?.commands?.length > 0){
+				if(output1?.commands?.length > 0){
+					responsechatmessage.rawoutput1 = { function_call: { name: 'app_action', arguments: JSON.stringify(output1) } }
+				}
+				responsechatmessage.rawoutput = { function_call: { name: 'app_action', arguments: JSON.stringify(output) } }
+			}
 			
 
 			let idmap = data.idmap
