@@ -14936,8 +14936,8 @@ async function submitaimessage(optionalinput, dictated){
 	let calendarevents = sortstartdate(getevents(now, endrange).filter(d => !Calendar.Event.isHidden(d)))
 	let calendartodos = sortduedate([...gettodos(null, endrange), ...getevents().filter(d => d.type == 1 && !d.completed && ((new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() < endrange.getTime() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > now.getTime()) || (new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute).getTime() < endrange.getTime())))].filter(d => !d.completed))
 	//let sendchathistory = chathistory.getInteractions().filter(d => d.getMessages().length > 1 && !d.getMessages().find(g => g.message == null)).map(d => d.getMessages().map(f => { return { role: f.role, content: f.message } }))
-	let sendchathistory1 = chathistory.getInteractions().filter(d => d.getMessages().length > 1 && !d.getMessages().find(g => g.role == 'assistant' && !g.rawoutput)).map(d => d.getMessages().map(f => { return f.role == 'assistant' ? { role: f.role, ...(f.rawoutput1 ? f.rawoutput1 : f.rawoutput) } : { role: f.role, content: f.message } }))
-	let sendchathistory = chathistory.getInteractions().filter(d => d.getMessages().length > 1 && !d.getMessages().find(g => g.role == 'assistant' && !g.rawoutput)).map(d => d.getMessages().map(f => { return f.role == 'assistant' ? { role: f.role, ...f.rawoutput } : { role: f.role, content: f.message } }))
+	let sendchathistory1 = chathistory.getInteractions().filter(d => d.getMessages().length > 1 && !d.getMessages().find(g => g.role == 'assistant' && !g.rawoutput && !g.message)).map(d => d.getMessages().map(f => { return f.role == 'assistant' && f.rawoutput ? { role: f.role, ...(f.rawoutput1 ? f.rawoutput1 : f.rawoutput) } : { role: f.role, content: f.message } }))
+	let sendchathistory = chathistory.getInteractions().filter(d => d.getMessages().length > 1 && !d.getMessages().find(g => g.role == 'assistant' && !g.rawoutput && !g.message)).map(d => d.getMessages().map(f => { return f.role == 'assistant' && f.rawoutput ? { role: f.role, ...f.rawoutput } : { role: f.role, content: f.message } }))
 
 	let tempautoscheduleevents = []
 
@@ -15040,10 +15040,12 @@ async function submitaimessage(optionalinput, dictated){
 
 
 			//replace ids
-			for(let tempcommand of output.commands){
-				let arguments = Object.values(tempcommand)[0]
-				if(arguments?.id){
-					arguments.id = getrealid(arguments.id)
+			if(output.commands){
+				for(let tempcommand of output.commands){
+					let arguments = Object.values(tempcommand)[0]
+					if(arguments?.id){
+						arguments.id = getrealid(arguments.id)
+					}
 				}
 			}
 

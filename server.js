@@ -5973,7 +5973,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			}
 			let existingitem = Object.entries(idmap).find(([key, value]) => value == currentid)
 			if(existingitem){
-				return Object.keys(existingitem)[0]
+				return existingitem[0]
 			}
 
 			let newid;
