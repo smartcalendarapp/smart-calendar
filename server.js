@@ -6070,7 +6070,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					if(interactionmessage?.function_call?.arguments){
 						console.warn('step 1')
 						let temparguments = JSON.parse(interactionmessage.function_call.arguments)
-						let tempcommands = temparguments.tempcommands
+						let tempcommands = temparguments.commands
 						if(tempcommands){
 							console.warn('step 2')
 							for(let tempcommand of tempcommands){
