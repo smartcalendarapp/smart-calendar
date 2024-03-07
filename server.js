@@ -5220,7 +5220,7 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 	}
 })
 
-//here3
+
 async function getgmailemails(req) {
     try {
         let user = await getUserById(req.session?.user?.userid);
@@ -5562,7 +5562,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					},
 					{
 						role: "assistant",
-						content: null,
 						function_call: {
 							name: "app_action",
 							arguments: JSON.stringify({
@@ -5586,7 +5585,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					},
 					{
 						role: "assistant",
-						content: null,
 						function_call: {
 							name: "app_action",
 							arguments: JSON.stringify({
@@ -5625,7 +5623,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							{
 								role: "assistant",
-								content: null,
 								function_call: {
 									name: "app_action",
 									arguments: JSON.stringify({
@@ -5639,7 +5636,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							{
 								role: "assistant",
-								content: null,
 								function_call: {
 									name: "app_action",
 									arguments: JSON.stringify({
@@ -5653,7 +5649,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							{
 								role: "assistant",
-								content: null,
 								function_call: {
 									name: "app_action",
 									arguments: JSON.stringify({
@@ -6080,6 +6075,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		let calendarcontext = getcalendarcontext(calendarevents)
 		let todocontext = gettodocontext(calendartodos)
 		let conversationhistory = getconversationhistory(rawconversationhistory)
+		console.warn(conversationhistory)
 
 		//REQUEST
 		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory, timezoneoffset)
