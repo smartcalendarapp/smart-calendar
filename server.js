@@ -6068,13 +6068,17 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 				for(let interactionmessage of interactionmessages){
 					if(interactionmessage?.function_call?.arguments){
+						console.warn('step 1')
 						let temparguments = JSON.parse(interactionmessage.function_call.arguments)
 						let tempcommands = temparguments.tempcommands
 						if(tempcommands){
+							console.warn('step 2')
 							for(let tempcommand of tempcommands){
 								let commandarguments = Object.values(tempcommand)[0]
 								if(commandarguments.id){
+									console.warn('step 3')
 									commandarguments.id = gettempid(commandarguments.id)
+									console.warn(commandarguments)
 								}
 							}
 						}
@@ -6107,7 +6111,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		let todocontext = gettodocontext(calendartodos)
 		let conversationhistory1 = getconversationhistory(rawconversationhistory1)
 		let conversationhistory = getconversationhistory(rawconversationhistory)
-		console.warn(conversationhistory)
 
 		//REQUEST
 		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory1, conversationhistory, timezoneoffset)
