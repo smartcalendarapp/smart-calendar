@@ -5910,7 +5910,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 									}
 
 									if(chunk.choices[0].delta.content){
-										accumulatedresponse2.message.function_call['app_action'].arguments.commands[0]['read_emails'].message += chunk.choices[0].delta.content
+										accumulatedresponse2.message.function_call.arguments.commands[0]['read_emails'].message += chunk.choices[0].delta.content
 									}
 								}else{
 									//text response
