@@ -5914,8 +5914,9 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 
 										//for email links
-										if(chunk.choices[0].delta.content.match(/(?:h(?:t(?:t(?:p(?:\d+)?|k?)?)?)?)?$/)){
+										if(chunk.choices[0].delta.content.match(/(?:h(?:t(?:t(?:p(?:s(?:\d+)?|k?)?)?)?)?)?$/)){
 											tempchunk += chunk.choices[0].delta.content
+											console.warn('huh')
 										}else if(tempchunk){
 											tempchunk += chunk.choices[0].delta.content
 											
@@ -5923,6 +5924,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 											for(let [key, value] of Object.entries(emaillinkmap)){
 												tempchunk = tempchunk.replace(key, value)
 											}
+											console.warn('huh', tempchunk)
 
 											res.write(tempchunk)
 											
@@ -5940,7 +5942,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								for(let [key, value] of Object.entries(emaillinkmap)){
 									tempchunk = tempchunk.replace(key, value)
 								}
-								
+
 								res.write(tempchunk)
 							}
 						}catch(err){
