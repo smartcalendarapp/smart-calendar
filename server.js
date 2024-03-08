@@ -6109,17 +6109,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						interactionmessage.function_call.arguments = JSON.stringify(temparguments)
 
 					}
-
-					if(interactionmessage.role == 'assistant'){
-						function replacelongURLs(inputText) {
-							const urlRegex = /https?:\/\/\S+/g
-							
-							return inputText.replace(urlRegex, (url) => {
-								return url.length > 30 ? '' : url
-							})
-						}
-						interactionmessage.content = replacelongURLs(interactionmessage.content)
-					}
 				}
 
 				tempoutput.push(...interactionmessages.reverse())

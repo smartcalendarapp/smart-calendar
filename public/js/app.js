@@ -15827,7 +15827,7 @@ async function submitaimessage(optionalinput, dictated){
 						let message = arguments?.message
 						if(message){
 							for(let [key, value] of Object.entries(emaillinkmap)){
-								message = message.replace(new RegExp(`${key}|${key.replace(/\{|\}/gm, '')}`), value)
+								message = message.replace(new RegExp(`${key}|${key.replace(/\{|\}/gm, '')}`, 'gmi'), value)
 							}
 
 							responsechatmessage.message = message
