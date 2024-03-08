@@ -14641,6 +14641,11 @@ function markdowntoHTML(markdown, role) {
         return placeholder
     })
 
+
+	//links, both markdown and https://
+	markdown = markdown.replace(/\[(.*?)\]\((.*?)\)/gim, `<a href='$2' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$1</a>`)
+	markdown = markdown.replace(/(?<!\]\()http(s)?:\/\/[^\s]+(?!\))/gim, `<a href='$&' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$&</a>`);
+
     markdown = markdown
         .replace(/^### (.*$)/gim, '<h3>$1</h3>')
         .replace(/^## (.*$)/gim, '<h2>$1</h2>')
@@ -14648,7 +14653,6 @@ function markdowntoHTML(markdown, role) {
         .replace(/^(\>|&gt;) (.*$)/gim, '<blockquote>$2</blockquote>')
         .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
         .replace(/\*(.*?)\*/gim, '<i>$1</i>')
-        .replace(/\[(.*?)\]\((.*?)\)/gim, `<a href='$2' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$1</a>`)
 
 
 	markdown = markdown.replace(/^\d+\.\s+(.+)(\n+\d+\.\s+.+)*/gm, (match) => {
@@ -15823,12 +15827,12 @@ async function submitaimessage(optionalinput, dictated){
 						let message = arguments?.message
 						if(message){
 							for(let [key, value] of Object.entries(emaillinkmap)){
-								message = message.replaceAll(key, value)
+								message = message.replace(new RegExp(`${key}|${key.replace(/\{|\}/gm, '')}`), value)
 							}
-							//here3
+
+							responsechatmessage.message = message
 						}
-					}else if(command == 'google_maps'){
-						//maps distance, time to leave, time between 2 places, visualize route, visualize place
+						//here3
 					}else{
 						responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `This is weird, I could not determine your command. Please click the thumbs down button and try again.`
 					}
