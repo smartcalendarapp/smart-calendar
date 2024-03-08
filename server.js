@@ -5525,14 +5525,21 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 					},
 					{
-						name: 'read_emails'
+						name: 'read_emails',
+						parameters: {
+							type: 'object',
+							properties: {
+								content: { type: 'string' },
+							},
+							required: []
+						}
 					}
 				])
 			}
 
 
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'send_email', 'search_web', 'open_link'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'send_email', 'search_web', 'open_link', 'read_emails'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
 
@@ -5777,7 +5784,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							const MAX_EMAIL_CONTENT_LENGTH = 1000
 
 							let tempcontext = ''
-							tempcontext += `You must list all the links in the email that are in format [link#]. In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. If email requires follow up, give user suggestions on how to reply. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
+							tempcontext += `You must list all the links in the email. In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. If email requires follow up, give user suggestions on how to reply. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
 							for(let item of emails.emails){
 								function replaceURLs(inputText) {
 									const urlRegex = /https?:\/\/\S+/g
@@ -5886,7 +5893,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							message: {}
 						}
 						try {
-							let tempchunk = ''
 							for await (const chunk of response2) {	
 								if(chunk.choices[0].delta?.function_call && chunk.choices[0].delta?.function_call?.name){
 									isfunctioncall2 = true
@@ -5912,49 +5918,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 											accumulatedresponse2.message.content = ''
 										}
 										accumulatedresponse2.message.content += chunk.choices[0].delta.content
-
-
-										console.warn(emaillinkmap)
-										//for email links
-										if(chunk.choices[0].delta.content.match(/\[(?:l(?:i(?:n(?:k(?:\d+)?|k?)?)?)?)?$/)){
-											tempchunk += chunk.choices[0].delta.content
-											console.warn('A')
-										}else if(tempchunk){
-											tempchunk += chunk.choices[0].delta.content
-											
-											//replace short links with real
-											for(let [key, value] of Object.entries(emaillinkmap)){
-												tempchunk = tempchunk.replace(key, value)
-											}
-
-											res.write(tempchunk)
-											
-											tempchunk = ''
-											console.warn('B')
-										}else{
-											let temptext = chunk.choices[0].delta.content
-											console.warn('C')
-
-											//replace short links with real
-											for(let [key, value] of Object.entries(emaillinkmap)){
-												temptext = temptext.replace(key, value)
-											}
-											console.warn(temptext)
-
-											//send chunk
-											res.write(temptext)
-										}
+										
+										//send chunk
+										res.write(temptext)
 									}
 								}
-							}
-
-							if(tempchunk){
-								//replace short links with real
-								for(let [key, value] of Object.entries(emaillinkmap)){
-									tempchunk = tempchunk.replace(key, value)
-								}
-
-								res.write(tempchunk)
 							}
 						}catch(err){
 							console.error(err)
@@ -6029,7 +5997,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		const emaillinkmap = {}
 		let emaillinkcounter = 1
 		function getshortenedlink(link){
-			let newkey = `[link${emaillinkcounter}]`
+			let newkey = `https://link${emaillinkcounter}`
 			emaillinkmap[newkey] = link
 			emaillinkcounter++
 
@@ -6161,7 +6129,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory1, conversationhistory, timezoneoffset)
 
 		if(output){
-			return res.json({ ...output, idmap: idmap, emaillinkmap: emaillinkmap })
+			return res.json({ ...output, idmap, emaillinkmap })
 		}
 	}catch(err){
 		console.error(err)

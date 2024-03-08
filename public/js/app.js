@@ -15035,6 +15035,16 @@ async function submitaimessage(optionalinput, dictated){
 				return idmap[tempid]
 			}
 
+			let emaillinkmap = data.emaillinkmap
+			function getrealemaillink(tempid){
+				if(!emaillinkmap) return null
+				if(!tempid) return null
+				if(!Object.keys(emaillinkmap).includes(tempid)){
+					return null
+				}
+				return emaillinkmap[tempid]
+			}
+
 
 			if(clientinfo.betatester){
 				console.log(output, idmap)
@@ -15821,7 +15831,21 @@ async function submitaimessage(optionalinput, dictated){
 						if(message){
 							responsechatmessage.message = message
 						}
-						//here3
+
+						let content = arguments?.content
+						if(content){
+							function replaceURLs(inputText) {
+								const urlRegex = /https?:\/\/\d+/g
+								
+								return inputText.replace(urlRegex, (url) => {
+									return getrealemaillink(url)
+								})
+							}
+
+							content = replaceURLs(content)
+							
+							responsechatmessage.message = content
+						}
 					}else if(command == 'google_maps'){
 						//maps distance, time to leave, time between 2 places, visualize route, visualize place
 					}else{
