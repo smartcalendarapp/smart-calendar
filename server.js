@@ -5784,7 +5784,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							const MAX_EMAIL_CONTENT_LENGTH = 1000
 
 							let tempcontext = ''
-							tempcontext += `You must list all the links in the email. In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. If email requires follow up, give user suggestions on how to reply. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
+							tempcontext += `You must list all the links in the email. In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. If email requires follow up, give user suggestions on how to reply. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}. Emails: """`
 							for(let item of emails.emails){
 								function replaceURLs(inputText) {
 									const urlRegex = /https?:\/\/\S+/g
@@ -5798,6 +5798,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 								tempcontext += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${(item.date && getFullRelativeDHMText(Math.floor((Date.now() - item.date)/60000))) || ''}, Message: ${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}`
 							}
+							tempcontext += `"""`
 
 							gmailcontext = tempcontext
 						}
@@ -5834,7 +5835,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 						if(gmailcontext){
 							//yes todo data
-							request2input += ` Emails: """${gmailcontext}"""`
+							request2input += ` ${gmailcontext}`
 						}
 		
 						if(requirescustomfunction){
@@ -5910,13 +5911,13 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 									if(chunk.choices[0].delta.function_call?.arguments){
 										accumulatedresponse2.message.function_call.arguments += chunk.choices[0].delta.function_call?.arguments
 									}
-								}else if(commands2.includes('read_emails')){
+								}else if(commands.includes('read_emails')){
 									if(!accumulatedresponse2.message.function_call){
-										accumulatedresponse2.message.function_call = { name: 'read_emails', arguments: { message: '' } }
+										accumulatedresponse2.message.function_call = { name: 'app_action', arguments: { commands: [ { 'read_emails': { message: '' } } ] } }
 									}
 
 									if(chunk.choices[0].delta.content){
-										accumulatedresponse2.message.function_call.arguments.message += chunk.choices[0].delta.content
+										accumulatedresponse2.message.function_call.arguments.commands['read_emails'].message += chunk.choices[0].delta.content
 									}
 								}else{
 									//text response
@@ -5941,8 +5942,14 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							}
 						}
 
-						let commands2 = JSON.parse(accumulatedresponse2.message.function_call?.arguments)?.commands
-						
+
+						let commands2;
+						if(commands.includes('read_emails')){
+							commands2 = accumulatedresponse2.message.function_call?.arguments?.commands
+						}else{
+							commands2 = JSON.parse(accumulatedresponse2.message.function_call?.arguments)?.commands
+						}
+
 						if(!Array.isArray(commands2) && typeof commands2 == 'object'){ //if gpt is weird and decides to return object and not array
 							commands2 = Object.keys(commands2).map(key => { return { [key]: commands2[key] } })
 						}
