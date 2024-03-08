@@ -5777,21 +5777,23 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							const MAX_EMAIL_CONTENT_LENGTH = 1000
 
 							let tempcontext = ''
-							tempcontext += `In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. The user does not have the email open, so you MUST include important links in the email in verbatim, example: [Link text](https://1). If email requires follow up, give user suggestions on how to reply. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
+							tempcontext += `In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. User does not have email open, so you MUST always mention any important links in the email in format [link text]({link1}). If email requires follow up, give user suggestions on how to reply. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
 							for(let item of emails.emails){
 								function replaceURLs(inputText) {
 									const urlRegex = /https?:\/\/\S+/g
 									
 									return inputText.replace(urlRegex, (url) => {
-										return `${getshortenedlink(url)}`
+										return `{${getshortenedlink(url)}}`
 									})
 								}
 								item.content = replaceURLs(item.content)
+								console.warn(JSON.stringify(item.content))
 
 								tempcontext += '\n' + `'''From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${(item.date && getFullRelativeDHMText(Math.floor((Date.now() - item.date)/60000))) || ''}, Message: ${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}'''`
 							}
 
 							gmailcontext = tempcontext
+							console.warn(gmailcontext)
 						}
 						//here3
 
@@ -5914,9 +5916,9 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 
 										//for email links
-										if(chunk.choices[0].delta.content.match(/(?:h(?:t(?:t(?:p(?:s(?:\:(?:\d+)?|k?)?)?)?)?)?)?$/)){
+										if(chunk.choices[0].delta.content.match(/\{(?:l(?:i(?:n(?:k(?:\d+)?|k?)?)?)?)?$/)){
 											tempchunk += chunk.choices[0].delta.content
-											console.warn('huh')
+											console.warn('HMM1')
 										}else if(tempchunk){
 											tempchunk += chunk.choices[0].delta.content
 											
@@ -5924,7 +5926,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 											for(let [key, value] of Object.entries(emaillinkmap)){
 												tempchunk = tempchunk.replace(key, value)
 											}
-											console.warn('huh', tempchunk)
 
 											res.write(tempchunk)
 											
@@ -5938,11 +5939,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							}
 
 							if(tempchunk){
-								//replace short links with real
-								for(let [key, value] of Object.entries(emaillinkmap)){
-									tempchunk = tempchunk.replace(key, value)
-								}
-
 								res.write(tempchunk)
 							}
 						}catch(err){
@@ -6018,7 +6014,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		const emaillinkmap = {}
 		let emaillinkcounter = 1
 		function getshortenedlink(link){
-			let newkey = `https://${emaillinkcounter}`
+			let newkey = `link${emaillinkcounter}`
 			emaillinkmap[newkey] = link
 			emaillinkcounter++
 

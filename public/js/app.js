@@ -14648,7 +14648,7 @@ function markdowntoHTML(markdown, role) {
         .replace(/^(\>|&gt;) (.*$)/gim, '<blockquote>$2</blockquote>')
         .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
         .replace(/\*(.*?)\*/gim, '<i>$1</i>')
-        .replace(/\[(.*?)\]\((.*?)\)/gim, `<a href='$1' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$2</a>`)
+        .replace(/\[(.*?)\]\((.*?)\)/gim, `<a href='$2' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$1</a>`)
 
 
 	markdown = markdown.replace(/^\d+\.\s+(.+)(\n+\d+\.\s+.+)*/gm, (match) => {
