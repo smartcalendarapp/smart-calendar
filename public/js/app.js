@@ -15825,8 +15825,6 @@ async function submitaimessage(optionalinput, dictated){
 							for(let [key, value] of Object.entries(emaillinkmap)){
 								message = message.replaceAll(key, value)
 							}
-
-							responsechatmessage.message = message
 							//here3
 						}
 					}else if(command == 'google_maps'){

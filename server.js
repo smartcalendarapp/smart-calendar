@@ -5056,7 +5056,7 @@ app.post('/getgptchatresponseeveningsummary', async (req, res) => {
 		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
 	}
 })
-let x=''
+
 app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 	try{
 		if(!req.session.user){
@@ -5777,7 +5777,9 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							const MAX_EMAIL_CONTENT_LENGTH = 1000
 
 							let tempcontext = ''
-							tempcontext += `${x} Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}. Emails: """`
+							tempcontext += `You must list all important links (any string in email that is in format {link#}), in the exact format of markdown, example: [descriptive text]({link1}). In a concise, paragraph-format, conversational briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. If email requires follow up, give user suggestions on how to reply. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
+
+							let tempcontext2 = ''
 							for(let item of emails.emails){
 								function replaceURLs(inputText) {
 									const urlRegex = /https?:\/\/\S+/g
@@ -5788,11 +5790,10 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								}
 								item.content = replaceURLs(item.content)
 
-								tempcontext += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${(item.date && getFullRelativeDHMText(Math.floor((Date.now() - item.date)/60000))) || ''}, Message: ${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}`
+								tempcontext2 += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${(item.date && getFullRelativeDHMText(Math.floor((Date.now() - item.date)/60000))) || ''}, Message: ${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}`
 							}
-							tempcontext += `"""`
 
-							gmailcontext = tempcontext
+							gmailcontext = `${tempcontext} Emails: """${tempcontext2}"""`
 						}
 						//here3
 
@@ -5921,7 +5922,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										accumulatedresponse2.message.content += chunk.choices[0].delta.content
 										
 										//send chunk
-										res.write(temptext)
+										res.write(chunk.choices[0].delta.content)
 									}
 								}
 							}
@@ -6097,6 +6098,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							for(let tempcommand of tempcommands){
 								let commandarguments = Object.values(tempcommand)[0]
 								if(commandarguments.id){
+									//update id business
 									let newid = gettempid(commandarguments.id)
 									if(newid){
 										commandarguments.id = newid
@@ -6106,6 +6108,17 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 						interactionmessage.function_call.arguments = JSON.stringify(temparguments)
 
+					}
+
+					if(interactionmessage.role == 'assistant'){
+						function replacelongURLs(inputText) {
+							const urlRegex = /https?:\/\/\S+/g
+							
+							return inputText.replace(urlRegex, (url) => {
+								return url.length > 30 ? '' : url
+							})
+						}
+						interactionmessage.content = replacelongURLs(interactionmessage.content)
 					}
 				}
 
