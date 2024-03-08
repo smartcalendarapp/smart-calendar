@@ -5777,7 +5777,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							const MAX_EMAIL_CONTENT_LENGTH = 1000
 
 							let tempcontext = ''
-							tempcontext += `In a concise, paragraph-format, conversational briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. If email requires follow up, give user suggestions on how to reply. You must list all important links (any string in email that is in format {link#}), in the exact format: [descriptive text]({link1}). Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
+							tempcontext += `In a concise, short, briefing manner, talk to the user and summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. Next, list all important links (any string in email that is in format {link#}), in the exact format: [descriptive text]({link1}). Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
 
 							let tempcontext2 = ''
 							for(let item of emails.emails){
