@@ -5914,9 +5914,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										accumulatedresponse2.message.content += chunk.choices[0].delta.content
 
 
+										console.warn(emaillinkmap)
 										//for email links
 										if(chunk.choices[0].delta.content.match(/\[(?:l(?:i(?:n(?:k(?:\d+)?|k?)?)?)?)?$/)){
 											tempchunk += chunk.choices[0].delta.content
+											console.warn('A')
 										}else if(tempchunk){
 											tempchunk += chunk.choices[0].delta.content
 											
@@ -5928,13 +5930,16 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 											res.write(tempchunk)
 											
 											tempchunk = ''
+											console.warn('B')
 										}else{
 											let temptext = chunk.choices[0].delta.content
+											console.warn('C')
 
 											//replace short links with real
 											for(let [key, value] of Object.entries(emaillinkmap)){
 												temptext = temptext.replace(key, value)
 											}
+											console.warn(temptext)
 
 											//send chunk
 											res.write(temptext)
