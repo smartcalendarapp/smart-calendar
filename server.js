@@ -5908,7 +5908,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										accumulatedresponse2.message.function_call = { name: 'app_action', arguments: { commands: [ { 'read_emails': { message: '' } } ] } }
 									}
 
-									console.warn(accumulatedresponse2)
 									if(chunk.choices[0].delta.content){
 										accumulatedresponse2.message.function_call.arguments.commands[0]['read_emails'].message += chunk.choices[0].delta.content
 									}
@@ -5942,6 +5941,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}else{
 							commands2 = JSON.parse(accumulatedresponse2.message.function_call?.arguments)?.commands
 						}
+						console.warn(JSON.stringify(accumulatedresponse2))
+						console.warn(JSON.stringify(commands2))
 
 						if(!Array.isArray(commands2) && typeof commands2 == 'object'){ //if gpt is weird and decides to return object and not array
 							commands2 = Object.keys(commands2).map(key => { return { [key]: commands2[key] } })
