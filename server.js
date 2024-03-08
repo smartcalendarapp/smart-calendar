@@ -5787,7 +5787,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 									})
 								}
 								item.content = replaceURLs(item.content)
-								console.warn(JSON.stringify(item.content))
 
 								tempcontext += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${(item.date && getFullRelativeDHMText(Math.floor((Date.now() - item.date)/60000))) || ''}, Message: ${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}`
 							}
@@ -5909,6 +5908,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										accumulatedresponse2.message.function_call = { name: 'app_action', arguments: { commands: [ { 'read_emails': { message: '' } } ] } }
 									}
 
+									console.warn(accumulatedresponse2)
 									if(chunk.choices[0].delta.content){
 										accumulatedresponse2.message.function_call.arguments.commands[0]['read_emails'].message += chunk.choices[0].delta.content
 									}
@@ -6137,7 +6137,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory1, conversationhistory, timezoneoffset)
 
 		if(output){
-			return res.json({ ...output, idmap, emaillinkmap })
+			return res.json({ ...output, idmap: idmap, emaillinkmap: emaillinkmap })
 		}
 	}catch(err){
 		console.error(err)
