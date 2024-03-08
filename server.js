@@ -5964,6 +5964,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		let idmapeventcounter = 1
 		let idmaptaskcounter = 1
 		function gettempid(currentid, type){
+			console.log(currentid, calendartodos.map(d => d.id), calendarevents.map(d => d.id))
 			if(!type){
 				if(calendartodos.find(d => d.id == currentid)){
 					type = 'task'
@@ -5972,6 +5973,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 				}
 			}
 			let existingitem = Object.entries(idmap).find(([key, value]) => value == currentid)
+			console.warn(existingitem)
 			if(existingitem){
 				return existingitem[0]
 			}
