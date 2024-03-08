@@ -5277,10 +5277,9 @@ async function getgmailemails(req) {
 
 					let content = '';
 					if (msg.payload.parts) {
-						const part = msg.payload.parts.find(part => part.mimeType === 'text/plain' || part.mimeType === 'text/html');
+						const part = msg.payload.parts.find(part => part.mimeType === 'text/html') || msg.payload.parts.find(part => part.mimeType === 'text/plain');
 						if (part?.body?.data) {
 							let tempcontent = Buffer.from(part.body.data, 'base64').toString('utf8');
-							console.warn(tempcontent)
 							content = htmlToText(tempcontent);
 						}
 					} else if (msg.payload.body.data) {
@@ -5775,7 +5774,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								return { data: { commands: [ { 'read_emails': { message: emails?.error || 'You have no unread emails!' } } ] }, data1: { commands: commands } }
 							}
 
-							const MAX_EMAIL_CONTENT_LENGTH = 1000
+							const MAX_EMAIL_CONTENT_LENGTH = 2000
 
 							let tempcontext = ''
 							tempcontext += `In a concise, short, briefing manner, talk to the user and summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. Next, list all important links (any string in email that is in format {link#}), in the exact format: "[descriptive text]({link1})". Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
@@ -5799,10 +5798,10 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						//here3
 
 						//*****NOTES*****\\
-						//for gmail context, need to display full links for unsubscribe so we can automate that. VERY powerful use case
 
 						//need to store internal data like from who to who etc (maybe internal data property, just for emails for now), so gpt can reply etc
-						//later can store email whole content in internal data, maybe, or a reference ID to fetch email later
+						//later can store a reference ID to fetch email later
+						//e.g. when return read email command, add a email_id param
 
 
 
