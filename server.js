@@ -5928,7 +5928,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}catch(err){
 							console.error(err)
 						}finally{
-							if(!isfunctioncall2){
+							if(!isfunctioncall2 && !commands.includes('read_emails')){
 								res.end()
 								return
 							}
