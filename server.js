@@ -5921,7 +5921,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										}else if(tempchunk){
 											tempchunk += chunk.choices[0].delta.content
 											
-											console.warn(JSON.stringify(emaillinkmap))
 											//replace short links with real
 											for(let [key, value] of Object.entries(emaillinkmap)){
 												tempchunk = tempchunk.replace(`[${key}]`, value)
@@ -5931,6 +5930,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 											
 											tempchunk = ''
 										}else{
+											//replace short links with real
+											for(let [key, value] of Object.entries(emaillinkmap)){
+												tempchunk = tempchunk.replace(`[${key}]`, value)
+											}
+
 											//send chunk
 											res.write(chunk.choices[0].delta.content)
 										}
@@ -5939,6 +5943,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							}
 
 							if(tempchunk){
+								//replace short links with real
+								for(let [key, value] of Object.entries(emaillinkmap)){
+									tempchunk = tempchunk.replace(`[${key}]`, value)
+								}
+								
 								res.write(tempchunk)
 							}
 						}catch(err){
