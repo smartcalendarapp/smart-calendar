@@ -5783,7 +5783,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 									const urlRegex = /https?:\/\/\S+/g
 									
 									return inputText.replace(urlRegex, (url) => {
-										return `{${getshortenedlink(url)}}`
+										return `${getshortenedlink(url)}`
 									})
 								}
 								item.content = replaceURLs(item.content)
@@ -5914,7 +5914,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 
 										//for email links
-										if(chunk.choices[0].delta.content.match(/\{(?:l(?:i(?:n(?:k(?:\d+)?|k?)?)?)?)?$/)){
+										if(chunk.choices[0].delta.content.match(/(?:h(?:t(?:t(?:p(?:\d+)?|k?)?)?)?)?$/)){
 											tempchunk += chunk.choices[0].delta.content
 										}else if(tempchunk){
 											tempchunk += chunk.choices[0].delta.content
@@ -5936,6 +5936,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							}
 
 							if(tempchunk){
+								//replace short links with real
+								for(let [key, value] of Object.entries(emaillinkmap)){
+									tempchunk = tempchunk.replace(key, value)
+								}
+								
 								res.write(tempchunk)
 							}
 						}catch(err){
@@ -6011,7 +6016,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		const emaillinkmap = {}
 		let emaillinkcounter = 1
 		function getshortenedlink(link){
-			let newkey = `link${emaillinkcounter}`
+			let newkey = `https://${emaillinkcounter}`
 			emaillinkmap[newkey] = link
 			emaillinkcounter++
 
