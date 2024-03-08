@@ -5788,7 +5788,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										return getshortenedlink(url)
 									})
 								}
-								console.warn(JSON.stringify(item.content.match(/((?:https?:\/\/)(?:[\w-]+\.)+[\w]{2,}(?:\/[\w-_.~%\/#?&=!$()'*+,;:@]+)?)/gi)))
+								console.warn(JSON.stringify(item.content))
 								item.content = replaceURLs(item.content)
 
 								tempcontext2 += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${(item.date && getFullRelativeDHMText(Math.floor((Date.now() - item.date)/60000))) || ''}, Message: ${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}`
