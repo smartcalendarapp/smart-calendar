@@ -5782,7 +5782,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							let tempcontext2 = ''
 							for(let item of emails.emails){
 								function replaceURLs(inputText) {
-									const urlRegex = /((?:https?:\/\/)?(?:www\.)?(?:[\w-]+\.)+[\w]{2,}(?:\/[\w-_.~%\/#?&=!$()'*+,;:@]+)?)/gi
+									const urlRegex = /((?:https?:\/\/)(?:[\w-]+\.)+[\w]{2,}(?:\/[\w-_.~%\/#?&=!$()'*+,;:@]+)?)/gi
 									
 									return inputText.replace(urlRegex, (url) => {
 										return getshortenedlink(url)
