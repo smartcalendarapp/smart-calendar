@@ -5155,7 +5155,21 @@ function updatestatus(newstatus) {
 	}
 }
 
+function needconformationtoclose(){
+	return savestatus == 1 || savestatus == 2 || (calendar.issyncingtogooglecalendar && setclientdataqueue.length > 0)
 
+}
+window.onbeforeunload = function (e) {
+    e = e || window.event;
+
+	if(needconformationtoclose()){
+		if (e) {
+			e.returnValue = 'Sure?';
+		}
+
+		return 'Sure?'
+	}
+}
 
 
 
@@ -14644,9 +14658,8 @@ function markdowntoHTML(markdown, role) {
 
 	//links
 	markdown = markdown.replace(/\[(.*?)\]\((.*?)\)/gim, `<a href='$2' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$1</a>`);
-    markdown = markdown.replace(/(?<!["'])\b(http(s)?:\/\/[^\s<]+)(?![^<>]*>|[^"]*?<\/a)/gim, `<a href='$1' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$1</a>`);
 
-
+    markdown = markdown.replace(/(?<!\]\(|href="|href='|src='|src=")http(s)?:\/\/[^\s]+(?!\))/gim, `<a href='$&' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$&</a>`)
 
     markdown = markdown
         .replace(/^### (.*$)/gim, '<h3>$1</h3>')
@@ -15793,13 +15806,40 @@ async function submitaimessage(optionalinput, dictated){
 							}
 						}
 						
-					}else if(command == 'send_email'){
+					}else if(command == 'new_emaildraft'){
 						let subject = arguments?.subject
 						let body = arguments?.body
 						let recipient = arguments?.recipient
 
 						responsechatmessage.message = `Done!`
 						responsechatmessage.link = { url: `mailto:${recipient}${subject ? `?subject=${encodeURIComponent(subject)}` : ''}${body ? `${subject ? '&' : '?'}body=${encodeURIComponent(body)}` : ''}`, text: 'Draft email' }
+					}else if(command == 'new_phonecall'){
+						let phoneNumber = arguments?.phoneNumber
+
+						if(phoneNumber){
+							phoneNumber = phoneNumber.replace(/[^\d+]/g, '')
+
+							responsechatmessage.message = `Done!`
+							responsechatmessage.link = { url: `tel:${phoneNumber}`, text: `Call ${phoneNumber}` }
+						}else{
+							responsechatmessage.message = `I couldn't catch that, could you please tell me the phone number again.`
+						}
+					}else if(command == 'new_textmessage'){
+						let phoneNumber = arguments?.phoneNumber
+						let message = arguments?.message
+
+						if(phoneNumber){
+							if(message){
+								phoneNumber = phoneNumber.replace(/[^\d+]/g, '')
+
+								responsechatmessage.message = `Done!`
+								responsechatmessage.link = { url: `sms:${phoneNumber}`, text: `Text ${phoneNumber}` }
+							}else{
+								responsechatmessage.message = `I couldn't catch that, could you please tell me your message.`
+							}
+						}else{
+							responsechatmessage.message = `I couldn't catch that, could you please tell me the phone number again.`
+						}
 					}else if(command == 'search_web'){
 						let query = arguments?.query
 
@@ -15807,7 +15847,7 @@ async function submitaimessage(optionalinput, dictated){
 							responsechatmessage.message = `Done!`
 							responsechatmessage.link = { url: `https://www.google.com/search?q=${encodeURIComponent(query)}`, text: 'Search Google' }
 						}else{
-							responsechatmessage.message = `Please tell me what you want to search.`
+							responsechatmessage.message = `I coulnd't catch that, could you please tell me what you want to search.`
 						}
 					}else if(command == 'open_link'){
 						let link = arguments?.link
@@ -15816,7 +15856,7 @@ async function submitaimessage(optionalinput, dictated){
 							responsechatmessage.message = `Done!`
 							responsechatmessage.link = { url: link, text: 'Open link' }
 						}else{
-							responsechatmessage.message = `Please tell me what link you want to open.`
+							responsechatmessage.message = `I coulnd't catch that, could you please tell me what link you want to open.`
 						}
 					}else if(command == 'read_emails'){
 						let error = arguments?.error
