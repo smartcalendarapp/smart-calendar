@@ -15827,13 +15827,9 @@ async function submitaimessage(optionalinput, dictated){
 							responsechatmessage.skiptyping = true
 						}
 
+
 						let message = arguments?.message
 						if(message){
-							responsechatmessage.message = message
-						}
-
-						let content = arguments?.content
-						if(content){
 							function replaceURLs(inputText) {
 								const urlRegex = /https?:\/\/link\d+/g
 								
@@ -15842,9 +15838,9 @@ async function submitaimessage(optionalinput, dictated){
 								})
 							}
 
-							content = replaceURLs(content)
+							message = replaceURLs(message)
 
-							responsechatmessage.message = content
+							responsechatmessage.message = message
 						}
 					}else if(command == 'google_maps'){
 						//maps distance, time to leave, time between 2 places, visualize route, visualize place
