@@ -5774,10 +5774,10 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								return { data: { commands: [ { 'read_emails': { message: emails?.error || 'You have no unread emails!' } } ] }, data1: { commands: commands } }
 							}
 
-							const MAX_EMAIL_CONTENT_LENGTH = 500
+							const MAX_EMAIL_CONTENT_LENGTH = 1000
 
 							let tempcontext = ''
-							tempcontext += `In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. Always include any important links in email in format [text]({link#}). If email requires follow up, give user suggestions on how to reply. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
+							tempcontext += `In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. Always mention any important links to click on in email. If email requires follow up, give user suggestions on how to reply. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
 							for(let item of emails.emails){
 								function replaceURLs(inputText) {
 									const urlRegex = /https?:\/\/\S+/g
@@ -5792,7 +5792,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							}
 
 							gmailcontext = tempcontext
-							console.warn(gmailcontext)
 						}
 						//here3
 
