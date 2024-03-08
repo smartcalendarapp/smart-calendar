@@ -5531,7 +5531,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							properties: {
 								message: { type: 'string', description: 'You must list all the links in the email. In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. If email requires follow up, give user suggestions on how to reply. Finally, tell the user how many unread emails are remaining, and prompt the user on what to do with the email or to move on to next email'},
 							},
-							required: []
+							required: ['message']
 						}
 					}
 				])
