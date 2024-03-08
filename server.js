@@ -5526,20 +5526,13 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					},
 					{
 						name: 'read_emails',
-						parameters: {
-							type: 'object',
-							properties: {
-								content: { type: 'string' },
-							},
-							required: []
-						}
 					}
 				])
 			}
 
 
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'send_email', 'search_web', 'open_link', 'read_emails'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'send_email', 'search_web', 'open_link'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
 
