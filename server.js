@@ -5792,12 +5792,14 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							}
 
 							gmailcontext = tempcontext
-							console.warn(gmailcontext)
 						}
 						//here3
 
 						//*****NOTES*****\\
 						//for gmail context, need to display full links for unsubscribe so we can automate that. VERY powerful use case
+
+						//need to store internal data like from who to who etc (maybe internal data property, just for emails for now), so gpt can reply etc
+						//later can store email whole content in internal data, maybe, or a reference ID to fetch email later
 
 
 
@@ -6009,8 +6011,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		const emaillinkmap = {}
 		let emaillinkcounter = 1
 		function getshortenedlink(link){
-			emaillinkmap[`link${emaillinkcounter}`] = link
+			let newkey = `link${emaillinkcounter}`
+			emaillinkmap[newkey] = link
 			emaillinkcounter++
+
+			return newkey
 		}
 
 		function getcalendarcontext(tempevents){
