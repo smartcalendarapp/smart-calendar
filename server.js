@@ -5909,9 +5909,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										accumulatedresponse2.message.function_call = { name: 'app_action', arguments: { commands: [ { 'read_emails': { message: '' } } ] } }
 									}
 
-									console.warn(accumulatedresponse2.message.function_call.arguments.commands['read_emails'].message)
 									if(chunk.choices[0].delta.content){
-										accumulatedresponse2.message.function_call.arguments.commands['read_emails'].message += chunk.choices[0].delta.content
+										accumulatedresponse2.message.function_call['app_action'].arguments.commands[0]['read_emails'].message += chunk.choices[0].delta.content
 									}
 								}else{
 									//text response
