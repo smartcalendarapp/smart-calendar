@@ -5916,10 +5916,12 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 										//for email links
 										if(chunk.choices[0].delta.content.match(/\[(?:l(?:i(?:n(?:k(?:\d+)?|k?)?)?)?)?$/)){
+											console.warn('ok')
 											tempchunk += chunk.choices[0].delta.content
 										}else if(tempchunk){
 											tempchunk += chunk.choices[0].delta.content
 											
+											console.warn(JSON.stringify(emaillinkmap))
 											//replace short links with real
 											for(let [key, value] of Object.entries(emaillinkmap)){
 												tempchunk = tempchunk.replace(`[${key}]`, value)
