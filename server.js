@@ -5777,13 +5777,13 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							const MAX_EMAIL_CONTENT_LENGTH = 1000
 
 							let tempcontext = ''
-							tempcontext += `You must first respond with all the links in the email that are in format {link#}. In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. If email requires follow up, give user suggestions on how to reply. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
+							tempcontext += `You must first respond with all the links in the email that are in format [link#]. In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. If email requires follow up, give user suggestions on how to reply. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
 							for(let item of emails.emails){
 								function replaceURLs(inputText) {
 									const urlRegex = /https?:\/\/\S+/g
 									
 									return inputText.replace(urlRegex, (url) => {
-										return `{${getshortenedlink(url)}}`
+										return `[${getshortenedlink(url)}]`
 									})
 								}
 								item.content = replaceURLs(item.content)
@@ -5915,7 +5915,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 
 										//for email links
-										if(chunk.choices[0].delta.content.match(/\{(?:l(?:i(?:n(?:k(?:\d+)?|k?)?)?)?)?$/)){
+										if(chunk.choices[0].delta.content.match(/\[(?:l(?:i(?:n(?:k(?:\d+)?|k?)?)?)?)?$/)){
 											tempchunk += chunk.choices[0].delta.content
 										}else if(tempchunk){
 											tempchunk += chunk.choices[0].delta.content
