@@ -5280,6 +5280,7 @@ async function getgmailemails(req) {
 						const part = msg.payload.parts.find(part => part.mimeType === 'text/plain' || part.mimeType === 'text/html');
 						if (part?.body?.data) {
 							let tempcontent = Buffer.from(part.body.data, 'base64').toString('utf8');
+							console.warn(tempcontent)
 							content = htmlToText(tempcontent);
 						}
 					} else if (msg.payload.body.data) {
@@ -5777,7 +5778,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							const MAX_EMAIL_CONTENT_LENGTH = 1000
 
 							let tempcontext = ''
-							tempcontext += `In a concise, short, briefing manner, talk to the user and summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. Next, list all important links (any string in email that is in format {link#}), in the exact format: [descriptive text]({link1}). Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
+							tempcontext += `In a concise, short, briefing manner, talk to the user and summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. Next, list all important links (any string in email that is in format {link#}), in the exact format: "[descriptive text]({link1})". Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
 
 							let tempcontext2 = ''
 							for(let item of emails.emails){
@@ -5788,7 +5789,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										return getshortenedlink(url)
 									})
 								}
-								console.warn(JSON.stringify(item.content))
 								item.content = replaceURLs(item.content)
 
 								tempcontext2 += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${(item.date && getFullRelativeDHMText(Math.floor((Date.now() - item.date)/60000))) || ''}, Message: ${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}`
