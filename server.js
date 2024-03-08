@@ -5788,6 +5788,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										return getshortenedlink(url)
 									})
 								}
+								console.warn(JSON.stringify(item.content.match(/((?:https?:\/\/)(?:[\w-]+\.)+[\w]{2,}(?:\/[\w-_.~%\/#?&=!$()'*+,;:@]+)?)/gi)))
 								item.content = replaceURLs(item.content)
 
 								tempcontext2 += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${(item.date && getFullRelativeDHMText(Math.floor((Date.now() - item.date)/60000))) || ''}, Message: ${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}`
@@ -5942,8 +5943,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}else{
 							commands2 = JSON.parse(accumulatedresponse2.message.function_call?.arguments)?.commands
 						}
-						console.warn(JSON.stringify(accumulatedresponse2))
-						console.warn(JSON.stringify(commands2))
+
 
 						if(!Array.isArray(commands2) && typeof commands2 == 'object'){ //if gpt is weird and decides to return object and not array
 							commands2 = Object.keys(commands2).map(key => { return { [key]: commands2[key] } })
