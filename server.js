@@ -5783,7 +5783,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 									const urlRegex = /https?:\/\/\S+/g
 									
 									return inputText.replace(urlRegex, (url) => {
-										return `[${getshortenedlink(url)}]`
+										return getshortenedlink(url)
 									})
 								}
 								item.content = replaceURLs(item.content)
@@ -5916,27 +5916,28 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 										//for email links
 										if(chunk.choices[0].delta.content.match(/\[(?:l(?:i(?:n(?:k(?:\d+)?|k?)?)?)?)?$/)){
-											console.warn('ok')
 											tempchunk += chunk.choices[0].delta.content
 										}else if(tempchunk){
 											tempchunk += chunk.choices[0].delta.content
 											
 											//replace short links with real
 											for(let [key, value] of Object.entries(emaillinkmap)){
-												tempchunk = tempchunk.replace(`[${key}]`, value)
+												tempchunk = tempchunk.replace(key, value)
 											}
 
 											res.write(tempchunk)
 											
 											tempchunk = ''
 										}else{
+											let temptext = chunk.choices[0].delta.content
+
 											//replace short links with real
 											for(let [key, value] of Object.entries(emaillinkmap)){
-												tempchunk = tempchunk.replace(`[${key}]`, value)
+												temptext = temptext.replace(key, value)
 											}
 
 											//send chunk
-											res.write(chunk.choices[0].delta.content)
+											res.write(temptext)
 										}
 									}
 								}
@@ -5945,9 +5946,9 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							if(tempchunk){
 								//replace short links with real
 								for(let [key, value] of Object.entries(emaillinkmap)){
-									tempchunk = tempchunk.replace(`[${key}]`, value)
+									tempchunk = tempchunk.replace(key, value)
 								}
-								
+
 								res.write(tempchunk)
 							}
 						}catch(err){
@@ -6023,7 +6024,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		const emaillinkmap = {}
 		let emaillinkcounter = 1
 		function getshortenedlink(link){
-			let newkey = `link${emaillinkcounter}`
+			let newkey = `[link${emaillinkcounter}]`
 			emaillinkmap[newkey] = link
 			emaillinkcounter++
 
