@@ -5529,9 +5529,9 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						parameters: {
 							type: 'object',
 							properties: {
-								message: { type: 'string', description: 'You must list all the links in the email. In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. If email requires follow up, give user suggestions on how to reply. Finally, tell the user how many unread emails are remaining, and prompt the user on what to do with the email or to move on to next email'},
+								content: { type: 'string' },
 							},
-							required: ['message']
+							required: []
 						}
 					}
 				])
@@ -5784,6 +5784,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							const MAX_EMAIL_CONTENT_LENGTH = 1000
 
 							let tempcontext = ''
+							tempcontext += `You must list all the links in the email. In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. If email requires follow up, give user suggestions on how to reply. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
 							for(let item of emails.emails){
 								function replaceURLs(inputText) {
 									const urlRegex = /https?:\/\/\S+/g
@@ -5793,11 +5794,12 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 									})
 								}
 								item.content = replaceURLs(item.content)
+								console.warn(JSON.stringify(item.content))
 
 								tempcontext += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${(item.date && getFullRelativeDHMText(Math.floor((Date.now() - item.date)/60000))) || ''}, Message: ${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}`
 							}
 
-							gmailcontext = ` Unread emails left: ${emails.unreadcount}. Email data: """${gmailcontext}"""`
+							gmailcontext = tempcontext
 						}
 						//here3
 
@@ -5832,7 +5834,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 						if(gmailcontext){
 							//yes todo data
-							request2input += gmailcontext
+							request2input += ` Emails: """${gmailcontext}"""`
 						}
 		
 						if(requirescustomfunction){
@@ -5907,6 +5909,14 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 									}
 									if(chunk.choices[0].delta.function_call?.arguments){
 										accumulatedresponse2.message.function_call.arguments += chunk.choices[0].delta.function_call?.arguments
+									}
+								}else if(commands2.includes('read_emails')){
+									if(!accumulatedresponse2.message.function_call){
+										accumulatedresponse2.message.function_call = { name: 'read_emails', arguments: { message: '' } }
+									}
+
+									if(chunk.choices[0].delta.content){
+										accumulatedresponse2.message.function_call.arguments.message += chunk.choices[0].delta.content
 									}
 								}else{
 									//text response
