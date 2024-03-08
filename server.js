@@ -5287,16 +5287,6 @@ async function getgmailemails(req) {
 						content = htmlToText(tempcontent);
 					}
 
-					function removeLongUrls(inputText, maxLength) {
-						const urlRegex = /https?:\/\/\S+/g
-						
-						return inputText.replace(urlRegex, (url) => {
-						return url.length > maxLength ? '' : url
-						})
-					}
-
-					content = removeLongUrls(content, 50)
-
 					outputmsgs.push({ from, to, subject, content, date: datevalue })
 				}
 
@@ -5787,24 +5777,26 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							const MAX_EMAIL_CONTENT_LENGTH = 500
 
 							let tempcontext = ''
-							tempcontext += `In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. Mention any important links in email. If email requires follow up, give user suggestions on how to reply. Finally, tell user there are ${emails.unreadcount} unread emails remaining, and prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
+							tempcontext += `In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. Always include any important links in email in format [text]({link#}). If email requires follow up, give user suggestions on how to reply. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
 							for(let item of emails.emails){
+								function replaceURLs(inputText) {
+									const urlRegex = /https?:\/\/\S+/g
+									
+									return inputText.replace(urlRegex, (url) => {
+										return `{${getshortenedlink(url)}}`
+									})
+								}
+								item.content = replaceURLs(item.content)
+
 								tempcontext += '\n' + `'''From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${(item.date && getFullRelativeDHMText(Math.floor((Date.now() - item.date)/60000))) || ''}, Message: ${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}'''`
 							}
 
 							gmailcontext = tempcontext
+							console.warn(gmailcontext)
 						}
 						//here3
 
 						//*****NOTES*****\\
-
-						//need to send the function call data rather than the text output?
-
-						//then need M1, M2 for mail id?? or not for now
-
-						//IMPORTANT: need to adjust the T1, T2... ids of the past items to be of the current data map. so when send raw data, need to replace T1, T2 with actual id, then convert that ID on server side back to the NEW T1, T2... and if not there add a new one. (make get id function to either get T1, T2 for id or create new T3)
-						//should we also inject in "raw data" property the title of the event? to do latest title, do on server side (ideal i think-)
-
 						//for gmail context, need to display full links for unsubscribe so we can automate that. VERY powerful use case
 
 
@@ -5891,6 +5883,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							message: {}
 						}
 						try {
+							let tempchunk = ''
 							for await (const chunk of response2) {	
 								if(chunk.choices[0].delta?.function_call && chunk.choices[0].delta?.function_call?.name){
 									isfunctioncall2 = true
@@ -5917,10 +5910,31 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										}
 										accumulatedresponse2.message.content += chunk.choices[0].delta.content
 
-										//send chunk
-										res.write(chunk.choices[0].delta.content)
+
+										//for email links
+										if(chunk.choices[0].delta.content.match(/\{(?:l(?:i(?:n(?:k(?:\d+)?|k?)?)?)?)?$/)){
+											tempchunk += chunk.choices[0].delta.content
+										}else if(tempchunk){
+											tempchunk += chunk.choices[0].delta.content
+											
+											//replace short links with real
+											for(let [key, value] of Object.entries(emaillinkmap)){
+												tempchunk = tempchunk.replace(key, value)
+											}
+
+											res.write(tempchunk)
+											
+											tempchunk = ''
+										}else{
+											//send chunk
+											res.write(chunk.choices[0].delta.content)
+										}
 									}
 								}
+							}
+
+							if(tempchunk){
+								res.write(tempchunk)
 							}
 						}catch(err){
 							console.error(err)
@@ -5990,6 +6004,13 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			}
 
 			return newid
+		}
+
+		const emaillinkmap = {}
+		let emaillinkcounter = 1
+		function getshortenedlink(link){
+			emaillinkmap[`link${emaillinkcounter}`] = link
+			emaillinkcounter++
 		}
 
 		function getcalendarcontext(tempevents){
@@ -6116,9 +6137,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		//REQUEST
 		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory1, conversationhistory, timezoneoffset)
 
-		console.warn(JSON.stringify(conversationhistory), JSON.stringify(conversationhistory1))
 		if(output){
-			return res.json({ ...output, idmap: idmap })
+			return res.json({ ...output, idmap: idmap, emaillinkmap: emaillinkmap })
 		}
 	}catch(err){
 		console.error(err)

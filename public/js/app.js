@@ -14991,7 +14991,8 @@ async function submitaimessage(optionalinput, dictated){
 						output = data.data
 
 						responsechatmessage.message = output.message
-						responsechatmessage.displaycontent = responsechatmessage.message
+						responsechatmessage.displaycontent = output.message
+
 
 						// Update UI
 						let chatmessagebody = getElement(`chatmessage-body-${responsechatmessage.id}`)
@@ -15033,6 +15034,7 @@ async function submitaimessage(optionalinput, dictated){
 				}
 				return idmap[tempid]
 			}
+
 
 			if(clientinfo.betatester){
 				console.log(output, idmap)
