@@ -15841,6 +15841,7 @@ async function submitaimessage(optionalinput, dictated){
 							message = replaceURLs(message)
 
 							responsechatmessage.message = message
+							//here3
 						}
 					}else if(command == 'google_maps'){
 						//maps distance, time to leave, time between 2 places, visualize route, visualize place
