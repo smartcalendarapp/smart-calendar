@@ -15036,14 +15036,6 @@ async function submitaimessage(optionalinput, dictated){
 			}
 
 			let emaillinkmap = data.emaillinkmap
-			function getrealemaillink(tempid){
-				if(!emaillinkmap) return null
-				if(!tempid) return null
-				if(!Object.keys(emaillinkmap).includes(tempid)){
-					return null
-				}
-				return emaillinkmap[tempid]
-			}
 
 
 			if(clientinfo.betatester){
@@ -15830,15 +15822,9 @@ async function submitaimessage(optionalinput, dictated){
 
 						let message = arguments?.message
 						if(message){
-							function replaceURLs(inputText) {
-								const urlRegex = /https?:\/\/link\d+/g
-								
-								return inputText.replace(urlRegex, (url) => {
-									return getrealemaillink(url)
-								})
+							for(let [key, value] of Object.entries(emaillinkmap)){
+								message = message.replaceAll(key, value)
 							}
-
-							message = replaceURLs(message)
 
 							responsechatmessage.message = message
 							//here3
