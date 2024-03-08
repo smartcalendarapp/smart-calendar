@@ -5777,7 +5777,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							const MAX_EMAIL_CONTENT_LENGTH = 1000
 
 							let tempcontext = ''
-							tempcontext += `In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. You must include links in the email, assume user does not have email open. If email requires follow up, give user suggestions on how to reply. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
+							tempcontext += `In a conversational assistant briefing manner, summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details as if user is an executive). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. The user does not have the email open, so you MUST include important links in the email in verbatim, example: [Link text](https://1). If email requires follow up, give user suggestions on how to reply. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
 							for(let item of emails.emails){
 								function replaceURLs(inputText) {
 									const urlRegex = /https?:\/\/\S+/g
@@ -5914,7 +5914,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 
 										//for email links
-										if(chunk.choices[0].delta.content.match(/(?:h(?:t(?:t(?:p(?:s(?:\d+)?|k?)?)?)?)?)?$/)){
+										if(chunk.choices[0].delta.content.match(/(?:h(?:t(?:t(?:p(?:s(?:\:(?:\d+)?|k?)?)?)?)?)?)?$/)){
 											tempchunk += chunk.choices[0].delta.content
 											console.warn('huh')
 										}else if(tempchunk){
