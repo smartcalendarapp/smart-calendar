@@ -14644,7 +14644,9 @@ function markdowntoHTML(markdown, role) {
 
 	//links
 	markdown = markdown.replace(/\[(.*?)\]\((.*?)\)/gim, `<a href='$2' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$1</a>`);
-    markdown = markdown.replace(/(?<!\]\(|href="|href='|src='|src=")http(s)?:\/\/[^\s]+(?!\))/gim, `<a href='$&' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$&</a>`)
+    markdown = markdown.replace(/(?<!["'])\b(http(s)?:\/\/[^\s<]+)(?![^<>]*>|[^"]*?<\/a)/gim, `<a href='$1' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$1</a>`);
+
+
 
     markdown = markdown
         .replace(/^### (.*$)/gim, '<h3>$1</h3>')
