@@ -15047,7 +15047,7 @@ async function submitaimessage(optionalinput, dictated){
 
 
 			if(clientinfo.betatester){
-				console.log(output, idmap)
+				console.log(output, idmap, emaillinkmap)
 			}
 
 
@@ -15835,7 +15835,7 @@ async function submitaimessage(optionalinput, dictated){
 						let content = arguments?.content
 						if(content){
 							function replaceURLs(inputText) {
-								const urlRegex = /https?:\/\/\d+/g
+								const urlRegex = /https?:\/\/link\d+/g
 								
 								return inputText.replace(urlRegex, (url) => {
 									return getrealemaillink(url)
@@ -15843,7 +15843,7 @@ async function submitaimessage(optionalinput, dictated){
 							}
 
 							content = replaceURLs(content)
-							
+
 							responsechatmessage.message = content
 						}
 					}else if(command == 'google_maps'){
