@@ -1523,6 +1523,9 @@ const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
 const GOOGLE_REDIRECT_URI = `${DOMAIN}/auth/google/callback`
 
+const GOOGLE_SEARCH_API_KEY = process.env.GOOGLE_SEARCH_API_KEY
+const GOOGLE_SEARCH_CSE_ID = '929ebe6605b8b43e3'
+
 const { google } = require('googleapis')
 const { OAuth2Client } = require('google-auth-library')
 
@@ -5423,6 +5426,31 @@ async function getgmailemails(req) {
 }
 
 
+//not used
+async function searchgoogle(query){
+	try{
+		const url = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(query)}&key=${GOOGLE_SEARCH_API_KEY}&cx=${GOOGLE_SEARCH_CSE_ID}`
+
+
+		const response = await fetch(url);
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`)
+		}
+
+		const data = await response.json()
+		return data.items.map(item => ({
+			title: item.title,
+			snippet: item.snippet,
+			url: item.link
+		}))
+
+	}catch(err){
+		console.warn(err)
+		return null
+	}
+}
+
+
 const DAYLIST = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 app.post('/getgptchatinteractionV2', async (req, res) => {
@@ -5613,17 +5641,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 					},
 					{
-						name: 'search_web',
-						description: 'Search Google for user request',
-						parameters: {
-							type: 'object',
-							properties: {
-								query: { type: 'string', description: 'User query' },
-							},
-							required: []
-						}
-					},
-					{
 						name: 'open_link',
 						description: 'Open link at user request',
 						parameters: {
@@ -5635,7 +5652,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 					},
 					{
-						name: 'get_unread_emails',
+						name: 'check_emails',
 					},
 					{
 						name: 'go_to_date_in_calendar',
@@ -5653,7 +5670,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'new_emaildraft', 'search_web', 'open_link', 'new_textmessage', 'new_phonecall', 'go_to_date_in_calendar'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'new_emaildraft', 'open_link', 'new_textmessage', 'new_phonecall', 'go_to_date_in_calendar'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
 
@@ -5859,7 +5876,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 						//other custom behavior, api, etc
 						let gmailcontext;
-						if(commands.includes('get_unread_emails')){
+						if(commands.includes('check_emails')){
 							function getFullRelativeDHMText(input){
 								let temp = Math.abs(input)
 								let days = Math.floor(temp / 1440)
@@ -5888,11 +5905,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 							let emails = await getgmailemails(req)
 							if(!emails || emails.error || !emails.emails){
-								return { data: { commands: [ { 'get_unread_emails': { error: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' } } ] }, data1: { commands: commands } }
+								return { data: { commands: [ { 'check_emails': { error: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' } } ] }, data1: { commands: commands } }
 							}
 
 							if(emails.emails.length == 0){
-								return { data: { commands: [ { 'get_unread_emails': { message: emails?.error || 'You have no unread emails!' } } ] }, data1: { commands: commands } }
+								return { data: { commands: [ { 'check_emails': { message: emails?.error || 'You have no unread emails!' } } ] }, data1: { commands: commands } }
 							}
 
 							const MAX_EMAIL_CONTENT_LENGTH = 2000
@@ -5918,7 +5935,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 						//here3
 
-						//*****NOTES*****\\
+						//*****NOTES TODO*****\\
 
 						//need to store internal data like from who to who etc (maybe internal data property, just for emails for now), so gpt can reply etc
 						//later can store a reference ID to fetch email later
@@ -5927,6 +5944,12 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						//and have list of latest emails, and ability to open already reademails
 						//current function becomes: read first unread
 						//and maybe every 5m check for unread emails
+
+						//make search web use actual ability
+
+
+						//CALENDAR context
+						//later - context for calendar is from today to 1 week, plus the current viewing ONLY IF week/day mode (and seeing future date)
 
 
 
@@ -6029,13 +6052,13 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 									if(chunk.choices[0].delta.function_call?.arguments){
 										accumulatedresponse2.message.function_call.arguments += chunk.choices[0].delta.function_call?.arguments
 									}
-								}else if(commands.includes('get_unread_emails')){
+								}else if(commands.includes('check_emails')){
 									if(!accumulatedresponse2.message.function_call){
-										accumulatedresponse2.message.function_call = { name: 'app_action', arguments: { commands: [ { 'get_unread_emails': { message: '' } } ] } }
+										accumulatedresponse2.message.function_call = { name: 'app_action', arguments: { commands: [ { 'check_emails': { message: '' } } ] } }
 									}
 
 									if(chunk.choices[0].delta.content){
-										accumulatedresponse2.message.function_call.arguments.commands[0]['get_unread_emails'].message += chunk.choices[0].delta.content
+										accumulatedresponse2.message.function_call.arguments.commands[0]['check_emails'].message += chunk.choices[0].delta.content
 									}
 								}else{
 									//text response
@@ -6054,7 +6077,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}catch(err){
 							console.error(err)
 						}finally{
-							if(!isfunctioncall2 && !commands.includes('get_unread_emails')){
+							if(!isfunctioncall2 && !commands.includes('check_emails')){
 								res.end()
 								return
 							}
@@ -6062,7 +6085,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 
 						let commands2;
-						if(commands.includes('get_unread_emails')){
+						if(commands.includes('check_emails')){
 							commands2 = accumulatedresponse2.message.function_call?.arguments?.commands
 						}else{
 							commands2 = JSON.parse(accumulatedresponse2.message.function_call?.arguments)?.commands

@@ -5028,30 +5028,32 @@ function run() {
 
 
 	let lastemailunreadcount;
+	let promptlastemailunread = 0
 	setInterval(async function(){
 		//email
 		if(calendar.settings.connectedgmail){
-			try{
-				const response = await fetch('/getunreademailscount', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
+			if(Date.now() - promptlastemailunread > 60000*5){ //5 min
+				try{
+					const response = await fetch('/getunreademailscount', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					})
+					if(response.status == 200){
+						let data = await response.json()
+						if(data.data.unreademails && data.data.unreademails > 0){
+							lastemailunreadcount = data.data.unreademails
+						}
 					}
-				})
-				if(response.status == 200){
-					let data = await response.json()
-					if(data.unreademails && data.unreademails > 0){
-						lastemailunreadcount = data.unreademails
-					}
-				}
-			}catch(err){ console.log(err) }
+				}catch(err){ console.log(err) }
 
-			if(document.visibilityState == 'visible' && lastemailunreadcount && lastemailunreadcount > 0){
-				submitaimessage('Do I have any unread emails?', false, true)
+				if(document.visibilityState == 'visible' && lastemailunreadcount && lastemailunreadcount > 0){
+					submitaimessage('Do I have any unread emails?', false, true)
+				}
 			}
-			//here3
 		}
-	}, 60000*5) //every 5 min
+	}, 5000)
 
 
 
@@ -15843,24 +15845,20 @@ async function submitaimessage(optionalinput, dictated, nousermessage){
 						responsechatmessage.message = `Done!`
 						responsechatmessage.link = { url: `mailto:${recipient}${subject ? `?subject=${encodeURIComponent(subject)}` : ''}${body ? `${subject ? '&' : '?'}body=${encodeURIComponent(body)}` : ''}`, text: 'Draft email' }
 					}else if(command == 'new_phonecall'){
-						let phoneNumber = arguments?.phoneNumber
+						let phoneNumber = arguments?.phoneNumber?.replace(/[^\d+]/g, '')
 
 						if(phoneNumber){
-							phoneNumber = phoneNumber.replace(/[^\d+]/g, '')
-
 							responsechatmessage.message = `Done!`
 							responsechatmessage.link = { url: `tel:${phoneNumber}`, text: `Call ${phoneNumber}` }
 						}else{
 							responsechatmessage.message = `I couldn't catch that, could you please tell me the phone number again.`
 						}
 					}else if(command == 'new_textmessage'){
-						let phoneNumber = arguments?.phoneNumber
+						let phoneNumber = arguments?.phoneNumber?.replace(/[^\d+]/g, '')
 						let message = arguments?.message
 
 						if(phoneNumber){
 							if(message){
-								phoneNumber = phoneNumber.replace(/[^\d+]/g, '')
-
 								responsechatmessage.message = `Done!`
 								responsechatmessage.link = { url: `sms:${phoneNumber}?body="${encodeURIComponent(message)}"`, text: `Text ${phoneNumber}` }
 							}else{
@@ -15868,15 +15866,6 @@ async function submitaimessage(optionalinput, dictated, nousermessage){
 							}
 						}else{
 							responsechatmessage.message = `I couldn't catch that, could you please tell me the phone number again.`
-						}
-					}else if(command == 'search_web'){
-						let query = arguments?.query
-
-						if(query){
-							responsechatmessage.message = `Done!`
-							responsechatmessage.link = { url: `https://www.google.com/search?q=${encodeURIComponent(query)}`, text: 'Search Google' }
-						}else{
-							responsechatmessage.message = `I coulnd't catch that, could you please tell me what you want to search.`
 						}
 					}else if(command == 'open_link'){
 						let link = arguments?.link
@@ -15887,7 +15876,7 @@ async function submitaimessage(optionalinput, dictated, nousermessage){
 						}else{
 							responsechatmessage.message = `I coulnd't catch that, could you please tell me what link you want to open.`
 						}
-					}else if(command == 'get_unread_emails'){
+					}else if(command == 'check_emails'){
 						let error = arguments?.error
 						if(error){
 							responsechatmessage.message = error
@@ -15902,12 +15891,19 @@ async function submitaimessage(optionalinput, dictated, nousermessage){
 							}
 
 							responsechatmessage.message = message
+
+							promptlastemailunread = Date.now()
 						}
 						//here3
 					}else if(command == 'go_to_date_in_calendar'){
 						let date = arguments?.date
 						let [year, month, day] = getDate(date).value
-						if(year != null && month != null && day != null){
+						if(year != null && month != null && day != null && !isNaN(new Date(year, month, day).getTime())){
+							calendaryear = year
+							calendarmonth = month
+							calendarday = day
+							calendar.updateTabs()
+
 							responsechatmessage.message = `Done! I've scrolled to ${getDMDYText(new Date(year, month, day))} in your calendar.`
 						}else{
 							responsechatmessage.message = `I couldn't catch that, could you please tell me again?`
