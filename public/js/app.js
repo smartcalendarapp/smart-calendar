@@ -5029,6 +5029,7 @@ function run() {
 
 	let lastemailunreadcount;
 	let promptlastemailunread = 0
+	/*
 	setInterval(async function(){
 		//email
 		if(calendar.settings.connectedgmail){
@@ -5055,6 +5056,7 @@ function run() {
 			}
 		}
 	}, 5000)
+	*/
 
 
 
@@ -13775,7 +13777,7 @@ function openaichat(){
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`,
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What are my tasks for today?')">What are my tasks for today?</div>`]
 
-		responsechatmessage.nextactions = getRandomItems(tempoptions, 3)
+		responsechatmessage.nextactions = [...getRandomItems(tempoptions, 3), `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('Help', 'Hey! Here are all my abilities:\\n\\n**Events**:\\n- Create event\\n- Modify event time, duration, color, recurrence\\n- Delete event\\n- Scroll to a specific date in calendar\\n\\n**Tasks**:\\n- Create, modify, delete task\\n\\n**Coming soon**:\\n\- Read your emails\\n- Draft emails\\n- Search the web\\n\\nAlso, you can use dictation to talk to me. I\\'m here to listen.')">Help</div>`]
 
 		chatinteraction.addMessage(responsechatmessage)
 		chathistory.addInteraction(chatinteraction)
