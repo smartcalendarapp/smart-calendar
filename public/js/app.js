@@ -5050,6 +5050,7 @@ function run() {
 
 				if(document.visibilityState == 'visible' && lastemailunreadcount && lastemailunreadcount > 0){
 					submitaimessage('Do I have any unread emails?', false, true)
+					promptlastemailunread = Date.now()
 				}
 			}
 		}
@@ -15874,7 +15875,7 @@ async function submitaimessage(optionalinput, dictated, nousermessage){
 							responsechatmessage.message = `Done!`
 							responsechatmessage.link = { url: link, text: 'Open link' }
 						}else{
-							responsechatmessage.message = `I coulnd't catch that, could you please tell me what link you want to open.`
+							responsechatmessage.message = `I couldn't catch that, could you please tell me what link you want to open.`
 						}
 					}else if(command == 'check_emails'){
 						let error = arguments?.error
