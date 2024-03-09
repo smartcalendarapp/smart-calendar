@@ -1731,7 +1731,7 @@ app.post('/auth/google', async (req, res, next) => {
 		return res.json({ url: authurl })
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -2492,7 +2492,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 		//download data
 		const googlecalendarlist = await googlecalendar.calendarList.list()
 		if(googlecalendarlist.status != 200){
-			return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.'})
+			return res.status(401).json({ error: htmltryagainerror})
 		}
 
 		const currentdate = new Date()
@@ -2509,7 +2509,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 		  })
 
 			if(calendarevents.status != 200){
-				return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+				return res.status(401).json({ error: htmltryagainerror })
 			}
 			
 			googlecalendardata.push({ calendar: calendaritem, events: calendarevents.data.items })
@@ -2738,7 +2738,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 		
 		const newgooglecalendarlist = await googlecalendar.calendarList.list()
 		if(newgooglecalendarlist.status != 200){
-			return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+			return res.status(401).json({ error: htmltryagainerror })
 		}
 
 		let newgooglecalendardata = []
@@ -2750,7 +2750,7 @@ app.post('/syncclientgooglecalendar', async(req, res, next) =>{
 		  })
 
 			if(calendarevents.status != 200){
-				return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+				return res.status(401).json({ error: htmltryagainerror })
 			}
 			
 			newgooglecalendardata.push({ calendar: calendaritem, events: calendarevents.data.items })
@@ -2978,13 +2978,29 @@ app.post('/setclientgooglecalendar', async (req, res, next) => {
 				
 			}else if(requestchange.type == 'deletecalendar'){
 
+				
 				try{
-					const response = await googlecalendar.calendars.delete({
-						calendarId: requestchange.googleid,
+					//handle subscription and unsub
+					const calendar = await googlecalendar.calendars.get({
+						calendarId: requestchange.googleid
 					})
-		
-					if(response.status != 200){
-						throw new Error(response.data?.error?.message)
+				
+					if (calendar.data.kind === "calendar#subscription") {
+						const response = await googlecalendar.subscriptions.delete({
+							subscriptionId: requestchange.googleid
+						})
+				
+						if (response.status !== 204) {
+							throw new Error(response.data?.error?.message)
+						}
+					} else {
+						const response = await googlecalendar.calendars.delete({
+							calendarId: requestchange.googleid
+						})
+				
+						if (response.status !== 200) {
+							throw new Error(response.data?.error?.message)
+						}
 					}
 				}catch(error){
 					//console.error(error)
@@ -3043,7 +3059,7 @@ app.post('/getclientgooglecalendar', async (req, res, next) => {
 		//download data
 		const googlecalendarlist = await googlecalendar.calendarList.list()
 		if(googlecalendarlist.status != 200){
-			return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.'})
+			return res.status(401).json({ error: htmltryagainerror})
 		}
 
 		const currentdate = new Date()
@@ -3062,7 +3078,7 @@ app.post('/getclientgooglecalendar', async (req, res, next) => {
 		  })
 
 			if(calendarevents.status != 200){
-				return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+				return res.status(401).json({ error: htmltryagainerror })
 			}
 			
 			googlecalendardata.push({ calendar: calendaritem, events: calendarevents.data.items })
@@ -3093,7 +3109,7 @@ app.post('/disconnectdiscord', async (req, res, next) => {
 		return res.end()
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -3116,7 +3132,7 @@ app.post('/getdiscordusername', async (req, res, next) => {
 		return res.json({ data: username })
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -3167,7 +3183,7 @@ app.post('/disconnectgoogle', async (req, res, next) => {
 		return res.end()
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -3198,7 +3214,7 @@ app.post('/disconnectapple', async (req, res, next) => {
 		return res.end()
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -3311,7 +3327,7 @@ app.post('/login', async (req, res, next) => {
 		return res.redirect(301, '/app')
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -3366,7 +3382,7 @@ app.post('/signup', async (req, res, next) => {
 		return res.redirect(301, '/app')
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -3508,7 +3524,7 @@ app.post('/changepassword', async (req, res, next) => {
 		return res.end()
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -3551,7 +3567,7 @@ app.post('/setpassword', async (req, res, next) => {
 		return res.end()
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -3599,7 +3615,7 @@ app.post('/deleteaccount', async (req, res, next) => {
 		return res.redirect(301, '/')
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -3649,7 +3665,7 @@ app.post('/changeusername', async (req, res, next) => {
 		return res.end()
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -3678,7 +3694,7 @@ app.post('/getclientinfo', async (req, res, next) => {
 		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, apple: user.accountdata.apple, appleid: user.appleid != null, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null, betatester: user.accountdata.betatester, referafriend: user.accountdata.referafriend, haspremium: user.accountdata.haspremium, premiumendtimestamp: user.accountdata.premium.endtimestamp } })
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -3708,7 +3724,7 @@ app.post('/getclientdata', async (req, res, next) => {
 		}
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -3733,7 +3749,7 @@ app.post('/setclientdata', async (req, res, next) => {
 		return res.end()
 	} catch (error) {
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -3749,13 +3765,13 @@ app.post('/sendcontactus', async (req, res, next) => {
 		try{
 			await savecontactusobject(message)
 		}catch(error){
-			return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+			return res.status(401).json({ error: htmltryagainerror })
 		}
 
 		return res.end()
 	}catch(error){
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -3770,13 +3786,13 @@ app.post('/sendfeedback', async (req, res, next) => {
 		try{
 			await savefeedbackobject(message)
 		}catch(error){
-			return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+			return res.status(401).json({ error: htmltryagainerror })
 		}
 
 		return res.end()
 	}catch(error){
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -4233,7 +4249,7 @@ app.post('/sendinviteemailreferafriend', async (req, res) => {
 		return res.end()
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -4268,7 +4284,7 @@ app.post('/submitreferafriendinvitelink', async (req, res) => {
 		return res.json({ data: { name: getUserName(inviteuser), googleprofilepicture: inviteuser.accountdata.google.profilepicture } })
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -4526,7 +4542,7 @@ app.post('/generatereferafriendinvitelink', async (req, res) => {
 		}
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -4547,7 +4563,7 @@ app.post('/getuseremailpreferences', async (req, res) => {
 		return res.json({ data: user.calendardata.settings.emailpreferences })
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 app.post('/setuseremailpreferences', async (req, res) => {
@@ -4573,7 +4589,7 @@ app.post('/setuseremailpreferences', async (req, res) => {
 		return res.end()
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -4659,7 +4675,7 @@ app.post('/gettasksuggestions', async (req, res) => {
 		return res.json({ data: gptresponse })
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -4748,7 +4764,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 		return res.json({ data: gptresponse })
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -4842,7 +4858,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 		return res.json({ data: { message: response.choices[0].message.content, totaltokens: totaltokens } })
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -4957,7 +4973,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 		return res.json({ data: { message: response.choices[0].message.content, totaltokens: totaltokens } })
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -5053,7 +5069,7 @@ app.post('/getgptchatresponseeveningsummary', async (req, res) => {
 		return res.json({ data: { message: response.choices[0].message.content, totaltokens: totaltokens } })
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -5163,7 +5179,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 		return res.json({ data: { message: response.choices[0].message.content, totaltokens: totaltokens } })
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
@@ -5216,10 +5232,81 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 		stream.pipe(res)
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 
+
+
+app.post('/getunreademailscount', async (req, res) => {
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		let user = await getUserById(userid)
+		if (!user) {
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
+
+		let unreademails = await getunreademailscount(req)
+		if(unreademails == null){
+			return res.status(401).json({ error: 'Could not fetch count.' })
+		}
+
+		return res.json({ data: { unreademails: unreademails } })
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: htmltryagainerror })
+	}
+})
+
+const htmltryagainerror = 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.'
+const markdowntryagainerror = 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).'
+
+async function getunreademailscount(req){
+	try{
+		let user = await getUserById(req.session?.user?.userid);
+        if (!user) return null;
+
+        if (!req.session.tokens || !req.session.tokens.access_token) {
+            let accessToken = await getNewAccessToken(user.accountdata.refreshtoken);
+            if (!accessToken) {
+                return { error: loginwithgooglegmailhtml };
+            }
+            req.session.tokens = req.session.tokens || {};
+            req.session.tokens.access_token = accessToken;
+        }
+
+        const googleclient = new OAuth2Client(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI);
+        googleclient.setCredentials(req.session.tokens);
+
+        const gmail = google.gmail({ version: 'v1', auth: googleclient });
+		
+		// Fetch unread count
+        const res2 = await new Promise((resolve, reject) => {
+            gmail.users.labels.get({
+				userId: 'me',
+				id: 'INBOX'
+			}, (err, res) => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                } else {
+                    resolve(res);
+                }
+            });
+        });
+
+		return  res2.data.threadsUnread
+
+	}catch(err){
+		console.error(err);
+        return null
+	}
+}
 
 async function getgmailemails(req) {
     try {
@@ -5548,14 +5635,25 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 					},
 					{
-						name: 'read_emails',
-					}
+						name: 'get_unread_emails',
+					},
+					{
+						name: 'go_to_date_in_calendar',
+						description: 'Go to date in calendar UI',
+						parameters: {
+							type: 'object',
+							properties: {
+								date: { type: 'string', description: 'Date in format: YYYY-MM-DD' },
+							},
+							required: []
+						}
+					},
 				])
 			}
 
 
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'new_emaildraft', 'search_web', 'open_link', 'new_textmessage', 'new_phonecall'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'new_emaildraft', 'search_web', 'open_link', 'new_textmessage', 'new_phonecall', 'go_to_date_in_calendar'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
 
@@ -5761,7 +5859,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 						//other custom behavior, api, etc
 						let gmailcontext;
-						if(commands.includes('read_emails')){
+						if(commands.includes('get_unread_emails')){
 							function getFullRelativeDHMText(input){
 								let temp = Math.abs(input)
 								let days = Math.floor(temp / 1440)
@@ -5790,11 +5888,11 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 							let emails = await getgmailemails(req)
 							if(!emails || emails.error || !emails.emails){
-								return { data: { commands: [ { 'read_emails': { error: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' } } ] }, data1: { commands: commands } }
+								return { data: { commands: [ { 'get_unread_emails': { error: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' } } ] }, data1: { commands: commands } }
 							}
 
 							if(emails.emails.length == 0){
-								return { data: { commands: [ { 'read_emails': { message: emails?.error || 'You have no unread emails!' } } ] }, data1: { commands: commands } }
+								return { data: { commands: [ { 'get_unread_emails': { message: emails?.error || 'You have no unread emails!' } } ] }, data1: { commands: commands } }
 							}
 
 							const MAX_EMAIL_CONTENT_LENGTH = 2000
@@ -5825,6 +5923,10 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						//need to store internal data like from who to who etc (maybe internal data property, just for emails for now), so gpt can reply etc
 						//later can store a reference ID to fetch email later
 						//e.g. when return read email command, add a email_id param
+
+						//and have list of latest emails, and ability to open already reademails
+						//current function becomes: read first unread
+						//and maybe every 5m check for unread emails
 
 
 
@@ -5927,13 +6029,13 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 									if(chunk.choices[0].delta.function_call?.arguments){
 										accumulatedresponse2.message.function_call.arguments += chunk.choices[0].delta.function_call?.arguments
 									}
-								}else if(commands.includes('read_emails')){
+								}else if(commands.includes('get_unread_emails')){
 									if(!accumulatedresponse2.message.function_call){
-										accumulatedresponse2.message.function_call = { name: 'app_action', arguments: { commands: [ { 'read_emails': { message: '' } } ] } }
+										accumulatedresponse2.message.function_call = { name: 'app_action', arguments: { commands: [ { 'get_unread_emails': { message: '' } } ] } }
 									}
 
 									if(chunk.choices[0].delta.content){
-										accumulatedresponse2.message.function_call.arguments.commands[0]['read_emails'].message += chunk.choices[0].delta.content
+										accumulatedresponse2.message.function_call.arguments.commands[0]['get_unread_emails'].message += chunk.choices[0].delta.content
 									}
 								}else{
 									//text response
@@ -5952,7 +6054,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}catch(err){
 							console.error(err)
 						}finally{
-							if(!isfunctioncall2 && !commands.includes('read_emails')){
+							if(!isfunctioncall2 && !commands.includes('get_unread_emails')){
 								res.end()
 								return
 							}
@@ -5960,7 +6062,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 
 						let commands2;
-						if(commands.includes('read_emails')){
+						if(commands.includes('get_unread_emails')){
 							commands2 = accumulatedresponse2.message.function_call?.arguments?.commands
 						}else{
 							commands2 = JSON.parse(accumulatedresponse2.message.function_call?.arguments)?.commands
@@ -5983,7 +6085,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 				console.warn('ERRORED RESPONSE 1: ' + JSON.stringify(accumulatedresponse))
 
-				return { data: { error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).' } }
+				return { data: { error: markdowntryagainerror } }
 		
 			} catch (err) {
 				console.error(err)
@@ -6166,7 +6268,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		}
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or [https://smartcalendar.us/contact](contact us).' })
+		return res.status(401).json({ error: markdowntryagainerror })
 	}
 })
 
@@ -6225,7 +6327,7 @@ app.post("/push-subscription", async (req, res) => {
 	  return res.end()
 	}catch(error){
 		console.error(error)
-		return res.status(401).json({ error: 'An unexpected error occurred, please try again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.' })
+		return res.status(401).json({ error: htmltryagainerror })
 	}
 })
 

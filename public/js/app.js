@@ -4955,6 +4955,7 @@ function run() {
 	}, 30000)
 
 
+	let templastupdateminute = new Date().getHours() * 60 + new Date().getMinutes()
 	setInterval(async function(){
 		if(document.visibilityState === 'visible' && needtoupdateeventstatus){
 			let eventstatus = getElement('eventstatus')
@@ -5006,10 +5007,9 @@ function run() {
 
 			needtoupdateeventstatus = false
 		}
-	}, 1000)
 
-	let templastupdateminute = new Date().getHours() * 60 + new Date().getMinutes()
-	setInterval(function(){
+
+		//ai task started message
 		let currentdate = new Date()
 		currentdate.setSeconds(0,0)
 
@@ -5025,6 +5025,33 @@ function run() {
 			templastupdateminute = currentdate.getHours() * 60 + currentdate.getMinutes()
 		}
 	}, 1000)
+
+
+	let lastemailunreadcount;
+	setInterval(async function(){
+		//email
+		if(calendar.settings.connectedgmail){
+			try{
+				const response = await fetch('/getunreademailscount', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				})
+				if(response.status == 200){
+					let data = await response.json()
+					if(data.unreademails && data.unreademails > 0){
+						lastemailunreadcount = data.unreademails
+					}
+				}
+			}catch(err){ console.log(err) }
+
+			if(document.visibilityState == 'visible' && lastemailunreadcount && lastemailunreadcount > 0){
+				submitaimessage('Do I have any unread emails?', false, true)
+			}
+			//here3
+		}
+	}, 60000*5) //every 5 min
 
 
 
@@ -5055,7 +5082,7 @@ function run() {
 				lasttriedsyncgoogleclassroomdate = Date.now()
 				getclientgoogleclassroom()
 			}
-		}, 100)
+		}, 500)
 	}
 	runtick()
 
@@ -14902,7 +14929,7 @@ let aichattemporarydata = {}
 let isgenerating = false
 let isanimating = false
 
-async function submitaimessage(optionalinput, dictated){
+async function submitaimessage(optionalinput, dictated, nousermessage){
 	stopplayingvoice = true
 
 	if(isgenerating || isanimating) return
@@ -14921,11 +14948,13 @@ async function submitaimessage(optionalinput, dictated){
 
 	//chat history
 	let chatinteraction = new ChatInteraction()
-	chatinteraction.addMessage(new ChatMessage({
-		role: 'user',
-		message: userinput,
-		dictated: !!dictated
-	}))
+	if(!nousermessage){
+		chatinteraction.addMessage(new ChatMessage({
+			role: 'user',
+			message: userinput,
+			dictated: !!dictated
+		}))
+	}
 	let responsechatmessage = new ChatMessage({
 		role: 'assistant',
 		message: null,
@@ -15833,7 +15862,7 @@ async function submitaimessage(optionalinput, dictated){
 								phoneNumber = phoneNumber.replace(/[^\d+]/g, '')
 
 								responsechatmessage.message = `Done!`
-								responsechatmessage.link = { url: `sms:${phoneNumber}`, text: `Text ${phoneNumber}` }
+								responsechatmessage.link = { url: `sms:${phoneNumber}?body="${encodeURIComponent(message)}"`, text: `Text ${phoneNumber}` }
 							}else{
 								responsechatmessage.message = `I couldn't catch that, could you please tell me your message.`
 							}
@@ -15858,7 +15887,7 @@ async function submitaimessage(optionalinput, dictated){
 						}else{
 							responsechatmessage.message = `I coulnd't catch that, could you please tell me what link you want to open.`
 						}
-					}else if(command == 'read_emails'){
+					}else if(command == 'get_unread_emails'){
 						let error = arguments?.error
 						if(error){
 							responsechatmessage.message = error
@@ -15875,6 +15904,15 @@ async function submitaimessage(optionalinput, dictated){
 							responsechatmessage.message = message
 						}
 						//here3
+					}else if(command == 'go_to_date_in_calendar'){
+						let date = arguments?.date
+						let [year, month, day] = getDate(date).value
+						if(year != null && month != null && day != null){
+							responsechatmessage.message = `Done! I've scrolled to ${getDMDYText(new Date(year, month, day))} in your calendar.`
+						}else{
+							responsechatmessage.message = `I couldn't catch that, could you please tell me again?`
+						}
+
 					}else{
 						responsechatmessage.message = ((responsechatmessage.message && responsechatmessage.message + '\n') || '') + `This is weird, I could not determine your command. Please click the thumbs down button and try again.`
 					}
