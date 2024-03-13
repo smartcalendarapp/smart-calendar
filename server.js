@@ -5635,23 +5635,23 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						name: 'check_emails',
 					},
 					{
-						name: 'open_link',
-						description: 'Open link at user request',
-						parameters: {
-							type: 'object',
-							properties: {
-								link: { type: 'string', description: 'Link to open' },
-							},
-							required: []
-						}
-					},
-					{
 						name: 'open_mac_app',
 						description: 'Open mac app by URL scheme',
 						parameters: {
 							type: 'object',
 							properties: {
 								scheme: { type: 'string', description: 'URL scheme for the app, example: discord://' },
+							},
+							required: []
+						}
+					},
+					{
+						name: 'open_link',
+						description: 'Open link at user request',
+						parameters: {
+							type: 'object',
+							properties: {
+								link: { type: 'string', description: 'Link to open' },
 							},
 							required: []
 						}
@@ -5695,7 +5695,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'new_emaildraft', 'open_link', 'new_textmessage', 'new_phonecall', 'go_to_date_in_calendar'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'new_emaildraft', 'open_link', 'new_textmessage', 'new_phonecall', 'go_to_date_in_calendar', 'open_mac_app'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
 
