@@ -5619,19 +5619,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			if(user.google_email == 'james.tsaggaris@gmail.com'){
 				allfunctions.push(...[
 					{
-						name: 'new_emaildraft',
-						description: 'Send a person an email at user request',
-						parameters: {
-							type: 'object',
-							properties: {
-								recipient: { type: 'string', description: 'Plain email. If name provided, do format: John Doe <johndoe@example.com>' },
-								subject: { type: 'string', description: 'Subject' },
-								body: { type: 'string', description: 'Body text' },
-							},
-							required: []
-						}
-					},
-					{
 						name: 'check_emails',
 					},
 					{
@@ -5657,29 +5644,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 					},
 					{
-						name: 'new_phonecall',
-						description: 'Call a person at user request',
-						parameters: {
-							type: 'object',
-							properties: {
-								phoneNumber: { type: 'string', description: 'Phone number including country code' },
-							},
-							required: []
-						}
-					},
-					{
-						name: 'new_textmessage',
-						description: 'Text a person at user request',
-						parameters: {
-							type: 'object',
-							properties: {
-								phoneNumber: { type: 'string', description: 'Phone number including country code' },
-								message: { type: 'string', description: 'User provided text message' }
-							},
-							required: []
-						}
-					},
-					{
 						name: 'go_to_date_in_calendar',
 						description: 'Go to date in calendar UI',
 						parameters: {
@@ -5690,12 +5654,25 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							required: []
 						}
 					},
+					{
+						name: 'new_emaildraft',
+						description: 'Send a person an email at user request',
+						parameters: {
+							type: 'object',
+							properties: {
+								recipient: { type: 'string', description: 'Plain email. If name provided, do format: John Doe <johndoe@example.com>' },
+								subject: { type: 'string', description: 'Subject' },
+								body: { type: 'string', description: 'Body text' },
+							},
+							required: []
+						}
+					},
 				])
 			}
 
 
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'new_emaildraft', 'open_link', 'new_textmessage', 'new_phonecall', 'go_to_date_in_calendar', 'open_mac_app'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'new_emaildraft', 'open_link', 'go_to_date_in_calendar', 'open_mac_app'] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
 

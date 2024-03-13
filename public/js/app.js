@@ -15846,29 +15846,6 @@ async function submitaimessage(optionalinput, dictated, nousermessage){
 
 						responsechatmessage.message = `Done!`
 						responsechatmessage.link = { url: `mailto:${recipient}${subject ? `?subject=${encodeURIComponent(subject)}` : ''}${body ? `${subject ? '&' : '?'}body=${encodeURIComponent(body)}` : ''}`, text: 'Draft email' }
-					}else if(command == 'new_phonecall'){
-						let phoneNumber = arguments?.phoneNumber?.replace(/[^\d+]/g, '')
-
-						if(phoneNumber){
-							responsechatmessage.message = `Done!`
-							responsechatmessage.link = { url: `tel:${phoneNumber}`, text: `Call ${phoneNumber}` }
-						}else{
-							responsechatmessage.message = `I couldn't catch that, could you please tell me the phone number again.`
-						}
-					}else if(command == 'new_textmessage'){
-						let phoneNumber = arguments?.phoneNumber?.replace(/[^\d+]/g, '')
-						let message = arguments?.message
-
-						if(phoneNumber){
-							if(message){
-								responsechatmessage.message = `Done!`
-								responsechatmessage.link = { url: `sms:${phoneNumber}?body="${encodeURIComponent(message)}"`, text: `Text ${phoneNumber}` }
-							}else{
-								responsechatmessage.message = `I couldn't catch that, could you please tell me your message.`
-							}
-						}else{
-							responsechatmessage.message = `I couldn't catch that, could you please tell me the phone number again.`
-						}
 					}else if(command == 'open_link'){
 						let link = arguments?.link
 
