@@ -1299,7 +1299,7 @@
 			<div class="display-flex flex-column gap-12px flex-1">
 				<div class="width-full relative display-flex align-center flex-row gap-12px">
 					<div class="display-flex flex-row border-8px background-primary backdrop-blur box-shadow overflow-hidden flex-1 relative">
-						<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea padding-right-0 infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px padding-right-48px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleprompttodotoday">
+						<textarea rows="1" onkeydown="stoprecognition(true, true);if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea padding-right-0 infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px padding-right-48px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleprompttodotoday">
 						</textarea>
 						<span class="inputline"></span>
 					</div>
@@ -1571,7 +1571,7 @@
 
 						<div class="width-full relative display-flex align-center flex-row gap-12px">
 							<div class="display-flex flex-row border-8px background-primary backdrop-blur box-shadow overflow-hidden flex-1 relative">
-								<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea padding-right-0 infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px padding-right-48px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleonboarding">
+								<textarea rows="1" onkeydown="stoprecognition(true, true);if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea padding-right-0 infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px padding-right-48px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitleonboarding">
 								</textarea>
 								<span class="inputline"></span>
 							</div>
@@ -1689,7 +1689,7 @@
 			
 			<div class="flex-shrink-0 transition-duration-100">
 				<div class="border-8px flex-1 bordertertiary display-flex flex-row relative">
-					<input oninput="typeaddevent(event)" onclick="if(gtag){gtag('event', 'button_click', { useraction: 'Focus title - add event' })}" class="infoinput text-16px padding-left-12px padding-top-12px padding-bottom-12px padding-right-0 transparentinput" onkeydown="stoprecognition();if(event.key == 'Enter'){ submitcreateevent(event) }" placeholder="Meeting with Cathy tomorrow 9:00 1 hour" autocomplete="off" maxlength="2000" id="createeventtitle"></input>
+					<input oninput="typeaddevent(event)" onclick="if(gtag){gtag('event', 'button_click', { useraction: 'Focus title - add event' })}" class="infoinput text-16px padding-left-12px padding-top-12px padding-bottom-12px padding-right-0 transparentinput" onkeydown="stoprecognition(true, true);if(event.key == 'Enter'){ submitcreateevent(event) }" placeholder="Meeting with Cathy tomorrow 9:00 1 hour" autocomplete="off" maxlength="2000" id="createeventtitle"></input>
 					<span class="inputlinewrap">
 						<span class="inputline"></span>
 					</span>
@@ -2713,7 +2713,7 @@
 
 
 								<!-- input -->
-								<textarea rows="1" onkeydown="stoprecognition();if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea padding-right-0 infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px padding-right-48px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle">
+								<textarea rows="1" onkeydown="stoprecognition(true, true);if(event.key == 'Enter' && !event.shiftKey){ event.preventDefault();submitcreatetodo(event) }" oninput="typeaddtask(event);resizeaddtask();" onclick="clicktypeaddtask(event);readinteractivetourpopup('clickaddtask')" class="createtodotextarea padding-right-0 infoinput addtaskplaceholder text-16px padding-top-12px padding-bottom-12px padding-left-12px padding-right-48px transparentinput popupbutton" placeholder="Work on project due tomorrow 6pm" autocomplete="off" id="todoinputtitle">
 								</textarea>
 								<span class="inputlinewrap">
 									<span class="inputline"></span>
