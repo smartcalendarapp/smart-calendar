@@ -5632,6 +5632,31 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 					},
 					{
+						name: 'check_emails',
+					},
+					{
+						name: 'open_link',
+						description: 'Open link at user request',
+						parameters: {
+							type: 'object',
+							properties: {
+								link: { type: 'string', description: 'Link to open' },
+							},
+							required: []
+						}
+					},
+					{
+						name: 'open_mac_app',
+						description: 'Open mac app by URL scheme',
+						parameters: {
+							type: 'object',
+							properties: {
+								scheme: { type: 'string', description: 'URL scheme for the app, example: discord://' },
+							},
+							required: []
+						}
+					},
+					{
 						name: 'new_phonecall',
 						description: 'Call a person at user request',
 						parameters: {
@@ -5653,20 +5678,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							required: []
 						}
-					},
-					{
-						name: 'open_link',
-						description: 'Open link at user request',
-						parameters: {
-							type: 'object',
-							properties: {
-								link: { type: 'string', description: 'Link to open' },
-							},
-							required: []
-						}
-					},
-					{
-						name: 'check_emails',
 					},
 					{
 						name: 'go_to_date_in_calendar',

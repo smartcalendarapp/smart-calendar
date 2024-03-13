@@ -13773,9 +13773,8 @@ function openaichat(){
 		
 		const tempoptions = [`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What is on my agenda for today?')">What's on my agenda today?</div>`,
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me create an event')">Help me create an event</div>`, 
-		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="addaiassistantinputwithnextaction('Create a weekly recurring event for ')">Create a weekly recurring event for...</div>`,
-		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`,
-		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What are my tasks for today?')">What are my tasks for today?</div>`]
+		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What are my tasks for today?')">What are my tasks for today?</div>`,
+		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`]
 
 		responsechatmessage.nextactions = [...getRandomItems(tempoptions, 3), `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('Help', 'Hey! Here are all my abilities:\\n\\n**Events**:\\n- Create event\\n- Modify event time, duration, color, recurrence\\n- Delete event\\n- Scroll to a specific date in calendar\\n\\n**Tasks**:\\n- Create, modify, delete task\\n\\n**Coming soon**:\\n\- Read your emails\\n- Draft emails\\n- Search the web\\n\\nAlso, you can use dictation to talk to me. I\\'m here to listen.')">Help</div>`]
 
@@ -15878,6 +15877,15 @@ async function submitaimessage(optionalinput, dictated, nousermessage){
 							responsechatmessage.link = { url: link, text: 'Open link' }
 						}else{
 							responsechatmessage.message = `I couldn't catch that, could you please tell me what link you want to open.`
+						}
+					}else if(command == 'open_mac_app'){
+						let scheme = arguments?.scheme
+
+						if(scheme){
+							responsechatmessage.message = `Done!`
+							responsechatmessage.link = { url: scheme, text: 'Open app' }
+						}else{
+							responsechatmessage.message = `I couldn't catch that, could you please tell me what app you want to open.`
 						}
 					}else if(command == 'check_emails'){
 						let error = arguments?.error
