@@ -6156,8 +6156,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		const emaillinkmap = {}
 		let emaillinkcounter = 1
 		function getshortenedlink(link){
-			const chars = 'abcdefghijklmnopqrstuvwxyz'.toUpperCase().split('')
-			let newkey = `{link${chars[emaillinkcounter]}`
+			let newkey = `{link${emaillinkcounter < 10 ? `0${emaillinkcounter}` : emaillinkcounter}}`
 			emaillinkmap[newkey] = link
 			emaillinkcounter++
 
