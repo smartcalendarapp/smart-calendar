@@ -4009,7 +4009,7 @@ let calendarday = new Date().getDate()
 let calendar = new Calendar()
 
 let eventinfo = getElement('eventinfo')
-eventinfo.style.left = (window.innerWidth - eventinfo.offsetWidth - 120) + 'px'
+eventinfo.style.left = ((window.innerWidth || document.body.clientWidth) - eventinfo.offsetWidth - 120) + 'px'
 eventinfo.style.top = '120px'
 
 //load data
@@ -15890,6 +15890,9 @@ async function submitaimessage(optionalinput, dictated, nousermessage){
 							calendaryear = year
 							calendarmonth = month
 							calendarday = day
+							if(mobilescreen){
+								calendartabs = [0]
+							}
 							calendar.updateTabs()
 
 							responsechatmessage.message = `Done! I've scrolled to ${getDMDYText(new Date(year, month, day))} in your calendar.`
