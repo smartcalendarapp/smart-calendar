@@ -14688,9 +14688,11 @@ function markdowntoHTML(markdown, role) {
 
 
 	//links
-	markdown = markdown.replace(/\[(.*?)\]\((.*?)\)/gim, `<a href='$2' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$1</a>`);
+	markdown = markdown.replace(/\[(.*?)\]\((.*?)\)/gim, function(match, text, url) {
+        return `<a href='${url}' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    });
 
-    markdown = markdown.replace(/(?<!\]\(|href="|href='|src='|src=")http(s)?:\/\/[^\s]+(?!\))/gim, `<a href='$&' class="text-blue text-decoration-none hover:text-decoration-underline" target="_blank" rel="noopener noreferrer">$&</a>`)
+    markdown = markdown.replace(/(?<!\]\(|href="|href='|src="|src=')https?:\/\/\S+(?![^<]*>)/gim, "<a href='$&' class='text-blue text-decoration-none hover:text-decoration-underline' target='_blank' rel='noopener noreferrer'>$&</a>");
 
     markdown = markdown
         .replace(/^### (.*$)/gim, '<h3>$1</h3>')
@@ -15875,7 +15877,8 @@ async function submitaimessage(optionalinput, dictated, nousermessage){
 						let message = arguments?.message
 						if(message){
 							for(let [key, value] of Object.entries(emaillinkmap)){
-								message = message.replace(new RegExp(`${key}|${key.replace(/\{/gmi, '[').replace(/\}/gmi, ']')}|${key.replace(/\{|\}/gmi, '')}`, 'gmi'), value)
+								console.log(message, key, value)
+								message = message.replace(new RegExp(`${key}|${key.replace(/\{|\}/gmi, '')}`, 'gmi'), value)
 							}
 
 							responsechatmessage.message = message
