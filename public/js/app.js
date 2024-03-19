@@ -16080,10 +16080,13 @@ function updateitemreminders() {
 	}
 
 	let remindmeapplytoall = getElement('remindmeapplytoall')
-	let tempcal = calendar.calendars.find(g =>g.id == item.calendarid)
-	if(!tempcal.isprimary){
-		remindmeapplytoall.innerHTML = `<div></div><div class="background-blue text-white pointer transition-duration-100 padding-top-4px padding-bottom-4px padding-left-8px padding-right-8px border-round text-12px" onclick="applyremindertoall('${item.id}','${tempcal.id}')">Apply to all events</div>
-		<div class="text-primary text-12px break-word white-space-normal">in "${Calendar.Calendar.getTitle(tempcal)}"</div>`
+	let tempcal = Calendar.Event.getCalendar(item)
+	if(!tempcal?.isprimary){
+		remindmeapplytoall.innerHTML = `
+		<div class="bordertop padding-top-12px align-center padding-bottom-12px display-flex flex-column gap-6px">
+			<div class="width-fit background-blue text-white pointer transition-duration-100 padding-top-4px hover:background-blue-hover padding-bottom-4px padding-left-6px padding-right-6px border-8px text-14px" onclick="applyremindertoall('${item.id}','${tempcal.id}')">Apply to all events</div>
+			<div class="text-primary text-14px break-word white-space-normal">in "${Calendar.Calendar.getTitle(tempcal)}"</div>
+		</div>`
 	}else{
 		remindmeapplytoall.innerHTML = ''
 	}
@@ -16102,6 +16105,9 @@ function applyremindertoall(itemid, calendarid){
 
 	calendar.updateHistory()
 	calendar.updateEvents()
+
+	let remindmemenu = getElement('remindmemenu')
+	remindmemenu.classList.add('hiddenpopup')
 }
 
 
