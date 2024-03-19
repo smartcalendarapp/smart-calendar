@@ -5943,11 +5943,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						//later can store a reference ID to fetch email later
 						//e.g. when return read email command, add a email_id param
 
-						//and have list of latest emails, and ability to open already reademails
-						//current function becomes: read first unread
+						//and have list of latest 10-20 emails, and ability to open already read emails by ID
 						//and maybe every 5m check for unread emails
-
-						//make search web use actual ability
 
 
 						//CALENDAR context

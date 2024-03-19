@@ -16082,7 +16082,7 @@ function updateitemreminders() {
 	let remindmeapplytoall = getElement('remindmeapplytoall')
 	let tempcal = calendar.calendars.find(g =>g.id == item.calendarid)
 	if(!tempcal.isprimary){
-		remindmeapplytoall.innerHTML = `<div class="background-blue text-white pointer transition-duration-100 padding-top-4px padding-bottom-4px padding-left-8px padding-right-8px border-round text-12px" onclick="applyremindertoall('${item.id}','${tempcal.id}')">Apply to all events</div>
+		remindmeapplytoall.innerHTML = `<div></div><div class="background-blue text-white pointer transition-duration-100 padding-top-4px padding-bottom-4px padding-left-8px padding-right-8px border-round text-12px" onclick="applyremindertoall('${item.id}','${tempcal.id}')">Apply to all events</div>
 		<div class="text-primary text-12px break-word white-space-normal">in "${Calendar.Calendar.getTitle(tempcal)}"</div>`
 	}else{
 		remindmeapplytoall.innerHTML = ''
