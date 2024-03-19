@@ -916,7 +916,7 @@ class Calendar {
 
 
 	static Event = class {
-		constructor(startyear, startmonth, startday, startminute, endyear, endmonth, endday, endminute, title = '', notes = '', type = 0) {
+		constructor(startyear, startmonth, startday, startminute, endyear, endmonth, endday, endminute, title = '', notes = '', type = 0, isusercreated) {
 
 			this.start = {
 				year: startyear,
@@ -981,15 +981,18 @@ class Calendar {
 			this.autoschedulelocked = false
 
 			this.reminder = []
-			let tempstart = new Date(this.start.year, this.start.month, this.start.day, 0, this.start.minute)
-			if(tempstart.getTime() - Date.now() > 86400000 * 7 && !Calendar.Event.isAllDay(this)){
-				this.reminder.push({ timebefore: 86400000 })
-				this.reminder.push({ timebefore: 3600000 })
-			}else if((tempstart.getFullYear() != new Date().getFullYear() || tempstart.getMonth() != new Date().getMonth() || tempstart.getDate() != new Date().getDate()) && !Calendar.Event.isAllDay(this)){
-				this.reminder.push({ timebefore: 900000 })
-			}else{
-				this.reminder.push({ timebefore: 0 })
+			if(isusercreated){
+				let tempstart = new Date(this.start.year, this.start.month, this.start.day, 0, this.start.minute)
+				if(tempstart.getTime() - Date.now() > 86400000 * 7 && !Calendar.Event.isAllDay(this)){
+					this.reminder.push({ timebefore: 86400000 })
+					this.reminder.push({ timebefore: 3600000 })
+				}else if((tempstart.getFullYear() != new Date().getFullYear() || tempstart.getMonth() != new Date().getMonth() || tempstart.getDate() != new Date().getDate()) && !Calendar.Event.isAllDay(this)){
+					this.reminder.push({ timebefore: 900000 })
+				}else{
+					this.reminder.push({ timebefore: 0 })
+				}
 			}
+
 		}
 
 		static getTitle(item){
@@ -6816,7 +6819,7 @@ function dblclickdayeventbox(event, timestamp) {
 	let nextdate = new Date(tempdate)
 	nextdate.setDate(nextdate.getDate() + 1)
 
-	let item = new Calendar.Event(tempdate.getFullYear(), tempdate.getMonth(), tempdate.getDate(), 0, nextdate.getFullYear(), nextdate.getMonth(), nextdate.getDate(), 0)
+	let item = new Calendar.Event(tempdate.getFullYear(), tempdate.getMonth(), tempdate.getDate(), 0, nextdate.getFullYear(), nextdate.getMonth(), nextdate.getDate(), 0, undefined, undefined, undefined, true)
 	calendar.events.push(item)
 
 	selectedeventid = item.id
@@ -6993,7 +6996,7 @@ function dblclickmontharea(event, timestamp) {
 
 	let tempdate = new Date(timestamp)
 
-	let item = new Calendar.Event(tempdate.getFullYear(), tempdate.getMonth(), tempdate.getDate(), minutes, tempdate.getFullYear(), tempdate.getMonth(), tempdate.getDate(), minutes + 60)
+	let item = new Calendar.Event(tempdate.getFullYear(), tempdate.getMonth(), tempdate.getDate(), minutes, tempdate.getFullYear(), tempdate.getMonth(), tempdate.getDate(), minutes + 60, undefined, undefined, undefined, true)
 	calendar.events.push(item)
 
 	selectedeventid = item.id
@@ -9612,7 +9615,7 @@ function submitcreateevent(event) {
 	let tempenddate = new Date(createeventendvalue.year, createeventendvalue.month, createeventendvalue.day, 0, createeventendvalue.minute)
 
 	if (!isNaN(tempstartdate.getTime()) && !isNaN(tempenddate.getTime())) {
-		let item = new Calendar.Event(tempstartdate.getFullYear(), tempstartdate.getMonth(), tempstartdate.getDate(), tempstartdate.getHours() * 60 + tempstartdate.getMinutes(), tempenddate.getFullYear(), tempenddate.getMonth(), tempenddate.getDate(), tempenddate.getHours() * 60 + tempenddate.getMinutes(), title)
+		let item = new Calendar.Event(tempstartdate.getFullYear(), tempstartdate.getMonth(), tempstartdate.getDate(), tempstartdate.getHours() * 60 + tempstartdate.getMinutes(), tempenddate.getFullYear(), tempenddate.getMonth(), tempenddate.getDate(), tempenddate.getHours() * 60 + tempenddate.getMinutes(), title, undefined, undefined, true)
 		calendar.events.push(item)
 
 		calendaryear = tempstartdate.getFullYear()
@@ -13127,7 +13130,7 @@ function geteventfromtodo(item) {
 	let enddate = new Date(startdate.getTime())
 	enddate.setMinutes(enddate.getMinutes() + item.duration)
 
-	let newitem = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), item.title, item.notes, 1)
+	let newitem = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), item.title, item.notes, 1, true)
 	
 	newitem.endbefore.year = endbeforeyear
 	newitem.endbefore.month = endbeforemonth
@@ -15154,7 +15157,7 @@ async function submitaimessage(optionalinput, dictated, nousermessage){
 
 
 							if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
-								let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title)
+								let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title, undefined, true)
 
 								if(hexcolor && new RegExp(/^#([0-9a-fA-F]{6})$/).test(hexcolor)){
 									item.hexcolor = hexcolor
@@ -15877,7 +15880,6 @@ async function submitaimessage(optionalinput, dictated, nousermessage){
 						let message = arguments?.message
 						if(message){
 							for(let [key, value] of Object.entries(emaillinkmap)){
-								console.log(message, key, value)
 								message = message.replace(new RegExp(`${key}|${key.replace(/\{|\}/gmi, '')}`, 'gmi'), value)
 							}
 
@@ -16076,7 +16078,32 @@ function updateitemreminders() {
 	for (let [index, div] of Object.entries(remindmetime.children)) {
 		div.children[0].innerHTML = getcheck(isselectedreminder(index))
 	}
+
+	let remindmeapplytoall = getElement('remindmeapplytoall')
+	let tempcal = calendar.calendars.find(g =>g.id == item.calendarid)
+	if(!tempcal.isprimary){
+		remindmeapplytoall.innerHTML = `<div class="background-blue text-white pointer transition-duration-100 padding-top-4px padding-bottom-4px padding-left-8px padding-right-8px border-round text-12px" onclick="applyremindertoall('${item.id}','${tempcal.id}')">Apply to all events</div>
+		<div class="text-primary text-12px break-word white-space-normal">in "${Calendar.Calendar.getTitle(tempcal)}"</div>`
+	}else{
+		remindmeapplytoall.innerHTML = ''
+	}
 }
+function applyremindertoall(itemid, calendarid){
+	let item = calendar.events.find(d => d.id == itemid)
+	let tempcal = calendar.calendars.find(d => d.id == calendarid)
+	if(!item || !tempcal) return
+
+	let copyreminder = deepCopy(item.reminder)
+
+	let myevents = calendar.events.filter(d => d.calendarid == tempcal.id)
+	for(let tempevent of myevents){
+		tempevent.reminder = copyreminder
+	}
+
+	calendar.updateHistory()
+	calendar.updateEvents()
+}
+
 
 
 //get border data
@@ -19367,7 +19394,7 @@ function dblclickboxcolumn(event, timestamp) {
 
 	let tempdate = new Date(timestamp)
 
-	let item = new Calendar.Event(tempdate.getFullYear(), tempdate.getMonth(), tempdate.getDate(), relativey, tempdate.getFullYear(), tempdate.getMonth(), tempdate.getDate(), relativey + 60)
+	let item = new Calendar.Event(tempdate.getFullYear(), tempdate.getMonth(), tempdate.getDate(), relativey, tempdate.getFullYear(), tempdate.getMonth(), tempdate.getDate(), relativey + 60, undefined, undefined, undefined, true)
 	calendar.events.push(item)
 
 	selectedeventid = item.id
@@ -19421,7 +19448,7 @@ function moveboxcolumn(event) {
 
 		let tempdate = new Date(selectedeventfromdate.getTime())
 
-		let item = new Calendar.Event(tempdate.getFullYear(), tempdate.getMonth(), tempdate.getDate(), relativey, tempdate.getFullYear(), tempdate.getMonth(), tempdate.getDate(), relativey + 15)
+		let item = new Calendar.Event(tempdate.getFullYear(), tempdate.getMonth(), tempdate.getDate(), relativey, tempdate.getFullYear(), tempdate.getMonth(), tempdate.getDate(), relativey + 15, undefined, undefined, undefined, true)
 		calendar.events.push(item)
 
 		selectedeventid = item.id
