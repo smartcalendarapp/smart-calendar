@@ -5160,6 +5160,12 @@ function run() {
 
 		try{
 			await aiassistantaudio.play()
+
+			if(mobilescreen){ //ios dont interrupt music
+				aiassistantaudio.pause()
+				aiassistantaudio.src = ''
+				aiassistantaudio.load()
+			}
 		}catch(err){}
 
 		window.removeEventListener('mousedown', clickforaiassistantaudio, false)
@@ -12706,6 +12712,11 @@ async function playsound(name){
 	
 	try{
 		await sounddiv.play()
+		if(mobilescreen){
+			sounddiv.pause()
+			sounddiv.src = ''
+			sounddiv.load()
+		}
 	}catch(e){}
 }
 
