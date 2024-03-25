@@ -2585,6 +2585,10 @@ max-width:1000px;
 	background: linear-gradient(to top right, #0d9035, #0fae49);
 }
 
+.upgradegradient{
+	background: linear-gradient(to top right, #e956ec, #fbb046);
+}
+
 .modeoptionbutton:hover {
 	background-color: var(--background-tint-1);
 }

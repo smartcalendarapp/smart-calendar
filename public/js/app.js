@@ -2903,7 +2903,7 @@ class Calendar {
 
 		if(calendar.closedupgradepopup == false && showupgradepopup){
 			output.push`
-			<div class="relative display-flex gap-12px align-center feedbackgradient border-16px padding-24px flex-column">
+			<div class="relative display-flex gap-12px align-center upgradegradient border-16px padding-24px flex-column">
 				<div class="absolute top-0 right-0 margin-12px infotoprightgroup">
 					<div class="infotopright pointer" onclick="closeupgradebanner()">
 						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
