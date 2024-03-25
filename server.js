@@ -2375,6 +2375,7 @@ app.get('/login', async (req, res, next) => {
 
 app.get('/edu', async (req, res, next) => {
 	try{
+		//stat
 		const STATISTIC = `coldemailclicks-2-2024`
 		let statistic = await getstatistic(STATISTIC)
 		if(!statistic){
@@ -2386,6 +2387,7 @@ app.get('/edu', async (req, res, next) => {
 		}
 		statistic.timestamps.push(Date.now())
 		await setstatistic(statistic)
+
 
 		if(!req.session.user){
 			req.session.user = {}
@@ -3393,6 +3395,7 @@ app.post('/signup', async (req, res, next) => {
 async function managecustomfrom(req, userid){
 	try{
 		if(req.session.user?.customfrom == 'edu'){
+			//stat
 			const STATISTIC = `coldemailsignups-2-2024`
 			let statistic = await getstatistic(STATISTIC)
 			if(!statistic){
@@ -4325,6 +4328,21 @@ async function validatereferafriendinvitecode(req){
 		existinginviteobject.pending.push({ userid: req.session.user.userid, logindata: getLoginData(req) })
 		await setreferafriendinvitelinkobject(existinginviteobject)
 	}
+
+
+	//stat
+	const STATISTIC = `referralsignups-3-2024`
+	let statistic = await getstatistic(STATISTIC)
+	if(!statistic){
+		statistic = { id: STATISTIC }
+	}
+	statistic.value = (statistic.value || 0) + 1
+	if(!statistic.userids){
+		statistic.userids = []
+	}
+	statistic.userids.push(req.session.user.userid)
+	await setstatistic(statistic)
+
 
 	//get inviter
 	let inviteuser = await getUserById(existinginviteobject.userid)
