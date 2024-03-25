@@ -2901,6 +2901,29 @@ class Calendar {
 	updateTodoList() {
 		let output = []
 
+		if(calendar.closedupgradepopup == false && showupgradepopup){
+			output.push`
+			<div class="relative display-flex gap-12px align-center feedbackgradient border-16px padding-24px flex-column">
+				<div class="absolute top-0 right-0 margin-12px infotoprightgroup">
+					<div class="infotopright pointer" onclick="closeupgradebanner()">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite">
+						<g>
+						<g opacity="1">
+						<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+						<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+						</g>
+						</g>
+						</svg>
+					</div>
+				</div>
+
+				<div class="text-24px text-bold text-white text-center">Get free premium</div>
+				<div class="text-16px text-white">Hey Smart Calendar user,<br><br>We've just released a new premium version of the app, with increased AI chat messages, improved abilities, and more!</div>
+
+				<div class="transition-duration-100 text-bold text-14px border-round regularwhitebutton padding-8px-16px pointer" onclick="clicktab([5]);closeupgradebanner()">Upgrade</div>
+			</div>`
+		}
+		
 		if(calendar.closedfeedbackpopup == false && showfeedbackpopup){
 			output.push`
 			<div class="relative display-flex gap-12px align-center feedbackgradient border-16px padding-24px flex-column">
@@ -3971,6 +3994,7 @@ let oldautoscheduleeventslist = []
 let newautoscheduleeventslist = []
 let showsocialmediapopup = false;
 let showfeedbackpopup = false;
+let showupgradepopup = false;
 
 //new calendar
 let calendarmode = 1
@@ -4399,7 +4423,11 @@ function updatetime() {
 
 	//show feedback
 	if(Date.now() - clientinfo.createddate > 1000*86400 && calendar.onboarding.finished == true && calendar.todos.length > 0){
-		showfeedbackpopup = true
+		//showfeedbackpopup = true
+	}
+
+	if(calendar.onboarding.finished == true && (calendar.todos.length > 0 || chathistory?.interactions?.length > 0)){
+		showupgradepopup = true
 	}
 }
 
@@ -5160,12 +5188,6 @@ function run() {
 
 		try{
 			await aiassistantaudio.play()
-
-			if(mobilescreen){ //ios dont interrupt music
-				aiassistantaudio.pause()
-				aiassistantaudio.src = ''
-				aiassistantaudio.load()
-			}
 		}catch(err){}
 
 		window.removeEventListener('mousedown', clickforaiassistantaudio, false)
@@ -8902,6 +8924,11 @@ function closefeedbackpopup(){
 
 function closefeedbackbanner(){
 	calendar.closedfeedbackpopup = true
+	calendar.updateTodo()
+}
+
+function closeupgradebanner(){
+	calendar.closedupgradepopup = true
 	calendar.updateTodo()
 }
 
@@ -12712,11 +12739,6 @@ async function playsound(name){
 	
 	try{
 		await sounddiv.play()
-		if(mobilescreen){
-			sounddiv.pause()
-			sounddiv.src = ''
-			sounddiv.load()
-		}
 	}catch(e){}
 }
 
@@ -14680,6 +14702,7 @@ async function sendfeedbackaichatmessage(rating){
 		
 	}catch(err){
 	}
+
 }
 
 function markdowntoHTML(markdown, role) {

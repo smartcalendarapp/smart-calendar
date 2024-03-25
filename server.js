@@ -530,7 +530,7 @@ class User{
 }
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
-const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, connectedgmail: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true, importantupdates: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, choosecalendars: false, eventreminders: false, sleeptime: false, addtask: false, finished: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, lastprompteveningsummarydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false, recognitionlanguage: 'en-US', recognitionalwaysonenabled: true, lastgottasksuggestion: 0, lastgotsubtasksuggestion: 0 }
+const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, connectedgmail: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true, importantupdates: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, choosecalendars: false, eventreminders: false, sleeptime: false, addtask: false, finished: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, lastprompteveningsummarydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false, closedupgradepopup: false, recognitionlanguage: 'en-US', recognitionalwaysonenabled: true, lastgottasksuggestion: 0, lastgotsubtasksuggestion: 0 }
 const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, logindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], gptvoiceusedtimestamps: [], betatester: false, haspremium: false, premium: { referafriendclaimvalue: 0, starttimestamp: null, endtimestamp: null }, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
 const MODELEVENT = { start: {}, end: {}, endbefore: {}, startafter: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0, parentid: null, subtasksuggestions: [], gotsubtasksuggestions: false, iseventsuggestion: false, goteventsuggestion: false, autoschedulelocked: false }
 const MODELTODO = { endbefore: {}, startafter: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false, issuggestion: false }
@@ -1641,6 +1641,7 @@ app.use(express.static(path.join(__dirname, 'public', 'blog', 'css')))
 app.use(express.static(path.join(__dirname, 'public', 'blog', 'js')))
 
 app.use((req, res, next) => {
+
   if (req.path.endsWith('.html')) {
     const newUrl = req.path.slice(0, -5)
     res.redirect(301, newUrl)
@@ -3891,7 +3892,7 @@ app.post('/dev', async (req, res) => {
 				console.error(error)
 			}
 
-			return allitems.length > 0 && allitems.find(d => d.pending.length > 0) ? allitems.filter(d => d.pending.length > 0).map(d => `Invite code: ${d.invitelink}\nInvite user ID: ${d.userid}\nInvite date: ${getlocaldate(d.logindata?.timestamp)}\nInvite IP: ${d.logindata?.ip}\nInvite user agent: ${d.logindata?.useragent}\nInvite IOS app: ${d.logindata?.iosapp}\nInvite Hotjar ID: ${d.logindata?.hotjarid}\n\nAccepted: ${d.accepted?.length}\nRejected: ${d.rejected?.length}\n\n\nPending:\n\n${d.pending?.map(f => `User ID: ${f.userid}\nDate: ${getlocaldate(f.logindata?.timestamp)}\nIP: ${f.logindata?.ip}\nUser agent: ${f.logindata?.useragent}\nIOS app: ${f.logindata?.iosapp}\nHotjar ID: ${f.logindata?.hotjarid}\nTo accept: <span class="inlinecode">await acceptreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo reject: <span class="inlinecode">await rejectreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo whitelist: <span class="inlinecode">await setwhitelistreferafriendinvitecode('${d.invitelink}', true)</span>`).join('\n\n')}`).join('\n\n\n') : 'None'
+			return allitems.length > 0 && allitems.find(d => d.pending.length > 0) ? allitems.filter(d => d.pending.length > 0).map(d => `Invite code: ${d.invitelink}\nInvite user ID: ${d.userid}\nInvite date: ${getlocaldate(d.logindata?.timestamp)}\nInvite IP: ${d.logindata?.ip}\nInvite user agent: ${d.logindata?.useragent}\nInvite IOS app: ${d.logindata?.iosapp}\nInvite Hotjar ID: ${d.logindata?.hotjarid}\n\nAccepted: ${d.accepted?.length}\nRejected: ${d.rejected?.length}\n\n\nPending:\n\n${d.pending?.map(f => `User ID: ${f.userid}\nDate: ${getlocaldate(f.logindata?.timestamp)}\nIP: ${f.logindata?.ip}\nUser agent: ${f.logindata?.useragent}\nIOS app: ${f.logindata?.iosapp}\nHotjar ID: ${f.logindata?.hotjarid}\nTo accept: <span class="inlinecode">await acceptreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo reject: <span class="inlinecode">await rejectreferafriendinvitecode('${d.invitelink}', '${f.userid}')</span>\nTo blacklist: <span class="inlinecode">await setblacklistreferafriendinvitecode('${d.invitelink}', true)</span>`).join('\n\n')}`).join('\n\n\n') : 'None'
 		}
 		
 		async function getstats(){
@@ -3941,7 +3942,7 @@ app.post('/dev', async (req, res) => {
 		}
 
 		async function help(){
-			return `<span class="inlinecode">addbetatester(userid or email)</span>\n\n<span class="inlinecode">getuserinfo(userid or email)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">whitelistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>\n<span class="inlinecode">getstatistics()</span>\n\n<span class="inlinecode">displaychat(conversationid)</span>\n<span class="inlinecode">displayallchats()</span>\n<span class="inlinecode">flagchat(conversationid)</span>\n\n<span class="inlinecode">displayfeedback(id)</span>\n<span class="inlinecode">displayallfeedback()</span>\n<span class="inlinecode">flagfeedback(id)</span>`
+			return `<span class="inlinecode">addbetatester(userid or email)</span>\n\n<span class="inlinecode">getuserinfo(userid or email)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">blacklistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>\n<span class="inlinecode">getstatistics()</span>\n\n<span class="inlinecode">displaychat(conversationid)</span>\n<span class="inlinecode">displayallchats()</span>\n<span class="inlinecode">flagchat(conversationid)</span>\n\n<span class="inlinecode">displayfeedback(id)</span>\n<span class="inlinecode">displayallfeedback()</span>\n<span class="inlinecode">flagfeedback(id)</span>`
 		}
 
 		async function getstatistics(){
@@ -4309,14 +4310,14 @@ async function validatereferafriendinvitecode(req){
 	let existinginviteobject = await getreferafriendinvitelinkobject(referafriendinvitecode)
 	if(!existinginviteobject) return false
 
-	if(existinginviteobject.whitelisted == true){
+	if(!existinginviteobject.blacklisted){ //default accept
 		//return if already in accepted
 		if(existinginviteobject.accepted.find(d => d.userid == req.session.user.userid)) return false
 
 		//save invite db object accepted
 		existinginviteobject.accepted.push({ userid: req.session.user.userid, logindata: getLoginData(req) })
 		await setreferafriendinvitelinkobject(existinginviteobject)
-	}else{
+	}else{ //need manual verify, add to pending
 		//return if already in pending
 		if(existinginviteobject.pending.find(d => d.userid == req.session.user.userid)) return false
 
@@ -4424,14 +4425,14 @@ async function acceptreferafriendinvitecode(invitecode, userid){
 	return true
 }
 
-async function setwhitelistreferafriendinvitecode(invitecode, bool){
+async function setblacklistreferafriendinvitecode(invitecode, bool){
 	invitecode = invitecode.toLowerCase()
 
 	//get invite db object
 	let existinginviteobject = await getreferafriendinvitelinkobject(invitecode)
 	if(!existinginviteobject) return false
 
-	existinginviteobject.whitelisted = bool
+	existinginviteobject.blacklisted = bool
 
 	await setreferafriendinvitelinkobject(existinginviteobject)
 }
@@ -4459,7 +4460,7 @@ async function rejectreferafriendinvitecode(invitecode, userid){
 	existinginviteobject.rejected.push(tempitem)
 	existinginviteobject.pending = existinginviteobject.pending.filter(d => d.userid != userid)
 
-	existinginviteobject.whitelisted = false
+	existinginviteobject.blacklisted = false
 
 	//save invite db object
 	await setreferafriendinvitelinkobject(existinginviteobject)
@@ -4535,7 +4536,7 @@ app.post('/generatereferafriendinvitelink', async (req, res) => {
 				accepted: [],
 				pending: [],
 				rejected: [],
-				whitelisted: false,
+				blacklisted: false,
 				emailinvited: [],
 				logindata: getLoginData(req),
 			}
