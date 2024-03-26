@@ -4426,7 +4426,7 @@ function updatetime() {
 		//showfeedbackpopup = true
 	}
 
-	if(calendar.onboarding.finished == true && (calendar.todos.length > 0 || chathistory?.interactions?.length > 0)){
+	if(calendar.onboarding.finished == true && (calendar.todos.length > 0 || chathistory?.interactions?.length > 1)){
 		showupgradepopup = true
 	}
 }
