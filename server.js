@@ -4361,7 +4361,7 @@ function checkreferafriendpremium(user){
 		if(user.accountdata.premium.referafriendclaimvalue < 3){
 			user.accountdata.premium.referafriendclaimvalue = 3
 
-			if(!user.accountdata.premium.endtimestamp || user.accountdata.premium.starttimestamp || user.accountdata.premium.endtimestamp < Date.now()){
+			if((!user.accountdata.premium.endtimestamp && user.accountdata.premium.starttimestamp) || user.accountdata.premium.endtimestamp < Date.now()){
 				//start new
 				user.accountdata.premium.starttimestamp = Date.now()
 				user.accountdata.premium.endtimestamp = Date.now() + 86400*1000*180 //6 months
@@ -4374,7 +4374,7 @@ function checkreferafriendpremium(user){
 		if(user.accountdata.premium.referafriendclaimvalue < 2){
 			user.accountdata.premium.referafriendclaimvalue = 2
 
-			if(!user.accountdata.premium.endtimestamp || user.accountdata.premium.starttimestamp || user.accountdata.premium.endtimestamp < Date.now()){
+			if((!user.accountdata.premium.endtimestamp && !user.accountdata.premium.starttimestamp) || user.accountdata.premium.endtimestamp < Date.now()){
 				//start new
 				user.accountdata.premium.starttimestamp = Date.now()
 				user.accountdata.premium.endtimestamp = Date.now() + 86400*1000*60 //2 months
@@ -4387,7 +4387,7 @@ function checkreferafriendpremium(user){
 		if(user.accountdata.premium.referafriendclaimvalue < 1){
 			user.accountdata.premium.referafriendclaimvalue = 1
 			
-			if(!user.accountdata.premium.endtimestamp || user.accountdata.premium.starttimestamp || user.accountdata.premium.endtimestamp < Date.now()){
+			if((!user.accountdata.premium.endtimestamp && !user.accountdata.premium.starttimestamp) || user.accountdata.premium.endtimestamp < Date.now()){
 				//start new
 				user.accountdata.premium.starttimestamp = Date.now()
 				user.accountdata.premium.endtimestamp = Date.now() + 86400*1000*30 //1 month

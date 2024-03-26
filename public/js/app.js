@@ -13484,6 +13484,7 @@ async function referafriendgeneratelink(generate){
 
 
 			if(oldhaspremium != clientinfo.haspremium || (oldpremiumendtimestamp && clientinfo.premiumendtimestamp && clientinfo.premiumendtimestamp > oldpremiumendtimestamp)){
+				calendar.updateUpgrade()
 
 				function getRoundedYMWDtext(input) {
 					let temp = Math.abs(input)
@@ -13511,7 +13512,7 @@ async function referafriendgeneratelink(generate){
 
 				displaypopup(`
 				<div class="text-18px text-primary text-center">Congrats!!</div>
-				<div class="text-16px text-primary">You have been granted ${getRoundedYMWDtext(Math.ceil(Date.now() - clientinfo?.premiumendtimestamp)/60000)} of free premium! See what you can do now:</div>
+				<div class="text-16px text-primary">You got ${getRoundedYMWDtext(Math.ceil(Date.now() - clientinfo?.premiumendtimestamp)/60000)} of free premium! See what you can do now:</div>
 				<div class="text-16px text-quaternary">${markdowntoHTML(`- Increased AI chat: send up to 100 messages to our AI Assistant Athena every day.\n- Enhanced Personal Assistant: Athena will have more capabilities, and will provide you daily briefings, suggestions to complete your tasks, and more productivity help.\n- Early access to new features: you'll be the first to see our new exciting features and use them for your productivity.`, 'assistant')}</div>
 				<div class="border-8px background-blue hover:background-blue-hover text-center padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Done</div>`)
 
@@ -13537,11 +13538,14 @@ async function referafriendgeneratelink(generate){
 					if(myconfetti) myconfetti.reset()
 				}catch(e){}
 			}else if(clientinfo.referafriend.acceptedcount > oldacceptedcount){
+				calendar.updateUpgrade()
+
 				let confetticanvas = getElement('confetticanvas')
 				let myconfetti = confetti.create(confetticanvas, {
 					resize: true,
 					useWorker: true
 				})
+				
 
 				let upgradereferprogressbarcontainer = getElement('upgradereferprogressbarcontainer')
 
