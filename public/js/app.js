@@ -2920,7 +2920,7 @@ class Calendar {
 				<div class="text-24px text-bold text-white text-center">Get free premium</div>
 				<div class="text-16px text-white">Hey Smart Calendar user,<br><br>We've just released a new premium version of the app, with increased AI chat messages, improved abilities, and more!</div>
 
-				<div class="transition-duration-100 text-bold text-14px border-round regularwhitebutton padding-8px-16px pointer" onclick="clicktab([5]);closeupgradebanner()">Upgrade</div>
+				<div class="transition-duration-100 text-bold text-14px border-round regularwhitebutton padding-8px-16px pointer" onclick="clicktab([5]);closeupgradebanner()">Check it out</div>
 			</div>`
 		}
 		
