@@ -370,6 +370,8 @@ async function getstatistic(id){
 
 //DATABASE CLASSES
 function addmissingproperties(model, current) {
+	model = deepCopy(model)
+	
   for (let prop in model) {
     if (!current.hasOwnProperty(prop)) {
       current[prop] = model[prop]
