@@ -15195,7 +15195,7 @@ async function submitaimessage(optionalinput, dictated, nousermessage){
 
 
 							if(startdate && !isNaN(startdate.getTime()) && enddate && !isNaN(enddate.getTime())){
-								let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title, undefined, true)
+								let item = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), title, undefined, 0, true)
 
 								if(hexcolor && new RegExp(/^#([0-9a-fA-F]{6})$/).test(hexcolor)){
 									item.hexcolor = hexcolor
