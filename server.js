@@ -5968,10 +5968,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						//and maybe every 5m check for unread emails
 
 
-						//CALENDAR context
-						//later - context for calendar is from today to 1 week, plus the current viewing ONLY IF week/day mode (and seeing future date)
-
-
 
 						let request2options = {
 							model: GPT_MODEL,
