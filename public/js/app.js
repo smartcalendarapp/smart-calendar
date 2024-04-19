@@ -11706,7 +11706,7 @@ function gettododata(item) {
 									}
 									
 		
-									${Calendar.Event.isEvent(item) && !item.iseventsuggestion ? `` : 
+									${Calendar.Event.isEvent(item) ? `` : 
 										`<div class="width-fit background-green transition-duration-100 hover:background-green-hover badgepadding border-round todoitemtext nowrap text-14px pointer-auto pointer transition-duration-100 text-white transition-duration-100 popupbutton ${itemclasses.join(' ')}" onclick="clicktodoitemduration(event, '${item.id}')">
 											Takes ${getDHMText(myduration)}
 										</div>`
