@@ -5153,6 +5153,13 @@ function run() {
 					calendar.updateTodo()
 					calendar.updateSettings()
 					calendar.updateHistory(false, false, false)
+
+
+					let rescheduletaskpopup = getElement('rescheduletaskpopup')
+					if(isautoscheduling && !rescheduletaskpopup.classList.contains('hiddenpopup')){
+						rescheduletaskpopup.classList.add('hiddenpopup')
+						isautoscheduling = false
+					}
 				}
 			}
 		}catch(error){
