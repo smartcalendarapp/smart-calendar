@@ -5157,8 +5157,7 @@ function run() {
 
 					let rescheduletaskpopup = getElement('rescheduletaskpopup')
 					if(isautoscheduling && !rescheduletaskpopup.classList.contains('hiddenpopup')){
-						rescheduletaskpopup.classList.add('hiddenpopup')
-						isautoscheduling = false
+						rescheduletaskfunction()
 					}
 				}
 			}
