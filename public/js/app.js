@@ -7890,7 +7890,6 @@ function inputcalendarfile(event) {
 			calendar.updateHistory()
 
 			displayalert('Successfully imported calendar')
-			closesettings()
 		} catch (error) {
 			console.log(error)
 			displayalert('Error, could not import calendar')
