@@ -2301,6 +2301,7 @@ app.post('/webhook', express.json({type: 'application/json'}), async (req, res) 
 			customer: customerId,
 			limit: 1
 		})
+		console.warn(JSON.stringify(sessions))
 		const session = sessions?.data[0]
 		if(!session){
 			console.error('Stripe webhook: No session ID found.')
@@ -2327,18 +2328,17 @@ app.post('/webhook', express.json({type: 'application/json'}), async (req, res) 
 			if(option == 0){
 				addpremiumtouser(user, 86400*1000*31)
 			}else if(option == 1){
-				addpremiumtouser(user, 86400*1000*61)
+				addpremiumtouser(user, 86400*1000*360)
 			}
 
 			await setUser(user)
 		}
 
-		res.json({received: true});
+		res.json({received: true})
 	}catch(err){
 		console.error(err)
 	}
 })
-
 
 
 function addpremiumtouser(user, duration){
