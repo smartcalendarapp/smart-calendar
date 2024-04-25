@@ -2292,10 +2292,11 @@ app.post('/webhook', (req, res) => {
         const sig = req.headers['stripe-signature'];
         let event;
         try {
-            event = stripe.webhooks.constructEvent(req.body, sig, STRIPE_SIGNING_SECRET);
+            event = stripe.webhooks.constructEvent(req.rawBody, sig, STRIPE_SIGNING_SECRET);
             sendmessagetodev(JSON.stringify(event));
         } catch (err) {
             console.error('Stripe Error:', err.message);
+			sendmessagetodev(JSON.stringify(err.message));
             return res.status(400).send(`Webhook Error: ${err.message}`);
         }
         res.json({ received: true });
@@ -2303,7 +2304,7 @@ app.post('/webhook', (req, res) => {
         console.error('Stripe Error:', err);
         res.status(400).send('Webhook handler error');
     }
-});
+})
 
 
 
