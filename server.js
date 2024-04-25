@@ -2207,7 +2207,7 @@ app.post('/create-checkout-session', async (req, res) => {
 		cancel_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
 	})
 
-  	res.send({clientSecret: session.client_secret});
+	res.json({ url: session.url });
 })
 
 app.get('/session-status', async (req, res) => {
