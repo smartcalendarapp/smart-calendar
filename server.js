@@ -2294,12 +2294,12 @@ app.post('/webhook', express.json({type: 'application/json'}), async (request, r
 		const event = request.body;
 	
 		switch (event.type) {
-			case 'payment_intent.succeeded':
-				const paymentIntent = event.data.object;
+			case 'customer.subscription.created':
+				const subscription = event.data.object;
 
-				sendmessagetodev(JSON.stringify(paymentIntent))
+				sendmessagetodev(JSON.stringify(subscription))
 
-           		const userid = paymentIntent?.metadata?.userid;
+           		const userid = subscription?.metadata?.userid;
 
 				if(!userid){
 					sendmessagetodev('Error: could not get user after successful transaction. Userid: ' + userid)
@@ -2316,10 +2316,6 @@ app.post('/webhook', express.json({type: 'application/json'}), async (request, r
 				await setUser(user)
 
 				sendmessagetodev('successful transaction\n' +paymentIntent.metadata.product_id + '\n'+userid + '\n'+JSON.stringify(paymentIntent))
-				break;
-			case 'payment_intent.payment_failed':
-				const paymentIntent2 = event.data.object;
-				sendmessagetodev('failed transaction\n'+JSON.stringify(paymentIntent2))
 				break;
 			default:
 				console.warn(`Stripe: Unhandled event type ${event.type}`);
