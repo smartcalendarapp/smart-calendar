@@ -2317,6 +2317,7 @@ app.post('/webhook', express.json({type: 'application/json'}), async (req, res) 
 			console.error('Stripe webhook: userid or option is null.')
 			return res.status(401)
 		}
+		sendmessagetodev(event.type)
 
 		if(event.type == 'payment_intent.succeeded'){
 			let user = await getUserById(userid)
