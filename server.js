@@ -2287,26 +2287,24 @@ app.get('/session-status', async (req, res) => {
 })
 
 //webhook for transaction end
-app.post('/webhook', express.raw({type: 'application/json'}), async (request, response) => {
-	try{
-		const sig = request.headers['stripe-signature'];
+app.post('/webhook', (req, res) => {
+    try {
+        const sig = req.headers['stripe-signature'];
+        let event;
+        try {
+            event = stripe.webhooks.constructEvent(req.body, sig, STRIPE_SIGNING_SECRET);
+            sendmessagetodev(JSON.stringify(event));
+        } catch (err) {
+            console.error('Stripe Error:', err.message);
+            return res.status(400).send(`Webhook Error: ${err.message}`);
+        }
+        res.json({ received: true });
+    } catch (err) {
+        console.error('Stripe Error:', err);
+        res.status(400).send('Webhook handler error');
+    }
+});
 
-		let event;
-
-		try {
-			event = stripe.webhooks.constructEvent(request.body, sig, STRIPE_SIGNING_SECRET);
-		} catch (err) {
-			sendmessagetodev('ERROR: ' + err.message)
-			return response.status(400).send(`Webhook Error: ${err.message}`);
-		}
-
-		sendmessagetodev(JSON.stringify(event))
-	}catch(err){
-		console.error(err)
-	}
-
-	response.json({ received: true });
-})
 
 
 function addpremiumtouser(user, duration){
