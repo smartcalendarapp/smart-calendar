@@ -1641,13 +1641,7 @@ const dynamostore = new DynamoDBStore({
 
 app.use(compression())
 
-app.use((req, res, next) => {
-    if (req.originalUrl.startsWith('/webhook')) {
-        express.raw({type: 'application/json'})(req, res, next);
-    } else {
-        bodyParser.json({ limit: '50mb' })(req, res, next);
-    }
-});
+app.use(bodyParser.json({ limit: '50mb' }))
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 
 app.use(cookieParser())
@@ -2293,25 +2287,24 @@ app.get('/session-status', async (req, res) => {
 })
 
 //webhook for transaction end
-app.post('/webhook', (req, res) => {
-    try {
-        const sig = req.headers['stripe-signature'];
-        let event;
-        try {
-            event = stripe.webhooks.constructEvent(req.rawBody, sig, STRIPE_SIGNING_SECRET);
-            sendmessagetodev(JSON.stringify(event));
-        } catch (err) {
-            console.error('Stripe Error:', err.message);
-			sendmessagetodev(JSON.stringify(err.message));
-            return res.status(400).send(`Webhook Error: ${err.message}`);
-        }
-        res.json({ received: true });
-    } catch (err) {
-        console.error('Stripe Error:', err);
-        res.status(400).send('Webhook handler error');
-    }
-})
-//here2
+app.post('/webhook', express.json({type: 'application/json'}), (request, response) => {
+	const event = request.body;
+
+	sendmessagetodev(JSON.stringify(event))
+  
+	switch (event.type) {
+	  case 'payment_intent.succeeded':
+		const paymentIntent = event.data.object;
+		break;
+	  case 'payment_method.attached':
+		const paymentMethod = event.data.object;
+		break;
+	  default:
+		console.log(`Unhandled event type ${event.type}`);
+	}
+  
+	response.json({received: true});
+  });
 
 
 
