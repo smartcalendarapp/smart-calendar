@@ -2262,7 +2262,7 @@ app.post('/create-checkout-session', async (req, res) => {
 			automatic_tax: {enabled: true},
 			success_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
 			cancel_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
-			payment_intent_data: {
+			subscription_data: {
 				metadata: {
 					userid: req.session.user.userid,
 					option: option
