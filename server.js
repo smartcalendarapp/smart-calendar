@@ -237,6 +237,20 @@ async function getfeedback(id){
 }
 
 
+async function getcontactus(id){
+	const params = {
+		TableName: 'smartcalendarcontactus',
+		Key: {
+		  'id': { S: id }
+		}
+	  }
+	  const data = await dynamoclient.send(new GetItemCommand(params))
+		if(data.Item){
+			return (unmarshall(data.Item))
+		}
+		return null
+}
+
 async function getallfeedback(){
 	let allitems = []
 	try{
@@ -286,6 +300,20 @@ async function setfeedback(tempdata){
 		console.error(error)
 	}
 }
+
+async function setcontactus(tempdata){
+	try{
+		const params2 = {
+			TableName: 'smartcalendarcontactus',
+			Item: marshall(tempdata, { convertClassInstanceToMap: true, removeUndefinedValues: true })
+		}
+		
+		await dynamoclient.send(new PutItemCommand(params2))
+	}catch(error){
+		console.error(error)
+	}
+}
+
 
 async function savechatconversation(conversationid, userid, chatconversation){
 	if(userid === 'qoc6sjx02h708xk4sqxhy770dkzow3f2') return
@@ -4066,7 +4094,7 @@ app.post('/dev', async (req, res) => {
 		}
 
 		async function help(){
-			return `<span class="inlinecode">addbetatester(userid or email)</span>\n\n<span class="inlinecode">getuserinfo(userid or email)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">blacklistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>\n<span class="inlinecode">getstatistics()</span>\n\n<span class="inlinecode">displaychat(conversationid)</span>\n<span class="inlinecode">displayallchats()</span>\n<span class="inlinecode">flagchat(conversationid)</span>\n\n<span class="inlinecode">displayfeedback(id)</span>\n<span class="inlinecode">displayallfeedback()</span>\n<span class="inlinecode">flagfeedback(id)</span>`
+			return `<span class="inlinecode">addbetatester(userid or email)</span>\n\n<span class="inlinecode">getuserinfo(userid or email)</span>\n<span class="inlinecode">getdiscorduserid(discordid)</span>\n\n<span class="inlinecode">getreferafriendpending()</span>\n<span class="inlinecode">acceptreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">rejectreferafriendinvitecode(invitecode, userid)</span>\n<span class="inlinecode">blacklistreferafriendinvitecode(invitecode)</span>\n\n<span class="inlinecode">getstats()</span>\n<span class="inlinecode">getstatistics()</span>\n\n<span class="inlinecode">displaychat(conversationid)</span>\n<span class="inlinecode">displayallchats()</span>\n<span class="inlinecode">flagchat(conversationid)</span>\n\n<span class="inlinecode">displayfeedback(id)</span>\n<span class="inlinecode">displayallfeedback()</span>\n<span class="inlinecode">flagfeedback(id)</span>\n\n<span class="inlinecode">displayallcontactus()</span>\n<span class="inlinecode">flagcontactus(id)</span></span>`
 		}
 
 		async function getstatistics(){
@@ -4205,6 +4233,26 @@ app.post('/dev', async (req, res) => {
 			return finaloutput.join('\n\n———————————————————————————————————\n\n')
 		}
 
+		async function displayallcontactus(){
+			function getlocaldate(date){
+				return new Date(date).toLocaleString('en-US', { timeZone: 'America/Los_Angeles', hour12: true })
+			}
+
+			let alltempdata = await getallcontactus()
+			alltempdata = alltempdata.filter(d => !d.read)
+			if(alltempdata.length == 0) return 'None unread'
+			
+			let finaloutput = []
+			for(let tempdata of alltempdata){
+				tempdata.read = true
+				await setcontactus(tempdata)
+
+				finaloutput.push(`Contact us ID: ${tempdata.id}\nUser ID: ${tempdata.userid}\nTime: ${getlocaldate(tempdata.timestamp)}\n\n${typeof tempdata.content === 'string' ? tempdata.content : JSON.stringify(tempdata.content, null, 4)}`)
+			}
+
+			return finaloutput.join('\n\n———————————————————————————————————\n\n')
+		}
+
 		async function flagfeedback(feedbackid){
 			let tempdata = await getfeedback(feedbackid)
 			tempdata.flagged = true
@@ -4212,6 +4260,15 @@ app.post('/dev', async (req, res) => {
 
 			return 'Done'
 		}
+
+		async function flagcontactus(contactusid){
+			let tempdata = await getcontactus(contactusid)
+			tempdata.flagged = true
+			await setcontactus(tempdata)
+
+			return 'Done'
+		}
+
 		
 
 		//eval
