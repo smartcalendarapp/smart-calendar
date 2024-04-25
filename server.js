@@ -2262,12 +2262,6 @@ app.post('/create-checkout-session', async (req, res) => {
 			automatic_tax: {enabled: true},
 			success_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
 			cancel_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
-			subscription_data: {
-				metadata: {
-					userid: req.session.user.userid,
-					option: option
-				}
-			},
 			metadata: {
 				userid: req.session.user.userid,
 				option: option
@@ -2293,7 +2287,7 @@ app.get('/session-status', async (req, res) => {
 })
 
 //webhook for transaction end
-app.post('/webhook', express.json({type: 'application/json'}), async (request, response) => {
+app.post('/webhook', express.raw({type: 'application/json'}), async (request, response) => {
 	try{
 		const sig = request.headers['stripe-signature'];
 
