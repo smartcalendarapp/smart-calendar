@@ -2287,39 +2287,34 @@ app.get('/session-status', async (req, res) => {
 })
 
 //webhook for transaction end
-app.post('/webhook', express.json({type: 'application/json'}), async (request, response) => {
+app.post('/webhook', express.raw({type: 'application/json'}), (request, response) => {
 	try{
-		const event = request.body;
-	
+		const sig = request.headers['stripe-signature'];
+
+		let event;
+
+		try {
+			event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+		} catch (err) {
+			response.status(400).send(`Webhook Error: ${err.message}`);
+			return;
+		}
+
 		switch (event.type) {
 			case 'customer.subscription.created':
-				const subscription = event.data.object;
-
-				sendmessagetodev(JSON.stringify(subscription))
-
-           		const userid = subscription?.metadata?.userid;
-
-				if(!userid){
-					sendmessagetodev('Error: could not get user after successful transaction. Userid: ' + userid)
-					break;
-				}
-
-				let user = await getUserById(userid)
-				if(!user){
-					sendmessagetodev('Error: could not get user after successful transaction. Userid: ' + userid)
-					break;
-				}
-
+			  const customerSubscriptionCreated = event.data.object;
+				sendmessagetodev(JSON.stringify(customerSubscriptionCreated))
+			  break;
+			default:
+			  console.log(`Unhandled event type ${event.type}`);
+		  }
+		
+		response.send();
+	
+				/*
 				user = addpremiumtouser(user, 86400*1000*30)
 				await setUser(user)
-
-				sendmessagetodev('successful transaction\n' +paymentIntent.metadata.product_id + '\n'+userid + '\n'+JSON.stringify(paymentIntent))
-				break;
-			default:
-				console.warn(`Stripe: Unhandled event type ${event.type}`);
-		}
-	
-		response.json({received: true})
+				*/
 	}catch(err){
 		console.error(err)
 	}
