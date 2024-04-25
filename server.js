@@ -2330,10 +2330,10 @@ app.post('/webhook', express.json({type: 'application/json'}), async (req, res) 
 			
 			if(option == 0){
 				addpremiumtouser(user, 86400*1000*31)
-				user.premium.plan = 0
+				user.accountdata.premium.plan = 0
 			}else if(option == 1){
 				addpremiumtouser(user, 86400*1000*360)
-				user.premium.plan = 1
+				user.accountdata.premium.plan = 1
 			}
 
 			await setUser(user)

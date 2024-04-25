@@ -1648,6 +1648,7 @@ class Calendar {
 		referafriendgeneratelink()
 
 
+		//plans
 		let premiumplan = clientinfo.premiumplan
 
 		let upgradeplan1 = getElement('upgradeplan1')
@@ -1656,6 +1657,12 @@ class Calendar {
 		let yourplan0 = getElement('yourplan0')
 		let yourplan1 = getElement('yourplan1')
 
+		upgradeplan0.classList.remove('display-none')
+		yourplan0.classList.add('display-none')
+
+		upgradeplan1.classList.remove('display-none')
+		yourplan1.classList.add('display-none')
+
 		if(premiumplan == 0){
 			upgradeplan0.classList.add('display-none')
 			yourplan0.classList.remove('display-none')
@@ -1663,6 +1670,7 @@ class Calendar {
 			upgradeplan1.classList.add('display-none')
 			yourplan1.classList.remove('display-none')
 		}
+
 	}
 
 
