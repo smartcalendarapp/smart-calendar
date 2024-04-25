@@ -2290,9 +2290,8 @@ app.get('/session-status', async (req, res) => {
 app.post('/webhook', express.json({type: 'application/json'}), async (req, res) => {
 	try{
 		const event = req.body;
-		console.warn(event)
 
-		const customerId = event.object.customer
+		const customerId = event.data.object.customer
 		if(!customerId){
 			console.error('Stripe webhook: No customer ID found.')
 			return res.status(401)
