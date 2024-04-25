@@ -2295,14 +2295,14 @@ app.post('/webhook', express.raw({type: 'application/json'}), (request, response
 
 		let event;
 
+		sendmessagetodev(JSON.stringify(event))
+
 		try {
 			event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
 		} catch (err) {
-			console.warn(err)
 			response.status(400).send(`Webhook Error: ${err.message}`);
 			return;
 		}
-		console.warn(event)
 
 		switch (event.type) {
 			case 'customer.subscription.created':
