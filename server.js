@@ -2287,11 +2287,11 @@ app.get('/session-status', async (req, res) => {
 })
 
 //webhook for transaction end
-app.post('/webhook', express.json({type: 'application/json'}), async (request, response) => {
+app.post('/webhook', express.json({type: 'application/json'}), async (req, res) => {
 	try{
-		const event = request.body;
+		const event = req.body;
 
-		const customerId = event.customer
+		const customerId = event.object.customer
 		if(!customerId){
 			console.error('Stripe webhook: No customer ID found.')
 			return res.status(401)
@@ -2333,7 +2333,7 @@ app.post('/webhook', express.json({type: 'application/json'}), async (request, r
 			await setUser(user)
 		}
 
-		response.json({received: true});
+		res.json({received: true});
 	}catch(err){
 		console.error(err)
 	}
