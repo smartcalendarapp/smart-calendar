@@ -20204,16 +20204,17 @@ const stripe = Stripe("pk_test_51P3hFzDn1kfev6yXMdv9nI5toOeNg8Z3uaKLxb2pnFkpNtNY
 
 async function clickupgrade(option){
 	const fetchClientSecret = async () => {
-    const response = await fetch("/create-checkout-session", {
-      method: "POST",
-	  headers: {
-		'Content-Type': 'application/json'
-	},
-	  body: JSON.stringify({ option: option })
-    })
-    const { clientSecret } = await response.json();
-    return clientSecret;
-  }
+		const response = await fetch("/create-checkout-session", {
+		method: "POST",
+		headers: {
+			'Content-Type': 'application/json'
+		},
+			body: JSON.stringify({ option: option })
+		})
+		const { clientSecret } = await response.json();
+		console.log(clientSecret)
+		return clientSecret;
+	}
 
   const checkout = await stripe.initEmbeddedCheckout({
     fetchClientSecret,
