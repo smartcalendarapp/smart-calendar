@@ -2301,6 +2301,7 @@ app.post('/webhook', express.raw({type: 'application/json'}), (request, response
 			response.status(400).send(`Webhook Error: ${err.message}`);
 			return;
 		}
+		console.warn(event)
 
 		switch (event.type) {
 			case 'customer.subscription.created':
