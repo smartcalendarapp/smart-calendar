@@ -2244,7 +2244,6 @@ app.post('/create-checkout-session', async (req, res) => {
 		if(!req.session?.user?.userid){
 			return res.status(401).end()
 		}
-		console.warn(req.session.user.userid)
 
 		let option = req.body.option
 
@@ -2263,7 +2262,12 @@ app.post('/create-checkout-session', async (req, res) => {
 			automatic_tax: {enabled: true},
 			success_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
 			cancel_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
-			client_reference_id: req.session?.user?.userid
+			payment_intent_data: {
+				metadata: {
+					userid: req.session.user.userid,
+					option: option
+				}
+			}
 		})
 
 		res.json({ url: session.url });
@@ -2295,7 +2299,7 @@ app.post('/webhook', express.json({type: 'application/json'}), async (request, r
 
 				sendmessagetodev(JSON.stringify(paymentIntent))
 
-           		const userid = paymentIntent?.client_reference_id;
+           		const userid = paymentIntent?.metadata?.userid;
 
 				if(!userid){
 					sendmessagetodev('Error: could not get user after successful transaction. Userid: ' + userid)
