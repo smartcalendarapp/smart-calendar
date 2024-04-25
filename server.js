@@ -2287,6 +2287,8 @@ app.get('/session-status', async (req, res) => {
 })
 
 //webhook for transaction end
+const endpointSecret = STRIPE_SIGNING_SECRET
+
 app.post('/webhook', express.raw({type: 'application/json'}), (request, response) => {
 	try{
 		const sig = request.headers['stripe-signature'];
