@@ -2205,7 +2205,7 @@ app.post('/create-checkout-session', async (req, res) => {
 		],
 		mode: 'subscription',
 		automatic_tax: {enabled: true},
-		return_url: `${YOUR_DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
+		return_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
 	})
 	console.warn(session.client_secret)
 
