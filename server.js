@@ -2184,45 +2184,60 @@ app.post('/auth/apple/callback', async (req, res) => {
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY
 const STRIPE_SIGNING_SECRET = process.env.STRIPE_SIGNING_SECRET
 
-const stripe = require('stripe')(STRIPE_SECRET_KEY)
+//const stripe = require('stripe')(STRIPE_SECRET_KEY)
+const stripe = require('stripe')('sk_test_51P3hFzDn1kfev6yXrPpFlSqJtnuwOAOqu1Ai28xqdeM4sfV1QaR015g11nqBDYFdoQa8Srl2BFimKirXn9eolUYU00zMaiBGfC')
 
-app.post('/webhook', (request, response) => {
-	const sig = request.headers['stripe-signature']
-  
-	let event;
-  
-	try {
-	  event = stripe.webhooks.constructEvent(
-		request.body, 
-		sig, 
-		STRIPE_SIGNING_SECRET
-	  );
-	} catch (err) {
-	  response.status(400).send(`Webhook Error: ${err.message}`)
-	  return;
-	}
+app.post('/create-checkout-session', async (req, res) => {
+	let option = req.body.option
+
+	const prices = ['price_1P9ErHDn1kfev6yXTtck8cfA', 'price_1P9EsHDn1kfev6yX7kA9geRI']
+
+	if(!prices[option]) return
+
+	const session = await stripe.checkout.sessions.create({
+		ui_mode: 'embedded',
+		line_items: [
+		{
+			price: prices[option],
+			quantity: 1,
+		},
+		],
+		mode: 'subscription',
+		automatic_tax: {enabled: true},
+		return_url: `${YOUR_DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
+	})
+
+  	res.send({clientSecret: session.client_secret});
+})
+
+app.get('/session-status', async (req, res) => {
+  const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
+
+  res.send({
+    status: session.status,
+    customer_email: session.customer_details.email
+  })
+})
+
+//webhook for transaction updates
+app.post('/webhook', express.json({type: 'application/json'}), (request, response) => {
+	const event = request.body;
   
 	switch (event.type) {
-	  case 'payment_intent.succeeded':
-		const paymentIntent = event.data.object
-
-		console.warn('PaymentIntent was successful!')
-		sendmessagetodev('Charge successful\n' + JSON.stringify(paymentIntent))
-
-		break;
-	  case 'charge.failed':
-		const charge = event.data.object
-
-		console.warn('Charge failed!')
-		sendmessagetodev('Charge failed\n' + JSON.stringify(charge))
-		break;
-	  default:
-		sendmessagetodev('Charge unexpected event: ' + event.type)
-		console.warn(`Unhandled event type ${event.type}`)
+	  	case 'payment_intent.succeeded':
+			const paymentIntent = event.data.object;
+			sendmessagetodev('successful transaction\n' +JSON.stringify(paymentIntent))
+			break;
+	  	case 'payment_intent.payment_failed':
+			const paymentIntent2 = event.data.object;
+			sendmessagetodev('failed transaction\n'+JSON.stringify(paymentIntent2))
+			break;
+		default:
+			console.warn(`Stripe: Unhandled event type ${event.type}`);
 	}
   
 	response.json({received: true})
-})
+ })
 
 
 //DISCORD BOT INITIALIZATION

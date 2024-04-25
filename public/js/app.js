@@ -13686,6 +13686,7 @@ async function clickreferafriendinviteemail(event){
 	}
 }
 
+
 function clickupgradeseebelow(){
 	let upgradefeatureslist = getElement('upgradefeatureslist')
 	let upgradewrapcontent = getElement('upgradewrapcontent')
@@ -20173,33 +20174,45 @@ function togglePushNotifs(event) {
 }
 
 
-
 //QUERY
-//e.g. unsubscribe or feedback
+//for return after transaction
+checkstripequery()
+
+//for unsubscribe and feedback /app
 checkquery()
 
 
 //STRIPE
-const stripe = Stripe('pk_test_51P3hFzDn1kfev6yXMdv9nI5toOeNg8Z3uaKLxb2pnFkpNtNY6zHxBliCjzGdjTEXQh4cH48OYlkVSfXeIp0iboNH000lNRR5Bk')
-const elements = stripe.elements()
-const cardElement = elements.create('card')
-cardElement.mount('#card-element')
-
-const form = getElement('payment-form')
-form.addEventListener('submit', async (event) => {
-	event.preventDefault()
-	const {error, paymentIntent} = await stripe.confirmCardPayment('{CLIENT_SECRET}', {
-		payment_method: {
-			card: cardElement,
-			billing_details: {
-				email: 'customer@example.com'
-			}
-		}
-	})
-
-	if (error) {
-		console.log('Payment failed:', error)
-	} else {
-		console.log('Payment succeeded:', paymentIntent)
+async function checkstripequery(){
+	const queryString = window.location.search;
+	const urlParams = new URLSearchParams(queryString);
+	const sessionId = urlParams.get('stripe_id');
+	const response = await fetch(`/session-status?session_id=${sessionId}`);
+	const session = await response.json();
+  
+	if (session.status == 'open') {
+	  alert('failed checkout')
+	} else if (session.status == 'complete') {
+	  alert('successful checkout')
 	}
-})
+}
+
+const stripe = Stripe("pk_test_51P3hFzDn1kfev6yXMdv9nI5toOeNg8Z3uaKLxb2pnFkpNtNY6zHxBliCjzGdjTEXQh4cH48OYlkVSfXeIp0iboNH000lNRR5Bk")
+
+async function clickupgrade(option){
+	const fetchClientSecret = async () => {
+    const response = await fetch("/create-checkout-session", {
+      method: "POST",
+	  body: JSON.stringify({ option: option })
+    })
+    const { clientSecret } = await response.json();
+    return clientSecret;
+  }
+
+  const checkout = await stripe.initEmbeddedCheckout({
+    fetchClientSecret,
+  })
+
+  // Mount Checkout
+  checkout.mount('#checkout')
+}
