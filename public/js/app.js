@@ -20206,6 +20206,9 @@ async function clickupgrade(option){
 	const fetchClientSecret = async () => {
     const response = await fetch("/create-checkout-session", {
       method: "POST",
+	  headers: {
+		'Content-Type': 'application/json'
+	},
 	  body: JSON.stringify({ option: option })
     })
     const { clientSecret } = await response.json();
@@ -20216,6 +20219,7 @@ async function clickupgrade(option){
     fetchClientSecret,
   })
 
-  // Mount Checkout
+  //show html
   checkout.mount('#checkout')
+  getElement('checkoutwrap').classList.remove('display-none')
 }
