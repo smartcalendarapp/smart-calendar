@@ -2236,8 +2236,7 @@ app.post('/auth/apple/callback', async (req, res) => {
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY
 const STRIPE_SIGNING_SECRET = process.env.STRIPE_SIGNING_SECRET
 
-//const stripe = require('stripe')(STRIPE_SECRET_KEY)
-const stripe = require('stripe')('sk_test_51P3hFzDn1kfev6yXrPpFlSqJtnuwOAOqu1Ai28xqdeM4sfV1QaR015g11nqBDYFdoQa8Srl2BFimKirXn9eolUYU00zMaiBGfC')
+const stripe = require('stripe')(STRIPE_SECRET_KEY)
 
 app.post('/create-checkout-session', async (req, res) => {
 	try{
@@ -2303,7 +2302,7 @@ app.post('/webhook', express.json({type: 'application/json'}), async (req, res) 
 			limit: 1
 		})
 		const session = sessions?.data[0]
-		console.warn(sessions.data[0])
+
 		if(!session){
 			console.error('Stripe webhook: No session ID found.')
 			return res.status(401)
@@ -2318,7 +2317,6 @@ app.post('/webhook', express.json({type: 'application/json'}), async (req, res) 
 			console.error('Stripe webhook: userid or option is null.')
 			return res.status(401)
 		}
-		sendmessagetodev(event.type)
 
 		if(event.type == 'invoice.payment_succeeded'){
 			let user = await getUserById(userid)
@@ -2334,6 +2332,8 @@ app.post('/webhook', express.json({type: 'application/json'}), async (req, res) 
 			}
 
 			await setUser(user)
+
+			sendmessagetodev('Added premium to ' + user.userid)
 		}
 
 		res.json({received: true})
