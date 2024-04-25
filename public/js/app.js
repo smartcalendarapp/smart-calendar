@@ -20202,6 +20202,7 @@ async function checkstripequery(){
 
 const stripe = Stripe("pk_test_51P3hFzDn1kfev6yXMdv9nI5toOeNg8Z3uaKLxb2pnFkpNtNY6zHxBliCjzGdjTEXQh4cH48OYlkVSfXeIp0iboNH000lNRR5Bk")
 
+let checkout;
 async function clickupgrade(option){
 	const fetchClientSecret = async () => {
 		const response = await fetch("/create-checkout-session", {
@@ -20216,11 +20217,18 @@ async function clickupgrade(option){
 		return clientSecret;
 	}
 
-  const checkout = await stripe.initEmbeddedCheckout({
+checkout = await stripe.initEmbeddedCheckout({
     fetchClientSecret,
   })
 
   //show html
   checkout.mount('#checkout')
   getElement('checkoutwrap').classList.remove('display-none')
+}
+
+function closepayment(){
+	if (checkout) {
+		checkout.unmount();
+		getElement('checkoutwrap').classList.add('display-none')
+	}
 }

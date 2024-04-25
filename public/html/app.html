@@ -1374,8 +1374,21 @@
 
 
 	<!-- stripe -->
-	<div class="margin-96px background-primary-transparent backdrop-blur border-box small:padding-0 display-none absolute top-0 left-0 width-full height-full" id="checkoutwrap">
-		<div id="checkout" class="width-full height-full">
+	<div class="margin-left-96px margin-right-96px margin-top-24px margin-bottom-24px border-16px overflow-auto z-index-10000 whitebackground border-box small:margin-0 display-none absolute top-0 left-0 bottom-0 right-0" id="checkoutwrap">
+		<div class="absolute top-0 right-0 padding-12px">
+			<div class="infotopright pointer" onclick="closepayment()">
+				<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge">
+				<g>
+				<g opacity="1">
+				<path d="M211.65 44.35L44.35 211.65" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+				<path d="M211.65 211.65L44.35 44.35" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+				</g>
+				</g>
+				</svg>
+			</div>
+		</div>
+
+		<div id="checkout" class="absolute top-0 left-0 bottom-0 right-0">
 		</div>
 	</div>
 

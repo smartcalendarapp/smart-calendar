@@ -2192,7 +2192,6 @@ app.post('/create-checkout-session', async (req, res) => {
 
 	const prices = ['price_1P9ErHDn1kfev6yXTtck8cfA', 'price_1P9EsHDn1kfev6yX7kA9geRI']
 
-	console.warn(option)
 	if(!prices[option]) return res.status(401).end()
 
 	const session = await stripe.checkout.sessions.create({
@@ -2207,7 +2206,6 @@ app.post('/create-checkout-session', async (req, res) => {
 		automatic_tax: {enabled: true},
 		return_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
 	})
-	console.warn(session.client_secret)
 
   	res.send({clientSecret: session.client_secret});
 })
