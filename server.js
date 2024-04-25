@@ -2195,7 +2195,6 @@ app.post('/create-checkout-session', async (req, res) => {
 	if(!prices[option]) return res.status(401).end()
 
 	const session = await stripe.checkout.sessions.create({
-		ui_mode: 'embedded',
 		line_items: [
 		{
 			price: prices[option],
@@ -2204,7 +2203,8 @@ app.post('/create-checkout-session', async (req, res) => {
 		],
 		mode: 'subscription',
 		automatic_tax: {enabled: true},
-		return_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
+		success_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
+		cancel_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
 	})
 
   	res.send({clientSecret: session.client_secret});
@@ -2237,7 +2237,8 @@ app.post('/webhook', express.json({type: 'application/json'}), (request, respons
 	}
   
 	response.json({received: true})
- })
+})
+//here3
 
 
 //DISCORD BOT INITIALIZATION

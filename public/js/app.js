@@ -20195,40 +20195,25 @@ async function checkstripequery(){
   
 	if (session.status == 'open') {
 	  	alert('failed checkout')
+		calendartabs = [5]
 	} else if (session.status == 'complete') {
 	  	alert('successful checkout')
+		calendartabs = [5]
 	}
 }
 
-const stripe = Stripe("pk_test_51P3hFzDn1kfev6yXMdv9nI5toOeNg8Z3uaKLxb2pnFkpNtNY6zHxBliCjzGdjTEXQh4cH48OYlkVSfXeIp0iboNH000lNRR5Bk")
-
-let checkout;
 async function clickupgrade(option){
-	const fetchClientSecret = async () => {
-		const response = await fetch("/create-checkout-session", {
-		method: "POST",
-		headers: {
-			'Content-Type': 'application/json'
-		},
-			body: JSON.stringify({ option: option })
-		})
-		const { clientSecret } = await response.json();
-		console.log(clientSecret)
-		return clientSecret;
-	}
-
-checkout = await stripe.initEmbeddedCheckout({
-    fetchClientSecret,
-  })
-
-  //show html
-  checkout.mount('#checkout')
-  getElement('checkoutwrap').classList.remove('display-none')
-}
-
-function closepayment(){
-	if (checkout) {
-		checkout.unmount();
-		getElement('checkoutwrap').classList.add('display-none')
-	}
+	try {
+        const response = await fetch('/create-checkout-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ option: option })
+        });
+        const session = await response.json();
+        window.location.href = session.url;
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
