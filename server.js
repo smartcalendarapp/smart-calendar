@@ -2267,6 +2267,10 @@ app.post('/create-checkout-session', async (req, res) => {
 					userid: req.session.user.userid,
 					option: option
 				}
+			},
+			metadata: {
+				userid: req.session.user.userid,
+				option: option
 			}
 		})
 
@@ -2289,41 +2293,25 @@ app.get('/session-status', async (req, res) => {
 })
 
 //webhook for transaction end
-const endpointSecret = STRIPE_SIGNING_SECRET
-
-app.post('/webhook', express.raw({type: 'application/json'}), (request, response) => {
+app.post('/webhook', express.json({type: 'application/json'}), async (request, response) => {
 	try{
 		const sig = request.headers['stripe-signature'];
 
 		let event;
 
-		sendmessagetodev(JSON.stringify(event))
-
 		try {
-			event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+			event = stripe.webhooks.constructEvent(request.rawBody, sig, STRIPE_SIGNING_SECRET);
 		} catch (err) {
-			response.status(400).send(`Webhook Error: ${err.message}`);
-			return;
+			sendmessagetodev('ERROR: ' + err.message)
+			return response.status(400).send(`Webhook Error: ${err.message}`);
 		}
 
-		switch (event.type) {
-			case 'customer.subscription.created':
-			  const customerSubscriptionCreated = event.data.object;
-				sendmessagetodev(JSON.stringify(customerSubscriptionCreated))
-			  break;
-			default:
-			  console.log(`Unhandled event type ${event.type}`);
-		  }
-		
-		response.send();
-	
-				/*
-				user = addpremiumtouser(user, 86400*1000*30)
-				await setUser(user)
-				*/
+		sendmessagetodev(JSON.stringify(event))
 	}catch(err){
 		console.error(err)
 	}
+
+	response.json({ received: true });
 })
 
 
@@ -2368,6 +2356,7 @@ async function sendmessagetodev(content){
 	try{
 	(await discordclient.users.fetch('552275355092647946')).send(content.slice(0, 2000))
 	}catch(err){
+
 	}
 }
 
