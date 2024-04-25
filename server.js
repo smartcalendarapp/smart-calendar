@@ -2290,6 +2290,7 @@ app.get('/session-status', async (req, res) => {
 app.post('/webhook', express.json({type: 'application/json'}), async (req, res) => {
 	try{
 		const event = req.body;
+		console.warn(event)
 
 		const customerId = event.object.customer
 		if(!customerId){
