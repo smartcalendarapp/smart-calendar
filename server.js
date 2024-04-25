@@ -585,7 +585,7 @@ class User{
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, connectedgmail: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true, importantupdates: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, choosecalendars: false, eventreminders: false, sleeptime: false, addtask: false, finished: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, lastprompteveningsummarydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false, closedupgradepopup: false, recognitionlanguage: 'en-US', recognitionalwaysonenabled: true, lastgottasksuggestion: 0, lastgotsubtasksuggestion: 0 }
-const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, logindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], gptchat4usedtimestamps: [], gptvoiceusedtimestamps: [], betatester: false, haspremium: false, premium: { referafriendclaimvalue: 0, starttimestamp: null, endtimestamp: null }, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
+const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, logindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], gptchat4usedtimestamps: [], gptvoiceusedtimestamps: [], betatester: false, premium: { referafriendclaimvalue: 0, starttimestamp: null, endtimestamp: null, plan: null }, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
 const MODELEVENT = { start: {}, end: {}, endbefore: {}, startafter: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0, parentid: null, subtasksuggestions: [], gotsubtasksuggestions: false, iseventsuggestion: false, goteventsuggestion: false, autoschedulelocked: false }
 const MODELTODO = { endbefore: {}, startafter: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false, issuggestion: false }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#18a4f5', isprimary: false, subscriptionurl: null, lastmodified: 0  }
@@ -2288,7 +2288,7 @@ app.get('/session-status', async (req, res) => {
 	}
 })
 
-//webhook for transaction end
+//webhook for payment
 app.post('/webhook', express.json({type: 'application/json'}), async (req, res) => {
 	try{
 		const event = req.body;
@@ -2330,8 +2330,10 @@ app.post('/webhook', express.json({type: 'application/json'}), async (req, res) 
 			
 			if(option == 0){
 				addpremiumtouser(user, 86400*1000*31)
+				user.premium.plan = 0
 			}else if(option == 1){
 				addpremiumtouser(user, 86400*1000*360)
+				user.premium.plan = 1
 			}
 
 			await setUser(user)
@@ -3889,7 +3891,7 @@ app.post('/getclientinfo', async (req, res, next) => {
 
 		await setUser(user)
 		
-		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, apple: user.accountdata.apple, appleid: user.appleid != null, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null, betatester: user.accountdata.betatester, referafriend: user.accountdata.referafriend, haspremium: user.accountdata.haspremium, premiumendtimestamp: user.accountdata.premium.endtimestamp } })
+		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, apple: user.accountdata.apple, appleid: user.appleid != null, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null, betatester: user.accountdata.betatester, referafriend: user.accountdata.referafriend, haspremium: userhaspremium(user), premiumendtimestamp: user.accountdata.premium.endtimestamp, premiumplan: user.accountdata.premium.plan } })
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: htmltryagainerror })
@@ -4597,12 +4599,10 @@ function checkreferafriendpremium(user){
 			user = addpremiumtouser(user, 86400*1000*31) //1 month
 		}
 	}
-
-	updateuserhaspremium(user)
 }
 
-function updateuserhaspremium(user){
-	user.accountdata.haspremium = user.accountdata.premium.endtimestamp && user.accountdata.premium.endtimestamp > Date.now()
+function userhaspremium(user){
+	return user.accountdata?.premium?.endtimestamp && user.accountdata.premium.endtimestamp > Date.now()
 }
 
 async function acceptreferafriendinvitecode(invitecode, userid){
@@ -4714,7 +4714,7 @@ app.post('/generatereferafriendinvitelink', async (req, res) => {
 		if(!generate || user.accountdata.referafriend.invitelink){
 			checkreferafriendpremium(user)
 
-			return res.json({ data: { invitelink: user.accountdata.referafriend.invitelink, acceptedcount: user.accountdata.referafriend.acceptedcount, haspremium: user.accountdata.haspremium, premiumendtimestamp: user.accountdata.premium.endtimestamp } })
+			return res.json({ data: { invitelink: user.accountdata.referafriend.invitelink, acceptedcount: user.accountdata.referafriend.acceptedcount, haspremium: userhaspremium(user), premiumendtimestamp: user.accountdata.premium.endtimestamp } })
 		}else{
 			async function generatereferafriendinvitelink(){
 				function generateinvitelink() {
@@ -4860,8 +4860,6 @@ function getusedmodel(user){
 
 	let usedgptchats = user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length
 	let usedgpt4chats = user.accountdata.gptchat4usedtimestamps.filter(d => currenttime - d < 86400000).length
-
-	updateuserhaspremium(user)
 	
 	let appliedratelimit = getappliedratelimit(user)
 	let appliedratelimit4 = getappliedratelimit4(user)
@@ -4878,7 +4876,7 @@ function getappliedratelimit(user){
 	if(user.accountdata.betatester){
 		appliedratelimit = MAX_GPT_CHAT_PER_DAY_BETA_TESTER
 	}
-	if(user.haspremium){
+	if(userhaspremium(user)){
 		appliedratelimit = MAX_GPT_CHAT_PER_DAY_PREMIUM
 	}
 
@@ -4889,7 +4887,7 @@ function getappliedratelimit4(user){
 	if(user.accountdata.betatester){
 		appliedratelimit4 = MAX_GPT4_CHAT_PER_DAY_BETA_TESTER
 	}
-	if(user.haspremium){
+	if(userhaspremium(user)){
 		appliedratelimit4 = MAX_GPT4_CHAT_PER_DAY_PREMIUM
 	}
 
@@ -5759,7 +5757,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 		//check ratelimit
 		if(!usedmodel){
-			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day${user.haspremium ? ` and ${appliedratelimit4} premium messages per day` : ''}). Please upgrade to premium to help us cover the costs of AI.` })
+			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day${userhaspremium(user) ? ` and ${appliedratelimit4} premium messages per day` : ''}). Please upgrade to premium to help us cover the costs of AI.` })
 		}
 
 		if(user.accountdata.gptchatusedtimestamps.filter(d => Date.now() - d < 5000).length >= 2 || user.accountdata.gptchat4usedtimestamps.filter(d => Date.now() - d < 5000).length >= 2){

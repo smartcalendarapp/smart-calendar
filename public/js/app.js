@@ -1646,6 +1646,23 @@ class Calendar {
 		referafriendemaillink.innerHTML = clientinfo.referafriend?.invitelink ? `https://smartcalendar.us/invite/${clientinfo.referafriend.invitelink.toUpperCase()}` : ''
 
 		referafriendgeneratelink()
+
+
+		let premiumplan = clientinfo.premiumplan
+
+		let upgradeplan1 = getElement('upgradeplan1')
+		let upgradeplan0 = getElement('upgradeplan0')
+
+		let yourplan0 = getElement('yourplan0')
+		let yourplan1 = getElement('yourplan1')
+
+		if(premiumplan == 0){
+			upgradeplan0.classList.add('display-none')
+			yourplan0.classList.remove('display-none')
+		}else if(premiumplan == 1){
+			upgradeplan1.classList.add('display-none')
+			yourplan1.classList.remove('display-none')
+		}
 	}
 
 
