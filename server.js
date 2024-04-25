@@ -2301,8 +2301,8 @@ app.post('/webhook', express.json({type: 'application/json'}), async (req, res) 
 			customer: customerId,
 			limit: 1
 		})
-		console.warn(JSON.stringify(sessions))
 		const session = sessions?.data[0]
+		console.warn(sessions.data[0])
 		if(!session){
 			console.error('Stripe webhook: No session ID found.')
 			return res.status(401)
