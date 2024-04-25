@@ -20189,16 +20189,14 @@ async function checkstripequery(){
 	const sessionId = urlParams.get('stripe_id');
 
 	if(!sessionId) return
-	
+
 	const response = await fetch(`/session-status?session_id=${sessionId}`);
 	const session = await response.json();
-
-	if(!session) return
   
 	if (session.status == 'open') {
-	  alert('failed checkout')
+	  	alert('failed checkout')
 	} else if (session.status == 'complete') {
-	  alert('successful checkout')
+	  	alert('successful checkout')
 	}
 }
 
