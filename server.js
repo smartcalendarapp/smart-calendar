@@ -2290,6 +2290,7 @@ app.get('/session-status', async (req, res) => {
 app.post('/webhook', express.json({type: 'application/json'}), async (req, res) => {
 	try{
 		const event = req.body;
+		if(event.type != 'invoice.payment_succeeded') return
 
 		const customerId = event.data.object.customer
 		if(!customerId){
@@ -2319,7 +2320,7 @@ app.post('/webhook', express.json({type: 'application/json'}), async (req, res) 
 		}
 		sendmessagetodev(event.type)
 
-		if(event.type == 'payment_intent.succeeded'){
+		if(event.type == 'invoice.payment_succeeded'){
 			let user = await getUserById(userid)
 			if(!user){
 				console.error('Stripe webhook: user not found.')
