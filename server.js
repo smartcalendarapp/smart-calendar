@@ -2288,32 +2288,55 @@ app.get('/session-status', async (req, res) => {
 
 //webhook for transaction end
 app.post('/webhook', express.json({type: 'application/json'}), async (request, response) => {
-	const event = request.body;
+	try{
+		const event = request.body;
 
-	sendmessagetodev(JSON.stringify(event))
+		const customerId = event.customer
+		if(!customerId){
+			console.error('Stripe webhook: No customer ID found.')
+			return res.status(401)
+		}
 
-	const customerId = event.customer
+		const sessions = await stripe.checkout.sessions.list({
+			customer: customerId,
+			limit: 1
+		})
+		const session = sessions?.data[0]
+		if(!session){
+			console.error('Stripe webhook: No session ID found.')
+			return res.status(401)
+		}
 
-	const sessions = await stripe.checkout.sessions.list({
-		customer: customerId,
-		limit: 1
-	})
-	sendmessagetodev(JSON.stringify(sessions))
-  
-  
-	switch (event.type) {
-	  case 'payment_intent.succeeded':
-		const paymentIntent = event.data.object;
-		break;
-	  case 'payment_method.attached':
-		const paymentMethod = event.data.object;
-		break;
-	  default:
-		console.log(`Unhandled event type ${event.type}`);
+		const metadata = session.metadata
+		const userid = metadata?.userid
+		const option = metadata?.option
+	
+		if(userid == null || option == null){
+			sendmessagetodev('Stripe webhook: userid or option is null.\n' + JSON.stringify(session))
+			console.error('Stripe webhook: userid or option is null.')
+			return res.status(401)
+		}
+
+		if(event.type == 'payment_intent.succeeded'){
+			let user = await getUserById(userid)
+			if(!user){
+				console.error('Stripe webhook: user not found.')
+				return res.status(401)
+			}
+			
+			if(option == 0){
+				addpremiumtouser(user, 86400*1000*31)
+			}else if(option == 1){
+				addpremiumtouser(user, 86400*1000*61)
+			}
+
+			await setUser(user)
+		}
+
+		response.json({received: true});
+	}catch(err){
+		console.error(err)
 	}
-
-
-	response.json({received: true});
 })
 
 
