@@ -1641,7 +1641,13 @@ const dynamostore = new DynamoDBStore({
 
 app.use(compression())
 
-app.use(bodyParser.json({ limit: '50mb' }))
+app.use((req, res, next) => {
+    if (req.originalUrl.startsWith('/webhook')) {
+        express.raw({type: 'application/json'})(req, res, next);
+    } else {
+        bodyParser.json({ limit: '50mb' })(req, res, next);
+    }
+});
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
 
 app.use(cookieParser())
@@ -2305,6 +2311,7 @@ app.post('/webhook', (req, res) => {
         res.status(400).send('Webhook handler error');
     }
 })
+//here2
 
 
 
