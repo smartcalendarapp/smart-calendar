@@ -2236,6 +2236,9 @@ app.post('/auth/apple/callback', async (req, res) => {
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY
 const STRIPE_SIGNING_SECRET = process.env.STRIPE_SIGNING_SECRET
 
+const MONTHLY_PLAN_ID = 'price_1P9K9yDn1kfev6yXNnfVzV1W'
+const YEARLY_PLAN_ID = 'price_1P9K9wDn1kfev6yXiTAtsEs4'
+
 const stripe = require('stripe')(STRIPE_SECRET_KEY)
 
 app.post('/create-checkout-session', async (req, res) => {
@@ -2246,7 +2249,7 @@ app.post('/create-checkout-session', async (req, res) => {
 
 		let option = req.body.option
 
-		const prices = ['price_1P9ErHDn1kfev6yXTtck8cfA', 'price_1P9EsHDn1kfev6yX7kA9geRI']
+		const prices = [MONTHLY_PLAN_ID, YEARLY_PLAN_ID]
 
 		if(!prices[option]) return res.status(401).end()
 
