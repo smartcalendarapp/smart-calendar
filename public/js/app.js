@@ -20201,7 +20201,7 @@ async function checkstripequery(){
 		displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">The payment was not completed.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>')
 		calendartabs = [5]
 	} else if (session.status == 'complete') {
-		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">Thank you for upgrading! You now have ${getRoundedYMWDtext(Math.ceil(Date.now() - clientinfo?.premiumendtimestamp)/60000)} of premium. See what you can do now:</div>
+		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">Thank you for upgrading! You now have premium. See what you can do now:</div>
 		<div class="text-16px text-quaternary">${markdowntoHTML(`- Increased AI chat: send up to 200 messages to our AI Assistant Athena every day.\n- Enhanced Personal Assistant: Athena will have more capabilities, and will provide you daily briefings, suggestions to complete your tasks, and more productivity help.\n- Early access to new features: you'll be the first to see our new exciting features and use them for your productivity.`, 'assistant')}</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Done</div>`)
 		calendartabs = [5]
 	}

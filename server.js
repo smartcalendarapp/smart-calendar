@@ -275,6 +275,30 @@ async function getallfeedback(){
 	}
 }
 
+async function getallcontactus(){
+	let allitems = []
+	try{
+		let ExclusiveStartKey;
+		do {
+			const command = new ScanCommand({
+				TableName: 'smartcalendarcontactus',
+				ExclusiveStartKey
+			})
+
+			const response = await dynamoclient.send(command)
+			const items = response.Items.map(item => unmarshall(item))
+			allitems.push(...items)
+
+			ExclusiveStartKey = response.LastEvaluatedKey
+		} while (ExclusiveStartKey)
+
+		return allitems
+	}catch(err){
+		console.error(err)
+		return null
+	}
+}
+
 async function setchatconversation(tempdata){
 	try{
 		const params2 = {
@@ -2239,9 +2263,7 @@ app.post('/create-checkout-session', async (req, res) => {
 			automatic_tax: {enabled: true},
 			success_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
 			cancel_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
-			metadata: {
-				userid: req.session?.user?.userid
-			}
+			client_reference_id: req.session?.user?.userid
 		})
 
 		res.json({ url: session.url });
@@ -2270,12 +2292,10 @@ app.post('/webhook', express.json({type: 'application/json'}), async (request, r
 		switch (event.type) {
 			case 'payment_intent.succeeded':
 				const paymentIntent = event.data.object;
-				const metadata = paymentIntent?.metadata;
 
 				sendmessagetodev(JSON.stringify(paymentIntent))
 
-           		const userid = metadata?.userid;
-				const productid = paymentIntent.metadata.product_id
+           		const userid = paymentIntent?.client_reference_id;
 
 				if(!userid){
 					sendmessagetodev('Error: could not get user after successful transaction. Userid: ' + userid)
@@ -2288,7 +2308,7 @@ app.post('/webhook', express.json({type: 'application/json'}), async (request, r
 					break;
 				}
 
-				user = addpremiumtouser(user, 86400*1000)
+				user = addpremiumtouser(user, 86400*1000*30)
 				await setUser(user)
 
 				sendmessagetodev('successful transaction\n' +paymentIntent.metadata.product_id + '\n'+userid + '\n'+JSON.stringify(paymentIntent))
@@ -5686,7 +5706,7 @@ async function searchgoogle(query){
 		}))
 
 	}catch(err){
-		console.warn(err)
+		console.error(err)
 		return null
 	}
 }
