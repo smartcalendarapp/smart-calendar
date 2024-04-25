@@ -2366,7 +2366,11 @@ discordclient.on('ready', async () => {
 discordclient.login(DISCORD_TOKEN)
 
 async function sendmessagetodev(content){
-	(await discordclient.users.fetch('552275355092647946')).send(content)
+	try{
+	(await discordclient.users.fetch('552275355092647946')).send(content.slice(0, 2000))
+	}catch(err){
+
+	}
 }
 
 
