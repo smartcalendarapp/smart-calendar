@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Smart Calendar | App</title>
+	<script src="https://js.stripe.com/v3/"></script>
 	<meta name="description" content="Open Smart Calendar now. Automatically plan tasks into your calendar, schedule meetings, and resolve conflicts.">
 	<meta name="keywords" content="AI Scheduling,AI Assistant,AI Calendar,To-Do List,Automated Scheduling,Task Scheduling,Google Calendar Integration,Productivity App,Productivity Tools,Time Management">
 	<meta name="author" content="Smart Calendar">
@@ -52,6 +53,8 @@
 		}
 	</script>
 </head>
+
+
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-YNYSBZ76C2"></script>
@@ -2310,11 +2313,12 @@
 
 						<!-- background -->
 						<div class="absolute top-0 left-0 right-0 upgradebackgroundsplash"></div>
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 1024 216.28" width="100%" class="upgradewave absolute left-0 right-0">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 1024 216" width="100%" class="upgradewave absolute left-0 right-0">
 							<g>
-							<path d="M0 138.179C0 138.179 150.95 56.2989 311.541 53.6925C472.131 51.0862 537.739 99.913 716.358 89.5322C894.978 79.1513 1024-2.50808e-13 1024-2.50808e-13L1024 800L3.56324e-14 800L0 138.179Z" fill-rule="nonzero" opacity="1" ></path>
-							</g>							
+							<path d="M0 138.179C0 138.179 150.95 56.2989 311.541 53.6925C472.131 51.0862 537.739 99.913 716.358 89.5322C894.978 79.1513 1024-2.50808e-13 1024-2.50808e-13L1024 4000L9.68648e-14 4000L0 138.179Z" fill-rule="nonzero" opacity="1"></path>
+							</g>
 						</svg>
+							
 
 
 						<div class="border-box upgradecontent align-center small:padding-top-24px padding-top-96px padding-bottom-96px width-full z-index-1 display-flex flex-column">
@@ -2323,11 +2327,41 @@
 							<div class="padding-top-96px small:padding-top-96px"></div>
 
 
+							<!-- pay upgrade -->
+
+							<div class="display-flex flex-row gap-24px small:flex-column justify-center">
+								<div class="width300px border-box background-primary-transparent box-shadow-3 backdrop-blur display-flex flex-column gap-24px padding-24px border-16px">
+									<div class="text-18px text-bold text-primary text-center">Free Plan</div>
+									<div class="text-14px text-quaternary">Good for managing light schedules.</div>
+									<div class="text-center text-bold"><span class="text-primary text-48px">$0</span></div>
+									<div class="text-14px text-center text-quaternary">Default</div>
+								</div>
+								<div class="width300px border-box background-primary-transparent box-shadow-3  backdrop-blur display-flex flex-column gap-24px padding-24px border-16px">
+									<div class="text-18px text-bold text-primary text-center">Monthly Plan</div>
+									<div class="text-14px text-quaternary">Good for individuals who want to manage busier schedules with more AI & less stress.</div>
+									<div class="text-center text-bold"><span class="text-primary text-48px">$10</span><span class="text-quaternary">/month</span></div>
+									<a class="text-decoration-none background-blue text-center padding-8px-12px border-8px text-white text-14px text-bold pointer transition-duration-100 hover:background-blue-hover" href="https://buy.stripe.com/test_6oE6rJ3g8aCcerubII"  rel="noopener noreferrer" target="_blank">Upgrade</a>
+									<div class="text-14px pointer text-center text-quaternary" >See <span class="text-blue pointer hover:text-blue-hover" onclick="clickupgradeseebelow()">below</span> for what's included.</div>
+								</div>
+								<div class="width300px border-box background-primary-transparent box-shadow-3  display-flex backdrop-blur flex-column gap-24px padding-24px border-16px">
+									<div class="text-18px text-bold text-primary text-center">Annual Plan <span class="background-purple border-round text-white badgepadding text-12px">Recommended</span></div>
+									<div class="text-14px text-quaternary">Good for individuals who are busy all year round.</div>
+									<div class="display-flex flex-column gap-6px align-center">
+										<div class="text-center text-bold"><span class="text-primary text-48px">$5</span><span class="text-quaternary">/month</span></div>
+										<div class="text-12px text-quaternary">(billed $60/year)</div>
+									</div>
+									<a class="text-decoration-none background-blue text-center padding-8px-12px border-8px text-white text-14px text-bold pointer transition-duration-100 hover:background-blue-hover" href="https://buy.stripe.com/test_bIYg2j180eSs2IM289"  rel="noopener noreferrer" target="_blank">Upgrade</a>
+									<div class="text-14px pointer text-center text-quaternary" >See <span class="text-blue pointer hover:text-blue-hover" onclick="clickupgradeseebelow()">below</span> for what's included.</div>
+								</div>
+							</div>
+
+							<div class="padding-top-48px"></div>
+
 							<!-- refer -->
-							<div class="width-full border-box box-shadow-3 border-16px padding-24px background-primary display-flex flex-column gap-48px">
+							<div class="width-full border-box box-shadow-3 border-16px padding-24px background-primary display-flex flex-column gap-24px">
 								<div class="display-flex flex-column gap-12px">
-									<div class="text-center text-primary text-24px text-bold">Refer a Friend, Get Free Premium! <span class="text-16px">(super easy)</span></div>
-									<div class="text-primary text-18px">Have a friend who you want to help organize their life better?<br>Simply <span class="text-bold gradienttextgreen">invite your friends</span> to get <span class="text-bold gradienttextpink">free Premium</span>! No credit card needed.</div>
+									<div class="text-center text-primary text-22px text-bold">Refer a Friend, Get Free Premium! <span class="text-16px">(it's easy)</span></div>
+									<div class="text-primary text-16px">Have a friend who you want to help organize their life better?<br>Simply <span class="text-bold gradienttextgreen">invite your friends</span> to get <span class="text-bold gradienttextpink">free Premium</span>! No credit card needed.</div>
 								</div>
 
 								<div id="referafrienderror" class="align-self-center text-center errorwrap display-none"></div>
@@ -2397,7 +2431,7 @@
 
 							<div class="padding-top-24px"></div>
 
-							<div class="pointer-none display-flex flex-column gap-12px align-center">
+							<div class="pointer display-flex flex-column gap-12px align-center" onclick="clickupgradeseebelow()">
 								<div class="text-16px text-center nowrap text-quaternary pointer-none">Learn more about premium</div>
 								<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonlarge buttonquaternary learnmorebutton">
 								<g>
@@ -2412,7 +2446,7 @@
 							<div class="padding-top-96px"></div>
 
 							<!-- features -->
-							<div class="display-flex flex-column gap-24px">
+							<div class="display-flex flex-column gap-24px" id="upgradefeatureslist">
 								<div class="text-center text-ultra-bold text-primary text-36px small:text-28px">See what's included</div>
 
 								<div class="display-flex flex-row gap-24px small:flex-column">
@@ -2439,7 +2473,7 @@
 									<div class="upgradefeaturecard flex-1 border-box background-secondary border-16px display-flex flex-column">
 										<div class="z-index-2 padding-24px display-flex flex-column gap-12px">
 											<div class="text-center white-space-normal text-bold text-primary text-24px align-self-center">Increased AI Chat</div>
-											<div class="white-space-normal text-quaternary text-16px">Send up to 200 messages to our AI Assistant Athena every day. GPT-4 powered.</div>
+											<div class="white-space-normal text-quaternary text-16px">Send up to 200 messages to our AI Assistant Athena every day. Powerful GPT-4 for 30 messages/day.</div>
 										</div>
 										<div class="relative upgradefeaturecardimgwrap">
 											<div class="z-index-1 upgradefeaturecardgradient absolute top-0 left-0 right-0 bottom-0"></div>

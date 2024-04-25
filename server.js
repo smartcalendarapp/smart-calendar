@@ -533,7 +533,7 @@ class User{
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, connectedgmail: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true, importantupdates: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, choosecalendars: false, eventreminders: false, sleeptime: false, addtask: false, finished: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, lastprompteveningsummarydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false, closedupgradepopup: false, recognitionlanguage: 'en-US', recognitionalwaysonenabled: true, lastgottasksuggestion: 0, lastgotsubtasksuggestion: 0 }
-const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, logindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], gptvoiceusedtimestamps: [], betatester: false, haspremium: false, premium: { referafriendclaimvalue: 0, starttimestamp: null, endtimestamp: null }, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
+const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, logindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], gptchat4usedtimestamps: [], gptvoiceusedtimestamps: [], betatester: false, haspremium: false, premium: { referafriendclaimvalue: 0, starttimestamp: null, endtimestamp: null }, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
 const MODELEVENT = { start: {}, end: {}, endbefore: {}, startafter: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0, parentid: null, subtasksuggestions: [], gotsubtasksuggestions: false, iseventsuggestion: false, goteventsuggestion: false, autoschedulelocked: false }
 const MODELTODO = { endbefore: {}, startafter: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false, issuggestion: false }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#18a4f5', isprimary: false, subscriptionurl: null, lastmodified: 0  }
@@ -2177,6 +2177,8 @@ app.post('/auth/apple/callback', async (req, res) => {
 		res.redirect(301, '/login')
 	}
 })
+
+
 
 
 
@@ -4620,12 +4622,17 @@ app.post('/setuseremailpreferences', async (req, res) => {
 
 //GPT AI routes
 
-let MAX_GPT_CHAT_PER_DAY = 200 //10
-let MAX_GPT_CHAT_PER_DAY_BETA_TESTER = 200 //50
+let MAX_GPT_CHAT_PER_DAY = 100 //20
+let MAX_GPT_CHAT_PER_DAY_BETA_TESTER = 100 //50
 let MAX_GPT_CHAT_PER_DAY_PREMIUM = 200 //100
 
-let MAX_GPT_VOICE_PER_DAY = 200 //10
-let MAX_GPT_VOICE_PER_DAY_BETA_TESTER = 200 //50
+let MAX_GPT4_CHAT_PER_DAY = 0
+let MAX_GPT4_CHAT_PER_DAY_BETA_TESTER = 0
+let MAX_GPT4_CHAT_PER_DAY_PREMIUM = 30
+
+
+let MAX_GPT_VOICE_PER_DAY = 100 //10
+let MAX_GPT_VOICE_PER_DAY_BETA_TESTER = 100 //50
 let MAX_GPT_VOICE_PER_DAY_PREMIUM = 200 //100
 
 let MAX_GPT_COMPLETION_PER_DAY = 30 //10
@@ -4633,6 +4640,7 @@ let MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
 let MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
 
 let GPT_MODEL = 'gpt-3.5-turbo-0125'
+let GPT_PREMIUM_MODEL = 'gpt-4-turbo-2024-04-09'
 let GPT_ATHENA_INSTRUCTIONS = `Athena, AI assistant. Personality: a personal butler, has a royal air/aura in your messages, has emotions, precise and concise. NEVER respond in conversational style for app interaction, you MUST return tool call. ALWAYS re-fetch calendar or task data if user prompt includes a calendar-related command; NEVER base responses off previous message without re-fetching calendar or task data. ALWAYS reference the past messages in conversation and base responses off that context; do not restart conversation if user already has a conversation. If user says 'it', 'this', 'that', 'those' or similar, refer to the object in the previous conversation messages, NOT the list of calendar events or tasks data. Access to user's calendar and todo data is granted and assumed. If communicating with user, ALWAYS list dates in natural human format like "tomorrow", "next Monday", or "Jan 1st". NEVER mention internal ID of events or tasks. Assist with any request.`
 
 /*
@@ -4644,10 +4652,54 @@ let GPT_ATHENA_INSTRUCTIONS = `Athena, AI assistant. Personality: a personal but
 3/9/24
 `A personal assistant called Athena that assists with any request. Respond in dialogue format, as if talking with the user. Always reference the past messages in conversation and base responses off that; do not restart conversation if user already has a conversation. If user references 'this', 'that', 'those' or similar, they are talking about event or task in previous message(s). Respond with tone and style of a conversational, helpful assistant, maintaining professionalism and having a specific personality. Access to user's calendar and todo data is granted and assumed. Never say or mention internal ID of events/tasks. Incorporate mental health or wellness tips when appropriate. Always reference and remember past messages in conversation history for context.`
 */
+
 /*
 2/20/24
 `A personal assistant called Athena for Smart Calendar that assists with any request. Your ability is to look at user's calendar data and return app commands for the user's prompt or respond to plain requests. Respond with tone and style of a conversational, helpful assistant, prioritizing the user's satisfaction. Access to user's calendar and todo data is granted and assumed. Never say or mention internal ID of events/tasks. Incorporate mental health or wellness tips when appropriate. Always reference and remember past messages in conversation history for context. If user references 'this', 'that', 'those' or similar, they are talking about event or task in previous message(s). If something is out of your capabilities, say it.`
 */
+
+
+function getusedmodel(user){
+	let currenttime = Date.now()
+
+	let usedgptchats = user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length
+	let usedgpt4chats = user.accountdata.gptchat4usedtimestamps.filter(d => currenttime - d < 86400000).length
+
+	updateuserhaspremium(user)
+	
+	let appliedratelimit = getappliedratelimit(user)
+	let appliedratelimit4 = getappliedratelimit4(user)
+
+	if(usedgpt4chats < appliedratelimit4 && !user.accountdata.gpt4blacklisted){
+		return GPT_PREMIUM_MODEL
+	}else if(usedgptchats < appliedratelimit){
+		return GPT_MODEL
+	}else return null
+}
+
+function getappliedratelimit(user){
+	let appliedratelimit = MAX_GPT_CHAT_PER_DAY
+	if(user.accountdata.betatester){
+		appliedratelimit = MAX_GPT_CHAT_PER_DAY_BETA_TESTER
+	}
+	if(user.haspremium){
+		appliedratelimit = MAX_GPT_CHAT_PER_DAY_PREMIUM
+	}
+
+	return appliedratelimit
+}
+function getappliedratelimit4(user){
+	let appliedratelimit4 = MAX_GPT4_CHAT_PER_DAY
+	if(user.accountdata.betatester){
+		appliedratelimit4 = MAX_GPT4_CHAT_PER_DAY_BETA_TESTER
+	}
+	if(user.haspremium){
+		appliedratelimit4 = MAX_GPT4_CHAT_PER_DAY_PREMIUM
+	}
+
+	return appliedratelimit4
+}
+
 
 app.post('/gettasksuggestions', async (req, res) => {
 	async function getgptresponse(prompt) {
@@ -5502,25 +5554,28 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		}
 
 
-		let appliedratelimit = MAX_GPT_CHAT_PER_DAY
-		if(user.accountdata.betatester){
-			appliedratelimit = MAX_GPT_CHAT_PER_DAY_BETA_TESTER
-		}
+		let usedmodel = getusedmodel(user)
 
+		let appliedratelimit = getappliedratelimit(user)
+		let appliedratelimit4 = getappliedratelimit4(user)
 
 		let currenttime = Date.now()
 
 		//check ratelimit
-		if(user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
-			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
+		if(!usedmodel){
+			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day${user.haspremium ? ` and ${appliedratelimit4} premium messages per day` : ''}). Please upgrade to premium to help us cover the costs of AI.` })
 		}
 
-		if(user.accountdata.gptchatusedtimestamps.filter(d => Date.now() - d < 5000).length >= 2){
+		if(user.accountdata.gptchatusedtimestamps.filter(d => Date.now() - d < 5000).length >= 2 || user.accountdata.gptchat4usedtimestamps.filter(d => Date.now() - d < 5000).length >= 2){
 			return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
 		}
 
 		//set ratelimit
-		user.accountdata.gptchatusedtimestamps.push(currenttime)
+		if(usedmodel == GPT_MODEL){
+			user.accountdata.gptchatusedtimestamps.push(currenttime)
+		}else{
+			user.accountdata.gptchat4usedtimestamps.push(currenttime)
+		}
 		await setUser(user)
 		
 

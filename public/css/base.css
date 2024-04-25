@@ -295,6 +295,9 @@
 .text-20px{
 	font-size:20px
 }
+.text-22px{
+	font-size:22px
+}
 .text-24px{
 	font-size:24px
 }
@@ -498,6 +501,9 @@
 }
 .gap-24px{
 	gap:24px
+}
+.gap-36px{
+	gap:36px
 }
 .gap-48px{
 	gap:48px

@@ -13686,6 +13686,36 @@ async function clickreferafriendinviteemail(event){
 	}
 }
 
+function clickupgradeseebelow(){
+	let upgradefeatureslist = getElement('upgradefeatureslist')
+	let upgradewrapcontent = getElement('upgradewrapcontent')
+	
+	let target = upgradefeatureslist.offsetTop
+	let duration = 500
+	let start = upgradewrapcontent.scrollTop
+	let end = target
+	let change = end - start
+	let increment = 20
+	let currentTime = 0
+
+	function animateScroll() {
+		function easeinoutquad(t, b, c, d) {
+			t /= d / 2
+			if (t < 1) return c / 2 * t * t + b
+			t--
+			return -c / 2 * (t * (t - 2) - 1) + b
+		}
+
+		currentTime += increment
+		const val = easeinoutquad(currentTime, start, change, duration)
+		upgradewrapcontent.scrollTo(0, val)
+		if (currentTime < duration) {
+			requestAnimationFrame(animateScroll, increment)
+		}
+	}
+	requestAnimationFrame(animateScroll, increment)
+}
+
 function clickreferafriendfeaturegetpremiumnow(){
 	let upgradewrapcontent = getElement('upgradewrapcontent')
 	
@@ -20147,3 +20177,29 @@ function togglePushNotifs(event) {
 //QUERY
 //e.g. unsubscribe or feedback
 checkquery()
+
+
+//STRIPE
+const stripe = Stripe('pk_test_51P3hFzDn1kfev6yXMdv9nI5toOeNg8Z3uaKLxb2pnFkpNtNY6zHxBliCjzGdjTEXQh4cH48OYlkVSfXeIp0iboNH000lNRR5Bk')
+const elements = stripe.elements()
+const cardElement = elements.create('card')
+cardElement.mount('#card-element')
+
+const form = getElement('payment-form')
+form.addEventListener('submit', async (event) => {
+	event.preventDefault()
+	const {error, paymentIntent} = await stripe.confirmCardPayment('{CLIENT_SECRET}', {
+		payment_method: {
+			card: cardElement,
+			billing_details: {
+				email: 'customer@example.com'
+			}
+		}
+	})
+
+	if (error) {
+		console.log('Payment failed:', error)
+	} else {
+		console.log('Payment succeeded:', paymentIntent)
+	}
+})

@@ -2366,7 +2366,7 @@ ol{
 
 
 .upgradebackgroundsplash{
-	background: linear-gradient(164deg, rgb(83, 130, 241) 1.68%, #4c92fc 23.95%, #9c59ff 57.56%, rgb(211, 94, 233) 72.69%, rgb(251, 126, 67) 84.87%);
+	background: linear-gradient(164deg, rgb(83, 130, 241) 0.84%, #4c92fc 11.975%, #9c59ff 28.78%, rgb(211, 94, 233) 36.345%, rgb(251, 126, 67) 42.435%, #d84cfc 80%);
 	height:800px;
 }
 
@@ -2527,10 +2527,10 @@ max-width:1000px;
 }
 
 .upgradewave{
-	top:800px;
+	top:320px;
 	width:100%;
 	fill:var(--background-primary);
-	transform:translateY(-560px)
+	overflow:visible;
 }
 
 .gradienttextpink {
@@ -2699,6 +2699,7 @@ max-width:1000px;
 	flex-direction: row;
 	justify-content: center;
 }
+
 
 .topbarbutton:hover {
 	background-color: var(--background-tint-1);
