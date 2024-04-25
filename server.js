@@ -2287,10 +2287,19 @@ app.get('/session-status', async (req, res) => {
 })
 
 //webhook for transaction end
-app.post('/webhook', express.json({type: 'application/json'}), (request, response) => {
+app.post('/webhook', express.json({type: 'application/json'}), async (request, response) => {
 	const event = request.body;
 
 	sendmessagetodev(JSON.stringify(event))
+
+	const customerId = event.customer
+
+	const sessions = await stripe.checkout.sessions.list({
+		customer: customerId,
+		limit: 1
+	})
+	sendmessagetodev(JSON.stringify(sessions))
+  
   
 	switch (event.type) {
 	  case 'payment_intent.succeeded':
@@ -2302,9 +2311,10 @@ app.post('/webhook', express.json({type: 'application/json'}), (request, respons
 	  default:
 		console.log(`Unhandled event type ${event.type}`);
 	}
-  
+
+
 	response.json({received: true});
-  });
+})
 
 
 
