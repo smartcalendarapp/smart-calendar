@@ -2234,16 +2234,28 @@ app.get('/session-status', async (req, res) => {
 })
 
 //webhook for transaction end
-app.post('/webhook', express.json({type: 'application/json'}), (request, response) => {
+app.post('/webhook', express.json({type: 'application/json'}), async (request, response) => {
 	try{
 		const event = request.body;
 	
 		switch (event.type) {
 			case 'payment_intent.succeeded':
 				const paymentIntent = event.data.object;
-				const metadata = paymentIntent.metadata;
-           		const userid = metadata.userid;
-				sendmessagetodev('successful transaction\n' +userid + '\n'+JSON.stringify(paymentIntent))
+				const metadata = paymentIntent?.metadata;
+				
+           		const userid = metadata?.userid;
+				const productid = paymentIntent.metadata.product_id
+
+				let user = await getUserById(userid)
+				if(!user){
+					sendmessagetodev('Error: could not get user after successful transaction. Userid: ' + userid)
+					break;
+				}
+
+				user = addpremiumtouser(user, 86400*1000)
+				await setUser(user)
+
+				sendmessagetodev('successful transaction\n' +paymentIntent.metadata.product_id + '\n'+userid + '\n'+JSON.stringify(paymentIntent))
 				break;
 			case 'payment_intent.payment_failed':
 				const paymentIntent2 = event.data.object;
@@ -2258,7 +2270,21 @@ app.post('/webhook', express.json({type: 'application/json'}), (request, respons
 		console.error(err)
 	}
 })
-//here3
+
+
+function addpremiumtouser(user, duration){
+	if((!user.accountdata.premium.endtimestamp && user.accountdata.premium.starttimestamp) || user.accountdata.premium.endtimestamp < Date.now()){
+		//start new
+		user.accountdata.premium.starttimestamp = Date.now()
+		user.accountdata.premium.endtimestamp = Date.now() + duration
+	}else{
+		//continue
+		user.accountdata.premium.endtimestamp = user.accountdata.premium.endtimestamp + duration
+	}
+
+	return user
+}
+
 
 
 //DISCORD BOT INITIALIZATION
@@ -4443,45 +4469,25 @@ async function validatereferafriendinvitecode(req){
 	return true
 }
 
+
 function checkreferafriendpremium(user){
 	if(user.accountdata.referafriend.acceptedcount >= 10){
 		if(user.accountdata.premium.referafriendclaimvalue < 3){
 			user.accountdata.premium.referafriendclaimvalue = 3
 
-			if((!user.accountdata.premium.endtimestamp && user.accountdata.premium.starttimestamp) || user.accountdata.premium.endtimestamp < Date.now()){
-				//start new
-				user.accountdata.premium.starttimestamp = Date.now()
-				user.accountdata.premium.endtimestamp = Date.now() + 86400*1000*180 //6 months
-			}else{
-				//continue
-				user.accountdata.premium.endtimestamp = user.accountdata.premium.endtimestamp + 86400*1000*180
-			}
+			user = addpremiumtouser(user, 86400*1000*183) //6 months
 		}
 	}else if(user.accountdata.referafriend.acceptedcount >= 5){
 		if(user.accountdata.premium.referafriendclaimvalue < 2){
 			user.accountdata.premium.referafriendclaimvalue = 2
 
-			if((!user.accountdata.premium.endtimestamp && !user.accountdata.premium.starttimestamp) || user.accountdata.premium.endtimestamp < Date.now()){
-				//start new
-				user.accountdata.premium.starttimestamp = Date.now()
-				user.accountdata.premium.endtimestamp = Date.now() + 86400*1000*60 //2 months
-			}else{
-				//continue
-				user.accountdata.premium.endtimestamp = user.accountdata.premium.endtimestamp + 86400*1000*60
-			}
+			user = addpremiumtouser(user, 86400*1000*61) //2 months
 		}
 	}else if(user.accountdata.referafriend.acceptedcount >= 3){
 		if(user.accountdata.premium.referafriendclaimvalue < 1){
 			user.accountdata.premium.referafriendclaimvalue = 1
 			
-			if((!user.accountdata.premium.endtimestamp && !user.accountdata.premium.starttimestamp) || user.accountdata.premium.endtimestamp < Date.now()){
-				//start new
-				user.accountdata.premium.starttimestamp = Date.now()
-				user.accountdata.premium.endtimestamp = Date.now() + 86400*1000*30 //1 month
-			}else{
-				//continue
-				user.accountdata.premium.endtimestamp = user.accountdata.premium.endtimestamp + 86400*1000*30
-			}
+			user = addpremiumtouser(user, 86400*1000*31) //1 month
 		}
 	}
 
