@@ -2262,11 +2262,9 @@ app.post('/create-checkout-session', async (req, res) => {
 			automatic_tax: {enabled: true},
 			success_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
 			cancel_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
-			subscription_data: {
-				metadata: {
-					userid: req.session.user.userid,
-					option: option
-				}
+			metadata: {
+				userid: req.session.user.userid,
+				option: option
 			}
 		})
 
@@ -2369,7 +2367,6 @@ async function sendmessagetodev(content){
 	try{
 	(await discordclient.users.fetch('552275355092647946')).send(content.slice(0, 2000))
 	}catch(err){
-
 	}
 }
 
