@@ -20187,8 +20187,13 @@ async function checkstripequery(){
 	const queryString = window.location.search;
 	const urlParams = new URLSearchParams(queryString);
 	const sessionId = urlParams.get('stripe_id');
+
+	if(!sessionId) return
+	
 	const response = await fetch(`/session-status?session_id=${sessionId}`);
 	const session = await response.json();
+
+	if(!session) return
   
 	if (session.status == 'open') {
 	  alert('failed checkout')
