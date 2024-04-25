@@ -20211,8 +20211,12 @@ async function clickupgrade(option){
             },
             body: JSON.stringify({ option: option })
         });
-        const session = await response.json();
-        window.location.href = session.url;
+		if(response.status == 401){
+			displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">An error occurred, try signing in again.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>')
+		}else{
+			const session = await response.json();
+			window.location.href = session.url;
+		}
     } catch (error) {
         console.error('Error:', error);
     }

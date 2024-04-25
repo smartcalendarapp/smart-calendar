@@ -2188,54 +2188,75 @@ const STRIPE_SIGNING_SECRET = process.env.STRIPE_SIGNING_SECRET
 const stripe = require('stripe')('sk_test_51P3hFzDn1kfev6yXrPpFlSqJtnuwOAOqu1Ai28xqdeM4sfV1QaR015g11nqBDYFdoQa8Srl2BFimKirXn9eolUYU00zMaiBGfC')
 
 app.post('/create-checkout-session', async (req, res) => {
-	let option = req.body.option
+	try{
+		if(!req.session?.user?.userid){
+			return res.status(401).end()
+		}
 
-	const prices = ['price_1P9ErHDn1kfev6yXTtck8cfA', 'price_1P9EsHDn1kfev6yX7kA9geRI']
+		let option = req.body.option
 
-	if(!prices[option]) return res.status(401).end()
+		const prices = ['price_1P9ErHDn1kfev6yXTtck8cfA', 'price_1P9EsHDn1kfev6yX7kA9geRI']
 
-	const session = await stripe.checkout.sessions.create({
-		line_items: [
-		{
-			price: prices[option],
-			quantity: 1,
-		},
-		],
-		mode: 'subscription',
-		automatic_tax: {enabled: true},
-		success_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
-		cancel_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
-	})
+		if(!prices[option]) return res.status(401).end()
 
-	res.json({ url: session.url });
+		const session = await stripe.checkout.sessions.create({
+			line_items: [
+			{
+				price: prices[option],
+				quantity: 1,
+			},
+			],
+			mode: 'subscription',
+			automatic_tax: {enabled: true},
+			success_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
+			cancel_url: `${DOMAIN}/app?stripe_id={CHECKOUT_SESSION_ID}`,
+			metadata: {
+				userid: req.session?.user?.userid
+			}
+		})
+
+		res.json({ url: session.url });
+	}catch(err){
+		console.error(err)
+	}
 })
 
 app.get('/session-status', async (req, res) => {
-  const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
+	try{
+		const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
 
-  res.send({
-    status: session.status
-  })
+		res.send({
+			status: session.status
+		})
+	}catch(error){
+		console.error(error)
+	}
 })
 
-//webhook for transaction updates
+//webhook for transaction end
 app.post('/webhook', express.json({type: 'application/json'}), (request, response) => {
-	const event = request.body;
-  
-	switch (event.type) {
-	  	case 'payment_intent.succeeded':
-			const paymentIntent = event.data.object;
-			sendmessagetodev('successful transaction\n' +JSON.stringify(paymentIntent))
-			break;
-	  	case 'payment_intent.payment_failed':
-			const paymentIntent2 = event.data.object;
-			sendmessagetodev('failed transaction\n'+JSON.stringify(paymentIntent2))
-			break;
-		default:
-			console.warn(`Stripe: Unhandled event type ${event.type}`);
+	try{
+		const event = request.body;
+	
+		switch (event.type) {
+			case 'payment_intent.succeeded':
+				const paymentIntent = event.data.object;
+				const metadata = paymentIntent.metadata;
+           		const userid = metadata.userid;
+				sendmessagetodev('successful transaction\n' +userid + '\n'+JSON.stringify(paymentIntent))
+				break;
+			case 'payment_intent.payment_failed':
+				const paymentIntent2 = event.data.object;
+				sendmessagetodev('failed transaction\n'+JSON.stringify(paymentIntent2))
+				break;
+			default:
+				console.warn(`Stripe: Unhandled event type ${event.type}`);
+		}
+	
+		response.json({received: true})
+	}catch(err){
+		console.error(err)
 	}
-  
-	response.json({received: true})
 })
 //here3
 
