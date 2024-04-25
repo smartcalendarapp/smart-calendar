@@ -7466,9 +7466,13 @@ async function disconnectgoogle() {
 //POPUP
 let popupqueue = []
 let popupshown = false
-function displaypopup(content){
+function displaypopup(content, donotpush){
 	let generalusepopup = getElement('generalusepopup')
 	let generalusepopupcontent = getElement('generalusepopupcontent')
+
+	if(!donotpush){
+		popupqueue.push(content)
+	}
 
 	if(!popupshown){
 		popupshown = true
@@ -7476,8 +7480,6 @@ function displaypopup(content){
 		generalusepopup.classList.remove('hiddenpopup')
 
 		generalusepopupcontent.innerHTML = content
-	}else{
-		popupqueue.push(content)
 	}
 }
 function closepopup(){
@@ -7489,7 +7491,7 @@ function closepopup(){
 		popupshown = false
 
 		if(popupqueue.length > 0){
-			displaypopup(popupqueue[0])
+			displaypopup(popupqueue[0], true)
 		}
 	}, 300)
 }
@@ -20196,11 +20198,11 @@ async function checkstripequery(){
 	const session = await response.json();
   
 	if (session.status == 'open') {
-		displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">An error occurred, try signing in again.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Checkout was not completed</div></div>')
+		displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">The payment was not completed.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>')
 		calendartabs = [5]
 	} else if (session.status == 'complete') {
-		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Thank you for upgrading! You now have ${getRoundedYMWDtext(Math.ceil(Date.now() - clientinfo?.premiumendtimestamp)/60000)} of premium! See what you can do now:</div>
-		<div class="text-16px text-quaternary">${markdowntoHTML(`- Increased AI chat: send up to 200 messages to our AI Assistant Athena every day.\n- Enhanced Personal Assistant: Athena will have more capabilities, and will provide you daily briefings, suggestions to complete your tasks, and more productivity help.\n- Early access to new features: you'll be the first to see our new exciting features and use them for your productivity.`)}</div></div>`)
+		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">Thank you for upgrading! You now have ${getRoundedYMWDtext(Math.ceil(Date.now() - clientinfo?.premiumendtimestamp)/60000)} of premium. See what you can do now:</div>
+		<div class="text-16px text-quaternary">${markdowntoHTML(`- Increased AI chat: send up to 200 messages to our AI Assistant Athena every day.\n- Enhanced Personal Assistant: Athena will have more capabilities, and will provide you daily briefings, suggestions to complete your tasks, and more productivity help.\n- Early access to new features: you'll be the first to see our new exciting features and use them for your productivity.`, 'assistant')}</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Done</div>`)
 		calendartabs = [5]
 	}
 }
@@ -20215,7 +20217,7 @@ async function clickupgrade(option){
             body: JSON.stringify({ option: option })
         });
 		if(response.status == 401){
-			displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">An error occurred, try signing in again.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>')
+			displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">An error occurred, try signing in again or contact us <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>')
 		}else{
 			const session = await response.json();
 			window.location.href = session.url;

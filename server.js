@@ -2192,6 +2192,7 @@ app.post('/create-checkout-session', async (req, res) => {
 		if(!req.session?.user?.userid){
 			return res.status(401).end()
 		}
+		console.warn(req.session.user.userid)
 
 		let option = req.body.option
 
