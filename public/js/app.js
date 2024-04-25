@@ -132,6 +132,30 @@ function getDHMText(input) {
 	return [days, hours, minutes].filter(f => f).join(' ')
 }
 
+function getRoundedYMWDtext(input) {
+	let temp = Math.abs(input)
+	let days = Math.round(temp / 1440)
+	let weeks = Math.round(days / 7)
+	let months = Math.round(days / 30.44)
+	let years = Math.round(days / 365.25)
+
+	let output = ''
+
+	if (years >= 1) {
+		output = `${years} year${years === 1 ? '' : 's'}`
+	} else if (months >= 1 && months < 12) {
+		output = `${months} month${months === 1 ? '' : 's'}`
+	} else if (weeks >= 1 && weeks < 4) {
+		output = `${weeks} week${weeks === 1 ? '' : 's'}`
+	} else if (days >= 1) {
+		output = `${days} day${days === 1 ? '' : 's'}`
+	} else {
+		return ''
+	}
+
+	return output
+}
+
 function getRelativeDHMText(input) {
 	let temp = Math.abs(input)
 	let days = Math.floor(temp / 1440)
@@ -13491,33 +13515,11 @@ async function referafriendgeneratelink(generate){
 			if(oldhaspremium != clientinfo.haspremium || (oldpremiumendtimestamp && clientinfo.premiumendtimestamp && clientinfo.premiumendtimestamp > oldpremiumendtimestamp)){
 				calendar.updateUpgrade()
 
-				function getRoundedYMWDtext(input) {
-					let temp = Math.abs(input)
-					let days = Math.round(temp / 1440)
-					let weeks = Math.round(days / 7)
-					let months = Math.round(days / 30.44)
-					let years = Math.round(days / 365.25)
-
-					let output = ''
-
-					if (years >= 1) {
-						output = `${years} year${years === 1 ? '' : 's'}`
-					} else if (months >= 1 && months < 12) {
-						output = `${months} month${months === 1 ? '' : 's'}`
-					} else if (weeks >= 1 && weeks < 4) {
-						output = `${weeks} week${weeks === 1 ? '' : 's'}`
-					} else if (days >= 1) {
-						output = `${days} day${days === 1 ? '' : 's'}`
-					} else {
-						return ''
-					}
-
-					return output
-				}
+				
 
 				displaypopup(`
 				<div class="text-18px text-primary text-center">Congrats!!</div>
-				<div class="text-16px text-primary">You got ${getRoundedYMWDtext(Math.ceil(Date.now() - clientinfo?.premiumendtimestamp)/60000)} of free premium! See what you can do now:</div>
+				<div class="text-16px text-primary">You now have ${getRoundedYMWDtext(Math.ceil(Date.now() - clientinfo?.premiumendtimestamp)/60000)} of premium! See what you can do now:</div>
 				<div class="text-16px text-quaternary">${markdowntoHTML(`- Increased AI chat: send up to 200 messages to our AI Assistant Athena every day.\n- Enhanced Personal Assistant: Athena will have more capabilities, and will provide you daily briefings, suggestions to complete your tasks, and more productivity help.\n- Early access to new features: you'll be the first to see our new exciting features and use them for your productivity.`, 'assistant')}</div>
 				<div class="border-8px background-blue hover:background-blue-hover text-center padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Done</div>`)
 
@@ -20194,10 +20196,11 @@ async function checkstripequery(){
 	const session = await response.json();
   
 	if (session.status == 'open') {
-	  	alert('failed checkout')
+		displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">An error occurred, try signing in again.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Checkout was not completed</div></div>')
 		calendartabs = [5]
 	} else if (session.status == 'complete') {
-	  	alert('successful checkout')
+		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Thank you for upgrading! You now have ${getRoundedYMWDtext(Math.ceil(Date.now() - clientinfo?.premiumendtimestamp)/60000)} of premium! See what you can do now:</div>
+		<div class="text-16px text-quaternary">${markdowntoHTML(`- Increased AI chat: send up to 200 messages to our AI Assistant Athena every day.\n- Enhanced Personal Assistant: Athena will have more capabilities, and will provide you daily briefings, suggestions to complete your tasks, and more productivity help.\n- Early access to new features: you'll be the first to see our new exciting features and use them for your productivity.`)}</div></div>`)
 		calendartabs = [5]
 	}
 }

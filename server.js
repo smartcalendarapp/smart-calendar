@@ -2242,9 +2242,16 @@ app.post('/webhook', express.json({type: 'application/json'}), async (request, r
 			case 'payment_intent.succeeded':
 				const paymentIntent = event.data.object;
 				const metadata = paymentIntent?.metadata;
-				
+
+				sendmessagetodev(JSON.stringify(paymentIntent))
+
            		const userid = metadata?.userid;
 				const productid = paymentIntent.metadata.product_id
+
+				if(!userid){
+					sendmessagetodev('Error: could not get user after successful transaction. Userid: ' + userid)
+					break;
+				}
 
 				let user = await getUserById(userid)
 				if(!user){
