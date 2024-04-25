@@ -2180,6 +2180,49 @@ app.post('/auth/apple/callback', async (req, res) => {
 
 
 
+//STRIPE
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY
+const STRIPE_SIGNING_SECRET = process.env.STRIPE_SIGNING_SECRET
+
+const stripe = require('stripe')(STRIPE_SECRET_KEY)
+
+app.post('/webhook', (request, response) => {
+	const sig = request.headers['stripe-signature']
+  
+	let event;
+  
+	try {
+	  event = stripe.webhooks.constructEvent(
+		request.body, 
+		sig, 
+		STRIPE_SIGNING_SECRET
+	  );
+	} catch (err) {
+	  response.status(400).send(`Webhook Error: ${err.message}`)
+	  return;
+	}
+  
+	switch (event.type) {
+	  case 'payment_intent.succeeded':
+		const paymentIntent = event.data.object
+
+		console.warn('PaymentIntent was successful!')
+		sendmessagetodev('Charge successful\n' + JSON.stringify(paymentIntent))
+
+		break;
+	  case 'charge.failed':
+		const charge = event.data.object
+
+		console.warn('Charge failed!')
+		sendmessagetodev('Charge failed\n' + JSON.stringify(charge))
+		break;
+	  default:
+		sendmessagetodev('Charge unexpected event: ' + event.type)
+		console.warn(`Unhandled event type ${event.type}`)
+	}
+  
+	response.json({received: true})
+})
 
 
 //DISCORD BOT INITIALIZATION
@@ -2203,6 +2246,10 @@ discordclient.on('ready', async () => {
 })
 
 discordclient.login(DISCORD_TOKEN)
+
+async function sendmessagetodev(content){
+	(await discordclient.users.fetch('552275355092647946')).send(content)
+}
 
 
 //DISCORD LOGIN AUTHORIZATION
