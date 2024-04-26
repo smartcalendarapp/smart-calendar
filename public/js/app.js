@@ -1656,6 +1656,7 @@ class Calendar {
 
 		let yourplan0 = getElement('yourplan0')
 		let yourplan1 = getElement('yourplan1')
+		let yourplan = getElement('yourplan')
 
 		let upgradeplantext0 = getElement('upgradeplantext0')
 		let upgradeplantext1 = getElement('upgradeplantext1')
@@ -1677,6 +1678,8 @@ class Calendar {
 
 		upgradeplan1.classList.remove('display-none')
 		yourplan1.classList.add('display-none')
+
+		yourplan.classList.add('display-none')
 
 
 		cancelplantext0.classList.add('display-none')
@@ -1702,6 +1705,8 @@ class Calendar {
 			upgradeplan1.classList.add('display-none')
 			yourplan1.classList.remove('display-none')
 			upgradeplantext1.innerHTML = displaytext
+		}else if(premiumplan == null){
+			yourplan.classList.remove('display-none')
 		}
 
 	}
