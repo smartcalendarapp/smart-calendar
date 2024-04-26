@@ -13565,20 +13565,14 @@ async function referafriendgeneratelink(generate){
 
 			let data = await response.json()
 
-			clientinfo.referafriend.invitelink = data.data.invitelink
-			clientinfo.referafriend.acceptedcount = data.data.acceptedcount
-
-			clientinfo.haspremium = data.data.haspremium
-			clientinfo.premiumendtimestamp = data.data.premiumendtimestamp
+			await getclientinfo()
 
 
-			if(oldhaspremium != clientinfo.haspremium || (oldpremiumendtimestamp && clientinfo.premiumendtimestamp && clientinfo.premiumendtimestamp > oldpremiumendtimestamp)){
+			if((clientinfo?.premiumplan == null) && (oldhaspremium != clientinfo.haspremium || (oldpremiumendtimestamp && clientinfo.premiumendtimestamp && clientinfo.premiumendtimestamp > oldpremiumendtimestamp))){
 				calendar.updateUpgrade()
 
-				
-
 				displaypopup(`
-				<div class="text-18px text-primary text-center">Congrats!!</div>
+				<div class="text-18px text-primary text-center">Congrats!</div>
 				<div class="text-16px text-primary">You now have ${getRoundedYMWDtext(Math.ceil(Date.now() - clientinfo?.premiumendtimestamp)/60000)} of premium! See what you can do now:</div>
 				<div class="text-16px text-quaternary">${markdowntoHTML(`- Increased AI chat: send up to 200 messages to our AI Assistant Athena every day.\n- Enhanced Personal Assistant: Athena will have more capabilities, and will provide you daily briefings, suggestions to complete your tasks, and more productivity help.\n- Early access to new features: you'll be the first to see our new exciting features and use them for your productivity.`, 'assistant')}</div>
 				<div class="border-8px background-blue hover:background-blue-hover text-center padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Done</div>`)
@@ -20262,9 +20256,31 @@ async function checkstripequery(){
 		await getclientinfo()
 		calendar.updateUpgrade()
 
-		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">Congrats, you are now a Smart Calendar Premium user! Your subscription will renew <span class="text-bold">${['monthly', 'annually'][option]}</span>, and will next renew ${getRelativeDHMText(Math.floor(Date.now() - clientinfo?.premiumendtimestamp)/60000)}<br><br>See what you can do now:</div>
+		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-center text-18px text-primary">Congrats!</div><div class="text-primary text-16px">You are now a Smart Calendar Premium user! Your subscription will renew <span class="text-bold">${['monthly', 'annually'][option]}</span> ${getRelativeDHMText(Math.floor(Date.now() - clientinfo?.premiumendtimestamp)/60000)}<br><br>See what you can do now:</div>
 		<div class="text-16px text-quaternary">${markdowntoHTML(`- Increased AI chat: send up to 200 messages to our AI Assistant Athena every day.\n- Enhanced Personal Assistant: Athena will have more capabilities, and will provide you daily briefings, suggestions to complete your tasks, and more productivity help.\n- Early access to new features: you'll be the first to see our new exciting features and use them for your productivity.`, 'assistant')}</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Done</div>`)
 		calendartabs = [5]
+
+		let confetticanvas = getElement('confetticanvas')
+		let myconfetti = confetti.create(confetticanvas, {
+			resize: true,
+			useWorker: true
+		})
+
+		try{
+			await myconfetti({
+				particleCount: 100,
+				gravity: 0.8,
+				startVelocity: 30,
+				decay: 0.96,
+				ticks: 300,
+				origin: {
+					x: 0.5,
+					y: 1,
+				}
+			})
+
+			if(myconfetti) myconfetti.reset()
+		}catch(e){}
 	}
 }
 
@@ -20287,7 +20303,7 @@ async function clickupgrade(option){
 				await getclientinfo()
 				calendar.updateUpgrade()
 
-				displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Successfully changed your subscription</div><div class="text-quaternary text-16px">Your subscription is now renewing <span class="text-bold">${['monthly', 'annually'][option]}</span>, and will next renew ${getRelativeDHMText(Math.floor(Date.now() - clientinfo?.premiumendtimestamp)/60000)}.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>`)
+				displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Successfully changed your subscription</div><div class="text-quaternary text-16px">Your subscription will renew <span class="text-bold">${['monthly', 'annually'][option]}</span> ${getRelativeDHMText(Math.floor(Date.now() - clientinfo?.premiumendtimestamp)/60000)}.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>`)
 			}
 		}else{
 
