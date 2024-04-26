@@ -2233,7 +2233,7 @@ app.post('/auth/apple/callback', async (req, res) => {
 
 
 //STRIPE
-const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY
+const STRIPE_SECRET_KEY = 'sk_test_51P3hFzDn1kfev6yXrPpFlSqJtnuwOAOqu1Ai28xqdeM4sfV1QaR015g11nqBDYFdoQa8Srl2BFimKirXn9eolUYU00zMaiBGfC'//process.env.STRIPE_SECRET_KEY
 const STRIPE_SIGNING_SECRET = process.env.STRIPE_SIGNING_SECRET
 
 const MONTHLY_PLAN_ID = 'price_1P9ErHDn1kfev6yXTtck8cfA'//'price_1P9K9yDn1kfev6yXNnfVzV1W'
