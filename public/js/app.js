@@ -1705,7 +1705,7 @@ class Calendar {
 			upgradeplan1.classList.add('display-none')
 			yourplan1.classList.remove('display-none')
 			upgradeplantext1.innerHTML = displaytext
-		}else if(premiumplan == null){
+		}else if(!clientinfo.haspremium && clientinfo.premiumplan == null){
 			yourplan.classList.remove('display-none')
 		}
 
