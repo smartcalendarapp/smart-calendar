@@ -20292,13 +20292,7 @@ async function checkstripequery(){
 async function clickupgrade(option){
 	try {
 		if(clientinfo?.haspremium && clientinfo?.premiumplan != null){
-			if(clientinfo?.premiumplan != null && option < clientinfo.premiumplan){
-				//cannot downgrade
-				displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Could not change your subscription</div><div class="text-quaternary text-16px">You cannot downgrade your subscription. Please cancel the current plan and wait until it expires to get the new subscription. If you have questions, please <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>`)
-				return
-			}
-
-			//need to prorate and stuff
+			//need to switch plan at end of term
 			const response = await fetch('/changesubscription', {
 				method: 'POST',
 				headers: {

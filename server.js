@@ -2456,12 +2456,9 @@ app.post('/changesubscription', async (req, res) => {
 			return res.status(401).end()
 		}
 
-		if(user.accountdata.premium.plan != null && option < user.accountdata.premium.plan){
-			return res.status(401).json({ error: 'Cannot downgrade to a cheaper plan, please cancel your current plan and buy the new subscription after it expires.' })
-		}
-
 		const subscription = await stripe.subscriptions.retrieve(subscriptionId)
         const firstItemId = subscription.items.data[0].id
+		const currentPeriodEnd = subscription.current_period_end;
 
 		const modifiedSubscription = await stripe.subscriptions.update(subscriptionId, {
 			cancel_at_period_end: false,
@@ -2469,7 +2466,8 @@ app.post('/changesubscription', async (req, res) => {
                 id: firstItemId,
                 price: prices[option],
             }],
-            proration_behavior: 'create_prorations',
+			proration_behavior: 'none',
+            trial_end: currentPeriodEnd,
 		})
 
 		if(option == 0){
