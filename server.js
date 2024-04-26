@@ -2293,12 +2293,10 @@ app.get('/session-status', async (req, res) => {
 //webhook for payment
 app.post('/webhook', express.json({type: 'application/json'}), async (req, res) => {
 	try{
-		if(event.type == 'invoice.payment_succeeded'){
-			sendmessagetodev(JSON.stringify(event.data))
-		}
-
 		const event = req.body;
 		if(event.type != 'invoice.payment_succeeded') return
+
+		sendmessagetodev(JSON.stringify(event.data))
 
 		const customerId = event.data.object.customer
 		if(!customerId){
