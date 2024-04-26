@@ -1649,7 +1649,7 @@ class Calendar {
 
 
 		//plans
-		let premiumplan = clientinfo.premiumplan
+		let premiumplan = clientinfo.haspremium && clientinfo.premiumplan
 
 		let upgradeplan1 = getElement('upgradeplan1')
 		let upgradeplan0 = getElement('upgradeplan0')
@@ -20223,7 +20223,7 @@ async function checkstripequery(){
 	const session = await response.json();
   
 	if (session.status == 'open') {
-		displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">The payment was not completed.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>')
+		displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">The payment was not completed.</div><div class="text-quaternary text-16px">If you have any questions, please <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>')
 		calendartabs = [5]
 	} else if (session.status == 'complete') {
 		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">Thank you for upgrading! You now have premium. See what you can do now:</div>
@@ -20242,7 +20242,7 @@ async function clickupgrade(option){
             body: JSON.stringify({ option: option })
         });
 		if(response.status == 401){
-			displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">An error occurred, try signing in again or contact us <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>')
+			displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">An error occurred</div><div class="text-quaternary text-16px">Try signing in again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>')
 		}else{
 			const session = await response.json();
 			window.location.href = session.url;
@@ -20250,4 +20250,36 @@ async function clickupgrade(option){
     } catch (error) {
         console.error('Error:', error);
     }
+}
+
+function clickcancelplan(event){
+	let cancelsubscriptionpopup = getElement('cancelsubscriptionpopup')
+	cancelsubscriptionpopup.classList.remove('hiddenpopup')
+
+	cancelsubscriptionpopup.style.left = fixleft(event.target.getBoundingClientRect().left + event.target.getBoundingClientRect().width/2 - cancelsubscriptionpopup.offsetWidth/2, tempdiv) + 'px'
+	cancelsubscriptionpopup.style.top = fixtop(event.target.getBoundingClientRect().top, tempdiv) + 'px'
+}
+
+async function confirmcancelplan(){
+	let cancelsubscriptiontextarea = getElement('cancelsubscriptiontextarea')
+
+	let response = await fetch('/cancelsubscription', {
+		method: 'POST',
+		headers: {
+		  'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ reason: cancelsubscriptiontextarea.value })
+	})
+	if(response.status == 401){
+		let data = await response.json()
+
+		let cancelsubscriptionerrorwrap = getElement('cancelsubscriptionerrorwrap')
+		cancelsubscriptionerrorwrap.innerHTML = data.error
+		cancelsubscriptionerrorwrap.classList.remove('display-none')
+	}else if(response.status == 200){
+		let cancelsubscriptionpopup = getElement('cancelsubscriptionpopup')
+		cancelsubscriptionpopup.classList.add('hiddenpopup')
+		
+		displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Confirmed.</div><div class="text-16px text-quaternary">Your subscription has been canceled. If you have any questions, please <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.</div></div><div class="border-8px background-blue hover:background-blue-hover text-center padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Done</div>')
+	}
 }

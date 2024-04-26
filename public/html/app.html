@@ -1064,6 +1064,19 @@
 		</div>
 	</div>
 
+	<div class="schedulemenu hiddenpopup popup z-index-1000 width300px" id="cancelsubscriptionpopup">
+		<div class="infotitle text-center">Cancel Subscription</div>
+		<div class="text-14px text-quaternary">We are sorry to see you would like to cancel your subscription. After your subscription ends, it will not be renewed. Do you want to continue?</div>
+
+		<div class="errorwrap display-none" id="cancelsubscriptionerrorwrap"></div>
+
+		<textarea id="cancelsubscriptiontextarea" class="infoinput infonotes" placeholder="Please tell us why you are cancelling your plan. Thank you"  maxlength="2000"></textarea>
+
+			
+		<div class="align-self-flex-end border-round background-red text-white padding-8px-12px pointer hover:background-red-hover text-14px transition-duration-100" onclick="confirmcancelplan()">Confirm</div>
+	</div>
+
+
 	<div class="schedulemenu hiddenpopup popup z-index-1000 width300px" id="changepasswordmenu" >
 		<div class="infotitle text-center">Change Password</div>
 		
@@ -2353,8 +2366,11 @@
 									<div class="text-14px text-quaternary">Good for individuals who want to manage busy schedules with more AI & less stress.</div>
 									<div class="text-center text-bold"><span class="text-primary text-48px">$10</span><span class="text-quaternary">/month</span></div>
 									<div class="text-decoration-none background-blue text-center padding-8px-12px border-8px text-white text-14px text-bold pointer transition-duration-100 hover:background-blue-hover" onclick="clickupgrade(0)" id="upgradeplan0">Upgrade</div>
-									<div class="text-decoration-none display-none background-tint-2 text-center padding-8px-12px border-8px text-white text-14px text-bold transition-duration-100" id="yourplan0">Your plan</div>
-									<div class="text-14px pointer text-center text-quaternary" >See below for <span class="text-blue pointer hover:text-blue-hover" onclick="clickupgradeseebelow()">what's included</span>.</div>
+									<div class="display-flex flex-column align-center gap-6px display-none "   id="yourplan0">
+										<div class="text-decoration-none width-full background-tint-2 text-center padding-8px-12px border-8px text-white text-14px text-bold transition-duration-100">Your plan</div>
+										<div class="text-quaternary text-12px hover:text-decoration-underline pointer" onclick="clickcancelplan(event)">Cancel plan</div>
+									</div>
+									<div class="text-14px pointer text-center text-quaternary" >See below for <span class="text-blue pointer hover:text-blue-hover" onclick="clickupgradeseebelow()">what's included</span></div>
 								</div>
 								<div class="width300px border-box background-primary-transparent box-shadow-3  display-flex backdrop-blur flex-column gap-24px padding-24px border-16px">
 									<div class="text-18px text-bold text-primary text-center">Annual Plan <span class="background-purple border-round text-white badgepadding text-12px">Recommended</span></div>
@@ -2364,8 +2380,11 @@
 										<div class="text-12px text-quaternary">(billed $60/year)</div>
 									</div>
 									<a class="text-decoration-none background-blue text-center padding-8px-12px border-8px text-white text-14px text-bold pointer transition-duration-100 hover:background-blue-hover" onclick="clickupgrade(1)" id="upgradeplan1">Upgrade</a>
-									<div class="text-decoration-none background-tint-2 text-center padding-8px-12px border-8px display-none text-white text-14px text-bold transition-duration-100" id="yourplan1">Your plan</div>
-									<div class="text-14px pointer text-center text-quaternary" >See below for <span class="text-blue pointer hover:text-blue-hover" onclick="clickupgradeseebelow()">what's included</span>.</div>
+									<div class="display-flex flex-column align-center gap-6px display-none "   id="yourplan1">
+										<div class="text-decoration-none width-full background-tint-2 text-center padding-8px-12px border-8px text-white text-14px text-bold transition-duration-100">Your plan</div>
+										<div class="text-quaternary text-12px hover:text-decoration-underline pointer" onclick="clickcancelplan(event)">Cancel plan</div>
+									</div>
+									<div class="text-14px pointer text-center text-quaternary" >See below for <span class="text-blue pointer hover:text-blue-hover" onclick="clickupgradeseebelow()">what's included</span></div>
 								</div>
 							</div>
 
