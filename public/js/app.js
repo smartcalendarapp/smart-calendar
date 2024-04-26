@@ -1657,18 +1657,48 @@ class Calendar {
 		let yourplan0 = getElement('yourplan0')
 		let yourplan1 = getElement('yourplan1')
 
+		let upgradeplantext0 = getElement('upgradeplantext0')
+		let upgradeplantext1 = getElement('upgradeplantext1')
+
+		let cancelplantext1 = getElement('cancelplantext1')
+		let cancelplantext0 = getElement('cancelplantext0')
+
+		let renewplantext1 = getElement('renewplantext1')
+		let renewplantext0 = getElement('renewplantext0')
+
+
+		upgradeplantext1.innerHTML = 'Your plan'
+		upgradeplantext0.innerHTML = 'Your plan'
+
+		let displaytext = `${clientinfo?.subscriptionstatus == 'ongoing' ? 'Renews' : 'Expires'} ${getRelativeDHMText(Math.floor(Date.now() - clientinfo?.premiumendtimestamp)/60000)}`
+
 		upgradeplan0.classList.remove('display-none')
 		yourplan0.classList.add('display-none')
 
 		upgradeplan1.classList.remove('display-none')
 		yourplan1.classList.add('display-none')
 
+
+		cancelplantext0.classList.add('display-none')
+		cancelplantext1.classList.add('display-none')
+		if(clientinfo?.subscriptionstatus == 'ongoing'){
+			cancelplantext0.classList.remove('display-none')
+			cancelplantext1.classList.remove('display-none')
+		}
+		if(clientinfo?.subscriptionstatus == 'canceled'){
+			renewplantext0.classList.remove('display-none')
+			renewplantext1.classList.remove('display-none')
+		}
+		
+
 		if(premiumplan == 0){
 			upgradeplan0.classList.add('display-none')
 			yourplan0.classList.remove('display-none')
+			upgradeplantext0.innerHTML = displaytext
 		}else if(premiumplan == 1){
 			upgradeplan1.classList.add('display-none')
 			yourplan1.classList.remove('display-none')
+			upgradeplantext1.innerHTML = displaytext
 		}
 
 	}
@@ -6192,7 +6222,7 @@ function updateuserinfo(){
 		${clientinfo?.haspremium ? `<span class="text-14px nowrap badgepadding background-gold border-8px text-white">Premium</span>` : ''}
 	</div>
 
-	${clientinfo?.haspremium && clientinfo?.premiumendtimestamp ? `<div class="text-14px text-quaternary nowrap">Premium expires ${getRelativeDHMText(Math.floor(Date.now() - clientinfo?.premiumendtimestamp)/60000)}</div>` : ''}
+	${clientinfo?.haspremium && clientinfo?.premiumendtimestamp ? `<div class="text-14px text-quaternary nowrap">Premium ${clientinfo?.subscriptionstatus == 'ongoing' ? 'renews' : 'expires'} ${getRelativeDHMText(Math.floor(Date.now() - clientinfo?.premiumendtimestamp)/60000)}</div>` : ''}
 	
 	<div class="text-14px text-primary">${getUserEmail() && isEmail(getUserEmail()) && getUserEmail()  != getUserName() ? getUserEmail() : ''}</div>`
 }
@@ -20260,6 +20290,23 @@ function clickcancelplan(event){
 	cancelsubscriptionpopup.style.top = fixtop(event.target.getBoundingClientRect().top + event.target.getBoundingClientRect().height, cancelsubscriptionpopup) + 'px'
 }
 
+async function clickrenewplan(){
+	let response = await fetch('/renewsubscription', {
+		method: 'POST',
+		headers: {
+		  'Content-Type': 'application/json',
+		}
+	})
+	if(response.status == 401){
+		let data = await response.json()
+
+		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Could not renew your subscription.</div><div class="text-16px text-quaternary">An error occured: ${data.error}. Please <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a> for help.</div></div><div class="border-8px background-blue hover:background-blue-hover text-center padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Ok</div>`)
+	}else if(response.status == 200){
+		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Successfully renewed your subscription!</div></div><div class="border-8px background-blue hover:background-blue-hover text-center padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Ok</div>`)
+	}
+	calendar.updateUpgrade()
+}
+
 async function confirmcancelplan(){
 	let cancelsubscriptiontextarea = getElement('cancelsubscriptiontextarea')
 
@@ -20284,6 +20331,6 @@ async function confirmcancelplan(){
 		let cancelsubscriptionpopup = getElement('cancelsubscriptionpopup')
 		cancelsubscriptionpopup.classList.add('hiddenpopup')
 		
-		displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Confirmed.</div><div class="text-16px text-quaternary">Your subscription has been canceled. Access to premium will go away after the remaining subscription expires. If you have any questions, please <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.</div></div><div class="border-8px background-blue hover:background-blue-hover text-center padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Done</div>')
+		displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Successfully canceled your subscription.</div><div class="text-16px text-quaternary">Your subscription has been canceled. Access to premium will go away after the remaining subscription expires. If you have any questions, please <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.</div></div><div class="border-8px background-blue hover:background-blue-hover text-center padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Done</div>')
 	}
 }

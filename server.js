@@ -585,7 +585,7 @@ class User{
 
 const MODELUSER = { calendardata: {}, accountdata: {} }
 const MODELCALENDARDATA = { events: [], todos: [], calendars: [], notifications: [], settings: { issyncingtogooglecalendar: false, issyncingtogoogleclassroom: false, connectedgmail: false, sleep: { startminute: 1380, endminute: 420 }, militarytime: false, theme: 0, eventspacing: 15, gettasksuggestions: true, geteventsuggestions: true, emailpreferences: { engagementalerts: true, importantupdates: true }  }, smartschedule: { mode: 1 }, lastsyncedgooglecalendardate: 0, lastsyncedgoogleclassroomdate: 0, onboarding: { start: false, connectcalendars: false, choosecalendars: false, eventreminders: false, sleeptime: false, addtask: false, finished: false }, interactivetour: { clickaddtask: false, clickscheduleoncalendar: false, autoschedule: false, subtask: false }, pushSubscription: null, pushSubscriptionEnabled: false, emailreminderenabled: false, discordreminderenabled: false, lastmodified: 0, lastprompttodotodaydate: 0, lastprompteveningsummarydate: 0, iosnotificationenabled: false, closedsocialmediapopup: false, closedfeedbackpopup: false, closedupgradepopup: false, recognitionlanguage: 'en-US', recognitionalwaysonenabled: true, lastgottasksuggestion: 0, lastgotsubtasksuggestion: 0 }
-const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, logindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], gptchat4usedtimestamps: [], gptvoiceusedtimestamps: [], betatester: false, premium: { referafriendclaimvalue: 0, subscriptionid: null, starttimestamp: null, endtimestamp: null, plan: null }, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
+const MODELACCOUNTDATA = { refreshtoken: null, google: { name: null, firstname: null, profilepicture: null }, timezoneoffset: null, lastloggedindate: null, logindata: [], createddate: null, discord: { id: null, username: null }, iosdevicetoken: null, apple: { email: null }, gptsuggestionusedtimestamps: [], gptchatusedtimestamps: [], gptchat4usedtimestamps: [], gptvoiceusedtimestamps: [], betatester: false, premium: { referafriendclaimvalue: 0, subscriptionid: null, subscriptionstatus: null, starttimestamp: null, endtimestamp: null, plan: null }, engagementalerts: { activitytries: 0, onboardingtries: 0, lastsentdate: null }, referafriend: { invitelink: null, acceptedcount: 0 } }
 const MODELEVENT = { start: {}, end: {}, endbefore: {}, startafter: {}, id: null, calendarid: null, googleeventid: null, googlecalendarid: null, googleclassroomid: null, googleclassroomlink: null, title: null, type: 0, notes: null, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, lastmodified: 0, parentid: null, subtasksuggestions: [], gotsubtasksuggestions: false, iseventsuggestion: false, goteventsuggestion: false, autoschedulelocked: false }
 const MODELTODO = { endbefore: {}, startafter: {}, title: null, notes: null, id: null, lastmodified: 0, completed: false, priority: 0, hexcolor: '#18a4f5', reminder: [], timewindow: { day: { byday: [] }, time: { startminute: null, endminute: null } }, googleclassroomid: null, googleclassroomlink: null, repeat: { frequency: null, interval: null, byday: [], until: null, count: null }, parentid: null, repeatid: null, subtasksuggestions: [], gotsubtasksuggestions: false, goteventsuggestion: false, issuggestion: false }
 const MODELCALENDAR = { title: null, notes: null, id: null, googleid: null, hidden: false, hexcolor: '#18a4f5', isprimary: false, subscriptionurl: null, lastmodified: 0  }
@@ -2233,10 +2233,10 @@ app.post('/auth/apple/callback', async (req, res) => {
 
 
 //STRIPE
-const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY
+const STRIPE_SECRET_KEY = 'sk_test_51P3hFzDn1kfev6yXrPpFlSqJtnuwOAOqu1Ai28xqdeM4sfV1QaR015g11nqBDYFdoQa8Srl2BFimKirXn9eolUYU00zMaiBGfC'//process.env.STRIPE_SECRET_KEY
 const STRIPE_SIGNING_SECRET = process.env.STRIPE_SIGNING_SECRET
 
-const MONTHLY_PLAN_ID = 'price_1P9K9yDn1kfev6yXNnfVzV1W'
+const MONTHLY_PLAN_ID = 'price_1P9ErHDn1kfev6yXTtck8cfA'//'price_1P9K9yDn1kfev6yXNnfVzV1W'
 const YEARLY_PLAN_ID = 'price_1P9K9wDn1kfev6yXiTAtsEs4'
 
 const stripe = require('stripe')(STRIPE_SECRET_KEY)
@@ -2385,6 +2385,43 @@ app.post('/cancelsubscription', async (req, res) => {
 			cancel_at_period_end: true
 		})
 
+
+		user.accountdata.premium.subscriptionstatus = 'canceled'
+		await setUser(user)
+
+		sendmessagetodev('Stripe subscription: cancelled.\n' + user.userid + '\n' + subscriptionId)
+
+		return res.end()
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: htmltryagainerror })
+	}
+})
+
+app.post('/renewsubscription', async (req, res) => {
+	try{
+		let userid = req.session?.user?.userid
+		if(!userid){
+			return res.status(401).json({ error: 'Please log in and try again.' })
+		}
+		
+		let user = await getUserById(userid)
+		if(!user){
+			return res.status(401).json({ error: 'User not found.' })
+		}
+
+		let subscriptionId = user.accountdata.premium.subscriptionid
+		if(!subscriptionId){
+			return res.status(401).json({ error: 'Subscription not found.' })
+		}
+
+		const canceledSubscription = await stripe.subscriptions.update(subscriptionId, {
+			cancel_at_period_end: false
+		})
+
+		user.accountdata.premium.subscriptionstatus = 'ongoing'
+		await setUser(user)
+
 		sendmessagetodev('Stripe subscription: cancelled.\n' + user.userid + '\n' + subscriptionId)
 
 		return res.end()
@@ -2404,6 +2441,8 @@ function addpremiumtouser(user, duration){
 		//continue
 		user.accountdata.premium.endtimestamp = user.accountdata.premium.endtimestamp + duration
 	}
+
+	user.accountdata.premium.subscriptionstatus = 'ongoing'
 
 	return user
 }
@@ -3945,7 +3984,7 @@ app.post('/getclientinfo', async (req, res, next) => {
 
 		await setUser(user)
 		
-		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, apple: user.accountdata.apple, appleid: user.appleid != null, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null, betatester: user.accountdata.betatester, referafriend: user.accountdata.referafriend, haspremium: userhaspremium(user), premiumendtimestamp: user.accountdata.premium.endtimestamp, premiumplan: user.accountdata.premium.plan } })
+		return res.json({ data: { username: user.username, password: user.password != null, google_email: user.google_email, google: user.accountdata.google, discord: user.accountdata.discord, apple: user.accountdata.apple, appleid: user.appleid != null, createddate: user.accountdata.createddate, iosdevicetoken: user.accountdata.iosdevicetoken != null, betatester: user.accountdata.betatester, referafriend: user.accountdata.referafriend, haspremium: userhaspremium(user), premiumendtimestamp: user.accountdata.premium.endtimestamp, premiumplan: user.accountdata.premium.plan, subscriptionstatus: user.accountdata.premium.subscriptionstatus } })
 	} catch (error) {
 		console.error(error)
 		return res.status(401).json({ error: htmltryagainerror })
