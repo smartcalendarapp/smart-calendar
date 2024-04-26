@@ -2233,11 +2233,11 @@ app.post('/auth/apple/callback', async (req, res) => {
 
 
 //STRIPE
-const STRIPE_SECRET_KEY = 'sk_test_51P3hFzDn1kfev6yXrPpFlSqJtnuwOAOqu1Ai28xqdeM4sfV1QaR015g11nqBDYFdoQa8Srl2BFimKirXn9eolUYU00zMaiBGfC'//process.env.STRIPE_SECRET_KEY
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY
 const STRIPE_SIGNING_SECRET = process.env.STRIPE_SIGNING_SECRET
 
-const MONTHLY_PLAN_ID = 'price_1P9ErHDn1kfev6yXTtck8cfA'//'price_1P9K9yDn1kfev6yXNnfVzV1W'
-const YEARLY_PLAN_ID = 'price_1P9gD8Dn1kfev6yXkP1BrH5O'//'price_1P9gAqDn1kfev6yXXG0d0g0K'
+const MONTHLY_PLAN_ID = 'price_1P9K9yDn1kfev6yXNnfVzV1W'
+const YEARLY_PLAN_ID = 'price_1P9gAqDn1kfev6yXXG0d0g0K'
 
 const prices = [MONTHLY_PLAN_ID, YEARLY_PLAN_ID]
 
@@ -2340,7 +2340,7 @@ app.post('/webhook', express.json({type: 'application/json'}), async (req, res) 
 			await setUser(user)
 		}
 
-		sendmessagetodev('Stripe subscription: successful.\n' + JSON.stringify(event.data))
+		sendmessagetodev('Stripe subscription: successful.\n' + userid + '\n'+JSON.stringify(event.data))
 
 		return res.json({received: true})
 	}catch(err){
