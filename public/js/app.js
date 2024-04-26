@@ -1649,7 +1649,7 @@ class Calendar {
 
 
 		//plans
-		let premiumplan = clientinfo.haspremium && clientinfo.premiumplan != null
+		let premiumplan = (clientinfo.haspremium && clientinfo.premiumplan != null) ? clientinfo.premiumplan : null
 
 		let upgradeplan1 = getElement('upgradeplan1')
 		let upgradeplan0 = getElement('upgradeplan0')

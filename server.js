@@ -2386,16 +2386,6 @@ app.post('/cancelsubscription', async (req, res) => {
 		})
 
 
-		if(option == 0){
-			removepremiumfromuser(user, 86400*1000*360)
-			addpremiumtouser(user, 86400*1000*31)
-			user.accountdata.premium.plan = 0
-		}else if(option == 1){
-			removepremiumfromuser(user, 86400*1000*31)
-			addpremiumtouser(user, 86400*1000*360)
-			user.accountdata.premium.plan = 1
-		}
-
 		await setUser(user)
 
 
@@ -2478,6 +2468,15 @@ app.post('/changesubscription', async (req, res) => {
             proration_behavior: 'create_prorations',
 		})
 
+		if(option == 0){
+			removepremiumfromuser(user, 86400*1000*360)
+			addpremiumtouser(user, 86400*1000*31)
+			user.accountdata.premium.plan = 0
+		}else if(option == 1){
+			removepremiumfromuser(user, 86400*1000*31)
+			addpremiumtouser(user, 86400*1000*360)
+			user.accountdata.premium.plan = 1
+		}
 
 		user.accountdata.premium.subscriptionstatus = 'ongoing'
 		await setUser(user)
