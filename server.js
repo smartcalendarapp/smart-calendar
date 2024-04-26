@@ -2236,7 +2236,7 @@ app.post('/auth/apple/callback', async (req, res) => {
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY
 const STRIPE_SIGNING_SECRET = process.env.STRIPE_SIGNING_SECRET
 
-const MONTHLY_PLAN_ID = 'price_1P9K9yDn1kfev6yXNnfVzV1W'
+const MONTHLY_PLAN_ID = 'price_1P9ErHDn1kfev6yXTtck8cfA'//'price_1P9K9yDn1kfev6yXNnfVzV1W'
 const YEARLY_PLAN_ID = 'price_1P9K9wDn1kfev6yXiTAtsEs4'
 
 const stripe = require('stripe')(STRIPE_SECRET_KEY)
@@ -2389,7 +2389,7 @@ app.post('/cancelsubscription', async (req, res) => {
 		})
 		console.warn(canceledSubscription)
 
-		sendmessagetodev('Subscription cancelled: ' + user.userid)
+		sendmessagetodev('Subscription cancelled:\n' + user.userid + '\n' + subscriptionId)
 
 		return res.end()
 	}catch(err){

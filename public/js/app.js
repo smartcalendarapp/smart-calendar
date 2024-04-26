@@ -20254,14 +20254,18 @@ async function clickupgrade(option){
 
 function clickcancelplan(event){
 	let cancelsubscriptionpopup = getElement('cancelsubscriptionpopup')
-	cancelsubscriptionpopup.classList.remove('hiddenpopup')
+	cancelsubscriptionpopup.classList.toggle('hiddenpopup')
 
-	cancelsubscriptionpopup.style.left = fixleft(event.target.getBoundingClientRect().left + event.target.getBoundingClientRect().width/2 - cancelsubscriptionpopup.offsetWidth/2, tempdiv) + 'px'
-	cancelsubscriptionpopup.style.top = fixtop(event.target.getBoundingClientRect().top, tempdiv) + 'px'
+	cancelsubscriptionpopup.style.left = fixleft(event.target.getBoundingClientRect().left + event.target.getBoundingClientRect().width/2 - cancelsubscriptionpopup.offsetWidth/2, cancelsubscriptionpopup) + 'px'
+	cancelsubscriptionpopup.style.top = fixtop(event.target.getBoundingClientRect().top + event.target.getBoundingClientRect().height, cancelsubscriptionpopup) + 'px'
 }
 
 async function confirmcancelplan(){
 	let cancelsubscriptiontextarea = getElement('cancelsubscriptiontextarea')
+
+	let cancelsubscriptionerrorwrap = getElement('cancelsubscriptionerrorwrap')
+	cancelsubscriptionerrorwrap.innerHTML = ''
+	cancelsubscriptionerrorwrap.classList.add('display-none')
 
 	let response = await fetch('/cancelsubscription', {
 		method: 'POST',
