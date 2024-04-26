@@ -1649,7 +1649,7 @@ class Calendar {
 
 
 		//plans
-		let premiumplan = clientinfo.haspremium && clientinfo.premiumplan
+		let premiumplan = clientinfo.haspremium && clientinfo.premiumplan != null
 
 		let upgradeplan1 = getElement('upgradeplan1')
 		let upgradeplan0 = getElement('upgradeplan0')
@@ -1681,10 +1681,13 @@ class Calendar {
 
 		cancelplantext0.classList.add('display-none')
 		cancelplantext1.classList.add('display-none')
+		
 		if(clientinfo?.subscriptionstatus == 'ongoing'){
 			cancelplantext0.classList.remove('display-none')
 			cancelplantext1.classList.remove('display-none')
 		}
+		renewplantext0.classList.add('display-none')
+		renewplantext1.classList.add('display-none')
 		if(clientinfo?.subscriptionstatus == 'canceled'){
 			renewplantext0.classList.remove('display-none')
 			renewplantext1.classList.remove('display-none')
@@ -20257,6 +20260,7 @@ async function checkstripequery(){
 		calendartabs = [5]
 	} else if (session.status == 'complete') {
 		await getclientinfo()
+		calendar.updateUpgrade()
 
 		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">Congrats, you are now a Smart Calendar Premium user! Your subscription will renew <span class="text-bold">${['monthly', 'annually'][option]}</span>, and will next renew ${getRelativeDHMText(Math.floor(Date.now() - clientinfo?.premiumendtimestamp)/60000)}<br><br>See what you can do now:</div>
 		<div class="text-16px text-quaternary">${markdowntoHTML(`- Increased AI chat: send up to 200 messages to our AI Assistant Athena every day.\n- Enhanced Personal Assistant: Athena will have more capabilities, and will provide you daily briefings, suggestions to complete your tasks, and more productivity help.\n- Early access to new features: you'll be the first to see our new exciting features and use them for your productivity.`, 'assistant')}</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Done</div>`)
@@ -20266,7 +20270,7 @@ async function checkstripequery(){
 
 async function clickupgrade(option){
 	try {
-		if(clientinfo?.haspremium && clientinfo?.premiumplan){
+		if(clientinfo?.haspremium && clientinfo?.premiumplan != null){
 			//need to prorate and stuff
 
 			const response = await fetch('/changesubscription', {

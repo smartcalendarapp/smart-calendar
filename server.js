@@ -2453,10 +2453,13 @@ app.post('/changesubscription', async (req, res) => {
 			return res.status(401).end()
 		}
 
+		const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        const firstItemId = subscription.items.data[0].id;
+
 		const modifiedSubscription = await stripe.subscriptions.update(subscriptionId, {
 			cancel_at_period_end: false,
 			items: [{
-                id: subscriptionId,
+                id: firstItemId,
                 price: prices[option],
             }],
             proration_behavior: 'create_prorations',
