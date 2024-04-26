@@ -2386,6 +2386,19 @@ app.post('/cancelsubscription', async (req, res) => {
 		})
 
 
+		if(option == 0){
+			removepremiumfromuser(user, 86400*1000*360)
+			addpremiumtouser(user, 86400*1000*31)
+			user.accountdata.premium.plan = 0
+		}else if(option == 1){
+			removepremiumfromuser(user, 86400*1000*31)
+			addpremiumtouser(user, 86400*1000*360)
+			user.accountdata.premium.plan = 1
+		}
+
+		await setUser(user)
+
+
 		user.accountdata.premium.subscriptionstatus = 'canceled'
 		await setUser(user)
 
@@ -2394,7 +2407,7 @@ app.post('/cancelsubscription', async (req, res) => {
 		return res.end()
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: htmltryagainerror })
+		return res.status(401).json({ error: err.message })
 	}
 })
 
@@ -2427,7 +2440,7 @@ app.post('/renewsubscription', async (req, res) => {
 		return res.end()
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: htmltryagainerror })
+		return res.status(401).json({ error: err.message })
 	}
 })
 
@@ -2474,10 +2487,20 @@ app.post('/changesubscription', async (req, res) => {
 		return res.end()
 	}catch(err){
 		console.error(err)
-		return res.status(401).json({ error: htmltryagainerror })
+		return res.status(401).json({ error: err.message })
 	}
 })
 
+
+function removepremiumfromuser(user, duration){
+	user.accountdata.premium.endtimestamp -= duration
+
+	if(user.accountdata.premium.endtimestamp < Date.now()){
+		user.accountdata.premium.endtimestamp = Date.now()
+	}
+
+	return user
+}
 
 function addpremiumtouser(user, duration){
 	if((!user.accountdata.premium.endtimestamp && user.accountdata.premium.starttimestamp) || user.accountdata.premium.endtimestamp < Date.now()){
