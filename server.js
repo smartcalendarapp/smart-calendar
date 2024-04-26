@@ -2456,6 +2456,10 @@ app.post('/changesubscription', async (req, res) => {
 			return res.status(401).end()
 		}
 
+		if(user.accountdata.premium.plan != null && option < user.accountdata.premium.plan){
+			return res.status(401).json({ error: 'Cannot downgrade to a cheaper plan, please cancel your current plan and buy the new subscription after it expires.' })
+		}
+
 		const subscription = await stripe.subscriptions.retrieve(subscriptionId)
         const firstItemId = subscription.items.data[0].id
 
