@@ -2422,7 +2422,7 @@ app.post('/renewsubscription', async (req, res) => {
 		user.accountdata.premium.subscriptionstatus = 'ongoing'
 		await setUser(user)
 
-		sendmessagetodev('Stripe subscription: renewed.\n' + user.userid + '\n' + subscriptionId)
+		sendmessagetodev('Stripe subscription: reactivated.\n' + user.userid + '\n' + subscriptionId)
 
 		return res.end()
 	}catch(err){
