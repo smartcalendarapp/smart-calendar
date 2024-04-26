@@ -2233,10 +2233,10 @@ app.post('/auth/apple/callback', async (req, res) => {
 
 
 //STRIPE
-const STRIPE_SECRET_KEY = 'sk_test_51P3hFzDn1kfev6yXrPpFlSqJtnuwOAOqu1Ai28xqdeM4sfV1QaR015g11nqBDYFdoQa8Srl2BFimKirXn9eolUYU00zMaiBGfC'//process.env.STRIPE_SECRET_KEY
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY
 const STRIPE_SIGNING_SECRET = process.env.STRIPE_SIGNING_SECRET
 
-const MONTHLY_PLAN_ID = 'price_1P9ErHDn1kfev6yXTtck8cfA'//'price_1P9K9yDn1kfev6yXNnfVzV1W'
+const MONTHLY_PLAN_ID = 'price_1P9K9yDn1kfev6yXNnfVzV1W'
 const YEARLY_PLAN_ID = 'price_1P9K9wDn1kfev6yXiTAtsEs4'
 
 const stripe = require('stripe')(STRIPE_SECRET_KEY)
@@ -2362,7 +2362,7 @@ app.post('/cancelsubscription', async (req, res) => {
 		
 		let user = await getUserById(userid)
 		if(!user){
-			return res.status(401).json({ error: 'User not found' })
+			return res.status(401).json({ error: 'User not found.' })
 		}
 
 		let reason = req.body.reason
@@ -2378,7 +2378,7 @@ app.post('/cancelsubscription', async (req, res) => {
 
 		let subscriptionId = user.accountdata.premium.subscriptionid
 		if(!subscriptionId){
-			return res.status(401).json({ error: 'User not found' })
+			return res.status(401).json({ error: 'Subscription not found.' })
 		}
 
 		const canceledSubscription = await stripe.subscriptions.update(subscriptionId, {

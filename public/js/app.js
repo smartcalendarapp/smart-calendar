@@ -20284,6 +20284,6 @@ async function confirmcancelplan(){
 		let cancelsubscriptionpopup = getElement('cancelsubscriptionpopup')
 		cancelsubscriptionpopup.classList.add('hiddenpopup')
 		
-		displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Confirmed.</div><div class="text-16px text-quaternary">Your subscription has been canceled. If you have any questions, please <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.</div></div><div class="border-8px background-blue hover:background-blue-hover text-center padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Done</div>')
+		displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Confirmed.</div><div class="text-16px text-quaternary">Your subscription has been canceled. Access to premium will go away after the remaining subscription expires. If you have any questions, please <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.</div></div><div class="border-8px background-blue hover:background-blue-hover text-center padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Done</div>')
 	}
 }
