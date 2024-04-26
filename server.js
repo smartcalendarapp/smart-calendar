@@ -2237,7 +2237,7 @@ const STRIPE_SECRET_KEY = 'sk_test_51P3hFzDn1kfev6yXrPpFlSqJtnuwOAOqu1Ai28xqdeM4
 const STRIPE_SIGNING_SECRET = process.env.STRIPE_SIGNING_SECRET
 
 const MONTHLY_PLAN_ID = 'price_1P9ErHDn1kfev6yXTtck8cfA'//'price_1P9K9yDn1kfev6yXNnfVzV1W'
-const YEARLY_PLAN_ID = 'price_1P9EsHDn1kfev6yX7kA9geRI'//'price_1P9K9wDn1kfev6yXiTAtsEs4'
+const YEARLY_PLAN_ID = 'price_1P9gD8Dn1kfev6yXkP1BrH5O'//'price_1P9gAqDn1kfev6yXXG0d0g0K'
 
 const prices = [MONTHLY_PLAN_ID, YEARLY_PLAN_ID]
 
@@ -2456,8 +2456,8 @@ app.post('/changesubscription', async (req, res) => {
 			return res.status(401).end()
 		}
 
-		const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-        const firstItemId = subscription.items.data[0].id;
+		const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+        const firstItemId = subscription.items.data[0].id
 
 		const modifiedSubscription = await stripe.subscriptions.update(subscriptionId, {
 			cancel_at_period_end: false,
