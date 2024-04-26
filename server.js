@@ -2239,6 +2239,8 @@ const STRIPE_SIGNING_SECRET = process.env.STRIPE_SIGNING_SECRET
 const MONTHLY_PLAN_ID = 'price_1P9ErHDn1kfev6yXTtck8cfA'//'price_1P9K9yDn1kfev6yXNnfVzV1W'
 const YEARLY_PLAN_ID = 'price_1P9K9wDn1kfev6yXiTAtsEs4'
 
+const prices = [MONTHLY_PLAN_ID, YEARLY_PLAN_ID]
+
 const stripe = require('stripe')(STRIPE_SECRET_KEY)
 
 app.post('/create-checkout-session', async (req, res) => {
@@ -2249,16 +2251,14 @@ app.post('/create-checkout-session', async (req, res) => {
 
 		let option = req.body.option
 
-		const prices = [MONTHLY_PLAN_ID, YEARLY_PLAN_ID]
-
 		if(!prices[option]) return res.status(401).end()
 
 		const session = await stripe.checkout.sessions.create({
 			line_items: [
-			{
-				price: prices[option],
-				quantity: 1,
-			},
+				{
+					price: prices[option],
+					quantity: 1,
+				},
 			],
 			mode: 'subscription',
 			automatic_tax: {enabled: true},
@@ -2415,14 +2415,58 @@ app.post('/renewsubscription', async (req, res) => {
 			return res.status(401).json({ error: 'Subscription not found.' })
 		}
 
-		const canceledSubscription = await stripe.subscriptions.update(subscriptionId, {
+		const renewedSubscription = await stripe.subscriptions.update(subscriptionId, {
 			cancel_at_period_end: false
 		})
 
 		user.accountdata.premium.subscriptionstatus = 'ongoing'
 		await setUser(user)
 
-		sendmessagetodev('Stripe subscription: cancelled.\n' + user.userid + '\n' + subscriptionId)
+		sendmessagetodev('Stripe subscription: renewed.\n' + user.userid + '\n' + subscriptionId)
+
+		return res.end()
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: htmltryagainerror })
+	}
+})
+
+app.post('/changesubscription', async (req, res) => {
+	try{
+		let userid = req.session?.user?.userid
+		if(!userid){
+			return res.status(401).json({ error: 'Please log in and try again.' })
+		}
+		
+		let user = await getUserById(userid)
+		if(!user){
+			return res.status(401).json({ error: 'User not found.' })
+		}
+
+		let subscriptionId = user.accountdata.premium.subscriptionid
+		if(!subscriptionId){
+			return res.status(401).json({ error: 'Subscription not found.' })
+		}
+
+		let option = req.body.option
+		if(!prices[option]){
+			return res.status(401).end()
+		}
+
+		const modifiedSubscription = await stripe.subscriptions.update(subscriptionId, {
+			cancel_at_period_end: false,
+			items: [{
+                id: subscriptionId,
+                price: prices[option],
+            }],
+            proration_behavior: 'create_prorations',
+		})
+
+
+		user.accountdata.premium.subscriptionstatus = 'ongoing'
+		await setUser(user)
+
+		sendmessagetodev('Stripe subscription: changed.\n' + user.userid + '\n' + subscriptionId)
 
 		return res.end()
 	}catch(err){

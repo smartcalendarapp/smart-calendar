@@ -1103,6 +1103,11 @@ ol{
 	pointer-events: none;
 }
 
+
+.stripecolor{
+	color:#635bff;
+}
+
 .buttonwhitefill {
 	height: 18px;
 	width: 18px;

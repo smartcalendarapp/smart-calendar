@@ -1670,7 +1670,7 @@ class Calendar {
 		upgradeplantext1.innerHTML = 'Your plan'
 		upgradeplantext0.innerHTML = 'Your plan'
 
-		let displaytext = `${clientinfo?.subscriptionstatus == 'ongoing' ? 'Renews' : 'Expires'} ${getRelativeDHMText(Math.floor(Date.now() - clientinfo?.premiumendtimestamp)/60000)}`
+		let displaytext = `Your plan: ${clientinfo?.subscriptionstatus == 'ongoing' ? 'Renews' : 'Expires'} ${getRelativeDHMText(Math.floor(Date.now() - clientinfo?.premiumendtimestamp)/60000)}`
 
 		upgradeplan0.classList.remove('display-none')
 		yourplan0.classList.add('display-none')
@@ -20256,7 +20256,7 @@ async function checkstripequery(){
 		displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">The payment was not completed.</div><div class="text-quaternary text-16px">If you have any questions, please <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>')
 		calendartabs = [5]
 	} else if (session.status == 'complete') {
-		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">Thank you for upgrading! You now have premium. See what you can do now:</div>
+		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-16px">Congrats! You now have premium. See what you can do now:</div>
 		<div class="text-16px text-quaternary">${markdowntoHTML(`- Increased AI chat: send up to 200 messages to our AI Assistant Athena every day.\n- Enhanced Personal Assistant: Athena will have more capabilities, and will provide you daily briefings, suggestions to complete your tasks, and more productivity help.\n- Early access to new features: you'll be the first to see our new exciting features and use them for your productivity.`, 'assistant')}</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Done</div>`)
 		calendartabs = [5]
 	}
@@ -20264,18 +20264,38 @@ async function checkstripequery(){
 
 async function clickupgrade(option){
 	try {
-        const response = await fetch('/create-checkout-session', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ option: option })
-        });
-		if(response.status == 401){
-			displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">An error occurred</div><div class="text-quaternary text-16px">Try signing in again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>')
+		if(clientinfo?.haspremium && clientinfo?.premiumplan){
+			//need to prorate and stuff
+
+			const response = await fetch('/changesubscription', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ option: option })
+			});
+			if(response.status == 401){
+				let data = await response.json()
+				displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Could not change your subscription</div><div class="text-quaternary text-16px">An error occured: ${data.error}. Try signing in again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>`)
+			}else if(response.status == 200){
+				displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Successfully changed your subscription</div><div class="text-quaternary text-16px">Your subscription is now renewing <span class="text-bold">${['monthly', 'annually'][option]}</span>.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>`)
+			}
 		}else{
-			const session = await response.json();
-			window.location.href = session.url;
+
+			const response = await fetch('/create-checkout-session', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ option: option })
+			});
+			if(response.status == 401){
+				let data = await response.json()
+				displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Could not load payment page</div><div class="text-quaternary text-16px">An error occured: ${data.error}. Try signing in again or <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>`)
+			}else{
+				const session = await response.json();
+				window.location.href = session.url;
+			}
 		}
     } catch (error) {
         console.error('Error:', error);
@@ -20302,7 +20322,7 @@ async function clickrenewplan(){
 
 		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Could not renew your subscription.</div><div class="text-16px text-quaternary">An error occured: ${data.error}. Please <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a> for help.</div></div><div class="border-8px background-blue hover:background-blue-hover text-center padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Ok</div>`)
 	}else if(response.status == 200){
-		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Successfully renewed your subscription!</div></div><div class="border-8px background-blue hover:background-blue-hover text-center padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Ok</div>`)
+		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Successfully reactivated your subscription!</div><div class="text-quaternary text-16px">Your subscription will renew ${getRelativeDHMText(Math.floor(Date.now() - clientinfo?.premiumendtimestamp)/60000)}.</div></div><div class="border-8px background-blue hover:background-blue-hover text-center padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Ok</div>`)
 	}
 	calendar.updateUpgrade()
 }
@@ -20331,6 +20351,6 @@ async function confirmcancelplan(){
 		let cancelsubscriptionpopup = getElement('cancelsubscriptionpopup')
 		cancelsubscriptionpopup.classList.add('hiddenpopup')
 		
-		displaypopup('<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Successfully canceled your subscription.</div><div class="text-16px text-quaternary">Your subscription has been canceled. Access to premium will go away after the remaining subscription expires. If you have any questions, please <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.</div></div><div class="border-8px background-blue hover:background-blue-hover text-center padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Done</div>')
+		displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Successfully canceled your subscription.</div><div class="text-16px text-quaternary">Your premium will go away ${getRelativeDHMText(Math.floor(Date.now() - clientinfo?.premiumendtimestamp)/60000)}. If you have any questions, please <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a>.</div></div><div class="border-8px background-blue hover:background-blue-hover text-center padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="closepopup()">Done</div>`)
 	}
 }
