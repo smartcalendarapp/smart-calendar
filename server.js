@@ -2296,12 +2296,9 @@ app.post('/webhook', express.json({type: 'application/json'}), async (req, res) 
 		const event = req.body;
 		if(event.type != 'invoice.payment_succeeded') return
 
-		sendmessagetodev(JSON.stringify(event.data))
-
 		const customerId = event.data.object.customer
 		if(!customerId){
-			console.error('Stripe webhook: No customer ID found.')
-			return res.status(401)
+			throw new Error('Stripe webhook: No customer ID found.\n' + JSON.stringify(event.data))
 		}
 
 		const subscriptionId = event.data.object.id
@@ -2313,27 +2310,24 @@ app.post('/webhook', express.json({type: 'application/json'}), async (req, res) 
 		const session = sessions?.data[0]
 
 		if(!session){
-			console.error('Stripe webhook: No session ID found.')
-			return res.status(401)
+			throw new Error('Stripe subscription: No session ID found.\n' + JSON.stringify(event.data))
 		}
 
-		const metadata = session.metadata
-		const userid = metadata?.userid
-		const option = metadata?.option
+		const userid = session.metadata?.userid
+		const option = session.metadata?.option
+		const subscriptionid = session.subscription
 	
 		if(userid == null || option == null){
-			console.error('Stripe webhook: userid or option is null.')
-			return res.status(401)
+			throw new Error('Stripe subscription: userid or option is null.\n' + JSON.stringify(event.data))
 		}
 
 		if(event.type == 'invoice.payment_succeeded'){
 			let user = await getUserById(userid)
 			if(!user){
-				console.error('Stripe webhook: user not found.')
-				return res.status(401)
+				throw new Error('Stripe subscription: user not found.\n' + JSON.stringify(event.data))
 			}
 
-			user.accountdata.premium.subscriptionid = subscriptionId
+			user.accountdata.premium.subscriptionid = subscriptionid
 			
 			if(option == 0){
 				addpremiumtouser(user, 86400*1000*31)
@@ -2346,9 +2340,14 @@ app.post('/webhook', express.json({type: 'application/json'}), async (req, res) 
 			await setUser(user)
 		}
 
+		sendmessagetodev('Stripe subscription: successful.\n' + JSON.stringify(event.data))
+
 		return res.json({received: true})
 	}catch(err){
 		console.error(err)
+
+		sendmessagetodev(JSON.stringify(err))
+
 		return res.status(401).end()
 	}
 })
@@ -2385,9 +2384,8 @@ app.post('/cancelsubscription', async (req, res) => {
 		const canceledSubscription = await stripe.subscriptions.update(subscriptionId, {
 			cancel_at_period_end: true
 		})
-		console.warn(canceledSubscription)
 
-		sendmessagetodev('Subscription cancelled:\n' + user.userid + '\n' + subscriptionId)
+		sendmessagetodev('Stripe subscription: cancelled.\n' + user.userid + '\n' + subscriptionId)
 
 		return res.end()
 	}catch(err){
@@ -2434,12 +2432,19 @@ discordclient.on('ready', async () => {
 
 discordclient.login(DISCORD_TOKEN)
 
-async function sendmessagetodev(content){
-	try{
-	(await discordclient.users.fetch('552275355092647946')).send(content.slice(0, 2000))
-	}catch(err){
 
-	}
+async function sendmessagetodev(content) {
+    const recipientId = '552275355092647946'
+	const user = await discordclient.users.fetch(recipientId)
+
+    try {
+        while (content.length > 0) {
+            await user.send(content.slice(0, 2000))
+            content = content.slice(2000)
+        }
+    } catch (err) {
+        console.error('Failed to send message:', err)
+    }
 }
 
 
