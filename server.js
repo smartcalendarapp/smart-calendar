@@ -4982,7 +4982,7 @@ app.post('/setuseremailpreferences', async (req, res) => {
 
 //GPT AI routes
 
-let MAX_GPT_CHAT_PER_DAY = 100 //20
+let MAX_GPT_CHAT_PER_DAY = 30 //20
 let MAX_GPT_CHAT_PER_DAY_BETA_TESTER = 100 //50
 let MAX_GPT_CHAT_PER_DAY_PREMIUM = 200 //100
 
@@ -5240,7 +5240,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 
 		//check ratelimit
 		if(user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
-			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
+			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please <span class="gradienttextgold text-bold pointer" onclick="clicktab([5])">upgrade to premium</span> to help us cover the costs of AI.` })
 		}
 
 		if(user.accountdata.gptchatusedtimestamps.filter(d => Date.now() - d < 5000).length >= 2){
@@ -5334,7 +5334,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 
 		//check ratelimit
 		if(user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
-			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
+			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please <span class="gradienttextgold text-bold pointer" onclick="clicktab([5])">upgrade to premium</span> to help us cover the costs of AI.` })
 		}
 
 		if(user.accountdata.gptchatusedtimestamps.filter(d => Date.now() - d < 5000).length >= 2){
@@ -5449,7 +5449,7 @@ app.post('/getgptchatresponseeveningsummary', async (req, res) => {
 
 		//check ratelimit
 		if(user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
-			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
+			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please <span class="gradienttextgold text-bold pointer" onclick="clicktab([5])">upgrade to premium</span> to help us cover the costs of AI.` })
 		}
 
 		if(user.accountdata.gptchatusedtimestamps.filter(d => Date.now() - d < 5000).length >= 2){
@@ -5544,7 +5544,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 
 		//check ratelimit
 		if(user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
-			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
+			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please <span class="gradienttextgold text-bold pointer" onclick="clicktab([5])">upgrade to premium</span> to help us cover the costs of AI.` })
 		}
 
 		if(user.accountdata.gptchatusedtimestamps.filter(d => Date.now() - d < 5000).length >= 2){
@@ -5654,7 +5654,7 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 
 		//check ratelimit
 		if(user.accountdata.gptvoiceusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
-			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please upgrade to premium to help us cover the costs of AI.` })
+			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day). Please <span class="gradienttextgold text-bold pointer" onclick="clicktab([5])">upgrade to premium</span> to help us cover the costs of AI.` })
 		}
 
 		if(user.accountdata.gptvoiceusedtimestamps.filter(d => Date.now() - d < 5000).length >= 2){
@@ -5921,7 +5921,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 		//check ratelimit
 		if(!usedmodel){
-			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day${userhaspremium(user) ? ` and ${appliedratelimit4} premium messages per day` : ''}). Please upgrade to premium to help us cover the costs of AI.` })
+			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day${userhaspremium(user) ? ` and ${appliedratelimit4} premium messages per day for GPT-4` : ''}). Please <span class="gradienttextgold text-bold pointer" onclick="clicktab([5])">upgrade to premium</span> to help us cover the costs of AI.` })
 		}
 
 		if(user.accountdata.gptchatusedtimestamps.filter(d => Date.now() - d < 5000).length >= 2 || user.accountdata.gptchat4usedtimestamps.filter(d => Date.now() - d < 5000).length >= 2){

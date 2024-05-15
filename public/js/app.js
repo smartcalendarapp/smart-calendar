@@ -13913,7 +13913,7 @@ function openaichat(){
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('What are my tasks for today?')">What are my tasks for today?</div>`,
 		`<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="promptaiassistantwithnextaction('Help me plan a task')">Help me plan a task</div>`]
 
-		responsechatmessage.nextactions = [...getRandomItems(tempoptions, 3), `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('Help', 'Hey! Here are all my abilities:\\n\\n**Events**:\\n- Create event\\n- Modify event time, duration, color, recurrence\\n- Delete event\\n- Scroll to a specific date in calendar\\n\\n**Tasks**:\\n- Create, modify, delete task\\n\\n**Coming soon**:\\n\- Read your emails\\n- Draft emails\\n- Search the web\\n\\nAlso, you can use dictation to talk to me. I\\'m here to listen.')">Help</div>`]
+		responsechatmessage.nextactions = [...getRandomItems(tempoptions, 3), `<div class="hover:background-tint-1 bordertertiary border-8px transition-duration-100 pointer text-primary text-14px padding-8px-12px" onclick="simulateaiassistantwithnextaction('Help', 'Hey! Here are all my abilities:\\n\\n**Events**:\\n- Create event\\n- Modify event time, duration, color, recurrence\\n- Delete event\\n- Scroll to a specific date in calendar\\n\\n**Tasks**:\\n- Create, modify, delete task\\n\\n**Coming soon**:\\n\- Read your emails\\n- Draft emails\\n\\nAlso, you can use dictation to talk to me. I\\'m here to listen.')">Help</div>`]
 
 		chatinteraction.addMessage(responsechatmessage)
 		chathistory.addInteraction(chatinteraction)
@@ -16047,6 +16047,7 @@ async function submitaimessage(optionalinput, dictated, nousermessage){
 
 			}else if(output?.error){
 				responsechatmessage.message = `${output.error}`
+				responsechatmessage.iscommand = true
 			}else if(!output?.message){
 				responsechatmessage.message = `This is weird, I could not generate a response. Please click the thumbs down button and try again.`
 			}else{
@@ -20307,7 +20308,7 @@ async function clickupgrade(option){
 				await getclientinfo()
 				calendar.updateUpgrade()
 
-				displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Successfully changed your subscription</div><div class="text-quaternary text-16px">Your subscription will renew <span class="text-bold">${['monthly', 'annually'][option]}</span> ${getRelativeDHMText(Math.floor(Date.now() - clientinfo?.premiumendtimestamp)/60000)}.</div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>`)
+				displaypopup(`<div class="display-flex flex-column gap-6px"><div class="text-primary text-18px">Successfully changed your subscription</div><div class="text-quaternary text-16px">Your subscription will renew <span class="text-bold">${['monthly', 'annually'][option]}</span> ${getRelativeDHMText(Math.floor(Date.now() - clientinfo?.premiumendtimestamp)/60000)}. If you have questions, please <a href="../contact" class="text-decoration-none text-blue width-fit pointer hover:text-decoration-underline" target="_blank">contact us</a></div><div class="pointer-auto text-16px bluebutton text-center gap-6px padding-6px-12px border-8px transition-duration-100 pointer" onclick="closepopup(event)">Ok</div></div>`)
 			}
 		}else{
 
