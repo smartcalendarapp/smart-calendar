@@ -1,230 +1,237 @@
 html,body {
-    height: 100%;
-    width: 100%;
-      margin:0;
-      padding:0;
-      background:#111122;
-      font-family:monospace;
-      overflow:hidden;
-  }
-  
-  html * {
-      cursor:default;
-      -webkit-user-select:none;
-  }
-  
-  body{
-      position:relative;
-      display:flex;
-      flex-direction:column;
-      align-items: center;
-      justify-content:center;
-      padding:40px;
-      box-sizing:border-box;
-  }
-  
-  #donemessage{
-      position:absolute;
-      top:0;
-      left:50%;
-      transform:translateX(-50%);
-      background:#d1d1d1;
-      color:black;
-      padding:12px;
-      border-radius:8px;
-      margin:24px;
-      font-size:18px;
-      z-index:1000;
-  }
-  
-  #buttonwrap{
-      position:relative;
-      height:100%;
-      width:60%;
-  }
-  
-  
-  .button{
-      background:#0f1fff;
-      transform:translate(-50%, -50%);
-      position:absolute;
-      color:white;
-      width:70px;
-      text-align:center;
-      font-size:24px;
-      font-weight:500;
-      height:40px;
-      padding:15px;
-      white-space:nowrap;
-  }
-  
-  
-  
-  .researchinstructions{
-      z-index:10000;
-      background:#111122;
-      display:flex;
-      flex-direction:row;
-      justify-content:center;
-      position:absolute;
-      align-items:center;
-      top:0;
-      left:0;
-      width:100%;
-      pointer-events:none;
-      height:100%;
-  }
-  .researchinstructionsimage{
-      height:100%;
-      width:auto;
-      pointer-events: auto;
-      cursor:pointer;
-  }
-  
-  @media only screen and (max-width: 600px) {
-      .button{
-          padding:8px;
-          font-size:20px;
-          width:50px;
-          height:30px;
-      }
-      
-      #buttonwrap{
-          width:100%;
-      }
-  }
-  
-  audio{
-      display:none;
-  }
-  
-  #feedback{
-      font-size:26px;
-      font-weight:500;
-      position:absolute;
-      top:50%;
-      left:50%;
-      transform:translate(-50%, -50%);
-  }
-  
-  #start{
-      font-size:22px;
-      font-weight:500;
-      position:absolute;
-      top:50%;
-      left:50%;
-      transform:translate(-50%, -50%);
-      color:white;
-      text-align:center;
-  }
-  
-  .display-none{
-      display:none !important;
-  }
-  
-  #settingsbutton{
-      color:#606060;
-      cursor:pointer;
-      font-size:18px;
-  }
-  
-  #exitresearchbutton{
-      color:#606060;
-      cursor:pointer;
-      position:absolute;
-      margin:24px;
-      top:0;
-      left:0;
-      font-size:13px;
-  }
-  
-  #idbutton{
+height: 100%;
+width: 100%;
+    margin:0;
+    padding:0;
+    background:#111122;
+    font-family:monospace;
+    overflow:hidden;
+}
+
+html * {
+    cursor:default;
+    -webkit-user-select:none;
+}
+
+body{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items: center;
+    justify-content:center;
+    padding:40px;
+    box-sizing:border-box;
+}
+
+#donemessage{
+    position:absolute;
+    top:0;
+    left:50%;
+    transform:translateX(-50%);
+    background:#d1d1d1;
+    color:black;
+    padding:12px;
+    border-radius:8px;
+    margin:24px;
+    font-size:18px;
+    z-index:1000;
+}
+
+#buttonwrap{
+    position:relative;
+    height:100%;
+    width:60%;
+}
+
+
+.button{
+    background:#0f1fff;
+    transform:translate(-50%, -50%);
+    position:absolute;
+    color:white;
+    width:70px;
+    text-align:center;
+    font-size:24px;
+    font-weight:500;
+    height:40px;
+    padding:15px;
+    white-space:nowrap;
+}
+
+
+
+.researchinstructions{
+    z-index:10000;
+    background:#111122;
+    display:flex;
+    flex-direction:row;
+    justify-content:center;
+    position:absolute;
+    align-items:center;
+    top:0;
+    left:0;
+    width:100%;
+    pointer-events:none;
+    height:100%;
+}
+.researchinstructionsimage{
+    height:100%;
+    width:auto;
+    pointer-events: auto;
+    cursor:pointer;
+}
+
+@media only screen and (max-width: 600px) {
+    .button{
+        padding:8px;
+        font-size:20px;
+        width:50px;
+        height:30px;
+    }
+    
+    #buttonwrap{
+        width:100%;
+    }
+}
+
+audio{
+    display:none;
+}
+
+#feedback{
+    font-size:26px;
+    font-weight:500;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+}
+
+#start{
+    font-size:22px;
+    font-weight:500;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    color:white;
+    text-align:center;
+}
+
+.display-none{
+    display:none !important;
+}
+
+#settingsbutton{
+    color:#606060;
+    cursor:pointer;
+    font-size:18px;
+}
+
+#exitresearchbutton{
     color:#606060;
     cursor:pointer;
     position:absolute;
     margin:24px;
-    bottom:0;
+    top:0;
     left:0;
     font-size:13px;
-    -webkit-user-select:text !important;
-    user-select:text !important;
-  }
+}
 
-  .settingstext{
-      color:#606060;
-      font-size:15px;
-  }
-  
-  .settingsoptiongroup{
-      display:flex;
-      flex-direction:row;
-      gap:12px;
-      border-radius:6px;
-      overflow:auto;
-  }
-  .settingsoption{
-      cursor:pointer;
-      white-space:nowrap;
-      background-color:#ffffff1A;
-      color:white;
-      font-size:13px;
-      padding:6px 12px;
-      border-radius:6px;
-  }
-  .selectedsetting{
-      background-color:#384fff;
-  }
-  
-  .settingswrap{
-      position:absolute;
-      top:0;
-      left:0;
-      padding:24px;
-      display:flex;
-      flex-direction:column;
-      gap:24px;
-  }
-  
-  #settingscontent{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-  }
-  
-  
-  .slider {
-      -webkit-appearance: none;  
-      appearance: none;
-      width: 100%;
-      height: 15px; 
-      background: #696969; 
-      border-radius:100px;
-      outline: none; 
-      opacity: 0.7; 
-      -webkit-transition: .2s; 
-      transition: opacity .2s;
-  }
-  .slider:hover {
-      opacity: 1; 
-  }
-  .slider::-webkit-slider-thumb {
-      -webkit-appearance: none; 
-      appearance: none;
-      width: 20px; 
-      border-radius:100px;
-      height: 20px; 
-      background: #3396ff; 
-      cursor: pointer; 
-  }
-  
-  .pointer{
-      cursor:pointer;
-  }
-  .horizontal{
-      height:0.5px;
-      flex-basis:auto;
-      width:100%;
-      background-color: #606060;
-      margin-top:12px;
-      margin-bottom:12px;
-  }
+#idbutton{
+color:#606060;
+cursor:pointer;
+position:absolute;
+margin:24px;
+bottom:0;
+left:0;
+font-size:13px;
+-webkit-user-select:text !important;
+user-select:text !important;
+}
+
+.settingstext{
+    color:#606060;
+    font-size:15px;
+}
+
+.settingsoptiongroup{
+    display:flex;
+    flex-direction:row;
+    gap:12px;
+    border-radius:6px;
+    overflow:auto;
+}
+.settingsoption{
+    cursor:pointer;
+    white-space:nowrap;
+    background-color:#ffffff1A;
+    color:white;
+    font-size:13px;
+    padding:6px 12px;
+    border-radius:6px;
+}
+.selectedsetting{
+    background-color:#384fff;
+}
+
+.settingswrap{
+    position:absolute;
+    top:0;
+    left:0;
+    padding:24px;
+    display:flex;
+    flex-direction:column;
+    gap:24px;
+}
+
+#settingscontent{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+
+.slider {
+    -webkit-appearance: none;  
+    appearance: none;
+    width: 100%;
+    height: 15px; 
+    background: #696969; 
+    border-radius:100px;
+    outline: none; 
+    opacity: 0.7; 
+    -webkit-transition: .2s; 
+    transition: opacity .2s;
+}
+.slider:hover {
+    opacity: 1; 
+}
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none; 
+    appearance: none;
+    width: 20px; 
+    border-radius:100px;
+    height: 20px; 
+    background: #3396ff; 
+    cursor: pointer; 
+}
+
+.pointer{
+    cursor:pointer;
+}
+.horizontal{
+    height:0.5px;
+    flex-basis:auto;
+    width:100%;
+    background-color: #606060;
+    margin-top:12px;
+    margin-bottom:12px;
+}
+
+#exportinput{
+    background-color:transparent !important;
+    border:none;
+    box-shadow: none;
+    outline:none;
+}

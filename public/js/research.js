@@ -249,15 +249,17 @@ function checkquery() {
             }
 
             //some research update
-            RESEARCH = true
+            if(ROUNDS.length > 0){
+                RESEARCH = true
 
-            exportedstats.settings = decoded
+                exportedstats.settings = decoded
 
-            getelement('researchinstructions1').classList.remove('display-none')
-            researchid = generateID()
-    
-            let idbutton = getelement('idbutton')
-            idbutton.innerHTML = `ID: ${researchid}`
+                getelement('researchinstructions1').classList.remove('display-none')
+                researchid = generateID()
+        
+                let idbutton = getelement('idbutton')
+                idbutton.innerHTML = `ID: ${researchid}`
+            }
 
 
         }
@@ -297,7 +299,8 @@ async function clickresearchvalexport() {
                 nlevel: NLEVEL,
                 minspeed: 3600,
                 maxspeed: 3600,
-                stimuluscount: 30 },
+                stimuluscount: 30
+            },
             {
                 positionmode: POSITIONMODE,
                 mathmode: MATHMODE,
@@ -306,7 +309,8 @@ async function clickresearchvalexport() {
                 nlevel: NLEVEL,
                 minspeed: 2400,
                 maxspeed: 2400,
-                stimuluscount: 30 },
+                stimuluscount: 30
+            },
             {
                 positionmode: POSITIONMODE,
                 mathmode: MATHMODE,
@@ -315,7 +319,8 @@ async function clickresearchvalexport() {
                 nlevel: NLEVEL,
                 minspeed: 1200,
                 maxspeed: 1200,
-                stimuluscount: 30 },
+                stimuluscount: 30
+            },
         ]
     })
 
