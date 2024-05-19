@@ -216,51 +216,56 @@ function startresearchdemo() {
 let queryParams = new URLSearchParams(window.location.search)
 function checkquery() {
 	if (queryParams.get('r') == 'true') {
-		RESEARCH = true
-		
-		exportedstats.settings = window.location.search
+        let decoded = hexToString(queryParams.get('r'))
+        if(decoded){
+            let queryParams2 = new URLSearchParams(decoded)
+
+            if (queryParams2.get('p')) {
+                POSITIONMODE = +queryParams2.get('p')
+            }
+        
+            if (queryParams2.get('m')) {
+                MATHMODE = +queryParams2.get('m')
+            }
+        
+            if (queryParams2.get('a')) {
+                AUDIOLANG = +queryParams2.get('a')
+            }
+        
+            if (queryParams2.get('d')) {
+                DISPLAYLANG = +queryParams2.get('d')
+            }
+        
+            if (queryParams2.get('mns')) {
+                MINSPEED = +queryParams2.get('mns')
+            }
+        
+            if (queryParams2.get('mxs')) {
+                MAXSPEED = +queryParams2.get('mxs')
+            }
+        
+            if (queryParams2.get('n')) {
+                NLEVEL = +queryParams2.get('n')
+            }
+        
+            if (queryParams2.get('sc')) {
+                STIMULUSCOUNT = +queryParams2.get('sc')
+            }
+
+            //some research update
+            RESEARCH = true
+
+            exportedstats.settings = decoded
+
+            getelement('researchinstructions1').classList.remove('display-none')
+            researchid = generateID()
+    
+            let idbutton = getelement('idbutton')
+            idbutton.innerHTML = `ID: ${researchid}`
+
+
+        }
 	}
-
-	if (queryParams.get('p')) {
-		POSITIONMODE = +queryParams.get('p')
-	}
-
-	if (queryParams.get('m')) {
-		MATHMODE = +queryParams.get('m')
-	}
-
-	if (queryParams.get('a')) {
-		AUDIOLANG = +queryParams.get('a')
-	}
-
-	if (queryParams.get('d')) {
-		DISPLAYLANG = +queryParams.get('d')
-	}
-
-	if (queryParams.get('mns')) {
-		MINSPEED = +queryParams.get('mns')
-	}
-
-	if (queryParams.get('mxs')) {
-		MAXSPEED = +queryParams.get('mxs')
-	}
-
-	if (queryParams.get('n')) {
-		NLEVEL = +queryParams.get('n')
-	}
-
-	if (queryParams.get('sc')) {
-		STIMULUSCOUNT = +queryParams.get('sc')
-	}
-
-	if (RESEARCH) {
-		getelement('researchinstructions1').classList.remove('display-none')
-        researchid = generateID()
-
-        let idbutton = getelement('idbutton')
-        idbutton.innerHTML = `ID: ${researchid}`
-	}
-
 }
 checkquery()
 
@@ -271,12 +276,30 @@ function clickid(){
 
 
 function clickresearchexport() {
-	let str = window.location.protocol + '//' + window.location.host + window.location.pathname + `?r=true&p=${POSITIONMODE}&m=${MATHMODE}&a=${AUDIOLANG}&d=${DISPLAYLANG}&mns=${MINSPEED}&mxs=${MAXSPEED}&n=${NLEVEL}${STIMULUSCOUNT ? `&sc=${STIMULUSCOUNT}` : ''}`
+	let str = window.location.protocol + '//' + window.location.host + window.location.pathname + `?r=${stringToHex(`p=${POSITIONMODE}&m=${MATHMODE}&a=${AUDIOLANG}&d=${DISPLAYLANG}&mns=${MINSPEED}&mxs=${MAXSPEED}&n=${NLEVEL}${STIMULUSCOUNT ? `&sc=${STIMULUSCOUNT}` : ''}`)}`
 	navigator.clipboard.writeText(str)
 }
 
 
+function stringToHex(str) {
+    let hexStr = '';
+    for (let i = 0; i < str.length; i++) {
+        hexStr += str.charCodeAt(i).toString(16);
+    }
+    return hexStr;
+}
+
+function hexToString(hexStr) {
+    let str = '';
+    for (let i = 0; i < hexStr.length; i += 2) {
+        str += String.fromCharCode(parseInt(hexStr.substr(i, 2), 16));
+    }
+    return str;
+}
+
+
 //reset
+
 
 let exportedstats = { rounds: [] }
 
