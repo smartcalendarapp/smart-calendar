@@ -218,41 +218,41 @@ function startresearchdemo() {
 
 let queryParams = new URLSearchParams(window.location.search)
 function checkquery() {
-	if (queryParams.get('r') == 'true') {
-        let decoded = hexToString(queryParams.get('r'))
+	if (queryParams.get('research')) {
+        let decoded = hexToString(queryParams.get('research'))
         if(decoded){
             let queryParams2 = new URLSearchParams(decoded)
 
-            if (queryParams2.get('p')) {
-                POSITIONMODE = +queryParams2.get('p')
+            if (queryParams2.get('positionmode')) {
+                POSITIONMODE = +queryParams2.get('positionmode')
             }
         
-            if (queryParams2.get('m')) {
-                MATHMODE = +queryParams2.get('m')
+            if (queryParams2.get('mathmode')) {
+                MATHMODE = +queryParams2.get('mathmode')
             }
         
-            if (queryParams2.get('a')) {
-                AUDIOLANG = +queryParams2.get('a')
+            if (queryParams2.get('audiolang')) {
+                AUDIOLANG = +queryParams2.get('audiolang')
             }
         
-            if (queryParams2.get('d')) {
-                DISPLAYLANG = +queryParams2.get('d')
+            if (queryParams2.get('displaylang')) {
+                DISPLAYLANG = +queryParams2.get('displaylang')
             }
         
-            if (queryParams2.get('mns')) {
-                MINSPEED = +queryParams2.get('mns')
+            if (queryParams2.get('minspeed')) {
+                MINSPEED = +queryParams2.get('minspeed')
             }
         
-            if (queryParams2.get('mxs')) {
-                MAXSPEED = +queryParams2.get('mxs')
+            if (queryParams2.get('maxspeed')) {
+                MAXSPEED = +queryParams2.get('maxspeed')
             }
         
-            if (queryParams2.get('n')) {
-                NLEVEL = +queryParams2.get('n')
+            if (queryParams2.get('nlevel')) {
+                NLEVEL = +queryParams2.get('nlevel')
             }
         
-            if (queryParams2.get('sc')) {
-                STIMULUSCOUNT = +queryParams2.get('sc')
+            if (queryParams2.get('stimuluscount')) {
+                STIMULUSCOUNT = +queryParams2.get('stimuluscount')
             }
 
             //some research update
@@ -278,9 +278,18 @@ function clickid(){
 
 
 
-function clickresearchexport() {
-	let str = window.location.protocol + '//' + window.location.host + window.location.pathname + `?r=${stringToHex(`p=${POSITIONMODE}&m=${MATHMODE}&a=${AUDIOLANG}&d=${DISPLAYLANG}&mns=${MINSPEED}&mxs=${MAXSPEED}&n=${NLEVEL}${STIMULUSCOUNT ? `&sc=${STIMULUSCOUNT}` : ''}`)}`
-	navigator.clipboard.writeText(str)
+async function clickresearchexport() {
+    let exportinput = getelement('exportinput')
+    
+	let str2 = window.location.protocol + '//' + window.location.host + window.location.pathname + `?research=${stringToHex(exportinput.value)}`
+	navigator.clipboard.writeText(str2)
+}
+
+async function clickresearchvalexport() {
+    let str = `positionmode=${POSITIONMODE}&mathmode=${MATHMODE}&audiolang=${AUDIOLANG}&displaylang=${DISPLAYLANG}&minspeed=${MINSPEED}&maxspeed=${MAXSPEED}&nlevel=${NLEVEL}&stimuluscount=${STIMULUSCOUNT}`
+
+    let exportinput = getelement('exportinput')
+    exportinput.value = str
 }
 
 
