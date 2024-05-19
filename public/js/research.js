@@ -278,9 +278,9 @@ function clickresearchexport() {
 
 //reset
 
-reset()
-
 let exportedstats = { rounds: [] }
+
+reset()
 
 function reset() {
 	clearTimeout(gametimeout)
