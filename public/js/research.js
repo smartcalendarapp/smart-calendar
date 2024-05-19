@@ -193,21 +193,20 @@ let MAXNUMS;
 function initvariables() {
 	MAXNUMS = (MATHMODE == 0) ? (9 * NLEVEL) : 49
 }
-
 let MAXNUMPERCIRCLE = 18
 let SHOWFEEDBACK = true
+
 let MINSPEED = 3000
 let MAXSPEED = 1000
 let delay = MINSPEED
 let NLEVEL = 2
 let STIMULUSCOUNT = null
-
+let ROUNDS = []
 
 
 //query
 let RESEARCH;
 let ISRESEARCHDEMO;
-let RESEARCHDEMOSTIMULUSCOUNT = 10;
 
 function startresearchdemo() {
 	ISRESEARCHDEMO = true
@@ -219,40 +218,34 @@ function startresearchdemo() {
 let queryParams = new URLSearchParams(window.location.search)
 function checkquery() {
 	if (queryParams.get('research')) {
-        let decoded = hexToString(queryParams.get('research'))
+        let decoded = JSON.parse(hexToString(queryParams.get('research')))
         if(decoded){
-            let queryParams2 = new URLSearchParams(decoded)
+            if (decoded.positionmode) {
+                POSITIONMODE = +decoded.positionmode
+            }
+        
+            if (decoded.mathmode) {
+                MATHMODE = +decoded.mathmode
+            }
+        
+            if (decoded.audiolang) {
+                AUDIOLANG = +decoded.audiolang
+            }
+        
+            if (decoded.displaylang) {
+                DISPLAYLANG = +decoded.displaylang
+            }
+        
+            if (decoded.nlevel) {
+                NLEVEL = +decoded.nlevel
+            }
 
-            if (queryParams2.get('positionmode')) {
-                POSITIONMODE = +queryParams2.get('positionmode')
+            if(decoded.stimuluscount){
+                STIMULUSCOUNT = +decoded.stimuluscount
             }
         
-            if (queryParams2.get('mathmode')) {
-                MATHMODE = +queryParams2.get('mathmode')
-            }
-        
-            if (queryParams2.get('audiolang')) {
-                AUDIOLANG = +queryParams2.get('audiolang')
-            }
-        
-            if (queryParams2.get('displaylang')) {
-                DISPLAYLANG = +queryParams2.get('displaylang')
-            }
-        
-            if (queryParams2.get('minspeed')) {
-                MINSPEED = +queryParams2.get('minspeed')
-            }
-        
-            if (queryParams2.get('maxspeed')) {
-                MAXSPEED = +queryParams2.get('maxspeed')
-            }
-        
-            if (queryParams2.get('nlevel')) {
-                NLEVEL = +queryParams2.get('nlevel')
-            }
-        
-            if (queryParams2.get('stimuluscount')) {
-                STIMULUSCOUNT = +queryParams2.get('stimuluscount')
+            if (decoded.rounds) {
+                ROUNDS = decoded.rounds
             }
 
             //some research update
@@ -286,10 +279,48 @@ async function clickresearchexport() {
 }
 
 async function clickresearchvalexport() {
-    let str = `positionmode=${POSITIONMODE}&mathmode=${MATHMODE}&audiolang=${AUDIOLANG}&displaylang=${DISPLAYLANG}&minspeed=${MINSPEED}&maxspeed=${MAXSPEED}&nlevel=${NLEVEL}&stimuluscount=${STIMULUSCOUNT}`
+    let str2 = JSON.stringify({
+        positionmode: POSITIONMODE,
+        mathmode: MATHMODE,
+        audiolang: AUDIOLANG,
+        displaylang: DISPLAYLANG,
+        nlevel: NLEVEL,
+        minspeed: 3000,
+        maxspeed: 3000,
+        stimuluscount: 10,
+        rounds: [
+            {
+                positionmode: POSITIONMODE,
+                mathmode: MATHMODE,
+                audiolang: AUDIOLANG,
+                displaylang: DISPLAYLANG,
+                nlevel: NLEVEL,
+                minspeed: 3600,
+                maxspeed: 3600,
+                stimuluscount: 30 },
+            {
+                positionmode: POSITIONMODE,
+                mathmode: MATHMODE,
+                audiolang: AUDIOLANG,
+                displaylang: DISPLAYLANG,
+                nlevel: NLEVEL,
+                minspeed: 2400,
+                maxspeed: 2400,
+                stimuluscount: 30 },
+            {
+                positionmode: POSITIONMODE,
+                mathmode: MATHMODE,
+                audiolang: AUDIOLANG,
+                displaylang: DISPLAYLANG,
+                nlevel: NLEVEL,
+                minspeed: 1200,
+                maxspeed: 1200,
+                stimuluscount: 30 },
+        ]
+    })
 
     let exportinput = getelement('exportinput')
-    exportinput.value = str
+    exportinput.value = str2
 }
 
 
@@ -323,6 +354,7 @@ function reset() {
 	currentnumber = null
 	storednums = []
 	chosennumber = null
+
 
 	delay = MINSPEED
 
@@ -535,15 +567,27 @@ function tickgame() {
 		}
 		updatestats()
 
-		if (!(STIMULUSCOUNT || RESEARCHDEMOSTIMULUSCOUNT) || tickindex < (ISRESEARCHDEMO ? RESEARCHDEMOSTIMULUSCOUNT : STIMULUSCOUNT)) {
+		if (!STIMULUSCOUNT || tickindex < STIMULUSCOUNT) {
 			tickgame()
 		} else {
-			if (ISRESEARCHDEMO) {
-				//transition to real test
-				ISRESEARCHDEMO = false
-				SHOWFEEDBACK = false
-
-			} else {
+			if (ISRESEARCHDEMO || ROUNDS.length > 0) {
+                if(ISRESEARCHDEMO){
+                    //transition to real test
+                    ISRESEARCHDEMO = false
+                    SHOWFEEDBACK = false
+                }
+                
+                //load the round
+                if(ROUNDS[0].MAXSPEED != null) MAXSPEED = ROUNDS[0].MAXSPEED
+                if(ROUNDS[0].MINSPEED != null) MINSPEED = ROUNDS[0].MINSPEED
+                if(ROUNDS[0].STIMULUSCOUNT != null) STIMULUSCOUNT = ROUNDS[0].STIMULUSCOUNT
+                if(ROUNDS[0].POSITIONMODE != null) POSITIONMODE = ROUNDS[0].POSITIONMODE
+                if(ROUNDS[0].MATHMODE != null) MATHMODE = ROUNDS[0].MATHMODE
+                if(ROUNDS[0].AUDIOLANG != null) AUDIOLANG = ROUNDS[0].AUDIOLANG
+                if(ROUNDS[0].DISPLAYLANG != null) DISPLAYLANG = ROUNDS[0].DISPLAYLANG
+                if(ROUNDS[0].NLEVEL != null) NLEVEL = ROUNDS[0].NLEVEL
+                ROUNDS.shift()
+			}else{
 				exportdata()
 			}
 
