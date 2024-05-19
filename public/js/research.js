@@ -12,6 +12,9 @@ const englishnumbers = [
 	'forty', 'forty-one', 'forty-two', 'forty-three', 'forty-four', 'forty-five', 'forty-six', 'forty-seven', 'forty-eight', 'forty-nine'
 ]
 
+let exportedstats = { rounds: [] }
+
+
 function generateID() {
     let uuid = ''
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
@@ -301,8 +304,6 @@ function hexToString(hexStr) {
 //reset
 
 
-let exportedstats = { rounds: [] }
-
 reset()
 
 function reset() {
@@ -317,6 +318,7 @@ function reset() {
 	delay = MINSPEED
 
 
+    //stats
 	if (stats.length > 0) {
 		exportedstats.rounds.push(stats)
 	}
