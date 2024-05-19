@@ -420,6 +420,21 @@ async function getstatistic(id){
 	return null
 }
 
+
+async function setresearch(tempdata){
+	try{
+		const params2 = {
+			TableName: 'researchdata',
+			Item: marshall(tempdata, { convertClassInstanceToMap: true, removeUndefinedValues: true })
+		}
+		
+		await dynamoclient.send(new PutItemCommand(params2))
+	}catch(error){
+		console.error(error)
+	}
+}
+
+
 //DATABASE CLASSES
 function addmissingproperties(model, current) {
 	model = deepCopy(model)
@@ -2227,6 +2242,29 @@ app.post('/auth/apple/callback', async (req, res) => {
 	} catch (error) {
 		console.error(error)
 		res.redirect(301, '/login')
+	}
+})
+
+
+
+//RESEARCH
+app.post('/saveresearchdata', async (req, res) => {
+	try{
+		let exportedstats = req.body.exportedstats
+		let id = req.body.id
+
+		if(!id || !exportedstats){
+			res.status(401).end
+		}
+
+		let researchobj = { id: id, exportedstats: exportedstats }
+
+		await setresearch(researchobj)
+
+		res.end()
+	}catch(err){
+		console.error(err)
+		res.status(401).end()
 	}
 })
 

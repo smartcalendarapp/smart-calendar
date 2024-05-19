@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>PASAT</title>
+  <link href="../research.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <div id="buttonwrap"></div>
+
+
+	<div class="display-none researchinstructions" id="researchinstructions1">
+		<img class="researchinstructionsimage" src="../researchassets/researchinstructions1.png" onclick="getelement('researchinstructions1').classList.add('display-none');getelement('researchinstructions2').classList.remove('display-none');"></img>
+	</div>
+	<div class="display-none researchinstructions" id="researchinstructions2">
+		<img class="researchinstructionsimage" src="../researchassets/researchinstructions2.png" onclick="getelement('researchinstructions2').classList.add('display-none');startresearchdemo()"></img>
+	</div>
+	
+	<div id="donemessage" class="display-none">Thank you! Please <br><a id="googleformurl">click here</a> to fill out a mandatory Google Form.</div>
+
+	<div id="errormessage" class="display-none">An error occurred, could not save your data. Please don't close the page yet...</div>
+
+	<div id="feedback" class="display-none"></div>
+	
+	<div id="start" class="pointer" onclick="start()">Click to start</div>
+
+
+	<div id="exitresearchbutton" onclick="clickexitresearch(event)">Exit research</div>
+
+    <div id="idbutton" onclick="clickid()"></div>
+	
+	<div class="settingswrap display-none" id="settingswrap">
+		<div id="settingsbutton" onclick="clicksettings(event)">Settings</div>
+		<div id="settingscontent" class="display-none">
+			<div class="settingstext">Square position</div>
+			<div class="settingsoptiongroup" id="settingsoption1">
+				<div class="settingsoption" onclick="clicksettingspositionmode(0)">Circle</div>
+				<div class="settingsoption" onclick="clicksettingspositionmode(1)">RNG</div>
+				<div class="settingsoption" onclick="clicksettingspositionmode(2)">RNG circle</div>
+			</div>
+	
+			<div class="settingstext">Math type</div>
+			<div class="settingsoptiongroup" id="settingsoption2">
+				<div class="settingsoption" onclick="clicksettingsmathmode(0)">Add</div>
+				<div class="settingsoption"onclick="clicksettingsmathmode(1)">Mult</div>
+			</div>
+
+			<div class="settingstext">Audio lang</div>
+			<div class="settingsoptiongroup" id="settingsoption3">
+				<div class="settingsoption" onclick="clicksettingsaudiolang(0)">En</div>
+				<div class="settingsoption"onclick="clicksettingsaudiolang(1)">Zh</div>
+				<div class="settingsoption"onclick="clicksettingsaudiolang(2)">Alt</div>
+				<div class="settingsoption"onclick="clicksettingsaudiolang(3)">RNG</div>
+			</div>
+
+			<div class="settingstext">Display lang</div>
+			<div class="settingsoptiongroup" id="settingsoption4">
+				<div class="settingsoption" onclick="clicksettingsdisplaylang(0)">Num</div>
+				<div class="settingsoption" onclick="clicksettingsdisplaylang(1)">En</div>
+				<div class="settingsoption"onclick="clicksettingsdisplaylang(2)">Zh</div>
+			</div>
+
+			<div class="settingstext" id="startingdelaytext">Starting speed</div>
+			<input type="range" step="100" min="1000" max="10000" class="slider" id="delayslider" oninput="inputstartingdelay(event)"></input>
+
+			<div class="settingstext" id="nleveltext">N level</div>
+			<input type="range" step="1" min="2" max="5" class="slider" id="nlevelslider" oninput="inputnlevel(event)"></input>
+
+
+			<div class="horizontal"></div>
+			
+			<div class="settingstext">Stats</div>
+			<div class="settingstext" id="settingsstats"></div>
+
+			<div class="horizontal"></div>
+
+			<div class="settingstext pointer" onclick="clickresearchexport()">Link</div>
+			
+		</div>
+	</div>
+
+  <script src="../research.js"></script>
+	
+	<audio src="../researchassets/tap.mp3" id="tapaudio"></audio>
+	<audio src="../researchassets/1_chinese.mp3" id="numberaudio1"></audio>
+	<audio src="../researchassets/2_chinese.mp3" id="numberaudio2"></audio>
+	<audio src="../researchassets/3_chinese.mp3" id="numberaudio3"></audio>
+	<audio src="../researchassets/4_chinese.mp3" id="numberaudio4"></audio>
+	<audio src="../researchassets/5_chinese.mp3" id="numberaudio5"></audio>
+	<audio src="../researchassets/6_chinese.mp3" id="numberaudio6"></audio>
+	<audio src="../researchassets/7_chinese.mp3" id="numberaudio7"></audio>
+	<audio src="../researchassets/8_chinese.mp3" id="numberaudio8"></audio>
+	<audio src="../researchassets/9_chinese.mp3" id="numberaudio9"></audio>
+</body>
+
+</html>
