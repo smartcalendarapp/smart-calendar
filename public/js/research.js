@@ -202,6 +202,7 @@ let delay = MINSPEED
 let NLEVEL = 2
 let STIMULUSCOUNT = null
 let ROUNDS = []
+let roundscompleted;
 
 
 //query
@@ -384,7 +385,12 @@ function reset() {
 		if (ISRESEARCHDEMO) {
 			getelement('start').innerHTML = 'Click to start demo'
 		} else {
-			getelement('start').innerHTML = 'Click to start experiment<br><span style="font-size:14px">Feedback will not be shown</span>'
+            if(roundscompleted == 0){
+			    getelement('start').innerHTML = `Click to start experiment<br><span style="font-size:14px">Feedback will not be shown</span>`
+            }else{
+                getelement('start').innerHTML = `Click to continue experiment</span>`
+            }
+
 		}
 	}
 
@@ -450,6 +456,13 @@ function clickbutton(num) {
 
 function ischosencorrect() {
 	return ((MATHMODE == 0 && chosennumber == currentnumber + storednums.reduce((s, a) => s + a, 0)) || (MATHMODE == 1 && chosennumber == currentnumber * storednums.reduce((s, a) => s * a, 1)))
+}
+function getanswer(){
+    if(MATHMODE == 0){
+        return currentnumber + storednums.reduce((s, a) => s + a, 0)
+    }else if(MATHMODE == 1){
+        return currentnumber * storednums.reduce((s, a) => s * a, 1)
+    }
 }
 
 let answeredtimestamp;
@@ -568,7 +581,7 @@ function tickgame() {
 
 		//stats
 		if (answercounts && !ISRESEARCHDEMO) {
-			stats.push({ responsetime: responsetime, delay: delay, answer: answernum, questionright: questionright, operation: ['Addition', 'Multiplication'][MATHMODE], operationvalue: operatednums.join(', ') })
+			stats.push({ responsetime: responsetime, delay: delay, clickedanswer: answernum, correctanswer: getanswer(), isanswercorrect: questionright, operation: ['Addition', 'Multiplication'][MATHMODE], operationvalues: operatednums.join(', ') })
 		}
 		updatestats()
 
@@ -580,6 +593,8 @@ function tickgame() {
                     //transition to real test
                     ISRESEARCHDEMO = false
                     SHOWFEEDBACK = false
+                }else{
+                    roundscompleted++
                 }
                 
                 //load the round
