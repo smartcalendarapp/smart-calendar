@@ -324,8 +324,8 @@ async function clickresearchvalexport() {
                 audiolang: AUDIOLANG,
                 displaylang: DISPLAYLANG,
                 nlevel: NLEVEL,
-                minspeed: 2200,
-                maxspeed: 2200,
+                minspeed: 2400,
+                maxspeed: 2400,
                 stimuluscount: 30
             },
             {
@@ -334,8 +334,18 @@ async function clickresearchvalexport() {
                 audiolang: AUDIOLANG,
                 displaylang: DISPLAYLANG,
                 nlevel: NLEVEL,
-                minspeed: 1400,
-                maxspeed: 1400,
+                minspeed: 1800,
+                maxspeed: 1800,
+                stimuluscount: 30
+            },
+            {
+                positionmode: POSITIONMODE,
+                mathmode: MATHMODE,
+                audiolang: AUDIOLANG,
+                displaylang: DISPLAYLANG,
+                nlevel: NLEVEL,
+                minspeed: 3000,
+                maxspeed: 3000,
                 stimuluscount: 30
             },
         ]
@@ -399,7 +409,7 @@ function reset() {
 
 	if (RESEARCH) {
 		if (ISRESEARCHDEMO) {
-			getelement('start').innerHTML = 'Click to start demo'
+			getelement('start').innerHTML = 'Click to start demo<br><span style="font-size:14px">Make sure your volume is turned up</span>'
 		} else {
             if(roundscompleted == 0){
 			    `Click to start experiment<br><span style="font-size:14px">Feedback will not be shown</span><br><span style="font-size:12px">Takes ~4 min. Please find a quiet space without distractions.</span>`
