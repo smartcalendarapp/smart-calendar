@@ -12,16 +12,18 @@
   <div id="buttonwrap"></div>
 
 
-	<div class="display-none researchinstructions" id="researchinstructions1">
-		<img class="researchinstructionsimage" src="../researchassets/researchinstructions1.png" onclick="getelement('researchinstructions1').classList.add('display-none');getelement('researchinstructions2').classList.remove('display-none');"></img>
+	<div class="display-none researchinstructions pointer" onclick="getelement('researchinstructions1').classList.add('display-none');getelement('researchinstructions2').classList.remove('display-none');" id="researchinstructions1">
+		<img class="researchinstructionsimage" src="../researchassets/researchinstructions1.png"></img>
 	</div>
-	<div class="display-none researchinstructions" id="researchinstructions2">
-		<img class="researchinstructionsimage" src="../researchassets/researchinstructions2.png" onclick="getelement('researchinstructions2').classList.add('display-none');startresearchdemo()"></img>
+	<div class="display-none researchinstructions pointer" onclick="getelement('researchinstructions2').classList.add('display-none');startresearchdemo()" id="researchinstructions2">
+		<img class="researchinstructionsimage" src="../researchassets/researchinstructions2.png" ></img>
 	</div>
 	
 	<div id="donemessage" class="display-none">Thank you! Please <br><a id="googleformurl" class="pointer" target="_blank" rel="noopener noreferrer">click here</a> to fill out a mandatory Google Form.</div>
 
 	<div id="errormessage" class="display-none">An error occurred, could not save your data. Please don't close the page yet...</div>
+
+    <div class="mobilewrap">Please find a laptop/desktop to do the experiment. Thank you!</div>
 
 	<div id="feedback" class="display-none"></div>
 	
