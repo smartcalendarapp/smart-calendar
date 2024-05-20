@@ -202,7 +202,7 @@ let delay = MINSPEED
 let NLEVEL = 2
 let STIMULUSCOUNT = null
 let ROUNDS = []
-let roundscompleted;
+let roundscompleted = 0
 
 
 //query
@@ -270,6 +270,14 @@ checkquery()
 
 function clickid(){
     navigator.clipboard.writeText(researchid)
+
+    let idbutton = getelement('idbutton')
+    idbutton.innerHTML = `ID: ${researchid} copied!`
+
+    setTimeout(function(){
+        let idbutton = getelement('idbutton')
+        idbutton.innerHTML = `ID: ${researchid}`
+    },1000)
 }
 
 
@@ -598,14 +606,14 @@ function tickgame() {
                 }
                 
                 //load the round
-                if(ROUNDS[0].MAXSPEED != null) MAXSPEED = ROUNDS[0].MAXSPEED
-                if(ROUNDS[0].MINSPEED != null) MINSPEED = ROUNDS[0].MINSPEED
-                if(ROUNDS[0].STIMULUSCOUNT != null) STIMULUSCOUNT = ROUNDS[0].STIMULUSCOUNT
-                if(ROUNDS[0].POSITIONMODE != null) POSITIONMODE = ROUNDS[0].POSITIONMODE
-                if(ROUNDS[0].MATHMODE != null) MATHMODE = ROUNDS[0].MATHMODE
-                if(ROUNDS[0].AUDIOLANG != null) AUDIOLANG = ROUNDS[0].AUDIOLANG
-                if(ROUNDS[0].DISPLAYLANG != null) DISPLAYLANG = ROUNDS[0].DISPLAYLANG
-                if(ROUNDS[0].NLEVEL != null) NLEVEL = ROUNDS[0].NLEVEL
+                if(ROUNDS[0].maxspeed != null) MAXSPEED = ROUNDS[0].maxspeed
+                if(ROUNDS[0].minspeed != null) MINSPEED = ROUNDS[0].minspeed
+                if(ROUNDS[0].stimuluscount != null) STIMULUSCOUNT = ROUNDS[0].stimuluscount
+                if(ROUNDS[0].positionmode != null) POSITIONMODE = ROUNDS[0].positionmode
+                if(ROUNDS[0].mathmode != null) MATHMODE = ROUNDS[0].mathmode
+                if(ROUNDS[0].audiolang != null) AUDIOLANG = ROUNDS[0].audiolang
+                if(ROUNDS[0].displaylang != null) DISPLAYLANG = ROUNDS[0].displaylang
+                if(ROUNDS[0].nlevel != null) NLEVEL = ROUNDS[0].nlevel
                 ROUNDS.shift()
 			}else{
 				exportdata()
