@@ -196,7 +196,7 @@ function initvariables() {
 let MAXNUMPERCIRCLE = 18
 let SHOWFEEDBACK = true
 
-let MINSPEED = 3600
+let MINSPEED = 3000
 let MAXSPEED = 1000
 let delay = MINSPEED
 let NLEVEL = 2
@@ -243,6 +243,14 @@ function checkquery() {
 
             if(decoded.stimuluscount){
                 STIMULUSCOUNT = +decoded.stimuluscount
+            }
+
+            if(decoded.minspeed){
+                MINSPEED = +decoded.minspeed
+            }
+
+            if(decoded.maxspeed){
+                MAXSPEED = +decoded.maxspeed
             }
         
             if (decoded.rounds) {
@@ -308,7 +316,7 @@ async function clickresearchvalexport() {
                 nlevel: NLEVEL,
                 minspeed: 3000,
                 maxspeed: 3000,
-                stimuluscount: 6
+                stimuluscount: 30
             },
             {
                 positionmode: POSITIONMODE,
@@ -316,9 +324,9 @@ async function clickresearchvalexport() {
                 audiolang: AUDIOLANG,
                 displaylang: DISPLAYLANG,
                 nlevel: NLEVEL,
-                minspeed: 2400,
-                maxspeed: 2400,
-                stimuluscount: 6
+                minspeed: 2200,
+                maxspeed: 2200,
+                stimuluscount: 30
             },
             {
                 positionmode: POSITIONMODE,
@@ -326,19 +334,9 @@ async function clickresearchvalexport() {
                 audiolang: AUDIOLANG,
                 displaylang: DISPLAYLANG,
                 nlevel: NLEVEL,
-                minspeed: 1800,
-                maxspeed: 1800,
-                stimuluscount: 6
-            },
-            {
-                positionmode: POSITIONMODE,
-                mathmode: MATHMODE,
-                audiolang: AUDIOLANG,
-                displaylang: DISPLAYLANG,
-                nlevel: NLEVEL,
-                minspeed: 1200,
-                maxspeed: 1200,
-                stimuluscount: 6
+                minspeed: 1400,
+                maxspeed: 1400,
+                stimuluscount: 30
             },
         ]
     })
@@ -404,7 +402,9 @@ function reset() {
 			getelement('start').innerHTML = 'Click to start demo'
 		} else {
             if(roundscompleted == 0){
-			    getelement('start').innerHTML = `Click to start experiment<br><span style="font-size:14px">Feedback will not be shown</span><br><span style="font-size:12px">Takes ~4 min. Please find a quiet space where you can focus.</span>`
+			    `Click to start experiment<br><span style="font-size:14px">Feedback will not be shown</span><br><span style="font-size:12px">Takes ~4 min. Please find a quiet space without distractions.</span>`
+            }else if(ROUNDS.length > 0){
+                getelement('start').innerHTML = `Click to continue`
             }else{
                 getelement('start').classList.add('display-none')
             }
@@ -607,9 +607,6 @@ function tickgame() {
 			tickgame()
 		} else {
 			if (ISRESEARCHDEMO || ROUNDS.length > 0) {
-                let doexport;
-                let startnext;
-
                 if(ISRESEARCHDEMO){
                     //transition to real test
                     ISRESEARCHDEMO = false
@@ -628,21 +625,12 @@ function tickgame() {
                 if(ROUNDS[0].displaylang != null) DISPLAYLANG = ROUNDS[0].displaylang
                 if(ROUNDS[0].nlevel != null) NLEVEL = ROUNDS[0].nlevel
                 ROUNDS.shift()
-
-                startnext = true
 			}else{
-                doexport = true
+				exportdata()
 			}
 
 			setTimeout(function() {
 				reset()
-
-                if(startnext){
-                    start()
-                }
-                if(doexport){
-                    exportdata()
-                }
 			}, 1000)
 
 		}
