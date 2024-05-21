@@ -261,9 +261,11 @@ function startresearchdemo() {
 let queryParams = new URLSearchParams(window.location.search)
 function checkquery() {
 	if (queryParams.get('research')) {
-        let decoded = JSON.parse(hexToString(queryParams.get('research')))
-        if(!decoded){
+        let decoded;
+        if(queryParams.get('research') == 'true'){
             decoded = DEFAULTEXPORT
+        }else{
+            decoded = JSON.parse(hexToString(queryParams.get('research')))
         }
 
         if(decoded){
