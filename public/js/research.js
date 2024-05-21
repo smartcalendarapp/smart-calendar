@@ -15,6 +15,50 @@ const englishnumbers = [
 let exportedstats = { rounds: [] }
 
 
+let DEFAULTEXPORT = {
+    positionmode: POSITIONMODE,
+    mathmode: MATHMODE,
+    audiolang: AUDIOLANG,
+    displaylang: DISPLAYLANG,
+    nlevel: NLEVEL,
+    minspeed: 3000,
+    maxspeed: 3000,
+    stimuluscount: 10,
+    rounds: [
+        {
+            positionmode: POSITIONMODE,
+            mathmode: MATHMODE,
+            audiolang: AUDIOLANG,
+            displaylang: DISPLAYLANG,
+            nlevel: NLEVEL,
+            minspeed: 3000,
+            maxspeed: 3000,
+            stimuluscount: 30
+        },
+        {
+            positionmode: POSITIONMODE,
+            mathmode: MATHMODE,
+            audiolang: AUDIOLANG,
+            displaylang: DISPLAYLANG,
+            nlevel: NLEVEL,
+            minspeed: 2400,
+            maxspeed: 2400,
+            stimuluscount: 30
+        },
+        {
+            positionmode: POSITIONMODE,
+            mathmode: MATHMODE,
+            audiolang: AUDIOLANG,
+            displaylang: DISPLAYLANG,
+            nlevel: NLEVEL,
+            minspeed: 1800,
+            maxspeed: 1800,
+            stimuluscount: 30
+        }
+    ]
+}
+
+
 function generateID() {
     let uuid = ''
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
@@ -28,8 +72,6 @@ function generateID() {
 }
 let researchid;
   
-
-
 
 function setup() {
 	if (!RESEARCH) {
@@ -220,6 +262,10 @@ let queryParams = new URLSearchParams(window.location.search)
 function checkquery() {
 	if (queryParams.get('research')) {
         let decoded = JSON.parse(hexToString(queryParams.get('research')))
+        if(!decoded){
+            decoded = DEFAULTEXPORT
+        }
+
         if(decoded){
             if (decoded.positionmode) {
                 POSITIONMODE = +decoded.positionmode
@@ -298,58 +344,7 @@ async function clickresearchexport() {
 }
 
 async function clickresearchvalexport() {
-    let str2 = JSON.stringify({
-        positionmode: POSITIONMODE,
-        mathmode: MATHMODE,
-        audiolang: AUDIOLANG,
-        displaylang: DISPLAYLANG,
-        nlevel: NLEVEL,
-        minspeed: 3000,
-        maxspeed: 3000,
-        stimuluscount: 10,
-        rounds: [
-            {
-                positionmode: POSITIONMODE,
-                mathmode: MATHMODE,
-                audiolang: AUDIOLANG,
-                displaylang: DISPLAYLANG,
-                nlevel: NLEVEL,
-                minspeed: 3000,
-                maxspeed: 3000,
-                stimuluscount: 20
-            },
-            {
-                positionmode: POSITIONMODE,
-                mathmode: MATHMODE,
-                audiolang: AUDIOLANG,
-                displaylang: DISPLAYLANG,
-                nlevel: NLEVEL,
-                minspeed: 2400,
-                maxspeed: 2400,
-                stimuluscount: 20
-            },
-            {
-                positionmode: POSITIONMODE,
-                mathmode: MATHMODE,
-                audiolang: AUDIOLANG,
-                displaylang: DISPLAYLANG,
-                nlevel: NLEVEL,
-                minspeed: 1800,
-                maxspeed: 1800,
-                stimuluscount: 20
-            },
-            {
-                positionmode: POSITIONMODE,
-                mathmode: MATHMODE,
-                audiolang: AUDIOLANG,
-                displaylang: DISPLAYLANG,
-                nlevel: NLEVEL,
-                minspeed: 3000,
-                maxspeed: 3000,
-                stimuluscount: 20
-            },
-        ]
-    })
+    let str2 = JSON.stringify(DEFAULTEXPORT)
 
     let exportinput = getelement('exportinput')
     exportinput.value = str2
@@ -460,6 +455,8 @@ async function exportdata() {
 
 //game
 
+
+let numindex = 0;
 
 function rng(max) { //between 1 and max, inclusive
 	return Math.floor(Math.random() * (max)) + 1
@@ -602,9 +599,18 @@ function tickgame() {
 			storednums.pop()
 		}
 
-		currentnumber = MATHMODE == 0 ? Math.min(rng(MAXNUMS - storednums.reduce((s, a) => s + a, 0)), 9) : rng(Math.min(Math.floor(MAXNUMS / storednums.reduce((s, a) => s * a, 1)), 9))
-		chosennumber = null
 
+        if(!RESEARCH){
+		    currentnumber = MATHMODE == 0 ? Math.min(rng(MAXNUMS - storednums.reduce((s, a) => s + a, 0)), 9) : rng(Math.min(Math.floor(MAXNUMS / storednums.reduce((s, a) => s * a, 1)), 9))
+        }else{
+            const rng = [1,6,2,1,8,9,7,3,6,9,5,1,1,6,1,1,8,3,2,6,1,4,6,1,9,9,9,1,7,2,9,2,3,7,9,1,4,8,4,8,1,6,8,5,5,5,1,7,5,3,3,5,9,9,9,4,1,7,7,3,1,3,9,2,3,3,8,1,3,7,5,3,5,9,7,3,5,2,1,7,4,9,7,5,3,5,7,7,4,5,2,7,5,1,8,4,4,3,6,7,2,9,6,6,2,4,4,3,2,9,5,3,1,8,3,1,7,7,9,4,2,9,3,5,1,7,6,2,4,9,8,2,6,5,3,1,4,5,7,2,6,1,9,6,2,8,5,8,9,7,7,8,8,7,5,3,5,9,6,3,8,2,4,2,7,7,5,7,8,1,1,6,4,2,4,3,8,7,8,9,6,4,5,5,6,8,1,3,3,9,1,9,2,5,1,5,5,8,1,8,1,9,3,3,4,5,1,8,6,5,8,2,5,5,2,3,7,3,5,1,4,1,5,8,3,5,4,1,6,1,4,8,5,8,4,2,2,6,9,2,1,6,2,6,8,6,8,9,2,9,5,2,2,4,5,4,4,4,9,5,8,4,2,1,9,5,9,3,2,9,5,1,6,7,2,8,8,9,7,2,4,9,5,5,4,7,8,4,6,8,2,2,1,6,5,2,3,1,5,6]
+
+            currentnumber = rng[numindex]
+
+            numindex++
+        }
+
+		chosennumber = null
 		answeredtimestamp = null
 
 		//stats
