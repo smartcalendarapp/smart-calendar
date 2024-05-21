@@ -15,6 +15,63 @@ const englishnumbers = [
 let exportedstats = { rounds: [] }
 
 
+
+
+//vars
+
+
+let gametimeout;
+let currentnumber, chosennumber;
+let storednums = []
+
+let tickindex = 0;
+
+let POSITIONMODE = 0
+/*
+mode 0 is circular
+mode 1 is random
+mode 2 is random circular
+*/
+
+let MATHMODE = 0
+/*
+mode 0 is addition
+mode 1 is multiplcation
+*/
+
+let AUDIOLANG = 0
+/*
+mode 0 is english
+mode 1 is chinese
+mode 2 is alternating
+mode 3 is random
+*/
+
+let DISPLAYLANG = 0
+/*
+mode 0 is numerical
+mode 1 is chinese
+mode 2 is english
+*/
+
+let MAXNUMS;
+function initvariables() {
+	MAXNUMS = (MATHMODE == 0) ? (9 * NLEVEL) : 49
+}
+let MAXNUMPERCIRCLE = 18
+let SHOWFEEDBACK = true
+
+let MINSPEED = 3000
+let MAXSPEED = 1000
+let delay = MINSPEED
+let NLEVEL = 2
+let STIMULUSCOUNT = null
+let ROUNDS = []
+let roundscompleted = 0
+
+
+
+//export
 let DEFAULTEXPORT = {
     positionmode: POSITIONMODE,
     mathmode: MATHMODE,
@@ -58,6 +115,9 @@ let DEFAULTEXPORT = {
     ]
 }
 
+
+
+//functions
 
 function generateID() {
     let uuid = ''
@@ -193,58 +253,6 @@ let spokenstarttimestamp;
 
 
 
-
-//vars
-
-
-let gametimeout;
-let currentnumber, chosennumber;
-let storednums = []
-
-let tickindex = 0;
-
-let POSITIONMODE = 0
-/*
-mode 0 is circular
-mode 1 is random
-mode 2 is random circular
-*/
-
-let MATHMODE = 0
-/*
-mode 0 is addition
-mode 1 is multiplcation
-*/
-
-let AUDIOLANG = 0
-/*
-mode 0 is english
-mode 1 is chinese
-mode 2 is alternating
-mode 3 is random
-*/
-
-let DISPLAYLANG = 0
-/*
-mode 0 is numerical
-mode 1 is chinese
-mode 2 is english
-*/
-
-let MAXNUMS;
-function initvariables() {
-	MAXNUMS = (MATHMODE == 0) ? (9 * NLEVEL) : 49
-}
-let MAXNUMPERCIRCLE = 18
-let SHOWFEEDBACK = true
-
-let MINSPEED = 3000
-let MAXSPEED = 1000
-let delay = MINSPEED
-let NLEVEL = 2
-let STIMULUSCOUNT = null
-let ROUNDS = []
-let roundscompleted = 0
 
 
 //query
