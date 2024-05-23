@@ -61,7 +61,7 @@ function initvariables() {
 let MAXNUMPERCIRCLE = 18
 let SHOWFEEDBACK = true
 
-let MINSPEED = 3000
+let MINSPEED = 4000
 let MAXSPEED = 1000
 let delay = MINSPEED
 let NLEVEL = 2
@@ -78,7 +78,7 @@ let DEFAULTEXPORT = {
     audiolang: AUDIOLANG,
     displaylang: DISPLAYLANG,
     nlevel: NLEVEL,
-    minspeed: 3000,
+    minspeed: 4000,
     maxspeed: 3000,
     stimuluscount: 10,
     rounds: [
@@ -98,8 +98,8 @@ let DEFAULTEXPORT = {
             audiolang: AUDIOLANG,
             displaylang: DISPLAYLANG,
             nlevel: NLEVEL,
-            minspeed: 2400,
-            maxspeed: 2400,
+            minspeed: 3000,
+            maxspeed: 1500,
             stimuluscount: 30
         },
         {
@@ -108,10 +108,10 @@ let DEFAULTEXPORT = {
             audiolang: AUDIOLANG,
             displaylang: DISPLAYLANG,
             nlevel: NLEVEL,
-            minspeed: 1800,
-            maxspeed: 1800,
+            minspeed: 2000,
+            maxspeed: 2000,
             stimuluscount: 30
-        }
+        },
     ]
 }
 
@@ -419,7 +419,7 @@ function reset() {
             if(roundscompleted == 0){
 			    getelement('start').innerHTML =  `Click to start experiment<br><span style="font-size:14px">Feedback will not be shown</span><br><span style="font-size:12px">Takes ~4 min. Please find a quiet space without distractions.</span>`
             }else if(ROUNDS.length > 0){
-                getelement('start').innerHTML = `Click to continue`
+                getelement('start').innerHTML = `Click to continue experiment`
             }else{
                 getelement('start').classList.add('display-none')
             }
