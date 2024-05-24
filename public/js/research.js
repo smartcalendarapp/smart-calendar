@@ -100,7 +100,7 @@ let DEFAULTEXPORT = {
             nlevel: NLEVEL,
             minspeed: 3000,
             maxspeed: 1500,
-            stimuluscount: 20
+            stimuluscount: 30
         },
         {
             positionmode: POSITIONMODE,
