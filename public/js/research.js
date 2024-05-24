@@ -431,8 +431,11 @@ function reset() {
 
 
 async function exportdata() {
+    let myurl = `https://docs.google.com/forms/d/e/1FAIpQLSdv8iYA3gmcknyFZb4z6Th6I1gQH7So_Ev-Niadk0l408puSg/viewform?usp=pp_url&entry.597758209=${researchid}`
     let googleformurl = getelement('googleformurl')
-    googleformurl.href = `https://docs.google.com/forms/d/e/1FAIpQLSdv8iYA3gmcknyFZb4z6Th6I1gQH7So_Ev-Niadk0l408puSg/viewform?usp=pp_url&entry.597758209=${researchid}`
+    googleformurl.href = myurl
+
+    window.open(myurl, '_blank')
 
 	const response = await fetch('/saveresearchdata', {
 		method: 'POST',
