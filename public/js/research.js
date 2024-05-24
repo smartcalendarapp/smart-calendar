@@ -418,7 +418,7 @@ function reset() {
 		} else {
             if(roundscompleted == 0){
 			    getelement('start').innerHTML =  `Click to start experiment<br><span style="font-size:14px">Feedback will not be shown</span><br><span style="font-size:12px">Takes ~3 min. Please find a quiet space without distractions.</span>`
-            }else if(ROUNDS.length > 0){
+            }else if(ROUNDS.length > 0 || roundscompleted > 0){
                 getelement('start').innerHTML = `Click to continue experiment`
             }else{
                 getelement('start').classList.add('display-none')
@@ -632,7 +632,7 @@ function tickgame() {
 		}
 		updatestats()
 
-		if (!STIMULUSCOUNT || tickindex < STIMULUSCOUNT) {
+		if (STIMULUSCOUNT == null || tickindex < STIMULUSCOUNT) {
 			tickgame()
 		} else {
 			if (ISRESEARCHDEMO || ROUNDS.length > 0) {
