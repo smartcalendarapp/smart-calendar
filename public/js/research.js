@@ -506,33 +506,30 @@ function getanswer(){
 let answeredtimestamp;
 function tickgame() {
 	if (AUDIOLANG == 0) {
-		const utterance = new SpeechSynthesisUtterance(currentnumber)
-		const voices = speechSynthesis.getVoices()
-		utterance.voice = voices[0]
-		window.speechSynthesis.speak(utterance)
+		let numberaudio = getelement(`englishnumberaudio${currentnumber}`)
+        numberaudio.playbackRate = 1.1
+        numberaudio.play()
 	} else if (AUDIOLANG == 1) {
-		let numberaudio = getelement(`numberaudio${currentnumber}`)
+		let numberaudio = getelement(`chinesenumberaudio${currentnumber}`)
 		numberaudio.playbackRate = 1.3
 		numberaudio.play()
 	} else if (AUDIOLANG == 2) {
 		if (tickindex % 2 == 0) {
-			const utterance = new SpeechSynthesisUtterance(currentnumber)
-			const voices = speechSynthesis.getVoices()
-			utterance.voice = voices[0]
-			window.speechSynthesis.speak(utterance)
+			let numberaudio = getelement(`englishnumberaudio${currentnumber}`)
+            numberaudio.playbackRate = 1.1
+            numberaudio.play()
 		} else {
-			let numberaudio = getelement(`numberaudio${currentnumber}`)
+			let numberaudio = getelement(`chinesenumberaudio${currentnumber}`)
 			numberaudio.playbackRate = 1.3
 			numberaudio.play()
 		}
 	} else if (AUDIOLANG == 3) {
 		if (Math.random() < 0.5) {
-			const utterance = new SpeechSynthesisUtterance(currentnumber)
-			const voices = speechSynthesis.getVoices()
-			utterance.voice = voices[0]
-			window.speechSynthesis.speak(utterance)
+			let numberaudio = getelement(`englishnumberaudio${currentnumber}`)
+            numberaudio.playbackRate = 1.1
+            numberaudio.play()
 		} else {
-			let numberaudio = getelement(`numberaudio${currentnumber}`)
+			let numberaudio = getelement(`chinesenumberaudio${currentnumber}`)
 			numberaudio.playbackRate = 1.3
 			numberaudio.play()
 		}
