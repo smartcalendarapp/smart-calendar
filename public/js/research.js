@@ -435,8 +435,6 @@ async function exportdata() {
     let googleformurl = getelement('googleformurl')
     googleformurl.href = myurl
 
-    window.open(myurl, '_blank')
-
 	const response = await fetch('/saveresearchdata', {
 		method: 'POST',
 		headers: {
@@ -463,6 +461,8 @@ async function exportdata() {
 			exportdata()
 		}, 3000)
 	}
+
+    window.open(myurl, '_blank')
 }
 
 
