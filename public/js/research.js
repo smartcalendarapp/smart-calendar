@@ -417,9 +417,9 @@ function reset() {
 			getelement('start').innerHTML = 'Click to start demo<br><span style="font-size:14px">Make sure your volume is turned up</span>'
 		} else {
             if(roundscompleted == 0){
-			    getelement('start').innerHTML =  `Click to start experiment<br><span style="font-size:14px">Feedback will not be shown</span><br><span style="font-size:12px">Takes ~3 min. Please find a quiet space without distractions.</span>`
+			    getelement('start').innerHTML =  `<span style="color:#00ff00;">Click to start experiment<br><span style="font-size:14px">Feedback will not be shown</span><br><span style="font-size:12px">Takes ~3 min. Please find a quiet space without distractions.</span></span>`
             }else if(ROUNDS.length > 0 || roundscompleted > 0){
-                getelement('start').innerHTML = `Click to continue experiment`
+                getelement('start').innerHTML = `<span style="color:#00ff00;">Click to continue experiment</span>`
             }else{
                 getelement('start').classList.add('display-none')
             }
