@@ -652,6 +652,7 @@ function tickgame() {
                 if(ROUNDS[0].nlevel != null) NLEVEL = ROUNDS[0].nlevel
                 ROUNDS.shift()
 			}else{
+				reset()
 				exportdata()
 			}
 
