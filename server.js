@@ -2363,6 +2363,7 @@ app.post('/webhook', express.json({type: 'application/json'}), async (req, res) 
 		if(event.type == 'invoice.payment_succeeded'){
 			let user = await getUserById(userid)
 			if(!user){
+				console.warn(userid)
 				throw new Error('Stripe subscription: user not found.\n' + JSON.stringify(event.data))
 			}
 
