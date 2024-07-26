@@ -6219,7 +6219,9 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			const systeminstructions = GPT_ATHENA_INSTRUCTIONS + ` The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
 
 			try {
-				let modifiedinput = `Prompt: """${userinput}"""`
+				let modifiedinput = `Prompt: """${userinput}"""
+				Events list (fetch_events to get details): """${eventslist}"""
+				Tasks list (fetch_tasks to get details): """${taskslist}"""`
 				const response = await openai.chat.completions.create({
 					model: GPT_MODEL,
 					messages: [
@@ -6659,6 +6661,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			for(let d of tempevents){
 				let newstring = `Event title: ${d.title || 'New Event'}, ID: ${gettempid(d.id, 'event')}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}${d.repeat.frequency != null && d.repeat.interval != null ? `, recurrence: ${getRecurrenceString(d)}` : ''}.`
 
+				eventslist.push(d.title || 'New Event')
+
 				if(tempoutput.length + newstring.length > MAX_CALENDAR_CONTEXT_LENGTH) break
 
 				tempoutput += '\n' + newstring
@@ -6696,6 +6700,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 			let tempoutput = ''
 			for(let d of temptodos){
 				let newstring = `Task title: ${d.title || 'New Task'}, ID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration || Math.floor(((new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime()) - new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime())/60000))}, completed: ${d.completed}.`
+
+				taskslist.push(d.title || 'New Task')
 
 				if(tempoutput.length + newstring.length > MAX_TODO_CONTEXT_LENGTH) break
 
@@ -6754,6 +6760,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		let rawconversationhistory1 = req.body.chathistory1
 		let rawconversationhistory = req.body.chathistory
 
+		let eventslist = []
+		let taskslist = []
 		let calendarcontext = getcalendarcontext(calendarevents)
 		let todocontext = gettodocontext(calendartodos)
 		let conversationhistory1 = getconversationhistory(rawconversationhistory1)
