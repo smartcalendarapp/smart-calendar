@@ -5989,10 +5989,10 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		async function queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory1, conversationhistory, timezoneoffset) {
 			const allfunctions = [
 				{
-					name: 'get_calendar_events',
+					name: 'fetch_events',
 				},
 				{
-					name: 'get_todo_list_tasks',
+					name: 'fetch_tasks',
 				},
 				/*{
 					name: 'schedule_unscheduled_task_in_calendar',
@@ -6154,8 +6154,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 
 			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'new_emaildraft', 'open_link', 'go_to_date_in_calendar', 'open_mac_app'] //a subset of all functions, the functions that invoke custom function
-			const calendardataneededfunctions = ['delete_event', 'modify_event', 'get_calendar_events'] //a subset of all functions, the functions that need calendar data
-			const tododataneededfunctions = ['delete_task', 'modify_task', 'get_todo_list_tasks'] //a subset of all functions, the functions that need todo data
+			const calendardataneededfunctions = ['delete_event', 'modify_event', 'fetch_events'] //a subset of all functions, the functions that need calendar data
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'fetch_tasks'] //a subset of all functions, the functions that need todo data
 
 			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
 			const localdatestring = `${DAYLIST[localdate.getDay()]} ${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
@@ -6744,7 +6744,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		const MAX_CALENDAR_CONTEXT_LENGTH = 3000
 		const MAX_TODO_CONTEXT_LENGTH = 3000
 		const MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH = 3000
-		const MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH = 10
+		const MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH = 6
 
 		
 		let userinput = req.body.userinput.slice(0, 300)
