@@ -5427,7 +5427,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 			return tempoutput
 		}
 		
-		const MAX_CALENDAR_CONTEXT_LENGTH = 2000
+		const MAX_CALENDAR_CONTEXT_LENGTH = 3000
 
 		let taskitem = req.body.taskitem
 		let timezoneoffset = req.body.timezoneoffset
@@ -5524,7 +5524,7 @@ app.post('/getgptchatresponseeveningsummary', async (req, res) => {
 			return tempoutput
 		}
 		
-		const MAX_TODO_CONTEXT_LENGTH = 2000
+		const MAX_TODO_CONTEXT_LENGTH = 3000
 
 		let timezoneoffset = req.body.timezoneoffset
 		let completedtodos = req.body.completedtodos
@@ -5634,7 +5634,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 			return tempoutput
 		}
 		
-		const MAX_CALENDAR_CONTEXT_LENGTH = 2000
+		const MAX_CALENDAR_CONTEXT_LENGTH = 3000
 
 		let timezoneoffset = req.body.timezoneoffset
 		let calendarevents = req.body.calendarevents
@@ -6395,7 +6395,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								return { data: { commands: [ { 'check_emails': { message: emails?.error || 'You have no unread emails!' } } ] }, data1: { commands: commands } }
 							}
 
-							const MAX_EMAIL_CONTENT_LENGTH = 2000
+							const MAX_EMAIL_CONTENT_LENGTH = 3000
 
 							let tempcontext = ''
 							tempcontext += `In a concise, short, briefing manner, talk to the user and summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. Next, list any links (any string in email that is in format {link#}), in the exact markdown format: "[descriptive text]({link01})", only including important links the user should click, avoiding links to images or icons. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
@@ -6741,10 +6741,10 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 		}
 
 
-		const MAX_CALENDAR_CONTEXT_LENGTH = 2000
-		const MAX_TODO_CONTEXT_LENGTH = 2000
-		const MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH = 2000
-		const MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH = 7
+		const MAX_CALENDAR_CONTEXT_LENGTH = 3000
+		const MAX_TODO_CONTEXT_LENGTH = 3000
+		const MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH = 3000
+		const MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH = 10
 
 		
 		let userinput = req.body.userinput.slice(0, 300)
