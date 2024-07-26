@@ -6243,7 +6243,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							{
 								role: "user",
-								content: "(sample message not from user) Reschedule/Move it to tomorrow morning. Add an event to meet with boss tomorrow lunch"
+								content: "(sample message not from user) Move it to tomorrow morning. Add an event to meet with boss tomorrow lunch"
 							},
 							{
 								role: "assistant",
@@ -6256,14 +6256,14 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							{
 								role: "user",
-								content: "(sample message not from user) [pasted content that contains tasks or events]"
+								content: "(sample message not from user) When is my meeting?"
 							},
 							{
 								role: "assistant",
 								function_call: {
 									name: "app_action",
 									arguments: JSON.stringify({
-										commands: ['create_task', 'create_task']
+										commands: ['fetch_events', 'fetch_tasks']
 									})
 								}
 							},
