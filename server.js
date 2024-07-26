@@ -6102,7 +6102,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 					{
 						name: 'check_emails',
 					},
-					{
+					/*{
 						name: 'open_mac_app',
 						description: 'Open mac app by URL scheme',
 						parameters: {
@@ -6112,7 +6112,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							},
 							required: []
 						}
-					},
+					},*/
 					{
 						name: 'open_link',
 						description: 'Open link at user request',
@@ -6153,7 +6153,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 
 
-			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'new_emaildraft', 'open_link', 'go_to_date_in_calendar', 'open_mac_app'] //a subset of all functions, the functions that invoke custom function
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'new_emaildraft', 'open_link', 'go_to_date_in_calendar', /*'open_mac_app'*/] //a subset of all functions, the functions that invoke custom function
 			const calendardataneededfunctions = ['delete_event', 'modify_event', 'fetch_events'] //a subset of all functions, the functions that need calendar data
 			const tododataneededfunctions = ['delete_task', 'modify_task', 'fetch_tasks'] //a subset of all functions, the functions that need todo data
 
@@ -6220,8 +6220,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""
-				Events list (fetch_events to get details): """${eventslist}"""
-				Tasks list (fetch_tasks to get details): """${taskslist}"""`
+				Events list (fetch_events to get details such as time or date): """${eventslist}"""
+				Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""`
 				const response = await openai.chat.completions.create({
 					model: GPT_MODEL,
 					messages: [
