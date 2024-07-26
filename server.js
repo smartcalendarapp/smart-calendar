@@ -6289,7 +6289,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								},
 								"required": [ "commands" ]
 							},
-							"description": `If user command is not explicit (e.g. I need to work on a task), is unclear or is not resolute, or is asking for a conversational dialogue (e.g. Help me create an event), do NOT return this function, and instead ask for clarification. Otherwise, return this function for the following commands: ${allfunctions.map(d => d.name).join(', ')}.`
+							"description": `If command requires data, return fetch_events or fetch_tasks. If command is unclear or incomplete, do NOT return this function, and instead guide user through command. Otherwise, return this function for the following commands: ${allfunctions.map(d => d.name).join(', ')}.`
 						}
 					],
 					max_tokens: 200,
@@ -6484,7 +6484,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										},
 										"required": [ "commands" ]
 									},
-									"description": `If user command is not explicit (e.g. I maybe need to do reading sometime), is unclear, or is asking for a conversational assistance (e.g. Help me book a meeting), do NOT return this function, and instead ask for clarification. Otherwise, return this function for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
+									"description": `If command requires data, return fetch_events or fetch_tasks. If command is unclear or incomplete, do NOT return this function, and instead guide user through command. Otherwise, return this function for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
 								}
 							]
 						}
