@@ -4900,8 +4900,12 @@ async function rejectreferafriendinvitecode(invitecode, userid){
 }
 
 
+const REFER_A_FRIEND_ENABLED = false
 app.post('/generatereferafriendinvitelink', async (req, res) => {
 	try{
+		if(!REFER_A_FRIEND_ENABLED){
+			return res.status(401).json({ error: 'Error.' })
+		}
 		if(!req.session.user){
 			return res.status(401).json({ error: 'User is not signed in.' })
 		}
