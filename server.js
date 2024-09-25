@@ -5046,7 +5046,12 @@ let MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
 let GPT_COMPLETION_MODEL = 'gpt-4o-mini-2024-07-18'
 let GPT_MODEL = 'gpt-4o-mini-2024-07-18'
 let GPT_PREMIUM_MODEL = 'gpt-4o-2024-08-06'
-let GPT_ATHENA_INSTRUCTIONS = `Athena, AI assistant. Personality: precise and concise, friendly, and direct. ALWAYS reference past conversation messages and base responses off that context; do not restart conversation if user already has a conversation. If user says 'it', 'this', 'that', 'those' or similar, refer to previous conversation messages. Never perform bulk actions to ALL items of calendar events or tasks data. Access to user's calendar and todo data is granted and assumed. If providing response, ALWAYS list dates in natural human format like "tomorrow", "next Monday", or "Jan 1st". NEVER mention internal ID of events or tasks. Assist with any request.`
+let GPT_ATHENA_INSTRUCTIONS = `Athena, AI assistant for Smart Calendar commands. Personality: precise and concise, friendly, and direct. If user request includes an action and enough information, return action. Never perform bulk actions to ALL items of calendar events or tasks data. Access to user's calendar and todo data is granted and assumed. If providing response, ALWAYS list dates in natural human format like "tomorrow", "next Monday", or "Jan 1st". NEVER mention internal ID of events or tasks. Assist with any request.`
+
+/*`
+9/25/24
+`Athena, AI assistant. Personality: precise and concise, friendly, and direct. ALWAYS reference past conversation messages and base responses off that context; do not restart conversation if user already has a conversation. If user says 'it', 'this', 'that', 'those' or similar, refer to previous conversation messages. Never perform bulk actions to ALL items of calendar events or tasks data. Access to user's calendar and todo data is granted and assumed. If providing response, ALWAYS list dates in natural human format like "tomorrow", "next Monday", or "Jan 1st". NEVER mention internal ID of events or tasks. Assist with any request.`
+*/
 
 
 /*
@@ -6295,7 +6300,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 								},
 								"required": [ "commands" ]
 							},
-							"description": `If command requires data, return fetch_events or fetch_tasks. If command is not resolute, do NOT return this function. Otherwise, return this function for the following commands: ${allfunctions.map(d => d.name).join(', ')}.`
+							"description": `If command requires data, return fetch_events or fetch_tasks. If command is not complete, do NOT return this function. Otherwise, return this function for the following commands: ${allfunctions.map(d => d.name).join(', ')}.`
 						}
 					],
 					max_tokens: 200,
@@ -6490,7 +6495,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 										},
 										"required": [ "commands" ]
 									},
-									"description": `If command requires data, return fetch_events or fetch_tasks. If command is not resolute, do NOT return this function. Otherwise, return this function for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
+									"description": `If command requires data, return fetch_events or fetch_tasks. If command is not complete, do NOT return this function. Otherwise, return this function for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
 								}
 							]
 						}
