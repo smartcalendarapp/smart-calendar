@@ -2655,7 +2655,7 @@ async function sendDiscordMessageToId(userid, message){
 		let user = await discordclient.users.fetch(userid)
 		await user.send(message)
 	}catch(error){
-		console.error(error)
+		//console.error(error)
 	}
 }
 
