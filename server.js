@@ -5729,8 +5729,11 @@ app.post('/getgptvoiceinteraction', async (req, res) => {
 			model: 'tts-1',
 			voice: 'nova',
 			input: message,
-			speed: 1.1
+			speed: 1.1,
+			
 		})
+
+		console.warn(userid, message)
 
 		const stream = response.body
 		stream.pipe(res)
@@ -6778,6 +6781,9 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 		//REQUEST
 		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory1, conversationhistory, timezoneoffset)
+
+
+		console.warn(userid, userinput)
 
 		if(output){
 			return res.json({ ...output, idmap: idmap, emaillinkmap: emaillinkmap })
