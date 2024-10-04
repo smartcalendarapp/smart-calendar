@@ -864,73 +864,147 @@ async function processReminders(){
 		//email
 		if(item.emailreminderenabled){
 			if(item.type == 'event'){
-				await sendRawEmail({
-					from: 'Smart Calendar <reminders@smartcalendar.us>',
-					to: item.user.email,
-					subject: `Friendly reminder: ${item.event.title || 'New Event'} (starts ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))})`,
-					htmlbody: `
-					<!DOCTYPE html>
-					<html>
-					<head>
-							<title>Smart Calendar | Your Event Reminder</title>
-							<style>
-									@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
+				if(item.user.email != 'james.tsaggaris@gmail.com'){
 
-							</style>
-					</head>
-					<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
-							<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 6px;">
-									<!--<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />-->
-									<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
-											Hi ${item.user.name},
-									</p>
-									<p style="font-size: 18px; color: #333;">
-											Just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}:
+					await sendRawEmail({
+						from: 'Smart Calendar <reminders@smartcalendar.us>',
+						to: item.user.email,
+						subject: `Friendly reminder: ${item.event.title || 'New Event'} (starts ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))})`,
+						htmlbody: `
+						<!DOCTYPE html>
+						<html>
+						<head>
+								<title>Smart Calendar | Your Event Reminder</title>
+								<style>
+										@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
 
-											<div style="background-color:#f4f4f4;border-radius:6px;font-size:18px">
-												<div style="padding:12px">
-													<strong>${item.event.title || 'New Event'}</strong> <span style="color:#595959;">${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} – ${getHMText(new Date(item.event.utcend).getHours() * 60 + new Date(item.event.utcend).getMinutes())}</span>
-													${item.event.notes ? `<div class="font-size:16px;color:#595959;">${formatURL(item.event.notes)}</div>` : ''}
+								</style>
+						</head>
+						<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
+								<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 6px;">
+										<!--<img src="https://smartcalendar.us/logo.png" style="display: block; margin: auto; height: 150px; width: auto;" alt="Smart Calendar Logo" />-->
+										<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
+												Hi ${item.user.name},
+										</p>
+										<p style="font-size: 18px; color: #333;">
+												Just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}:
+
+												<div style="background-color:#f4f4f4;border-radius:6px;font-size:18px">
+													<div style="padding:12px">
+														<strong>${item.event.title || 'New Event'}</strong> <span style="color:#595959;">${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} – ${getHMText(new Date(item.event.utcend).getHours() * 60 + new Date(item.event.utcend).getMinutes())}</span>
+														${item.event.notes ? `<div class="font-size:16px;color:#595959;">${formatURL(item.event.notes)}</div>` : ''}
+													</div>
 												</div>
-											</div>
-									</p>
-									<p style="text-align: center;font-size: 14px; color: #333;padding:12px;">
-										<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
-									</p>
+										</p>
+										<p style="text-align: center;font-size: 14px; color: #333;padding:12px;">
+											<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
+										</p>
 
-									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
-									<p style="font-size: 18px; color: #333;">
-										If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
-									</p>
-									<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
-									<p style="text-align: center; font-size: 18px; color: #333;">
-											Stay Productive,<br>
-											Smart Calendar | Where AI Meets Agenda
-									</p>
+										<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+										<p style="font-size: 18px; color: #333;">
+											If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
+										</p>
+										<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+										<p style="text-align: center; font-size: 18px; color: #333;">
+												Stay Productive,<br>
+												Smart Calendar | Where AI Meets Agenda
+										</p>
 
-							<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
-									<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
-										<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe&userid=${item.user.userid}" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
-									<p>&copy; 2024 James Tsaggaris. All rights reserved.</p>
-									</div>
+								<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+										<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
+											<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe&userid=${item.user.userid}" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+										<p>&copy; 2024 James Tsaggaris. All rights reserved.</p>
+										</div>
 
-							</div>
-					</body>
-					</html>`,
-					textbody: `Hi ${item.user.name},
-					Just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}:
-					${item.event.title || 'New Event'} (${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} – ${getHMText(new Date(item.event.utcend).getHours() * 60 + new Date(item.event.utcend).getMinutes())}).
+								</div>
+						</body>
+						</html>`,
+						textbody: `Hi ${item.user.name},
+						Just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}:
+						${item.event.title || 'New Event'} (${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} – ${getHMText(new Date(item.event.utcend).getHours() * 60 + new Date(item.event.utcend).getMinutes())}).
 
-					Open https://smartcalendar.us/app to see more details about your event.
-					
-					If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
+						Open https://smartcalendar.us/app to see more details about your event.
+						
+						If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
 
-					Stay Productive,
-					Smart Calendar | Where AI Meets Agenda
+						Stay Productive,
+						Smart Calendar | Where AI Meets Agenda
 
-					You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe&userid=${item.user.userid}.
-					(c) 2024 James Tsaggaris. All rights reserved.`
-				})
+						You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe&userid=${item.user.userid}.
+						(c) 2024 James Tsaggaris. All rights reserved.`
+					})
+				}else{
+
+
+					//testing new version here2
+					await sendRawEmail({
+						from: 'Smart Calendar <reminders@smartcalendar.us>',
+						to: item.user.email,
+						subject: `Friendly reminder: ${item.event.title || 'New Event'} (starts ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))})`,
+						htmlbody: `
+						<!DOCTYPE html>
+						<html>
+						<head>
+								<title>Smart Calendar | Your Event Reminder</title>
+								<style>
+										@import url('https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+								</style>
+						</head>
+						<body style="background-color: #f4f4f4; font-family: 'Wix Madefor Text', Arial, sans-serif;">
+								<div style="max-width: 600px; margin: auto; background-color: #fff; padding: 20px; border-radius: 6px;">
+										<p style="text-align: center; font-size: 24px; color: #333; margin-top: 20px;">
+												Hi ${item.user.name},
+										</p>
+										<p style="font-size: 18px; color: #333;">
+												Just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}:
+
+												<div style="background-color:#f4f4f4;border-radius:6px;font-size:18px">
+													<div style="padding:12px">
+														<strong>${item.event.title || 'New Event'}</strong> <span style="color:#595959;">${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} – ${getHMText(new Date(item.event.utcend).getHours() * 60 + new Date(item.event.utcend).getMinutes())}</span>
+														${item.event.notes ? `<div class="font-size:16px;color:#595959;">${formatURL(item.event.notes)}</div>` : ''}
+													</div>
+												</div>
+										</p>
+										<p style="text-align: center;font-size: 14px; color: #333;padding:12px;">
+											<a href="https://smartcalendar.us/app" style="font-size:18px;padding:8px 16px;background-color:#2693ff;color: #ffffff !important; text-decoration: none;border-radius:999px"><span style="color: #ffffff">Open the app</span></a>
+										</p>
+
+										<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+										<p style="font-size: 18px; color: #333;">
+											If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
+										</p>
+										<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+										<p style="text-align: center; font-size: 18px; color: #333;">
+												Stay Productive,<br>
+												Smart Calendar | Where AI Meets Agenda
+										</p>
+
+								<hr style="border-top: 1px solid #f4f4f4; margin: 20px 0;">
+										<div style="font-size: 14px; color: #777; padding-top: 20px; text-align: center;">
+											<p>You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may <a href="https://smartcalendar.us/app?to=unsubscribe&userid=${item.user.userid}" style="color: #2693ff; text-decoration: none;">unsubscribe</a>.</p>
+										<p>&copy; 2024 James Tsaggaris. All rights reserved.</p>
+										</div>
+
+								</div>
+						</body>
+						</html>`,
+						textbody: `Hi ${item.user.name},
+						Just a quick reminder that you have an event starting ${getFullRelativeDHMText(Math.floor((Date.now() - item.event.start)/60000))}:
+						${item.event.title || 'New Event'} (${getHMText(new Date(item.event.utcstart).getHours() * 60 + new Date(item.event.utcstart).getMinutes())} – ${getHMText(new Date(item.event.utcend).getHours() * 60 + new Date(item.event.utcend).getMinutes())}).
+
+						Open https://smartcalendar.us/app to see more details about your event.
+						
+						If you have other tasks to plan, simply add them to your to-do list, and Smart Calendar will automatically schedule them for you.
+
+						Stay Productive,
+						Smart Calendar | Where AI Meets Agenda
+
+						You are receiving this email because you signed up with Smart Calendar. If you wish to stop receiving these notifications, you may unsubscribe at https://smartcalendar.us/app?to=unsubscribe&userid=${item.user.userid}.
+						(c) 2024 James Tsaggaris. All rights reserved.`
+					})
+
+				}
 
 			}else if(item.type == 'task'){
 
@@ -6105,6 +6179,17 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						required: []
 					}
 				},
+				{
+					name: 'go_to_date_in_calendar',
+					description: 'Go to date in calendar UI',
+					parameters: {
+						type: 'object',
+						properties: {
+							date: { type: 'string', description: 'Date in format: YYYY-MM-DD' },
+						},
+						required: []
+					}
+				},
 			]
 
 
@@ -6132,17 +6217,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							type: 'object',
 							properties: {
 								link: { type: 'string', description: 'Link to open' },
-							},
-							required: []
-						}
-					},
-					{
-						name: 'go_to_date_in_calendar',
-						description: 'Go to date in calendar UI',
-						parameters: {
-							type: 'object',
-							properties: {
-								date: { type: 'string', description: 'Date in format: YYYY-MM-DD' },
 							},
 							required: []
 						}
