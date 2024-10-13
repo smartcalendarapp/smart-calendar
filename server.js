@@ -1974,10 +1974,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			//sign in to google account
 
 			req.session.user = { userid: user.userid }
-			req.session.tokens = {
-				...req.session.tokens,
-				...tokens,
-			}
+			req.session.tokens = tokens
 
 			if(tokens.refresh_token) user.accountdata.refreshtoken = tokens.refresh_token
 			user.accountdata.google.name = name
@@ -2001,10 +1998,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			// add google to logged in account
 
 			req.session.user = { userid: loggedInUser.userid }
-			req.session.tokens = {
-				...req.session.tokens,
-				...tokens,
-			}
+			req.session.tokens = tokens
 			
 			delete loggedInUser.username
 			loggedInUser.google_email = email
@@ -2065,10 +2059,7 @@ app.get('/auth/google/callback', async (req, res, next) => {
 			}
 			req.session.user.userid = newUser.userid
 
-			req.session.tokens = {
-				...req.session.tokens,
-				...tokens,
-			}
+			req.session.tokens = tokens
 
 
 			if(req.session.user?.inviteafriend?.invitecode){
