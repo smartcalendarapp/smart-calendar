@@ -6311,7 +6311,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = GPT_ATHENA_INSTRUCTIONS + ` The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone.`
+			const systeminstructions = GPT_ATHENA_INSTRUCTIONS + ` The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone. Do not send all data unless explicitly asked for; only send what is relevant to user prompt.`
 
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""
