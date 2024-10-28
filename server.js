@@ -1711,6 +1711,9 @@ const openai = new OpenAI({
 const express = require('express')
 const session = require('express-session')
 const app = express()
+const helmet = require('helmet')
+
+
 
 const DynamoDBStore = require('dynamodb-store')
 const dynamostore = new DynamoDBStore({
@@ -1729,6 +1732,8 @@ const dynamostore = new DynamoDBStore({
 })
 
 app.use(compression())
+
+app.use(helmet.frameguard({ action: 'deny' }))
 
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))

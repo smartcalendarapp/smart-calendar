@@ -34,6 +34,7 @@
     "formidable": "^2.1.1",
     "google-auth-library": "^8.7.0",
     "googleapis": "^114.0.0",
+    "helmet": "^8.0.0",
     "html-to-text": "^9.0.5",
     "ical": "^0.8.0",
     "ical.js": "^1.5.0",
