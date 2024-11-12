@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemGrow</title>
+    <link rel="stylesheet" href="../css/memgrow-base.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&amp;display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="absolute flex-column top-0 left-0 width-full height-full flex-column">
+        <div class="pointer text-bold text-32px padding-24px" onclick="clickmaintitle()">Welcome to MemGrow</div>
+        <div class="padding-24px flex-row flex-wrap-wrap gap-24px overflow-auto" id="cardsetlist"></div>
+    </div>
+
+    <div class="absolute flex-column left-0 width-full height-full hidden background-primary" id="screenview1">
+        <div class="flex-row align-center padding-24px gap-12px">
+            <div class="flex-row align-center relative" id="screencardtitlewrap">
+                <input class="text-bold text-32px titleinput" id="screencardsettitle" oninput="adjustcardtitleinput()" onkeydown="if(event.key === 'Enter' && !event.shiftKey){ this.blur() }" onblur="submitscreencardtitle()" placeholder="New Card Set">
+                <div class="pointer pointer-auto absolute top-0 left-0 bottom-0 right-0" onclick="clickbackhome()" id="clickbackhomebutton"></div>
+            </div>
+            <span id="hiddenwidthhelper" class="pre absolute visibility-hidden text-bold text-32px"></span>
+            
+            
+            <div class="buttonbackground pointer" onclick="clickeditcardset()" id="editcardset">
+                <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonprimary">
+                <g>
+                <path d="M178.389 21.6002L31.105 168.884M234.4 77.6109L87.1156 224.895M178.389 21.6002C193.856 6.13327 218.933 6.13327 234.4 21.6002C249.867 37.0671 249.867 62.1439 234.4 77.6109M10 245.998L31.105 168.884M10.0017 246L87.1156 224.895" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                </g>
+                </svg>
+            </div>
+
+            <div class="buttonbackground pointer display-none" onclick="clickdoneeditcardset()" id="doneeditcardset">
+                <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonprimary">
+                    <g>
+                    <path d="M93.2369 211.648L10 120.493" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+                    <path d="M93.2369 211.648L246 44.3518" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="buttonbackground pointer hidden" onclick="deletecardset()" id="deletecardsetbutton">
+                <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonprimary">
+                <g>
+                <path d="M207.414 223.445L207.414 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                <path d="M71.3433 246L184.657 246" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                <path d="M207.414 223.445C207.414 235.902 197.226 246 184.657 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+                <path d="M238 57.6433L18 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                <path d="M48.5864 223.445L48.5864 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                <path d="M48.5864 223.445C48.5864 235.902 58.775 246 71.3433 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+                <path d="M96.1228 10L159.881 10" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                <path d="M173.737 23.7283C173.737 16.1464 167.534 10 159.881 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+                <path d="M82.2668 23.7283C82.2668 16.1464 88.4703 10 96.1228 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+                <path d="M82.2668 23.7283L82.2668 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                <path d="M173.737 23.7283L173.737 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                <path d="M165.379 101.49L165.379 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+                <path d="M90.6212 101.49L90.6212 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+                <path d="M128 101.49L128 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+                </g>
+                </svg>
+            </div>
+
+
+            <div class="buttonbackground pointer hidden text-primary text-14px" id="togglecardsetintervalbutton" onclick="togglecardsetinterval()">
+            </div>
+        </div>
+
+
+        <!-- screen 1 content -->
+        <div class="relative overflow-hidden flex-row gap-48px align-center justify-center flex-1">
+
+            <!-- ai button -->
+            <div class="absolute flex-row gap-12px hiddenshiftdown" id="aibuttonwrap">
+                
+                <div class="overflow-hidden relative flex-column gap-12px height-fit align-self-flex-end buttonbackground pointer hiddenuploadbutton" onclick="clickupload()" id="uploadbutton">
+                    <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonprimaryfill align-self-center">
+                        <path d="M143.953 3.1238C134.727 3.1238 126.369 4.99543 118.922 8.78005C111.423 12.5911 105.434 18.0207 101.016 24.9988C96.5662 32.0258 94.3594 40.2989 94.3594 49.7801L94.3594 188.624C94.3594 194.063 95.7114 199.021 98.4219 203.374C101.109 207.688 104.81 211.088 109.453 213.561C114.081 216.026 119.296 217.249 125.047 217.249C130.386 217.249 135.368 216.02 139.984 213.561C144.6 211.103 148.363 207.709 151.203 203.436C154.107 199.068 155.547 194.101 155.547 188.624L155.547 91.6863C155.623 88.6724 154.497 85.962 152.266 83.8426C150.107 81.7917 147.395 80.7197 144.266 80.6551C140.972 80.6543 138.176 81.7196 136.016 83.8426C133.881 85.9405 132.747 88.6036 132.672 91.6238L132.828 188.218C132.792 190.614 132.066 192.13 130.672 193.093C128.864 194.34 126.988 194.936 124.953 194.936C123.001 194.902 121.095 194.283 119.234 193.03C117.868 192.11 117.198 190.654 117.234 188.249L117.234 49.9363C117.234 45.1715 118.363 40.848 120.578 36.9363C122.792 33.026 125.806 29.9543 129.703 27.6551C133.577 25.3697 138.136 24.1973 143.422 24.1551C148.54 24.1972 153.05 25.3766 156.953 27.6863C160.886 30.0139 163.962 33.1028 166.203 36.9988C168.43 40.8702 169.5 45.1736 169.453 49.9676L169.547 191.468C169.498 199.769 167.468 206.864 163.516 212.811C159.522 218.821 154.207 223.422 147.484 226.655C140.681 229.927 133.221 231.561 125.047 231.561C116.809 231.606 109.307 229.978 102.484 226.686C95.7327 223.429 90.3849 218.821 86.3906 212.811C82.4425 206.871 80.4531 199.739 80.4531 191.374L80.4531 87.5926C80.3767 84.6749 79.2045 82.0243 77.0781 79.8113C74.8956 77.54 72.066 76.4564 68.8281 76.5613C68.8066 76.562 68.7871 76.5605 68.7656 76.5613C68.6688 76.5649 68.5819 76.5555 68.4844 76.5613L68.4844 76.6238C65.3927 76.5831 62.5682 77.5521 60.2344 79.6238C57.7619 81.8185 56.4531 84.5794 56.4531 87.6863L56.4531 192.093C56.5092 201.315 58.3371 209.751 61.9531 217.374C65.5526 224.962 70.5354 231.507 76.8906 236.999C83.211 242.46 90.5252 246.651 98.7969 249.593C107.047 252.527 115.763 253.999 124.953 253.999C134.187 254.048 142.938 252.587 151.172 249.624C159.408 246.66 166.706 242.46 173.047 237.03C179.434 231.56 184.445 225.029 188.047 217.436C191.666 209.806 193.453 201.347 193.453 192.093L193.547 49.8113C193.547 40.3137 191.272 32.0012 186.703 24.9676C182.178 18.0023 176.122 12.5849 168.578 8.78005C161.087 5.00167 152.863 3.1238 143.953 3.1238Z" fill-rule="nonzero" opacity="1" stroke="none"/>
+                    </svg>
+                    
+                    <div class="pointer flex-column gap-12px" id="uploadbuttoncontent">
+                        <div class="flex-row flex-wrap-wrap gap-12px flex-1 nowrap" id="uploadbuttontext"></div>
+                        <div class="align-self-center flex-row gap-12px">
+                            <div class="pointer align-self-center border-round padding-8px-12px secondarybutton" onclick="cancelupload(event)">Cancel</div>
+                            <div class="pointer align-self-center border-round padding-8px-12px secondarybutton" onclick="submituploadfile(event)">Go</div>
+                        </div>
+                    </div>
+                </div>
+                <input type="file" id="fileinput" multiple accept="image/*" class="display-none" onchange="submitfileuploader()"/>
+
+                <div class="align-self-flex-end flex-column overflow-hidden hiddenaibutton" onclick="clickaibutton()" id="aibutton">
+                    <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhitefill align-self-center">
+                        <path d="M40.6975 256L192.859 256C204.524 256 213.575 252.652 220.013 245.955C226.45 239.259 229.668 229.214 229.668 215.821L229.668 77.2682L208.801 98.1353L208.801 214.784C208.801 221.524 207.203 226.6 204.006 230.013C200.809 233.426 197.007 235.133 192.6 235.133L41.0863 235.133C34.6058 235.133 29.6158 233.426 26.1164 230.013C22.6169 226.6 20.8672 221.524 20.8672 214.784L20.8672 67.677C20.8672 60.9373 22.6169 55.8393 26.1164 52.3831C29.6158 48.9268 34.6058 47.1987 41.0863 47.1987L159.161 47.1987L180.028 26.3315L40.6975 26.3315C27.218 26.3315 17.0653 29.6798 10.2392 36.3763C3.41306 43.0728 0 53.1175 0 66.5105L0 215.821C0 229.214 3.41306 239.259 10.2392 245.955C17.0653 252.652 27.218 256 40.6975 256ZM87.8754 172.013L113.149 160.996L234.205 40.0702L216.448 22.5728L95.5224 143.499L83.8575 167.865C83.3391 168.989 83.5767 170.09 84.5704 171.17C85.564 172.25 86.6657 172.531 87.8754 172.013ZM243.796 30.6086L253.128 21.0175C255.288 18.6845 256.39 16.1139 256.433 13.3057C256.476 10.4975 255.374 8.01334 253.128 5.85318L250.147 2.74254C248.159 0.755193 245.762-0.152075 242.953 0.0207376C240.145 0.193551 237.661 1.31684 235.501 3.39059L226.039 12.7225L243.796 30.6086Z" fill-rule="nonzero" opacity="1" stroke="none"/>
+                    </svg>
+
+                    <div class="flex-column gap-12px" id="aibuttoncontent">
+                        <textarea class="aitextarea text-14px border-16px padding-12px background-secondary flex-1 textareainput" placeholder="Paste text..." id="aitextarea"></textarea>
+                        <div class="pointer align-self-center border-round padding-8px-12px secondarybutton" onclick="submitaifield(event)">Go</div>
+                    </div>
+                </div>
+
+                <div class="overflow-hidden relative flex-column gap-12px height-fit align-self-flex-end buttonbackground pointer hiddenrecognitionbutton" onclick="clickrecognition()" id="recognitionbutton">
+                    <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonprimaryfill align-self-center">
+                        <g>
+                            <path d="M128 0.46875C103.522 0.46875 83.6875 20.3029 83.6875 44.7812C83.6875 45.3985 83.6875 123.164 83.6875 123.781C83.6875 148.26 103.522 168.125 128 168.125C152.478 168.125 172.344 148.26 172.344 123.781L172.344 44.7812C172.344 20.3029 152.478 0.46875 128 0.46875Z" fill-rule="nonzero" opacity="1"></path>
+                            <path d="M204.031 99.4062C198.521 99.7839 194.341 104.553 194.719 110.062C194.727 110.184 194.762 110.509 194.781 111.031C194.939 115.329 194.812 120.897 194.156 127.25C193.197 136.543 191.256 145.663 188.188 154.094C178.587 180.474 159.919 195.656 128 195.656C96.0861 195.656 77.5059 180.526 68 154.219C64.9794 145.859 63.0898 136.813 62.1562 127.594C61.515 121.261 61.3944 115.681 61.5625 111.344C61.5845 110.777 61.6152 110.417 61.625 110.281C62.0216 104.773 57.8836 99.9904 52.375 99.5938C46.8664 99.1971 42.0529 103.335 41.6562 108.844C41.6309 109.196 41.6245 109.77 41.5938 110.562C41.0188 125.394 42.8265 143.396 49.1875 161C54.6475 176.11 62.9544 188.903 74.625 198.406C88.4407 209.656 106.232 215.656 128 215.656C149.768 215.656 167.591 209.642 181.438 198.375C193.131 188.86 201.494 176.067 207 160.938C210.678 150.83 212.914 140.138 214.031 129.312C214.789 121.967 214.94 115.458 214.75 110.281C214.723 109.544 214.71 109.016 214.688 108.688C214.31 103.178 209.541 99.0286 204.031 99.4062Z" fill-rule="nonzero" opacity="1"></path>
+                            <path d="M128 195.656C122.477 195.656 118 200.133 118 205.656L118 243.156C118 248.679 122.477 253.156 128 253.156C133.523 253.156 138 248.679 138 243.156L138 205.656C138 200.133 133.523 195.656 128 195.656Z" fill-rule="nonzero" opacity="1"></path>
+                            <path d="M74.4375 235.812C68.9147 235.812 64.4375 240.29 64.4375 245.812C64.4375 251.335 68.9147 255.812 74.4375 255.812L181.906 255.812C187.429 255.812 191.906 251.335 191.906 245.812C191.906 240.29 187.429 235.812 181.906 235.812L74.4375 235.812Z" fill-rule="nonzero" opacity="1"></path>
+                        </g>
+                    </svg>
+
+                    <div class="flex-column gap-12px" id="recognitionbuttoncontent">
+                        <div class="flex-1 fadingdiv smoothscroll flex-column" id="recognitiontranscriptdiv"></div>
+                        <div class="align-self-center flex-row gap-12px">
+                            <div class="pointer align-self-center border-round padding-8px-12px secondarybutton" onclick="clearrecognition(event)">Cancel</div>
+                            <div class="pointer align-self-center border-round padding-8px-12px secondarybutton" onclick="submitrecognition(event)">Go</div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- card list -->
+            <div class="flex-column gap-12px hiddenwidth cardlistgroup smoothscroll height-full" id="cardlist"></div>
+
+            <div></div>
+
+            <!-- main card content -->
+            <div class="flex-column align-center gap-48px">
+                <div class="relative cardgroup">
+                    <div class="relative top-0 left-0 right-0 bottom-0 flex-column align-center" id="cardgroupdiv">
+                        <div class="absolute card flex-column backcard"></div>
+                        <div class="absolute card flex-column middlecard"></div>
+                        <div class="absolute card flex-column frontcard">
+                            <div class="relative flex-1">
+                                <span class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 textareainput textareainputedit" id="screencardfronttext" oninput="updatetextareaplaceholders()" onblur="submitscreencardfronttext()" contenteditable="true" onclick="clickfronttext()"></span>
+                                <span class="placeholder padding-16px text-18px absolute top-0 bottom-0 left-0 right-0">Enter a prompt...</span>
+                            </div>
+
+                            <div class="cardseparator"></div>
+                            
+                            <div class="flex-1 relative flex-column">
+                                <div class="relative flex-1">
+                                    <span class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 textareainput" id="screencardbacktext" oninput="updatetextareaplaceholders()" onblur="submitscreencardbacktext()" contenteditable="true" onclick="clickbacktext()"></span>
+                                    <span class="placeholder padding-16px text-18px absolute top-0 left-0">Enter an answer...</span>
+                                </div>
+
+                                <div class="backdrop-blur display-flex align-center justify-center padding-16px top-0 left-0 right-0 bottom-0 absolute cardanswercover" id="cardanswercover" onclick="clicktoreveal()">
+                                    <div class="text-14px text-secondary pointer-none">Click to reveal</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-16px absolute flex-column align-center gap-6px justify-center top-0 left-0 right-0 bottom-0 backdrop-blur" id="cardgroupblur" onclick="clickcardblur()"></div>
+
+                    <div class="border-16px absolute flex-column align-center gap-24px justify-center top-0 left-0 right-0 bottom-0 backdrop-blur hidden" id="cardgroupdone">
+                        <div class="text-18px text-primary">Done!</div>
+
+                        <div class="rememberbutton justify-center align-center flex-row gap-12px nowrap padding-8px-16px pointer border-8px-12px border-8px" onclick="clickcardgroupdone()">
+                            <div class="pointer-none text-14px text-white">Go home</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex-column gap-12px width-full" id="remembergroup">
+                    <div class="flex-row gap-12px remembergroup2items" id="remembergroupitems">
+                        <div class="rememberbutton justify-center flex-1 align-center flex-row gap-12px nowrap padding-8px-12px pointer border-8px-12px border-8px" onclick="clickdidntremember()">
+                            <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite pointer-none">
+                                <g>
+                                <path d="M229.927 149.865C229.927 202.652 187.135 245.445 134.348 245.445C81.5606 245.445 38.7682 202.652 38.7682 149.865C38.7682 97.8591 80.3041 56.5247 132.012 55.3134C132.788 55.2952 159.382 52.7582 179.094 60.9501" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="25"/>
+                                <path d="M130.486 10.5552L179.094 60.9501" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="25"/>
+                                <path d="M179.094 60.9501L130.486 111.345" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="25"/>
+                                </g>
+                            </svg>
+                            <div class="pointer-none text-14px text-white">Didn't remember</div>
+                        </div>
+                        <div class="rememberbutton justify-center flex-1 align-center flex-row gap-12px nowrap padding-8px-12px pointer border-8px-12px border-8px" onclick="clickremembered()">
+                            <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite pointer-none">
+                                <g>
+                                <path d="M93.2369 211.648L10 120.493" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="25"></path>
+                                <path d="M93.2369 211.648L246 44.3518" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="25"></path>
+                                </g>
+                            </svg>
+                            <div class="pointer-none text-14px text-white">Remembered</div>
+                        </div>
+                    </div>
+                    <div class="display-flex flex-row align-center justify-flex-end gap-12px">
+                        <div class="text-center text-12px text-tertiary" id="cardindexdisplay2"></div>
+                        <div class="align-self-flex-end primarybutton justify-center align-center flex-row gap-12px nowrap padding-8px-16px pointer border-8px-12px border-8px" onclick="clickskip()">
+                            <div class="pointer-none text-tertiary text-12px">Skip</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- spacing -->
+                <div></div>
+            </div>
+
+
+            <!-- card navigation -->
+            <div class="flex-column align-center gap-12px" id="editcardactions">
+                <div class="text-12px text-secondary" id="cardindexdisplay"></div>
+                <div class="buttonbackground pointer rotate90" onclick="previouscard(currentcardindex - 1)" id="previouscardbutton">
+                    <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonprimary">
+                    <g>
+                    <path d="M186 10L70 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                    <path d="M186 246L70 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                    </g>
+                    </svg>
+                </div>
+                <div class="buttonbackground pointer rotate270" onclick="nextcard(currentcardindex + 1)" id="nextcardbutton">
+                    <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonprimary">
+                    <g>
+                    <path d="M186 10L70 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                    <path d="M186 246L70 128" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                    </g>
+                    </svg>
+                </div>
+                <div class="buttonbackground pointer rotate270" onclick="newcard()">
+                    <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonprimary">
+                    <g>
+                    <g opacity="1">
+                    <path d="M128.004 10.0039L128.004 246.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+                    <path d="M246.004 128.004L10.0039 128.004" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="20"></path>
+                    </g>
+                    </g>
+                    </svg>
+                </div>
+                <div class="buttonbackground pointer" onclick="deletecard()">
+                    <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonprimary">
+                    <g>
+                    <path d="M207.414 223.445L207.414 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                    <path d="M71.3433 246L184.657 246" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                    <path d="M207.414 223.445C207.414 235.902 197.226 246 184.657 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+                    <path d="M238 57.6433L18 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                    <path d="M48.5864 223.445L48.5864 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                    <path d="M48.5864 223.445C48.5864 235.902 58.775 246 71.3433 246" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+                    <path d="M96.1228 10L159.881 10" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                    <path d="M173.737 23.7283C173.737 16.1464 167.534 10 159.881 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+                    <path d="M82.2668 23.7283C82.2668 16.1464 88.4703 10 96.1228 10" fill="none" opacity="1" stroke-linecap="butt" stroke-linejoin="round" stroke-width="20"></path>
+                    <path d="M82.2668 23.7283L82.2668 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                    <path d="M173.737 23.7283L173.737 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
+                    <path d="M165.379 101.49L165.379 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+                    <path d="M90.6212 101.49L90.6212 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+                    <path d="M128 101.49L128 204.22" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"></path>
+                    </g>
+                    </svg>
+                </div>
+
+            </div>
+        
+        </div>
+
+    </div>
+
+    <script src="../js/memgrow.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <audio id="soundeffectaudio" class="display-none" preload="none" src="../sounds/dictationend.mp3"></audio>
+    </body>
+</html>

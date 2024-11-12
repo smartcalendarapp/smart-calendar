@@ -6937,3 +6937,126 @@ app.post("/push-subscription", async (req, res) => {
 app.listen(port, () => {
 	console.error(`Server listening on port ${port}`)
 })
+
+
+
+//MEMGROW
+
+const z = require("zod").default
+
+const { zodResponseFormat } = require("openai/helpers/zod")
+
+
+const MEMGROW_GPT_INDEX = 1
+const MEMGROW_IS_AZURE = true
+
+const MEMGROW_GPT_MODEL = ['gpt-4o-mini-2024-07-18','gpt-4o-2024-08-06'][MEMGROW_GPT_INDEX]
+const MEMGROW_AZURE_MODEL = ['gpt-4o-mini/chat/completions?api-version=2023-03-15-preview','gpt-4o/chat/completions?api-version=2024-08-01-preview'][MEMGROW_GPT_INDEX]
+
+let memgrow_openai;
+if(MEMGROW_IS_AZURE == true){
+  const RESOURCE = 'smartcalendarapp'
+
+  memgrow_openai = new OpenAI({
+    apiKey: process.env.AZURE_OPENAI_API_KEY,
+    baseURL: `https://${RESOURCE}.openai.azure.com/openai/deployments/${MEMGROW_AZURE_MODEL}`,
+    defaultQuery: { 'api-version': '2024-08-01-preview' },
+    defaultHeaders: { 'api-key':  process.env.AZURE_OPENAI_API_KEY }
+  })
+}else{
+	memgrow_openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY
+  })
+}
+
+const CardExtraction = z.object({
+    cards: z.array(
+        z.object({
+            card_prompt: z.string(),
+            card_answer: z.string()
+        })
+    ),
+    title: z.string()
+})
+
+
+
+app.post('/saveuserdata', async (req, res) => {
+    try{
+        let data = req.body.data
+        fs.writeFileSync(path.join(__dirname, 'memgrowdata', 'data.json'), JSON.stringify(data), 'utf8')
+
+        res.end()
+    }catch(err){
+        console.log(err)
+        res.status(401).end()
+    }
+})
+
+app.post('/getuserdata', async (req, res) => {
+    try{
+        const data = JSON.parse(fs.readFileSync(path.join(__dirname, 'memgrowdata', 'data.json'), 'utf8'))
+
+        res.json({ data: data })
+    }catch(err){
+        console.log(err)
+        res.status(401).end()
+    }
+})
+
+app.post('/generateaicards', async (req, res) => {
+    const input = req.body.input
+    const istranscript = req.body.istranscript
+    const existingcards = [] //req.body.existingcards
+    const files = req.body.files
+
+const systemprompt = `Every card prompt MUST:
+- engage active recall
+- not give away answer based on the wording or word choice
+- focus on a SINGLE idea or concept
+- not overwhelm cognitive load
+If needed, use techniques like cloze deletion ___ or cues. Answers should be at a PhD level difficulty but still concise.
+${existingcards.length > 0 ? `\nBelow are the user's existing cards. Do not repeat any of them. If you have no new cards to create, then do not return anything.\n"""${existingcards.filter(d => d.fronttext).map(d => d.fronttext.slice(0, 200)).join('\n')}"""` : ''}`
+
+    try{
+const finalinput = `${istranscript ? `Below is a transcript of a recorded input source (e.g. lecture, meeting). Only make cards for the information that is valuable and needs to be remembered.\n` : ''}${input}`
+        const usermsg = {
+            role: 'user',
+            content: []
+        }
+        if(finalinput){
+            usermsg.content.push({ type: 'text', text: finalinput })
+        }
+        if(files){
+            for(let temp of files){
+                if(temp.type == 'image'){
+                    usermsg.content.push({ type: 'image_url', image_url: { url: `${temp.data}`, detail: 'low' } })
+                }else if(temp.type == 'text'){
+                    usermsg.content.push({ type: 'text', text: temp.data })
+                }
+            }
+        }
+
+
+        const response = await openai.chat.completions.create({
+            model: MEMGROW_GPT_MODEL,
+            messages: [
+              {
+                role: 'system', 
+                content: systemprompt
+              },
+              usermsg
+            ],
+            top_p: 1,
+            response_format: zodResponseFormat(CardExtraction, "card_extraction")
+        })
+
+        const content = JSON.parse(response.choices[0].message.content)
+        return res.json({ content: content, tokens: response.usage })
+    
+    }catch(err){
+        console.log(err)
+        return res.status(401).end()
+    }
+})
+
