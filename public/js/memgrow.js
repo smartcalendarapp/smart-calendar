@@ -76,8 +76,6 @@ class CardSet{
         this.cards = cards
         this.title = title
 
-        this.mixset = false
-
         this.delayindex = 1
         //0 for long term
         //1 for short term
