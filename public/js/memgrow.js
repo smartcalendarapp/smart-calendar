@@ -255,14 +255,20 @@ let userdata;
 
 loaddata()
 
-
 //loops
 let lasttemp;
 let olddata = JSON.stringify(userdata)
+let lastsavedata = 0;
+let needsave;
 setInterval(function(){
-    if(olddata != JSON.stringify(userdata)){
-        savedata()
-        olddata = JSON.stringify(userdata)
+    if(olddata != JSON.stringify(userdata){
+        needsave = true
+        if(Date.now() - lastsavedata > 10000){
+            savedata()
+            olddata = JSON.stringify(userdata)
+        }
+    }else{
+        needsave = false
     }
 
     let temp = userdata.getReviewSets().length
@@ -277,6 +283,21 @@ setInterval(function(){
     }
     lasttemp = temp
 }, 1000)
+
+function getneedsave(){
+    return needsave
+}
+window.onbeforeunload = function (e) {
+    e = e || window.event;
+
+	if(getneedsave()){
+		if (e) {
+			e.returnValue = 'Sure?';
+		}
+		return 'Sure?'
+	}
+}
+
 
 setInterval(function(){
     if(document.visibilityState == 'visible'){
@@ -1094,13 +1115,11 @@ function createnewcardset(){
 
 function submitscreencardtitle(){
     currentcardset.title = getelement('screencardsettitle').value
-    savedata()
     updatescreen()
 }
 
 function submitscreencardfronttext(){
     currentcardset.cards[currentcardindex].fronttext = getelement('screencardfronttext').innerHTML.replace(/<br>/g,'').trim()
-    savedata()
     if(!dragdivid2){
         updatescreen()
     }
@@ -1108,7 +1127,6 @@ function submitscreencardfronttext(){
 
 function submitscreencardbacktext(){
     currentcardset.cards[currentcardindex].backtext = getelement('screencardbacktext').innerHTML.replace(/<br>/g,'').trim()
-    savedata()
     if(!dragdivid2){
         updatescreen()
     }
