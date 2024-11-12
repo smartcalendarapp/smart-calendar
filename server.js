@@ -3,6 +3,8 @@ try {
 	require("dotenv").config()
 } catch (e) {}
 
+const DEV_ID = 'qoc6sjx02h708xk4sqxhy770dkzow3f2'
+
 //DATABASE INITIALIZATION
 const { DynamoDBClient, CreateTableCommand, PutItemCommand, GetItemCommand, ScanCommand, DescribeTableCommand, QueryCommand, UpdateItemCommand, DeleteItemCommand, BatchWriteCommand } = require('@aws-sdk/client-dynamodb')
 const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb')
@@ -340,7 +342,7 @@ async function setcontactus(tempdata){
 
 
 async function savechatconversation(conversationid, userid, chatconversation){
-	if(userid === 'qoc6sjx02h708xk4sqxhy770dkzow3f2') return
+	if(userid === DEV_ID) return
 	try{
 		const params = {
 			TableName: 'smartcalendarchatconversations',
@@ -2926,6 +2928,17 @@ app.get('/:page', (req, res, next) => {
 	}
 })
 
+//no access
+app.get('/research', (req, res) => {
+	if(req.session?.userid != DEV_ID){
+		res.status(404).sendFile(path.join(__dirname, 'public', 'html', 'error.html'))
+	}
+})
+app.get('/memgrow', (req, res) => {
+	if(req.session?.userid != DEV_ID){
+		res.status(404).sendFile(path.join(__dirname, 'public', 'html', 'error.html'))
+	}
+})
 
 app.get('*', (req, res) => {
 	res.status(404).sendFile(path.join(__dirname, 'public', 'html', 'error.html'))
@@ -6942,6 +6955,34 @@ app.listen(port, () => {
 
 //MEMGROW
 
+
+async function setmemgrowdata(tempdata){
+	try{
+		const params2 = {
+			TableName: 'memgrowdata',
+			Item: marshall(tempdata, { convertClassInstanceToMap: true, removeUndefinedValues: true })
+		}
+		
+		await dynamoclient.send(new PutItemCommand(params2))
+	}catch(error){
+		console.error(error)
+	}
+}
+
+async function getmemgrowdata(id){
+	const params = {
+		TableName: 'memgrowdata',
+		Key: {
+		  'id': { S: id }
+		}
+	  }
+	  const data = await dynamoclient.send(new GetItemCommand(params))
+		if(data.Item){
+			return (unmarshall(data.Item))
+		}
+		return null
+}
+
 const z = require("zod").default
 
 const { zodResponseFormat } = require("openai/helpers/zod")
@@ -6983,8 +7024,11 @@ const CardExtraction = z.object({
 
 app.post('/saveuserdata', async (req, res) => {
     try{
+		if(req.session?.userid != DEV_ID) return
+
         let data = req.body.data
-        fs.writeFileSync(path.join(__dirname, 'memgrowdata', 'data.json'), JSON.stringify(data), 'utf8')
+
+		await setmemgrowdata({ id: DEV_ID, data: data })
 
         res.end()
     }catch(err){
@@ -6995,9 +7039,11 @@ app.post('/saveuserdata', async (req, res) => {
 
 app.post('/getuserdata', async (req, res) => {
     try{
-        const data = JSON.parse(fs.readFileSync(path.join(__dirname, 'memgrowdata', 'data.json'), 'utf8'))
+		if(req.session?.userid != DEV_ID) return
 
-        res.json({ data: data })
+        const data = await getmemgrowdata(DEV_ID)
+
+        res.json({ data: data.data })
     }catch(err){
         console.log(err)
         res.status(401).end()
@@ -7005,6 +7051,8 @@ app.post('/getuserdata', async (req, res) => {
 })
 
 app.post('/generateaicards', async (req, res) => {
+	if(req.session?.userid != DEV_ID) return
+	
     const input = req.body.input
     const istranscript = req.body.istranscript
     const existingcards = [] //req.body.existingcards

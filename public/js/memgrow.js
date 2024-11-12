@@ -1574,7 +1574,7 @@ async function updaterecognitionui(processresult, tempuserwantstostop){
 
     let recognitiontranscriptdiv = getelement('recognitiontranscriptdiv')
 
-    recognitiontranscriptdiv.textContent = `<div class="padding-top-12px padding-bottom-12px text-white text-14px">${(entiretranscript + totalTranscript) || 'Listening...'}</div>`
+    recognitiontranscriptdiv.innerHTML = `<div class="padding-top-12px"><div class="text-white text-14px">${(entiretranscript + totalTranscript) || 'Listening...'}</div><div class="padding-top-12px">`
     recognitiontranscriptdiv.scrollTo(0, recognitiontranscriptdiv.scrollHeight)
 
 
