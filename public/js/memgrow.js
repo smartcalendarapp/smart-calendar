@@ -218,7 +218,7 @@ async function loaddata(){
     })
     if(response.status == 200){
         const data = await response.json()
-        userdata = JSON.parse(data.data)
+        userdata = data.data
     }
 
     if(userdata){
