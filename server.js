@@ -2928,17 +2928,6 @@ app.get('/:page', (req, res, next) => {
 	}
 })
 
-//no access
-app.get('/research', (req, res) => {
-	if(req.session?.userid != DEV_ID){
-		res.status(404).sendFile(path.join(__dirname, 'public', 'html', 'error.html'))
-	}
-})
-app.get('/memgrow', (req, res) => {
-	if(req.session?.userid != DEV_ID){
-		res.status(404).sendFile(path.join(__dirname, 'public', 'html', 'error.html'))
-	}
-})
 
 app.get('*', (req, res) => {
 	res.status(404).sendFile(path.join(__dirname, 'public', 'html', 'error.html'))
@@ -7024,7 +7013,7 @@ const CardExtraction = z.object({
 
 app.post('/saveuserdata', async (req, res) => {
     try{
-		if(req.session?.userid != DEV_ID) return
+		if(req.session.user.userid != DEV_ID) return res.status(401).end()
 
         let data = req.body.data
 
@@ -7039,7 +7028,7 @@ app.post('/saveuserdata', async (req, res) => {
 
 app.post('/getuserdata', async (req, res) => {
     try{
-		if(req.session?.userid != DEV_ID) return
+		if(req.session.user.userid != DEV_ID) return res.status(401).end()
 
         const data = await getmemgrowdata(DEV_ID)
 
