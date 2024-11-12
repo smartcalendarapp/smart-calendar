@@ -261,7 +261,7 @@ let olddata = JSON.stringify(userdata)
 let lastsavedata = 0;
 let needsave;
 setInterval(function(){
-    if(olddata != JSON.stringify(userdata){
+    if(olddata != JSON.stringify(userdata)){
         needsave = true
         if(Date.now() - lastsavedata > 10000){
             savedata()
