@@ -234,6 +234,19 @@ async function loaddata(){
             signedinuser = true
         }
 
+        if(!userdata){
+            let tempdata = localStorage.getItem('userdata')
+            try{
+                if(tempdata && JSON.parse(tempdata)){
+                    userdata = JSON.parse(tempdata)
+                }else{
+                    userdata = new UserData()
+                }
+            }catch(err){
+                userdata = new UserData()
+            }
+        }
+
         if(userdata){
             userdata = Object.assign(new UserData(), userdata)
             for(let index = 0; index < userdata.cardsets.length; index++){
@@ -242,17 +255,6 @@ async function loaddata(){
                 for(let index2 = 0; index2 < userdata.cardsets[index].cards.length; index2++){
                     userdata.cardsets[index].cards[index2] = Object.assign(new Card(), userdata.cardsets[index].cards[index2])
                 }
-            }
-        }else{
-            let tempdata = localStorage.getItem('userdata')
-            try{
-                if(tempdata && JSON.parse(tempdata)){
-                    userdata = Object.assign(new UserData(), JSON.parse(tempdata))
-                }else{
-                    userdata = new UserData()
-                }
-            }catch(err){
-                userdata = new UserData()
             }
         }
 
