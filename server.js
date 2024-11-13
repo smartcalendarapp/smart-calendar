@@ -1736,7 +1736,7 @@ const dynamostore = new DynamoDBStore({
 app.use(compression())
 
 //clickjacking stuff
-app.use(helmet.frameguard({ action: 'deny' }))
+//app.use(helmet.frameguard({ action: 'deny' }))
 
 app.use(bodyParser.json({ limit: '50mb' }))
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
