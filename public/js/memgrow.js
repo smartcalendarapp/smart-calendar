@@ -194,47 +194,72 @@ const DELAYS = [
 ]
 //index 0 is long term, index 1 is short term, index 2 is music
 
+let signedinuser = false
+
 async function savedata(){
-    const response = await fetch('/saveuserdata', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            data: userdata
-        })
-    })
-    if(response.status != 200){
-        console.log(response)
+    try{
+        if(signedinuser){
+            const response = await fetch('/saveuserdata', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    data: userdata
+                })
+            })
+            if(response.status != 200){
+                console.log(response)
+            }
+        }else{
+            localStorage.setItem('userdata', JSON.stringify(userdata))
+        }
+    }catch(err){
+        console.log(err)
     }
 }
 
 async function loaddata(){
-    const response = await fetch('/getuserdata', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    if(response.status == 200){
-        const data = await response.json()
-        userdata = data.data
-    }
+    try{
+        const response = await fetch('/getuserdata', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        if(response.status == 200){
+            const data = await response.json()
+            userdata = data.data
 
-    if(userdata){
-        userdata = Object.assign(new UserData(), userdata)
-        for(let index = 0; index < userdata.cardsets.length; index++){
-            userdata.cardsets[index] = Object.assign(new CardSet(), userdata.cardsets[index])
-            
-            for(let index2 = 0; index2 < userdata.cardsets[index].cards.length; index2++){
-                userdata.cardsets[index].cards[index2] = Object.assign(new Card(), userdata.cardsets[index].cards[index2])
+            signedinuser = true
+        }
+
+        if(userdata){
+            userdata = Object.assign(new UserData(), userdata)
+            for(let index = 0; index < userdata.cardsets.length; index++){
+                userdata.cardsets[index] = Object.assign(new CardSet(), userdata.cardsets[index])
+                
+                for(let index2 = 0; index2 < userdata.cardsets[index].cards.length; index2++){
+                    userdata.cardsets[index].cards[index2] = Object.assign(new Card(), userdata.cardsets[index].cards[index2])
+                }
+            }
+        }else{
+            let tempdata = localStorage.getItem('userdata')
+            try{
+                if(tempdata && JSON.parse(tempdata)){
+                    userdata = JSON.parse(tempdata)
+                }else{
+                    userdata = new UserData()
+                }
+            }catch(err){
+                userdata = new UserData()
             }
         }
-    }else{
-        userdata = new UserData()
-    }
 
-    updatescreen()
+        updatescreen()
+    }catch(err){
+        console.log(err)
+    }
 }
 
 
