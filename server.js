@@ -7022,6 +7022,8 @@ app.post('/saveuserdata', async (req, res) => {
 		let lastedited = req.body.lastedited
 
 		const userdata = await getmemgrowdata(DEV_ID)
+
+		console.warn(userdata.lastedited)
 		if(lastedited < userdata.lastedited){
 			return res.status(401).end()
 		}
@@ -7030,7 +7032,7 @@ app.post('/saveuserdata', async (req, res) => {
 
         res.end()
     }catch(err){
-        console.log(err)
+        console.error(err)
         res.status(401).end()
     }
 })
@@ -7043,7 +7045,7 @@ app.post('/getuserdata', async (req, res) => {
 
         res.json({ data: data.data })
     }catch(err){
-        console.log(err)
+        console.error(err)
         res.status(401).end()
     }
 })
