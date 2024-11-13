@@ -234,7 +234,7 @@ async function loaddata(){
             signedinuser = true
         }
 
-        if(!userdata){
+        if(!signedinuser){
             let tempdata = localStorage.getItem('userdata')
             try{
                 if(tempdata && JSON.parse(tempdata)){
