@@ -265,31 +265,42 @@ async function loaddata(){
 
         olddata = JSON.stringify(userdata)
         tempolddata = JSON.stringify(userdata)
+
+        let needtochecklastedited = true;
+        let lastcheckedlastedited = Date.now()
+
         let maininterval = setInterval(async function(){
             if(tempolddata != JSON.stringify(userdata)){
                 lastedited = Date.now()
                 tempolddata = JSON.stringify(userdata)
             }
 
-            if(olddata != JSON.stringify(userdata)){
-                needsave = true
-                if(Date.now() - lastsavedata > 10000){
-                    //check if edited by another place
-                    const response = await fetch('/getuserdatalastedited', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    if(response.status == 401){
+            if(needtochecklastedited && Date.now() - lastcheckedlastedited > 10000){
+                //check if edited by another place
+                const response = await fetch('/getuserdatalastedited', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                if(response.status == 200){
+                    let data = await response.json()
+                    let temp = data.lastedited
+                    if(temp > lastedited){
+                        //stop all
                         let screencover = getelement('screencover')
                         screencover.classList.remove('display-none')
                         
-                        //stop this script
                         clearInterval(maininterval)
                         return
                     }
+                    needtochecklastedited = false
+                }
+            }
 
+            if(olddata != JSON.stringify(userdata)){
+                needsave = true
+                if(Date.now() - lastsavedata > 10000 && !needtochecklastedited){
                     await savedata()
                     olddata = JSON.stringify(userdata)
                 }

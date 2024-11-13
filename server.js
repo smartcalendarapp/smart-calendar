@@ -7037,7 +7037,7 @@ app.post('/getuserdatalastedited', async (req, res) => {
 
 		const data = await getmemgrowdata(DEV_ID)
 
-		res.json({ data: data.lastedited })
+		res.json({ lastedited: data.lastedited })
     }catch(err){
         console.error(err)
         res.status(401).end()
