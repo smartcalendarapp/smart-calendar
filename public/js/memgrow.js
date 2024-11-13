@@ -266,7 +266,6 @@ async function loaddata(){
         olddata = JSON.stringify(userdata)
         tempolddata = JSON.stringify(userdata)
 
-        let needtochecklastedited = true;
         let lastcheckedlastedited = Date.now()
 
         let maininterval = setInterval(async function(){
@@ -275,7 +274,7 @@ async function loaddata(){
                 tempolddata = JSON.stringify(userdata)
             }
 
-            if(needtochecklastedited && Date.now() - lastcheckedlastedited > 10000){
+            if(Date.now() - lastcheckedlastedited > 10000){
                 //check if edited by another place
                 const response = await fetch('/getuserdatalastedited', {
                     method: 'POST',
@@ -294,13 +293,13 @@ async function loaddata(){
                         clearInterval(maininterval)
                         return
                     }
-                    needtochecklastedited = false
+                    lastcheckedlastedited = Date.now()
                 }
             }
 
             if(olddata != JSON.stringify(userdata)){
                 needsave = true
-                if(Date.now() - lastsavedata > 10000 && !needtochecklastedited){
+                if(Date.now() - lastsavedata > 10000 && Date.now() - lastcheckedlastedited < 10000){
                     await savedata()
                     olddata = JSON.stringify(userdata)
                 }
