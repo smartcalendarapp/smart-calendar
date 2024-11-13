@@ -7019,8 +7019,14 @@ app.post('/saveuserdata', async (req, res) => {
 		if(req.session.user.userid != DEV_ID) return res.status(401).end()
 
         let data = req.body.data
+		let lastedited = req.body.lastedited
 
-		await setmemgrowdata({ id: DEV_ID, data: data })
+		const userdata = await getmemgrowdata(DEV_ID)
+		if(lastedited < userdata.lastedited){
+			return res.status(401).end()
+		}
+	
+		await setmemgrowdata({ id: DEV_ID, data: data, lastedited: lastedited })
 
         res.end()
     }catch(err){
