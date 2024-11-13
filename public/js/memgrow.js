@@ -247,7 +247,7 @@ async function loaddata(){
             let tempdata = localStorage.getItem('userdata')
             try{
                 if(tempdata && JSON.parse(tempdata)){
-                    userdata = JSON.parse(tempdata)
+                    userdata = Object.assign(new UserData(), JSON.parse(tempdata))
                 }else{
                     userdata = new UserData()
                 }
