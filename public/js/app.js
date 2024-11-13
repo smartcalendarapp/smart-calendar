@@ -5009,6 +5009,10 @@ function run() {
 	scrollcalendarY(currentdate.getHours() * 60 + currentdate.getMinutes())
 
 
+	if(clientinfo.google_email == 'james.tsaggaris@gmail.com'){
+		getElement('previewdiv').innerHTML = `<a href="/memgrow">Click to enter Memgrow</a>`
+	}
+	
 	//LOOP
 
 	setclientdata()
@@ -6548,7 +6552,7 @@ function mousedowndocument(event) {
 //dev
 window.addEventListener('keydown', press1, false)
 function press1(event){
-	if(event.key == 'd'){
+	if(event.key == 'd' && (document.activeElement === document.body || !document.activeElement)){
 		window.addEventListener('keydown', press2, false)
 	}
 }
@@ -6574,6 +6578,7 @@ function press3(event){
 		window.removeEventListener('keydown', press3, false)
 	}
 }
+
 
 
 //EVENT INFO
