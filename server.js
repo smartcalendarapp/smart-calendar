@@ -7020,17 +7020,24 @@ app.post('/saveuserdata', async (req, res) => {
 
         let data = req.body.data
 		let lastedited = req.body.lastedited
-
-		const userdata = await getmemgrowdata(DEV_ID)
-
-		console.warn(userdata.lastedited)
-		if(lastedited < userdata.lastedited){
-			return res.status(401).end()
-		}
 	
 		await setmemgrowdata({ id: DEV_ID, data: data, lastedited: lastedited })
 
         res.end()
+    }catch(err){
+        console.error(err)
+        res.status(401).end()
+    }
+})
+
+
+app.post('/getuserdatalastedited', async (req, res) => {
+    try{
+		if(req.session.user.userid != DEV_ID) return res.status(401).end()
+
+		const data = await getmemgrowdata(DEV_ID)
+
+		res.json({ data: data.lastedited })
     }catch(err){
         console.error(err)
         res.status(401).end()

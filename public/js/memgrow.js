@@ -196,7 +196,7 @@ const DELAYS = [
 
 let signedinuser = false
 
-let hidescreen;
+
 async function savedata(){
     try{
         if(signedinuser){            
@@ -213,11 +213,6 @@ async function savedata(){
             if(response.status != 200){
                 console.log(response)
             }
-            if(response.status == 401){
-                let screencover = getelement('screencover')
-                screencover.classList.remove('display-none')
-                hidescreen = true
-            }
         }else{
             localStorage.setItem('userdata', JSON.stringify(userdata))
         }
@@ -225,6 +220,7 @@ async function savedata(){
         console.log(err)
     }
 }
+
 
 async function loaddata(){
     try{
@@ -269,12 +265,7 @@ async function loaddata(){
 
         olddata = JSON.stringify(userdata)
         tempolddata = JSON.stringify(userdata)
-        let maininterval = setInterval(function(){
-            if(hidescreen){
-                clearInterval(maininterval)
-                return
-            }
-
+        let maininterval = setInterval(async function(){
             if(tempolddata != JSON.stringify(userdata)){
                 lastedited = Date.now()
                 tempolddata = JSON.stringify(userdata)
@@ -283,7 +274,23 @@ async function loaddata(){
             if(olddata != JSON.stringify(userdata)){
                 needsave = true
                 if(Date.now() - lastsavedata > 10000){
-                    savedata()
+                    //check if edited by another place
+                    const response = await fetch('/getuserdatalastedited', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    if(response.status == 401){
+                        let screencover = getelement('screencover')
+                        screencover.classList.remove('display-none')
+                        
+                        //stop this script
+                        clearInterval(maininterval)
+                        return
+                    }
+
+                    await savedata()
                     olddata = JSON.stringify(userdata)
                 }
             }else{
