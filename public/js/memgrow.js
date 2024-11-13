@@ -219,7 +219,6 @@ async function savedata(){
     }
 }
 
-let lastedited;
 async function loaddata(){
     try{
         const response = await fetch('/getuserdata', {
@@ -246,27 +245,6 @@ async function loaddata(){
             }catch(err){
                 userdata = new UserData()
             }
-        }else{
-            lastedited = Date.now()
-
-            setInterval(async function(){
-                const response = await fetch('/getuserdatalastedited', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                if(response.status == 200){
-                    const data = await response.json()
-                    let timestamp = data.timestamp || 0
-        
-                    if(timestamp > lastedited){
-                        stopeverything = true
-                        clickscreen(0)
-                        getelement('cardsetlist').innerHTML = ''
-                    }
-                }
-            }, 10000)
         }
 
         if(userdata){
@@ -289,8 +267,6 @@ async function loaddata(){
 
 //START
 
-let stopeverything = false
-
 let screenview = 0
 
 let currentcardset;
@@ -311,14 +287,9 @@ let lasttemp;
 let olddata = JSON.stringify(userdata)
 let lastsavedata = 0;
 let needsave;
-let maininterval = setInterval(function(){
-    if(stopeverything){
-        return clearInterval(maininterval)
-    }
-
+setInterval(function(){
     if(olddata != JSON.stringify(userdata)){
         needsave = true
-        lastedited = Date.now()
         if(Date.now() - lastsavedata > 10000){
             savedata()
             olddata = JSON.stringify(userdata)
