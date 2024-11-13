@@ -1335,6 +1335,8 @@ function processnextcard(){
 
 function clickcardgroupdone(){
     finishedreview = false
+
+    currentcardset = null
     
     clickscreen(0)
 }
@@ -1745,6 +1747,20 @@ document.addEventListener('keydown', async (event) => {
 
         if(currentcardset && editcardmode){
             previouscard(currentcardindex - 1)
+        }
+    }else if(event.key == ' '){
+        if(document.activeElement && document.activeElement !== document.body) return
+
+        if(currentcardset && !editcardmode){
+            if(!hidecardgroupblur){
+                clickcardblur()
+            }else if(finishedreview){
+                clickcardgroupdone()
+            }else if(!showanswer){
+                clicktoreveal()
+            }else{
+                clickremembered()
+            }
         }
     }
 })
