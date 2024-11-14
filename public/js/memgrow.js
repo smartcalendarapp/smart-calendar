@@ -267,6 +267,8 @@ async function loaddata(){
         tempolddata = JSON.stringify(userdata)
 
         let lastcheckedlastedited = Date.now()
+        
+        lastedited = Date.now()
 
         let maininterval = setInterval(async function(){
             if(tempolddata != JSON.stringify(userdata)){
