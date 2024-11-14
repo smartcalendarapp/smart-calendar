@@ -239,10 +239,10 @@ textarea{
 }
 
 .titleinput::placeholder{
-    color:var(--text-primary)
+    color:var(--text-primary);
 }
 .titleinputedit::placeholder{
-    color:revert;
+    color:var(--text-tertiary) !important;
 }
 
 
