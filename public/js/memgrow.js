@@ -269,8 +269,6 @@ async function loaddata(){
         let lastcheckedlastedited = Date.now()
 
         let maininterval = setInterval(async function(){
-            if(document.visibilityState != 'visible') return
-            
             if(tempolddata != JSON.stringify(userdata)){
                 lastedited = Date.now()
                 tempolddata = JSON.stringify(userdata)
