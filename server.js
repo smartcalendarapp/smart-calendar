@@ -7058,9 +7058,10 @@ app.post('/getuserdata', async (req, res) => {
 })
 
 app.post('/generateaicards', async (req, res) => {
+	console.warn(req.body)
 	if(req?.body?.secretToken != process.env.MEMGROW_SECRET) return
 
-	console.info('generate ai cards logging')
+	console.warn('generate ai cards logging')
 	
     const input = req.body.input
     const istranscript = req.body.istranscript
