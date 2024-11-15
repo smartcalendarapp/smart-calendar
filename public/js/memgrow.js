@@ -682,10 +682,10 @@ async function submitaifield(event){
 
 
             if(Array.isArray(cards)){
-                let len = currentcardset.cards.length
+                let len = currentcardset.cards.filter(d => d.fronttext || d.backtext).length
 
                 for(let temp of cards){
-                    if(!currentcardset.cards[currentcardindex].fronttext || !currentcardset.cards[currentcardindex].backtext){
+                    if(!currentcardset.cards[currentcardindex].fronttext && !currentcardset.cards[currentcardindex].backtext){
                         currentcardset.cards[currentcardindex].fronttext = (temp.card_prompt)
                         currentcardset.cards[currentcardindex].backtext = (temp.card_answer)
                     }else{
@@ -698,7 +698,7 @@ async function submitaifield(event){
                     }
 
                     if(editcardmode){
-                        currentcardindex = len == 1 ? 0 : len
+                        currentcardindex = len
 
                         updatescreen()
                     }else{
@@ -1516,10 +1516,10 @@ async function submituploadfile(event){
             const title = data?.content?.title
 
             if(Array.isArray(cards)){
-                let len = currentcardset.cards.length
+                let len = currentcardset.cards.filter(d => d.fronttext || d.backtext).length
 
                 for(let temp of cards){
-                    if(!currentcardset.cards[currentcardindex].fronttext || !currentcardset.cards[currentcardindex].backtext){
+                    if(!currentcardset.cards[currentcardindex].fronttext && !currentcardset.cards[currentcardindex].backtext){
                         currentcardset.cards[currentcardindex].fronttext = (temp.card_prompt)
                         currentcardset.cards[currentcardindex].backtext = (temp.card_answer)
                     }else{
@@ -1532,7 +1532,7 @@ async function submituploadfile(event){
                     }
                     
                     if(editcardmode){
-                        currentcardindex = len == 1 ? 0 : len
+                        currentcardindex = len
 
                         updatescreen()
 
@@ -1693,10 +1693,10 @@ async function updaterecognitionui(processresult, tempuserwantstostop){
                 const title = data?.content?.title
     
                 if(Array.isArray(cards)){
-                    let len = currentcardset.cards.length
-    
+                    let len = currentcardset.cards.filter(d => d.fronttext || d.backtext).length
+
                     for(let temp of cards){
-                        if(!currentcardset.cards[currentcardindex].fronttext || !currentcardset.cards[currentcardindex].backtext){
+                        if(!currentcardset.cards[currentcardindex].fronttext && !currentcardset.cards[currentcardindex].backtext){
                             currentcardset.cards[currentcardindex].fronttext = (temp.card_prompt)
                             currentcardset.cards[currentcardindex].backtext = (temp.card_answer)
                         }else{
@@ -1712,7 +1712,7 @@ async function updaterecognitionui(processresult, tempuserwantstostop){
                         finalTranscript = ''
 
                         if(editcardmode){
-                            currentcardindex = len == 1 ? 0 : len
+                            currentcardindex = len
 
                             updatescreen()
 
