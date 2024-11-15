@@ -7016,7 +7016,7 @@ const CardExtraction = z.object({
 
 app.post('/saveuserdata', async (req, res) => {
     try{
-		if(req?.body?.secretToken != process.env.MEMGROW_SECRET) return res.status(401).end()
+		if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
 
         let data = req.body.data
 		let lastedited = req.body.lastedited
@@ -7033,7 +7033,7 @@ app.post('/saveuserdata', async (req, res) => {
 
 app.post('/getuserdatalastedited', async (req, res) => {
     try{
-		if(req?.body?.secretToken != process.env.MEMGROW_SECRET) return res.status(401).end()
+		if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
 
 		const data = await getmemgrowdata(DEV_ID)
 
@@ -7046,7 +7046,7 @@ app.post('/getuserdatalastedited', async (req, res) => {
 
 app.post('/getuserdata', async (req, res) => {
     try{
-		if(req?.body?.secretToken != process.env.MEMGROW_SECRET) return res.status(401).end()
+		if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
 
         const data = await getmemgrowdata(DEV_ID)
 
@@ -7058,8 +7058,7 @@ app.post('/getuserdata', async (req, res) => {
 })
 
 app.post('/generateaicards', async (req, res) => {
-	console.warn(req.body)
-	if(req?.body?.secretToken != process.env.MEMGROW_SECRET) return
+	if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
 
 	console.warn('generate ai cards logging')
 	

@@ -278,12 +278,14 @@ async function loaddata(){
 
             if(Date.now() - lastcheckedlastedited > 10000){
                 //check if edited by another place
+                lastcheckedlastedited = Date.now()
                 const response = await fetch('/getuserdatalastedited', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 })
+                
                 if(response.status == 200){
                     let data = await response.json()
                     let temp = data.lastedited
@@ -295,7 +297,6 @@ async function loaddata(){
                         clearInterval(maininterval)
                         return
                     }
-                    lastcheckedlastedited = Date.now()
                 }
             }
 
