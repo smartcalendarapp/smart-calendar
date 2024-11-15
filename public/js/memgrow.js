@@ -646,6 +646,11 @@ function aibuttonmousedown(event){
     if(!aibutton.contains(event.target)){
         aibutton.classList.add('hiddenaibutton')
     }
+
+    let recognitionbutton = getelement('recognitionbutton')
+    if(!recognitionbutton.contains(event.target)){
+        recognitionbutton.classList.add('hiddenrecognitionbutton')
+    }
 }
 
 async function submitaifield(event){
@@ -1651,22 +1656,13 @@ function submitrecognition(event){
 let lastdidrecognitionai;
 let entiretranscript = ''
 async function updaterecognitionui(processresult, tempuserwantstostop){
-    let recognitionbutton = getelement('recognitionbutton')
-
-
-    if(isrecognizing){
-        recognitionbutton.classList.remove('hiddenrecognitionbutton')
-    }else{
-        recognitionbutton.classList.add('hiddenrecognitionbutton')
-    }
-
     let recognitiontranscriptdiv = getelement('recognitiontranscriptdiv')
 
     recognitiontranscriptdiv.innerHTML = `<div class="padding-top-12px"><div class="text-white text-14px">${(entiretranscript + totalTranscript) || 'Listening...'}</div><div class="padding-top-12px">`
     recognitiontranscriptdiv.scrollTo(0, recognitiontranscriptdiv.scrollHeight)
 
 
-    const timedur = 60000*3
+    const timedur = 60000*4
     const minlength = 50
     
     if((isrecognizing && lastdidrecognitionai && processresult && Date.now() - lastdidrecognitionai > timedur && finalTranscript?.length > minlength) || tempuserwantstostop){
@@ -1748,7 +1744,9 @@ function setrecognitionstatus(status, isusertriggered, tempuserwantstostop){
         isrecognizing = false
         
         if(isusertriggered){
-            playsound('dictationend')
+            //playsound('dictationend')
+            let recognitionbutton = getelement('recognitionbutton')
+            recognitionbutton.classList.add('hiddenrecognitionbutton')
         }
     }else if(status == true && !isrecognizing){
         if(isusertriggered){
@@ -1766,7 +1764,9 @@ function setrecognitionstatus(status, isusertriggered, tempuserwantstostop){
 
             if(isusertriggered){
                 lastdidrecognitionai = Date.now()
-                playsound('dictation')
+                //playsound('dictation')
+                let recognitionbutton = getelement('recognitionbutton')
+                recognitionbutton.classList.remove('hiddenrecognitionbutton')
             }
         }else{
             userwantstostop = false

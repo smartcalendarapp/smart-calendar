@@ -7066,8 +7066,6 @@ app.post('/generateaicards', async (req, res) => {
     const existingcards = [] //req.body.existingcards
     const files = req.body.files
 
-	console.warn(files)
-
 const systemprompt = `Every card prompt MUST:
 - engage active recall
 - not give away answer based on the wording or word choice
