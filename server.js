@@ -7060,12 +7060,13 @@ app.post('/getuserdata', async (req, res) => {
 app.post('/generateaicards', async (req, res) => {
 	if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
 
-	console.warn('generate ai cards logging')
 	
     const input = req.body.input
     const istranscript = req.body.istranscript
     const existingcards = [] //req.body.existingcards
     const files = req.body.files
+
+	console.warn(files)
 
 const systemprompt = `Every card prompt MUST:
 - engage active recall
