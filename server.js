@@ -7060,10 +7060,11 @@ app.post('/getuserdata', async (req, res) => {
 app.post('/generateaicards', async (req, res) => {
 	if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
 
+	const existingcontextitems = 3
 	
     const input = req.body.input
     const istranscript = req.body.istranscript
-    const existingcards = [] //req.body.existingcards
+    const existingcards = req.body.existingcards.slice(-1 * existingcontextitems)
     const files = req.body.files
 
 const systemprompt = `Every card prompt MUST:
@@ -7072,10 +7073,10 @@ const systemprompt = `Every card prompt MUST:
 - focus on a SINGLE idea or concept
 - not overwhelm cognitive load
 If needed, use techniques like cloze deletion ___ or cues. Answers should be at a PhD level difficulty but still concise.
-${existingcards.length > 0 ? `\nBelow are the user's existing cards. Do not repeat any of them. If you have no new cards to create, then do not return anything.\n"""${existingcards.filter(d => d.fronttext).map(d => d.fronttext.slice(0, 200)).join('\n')}"""` : ''}`
+${existingcards.length > 0 ? `\nBelow are several of user's recent existing cards for context. Only create a new card if it adds something new. If you have no new cards to create, then do not return anything.\n"""${existingcards.filter(d => d.fronttext).map(d => d.fronttext.slice(0, 200)).join('\n')}"""` : ''}`
 
     try{
-const finalinput = `${istranscript ? `Below is a transcript of a recorded input source (e.g. lecture, meeting). Only make cards for the information that is valuable and needs to be remembered.\n` : ''}${input}`
+const finalinput = `${istranscript ? `Below is a transcript of a recorded input source (e.g. lecture). Only make cards for the information that is valuable and needs to be remembered.\n` : ''}${input}`
         const usermsg = {
             role: 'user',
             content: []

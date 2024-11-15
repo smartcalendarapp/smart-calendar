@@ -1752,6 +1752,7 @@ function setrecognitionstatus(status, isusertriggered, tempuserwantstostop){
         if(isusertriggered){
             finalTranscript = ''
             totalTranscript = ''
+            entiretranscript = ''
         }else{
             if(recognitionerror){
                 return
