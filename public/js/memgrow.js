@@ -654,7 +654,7 @@ function aibuttonmousedown(event){
 
     let recognitionbutton = getelement('recognitionbutton')
     if(!recognitionbutton.contains(event.target)){
-        recognitionbutton.classList.add('hiddenrecognitionbutton')
+        recognitionbutton.classList.add('temphiddenrecognitionbutton')
     }
 }
 
@@ -1574,6 +1574,8 @@ async function submituploadfile(event){
 function clickrecognition(){    
     if(isrecognizing){
         //setrecognitionstatus(false, true, true)
+        let recognitionbutton = getelement('recognitionbutton')
+        recognitionbutton.classList.remove('temphiddenrecognitionbutton')
     }else{
         setrecognitionstatus(true, true, false)
     }
