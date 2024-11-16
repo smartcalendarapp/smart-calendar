@@ -135,16 +135,14 @@
                         <div class="absolute card flex-column middlecard"></div>
                         <div class="absolute card flex-column frontcard">
                             <div class="relative flex-1">
-                                <span class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 textareainput textareainputedit" id="screencardfronttext" oninput="updatetextareaplaceholders()" onblur="submitscreencardfronttext()" contenteditable="true" onclick="clickfronttext()"></span>
-                                <span class="placeholder padding-16px text-18px absolute top-0 bottom-0 left-0 right-0">Enter a prompt...</span>
+                                <textarea class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 textareainput textareainputedit" id="screencardfronttext" placeholder="Enter a prompt..." onblur="submitscreencardfronttext()" onclick="clickfronttext()"></span>
                             </div>
 
                             <div class="cardseparator"></div>
                             
                             <div class="flex-1 relative flex-column">
                                 <div class="relative flex-1">
-                                    <span class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 textareainput" id="screencardbacktext" oninput="updatetextareaplaceholders()" onblur="submitscreencardbacktext()" contenteditable="true" onclick="clickbacktext()"></span>
-                                    <span class="placeholder padding-16px text-18px absolute top-0 left-0">Enter an answer...</span>
+                                    <textarea class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 textareainput" id="screencardbacktext" placeholder="Enter an answer..." onblur="submitscreencardbacktext()"  onclick="clickbacktext()"></textarea>
                                 </div>
 
                                 <div class="backdrop-blur display-flex align-center justify-center padding-16px top-0 left-0 right-0 bottom-0 absolute cardanswercover" id="cardanswercover" onclick="clicktoreveal()">

@@ -446,15 +446,14 @@ function updatescreen(){
 
         let screencardfronttext = getelement('screencardfronttext')
         screencardfronttext.classList.remove('textareainputedit')
-        screencardfronttext.contentEditable = false
+        screencardfronttext.disabled = true
         screencardfronttext.innerHTML = (currentcardset.cards[currentcardindex].fronttext || '')
 
         let screencardbacktext = getelement('screencardbacktext')
         screencardbacktext.classList.remove('textareainputedit')
-        screencardbacktext.contentEditable = false
+        screencardbacktext.disabled = true
         screencardbacktext.innerHTML = (currentcardset.cards[currentcardindex].backtext || '')
 
-        updatetextareaplaceholders()
 
 
         let cardanswercover = getelement('cardanswercover')
@@ -512,10 +511,10 @@ function updatescreen(){
             screencardsettitle.disabled = false
 
             screencardfronttext.classList.add('textareainputedit')
-            screencardfronttext.contentEditable = true
+            screencardfronttext.disabled = false
 
             screencardbacktext.classList.add('textareainputedit')
-            screencardbacktext.contentEditable = true
+            screencardbacktext.disabled = false
             
             clickbackhomebutton.classList.add('display-none')
 
@@ -593,22 +592,6 @@ function updatescreen(){
         }
 
         MathJax.typeset()
-    }
-}
-
-
-function updatetextareaplaceholders(){
-    let screencardfronttext = getelement('screencardfronttext')
-    let screencardbacktext = getelement('screencardbacktext')
-
-    screencardfronttext.parentNode.children[1].classList.remove('display-none')
-    screencardbacktext.parentNode.children[1].classList.remove('display-none')
-    
-    if(screencardfronttext.innerHTML.replace(/<br>/g,'').trim()){
-        screencardfronttext.parentNode.children[1].classList.add('display-none')
-    }
-    if(screencardbacktext.innerHTML.replace(/<br>/g,'').trim()){
-        screencardbacktext.parentNode.children[1].classList.add('display-none')
     }
 }
 
@@ -1199,14 +1182,14 @@ function submitscreencardtitle(){
 }
 
 function submitscreencardfronttext(){
-    currentcardset.cards[currentcardindex].fronttext = getelement('screencardfronttext').innerHTML.replace(/<br>/g,'').trim()
+    currentcardset.cards[currentcardindex].fronttext = getelement('screencardfronttext').value.trim()
     if(!dragdivid2){
         updatescreen()
     }
 }
 
 function submitscreencardbacktext(){
-    currentcardset.cards[currentcardindex].backtext = getelement('screencardbacktext').innerHTML.replace(/<br>/g,'').trim()
+    currentcardset.cards[currentcardindex].backtext = getelement('screencardbacktext').value.trim()
     if(!dragdivid2){
         updatescreen()
     }
