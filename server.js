@@ -7017,7 +7017,6 @@ const CardExtraction = z.object({
 app.post('/saveuserdata', async (req, res) => {
     try{
 		if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
-			console.log(JSON.stringify(req.body.data))
 
         let data = req.body.data
 		let lastedited = req.body.lastedited
