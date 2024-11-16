@@ -549,7 +549,12 @@ function updatescreen(){
             nextcardbutton.classList.remove('disabled')
         }
 
-        let displaytxt = `Card ${currentcardindex + 1} of ${currentcardset.cards.length}`
+        let displaytxt;
+        if(editcardmode){
+            displaytxt = `Card ${currentcardindex + 1} of ${currentcardset.cards.length}`
+        }else{
+            displaytxt = `Card ${displaycardindexes.indexOf(currentcardindex) + 1} of ${displaycardindexes.length}`
+        }
         let cardindexdisplay = getelement('cardindexdisplay')
         cardindexdisplay.innerHTML = displaytxt
 

@@ -439,7 +439,7 @@ textarea{
 #uploadbuttoncontent{
     width:200px;
     height:120px;
-    max-width:200px;
+    ath:200px;
     max-height:120px;
     transition-duration:0.4s;
 }
@@ -533,4 +533,12 @@ textarea{
 
 .selectedbutton{
     background-color:#3075ff;
+}
+
+
+@media only screen and (max-width: 600px) {
+    .cardset{
+        width:150px;
+        height:150px;
+    }
 }
