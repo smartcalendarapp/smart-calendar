@@ -7046,6 +7046,7 @@ app.post('/getuserdatalastedited', async (req, res) => {
 
 app.post('/getuserdata', async (req, res) => {
     try{
+		console.warn(req?.body)
 		if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
 
         const data = await getmemgrowdata(DEV_ID)
