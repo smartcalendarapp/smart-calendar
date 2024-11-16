@@ -1573,12 +1573,12 @@ async function submituploadfile(event){
 
 function clickrecognition(){    
     if(isrecognizing){
-        //setrecognitionstatus(false, true, true)
-        let recognitionbutton = getelement('recognitionbutton')
-        recognitionbutton.classList.remove('temphiddenrecognitionbutton')
     }else{
         setrecognitionstatus(true, true, false)
     }
+
+    let recognitionbutton = getelement('recognitionbutton')
+    recognitionbutton.classList.remove('temphiddenrecognitionbutton')
 }
 
 async function playsound(name){
