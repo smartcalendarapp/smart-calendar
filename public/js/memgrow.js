@@ -197,10 +197,10 @@ const DELAYS = [
 
 
 
-let userdata = new UserData(); // Assuming UserData is defined elsewhere
+let userdata = new UserData();
 let oldData = JSON.stringify(userdata);
 let lastEdited = Date.now();
-let signedInUser = false; // Set this based on user authentication state
+let signedInUser = false;
 
 async function saveData() {
     try {
@@ -309,8 +309,6 @@ let hidecardgroupblur = false
 let finishedreview = false
 
 
-
-loaddata()
 
 //loops
 let lasttemp;
