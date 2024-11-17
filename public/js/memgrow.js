@@ -296,7 +296,7 @@ async function syncData() {
 }
 
 function monitorChanges() {
-    setInterval(syncData, 10000);
+    setInterval(syncData, 5000);
 
     let oldtitle;
     setInterval(() => {
