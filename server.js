@@ -7064,8 +7064,7 @@ app.post('/getuserdatalastedited', async (req, res) => {
     try{
 		if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
 
-		const data = await getmemgrowlastediteddata({ lastedited: lastedited })
-
+		const data = await getmemgrowlastediteddata(DEV_ID)
 
 		res.json({ lastedited: data.lastedited })
     }catch(err){
