@@ -292,7 +292,7 @@ async function syncData() {
 }
 
 function monitorChanges() {
-    setInterval(syncData, 5000);
+    setInterval(syncData, 10000);
 
     setInterval(() => {
         const reviewSets = userdata.getReviewSets ? userdata.getReviewSets().length : 0;
