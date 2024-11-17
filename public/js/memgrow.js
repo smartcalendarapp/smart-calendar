@@ -239,6 +239,8 @@ async function loadData() {
             userdata = Object.assign(new UserData(), data.data);
             signedInUser = true;
 
+            lastEdited = Date.now();
+
             //fixing
             if(userdata){
                 for(let index = 0; index < userdata.cardsets.length; index++){
