@@ -250,14 +250,12 @@ async function loadData() {
                 }
             }
 
-            
         } else {
             const tempData = localStorage.getItem('userdata');
             userdata = tempData ? Object.assign(new UserData(), JSON.parse(tempData)) : new UserData();
         }
 
         oldData = JSON.stringify(userdata);
-        lastEdited = Date.now();
         console.log("Data loaded successfully.");
         updatescreen(); 
     } catch (err) {
@@ -328,7 +326,7 @@ let lasttemp;
 let olddata;
 let lastsavedata = 0;
 let needsave;
-let lastedited = 0;
+
 
 
 function getneedsave(){
