@@ -279,7 +279,6 @@ async function loaddata(midload){
                 tempolddata = JSON.stringify(userdata)
             }
 
-
             let needtosave = olddata != JSON.stringify(userdata)
 
             if(signedinuser && (needtosave || document.visibilityState == 'visible')){
@@ -300,11 +299,11 @@ async function loaddata(midload){
                 }
             }
 
-
             if(needtosave){
                 //save
                 await savedata()
                 olddata = JSON.stringify(userdata)
+                tempolddata = JSON.stringify(userdata)
             }
 
             setTimeout(async function(){
