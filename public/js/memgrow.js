@@ -447,12 +447,12 @@ function updatescreen(){
         let screencardfronttext = getelement('screencardfronttext')
         screencardfronttext.classList.remove('textareainputedit')
         screencardfronttext.disabled = true
-        screencardfronttext.innerHTML = (currentcardset.cards[currentcardindex].fronttext || '')
+        screencardfronttext.value = (currentcardset.cards[currentcardindex].fronttext || '')
 
         let screencardbacktext = getelement('screencardbacktext')
         screencardbacktext.classList.remove('textareainputedit')
         screencardbacktext.disabled = true
-        screencardbacktext.innerHTML = (currentcardset.cards[currentcardindex].backtext || '')
+        screencardbacktext.value = (currentcardset.cards[currentcardindex].backtext || '')
 
 
 
