@@ -238,6 +238,19 @@ async function loadData() {
             const data = await response.json();
             userdata = Object.assign(new UserData(), data.data);
             signedInUser = true;
+
+            //fixing
+            if(userdata){
+                for(let index = 0; index < userdata.cardsets.length; index++){
+                    userdata.cardsets[index] = Object.assign(new CardSet(), userdata.cardsets[index])
+                    
+                    for(let index2 = 0; index2 < userdata.cardsets[index].cards.length; index2++){
+                        userdata.cardsets[index].cards[index2] = Object.assign(new Card(), userdata.cardsets[index].cards[index2])
+                    }
+                }
+            }
+
+            
         } else {
             const tempData = localStorage.getItem('userdata');
             userdata = tempData ? Object.assign(new UserData(), JSON.parse(tempData)) : new UserData();
