@@ -7046,8 +7046,6 @@ app.post('/saveuserdata', async (req, res) => {
     try{
 		if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
 
-			console.warn(req.body.data, !!req.session)
-
         let data = req.body.data
 		let lastedited = req.body.lastedited
 	

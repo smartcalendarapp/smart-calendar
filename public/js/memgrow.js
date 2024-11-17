@@ -227,6 +227,7 @@ async function saveData() {
     }
 }
 
+let firstloaddata = true
 async function loadData() {
     try {
         const response = await fetch('/getuserdata', {
@@ -237,7 +238,10 @@ async function loadData() {
         if (response.status === 200) {
             const data = await response.json();
             userdata = Object.assign(new UserData(), data.data);
-            signedInUser = true;
+            if(firstloaddata){
+                signedInUser = true;
+                firstloaddata = false
+            }
 
             lastEdited = Date.now();
 
@@ -252,7 +256,7 @@ async function loadData() {
                 }
             }
 
-        } else {
+        } else if(!signedInUser){
             const tempData = localStorage.getItem('userdata');
             userdata = tempData ? Object.assign(new UserData(), JSON.parse(tempData)) : new UserData();
         }
@@ -294,11 +298,13 @@ async function syncData() {
 function monitorChanges() {
     setInterval(syncData, 10000);
 
+    let oldtitle;
     setInterval(() => {
         const reviewSets = userdata.getReviewSets ? userdata.getReviewSets().length : 0;
         const title = reviewSets > 0 ? `MemGrow (${reviewSets})` : "MemGrow";
-        if (document.title !== title) {
+        if (oldtitle !== title) {
             document.title = title;
+            oldtitle = title
         }
     }, 1000);
 }
