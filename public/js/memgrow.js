@@ -222,7 +222,7 @@ async function savedata(){
 }
 
 
-async function loaddata(){
+async function loaddata(midload){
     try{
         const response = await fetch('/getuserdata', {
             method: 'POST',
@@ -264,21 +264,22 @@ async function loaddata(){
         updatescreen()
 
         olddata = JSON.stringify(userdata)
-        tempolddata = JSON.stringify(userdata)
 
-        let lastcheckedlastedited = Date.now()
+        if(midload){
+            return
+        }
         
         lastedited = Date.now()
 
-        let maininterval = setInterval(async function(){
+        let tempolddata = JSON.stringify(userdata)
+
+        async function checksave(){
             if(tempolddata != JSON.stringify(userdata)){
                 lastedited = Date.now()
                 tempolddata = JSON.stringify(userdata)
             }
 
-            if(Date.now() - lastcheckedlastedited > 10000){
-                //check if edited by another place
-                lastcheckedlastedited = Date.now()
+            if(olddata != JSON.stringify(userdata) && signedinuser){
                 const response = await fetch('/getuserdatalastedited', {
                     method: 'POST',
                     headers: {
@@ -289,27 +290,29 @@ async function loaddata(){
                 if(response.status == 200){
                     let data = await response.json()
                     let temp = data.lastedited
+
                     if(temp > lastedited){
-                        //stop all
-                        let screencover = getelement('screencover')
-                        screencover.classList.remove('display-none')
-                        
-                        clearInterval(maininterval)
-                        return
+                        await loaddata()
                     }
                 }
             }
 
+
             if(olddata != JSON.stringify(userdata)){
-                needsave = true
-                if(Date.now() - lastsavedata > 10000 && Date.now() - lastcheckedlastedited < 10000){
-                    await savedata()
-                    olddata = JSON.stringify(userdata)
-                }
-            }else{
-                needsave = false
+                //save
+                await savedata()
+                olddata = JSON.stringify(userdata)
             }
+
+            setTimeout(async function(){
+                checksave()
+            }, 3000)
+        }
+        await checksave()
+
         
+        //ui interval
+        setInterval(async function(){
             let temp = userdata.getReviewSets().length
             if(temp > 0){
                 if(lasttemp != temp){
@@ -350,7 +353,6 @@ let lasttemp;
 let olddata;
 let lastsavedata = 0;
 let needsave;
-let tempolddata;
 let lastedited = 0;
 
 

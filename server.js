@@ -6975,6 +6975,34 @@ async function getmemgrowdata(id){
 		return null
 }
 
+
+async function setmemgrowlastediteddata(tempdata){
+	try{
+		const params2 = {
+			TableName: 'memgrowlastediteddata',
+			Item: marshall(tempdata, { convertClassInstanceToMap: true, removeUndefinedValues: true })
+		}
+		
+		await dynamoclient.send(new PutItemCommand(params2))
+	}catch(error){
+		console.error(error)
+	}
+}
+
+async function getmemgrowlastediteddata(id){
+	const params = {
+		TableName: 'memgrowlastediteddata',
+		Key: {
+		  'id': { S: id }
+		}
+	  }
+	  const data = await dynamoclient.send(new GetItemCommand(params))
+		if(data.Item){
+			return (unmarshall(data.Item))
+		}
+		return null
+}
+
 const z = require("zod").default
 
 const { zodResponseFormat } = require("openai/helpers/zod")
@@ -7021,7 +7049,8 @@ app.post('/saveuserdata', async (req, res) => {
         let data = req.body.data
 		let lastedited = req.body.lastedited
 	
-		await setmemgrowdata({ id: DEV_ID, data: data, lastedited: lastedited })
+		await setmemgrowdata({ id: DEV_ID, data: data })
+		await setmemgrowlastediteddata({ id: DEV_ID, lastedited: lastedited })
 
         res.end()
     }catch(err){
@@ -7035,7 +7064,8 @@ app.post('/getuserdatalastedited', async (req, res) => {
     try{
 		if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
 
-		const data = await getmemgrowdata(DEV_ID)
+		const data = await getmemgrowlastediteddata({ lastedited: lastedited })
+
 
 		res.json({ lastedited: data.lastedited })
     }catch(err){
