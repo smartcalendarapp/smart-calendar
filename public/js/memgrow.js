@@ -279,7 +279,10 @@ async function loaddata(midload){
                 tempolddata = JSON.stringify(userdata)
             }
 
-            if(olddata != JSON.stringify(userdata) && signedinuser){
+
+            let needtosave = olddata != JSON.stringify(userdata)
+
+            if(signedinuser && (needtosave || document.visibilityState == 'visible')){
                 const response = await fetch('/getuserdatalastedited', {
                     method: 'POST',
                     headers: {
@@ -298,7 +301,7 @@ async function loaddata(midload){
             }
 
 
-            if(olddata != JSON.stringify(userdata)){
+            if(needtosave){
                 //save
                 await savedata()
                 olddata = JSON.stringify(userdata)
@@ -306,7 +309,7 @@ async function loaddata(midload){
 
             setTimeout(async function(){
                 checksave()
-            }, 3000)
+            }, 5000)
         }
         await checksave()
 
