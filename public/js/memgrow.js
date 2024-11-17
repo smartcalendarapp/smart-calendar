@@ -194,143 +194,106 @@ const DELAYS = [
 ]
 //index 0 is long term, index 1 is short term, index 2 is music
 
-let signedinuser = false
 
 
-async function savedata(){
-    try{
-        if(signedinuser){            
+
+let userdata = new UserData(); // Assuming UserData is defined elsewhere
+let oldData = JSON.stringify(userdata);
+let lastEdited = Date.now();
+let signedInUser = false; // Set this based on user authentication state
+
+async function saveData() {
+    try {
+        if (signedInUser) {
             const response = await fetch('/saveuserdata', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     data: userdata,
-                    lastedited: lastedited
-                })
-            })
-            if(response.status != 200){
-                console.log(response)
+                    lastedited: lastEdited,
+                }),
+            });
+
+            if (response.status !== 200) {
+                console.error("Error saving data:", response);
+            } else {
+                console.log("Data saved successfully.");
             }
-        }else{
-            localStorage.setItem('userdata', JSON.stringify(userdata))
+        } else {
+            localStorage.setItem('userdata', JSON.stringify(userdata));
         }
-    }catch(err){
-        console.log(err)
+    } catch (err) {
+        console.error("Error saving data:", err);
     }
 }
 
-
-async function loaddata(midload){
-    try{
+async function loadData() {
+    try {
         const response = await fetch('/getuserdata', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        if(response.status == 200){
-            const data = await response.json()
-            userdata = data.data
+            headers: { 'Content-Type': 'application/json' },
+        });
 
-            signedinuser = true
+        if (response.status === 200) {
+            const data = await response.json();
+            userdata = Object.assign(new UserData(), data.data);
+            signedInUser = true;
+        } else {
+            const tempData = localStorage.getItem('userdata');
+            userdata = tempData ? Object.assign(new UserData(), JSON.parse(tempData)) : new UserData();
         }
 
-        if(!signedinuser){
-            let tempdata = localStorage.getItem('userdata')
-            try{
-                if(tempdata && JSON.parse(tempdata)){
-                    userdata = JSON.parse(tempdata)
-                }else{
-                    userdata = new UserData()
-                }
-            }catch(err){
-                userdata = new UserData()
-            }
-        }
-
-        if(userdata){
-            userdata = Object.assign(new UserData(), userdata)
-            for(let index = 0; index < userdata.cardsets.length; index++){
-                userdata.cardsets[index] = Object.assign(new CardSet(), userdata.cardsets[index])
-                
-                for(let index2 = 0; index2 < userdata.cardsets[index].cards.length; index2++){
-                    userdata.cardsets[index].cards[index2] = Object.assign(new Card(), userdata.cardsets[index].cards[index2])
-                }
-            }
-        }
-
-        updatescreen()
-
-        olddata = JSON.stringify(userdata)
-
-        if(midload){
-            return
-        }
-        
-        lastedited = Date.now()
-
-        let tempolddata = JSON.stringify(userdata)
-
-        async function checksave(){
-            if(tempolddata != JSON.stringify(userdata)){
-                lastedited = Date.now()
-                tempolddata = JSON.stringify(userdata)
-            }
-
-            let needtosave = olddata != JSON.stringify(userdata)
-
-            if(signedinuser && (needtosave || document.visibilityState == 'visible')){
-                const response = await fetch('/getuserdatalastedited', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-                
-                if(response.status == 200){
-                    let data = await response.json()
-                    let temp = data.lastedited
-
-                    if(temp > lastedited){
-                        await loaddata()
-                    }
-                }
-            }
-
-            if(needtosave){
-                //save
-                await savedata()
-                olddata = JSON.stringify(userdata)
-                tempolddata = JSON.stringify(userdata)
-            }
-
-            setTimeout(async function(){
-                checksave()
-            }, 5000)
-        }
-        await checksave()
-
-        
-        //ui interval
-        setInterval(async function(){
-            let temp = userdata.getReviewSets().length
-            if(temp > 0){
-                if(lasttemp != temp){
-                    document.title = `MemGrow (${temp})`
-                }
-            }else{
-                if(lasttemp != temp){
-                    document.title = 'MemGrow'
-                }
-            }
-            lasttemp = temp
-        }, 1000)
-    }catch(err){
-        console.log(err)
+        oldData = JSON.stringify(userdata);
+        lastEdited = Date.now();
+        console.log("Data loaded successfully.");
+        updatescreen(); 
+    } catch (err) {
+        console.error("Error loading data:", err);
     }
 }
+
+async function syncData() {
+    try {
+        const response = await fetch('/getuserdatalastedited', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (response.status === 200) {
+            const { lastedited: serverLastEdited } = await response.json();
+
+            if (serverLastEdited > lastEdited) {
+                await loadData();
+                return;
+            }
+        }
+
+        if (JSON.stringify(userdata) !== oldData) {
+            lastEdited = Date.now();
+            oldData = JSON.stringify(userdata);
+            await saveData();
+        }
+    } catch (err) {
+        console.error("Error syncing data:", err);
+    }
+}
+
+function monitorChanges() {
+    setInterval(syncData, 5000);
+
+    setInterval(() => {
+        const reviewSets = userdata.getReviewSets ? userdata.getReviewSets().length : 0;
+        const title = reviewSets > 0 ? `MemGrow (${reviewSets})` : "MemGrow";
+        if (document.title !== title) {
+            document.title = title;
+        }
+    }, 1000);
+}
+
+(async function initializeApp() {
+    await loadData(); 
+    monitorChanges();
+})();
 
 
 //START
@@ -345,7 +308,6 @@ let showanswer = false
 let hidecardgroupblur = false
 let finishedreview = false
 
-let userdata;
 
 
 loaddata()
