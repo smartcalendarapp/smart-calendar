@@ -1751,7 +1751,7 @@ function setrecognitionstatus(status, isusertriggered, tempuserwantstostop){
         recognition.stop()
         isrecognizing = false
         
-        if(isusertriggered){
+        if(isusertriggered || userwantstostop){
             //playsound('dictationend')
             let recognitionbutton = getelement('recognitionbutton')
             recognitionbutton.classList.add('hiddenrecognitionbutton')
