@@ -1639,7 +1639,7 @@ recognition.addEventListener('end', () => {
 
 function clearrecognition(event){
     event.stopPropagation()
-    setrecognitionstatus(false, true, true)
+    setrecognitionstatus(false, false, true) //silent end
 }
 
 function submitrecognition(event){
@@ -1656,7 +1656,7 @@ async function updaterecognitionui(processresult, tempuserwantstostop){
     recognitiontranscriptdiv.scrollTo(0, recognitiontranscriptdiv.scrollHeight)
 
 
-    const timedur = 60000*5
+    const timedur = 60000*4
     const minlength = 50
     
     if((isrecognizing && lastdidrecognitionai && processresult && Date.now() - lastdidrecognitionai > timedur && finalTranscript?.length > minlength) || tempuserwantstostop){
@@ -1794,28 +1794,6 @@ document.addEventListener('keydown', async (event) => {
                 } else if (item.types.includes('text/plain')) {
                     const text = await item.getType('text/plain')
                     const data = await text.text()
-
-                    //check if its upload card or upload text
-                    let jsondata;
-                    try{
-                        jsondata = JSON.parse(data)
-                        if(Array.isArray(jsondata) && jsondata.length > 0 && currentcardset){
-                            let len = currentcardset.cards.filter(d => d.fronttext || d.backtext).length
-                            
-                            for(let temp of jsondata){
-                                if(!currentcardset.cards[currentcardindex].fronttext && !currentcardset.cards[currentcardindex].backtext){
-                                    currentcardset.cards[currentcardindex].fronttext = temp.fronttext
-                                    currentcardset.cards[currentcardindex].backtext = temp.backtext
-                                }else{
-                                    currentcardset.addCard(new Card(temp.fronttext, temp.backtext))
-                                }
-                            }
-                            
-                            currentcardindex = len
-                            updatescreen()
-                            return
-                        }
-                    }catch(err){}
 
                     myuploads.push({ type: 'text', data: data, id: generateID() })
                     updatefileuploader()
