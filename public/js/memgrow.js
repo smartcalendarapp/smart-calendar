@@ -437,7 +437,28 @@ function updatescreen(){
         screencardbacktext.disabled = true
         screencardbacktext.value = (currentcardset.cards[currentcardindex].backtext || '')
 
+        let screencardfronttextview = getelement('screencardfronttextview')
+        screencardfronttextview.classList.remove('textareainputedit')
+        screencardfronttextview.innerHTML = (currentcardset.cards[currentcardindex].fronttext || '')
 
+        let screencardbacktextview = getelement('screencardbacktextview')
+        screencardbacktextview.classList.remove('textareainputedit')
+        screencardbacktextview.innerHTML = (currentcardset.cards[currentcardindex].backtext || '')
+
+
+        if(editcardmode){
+            screencardfronttext.classList.remove('display-none')
+            screencardbacktext.classList.remove('display-none')
+
+            screencardfronttextview.classList.add('display-none')
+            screencardbacktextview.classList.add('display-none')
+        }else{
+            screencardfronttext.classList.add('display-none')
+            screencardbacktext.classList.add('display-none')
+
+            screencardfronttextview.classList.remove('display-none')
+            screencardbacktextview.classList.remove('display-none')
+        }
 
         let cardanswercover = getelement('cardanswercover')
         if(editcardmode || showanswer || !currentcardset.cards[currentcardindex].fronttext || !currentcardset.cards[currentcardindex].backtext){

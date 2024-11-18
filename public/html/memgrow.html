@@ -136,13 +136,15 @@
                         <div class="absolute card flex-column frontcard">
                             <div class="relative flex-1">
                                 <textarea class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 textareainput" id="screencardfronttext" placeholder="Enter a prompt..." onblur="submitscreencardfronttext()" onclick="clickfronttext()"></textarea>
+                                <div class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 pre-wrap textareainput" id="screencardfronttextview"></div>
                             </div>
 
                             <div class="cardseparator"></div>
                             
                             <div class="flex-1 relative flex-column">
                                 <div class="relative flex-1">
-                                    <textarea class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 textareainput" id="screencardbacktext" placeholder="Enter an answer..." onblur="submitscreencardbacktext()"  onclick="clickbacktext()"></textarea>
+                                    <textarea class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 textareainput" id="screencardbacktext" placeholder="Enter an answer..." onblur="submitscreencardbacktext()" onclick="clickbacktext()"></textarea>
+                                    <div class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 pre-wrap textareainput" id="screencardbacktextview"></div>
                                 </div>
 
                                 <div class="backdrop-blur display-flex align-center justify-center padding-16px top-0 left-0 right-0 bottom-0 absolute cardanswercover" id="cardanswercover" onclick="clicktoreveal()">
