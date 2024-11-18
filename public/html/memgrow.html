@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MemGrow</title>
-    <link rel="stylesheet" href="../css/memgrow-base.css">
     <link rel="stylesheet" href="../css/memgrow.css">
+    <link rel="stylesheet" href="../css/memgrow-base.css">
     <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Text:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&amp;display=swap" rel="stylesheet">
 </head>
 <body>
@@ -136,7 +136,7 @@
                         <div class="absolute card flex-column frontcard">
                             <div class="relative flex-1">
                                 <textarea class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 textareainput" id="screencardfronttext" placeholder="Enter a prompt..." onblur="submitscreencardfronttext()" onclick="clickfronttext()"></textarea>
-                                <div class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 pre-wrap textareainput" id="screencardfronttextview"></div>
+                                <div class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 pre-wrap textareainput" id="screencardfronttextview" onclick="clickfronttext()"></div>
                             </div>
 
                             <div class="cardseparator"></div>
@@ -144,7 +144,7 @@
                             <div class="flex-1 relative flex-column">
                                 <div class="relative flex-1">
                                     <textarea class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 textareainput" id="screencardbacktext" placeholder="Enter an answer..." onblur="submitscreencardbacktext()" onclick="clickbacktext()"></textarea>
-                                    <div class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 pre-wrap textareainput" id="screencardbacktextview"></div>
+                                    <div class="select-text border-16px padding-16px text-18px flex-1 absolute top-0 bottom-0 left-0 right-0 pre-wrap textareainput" id="screencardbacktextview" onclick="clickbacktext()"></div>
                                 </div>
 
                                 <div class="backdrop-blur display-flex align-center justify-center padding-16px top-0 left-0 right-0 bottom-0 absolute cardanswercover" id="cardanswercover" onclick="clicktoreveal()">
