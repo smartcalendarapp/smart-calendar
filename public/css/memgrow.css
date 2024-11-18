@@ -416,6 +416,10 @@ textarea{
 }
 
 
+.box-shadow{
+	box-shadow:0 0 40px 0 var(--black-transparent)
+}
+
 #uploadbutton{
     border-radius:16px;
     transition-timing-function:ease;

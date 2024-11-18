@@ -1339,6 +1339,20 @@ function deletecard(){
     }
 }
 
+function opendeletecardsetpopup(){
+    let deletecardsetbutton = getelement('deletecardsetbutton')
+    let rect = deletecardsetbutton.getBoundingClientRect()
+    
+    let confirmdeletepopup = getelement('confirmdeletepopup')
+    confirmdeletepopup.style.top = (rect.top + rect.height) + 'px'
+    confirmdeletepopup.style.left = (rect.left - rect.width/2 + deletecardsetbutton.height/2) + 'px'
+    confirmdeletepopup.classList.toggle('hidden')
+}
+function canceldelete(){
+    let confirmdeletepopup = getelement('confirmdeletepopup')
+    confirmdeletepopup.classList.add('hidden')
+}
+
 function deletecardset(){
     userdata.deleteCardSet(currentcardset.id)
    

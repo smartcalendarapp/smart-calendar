@@ -14,6 +14,14 @@
         <div class="padding-24px flex-row flex-wrap-wrap gap-24px overflow-auto" id="cardsetlist"></div>
     </div>
 
+    <div class="absolute hidden display-flex border-8px backdrop-blur align-center gap-12px background-secondary box-shadow padding-12px display-flex flex-column" id="confirmdeletepopup">
+        <div class="text-14px text-primary text-center">Confirm delete?</div>
+        <div class="flex-row gap-12px">
+            <div class="pointer align-self-center border-round padding-8px-12px secondarybutton" onclick="canceldelete(event)">Cancel</div>
+            <div class="pointer align-self-center border-round padding-8px-12px secondarybutton" onclick="deletecardset(event)">Yes</div>
+        </div>
+    </div>
+
     <div class="absolute display-none top-0 left-0 right-0 bottom-0 background-primary text-18px align-center flex-row justify-center" id="screencover">Please reload for latest data</div>
 
     <div class="absolute flex-column left-0 width-full height-full hidden background-primary" id="screenview1">
@@ -42,7 +50,7 @@
                 </svg>
             </div>
 
-            <div class="buttonbackground pointer hidden" onclick="deletecardset()" id="deletecardsetbutton">
+            <div class="buttonbackground pointer hidden" onclick="opendeletecardsetpopup()" id="deletecardsetbutton">
                 <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonprimary">
                 <g>
                 <path d="M207.414 223.445L207.414 57.6433" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"></path>
