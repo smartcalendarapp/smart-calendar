@@ -439,11 +439,11 @@ function updatescreen(){
 
         let screencardfronttextview = getelement('screencardfronttextview')
         screencardfronttextview.classList.remove('textareainputedit')
-        screencardfronttextview.innerHTML = (currentcardset.cards[currentcardindex].fronttext || '')
+        screencardfronttextview.innerHTML = (currentcardset.cards[currentcardindex].fronttext || '<span class="text-tertiary">Enter a prompt...</span>')
 
         let screencardbacktextview = getelement('screencardbacktextview')
         screencardbacktextview.classList.remove('textareainputedit')
-        screencardbacktextview.innerHTML = (currentcardset.cards[currentcardindex].backtext || '')
+        screencardbacktextview.innerHTML = (currentcardset.cards[currentcardindex].backtext || '<span class="text-tertiary">Enter an answer...</span>')
 
 
         if(editcardmode){
