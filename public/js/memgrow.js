@@ -1807,13 +1807,13 @@ document.addEventListener('keydown', async (event) => {
     }else if(event.key == 'ArrowDown'){
         if(document.activeElement && document.activeElement !== document.body) return
 
-        if(currentcardset && editcardmode){
+        if(currentcardset){
             nextcard(currentcardindex + 1)
         }
     }else if(event.key == 'ArrowUp'){
         if(document.activeElement && document.activeElement !== document.body) return
 
-        if(currentcardset && editcardmode){
+        if(currentcardset){
             previouscard(currentcardindex - 1)
         }
     }else if(event.key == ' '){
