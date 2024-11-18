@@ -1345,7 +1345,7 @@ function opendeletecardsetpopup(){
     
     let confirmdeletepopup = getelement('confirmdeletepopup')
     confirmdeletepopup.style.top = (rect.top + rect.height) + 'px'
-    confirmdeletepopup.style.left = (rect.left - rect.width/2 + deletecardsetbutton.width/2) + 'px'
+    confirmdeletepopup.style.left = (rect.left + rect.width/2 - confirmdeletepopup.offsetWidth/2) + 'px'
     confirmdeletepopup.classList.toggle('hidden')
 }
 function canceldelete(){
@@ -1356,7 +1356,7 @@ function canceldelete(){
 function deletecardset(){
     let confirmdeletepopup = getelement('confirmdeletepopup')
     confirmdeletepopup.classList.add('hidden')
-    
+
     userdata.deleteCardSet(currentcardset.id)
    
     setrecognitionstatus(false, false, true) //quiet end
