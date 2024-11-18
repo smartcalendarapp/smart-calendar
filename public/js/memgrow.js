@@ -1778,7 +1778,16 @@ document.addEventListener('keydown', async (event) => {
                         jsondata = JSON.parse(data)
                         if(Array.isArray(jsondata) && jsondata.length > 0 && currentcardset){
                             let len = currentcardset.cards.filter(d => d.fronttext || d.backtext).length
-                            currentcardset.cards.push(...jsondata.map(d => Object.assign(new Card(), d)))
+                            
+                            for(let temp of jsondata){
+                                if(!currentcardset.cards[currentcardindex].fronttext && !currentcardset.cards[currentcardindex].backtext){
+                                    currentcardset.cards[currentcardindex].fronttext = temp.fronttext
+                                    currentcardset.cards[currentcardindex].backtext = temp.backtext
+                                }else{
+                                    currentcardset.addCard(new Card(temp.fronttext, temp.backtext))
+                                }
+                            }
+                            
                             currentcardindex = len
                             updatescreen()
                             return
