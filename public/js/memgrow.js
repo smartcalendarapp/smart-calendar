@@ -1756,6 +1756,8 @@ function setrecognitionstatus(status, isusertriggered, tempuserwantstostop){
 document.addEventListener('keydown', async (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key === 'v') {
         if(document.activeElement && document.activeElement !== document.body) return
+        if(screenview != 1) return
+
         try {
             const clipboardItems = await navigator.clipboard.read()
 
