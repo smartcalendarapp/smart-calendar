@@ -7093,7 +7093,7 @@ app.post('/generateaicards', async (req, res) => {
 	
     const input = req.body.input
     const istranscript = req.body.istranscript
-    const existingcards = req.body.existingcards.slice(-1 * existingcontextitems)
+    const existingcards = req.body.existingcards //.slice(-1 * existingcontextitems)
     const files = req.body.files
 
 const systemprompt = `Every card prompt MUST:
@@ -7102,6 +7102,7 @@ const systemprompt = `Every card prompt MUST:
 - focus on a SINGLE idea or concept
 - not overwhelm cognitive load
 If needed, use techniques like cloze deletion ___ or cues. Answers should be at a PhD level difficulty but still concise.
+If user asks to create a certain number of cards, ensure you create that many.
 ${existingcards.length > 0 ? `\nBelow are several of user's recent existing cards for context. Only create a new card if it adds something new. If you have no new cards to create, then do not return anything.\n"""${existingcards.filter(d => d.fronttext).map(d => d.fronttext.slice(0, 200)).join('\n')}"""` : ''}`
 
     try{

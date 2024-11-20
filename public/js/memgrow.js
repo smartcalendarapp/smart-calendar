@@ -3,7 +3,7 @@ function getelement(id){
     return document.getElementById(id)
 }
 
-function markdownToHtml(markdown) {
+function markdownToHTML(markdown) {
     if(!markdown) return ''
 
     markdown = markdown.replace(/^(#{1,6})\s*(.+)$/gm, (_, hashes, content) => {
@@ -1821,36 +1821,39 @@ function setrecognitionstatus(status, isusertriggered, tempuserwantstostop){
 
 
 //paste to upload
-document.addEventListener('keydown', async (event) => {
-    if ((event.ctrlKey || event.metaKey) && event.key === 'v') {
-        if(document.activeElement && document.activeElement !== document.body) return
-        if(screenview != 1) return
+document.addEventListener('paste', async (event) => {
+    if(document.activeElement && document.activeElement !== document.body) return
+    if(screenview != 1) return
 
-        try {
-            const clipboardItems = await navigator.clipboard.read()
+    event.preventDefault()
 
-            for (const item of clipboardItems) {
+    try {
+        const clipboardItems = await navigator.clipboard.read()
 
-                if (item.types.find(type => type.startsWith('image/'))) {
-                    const blob = await item.getType(item.types.find(type => type.startsWith('image/')))
-                    const data = await getBase64fromimage(blob)
+        for (const item of clipboardItems) {
 
-                    myuploads.push({ type: 'image', data: data, id: generateID() })
-                    updatefileuploader()
+            if (item.types.find(type => type.startsWith('image/'))) {
+                const blob = await item.getType(item.types.find(type => type.startsWith('image/')))
+                const data = await getBase64fromimage(blob)
 
-                } else if (item.types.includes('text/plain')) {
-                    const text = await item.getType('text/plain')
-                    const data = await text.text()
+                myuploads.push({ type: 'image', data: data, id: generateID() })
+                updatefileuploader()
 
-                    myuploads.push({ type: 'text', data: data, id: generateID() })
-                    updatefileuploader()
-                }
+            } else if (item.types.includes('text/plain')) {
+                const text = await item.getType('text/plain')
+                const data = await text.text()
+
+                myuploads.push({ type: 'text', data: data, id: generateID() })
+                updatefileuploader()
             }
-
-        } catch (error) {
-            console.log(error)
         }
-    }else if(event.key == 'ArrowDown'){
+
+    } catch (error) {
+        console.log(error)
+    }
+})
+document.addEventListener('keydown', async (event) => {
+    if(event.key == 'ArrowDown'){
         if(document.activeElement && document.activeElement !== document.body) return
 
         if(currentcardset){
