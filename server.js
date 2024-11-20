@@ -7099,8 +7099,7 @@ app.post('/generateaicards', async (req, res) => {
 const systemprompt = `Every card prompt MUST:
 - engage active recall
 - not give away answer based on the wording or word choice
-- focus on a SINGLE idea or concept, with a very short prompt
-- not overwhelm cognitive load
+- focus on a SINGLE idea or concept (minimum information principle), with a very short prompt
 If needed, use techniques like cloze deletion ___. Answers should be at a PhD level difficulty but still concise.
 If user asks to create a certain number of cards, ensure you create that many.
 ${existingcards.length > 0 ? `\nBelow are several of user's recent existing cards for context. Only create a new card if it adds something new. If you have no new cards to create, then do not return anything.\n"""${existingcards.filter(d => d.fronttext).map(d => d.fronttext.slice(0, 200)).join('\n')}"""` : ''}`
@@ -7125,7 +7124,7 @@ const finalinput = `${istranscript ? `Below is a transcript of a recorded input 
         }
 
 
-        const response = await openai.chat.completions.create({
+        const response = await memgrow_openai.chat.completions.create({
             model: MEMGROW_GPT_MODEL,
             messages: [
               {
