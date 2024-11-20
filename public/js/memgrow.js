@@ -67,9 +67,9 @@ class CardSet{
         this.cards = cards
         this.title = title
 
-        this.delayindex = 1
-        //0 for long term
-        //1 for short term
+        this.delayindex = 0
+        //0 for short term
+        //1 for long term
         //2 for music
         this.id = generateID()
     }
@@ -179,11 +179,11 @@ class Card{
 }
 
 const DELAYS = [
-    [86400 * 1000, 5 * 86400 * 1000, 14 * 86400 * 1000, 30 * 86400 * 1000, 2 * 30 * 86400 * 1000, 4 * 30 * 86400 * 1000, 12 * 30 * 86400 * 1000],
     [4 * 3600 * 1000, 12 * 3600 * 1000, 86400 * 1000, 2 * 86400 * 1000, 5 * 86400 * 1000, 7 * 86400 * 1000, 14 * 86400 * 1000],
+    [86400 * 1000, 5 * 86400 * 1000, 14 * 86400 * 1000, 30 * 86400 * 1000, 2 * 30 * 86400 * 1000, 4 * 30 * 86400 * 1000, 12 * 30 * 86400 * 1000],
     [14 * 86400 * 1000, 21 * 86400 * 1000, 30 * 86400 * 1000]
 ]
-//index 0 is long term, index 1 is short term, index 2 is music
+//index 0 is short term, index 1 is long term, index 2 is music
 
 
 
@@ -736,7 +736,21 @@ function clickcardlistitem(id){
 
 function getcardgroupblurHTML(){
     return `<div class="pointer-none text-primary text-18px">${currentcardset.getStatusText()}</div>
-    <div class="pointer-none text-secondary text-13px">${currentcardset.getStatus() == 1 ? `${displaynumber(currentcardset.getReviewCards().length, 'question')} • ${currentcardset.getReviewTime()} min` : `Check back later`}</div>`
+    <div class="pointer-none text-secondary text-13px">${currentcardset.getStatus() == 1 ? `${displaynumber(currentcardset.getReviewCards().length, 'question')} • ${currentcardset.getReviewTime()} min` : `Check back later`}</div>
+    ${currentcardset.getStatus() == 1 ? `` : 
+        `<div class="rememberbutton justify-center align-center flex-row gap-12px nowrap padding-8px-16px pointer border-8px-12px border-8px" onclick="clickreviewnow()">
+            <div class="pointer-none text-14px text-white">Review now</div>
+        </div>`
+    }`
+}
+
+
+function clickreviewnow(){
+    if(!currentcardset){
+        return
+    }
+    currentcardset.cards.forEach(d => d.laststudied = 0)
+    updatescreen()
 }
 
 function clickscreen(index){
