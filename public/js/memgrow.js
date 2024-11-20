@@ -490,7 +490,7 @@ function updatescreen(){
 
         let togglecardsetintervalbutton = getelement('togglecardsetintervalbutton')
         togglecardsetintervalbutton.classList.add('hidden')
-        togglecardsetintervalbutton.innerHTML = ['Long term', 'Short term', 'Music'][currentcardset.delayindex]
+        togglecardsetintervalbutton.innerHTML = ['Short term', 'Long term', 'Music'][currentcardset.delayindex]
 
 
         //edit ui
