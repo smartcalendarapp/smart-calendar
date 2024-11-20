@@ -3,15 +3,6 @@ function getelement(id){
     return document.getElementById(id)
 }
 
-MathJax = {
-    tex: {
-      inlineMath: [['$', '$'], ['\\(', '\\)']],
-      displayMath: [['$$', '$$'], ['\\[', '\\]']],
-    },
-    svg: {
-      fontCache: 'global'
-    }
-}
 
 
 function generateID() {
