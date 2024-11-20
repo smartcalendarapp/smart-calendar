@@ -19,12 +19,6 @@ function markdownToHTML(markdown) {
 
     markdown = markdown.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
 
-    markdown = markdown.replace(/^\s*[-*]\s+(.+)$/gm, '<li>$1</li>')
-                        .replace(/(<li>.*<\/li>)(?!\n<li>)/g, '<ul>$1</ul>');
-
-    markdown = markdown.replace(/^\s*\d+\.\s+(.+)$/gm, '<li>$1</li>')
-                        .replace(/(<li>.*<\/li>)(?!\n<li>)/g, '<ol>$1</ol>');
-
     return markdown.trim();
 }
 
