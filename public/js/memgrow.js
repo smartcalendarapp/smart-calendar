@@ -3,7 +3,32 @@ function getelement(id){
     return document.getElementById(id)
 }
 
+function markdownToHtml(markdown) {
+    if(!markdown) return ''
 
+    markdown = markdown.replace(/^(#{1,6})\s*(.+)$/gm, (_, hashes, content) => {
+        const level = hashes.length;
+        return `<h${level}>${content.trim()}</h${level}>`;
+    });
+
+    markdown = markdown.replace(/\*\*(.+?)\*\*|__(.+?)__/g, '<strong>$1$2</strong>');
+
+    markdown = markdown.replace(/\*(.+?)\*|_(.+?)_/g, '<em>$1$2</em>');
+
+    markdown = markdown.replace(/`(.+?)`/g, '<code>$1</code>');
+
+    markdown = markdown.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+
+    markdown = markdown.replace(/^\s*[-*]\s+(.+)$/gm, '<li>$1</li>')
+                        .replace(/(<li>.*<\/li>)(?!\n<li>)/g, '<ul>$1</ul>');
+
+    markdown = markdown.replace(/^\s*\d+\.\s+(.+)$/gm, '<li>$1</li>')
+                        .replace(/(<li>.*<\/li>)(?!\n<li>)/g, '<ol>$1</ol>');
+
+    return markdown.trim();
+}
+
+// Example usage
 
 function generateID() {
 	let uuid = ''
@@ -430,11 +455,11 @@ function updatescreen(){
 
         let screencardfronttextview = getelement('screencardfronttextview')
         screencardfronttextview.classList.remove('textareainputedit')
-        screencardfronttextview.innerHTML = (currentcardset.cards[currentcardindex].fronttext || '<span class="text-tertiary">Enter a prompt...</span>')
+        screencardfronttextview.innerHTML = (markdownToHTML(currentcardset.cards[currentcardindex].fronttext) || '<span class="text-tertiary">Enter a prompt...</span>')
 
         let screencardbacktextview = getelement('screencardbacktextview')
         screencardbacktextview.classList.remove('textareainputedit')
-        screencardbacktextview.innerHTML = (currentcardset.cards[currentcardindex].backtext || '<span class="text-tertiary">Enter an answer...</span>')
+        screencardbacktextview.innerHTML = (markdownToHTML(currentcardset.cards[currentcardindex].backtext) || '<span class="text-tertiary">Enter an answer...</span>')
 
 
         if(editcardmode){
