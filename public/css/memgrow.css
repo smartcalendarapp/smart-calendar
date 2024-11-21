@@ -173,11 +173,14 @@ body {
 	stroke: none;
 	fill: var(--text-tertiary);
 	display: block;
-	pointer-events: none;
+}
+.buttontertiaryfill * {
+    transition:none;
 }
 .buttontertiaryfill:hover{
     fill: var(--text-secondary);
 }
+
 
 .buttonwhitefill {
 	height: 16px;
@@ -200,7 +203,12 @@ body {
 }
 
 
-
+.skipbutton{
+    color:var(--text-tertiary)
+}
+.skipbutton:hover{
+    color:var(--text-secondary)
+}
 
 .primarybutton{
     background-color: var(--background-primary);
