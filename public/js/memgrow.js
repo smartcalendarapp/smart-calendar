@@ -11,9 +11,9 @@ function markdownToHTML(markdown) {
         return `<h${level}>${content.trim()}</h${level}>`;
     });
 
-    markdown = markdown.replace(/\*\*(.+?)\*\*|__(.+?)__/g, '<strong>$1$2</strong>');
+    markdown = markdown.replace(/\*\*(.+?)\*\*/g, '<strong>$1$2</strong>');
 
-    markdown = markdown.replace(/\*(.+?)\*|_(.+?)_/g, '<em>$1$2</em>');
+    markdown = markdown.replace(/\*(.+?)\*/g, '<em>$1$2</em>');
 
     markdown = markdown.replace(/`(.+?)`/g, '<code>$1</code>');
 
