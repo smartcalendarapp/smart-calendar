@@ -7109,7 +7109,8 @@ app.post('/getcardhint', async (req, res) => {
 				content: userprompt
 			  }
             ],
-			temperature: 2
+			temperature: 1.5,
+			max_tokens: 500
         })
 
         const content = response.choices[0].message.content
