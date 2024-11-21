@@ -7112,7 +7112,7 @@ app.post('/getcardhint', async (req, res) => {
 			temperature: 2
         })
 
-        const content = JSON.parse(response.choices[0].message.content)
+        const content = response.choices[0].message.content
         return res.json({ content: content, tokens: response.usage })
 	}catch(err){
 		console.error(err)
