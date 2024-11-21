@@ -653,6 +653,16 @@ function aibuttonmousedown(event){
     if(!recognitionbutton.contains(event.target)){
         recognitionbutton.classList.add('temphiddenrecognitionbutton')
     }
+
+    let hintpopup = getelement('hintpopup')
+    if(!hintpopup.contains(event.target)){
+        hintpopup.classList.add('hidden')
+    }
+
+    let confirmdeletepopup = getelement('confirmdeletepopup')
+    if(!confirmdeletepopup.contains(event.target)){
+        confirmdeletepopup.classList.add('hidden')
+    }
 }
 
 async function submitaifield(event){
@@ -1913,6 +1923,40 @@ function press4(event){
 }
 
 
+
+async function clickhint(){
+    try {
+        if(!currentcardset || !currentcardset.cards[currentcardindex]?.backtext || !currentcardset.cards[currentcardindex]?.fronttext) return
+
+        const response = await fetch('/getcardhint', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                card: currentcardset.cards[currentcardindex],
+                showanswer: showanswer
+            })
+        })
+
+        if (response.status == 200) {
+            const data = await response.json()
+            if(data.text){
+                let hinttext = getelement('hinttext')
+                let hintpopup = getelement('hintpopup')
+                hinttext.innerHTML = data.text
+                
+                let hintbutton = getelement('hintbutton')
+                let rect = hintbutton.getBoundingClientRect()
+                
+                hintpopup.style.top = (rect.top - hintpopup.offsetHeight) + 'px'
+                hintpopup.style.left = (rect.left + rect.width/2 - hintpopup.offsetWidth/2) + 'px'
+                hintpopup.classList.remove('hidden')
+            }
+        }
+
+    } catch (err) {
+        console.error("Error saving data:", err);
+    }
+}
 
 
 //CREDITS to:

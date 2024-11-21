@@ -167,6 +167,18 @@ body {
 	pointer-events: none;
 }
 
+.buttontertiaryfill{
+    height: 16px;
+	width: 16px;
+	stroke: none;
+	fill: var(--text-tertiary);
+	display: block;
+	pointer-events: none;
+}
+.buttontertiaryfill:hover{
+    fill: var(--text-secondary);
+}
+
 .buttonwhitefill {
 	height: 16px;
 	width: 16px;
@@ -335,6 +347,16 @@ textarea{
 }
 .selectedcardlistitem{
     border:1px solid #3075ff
+}
+
+#hintpopup{
+    box-shadow: rgba(255, 229, 32, 0.05) 0px 7px 30px, rgba(255, 229, 32, 0.2) 0px 2px 3px 0.7px;
+}
+
+.hinttext{
+    word-break: break-word;
+    word-wrap:break-word;
+    white-space:pre-wrap;
 }
 
 ::-webkit-scrollbar {

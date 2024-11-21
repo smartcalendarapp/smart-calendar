@@ -7086,14 +7086,46 @@ app.post('/getuserdata', async (req, res) => {
     }
 })
 
+app.post('/getcardhint', async (req, res) => {
+	if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
+	
+	const card = req.body.card
+	const showanswer = req.body.showanswer
+
+	const systemprompt = `I need help instantly memorizing this card, can you give a creative memory technique?${showanswer ? '' : ` I haven't revealed the card back yet, so try not to reveal the answer.`} Keep it short and memorable`
+
+	const userprompt = `Card front: """${card.fronttext}"""\nCard back: """${card.backtext}"""`
+
+	try{
+		const response = await memgrow_openai.chat.completions.create({
+            model: MEMGROW_GPT_MODEL,
+            messages: [
+              {
+                role: 'system', 
+                content: systemprompt
+              },
+              {
+				role: 'user',
+				content: userprompt
+			  }
+            ],
+			temperature: 2
+        })
+
+        const content = JSON.parse(response.choices[0].message.content)
+        return res.json({ content: content, tokens: response.usage })
+	}catch(err){
+		console.error(err)
+        return res.status(401).end()
+	}
+})
+
 app.post('/generateaicards', async (req, res) => {
 	if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
-
-	const existingcontextitems = 3
 	
     const input = req.body.input
     const istranscript = req.body.istranscript
-    const existingcards = req.body.existingcards //.slice(-1 * existingcontextitems)
+    const existingcards = req.body.existingcards //or decide to select them to save ctx
     const files = req.body.files
 
 const systemprompt = `Each card prompt must follow the rules below:
@@ -7143,7 +7175,7 @@ const finalinput = `${istranscript ? `Below is a transcript of a recorded input 
         return res.json({ content: content, tokens: response.usage })
     
     }catch(err){
-        console.log(err)
+        console.error(err)
         return res.status(401).end()
     }
 })
