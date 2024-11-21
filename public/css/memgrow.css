@@ -358,7 +358,7 @@ textarea{
 }
 
 #hintpopup{
-    box-shadow: rgba(255, 229, 32, 0.3) 0px 7px 40px;
+    box-shadow: rgba(255, 229, 32, 0.2) 0px 3px 30px;
     max-width:300px;
     max-height:350px;
 }

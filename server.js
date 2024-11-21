@@ -7109,7 +7109,6 @@ app.post('/getcardhint', async (req, res) => {
 				content: userprompt
 			  }
             ],
-			temperature: 1.0,
 			max_tokens: 500
         })
 
