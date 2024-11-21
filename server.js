@@ -7098,9 +7098,9 @@ app.post('/generateaicards', async (req, res) => {
 
 const systemprompt = `Each card prompt must follow the rules below:
 - focus on a single idea or concept (minimum information principle)
-- use cloze deletion or active recall of a singular, specific idea
-- do not be vague or ask general questions
-- do not give away answer from the wording or diction
+- avoid vague prompts like "explain", "describe", "what", or "how"
+- use cloze deletion _____ or ask specific questions that engage active recall of a specific answer
+- do not give away answer from the prompt wording or diction
 - one sentence at most
 Answers should be at a PhD level difficulty but very concise.
 If user asks to create a certain number of cards, ensure you create that many.
