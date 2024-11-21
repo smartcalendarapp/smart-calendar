@@ -1939,10 +1939,10 @@ async function clickhint(){
 
         if (response.status == 200) {
             const data = await response.json()
-            if(data.text){
+            if(data.content){
                 let hinttext = getelement('hinttext')
                 let hintpopup = getelement('hintpopup')
-                hinttext.innerHTML = data.text
+                hinttext.innerHTML = data.content
                 
                 let hintbutton = getelement('hintbutton')
                 let rect = hintbutton.getBoundingClientRect()
@@ -1951,6 +1951,7 @@ async function clickhint(){
                 hintpopup.style.left = (rect.left + rect.width/2 - hintpopup.offsetWidth/2) + 'px'
                 hintpopup.classList.remove('hidden')
             }
+            console.log(data)
         }
 
     } catch (err) {
