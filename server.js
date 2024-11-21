@@ -7096,11 +7096,13 @@ app.post('/generateaicards', async (req, res) => {
     const existingcards = req.body.existingcards //.slice(-1 * existingcontextitems)
     const files = req.body.files
 
-const systemprompt = `Every card prompt MUST:
-- engage active recall
-- not give away answer based on the wording or word choice
-- focus on a SINGLE idea or concept (minimum information principle), with a very short prompt
-If needed, use techniques like cloze deletion ___. Answers should be at a PhD level difficulty but still concise.
+const systemprompt = `Each card prompt must follow the rules below:
+- focus on a single idea or concept (minimum information principle)
+- use cloze deletion or active recall of a singular, specific idea
+- do not be vague or ask general questions
+- do not give away answer from the wording or diction
+- one sentence at most
+Answers should be at a PhD level difficulty but very concise.
 If user asks to create a certain number of cards, ensure you create that many.
 ${existingcards.length > 0 ? `\nBelow are several of user's recent existing cards for context. Only create a new card if it adds something new. If you have no new cards to create, then do not return anything.\n"""${existingcards.filter(d => d.fronttext).map(d => d.fronttext.slice(0, 200)).join('\n')}"""` : ''}`
 
