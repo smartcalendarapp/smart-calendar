@@ -7092,7 +7092,7 @@ app.post('/getcardhint', async (req, res) => {
 	const card = req.body.card
 	const showanswer = req.body.showanswer
 
-	const systemprompt = `I need help instantly memorizing this card, can you give a creative memory loci technique?${showanswer ? '' : ` I haven't revealed the card back yet, so do not give away the answer.`} Short (3-4 sentences max) and memorable. If I'm studying a language, and the card back has the pronounciation, help me remember the pronounciation.`
+	const systemprompt = `User needs help memorizing, use method of loci. Make very easy to read and visualize.${showanswer ? '' : ` Don't give away the card back.`} If studying a language, help user remember the pronounciation.`
 
 	const userprompt = `Card front: """${card.fronttext}"""\nCard back: """${card.backtext}"""`
 
