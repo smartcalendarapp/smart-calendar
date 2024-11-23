@@ -7092,7 +7092,7 @@ app.post('/getcardhint', async (req, res) => {
 	const card = req.body.card
 	const showanswer = req.body.showanswer
 
-	const systemprompt = showanswer ? `Create a sensory-rich location where each segment of information is anchored to distinct landmarks in a seamless narrative, and reinforced with a memorable closing cue. It must be very easy to understand, clear, and not confusing. Do not mention specifics until after the end of story. 2-3 sentences.` : `Give me a hint and/or creative associations related to the prompt that may help me recall the back without revealing the answer`
+	const systemprompt = showanswer ? `Create a vivid memory loci location where each segment of information is anchored to distinct landmarks in a seamless narrative with cues. It must be very easy to understand, clear, and not confusing. Be very specific, clear, and visual, not overly metaphorical. 2-3 sentences.` : `Give me a hint and/or creative associations related to the prompt that may help me recall the back without revealing the answer`
 
 	const userprompt = `Card front: """${card.fronttext}"""\nCard back: """${card.backtext}"""`
 
