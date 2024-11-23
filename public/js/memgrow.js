@@ -1924,7 +1924,7 @@ function press4(event){
 
 
 
-async function clickhint(){
+async function clickhint(type){
     try {
         if(!currentcardset || !currentcardset.cards[currentcardindex]?.backtext || !currentcardset.cards[currentcardindex]?.fronttext) return
 
@@ -1933,7 +1933,8 @@ async function clickhint(){
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 card: currentcardset.cards[currentcardindex],
-                showanswer: showanswer
+                showanswer: showanswer,
+                hinttype: hinttype
             })
         })
 

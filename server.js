@@ -7091,8 +7091,9 @@ app.post('/getcardhint', async (req, res) => {
 	
 	const card = req.body.card
 	const showanswer = req.body.showanswer
+	const hinttype = req.body.hinttype || 0
 
-	const systemprompt = showanswer ? `Invite me to visualize a memory loci location with seamless narrative and cues. Any confusing terms must be made intuitively clear. 2-3 sentences. If there are complex vocab, put in parentheses a quick way to remember it based on the word's root or similarities` : `Give me a hint and/or creative associations related to the prompt that may help me recall the back without revealing the answer`
+	const systemprompt = showanswer ? [`Your task is to provide a seamless memory loci narrative. Any confusing terms must be made intuitively clear. 2-3 sentences. Use name word-play and word-roots (and words with shared roots) to make more memorable`, `Your task is to first define all complex terminology in a few words. Then, explain the concept like the user is five years old. Use name word-play and word-roots (and words with shared roots) to make more memorable`][hinttype] : `Your task is to provide a hint and/or creative associations related to the prompt that may help user recall the back without revealing the answer`
 
 	const userprompt = `Card front: """${card.fronttext}"""\nCard back: """${card.backtext}"""`
 
