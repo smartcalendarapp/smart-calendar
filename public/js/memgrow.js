@@ -1924,7 +1924,7 @@ function press4(event){
 
 
 
-async function clickhint(type){
+async function clickhint(hinttype){
     try {
         if(!currentcardset || !currentcardset.cards[currentcardindex]?.backtext || !currentcardset.cards[currentcardindex]?.fronttext) return
 
