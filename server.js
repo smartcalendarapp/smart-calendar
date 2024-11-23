@@ -7092,7 +7092,7 @@ app.post('/getcardhint', async (req, res) => {
 	const card = req.body.card
 	const showanswer = req.body.showanswer
 
-	const systemprompt = showanswer ? `In memory loci and palace and/or word play, help me remember the idea without even making me think I'm remembering it. Use a storytelling/loci narrative style. 2-3 sentences. If studying a language, help user remember the pronounciation. If studying science, elaborate on the specific mechanisms` : `Give me a hint and/or creative associations related to the prompt that may help me recall the back without revealing the answer`
+	const systemprompt = showanswer ? `Create a vivid, sensory-rich location where each segment of information is anchored to distinct landmarks, connected by a flowing narrative, and reinforced with a memorable closing cue. 2-3 sentences` : `Give me a hint and/or creative associations related to the prompt that may help me recall the back without revealing the answer`
 
 	const userprompt = `Card front: """${card.fronttext}"""\nCard back: """${card.backtext}"""`
 
