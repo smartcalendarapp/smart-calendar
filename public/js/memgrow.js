@@ -11,9 +11,9 @@ function markdownToHTML(markdown) {
         return `<h${level}>${content.trim()}</h${level}>`;
     });
 
-    markdown = markdown.replace(/\*\*(.+?)\*\*/g, '<strong>$1$2</strong>');
+    markdown = markdown.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 
-    markdown = markdown.replace(/\*(.+?)\*/g, '<em>$1$2</em>');
+    markdown = markdown.replace(/\*(.+?)\*/g, '<em>$1</em>');
 
     markdown = markdown.replace(/`(.+?)`/g, '<code>$1</code>');
 
@@ -1943,7 +1943,7 @@ async function clickhint(hinttype){
             if(data.content){
                 let hinttext = getelement('hinttext')
                 let hintpopup = getelement('hintpopup')
-                hinttext.innerHTML = data.content
+                hinttext.innerHTML = markdownToHTML(data.content)
                 
                 let hintbutton = getelement('hintbutton')
                 let rect = hintbutton.getBoundingClientRect()
