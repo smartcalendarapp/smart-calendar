@@ -7093,7 +7093,7 @@ app.post('/getcardhint', async (req, res) => {
 	const showanswer = req.body.showanswer
 	const hinttype = req.body.hinttype || 0
 
-	const systemprompt = showanswer ? [`Your task is to create a sensory-specific scene and use method of loci to tell a narrative of the elements, with cues along the way. Name characters with word-play associations. 2-3 sentences max.`, `Your task is to first define all complex terminology in a few words. Then, explain the concept like the user is five years old. Use name word-play, word-roots (refer to words with shared roots), and/or association linking to make more understandable. 2-3 sentences max.`][hinttype] : `Your task is to use association linking to help user recall the back without revealing the answer`
+	const systemprompt = showanswer ? [`Your task is to create a sensory scene and use method of loci to tell a narrative of the elements, with cues along the way. Use word-play associations. 2-3 sentences.`, `Explain the concept like the user is five years old. Use name word-play, word-roots, and/or association linking to make more understandable. 2-3 sentences.`][hinttype] : `Your task is to use association linking to help user recall the back without revealing the answer`
 
 	const userprompt = `Card front: """${card.fronttext}"""\nCard back: """${card.backtext}"""`
 
