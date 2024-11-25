@@ -6948,7 +6948,6 @@ app.listen(port, () => {
 //MEMGROW
 
 const { S3Client, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3')
-const { Readable } = require('stream')
 
 const s3Client = new S3Client({
 	region: 'us-west-1',
@@ -6998,11 +6997,6 @@ async function getmemgrowdataold(id){
 		return null
 }
 
-(async function(){
-
-	//let tempd = await getmemgrowdataold(DEV_ID)
-	//await setmemgrowdata({ id: DEV_ID, tempd})
-})()
 
 async function getmemgrowdata(id) {
     try {
