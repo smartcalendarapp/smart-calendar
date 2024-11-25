@@ -7134,7 +7134,7 @@ app.post('/getcardhint', async (req, res) => {
 	const showanswer = req.body.showanswer
 	const hinttype = req.body.hinttype || 0
 
-	const systemprompt = showanswer ? [`Explain it with memory loci (not necessarily 'accurate' but memorable) in 3 sentences`, `Explain it with word associations, word roots, or whatever (not necessarily 'accurate' but memorable) in 3 sentences`][hinttype] : `Use association linking to help user recall the back without revealing the answer`
+	const systemprompt = showanswer ? [`Explain it with memory loci (memorable) in 3 sentences`, `Explain the meaning simply with word associations, word roots in 3 sentences`][hinttype] : `Use association linking to help user recall the back without revealing the answer`
 
 	const userprompt = `Card front: """${card.fronttext}"""\nCard back: """${card.backtext}"""`
 
