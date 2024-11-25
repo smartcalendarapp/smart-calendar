@@ -7093,7 +7093,7 @@ app.post('/getcardhint', async (req, res) => {
 	const showanswer = req.body.showanswer
 	const hinttype = req.body.hinttype || 0
 
-	const systemprompt = showanswer ? [`Your task is to create a sensory scene and use method of loci to tell a narrative of the elements, with cues along the way. Use word-play associations. 2-3 sentences.`, `Explain the concept like the user is five years old. Use name word-play, word-roots, and/or association linking to make more understandable. 2-3 sentences.`][hinttype] : `Your task is to use association linking to help user recall the back without revealing the answer`
+	const systemprompt = showanswer ? [`Explain it with memory loci (not necessarily 'accurate' but memorable) in 3 sentences`, `Explain it with word associations, word roots, or whatever (not necessarily 'accurate' but memorable) in 3 sentences`][hinttype] : `Use association linking to help user recall the back without revealing the answer`
 
 	const userprompt = `Card front: """${card.fronttext}"""\nCard back: """${card.backtext}"""`
 
@@ -7137,7 +7137,7 @@ const systemprompt = `Each card prompt must follow the rules below:
 - one sentence at most
 Answers should be at a PhD level difficulty but very concise.
 If user asks to create a certain number of cards, ensure you create that many.
-${existingcards.length > 0 ? `\nBelow are several of user's recent existing cards for context. Only create a new card if it adds something new. If you have no new cards to create, then do not return anything.\n"""${existingcards.filter(d => d.fronttext).map(d => d.fronttext.slice(0, 200)).join('\n')}"""` : ''}`
+${existingcards.length > 0 ? `\nBelow are user's existing cards for context. Only create a new card if it adds something new. If you have no new cards to create, then do not return anything.\n"""${existingcards.filter(d => d.fronttext).map(d => d.fronttext.slice(0, 200)).join('\n')}"""` : ''}`
 
     try{
 const finalinput = `${istranscript ? `Below is a transcript of a recorded input source (e.g. lecture). Only make cards for the information that is valuable and needs to be remembered.\n` : ''}${input}`
