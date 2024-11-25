@@ -7000,8 +7000,8 @@ async function getmemgrowdataold(id){
 
 (async function(){
 
-	let tempd = await getmemgrowdataold(DEV_ID)
-	await setmemgrowdata({ id: DEV_ID, tempd})
+	//let tempd = await getmemgrowdataold(DEV_ID)
+	//await setmemgrowdata({ id: DEV_ID, tempd})
 })()
 
 async function getmemgrowdata(id) {
