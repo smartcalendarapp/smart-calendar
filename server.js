@@ -6947,21 +6947,44 @@ app.listen(port, () => {
 
 //MEMGROW
 
+const { S3Client, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3')
+const { Readable } = require('stream')
 
-async function setmemgrowdata(tempdata){
-	try{
-		const params2 = {
-			TableName: 'memgrowdata',
-			Item: marshall(tempdata, { convertClassInstanceToMap: true, removeUndefinedValues: true })
-		}
-		
-		await dynamoclient.send(new PutItemCommand(params2))
-	}catch(error){
-		console.error(error)
+const s3Client = new S3Client({
+	region: 'us-west-1',
+	credentials: {
+		accessKeyId: ACCESS_KEY_ID,
+		secretAccessKey: SECRET_ACCESS_KEY
 	}
+})
+const bucketName = 'memgrowbucket'
+
+async function streamToString(stream) {
+    return await new Promise((resolve, reject) => {
+        const chunks = [];
+        stream.on('data', (chunk) => chunks.push(chunk));
+        stream.on('error', reject);
+        stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')))
+    })
 }
 
-async function getmemgrowdata(id){
+async function setmemgrowdata(tempdata) {
+    try {
+        const params = {
+            Bucket: bucketName,
+            Key: `memgrowdata/${tempdata.id}.json`,
+            Body: JSON.stringify(tempdata),
+            ContentType: 'application/json',
+        };
+
+        await s3Client.send(new PutObjectCommand(params))
+        console.log(`Data stored for ID: ${tempdata.id}`)
+    } catch (error) {
+        console.error('Error storing data in S3:', error)
+    }
+}
+
+async function getmemgrowdataold(id){
 	const params = {
 		TableName: 'memgrowdata',
 		Key: {
@@ -6975,6 +6998,30 @@ async function getmemgrowdata(id){
 		return null
 }
 
+(async function(){
+
+	let tempd = await getmemgrowdataold(DEV_ID)
+	await setmemgrowdata({ id: DEV_ID, tempd})
+})()
+
+async function getmemgrowdata(id) {
+    try {
+        const params = {
+            Bucket: bucketName,
+            Key: `memgrowdata/${id}.json`,
+        };
+
+        const response = await s3Client.send(new GetObjectCommand(params));
+        const dataString = await streamToString(response.Body);
+        return JSON.parse(dataString);
+    } catch (error) {
+        if (error.name === 'NoSuchKey') {
+            console.error('No data found for ID:', id);
+            return null;
+        }
+        console.error('Error retrieving data from S3:', error);
+    }
+}
 
 async function setmemgrowlastediteddata(tempdata){
 	try{
