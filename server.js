@@ -7100,7 +7100,6 @@ app.post('/saveuserdata', async (req, res) => {
     }
 })
 
-
 app.post('/getuserdatalastedited', async (req, res) => {
     try{
 		if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
