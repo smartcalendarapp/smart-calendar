@@ -1893,18 +1893,24 @@ document.addEventListener('keydown', async (event) => {
             }
         }
     }else if(event.key == 'h'){
+        if(document.activeElement && document.activeElement !== document.body) return
+
         if(screenview == 1 && currentcardset && !editcardmode){
             if(hidecardgroupblur && !finishedreview){
                 clickhint(0)
             }
         }
     }else if(event.key == 'j'){
+        if(document.activeElement && document.activeElement !== document.body) return
+
         if(screenview == 1 && currentcardset && !editcardmode){
             if(hidecardgroupblur && !finishedreview){
                 clickhint(1)
             }
         }
     }else if(event.key == 'n'){
+        if(document.activeElement && document.activeElement !== document.body) return
+        
         if(screenview == 1 && currentcardset && !editcardmode){
             if(hidecardgroupblur && !finishedreview && !showanswer){
                 clickdidntremember()
