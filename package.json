@@ -45,7 +45,7 @@
     "mime": "^3.0.0",
     "mongoose": "^6.11.5",
     "node-fetch": "^3.2.6",
-    "node-ical": "^0.18.0",
+    "node-ical": "^0.20.1",
     "openai": "^4.72.0",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",

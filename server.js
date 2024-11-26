@@ -6977,7 +6977,7 @@ async function setmemgrowdata(tempdata) {
         };
 
         await s3Client.send(new PutObjectCommand(params))
-        console.log(`Data stored for ID: ${tempdata.id}`)
+        //console.log(`Data stored for ID: ${tempdata.id}`)
     } catch (error) {
         console.error('Error storing data in S3:', error)
     }
