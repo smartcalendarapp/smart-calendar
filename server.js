@@ -6946,7 +6946,7 @@ app.listen(port, () => {
 
 
 //MEMGROW
-
+/*
 const { S3Client, PutObjectCommand, GetObjectCommand } = require('@aws-sdk/client-s3')
 
 const s3Client = new S3Client({
@@ -6966,7 +6966,7 @@ async function streamToString(stream) {
         stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf-8')))
     })
 }
-
+*/
 async function setmemgrowdata(tempdata) {
     try {
         const params = {
