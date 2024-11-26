@@ -1354,13 +1354,18 @@ async function nextcard(newindex){
     }
 }
 
-function newcard(){
+function newcard(event){
     currentcardset.addCard(new Card())
     editcardmode = true
-    nextcard(currentcardset.cards.length - 1)
+    if(event.shiftKey){
+        nextcard(currentcardindex + 1)
+    }else{
+        nextcard(currentcardset.cards.length - 1)
+    }
 }
 
 function deletecard(){
+    if(!currentcardset.cards[currentcardindex]) return
     currentcardset.deleteCard(currentcardset.cards[currentcardindex].id)
     if(currentcardset.cards.length == 0){
         newcard()
@@ -1872,7 +1877,7 @@ document.addEventListener('keydown', async (event) => {
     }else if(event.key == ' '){
         if(document.activeElement && document.activeElement !== document.body) return
 
-        if(currentcardset && !editcardmode){
+        if(screenview == 1 && currentcardset && !editcardmode){
             if(!hidecardgroupblur){
                 clickcardblur()
             }else if(finishedreview){
@@ -1881,6 +1886,28 @@ document.addEventListener('keydown', async (event) => {
                 clicktoreveal()
             }else{
                 clickremembered()
+            }
+        }else if(screenview == 0){
+            if(userdata.getReviewSets().length > 0){
+                clickmaintitle()
+            }
+        }
+    }else if(event.key == 'h'){
+        if(screenview == 1 && currentcardset && !editcardmode){
+            if(hidecardgroupblur && !finishedreview){
+                clickhint(0)
+            }
+        }
+    }else if(event.key == 'j'){
+        if(screenview == 1 && currentcardset && !editcardmode){
+            if(hidecardgroupblur && !finishedreview){
+                clickhint(1)
+            }
+        }
+    }else if(event.key == 'n'){
+        if(screenview == 1 && currentcardset && !editcardmode){
+            if(hidecardgroupblur && !finishedreview && !showanswer){
+                clickdidntremember()
             }
         }
     }
