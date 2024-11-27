@@ -378,9 +378,6 @@ textarea{
 .yesscrollbar::-webkit-scrollbar{
     display:unset;
 }
-.yesscrollbar{
-    margin-right:6px;
-}
 ::-webkit-scrollbar {
     width: 6px; 
 }
