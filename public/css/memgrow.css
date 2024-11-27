@@ -374,6 +374,31 @@ textarea{
     display: none;
 }
 
+
+.yesscrollbar::-webkit-scrollbar{
+    display:unset;
+}
+.yesscrollbar{
+    margin-right:6px;
+}
+::-webkit-scrollbar {
+    width: 6px; 
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: grey;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: darkgrey;
+}
+
+
 .hiddenwidth{
     max-width:0 !important;
     pointer-events:none;
