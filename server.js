@@ -1650,7 +1650,6 @@ const SESSION_SECRET = process.env.SESSION_SECRET
 const port = process.env.PORT || 3000
 
 const fs = require('fs')
-const axios = require('axios');
 const path = require('path')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
