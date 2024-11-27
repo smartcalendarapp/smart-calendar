@@ -1355,11 +1355,12 @@ async function nextcard(newindex){
 }
 
 function newcard(event){
-    currentcardset.addCard(new Card())
     editcardmode = true
     if(event.shiftKey){
+        currentcardset.cards.splice(currentcardindex + 1, 0, new Card())
         nextcard(currentcardindex + 1)
     }else{
+        currentcardset.addCard(new Card())
         nextcard(currentcardset.cards.length - 1)
     }
 }
@@ -1916,6 +1917,14 @@ document.addEventListener('keydown', async (event) => {
                 clickdidntremember()
             }
         }
+    }else if(event.key == 's'){
+        if(document.activeElement && document.activeElement !== document.body) return
+        
+        if(screenview == 1 && currentcardset && !editcardmode){
+            if(hidecardgroupblur && !finishedreview){
+                clickskip()
+            }
+        }
     }
 })
 
@@ -1956,10 +1965,13 @@ function press4(event){
 }
 
 
-
+let isgettinghint;
 async function clickhint(hinttype){
     try {
         if(!currentcardset || !currentcardset.cards[currentcardindex]?.backtext || !currentcardset.cards[currentcardindex]?.fronttext) return
+
+        if(isgettinghint) return
+        isgettinghint = true
 
         const response = await fetch('/getcardhint', {
             method: 'POST',
@@ -1970,6 +1982,8 @@ async function clickhint(hinttype){
                 hinttype: hinttype
             })
         })
+
+        isgettinghint = false
 
         if (response.status == 200) {
             const data = await response.json()
@@ -1990,6 +2004,7 @@ async function clickhint(hinttype){
 
     } catch (err) {
         console.error("Error saving data:", err);
+        isgettinghint = false
     }
 }
 
