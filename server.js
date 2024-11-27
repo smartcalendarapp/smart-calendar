@@ -1644,6 +1644,7 @@ async function initializeReminders(){
 initializeReminders()
 
 
+
 //SERVER INITIALIZATION
 const DOMAIN = process.env.DOMAIN
 const SESSION_SECRET = process.env.SESSION_SECRET
