@@ -1451,7 +1451,7 @@ function clickremembered(){
 
 function clickdidntremember(){
     currentcardset.cards[currentcardindex].laststudied = Date.now()
-    if(currentcardset.cards[currentcardindex].laststudiedindex == 0){
+    if(currentcardset.cards[currentcardindex].laststudiedindex <= 0){
         currentcardset.cards[currentcardindex].laststudiedindex-- //penalty
     }else if(currentcardset.cards[currentcardindex].laststudiedindex > 0){
         currentcardset.cards[currentcardindex].laststudiedindex = 0 //reset
