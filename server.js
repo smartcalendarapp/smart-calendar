@@ -7178,7 +7178,14 @@ app.post('/getcardhint', async (req, res) => {
 	const showanswer = req.body.showanswer
 	const hinttype = req.body.hinttype || 0
 
-	const systemprompt = showanswer ? [`Explain it with memory loci (memorable, step by step narrative) in 3 sentences`, `Explain simply and give a trick to remember with word associations, logical associations, word roots/etymology in 3 sentences`][hinttype] : `Give a cue hint without revealing anything that is part of the card back`
+	function containsChinese(word) {
+		const chineseRegex = /[\u4e00-\u9fff]/;
+		return chineseRegex.test(word);
+	}
+	let ischinese = containsChinese(card.fronttext)
+
+
+	const systemprompt = showanswer ? [`Explain it with memory loci (memorable, step by step narrative) in 3 sentences`, `Explain simply and give a trick to remember with word associations, logical associations, word roots/etymology in 3 sentences${ischinese ? '. At the end, give a sentence with it' : ''}`][hinttype] : `Give a cue hint without revealing anything that is part of the card back`
 
 	const userprompt = `Card front: """${card.fronttext}"""\nCard back: """${card.backtext}"""`
 
