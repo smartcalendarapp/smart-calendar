@@ -1883,23 +1883,23 @@ document.addEventListener('paste', async (event) => {
     }
 })
 document.addEventListener('keydown', async (event) => {
-    if(event.key == 'ArrowDown'){
-        if(document.activeElement && document.activeElement !== document.body) return
+    if(document.activeElement && document.activeElement !== document.body) return
 
+    if(event.key == 'ArrowDown'){
         if(currentcardset){
             showanswer = false
             nextcard(currentcardindex + 1)
         }
-    }else if(event.key == 'ArrowUp'){
-        if(document.activeElement && document.activeElement !== document.body) return
-
+    }
+    
+    if(event.key == 'ArrowUp'){
         if(currentcardset){
             showanswer = false
             previouscard(currentcardindex - 1)
         }
-    }else if(event.key == ' '){
-        if(document.activeElement && document.activeElement !== document.body) return
-
+    }
+    
+    if(event.key == ' '){
         if(screenview == 1 && currentcardset && !editcardmode){
             if(!hidecardgroupblur){
                 clickcardblur()
@@ -1915,31 +1915,26 @@ document.addEventListener('keydown', async (event) => {
                 clickmaintitle()
             }
         }
-    }else if(event.key == 'h'){
-        if(document.activeElement && document.activeElement !== document.body) return
-
-        if(screenview == 1 && currentcardset && !editcardmode){
+    }
+    
+    if(screenview == 1 && currentcardset && !editcardmode){
+        if(event.key == 'h'){ //help memorize
             if(hidecardgroupblur && !finishedreview){
                 clickhint(0)
             }
-        }
-    }else if(event.key == 'j'){
-        if(document.activeElement && document.activeElement !== document.body) return
-
-        if(screenview == 1 && currentcardset && !editcardmode){
+        }else if(event.key == 'j'){ //justify
             if(hidecardgroupblur && !finishedreview){
                 clickhint(1)
             }
-        }
-    }else if(event.key == 'n'){
-        if(document.activeElement && document.activeElement !== document.body) return
-        
-        if(screenview == 1 && currentcardset && !editcardmode){
+        }else if(event.key == 'f'){ //forgot
             if(hidecardgroupblur && !finishedreview){
                 clickdidntremember()
             }
+        }else if(event.key == 's'){ //speak
+            speakcardtext(0)
         }
     }
+
 })
 
 
@@ -1948,12 +1943,12 @@ document.addEventListener('keydown', async (event) => {
 document.addEventListener('keydown', press1, false)
 function press1(event){
     if(document.activeElement && document.activeElement !== document.body) return
-	if(event.key == 's'){
+	if(event.key == 'q'){
 		document.addEventListener('keydown', press2, false)
 	}
 }
 function press2(event){
-	if(event.key == 'a'){
+	if(event.key == 'q'){
 		document.removeEventListener('keydown', press2, false)
 		document.addEventListener('keydown', press3, false)
 	}else{
@@ -1961,23 +1956,14 @@ function press2(event){
 	}
 }
 function press3(event){
-	if(event.key == 'v'){
+	if(event.key == 'q'){
 		document.removeEventListener('keydown', press3, false)
-		document.addEventListener('keydown', press4, false)
-	}else{
-		document.removeEventListener('keydown', press3, false)
-	}
-}
-function press4(event){
-	if(event.key == 'e'){
-		document.removeEventListener('keydown', press4, false)
 
         localStorage.setItem('backup', JSON.stringify(userdata))
 	}else{
-		document.removeEventListener('keydown', press4, false)
+		document.removeEventListener('keydown', press3, false)
 	}
 }
-
 
 let isgettinghint;
 async function clickhint(hinttype){
