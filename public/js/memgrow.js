@@ -442,15 +442,6 @@ function updatescreen(){
         screencardfronttext.disabled = true
         screencardfronttext.value = (currentcardset.cards[currentcardindex].fronttext || '')
 
-        function containsChinese(word) {
-            const chineseRegex = /[\u4e00-\u9fff]/;
-            return chineseRegex.test(word);
-        }
-        if(containsChinese(currentcardset.cards[currentcardindex].fronttext || '')){
-            screencardfronttext.classList.add('bigfronttext')
-        }else{
-            screencardfronttext.classList.remove('bigfronttext')
-        }
 
         let screencardbacktext = getelement('screencardbacktext')
         screencardbacktext.classList.remove('textareainputedit')
@@ -464,6 +455,16 @@ function updatescreen(){
         let screencardbacktextview = getelement('screencardbacktextview')
         screencardbacktextview.classList.remove('textareainputedit')
         screencardbacktextview.innerHTML = (markdownToHTML(currentcardset.cards[currentcardindex].backtext) || '<span class="text-tertiary">Enter an answer...</span>')
+
+        function containsChinese(word) {
+            const chineseRegex = /[\u4e00-\u9fff]/;
+            return chineseRegex.test(word);
+        }
+        if(containsChinese(currentcardset.cards[currentcardindex].fronttext || '')){
+            screencardfronttextview.classList.add('bigfronttext')
+        }else{
+            screencardfronttextview.classList.remove('bigfronttext')
+        }
 
 
         if(editcardmode){
