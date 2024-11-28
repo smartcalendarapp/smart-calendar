@@ -306,7 +306,7 @@ async function syncData() {
 }
 
 function monitorChanges() {
-    setInterval(syncData, 10000);
+    setInterval(syncData, 5000);
 
     let oldtitle;
     setInterval(() => {
@@ -2013,6 +2013,48 @@ async function clickhint(hinttype){
     }
 }
 
+function speakcardtext(ind){
+    if(!currentcardset.cards[currentcardindex]) return
+    if(ind == 0){
+        speaktext(currentcardset.cards[currentcardindex].fronttext)
+    }else if(ind == 1){
+        speaktext(currentcardset.cards[currentcardindex].backtext)
+    }
+}
+
+async function speaktext(text){
+    try{
+        text = text.trim()
+        if(!text) return
+
+        const response = await fetch('/speaktext', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                text: text
+            })
+        })
+
+        if(response.status == 200){
+            const data = await response.json()
+
+            const binary = atob(data.data)
+            const len = binary.length
+            const bytes = new Uint8Array(len)
+            for (let i = 0; i < len; i++) {
+              bytes[i] = binary.charCodeAt(i)
+            }
+    
+            const blob = new Blob([bytes], { type: 'audio/mp3' });
+            const url = URL.createObjectURL(blob)
+
+            const audio = new Audio(url)
+            audio.play()
+        }
+    }catch(err){
+        console.log(err)
+    }
+}
 
 //CREDITS to:
 

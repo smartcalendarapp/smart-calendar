@@ -7083,6 +7083,51 @@ const CardExtraction = z.object({
 
 
 
+app.post('/speaktext', async (req, res) => {
+	try{
+		if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
+		const text = req.body.text
+
+		function containsChinese(word) {
+            const chineseRegex = /[\u4e00-\u9fff]/;
+            return chineseRegex.test(word);
+        }
+
+		const lang = containsChinese(text) ? 'zh' : 'en'
+
+		const url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${lang}&client=tw-ob&q=${encodeURIComponent(
+			text
+		  )}`;
+  
+		  const response = await fetch(url, {
+			method: 'GET',
+			headers: {
+			  'User-Agent': 'Mozilla/5.0',
+			  'Referer': 'https://translate.google.com/'
+			},
+		  });
+  
+		  if (!response.ok) {
+			throw new Error(`Failed to fetch TTS: ${response.status}`);
+		  }
+  
+		  const buffer = await response.arrayBuffer();
+		  
+		  const uint8Array = new Uint8Array(buffer);
+		  let binary = '';
+		  for (let i = 0; i < uint8Array.length; i++) {
+			binary += String.fromCharCode(uint8Array[i]);
+		  }
+		  const base64Audio = btoa(binary);
+
+		  return res.json({data: base64Audio})
+	}catch(err){
+		console.error(err)
+		res.status(401).end()
+	}
+})
+
+
 app.post('/saveuserdata', async (req, res) => {
     try{
 		if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()

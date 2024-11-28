@@ -616,3 +616,14 @@ textarea{
 .bigfronttext{
     font-size:30px !important;
 }
+
+.cardinsideitem{
+    visibility: hidden;
+    opacity:0;
+    pointer-events:none;
+}
+.cardinside:hover .cardinsideitem{
+    visibility:visible !important;
+    opacity:1 !important;
+    pointer-events:auto !important;
+}
