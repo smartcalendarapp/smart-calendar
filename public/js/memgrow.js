@@ -1930,14 +1930,6 @@ document.addEventListener('keydown', async (event) => {
                 clickdidntremember()
             }
         }
-    }else if(event.key == 's'){
-        if(document.activeElement && document.activeElement !== document.body) return
-        
-        if(screenview == 1 && currentcardset && !editcardmode){
-            if(hidecardgroupblur && !finishedreview){
-                clickskip()
-            }
-        }
     }
 })
 
