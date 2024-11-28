@@ -89,7 +89,6 @@ class CardSet{
         this.delayindex = 0
         //0 for short term
         //1 for long term
-        //2 for music
         this.id = generateID()
     }
 
@@ -149,7 +148,7 @@ class CardSet{
                 return [seconds, 'second']
             }
 
-            let timeuntil = Math.min(...this.cards.filter(d => d.fronttext && d.backtext).map(d => d.laststudied + DELAYS[this.delayindex][d.laststudiedindex]))
+            let timeuntil = Math.min(...this.cards.filter(d => d.fronttext && d.backtext).map(d => d.laststudied + DELAYS[this.delayindex][Math.max(d.laststudiedindex, 0)]))
             let timedata = timeUntil(timeuntil)
             return `Review in ${displaynumber(timedata[0], timedata[1])}`
         }else if(status == 1){
@@ -164,7 +163,7 @@ class CardSet{
     }
 
     getReviewCards(){
-        return this.cards.filter(d => Date.now() > d.laststudied + DELAYS[this.delayindex][d.laststudiedindex] && d.fronttext && d.backtext)
+        return this.cards.filter(d => Date.now() > d.laststudied + DELAYS[this.delayindex][Math.max(d.laststudiedindex, 0)] && d.fronttext && d.backtext)
     }
 
 
@@ -199,10 +198,8 @@ class Card{
 
 const DELAYS = [
     [4 * 3600 * 1000, 12 * 3600 * 1000, 86400 * 1000, 2 * 86400 * 1000, 5 * 86400 * 1000, 7 * 86400 * 1000, 14 * 86400 * 1000],
-    [86400 * 1000, 5 * 86400 * 1000, 14 * 86400 * 1000, 30 * 86400 * 1000, 2 * 30 * 86400 * 1000, 4 * 30 * 86400 * 1000, 12 * 30 * 86400 * 1000],
-    [14 * 86400 * 1000, 21 * 86400 * 1000, 30 * 86400 * 1000]
+    [86400 * 1000, 5 * 86400 * 1000, 14 * 86400 * 1000, 30 * 86400 * 1000, 2 * 30 * 86400 * 1000, 4 * 30 * 86400 * 1000, 12 * 30 * 86400 * 1000]
 ]
-//index 0 is short term, index 1 is long term, index 2 is music
 
 
 
@@ -529,7 +526,7 @@ function updatescreen(){
 
         let togglecardsetintervalbutton = getelement('togglecardsetintervalbutton')
         togglecardsetintervalbutton.classList.add('hidden')
-        togglecardsetintervalbutton.innerHTML = ['Short term', 'Long term', 'Music'][currentcardset.delayindex]
+        togglecardsetintervalbutton.innerHTML = ['Short term', 'Long term'][currentcardset.delayindex]
 
 
         //edit ui
@@ -1276,8 +1273,8 @@ function clicktoreveal(){
 }
 
 
-async function previouscard(newindex){
-    if(newindex >= 0){
+async function previouscard(newindex, checkdisplaycard){
+    if((checkdisplaycard && displaycardindexes.findIndex(d => d == newindex) >= 0) || newindex >= 0){
         if(isanimating) return
         isanimating = true
 
@@ -1326,8 +1323,8 @@ async function previouscard(newindex){
 }
 
 let isanimating;
-async function nextcard(newindex){
-    if(newindex < currentcardset.cards.length){
+async function nextcard(newindex, checkdisplaycard){
+    if((checkdisplaycard && displaycardindexes.findIndex(d => d == newindex) < displaycardindexes.length) || (newindex < currentcardset.cards.length)){
         if(isanimating) return
         isanimating = true
 
@@ -1437,7 +1434,7 @@ function clickcardblur(){
 }
 
 function togglecardsetinterval(){
-    currentcardset.delayindex = (currentcardset.delayindex + 1) % 3
+    currentcardset.delayindex = (currentcardset.delayindex + 1) % DELAYS.length
     updatescreen()
 }
 
@@ -1454,7 +1451,9 @@ function clickremembered(){
 
 function clickdidntremember(){
     currentcardset.cards[currentcardindex].laststudied = Date.now()
-    if(currentcardset.cards[currentcardindex].laststudiedindex > 0){
+    if(currentcardset.cards[currentcardindex].laststudiedindex == 0){
+        currentcardset.cards[currentcardindex].laststudiedindex-- //penalty
+    }else if(currentcardset.cards[currentcardindex].laststudiedindex > 0){
         currentcardset.cards[currentcardindex].laststudiedindex = 0 //reset
     }
 
@@ -1467,7 +1466,7 @@ function clickskip(){
 
 function processnextcard(){
     if(displaycardindexes.findIndex(d => d == currentcardindex) < displaycardindexes.length - 1){
-        nextcard(displaycardindexes[displaycardindexes.findIndex(d => d == currentcardindex) + 1])
+        nextcard(displaycardindexes[displaycardindexes.findIndex(d => d == currentcardindex) + 1], true)
 
         showanswer = false
     }else{
@@ -1888,14 +1887,22 @@ document.addEventListener('keydown', async (event) => {
     if(event.key == 'ArrowDown'){
         if(currentcardset){
             showanswer = false
-            nextcard(currentcardindex + 1)
+            if(editcardmode){
+                nextcard(currentcardindex + 1)
+            }else{
+                nextcard(displaycardindexes[displaycardindexes.findIndex(d => d == currentcardindex) + 1], true)
+            }
         }
     }
     
     if(event.key == 'ArrowUp'){
         if(currentcardset){
             showanswer = false
-            previouscard(currentcardindex - 1)
+            if(editcardmode){
+                previouscard(currentcardindex - 1)
+            }else{
+                previouscard(displaycardindexes[displaycardindexes.findIndex(d => d == currentcardindex) - 1], true)
+            }
         }
     }
     
