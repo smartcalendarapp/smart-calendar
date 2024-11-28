@@ -612,3 +612,7 @@ textarea{
         height:150px;
     }
 }
+
+.bigfronttext{
+    font-size:30px !important;
+}

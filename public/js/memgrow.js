@@ -442,6 +442,16 @@ function updatescreen(){
         screencardfronttext.disabled = true
         screencardfronttext.value = (currentcardset.cards[currentcardindex].fronttext || '')
 
+        function containsChinese(word) {
+            const chineseRegex = /[\u4e00-\u9fff]/;
+            return chineseRegex.test(word);
+        }
+        if(containsChinese(currentcardset.cards[currentcardindex].fronttext || '')){
+            screencardfronttext.classList.add('bigfronttext')
+        }else{
+            screencardfronttext.classList.remove('bigfronttext')
+        }
+
         let screencardbacktext = getelement('screencardbacktext')
         screencardbacktext.classList.remove('textareainputedit')
         screencardbacktext.disabled = true
@@ -1867,12 +1877,14 @@ document.addEventListener('keydown', async (event) => {
         if(document.activeElement && document.activeElement !== document.body) return
 
         if(currentcardset){
+            showanswer = false
             nextcard(currentcardindex + 1)
         }
     }else if(event.key == 'ArrowUp'){
         if(document.activeElement && document.activeElement !== document.body) return
 
         if(currentcardset){
+            showanswer = false
             previouscard(currentcardindex - 1)
         }
     }else if(event.key == ' '){
@@ -1913,7 +1925,7 @@ document.addEventListener('keydown', async (event) => {
         if(document.activeElement && document.activeElement !== document.body) return
         
         if(screenview == 1 && currentcardset && !editcardmode){
-            if(hidecardgroupblur && !finishedreview && !showanswer){
+            if(hidecardgroupblur && !finishedreview){
                 clickdidntremember()
             }
         }

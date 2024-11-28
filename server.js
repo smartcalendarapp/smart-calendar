@@ -7133,7 +7133,7 @@ app.post('/getcardhint', async (req, res) => {
 	const showanswer = req.body.showanswer
 	const hinttype = req.body.hinttype || 0
 
-	const systemprompt = showanswer ? [`Explain it with memory loci (memorable) in 3 sentences`, `Explain the meaning simply with word associations, word roots in 3 sentences`][hinttype] : `Use association linking to help user recall the back without revealing the answer`
+	const systemprompt = showanswer ? [`Explain it with memory loci (memorable, step by step narrative) in 3 sentences`, `Explain the meaning simply with word associations, logical associations, word roots/etymology in 3 sentences`][hinttype] : `Give a cue hint without revealing anything that is part of the card back`
 
 	const userprompt = `Card front: """${card.fronttext}"""\nCard back: """${card.backtext}"""`
 
