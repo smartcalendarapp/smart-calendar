@@ -1889,8 +1889,10 @@ document.addEventListener('keydown', async (event) => {
             showanswer = false
             if(editcardmode){
                 nextcard(currentcardindex + 1)
-            }else{
-                nextcard(displaycardindexes[displaycardindexes.findIndex(d => d == currentcardindex) + 1], true)
+            }else if(hidecardgroupblur && !finishedreview){
+                if(displaycardindexes){
+                    nextcard(displaycardindexes[displaycardindexes.findIndex(d => d == currentcardindex) + 1], true)
+                }
             }
         }
     }
@@ -1900,8 +1902,10 @@ document.addEventListener('keydown', async (event) => {
             showanswer = false
             if(editcardmode){
                 previouscard(currentcardindex - 1)
-            }else{
-                previouscard(displaycardindexes[displaycardindexes.findIndex(d => d == currentcardindex) - 1], true)
+            }else if(hidecardgroupblur && !finishedreview){
+                if(displaycardindexes){
+                    previouscard(displaycardindexes[displaycardindexes.findIndex(d => d == currentcardindex) - 1], true)
+                }
             }
         }
     }
