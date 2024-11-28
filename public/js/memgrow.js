@@ -467,13 +467,22 @@ function updatescreen(){
         }
 
 
+        let speakcardtextbutton0 = getelement('speakcardtextbutton0')
+        let speakcardtextbutton1 = getelement('speakcardtextbutton1')
+
         if(editcardmode){
+            speakcardtextbutton0.classList.add('display-none')
+            speakcardtextbutton1.classList.add('display-none')
+
             screencardfronttext.classList.remove('display-none')
             screencardbacktext.classList.remove('display-none')
 
             screencardfronttextview.classList.add('display-none')
             screencardbacktextview.classList.add('display-none')
         }else{
+            speakcardtextbutton0.classList.remove('display-none')
+            speakcardtextbutton1.classList.remove('display-none')
+
             screencardfronttext.classList.add('display-none')
             screencardbacktext.classList.add('display-none')
 
