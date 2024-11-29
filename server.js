@@ -7185,7 +7185,7 @@ app.post('/getcardhint', async (req, res) => {
 	let ischinese = containsChinese(card.fronttext)
 
 
-	const systemprompt = showanswer ? [`Explain it with memory loci (memorable, step by step narrative) in 3 sentences`, `Explain simply and give a trick to remember with word associations, logical associations, word roots/etymology in 3 sentences${ischinese ? '. Help me remember the sound of the word. At the end, give a sentence with it' : ''}`][hinttype] : `Give a cue hint without revealing anything that is part of the card back`
+	const systemprompt = showanswer ? [`Make a crazy wild association and use memory loci (step by step narrative) in 3 sentences so I'll never forget`, `Explain simply and give a trick to remember with word associations, logical associations, word roots/etymology in 3 sentences${ischinese ? '. Help me remember the sound of the word. At the end, give a sentence with it' : ''}`][hinttype] : `Give a cue hint without revealing anything that is part of the card back`
 
 	const userprompt = `Card front: """${card.fronttext}"""\nCard back: """${card.backtext}"""`
 
