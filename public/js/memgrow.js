@@ -1453,20 +1453,64 @@ function clickdidntremember(){
     currentcardset.cards[currentcardindex].laststudied = Date.now()
     if(currentcardset.cards[currentcardindex].laststudiedindex <= 0){
         currentcardset.cards[currentcardindex].laststudiedindex-- //penalty
-        if(currentcardset.cards[currentcardindex].laststudiedindex <= -1){
+        
+
+        //add to missed collection
+        if(currentcardset.cards[currentcardindex].laststudiedindex < 0){
             const title = 'Missed Collection'
-            let temp = userdata.cardsets.find(d => d.title == 'Missed Collection')
+            let temp = userdata.cardsets.find(d => d.title == title)
             if(!temp){
-                temp = new CardSet('Missed Collection')
+                temp = new CardSet(title)
                 userdata.addCardSet(temp)
             }
             let myfront = currentcardset.cards[currentcardindex].fronttext
             let myback = currentcardset.cards[currentcardindex].backtext
             let temp2 = temp.cards.find(d => d.fronttext == myfront && d.backtext == myback)
             if(!temp2){
-                temp.addCard(new Card(myfront, myback))
+
+                //generate AI help
+                async function generateit(){
+                    try{
+                        const input = `The user is having trouble remembering, help craft a good spaced repetition card`
+
+                        const response = await fetch('/generateaicards', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                input: input,
+                                existingcards: [currentcardset.cards[currentcardindex]]
+                            })
+                        })
+                
+                        if(response.status == 200){
+                            const data = await response.json()
+                            const cards = data?.content?.cards
+                
+                            if(Array.isArray(cards)){                
+                                for(let te of cards){
+                                    temp.addCard(new Card(te.card_prompt, te.card_answer))
+                                }
+                            }
+                
+                            console.log(data)
+                        }else{
+                            console.log(response)
+                        }
+                
+                    }catch(err){
+                        console.log(err)
+                    }finally{
+                        temp.addCard(new Card(myfront, myback))
+                    }
+                    
+                }
+                generateit()
             }
         }
+
+        
     }else if(currentcardset.cards[currentcardindex].laststudiedindex > 0){
         currentcardset.cards[currentcardindex].laststudiedindex = 0 //reset
     }
