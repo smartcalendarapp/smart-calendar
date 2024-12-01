@@ -1457,13 +1457,6 @@ function clickdidntremember(){
 
         //add to missed collection
         if(currentcardset.cards[currentcardindex].laststudiedindex < 0){
-            const title = 'Missed Collection'
-            let temp = userdata.cardsets.find(d => d.title == title)
-            if(!temp){
-                temp = new CardSet(title)
-                userdata.addCardSet(temp)
-            }
-
             const title2 = 'Missed List'
             let temp3 = userdata.cardsets.find(d => d.title == title2)
             if(!temp3){
@@ -1505,7 +1498,7 @@ function clickdidntremember(){
             
                         if(Array.isArray(cards)){                
                             for(let te of cards){
-                                temp.addCard(new Card(te.card_prompt, te.card_answer))
+                                //temp.addCard(new Card(te.card_prompt, te.card_answer))
                             }
                         }
             
@@ -1519,7 +1512,7 @@ function clickdidntremember(){
                 }
             }
 
-            generateit()
+            //no call func for now
 
         }
 
