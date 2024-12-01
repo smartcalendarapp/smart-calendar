@@ -1454,16 +1454,17 @@ function clickdidntremember(){
     if(currentcardset.cards[currentcardindex].laststudiedindex <= 0){
         currentcardset.cards[currentcardindex].laststudiedindex-- //penalty
         if(currentcardset.cards[currentcardindex].laststudiedindex <= -1){
-            let temp = userdata.cardsets.find(d => d.title == 'Missed Review')
+            const title = 'Missed Collection'
+            let temp = userdata.cardsets.find(d => d.title == 'Missed Collection')
             if(!temp){
-                temp = new CardSet('Missed Review')
+                temp = new CardSet('Missed Collection')
                 userdata.addCardSet(temp)
             }
             let myfront = currentcardset.cards[currentcardindex].fronttext
             let myback = currentcardset.cards[currentcardindex].backtext
             let temp2 = temp.cards.find(d => d.fronttext == myfront && d.backtext == myback)
             if(!temp2){
-                temp.addCard(myfront, myback)
+                temp.addCard(new Card(myfront, myback))
             }
         }
     }else if(currentcardset.cards[currentcardindex].laststudiedindex > 0){
