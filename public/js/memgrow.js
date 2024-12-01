@@ -1502,7 +1502,7 @@ function clickdidntremember(){
                     }catch(err){
                         console.log(err)
                     }finally{
-                        temp.addCard(new Card(myfront, myback))
+                        //temp.addCard(new Card(myfront, myback))
                     }
                 }
 
