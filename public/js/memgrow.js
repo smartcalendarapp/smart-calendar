@@ -2001,11 +2001,7 @@ document.addEventListener('keydown', async (event) => {
                 clickdidntremember()
             }
         }else if(event.key == 's'){ //speak
-            if(getelement('hintpopup').classList.contains('hidden')){
-                speakcardtext(0)
-            }else{
-                speakcardtext(2)
-            }
+            speakcardtext(0)
         }
     }
 
@@ -2088,8 +2084,6 @@ function speakcardtext(ind){
         speaktext(currentcardset.cards[currentcardindex].fronttext)
     }else if(ind == 1){
         speaktext(currentcardset.cards[currentcardindex].backtext)
-    }else if(ind == 2){
-        speaktext(getelement('hinttext').innerText)
     }
 }
 
