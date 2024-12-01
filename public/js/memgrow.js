@@ -1471,7 +1471,7 @@ function clickdidntremember(){
                 //generate AI help
                 async function generateit(){
                     try{
-                        const input = `The user is having trouble remembering, help craft a good spaced repetition card`
+                        const input = `The user is having trouble remembering this card, help craft a good spaced repetition card based on this info. Front: '''${myfront}'''\nBack: '''${myback}'''`
 
                         const response = await fetch('/generateaicards', {
                             method: 'POST',
@@ -1480,7 +1480,7 @@ function clickdidntremember(){
                             },
                             body: JSON.stringify({
                                 input: input,
-                                existingcards: [currentcardset.cards[currentcardindex]]
+                                existingcards: []
                             })
                         })
                 
