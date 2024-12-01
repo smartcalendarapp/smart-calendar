@@ -1424,7 +1424,7 @@ function deletecardset(){
 
 function clickcardblur(){
     if(currentcardset.getStatus() == 1){
-        displaycardindexes = currentcardset.getReviewCards().map(d => currentcardset.cards.findIndex(f => f.id == d.id)) //no sort for now
+        displaycardindexes = currentcardset.getReviewCards().map(d => currentcardset.cards.findIndex(f => f.id == d.id)) //.sort((a, b) => a.laststudiedindex - b.laststudiedindex)
 
         currentcardindex = displaycardindexes[0]
 
@@ -1453,6 +1453,14 @@ function clickdidntremember(){
     currentcardset.cards[currentcardindex].laststudied = Date.now()
     if(currentcardset.cards[currentcardindex].laststudiedindex <= 0){
         currentcardset.cards[currentcardindex].laststudiedindex-- //penalty
+        if(currentcardset.cards[currentcardindex].laststudiedindex <= -1){
+            let temp = userdata.cardsets.find(d => d.title == 'Missed Review')
+            if(!temp){
+                temp = new CardSet('Missed Review')
+                userdata.addCardSet(temp)
+            }
+            temp.addCard(currentcardset.cards[currentcardindex].fronttext, currentcardset.cards[currentcardindex].backtext)
+        }
     }else if(currentcardset.cards[currentcardindex].laststudiedindex > 0){
         currentcardset.cards[currentcardindex].laststudiedindex = 0 //reset
     }
