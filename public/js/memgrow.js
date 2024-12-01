@@ -1459,7 +1459,12 @@ function clickdidntremember(){
                 temp = new CardSet('Missed Review')
                 userdata.addCardSet(temp)
             }
-            temp.addCard(currentcardset.cards[currentcardindex].fronttext, currentcardset.cards[currentcardindex].backtext)
+            let myfront = currentcardset.cards[currentcardindex].fronttext
+            let myback = currentcardset.cards[currentcardindex].backtext
+            let temp2 = temp.cards.find(d => d.fronttext == myfront && d.backtext == myback)
+            if(!temp2){
+                temp.addCard(myfront, myback)
+            }
         }
     }else if(currentcardset.cards[currentcardindex].laststudiedindex > 0){
         currentcardset.cards[currentcardindex].laststudiedindex = 0 //reset
