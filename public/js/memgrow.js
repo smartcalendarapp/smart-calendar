@@ -1424,7 +1424,7 @@ function deletecardset(){
 
 function clickcardblur(){
     if(currentcardset.getStatus() == 1){
-        displaycardindexes = currentcardset.getReviewCards().sort((a, b) => b.laststudiedindex - a.laststudiedindex).map(d => currentcardset.cards.findIndex(f => f.id == d.id))
+        displaycardindexes = currentcardset.getReviewCards().map(d => currentcardset.cards.findIndex(f => f.id == d.id)) //no sort for now
 
         currentcardindex = displaycardindexes[0]
 
