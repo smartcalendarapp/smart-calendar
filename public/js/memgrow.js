@@ -1465,7 +1465,7 @@ function clickdidntremember(){
             }
 
             const title2 = 'Missed List'
-            let temp3 = userdata.cardsets.find(d => d.title == title)
+            let temp3 = userdata.cardsets.find(d => d.title == title2)
             if(!temp3){
                 temp3 = new CardSet(title2)
                 userdata.addCardSet(temp3)
@@ -1475,7 +1475,7 @@ function clickdidntremember(){
             let myback = currentcardset.cards[currentcardindex].backtext
             let myid = currentcardset.cards[currentcardindex].id
 
-            let temp4 = temp.cards.find(d => d.id == myid)
+            let temp4 = temp3.cards.find(d => d.id == myid)
             if(!temp4){
                 let gee = new Card(myfront, myback)
                 gee.id = myid
