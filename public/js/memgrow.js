@@ -1424,7 +1424,7 @@ function deletecardset(){
 
 function clickcardblur(){
     if(currentcardset.getStatus() == 1){
-        displaycardindexes = currentcardset.getReviewCards().map(d => currentcardset.cards.findIndex(f => f.id == d.id)) //.sort((a, b) => a.laststudiedindex - b.laststudiedindex)
+        displaycardindexes = currentcardset.getReviewCards().sort((a, b) => a.laststudied - b.laststudied).map(d => currentcardset.cards.findIndex(f => f.id == d.id)) //sort here
 
         currentcardindex = displaycardindexes[0]
 
@@ -2001,7 +2001,7 @@ document.addEventListener('keydown', async (event) => {
             if(hidecardgroupblur && !finishedreview){
                 clickhint(1)
             }
-        }else if(event.key == 'f'){ //forgot
+        }else if(event.key == 'd'){ //didnt remember
             if(hidecardgroupblur && !finishedreview){
                 clickdidntremember()
             }
