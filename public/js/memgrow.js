@@ -4,6 +4,7 @@ function getelement(id){
 }
 
 function markdownToHTML(markdown) {
+    return markdown
     if(!markdown) return ''
 
     markdown = markdown.replace(/^(#{1,6})\s*(.+)$/gm, (_, hashes, content) => {
@@ -1274,7 +1275,7 @@ function clicktoreveal(){
 
 
 async function previouscard(newindex, checkdisplaycard){
-    if((checkdisplaycard && displaycardindexes.findIndex(d => d == newindex) >= 0) || newindex >= 0){
+    if((checkdisplaycard && displaycardindexes.findIndex(d => d == newindex) != -1) || newindex >= 0){
         if(isanimating) return
         isanimating = true
 
@@ -1324,7 +1325,7 @@ async function previouscard(newindex, checkdisplaycard){
 
 let isanimating;
 async function nextcard(newindex, checkdisplaycard){
-    if((checkdisplaycard && displaycardindexes.findIndex(d => d == newindex) < displaycardindexes.length) || (newindex < currentcardset.cards.length)){
+    if((checkdisplaycard && displaycardindexes.findIndex(d => d == newindex) != -1) || (newindex < currentcardset.cards.length)){
         if(isanimating) return
         isanimating = true
 
