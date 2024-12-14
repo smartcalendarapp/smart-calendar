@@ -1458,7 +1458,7 @@ function clickdidntremember(){
 
         //add to missed collection
         if(currentcardset.cards[currentcardindex].laststudiedindex < 0){
-            const title2 = 'Missed List'
+            const title2 = `${currentcardset.title || 'New Card Set'} – Missed`
             let temp3 = userdata.cardsets.find(d => d.title == title2)
             if(!temp3){
                 temp3 = new CardSet(title2)
