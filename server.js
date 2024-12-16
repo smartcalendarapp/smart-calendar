@@ -7185,7 +7185,7 @@ app.post('/getcardhint', async (req, res) => {
 	let ischinese = containsChinese(card.fronttext)
 
 
-	const systemprompt = showanswer ? [`Make a crazy wild association and use memory loci (step by step narrative) in 2 sentences so I'll never forget. Short`, `${ischinese ? 'Help me how I can remember the pinyin of these characters based on the character radicals and components in 1 sentence. Then, use the word in a Chinese sentence, and give translation below in parentheses' : 'Explain simply. Then give a trick to remember. Less than 3 sentences'}`][hinttype] : `Give a cue hint without revealing anything that is part of the card back`
+	const systemprompt = showanswer ? [ischinese ? `Help me how I can remember the pinyin of these characters based on the character radicals and components in 1 sentence. ` : `Make a crazy wild association and use memory loci (step by step narrative) in 2 sentences so I'll never forget. Short`, ischinese ? `Use the word in a Chinese sentence, and give translation below in parentheses` : `Explain simply. Then give a trick to remember. Less than 3 sentences`][hinttype] : `Give a cue hint without revealing anything that is part of the card back`
 
 	const userprompt = `Card front: """${card.fronttext}"""\nCard back: """${card.backtext}"""`
 
