@@ -762,14 +762,15 @@ async function submitaifield(event){
 function clickmaintitle(){
     let sets = userdata.getReviewSets()
     if(sets.length > 0){
-        if(sets.length == 1){
+        opencardset(sets[0].id)
+        /*if(sets.length == 1){
             opencardset(sets[0].id)
         }else{
             let mixset = new CardSet('Mixed Review', sets.map(d => d.getReviewCards()).flat())
             mixset.mixset = true
             
             opencardset('mix', mixset)
-        }
+        }*/
     }
 }
 

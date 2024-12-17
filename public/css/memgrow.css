@@ -368,6 +368,8 @@ textarea{
     word-wrap:break-word;
     white-space:pre-wrap;
     overflow-y:auto;
+    user-select:text;
+    -webkit-user-select: text;
 }
 
 ::-webkit-scrollbar {
