@@ -199,7 +199,7 @@ class Card{
 
 const DELAYS = [
     [4 * 3600 * 1000, 12 * 3600 * 1000, 86400 * 1000, 2 * 86400 * 1000, 5 * 86400 * 1000, 7 * 86400 * 1000, 14 * 86400 * 1000],
-    [4 * 3600 * 1000, 3 * 86400 * 1000, 10 * 86400 * 1000, 30 * 86400 * 1000, 2 * 30 * 86400 * 1000, 4 * 30 * 86400 * 1000, 6 * 30 * 86400 * 1000],
+    [4 * 3600 * 1000, 3 * 86400 * 1000, 7 * 86400 * 1000, 14 * 86400 * 1000, 30 * 86400 * 1000, 3 * 30 * 86400 * 1000, 6 * 30 * 86400 * 1000]
 ]
 
 
@@ -1426,7 +1426,7 @@ function deletecardset(){
 
 function clickcardblur(){
     if(currentcardset.getStatus() == 1){
-        displaycardindexes = currentcardset.getReviewCards().sort((a, b) => a.laststudied - b.laststudied).map(d => currentcardset.cards.findIndex(f => f.id == d.id)) //sort here
+        displaycardindexes = currentcardset.getReviewCards().sort((a, b) => (a.laststudied + DELAYS[currentcardset.delayindex][a.laststudiedindex]) - (b.laststudied + DELAYS[currentcardset.delayindex][b.laststudiedindex])).map(d => currentcardset.cards.findIndex(f => f.id == d.id)) //sort here
 
         currentcardindex = displaycardindexes[0]
 
