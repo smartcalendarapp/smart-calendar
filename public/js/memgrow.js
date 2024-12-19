@@ -1459,62 +1459,26 @@ function clickdidntremember(){
 
         //add to missed collection
         if(currentcardset.cards[currentcardindex].laststudiedindex < 0){
-            const title2 = `${currentcardset.title || 'New Card Set'} – Missed`
-            let temp3 = userdata.cardsets.find(d => d.title == title2)
-            if(!temp3){
-                temp3 = new CardSet(title2)
-                userdata.addCardSet(temp3)
-            }
+            if(!currentcardset.title?.endsWith(' – Missed')){
+                const title2 = `${currentcardset.title || 'New Card Set'} – Missed`
+                let temp3 = userdata.cardsets.find(d => d.title == title2)
+                if(!temp3){
+                    temp3 = new CardSet(title2)
+                    userdata.addCardSet(temp3)
+                    userdata.cardsets.splice(userdata.cardsets.findIndex(d => d.id == currentcardset.id) + 1, 0, temp3)
+                }
 
-            let myfront = currentcardset.cards[currentcardindex].fronttext
-            let myback = currentcardset.cards[currentcardindex].backtext
-            let myid = currentcardset.cards[currentcardindex].id
+                let myfront = currentcardset.cards[currentcardindex].fronttext
+                let myback = currentcardset.cards[currentcardindex].backtext
+                let myid = currentcardset.cards[currentcardindex].id
 
-            let temp4 = temp3.cards.find(d => d.id == myid)
-            if(!temp4){
-                let gee = new Card(myfront, myback)
-                gee.id = myid
-                temp3.addCard(gee)
-            }
-
-
-            //generate AI help
-            async function generateit(){
-                try{
-                    const input = `The user is having trouble remembering this card, help craft a good spaced repetition card based on this info. Front: '''${myfront}'''\nBack: '''${myback}'''`
-
-                    const response = await fetch('/generateaicards', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            input: input,
-                            existingcards: []
-                        })
-                    })
-            
-                    if(response.status == 200){
-                        const data = await response.json()
-                        const cards = data?.content?.cards
-            
-                        if(Array.isArray(cards)){                
-                            for(let te of cards){
-                                //temp.addCard(new Card(te.card_prompt, te.card_answer))
-                            }
-                        }
-            
-                        console.log(data)
-                    }else{
-                        console.log(response)
-                    }
-            
-                }catch(err){
-                    console.log(err)
+                let temp4 = temp3.cards.find(d => d.id == myid)
+                if(!temp4){
+                    let gee = new Card(myfront, myback)
+                    gee.id = myid
+                    temp3.addCard(gee)
                 }
             }
-
-            //no call func for now
 
         }
 
