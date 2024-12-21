@@ -1914,6 +1914,12 @@ document.addEventListener('paste', async (event) => {
 document.addEventListener('keydown', async (event) => {
     if(document.activeElement && document.activeElement !== document.body) return
 
+    if(event.key == 'Escape'){
+        if(screenview == 1){
+            clickscreen(0)
+        }
+    }
+
     if(event.key == 'ArrowDown'){
         if(currentcardset){
             showanswer = false
