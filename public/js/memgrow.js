@@ -2027,10 +2027,17 @@ async function clickhint(hinttype){
                 hinttext.innerHTML = data.content
 
                 let hintbutton = getelement('hintbutton')
-                let rect = hintbutton.getBoundingClientRect()
-                
-                hintpopup.style.top = (rect.top - hintpopup.offsetHeight) + 'px'
-                hintpopup.style.left = (rect.left + rect.width/2 - hintpopup.offsetWidth/2) + 'px'
+
+                if(hinttype == 2){
+                    let rect = maincardcontent.getBoundingClientRect()
+                    hintpopup.style.top = (window.innerHeight/2 - hintpopup.offsetHeight/2) + 'px'
+                    hintpopup.style.left = (rect.left + rect.width + 30) + 'px'
+                }else{
+                    let rect = hintbutton.getBoundingClientRect()
+                    hintpopup.style.top = (rect.top - hintpopup.offsetHeight) + 'px'
+                    hintpopup.style.left = (rect.left + rect.width/2 - hintpopup.offsetWidth/2) + 'px'
+                }
+
                 hintpopup.classList.remove('hidden')
             }
             console.log(data)
