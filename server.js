@@ -7186,7 +7186,7 @@ app.post('/getcardhint', async (req, res) => {
 		try {
 			const results = await gis(card.fronttext || '')
 
-			let myhtml = `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">${results.map(d => `<img src="${d.url}" style="height: 100px; width: 100%; object-fit: cover;"></img>`).join('')}</div>`
+			let myhtml = `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">${results.map(d => `<img src="${d.url}" style="height: auto; width: 100%"></img>`).join('')}</div>`
 			return res.json({ content: myhtml })
 		
 		} catch (e) {
