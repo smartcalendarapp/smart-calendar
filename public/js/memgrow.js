@@ -1993,6 +1993,12 @@ function press3(event){
 	}
 }
 
+
+function clickimg(url){
+    let newwin = window.open(url, "_blank");
+    newwin.focus()
+}
+
 let isgettinghint;
 async function clickhint(hinttype){
     try {
