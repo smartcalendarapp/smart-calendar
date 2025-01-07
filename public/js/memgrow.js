@@ -2032,12 +2032,15 @@ async function clickhint(hinttype){
                     let rect = maincardcontent.getBoundingClientRect()
                     hintpopup.style.top = (window.innerHeight/2 - hintpopup.offsetHeight/2) + 'px'
                     hintpopup.style.left = (rect.left + rect.width + 30) + 'px'
+                    hintpopup.classList.add('hintpopupexpanded')
                 }else{
                     let rect = hintbutton.getBoundingClientRect()
                     hintpopup.style.top = (rect.top - hintpopup.offsetHeight) + 'px'
                     hintpopup.style.left = (rect.left + rect.width/2 - hintpopup.offsetWidth/2) + 'px'
+                    hintpopup.classList.remove('hintpopupexpanded')
                 }
 
+                hinttext.scrollTop = 0
                 hintpopup.classList.remove('hidden')
             }
             console.log(data)

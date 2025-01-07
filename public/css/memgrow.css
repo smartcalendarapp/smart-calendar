@@ -363,6 +363,11 @@ textarea{
     max-height:350px;
 }
 
+.hintpopupexpanded{
+    max-width:400px;
+    max-height:500px;
+}
+
 .hinttext{
     word-break: break-word;
     word-wrap:break-word;
