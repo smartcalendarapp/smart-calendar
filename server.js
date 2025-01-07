@@ -7171,6 +7171,8 @@ app.post('/getuserdata', async (req, res) => {
     }
 })
 
+const gis = require('async-g-i-s')
+
 app.post('/getcardhint', async (req, res) => {
 	if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
 	
@@ -7178,38 +7180,54 @@ app.post('/getcardhint', async (req, res) => {
 	const showanswer = req.body.showanswer
 	const hinttype = req.body.hinttype || 0
 
-	function containsChinese(word) {
-		const chineseRegex = /[\u4e00-\u9fff]/;
-		return chineseRegex.test(word);
-	}
-	let ischinese = containsChinese(card.fronttext)
+	if(hinttype == 2){
+		//google images
+
+		try {
+			const results = await gis(card.fronttext || '')
+
+			return res.json({ content: JSON.stringify(results.slice(0, 10)) })
+		
+		} catch (e) {
+			console.error(err)
+			return res.status(401).end()
+		}
+	}else{
+		//chat gpt
+
+		function containsChinese(word) {
+			const chineseRegex = /[\u4e00-\u9fff]/;
+			return chineseRegex.test(word);
+		}
+		let ischinese = containsChinese(card.fronttext)
 
 
-	const systemprompt = showanswer ? [ischinese ? `Help me how I can remember the pinyin of these characters based on the character radicals and components in 1 sentence. ` : `Make a crazy wild association and use memory loci (step by step narrative) in 2 sentences so I'll never forget. Short`, ischinese ? `Use the word in a Chinese sentence, and give translation below in parentheses` : `Explain simply. Then give a trick to remember. Less than 3 sentences`][hinttype] : `Give a cue hint without revealing anything that is part of the card back`
+		const systemprompt = showanswer ? [ischinese ? `Help me how I can remember the pinyin of these characters based on the character radicals and components in 1 sentence. ` : `Make a crazy wild association and use memory loci (step by step narrative) in 2 sentences so I'll never forget. Short`, ischinese ? `Use the word in a Chinese sentence, and give translation below in parentheses` : `Explain simply. Then give a trick to remember. Less than 3 sentences`][hinttype] : `Give a cue hint without revealing anything that is part of the card back`
 
-	const userprompt = `Card front: """${card.fronttext}"""\nCard back: """${card.backtext}"""`
+		const userprompt = `Card front: """${card.fronttext}"""\nCard back: """${card.backtext}"""`
 
-	try{
-		const response = await memgrow_openai.chat.completions.create({
-            model: MEMGROW_GPT_MODEL,
-            messages: [
-              {
-                role: 'system', 
-                content: systemprompt
-              },
-              {
-				role: 'user',
-				content: userprompt
-			  }
-            ],
-			max_tokens: 500,
-        })
+		try{
+			const response = await memgrow_openai.chat.completions.create({
+				model: MEMGROW_GPT_MODEL,
+				messages: [
+				{
+					role: 'system', 
+					content: systemprompt
+				},
+				{
+					role: 'user',
+					content: userprompt
+				}
+				],
+				max_tokens: 500,
+			})
 
-        const content = response.choices[0].message.content
-        return res.json({ content: content, tokens: response.usage })
-	}catch(err){
-		console.error(err)
-        return res.status(401).end()
+			const content = response.choices[0].message.content
+			return res.json({ content: content, tokens: response.usage })
+		}catch(err){
+			console.error(err)
+			return res.status(401).end()
+		}
 	}
 })
 

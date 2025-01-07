@@ -3,25 +3,6 @@ function getelement(id){
     return document.getElementById(id)
 }
 
-function markdownToHTML(markdown) {
-    return markdown
-    if(!markdown) return ''
-
-    markdown = markdown.replace(/^(#{1,6})\s*(.+)$/gm, (_, hashes, content) => {
-        const level = hashes.length;
-        return `<h${level}>${content.trim()}</h${level}>`;
-    });
-
-    markdown = markdown.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-
-    markdown = markdown.replace(/\*(.+?)\*/g, '<em>$1</em>');
-
-    markdown = markdown.replace(/`(.+?)`/g, '<code>$1</code>');
-
-    markdown = markdown.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
-
-    return markdown.trim();
-}
 
 // Example usage
 
@@ -448,11 +429,11 @@ function updatescreen(){
 
         let screencardfronttextview = getelement('screencardfronttextview')
         screencardfronttextview.classList.remove('textareainputedit')
-        screencardfronttextview.innerHTML = (markdownToHTML(currentcardset.cards[currentcardindex].fronttext) || '<span class="text-tertiary">Enter a prompt...</span>')
+        screencardfronttextview.innerHTML = ((currentcardset.cards[currentcardindex].fronttext) || '<span class="text-tertiary">Enter a prompt...</span>')
 
         let screencardbacktextview = getelement('screencardbacktextview')
         screencardbacktextview.classList.remove('textareainputedit')
-        screencardbacktextview.innerHTML = (markdownToHTML(currentcardset.cards[currentcardindex].backtext) || '<span class="text-tertiary">Enter an answer...</span>')
+        screencardbacktextview.innerHTML = ((currentcardset.cards[currentcardindex].backtext) || '<span class="text-tertiary">Enter an answer...</span>')
 
         function containsChinese(word) {
             const chineseRegex = /[\u4e00-\u9fff]/;
@@ -1967,9 +1948,9 @@ document.addEventListener('keydown', async (event) => {
     if(screenview == 1 && currentcardset && !editcardmode){
         if(event.key == 'h'){ //help memorize
             if(hidecardgroupblur && !finishedreview){
-                clickhint(0)
+                //clickhint(0)
             }
-        }else if(event.key == 'j'){ //justify
+        }else if(event.key == 'j'){ //quick explanation
             if(hidecardgroupblur && !finishedreview){
                 clickhint(1)
             }
@@ -2037,7 +2018,7 @@ async function clickhint(hinttype){
             if(data.content){
                 let hinttext = getelement('hinttext')
                 let hintpopup = getelement('hintpopup')
-                hinttext.innerHTML = markdownToHTML(data.content)
+                hinttext.innerHTML = data.content
 
                 let hintbutton = getelement('hintbutton')
                 let rect = hintbutton.getBoundingClientRect()
