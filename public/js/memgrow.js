@@ -478,6 +478,9 @@ function updatescreen(){
             cardanswercover.classList.remove('hidden')
         }
 
+        let cardinsideprogress = getelement('cardinsideprogress')
+        cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset.cards[currentcardindex])
+
         let clickbackhomebutton = getelement('clickbackhomebutton')
         clickbackhomebutton.classList.remove('display-none')
 
@@ -2168,6 +2171,44 @@ async function speaktext(text){
     }catch(err){
         console.log(err)
     }
+}
+
+
+
+
+//hover
+function getcardinsideprogress(card){
+    function timeUntilShort(date) {
+        const now = new Date()
+        const diff = date - now
+        const seconds = Math.floor(diff / 1000)
+        const minutes = Math.floor(seconds / 60)
+        const hours = Math.floor(minutes / 60)
+        let days = Math.floor(hours / 24)
+        const remainingHours = hours % 24
+    
+        if (remainingHours >= 12) days += 1
+    
+        const months = Math.floor(days / 30)
+        const years = Math.floor(days / 365)
+    
+        if (years > 0) return [years, 'y']
+        if (months > 0) return [months, 'mo']
+        if (days > 0) return [days, 'd']
+        if (hours > 0) return [hours, 'h']
+        if (minutes > 0) return [minutes, 'm']
+        return [seconds, 's']
+    }
+    return timeUntilShort(card.laststudied + DELAYS[card.delayindex][Math.max(card.laststudiedindex + 1 - didntremembervalue, 0)])
+}
+let didntremembervalue = 0
+function enterdidntremember(){
+    didntremembervalue = 1
+    getcardinsideprogress(currentcardset.cards[currentcardindex])
+}
+function leavedidntremember(){
+    didntremembervalue = 0
+    getcardinsideprogress(currentcardset.cards[currentcardindex])
 }
 
 //CREDITS to:
