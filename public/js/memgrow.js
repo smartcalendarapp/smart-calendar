@@ -1950,9 +1950,13 @@ document.addEventListener('keydown', async (event) => {
             if(hidecardgroupblur && !finishedreview){
                 //clickhint(0)
             }
-        }else if(event.key == 'j'){ //quick explanation
+        }else if(event.key == 'e'){ //explain
             if(hidecardgroupblur && !finishedreview){
                 clickhint(1)
+            }
+        }else if(event.key == 'g'){ //google
+            if(hidecardgroupblur && !finishedreview){
+                clickhint(2)
             }
         }else if(event.key == 'd'){ //didnt remember
             if(hidecardgroupblur && !finishedreview){
