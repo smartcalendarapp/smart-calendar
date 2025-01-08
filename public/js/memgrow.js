@@ -172,6 +172,8 @@ class Card{
         this.fronttext = fronttext
         this.backtext = backtext
 
+        this.imgurl = null
+
         this.laststudied = 0
         this.laststudiedindex = 0
         this.id = generateID()
@@ -2001,8 +2003,18 @@ function press3(event){
 
 
 function clickimg(url){
-    let newwin = window.open(url, "_blank");
-    newwin.focus()
+    if(currentcardset?.cards[currentcardindex]){
+        currentcardset.cards[currentcardindex].imgurl = url
+        let hinttext = getelement('hinttext')
+        hinttext.innerHTML = `<img loading="lazy" src="${d.url}" onclick="clickremoveimg('${d.url}')" class="fade-in" style="cursor: pointer; height: auto; width: 100%"></img>`
+    }
+}
+function clickremoveimg(url){
+    if(currentcardset?.cards[currentcardindex]){
+        currentcardset.cards[currentcardindex].imgurl = null
+        let hintpopup = getelement('hintpopup')
+        hintpopup.classList.add('hidden')
+    }
 }
 
 
@@ -2036,11 +2048,20 @@ async function clickhint(hinttype){
             if(data.content){
                 let hinttext = getelement('hinttext')
                 let hintpopup = getelement('hintpopup')
-                hinttext.innerHTML = data.content
 
                 if(hinttype == 2){
                     hintpopup.classList.add('hintpopupexpanded')
+
+                    let myhtml = `
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+                        ${data.content.map(d => `
+                            <img loading="lazy" onerror="this.remove()" src="${d.url}" onclick="clickimg('${d.url}')" class="fade-in" style="cursor: pointer; height: auto; width: 100%">
+                            </img>
+                        `).join('')}
+                    </div>`;
+                    hinttext.innerHTML = myhtml
                 }else{
+                    hinttext.innerHTML = data.content
                     hintpopup.classList.remove('hintpopupexpanded')    
                 }
 
