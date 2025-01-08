@@ -1438,6 +1438,10 @@ function clickdidntremember(){
     currentcardset.cards[currentcardindex].laststudied = Date.now()
     if(currentcardset.cards[currentcardindex].laststudiedindex <= 0){
         currentcardset.cards[currentcardindex].laststudiedindex-- //penalty
+
+        if(currentcardset.cards[currentcardindex].laststudiedindex < -2){
+            currentcardset.cards[currentcardindex].laststudiedindex = -2
+        }
         
 
         //add to missed collection
@@ -1931,6 +1935,9 @@ document.addEventListener('keydown', async (event) => {
     }
     
     if(event.key == ' '){
+        event.preventDefault()
+        event.stopPropagation()
+
         if(screenview == 1 && currentcardset && !editcardmode){
             if(!hidecardgroupblur){
                 clickcardblur()
@@ -2036,6 +2043,9 @@ async function clickhint(hinttype){
             let maincardcontent = getelement('maincardcontent')
 
             hintpopup.classList.add('hintpopupexpanded')
+
+            let hintpopuptitle = getelement('hintpopuptitle')
+            hintpopuptitle.innerHTML = currentcardset.cards[currentcardindex].fronttext
             
             await sleep(10)
 
