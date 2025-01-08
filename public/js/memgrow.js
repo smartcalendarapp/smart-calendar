@@ -115,9 +115,6 @@ class CardSet{
                 const minutes = Math.floor(seconds / 60)
                 const hours = Math.floor(minutes / 60)
                 let days = Math.floor(hours / 24)
-                const remainingHours = hours % 24
-            
-                if (remainingHours >= 12) days += 1
             
                 const months = Math.floor(days / 30)
                 const years = Math.floor(days / 365)
@@ -477,9 +474,6 @@ function updatescreen(){
         }else{
             cardanswercover.classList.remove('hidden')
         }
-
-        let cardinsideprogress = getelement('cardinsideprogress')
-        cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset.cards[currentcardindex])
 
         let clickbackhomebutton = getelement('clickbackhomebutton')
         clickbackhomebutton.classList.remove('display-none')
@@ -2174,21 +2168,16 @@ async function speaktext(text){
 }
 
 
-
-
 //hover
-function getcardinsideprogress(card){
-    function timeUntilShort(date) {
-        const now = new Date()
-        const diff = date - now
-        const seconds = Math.floor(diff / 1000)
+function getcardinsideprogress(card, cardset){
+    if(!card) return
+    if(!cardset) return
+    function timeShort(ms) {
+        const seconds = Math.floor(ms / 1000)
         const minutes = Math.floor(seconds / 60)
         const hours = Math.floor(minutes / 60)
         let days = Math.floor(hours / 24)
-        const remainingHours = hours % 24
-    
-        if (remainingHours >= 12) days += 1
-    
+        
         const months = Math.floor(days / 30)
         const years = Math.floor(days / 365)
     
@@ -2199,16 +2188,32 @@ function getcardinsideprogress(card){
         if (minutes > 0) return [minutes, 'm']
         return [seconds, 's']
     }
-    return timeUntilShort(card.laststudied + DELAYS[card.delayindex][Math.max(card.laststudiedindex + 1 - didntremembervalue, 0)])
+    return timeShort(DELAYS[cardset.delayindex][Math.max(card.laststudiedindex + 1 - didntremembervalue, 0)]).join('')
 }
 let didntremembervalue = 0
 function enterdidntremember(){
     didntremembervalue = 1
-    getcardinsideprogress(currentcardset.cards[currentcardindex])
+    let cardinsideprogress = getelement('cardinsideprogress')
+    cardinsideprogress.classList.remove('hidden')
+    cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
 }
 function leavedidntremember(){
     didntremembervalue = 0
-    getcardinsideprogress(currentcardset.cards[currentcardindex])
+    let cardinsideprogress = getelement('cardinsideprogress')
+    cardinsideprogress.classList.add('hidden')
+    cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
+}
+
+function enterremembered(){
+    didntremembervalue = 0
+    let cardinsideprogress = getelement('cardinsideprogress')
+    cardinsideprogress.classList.remove('hidden')
+    cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
+}
+function leaveremembered(){
+    let cardinsideprogress = getelement('cardinsideprogress')
+    cardinsideprogress.classList.add('hidden')
+    cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
 }
 
 //CREDITS to:
