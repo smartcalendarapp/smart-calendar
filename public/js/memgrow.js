@@ -2003,6 +2003,12 @@ function clickimg(url){
     newwin.focus()
 }
 
+
+function isMobile() {
+    return window.matchMedia("(max-width: 600px)").matches;
+}
+
+
 let isgettinghint;
 async function clickhint(hinttype){
     try {
@@ -2030,18 +2036,21 @@ async function clickhint(hinttype){
                 let hintpopup = getelement('hintpopup')
                 hinttext.innerHTML = data.content
 
-                let hintbutton = getelement('hintbutton')
-
                 if(hinttype == 2){
+                    hintpopup.classList.add('hintpopupexpanded')
+                }else{
+                    hintpopup.classList.remove('hintpopupexpanded')    
+                }
+
+                await sleep(10)
+
+                if(isMobile()){
+                    hintpopup.style.top = (window.innerHeight - hintpopup.offsetHeight - 24) + 'px'
+                    hintpopup.style.left = (window.innerWidth/2 - hintpopup.offsetWidth/2) + 'px'
+                }else{
                     let rect = maincardcontent.getBoundingClientRect()
                     hintpopup.style.top = (window.innerHeight/2 - hintpopup.offsetHeight/2) + 'px'
                     hintpopup.style.left = (rect.left + rect.width + 30) + 'px'
-                    hintpopup.classList.add('hintpopupexpanded')
-                }else{
-                    let rect = hintbutton.getBoundingClientRect()
-                    hintpopup.style.top = (rect.top - hintpopup.offsetHeight) + 'px'
-                    hintpopup.style.left = (rect.left + rect.width/2 - hintpopup.offsetWidth/2) + 'px'
-                    hintpopup.classList.remove('hintpopupexpanded')
                 }
 
                 hinttext.scrollTop = 0
