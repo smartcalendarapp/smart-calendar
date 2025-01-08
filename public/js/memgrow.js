@@ -1950,23 +1950,45 @@ document.addEventListener('keydown', async (event) => {
     }
     
     if(screenview == 1 && currentcardset && !editcardmode){
-        if(event.key == 'h'){ //help memorize
-            if(hidecardgroupblur && !finishedreview){
-                //clickhint(0)
+        if((event.key == 'e' || event.key == 'g') && currentcardset?.cards[currentcardindex]?.imgurl){
+            let hinttext = getelement('hinttext')
+            hinttext.innerHTML = `<img src="${currentcardset.cards[currentcardindex].imgurl}" onclick="clickremoveimg()" class="fade-in" style="cursor: pointer; height: auto; width: 100%"></img>`
+
+            let maincardcontent = getelement('maincardcontent')
+
+            hintpopup.classList.add('hintpopupexpanded')
+            
+            await sleep(10)
+
+            if(isMobile()){
+                hintpopup.style.top = (window.innerHeight - hintpopup.offsetHeight - 24) + 'px'
+                hintpopup.style.left = (window.innerWidth/2 - hintpopup.offsetWidth/2) + 'px'
+            }else{
+                let rect = maincardcontent.getBoundingClientRect()
+                hintpopup.style.top = (window.innerHeight/2 - hintpopup.offsetHeight/2) + 'px'
+                hintpopup.style.left = (rect.left + rect.width + 30) + 'px'
             }
-        }else if(event.key == 'e'){ //explain
-            if(hidecardgroupblur && !finishedreview){
-                clickhint(1)
+
+            hintpopup.classList.remove('hidden')
+        }else{
+            if(event.key == 'e'){ //explain
+                if(hidecardgroupblur && !finishedreview){
+                    clickhint(1)
+                }
             }
-        }else if(event.key == 'g'){ //google
-            if(hidecardgroupblur && !finishedreview){
-                clickhint(2)
+            if(event.key == 'g'){ //google
+                if(hidecardgroupblur && !finishedreview){
+                    clickhint(2)
+                }
             }
-        }else if(event.key == 'd'){ //didnt remember
+        }
+        
+        if(event.key == 'd'){ //didnt remember
             if(hidecardgroupblur && !finishedreview){
                 clickdidntremember()
             }
-        }else if(event.key == 's'){ //speak
+        }
+        if(event.key == 's'){ //speak
             speakcardtext(0)
         }
     }
@@ -2006,10 +2028,10 @@ function clickimg(url){
     if(currentcardset?.cards[currentcardindex]){
         currentcardset.cards[currentcardindex].imgurl = url
         let hinttext = getelement('hinttext')
-        hinttext.innerHTML = `<img loading="lazy" src="${d.url}" onclick="clickremoveimg('${d.url}')" class="fade-in" style="cursor: pointer; height: auto; width: 100%"></img>`
+        hinttext.innerHTML = `<img src="${url}" onclick="clickremoveimg()" class="fade-in" style="cursor: pointer; height: auto; width: 100%"></img>`
     }
 }
-function clickremoveimg(url){
+function clickremoveimg(){
     if(currentcardset?.cards[currentcardindex]){
         currentcardset.cards[currentcardindex].imgurl = null
         let hintpopup = getelement('hintpopup')
@@ -2055,7 +2077,7 @@ async function clickhint(hinttype){
                     let myhtml = `
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
                         ${data.content.map(d => `
-                            <img loading="lazy" onerror="this.remove()" src="${d.url}" onclick="clickimg('${d.url}')" class="fade-in" style="cursor: pointer; height: auto; width: 100%">
+                            <img onerror="this.remove()" src="${d.url}" onclick="clickimg('${d.url}')" class="fade-in" style="cursor: pointer; height: auto; width: 100%">
                             </img>
                         `).join('')}
                     </div>`;
@@ -2069,6 +2091,8 @@ async function clickhint(hinttype){
                 hintpopuptitle.innerHTML = currentcardset.cards[currentcardindex].fronttext
 
                 await sleep(10)
+
+                let maincardcontent = getelement('maincardcontent')
 
                 if(isMobile()){
                     hintpopup.style.top = (window.innerHeight - hintpopup.offsetHeight - 24) + 'px'
