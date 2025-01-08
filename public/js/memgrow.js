@@ -1447,7 +1447,6 @@ function clickdidntremember(){
                 let temp3 = userdata.cardsets.find(d => d.title == title2)
                 if(!temp3){
                     temp3 = new CardSet(title2)
-                    userdata.addCardSet(temp3)
                     userdata.cardsets.splice(userdata.cardsets.findIndex(d => d.id == currentcardset.id) + 1, 0, temp3)
                 }
 
@@ -1950,39 +1949,17 @@ document.addEventListener('keydown', async (event) => {
     }
     
     if(screenview == 1 && currentcardset && !editcardmode){
-        if((event.key == 'e' || event.key == 'g') && currentcardset?.cards[currentcardindex]?.imgurl){
-            let hinttext = getelement('hinttext')
-            hinttext.innerHTML = `<img src="${currentcardset.cards[currentcardindex].imgurl}" onclick="clickremoveimg()" class="fade-in" style="cursor: pointer; height: auto; width: 100%"></img>`
-
-            let maincardcontent = getelement('maincardcontent')
-
-            hintpopup.classList.add('hintpopupexpanded')
-            
-            await sleep(10)
-
-            if(isMobile()){
-                hintpopup.style.top = (window.innerHeight - hintpopup.offsetHeight - 24) + 'px'
-                hintpopup.style.left = (window.innerWidth/2 - hintpopup.offsetWidth/2) + 'px'
-            }else{
-                let rect = maincardcontent.getBoundingClientRect()
-                hintpopup.style.top = (window.innerHeight/2 - hintpopup.offsetHeight/2) + 'px'
-                hintpopup.style.left = (rect.left + rect.width + 30) + 'px'
-            }
-
-            hintpopup.classList.remove('hidden')
-        }else{
-            if(event.key == 'e'){ //explain
-                if(hidecardgroupblur && !finishedreview){
-                    clickhint(1)
-                }
-            }
-            if(event.key == 'g'){ //google
-                if(hidecardgroupblur && !finishedreview){
-                    clickhint(2)
-                }
+        if(event.key == 'e'){ //explain
+            if(hidecardgroupblur && !finishedreview){
+                clickhint(1)
             }
         }
-        
+        if(event.key == 'g'){ //google
+            if(hidecardgroupblur && !finishedreview){
+                clickhint(2)
+            }
+        }
+    
         if(event.key == 'd'){ //didnt remember
             if(hidecardgroupblur && !finishedreview){
                 clickdidntremember()
@@ -2050,63 +2027,88 @@ async function clickhint(hinttype){
     try {
         if(!currentcardset || !currentcardset.cards[currentcardindex]?.backtext || !currentcardset.cards[currentcardindex]?.fronttext) return
 
-        if(isgettinghint) return
-        isgettinghint = true
+        if(currentcardset?.cards[currentcardindex]?.imgurl){
+            //has saved img hint
 
-        const response = await fetch('/getcardhint', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                card: currentcardset.cards[currentcardindex],
-                showanswer: showanswer,
-                hinttype: hinttype
-            })
-        })
+            let hinttext = getelement('hinttext')
+            hinttext.innerHTML = `<img loading="lazy" src="${currentcardset.cards[currentcardindex].imgurl}" onclick="clickremoveimg()" style="cursor: pointer; height: auto; width: 100%; opacity: 0; transition: opacity 0.5s ease-in-out;" onload="this.style.opacity = '1';"></img>`
 
-        isgettinghint = false
+            let maincardcontent = getelement('maincardcontent')
 
-        if (response.status == 200) {
-            const data = await response.json()
-            if(data.content){
-                let hinttext = getelement('hinttext')
-                let hintpopup = getelement('hintpopup')
+            hintpopup.classList.add('hintpopupexpanded')
+            
+            await sleep(10)
 
-                if(hinttype == 2){
-                    hintpopup.classList.add('hintpopupexpanded')
-
-                    let myhtml = `
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
-                        ${data.content.map(d => `
-                            <img onerror="this.remove()" src="${d.url}" onclick="clickimg('${d.url}')" class="fade-in" style="cursor: pointer; height: auto; width: 100%">
-                            </img>
-                        `).join('')}
-                    </div>`;
-                    hinttext.innerHTML = myhtml
-                }else{
-                    hinttext.innerHTML = data.content
-                    hintpopup.classList.remove('hintpopupexpanded')    
-                }
-
-                let hintpopuptitle = getelement('hintpopuptitle')
-                hintpopuptitle.innerHTML = currentcardset.cards[currentcardindex].fronttext
-
-                await sleep(10)
-
-                let maincardcontent = getelement('maincardcontent')
-
-                if(isMobile()){
-                    hintpopup.style.top = (window.innerHeight - hintpopup.offsetHeight - 24) + 'px'
-                    hintpopup.style.left = (window.innerWidth/2 - hintpopup.offsetWidth/2) + 'px'
-                }else{
-                    let rect = maincardcontent.getBoundingClientRect()
-                    hintpopup.style.top = (window.innerHeight/2 - hintpopup.offsetHeight/2) + 'px'
-                    hintpopup.style.left = (rect.left + rect.width + 30) + 'px'
-                }
-
-                hinttext.scrollTop = 0
-                hintpopup.classList.remove('hidden')
+            if(isMobile()){
+                hintpopup.style.top = (window.innerHeight - hintpopup.offsetHeight - 24) + 'px'
+                hintpopup.style.left = (window.innerWidth/2 - hintpopup.offsetWidth/2) + 'px'
+            }else{
+                let rect = maincardcontent.getBoundingClientRect()
+                hintpopup.style.top = (window.innerHeight/2 - hintpopup.offsetHeight/2) + 'px'
+                hintpopup.style.left = (rect.left + rect.width + 30) + 'px'
             }
-            console.log(data)
+
+            hintpopup.classList.remove('hidden')
+        }else{
+
+            if(isgettinghint) return
+            isgettinghint = true
+
+            const response = await fetch('/getcardhint', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    card: currentcardset.cards[currentcardindex],
+                    showanswer: showanswer,
+                    hinttype: hinttype
+                })
+            })
+
+            isgettinghint = false
+
+            if (response.status == 200) {
+                const data = await response.json()
+                if(data.content){
+                    let hinttext = getelement('hinttext')
+                    let hintpopup = getelement('hintpopup')
+
+                    if(hinttype == 2){
+                        hintpopup.classList.add('hintpopupexpanded')
+
+                        let myhtml = `
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+                            ${data.content.map(d => `
+                                <img loading="lazy" onerror="this.remove()" src="${d.url}" onclick="clickimg('${d.url}')" style="cursor: pointer; height: auto; width: 100%; opacity: 0; transition: opacity 0.5s ease-in-out;" onload="this.style.opacity = '1';">
+                                </img>
+                            `).join('')}
+                        </div>`;
+                        hinttext.innerHTML = myhtml
+                    }else{
+                        hinttext.innerHTML = data.content
+                        hintpopup.classList.remove('hintpopupexpanded')    
+                    }
+
+                    let hintpopuptitle = getelement('hintpopuptitle')
+                    hintpopuptitle.innerHTML = currentcardset.cards[currentcardindex].fronttext
+
+                    await sleep(10)
+
+                    let maincardcontent = getelement('maincardcontent')
+
+                    if(isMobile()){
+                        hintpopup.style.top = (window.innerHeight - hintpopup.offsetHeight - 24) + 'px'
+                        hintpopup.style.left = (window.innerWidth/2 - hintpopup.offsetWidth/2) + 'px'
+                    }else{
+                        let rect = maincardcontent.getBoundingClientRect()
+                        hintpopup.style.top = (window.innerHeight/2 - hintpopup.offsetHeight/2) + 'px'
+                        hintpopup.style.left = (rect.left + rect.width + 30) + 'px'
+                    }
+
+                    hinttext.scrollTop = 0
+                    hintpopup.classList.remove('hidden')
+                }
+                console.log(data)
+            }
         }
 
     } catch (err) {
