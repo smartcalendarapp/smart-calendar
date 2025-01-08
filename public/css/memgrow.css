@@ -363,6 +363,14 @@ textarea{
     max-height:350px;
 }
 
+#hintpopuptitle{
+    word-break: break-word;
+    word-wrap:break-word;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space:nowrap;
+}
+
 .hintpopupexpanded{
     max-width:400px !important;
     max-height:500px !important;

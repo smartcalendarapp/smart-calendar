@@ -1476,6 +1476,8 @@ function clickskip(){
 }
 
 function processnextcard(){
+    getelement('hintpopup').classList.add('hidden')
+    
     if(displaycardindexes.findIndex(d => d == currentcardindex) < displaycardindexes.length - 1){
         nextcard(displaycardindexes[displaycardindexes.findIndex(d => d == currentcardindex) + 1], true)
 
@@ -2041,6 +2043,9 @@ async function clickhint(hinttype){
                 }else{
                     hintpopup.classList.remove('hintpopupexpanded')    
                 }
+
+                let hintpopuptitle = getelement('hintpopuptitle')
+                hintpopuptitle.innerHTML = currentcardset.cards[currentcardindex].fronttext
 
                 await sleep(10)
 

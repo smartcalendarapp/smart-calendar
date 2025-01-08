@@ -7188,7 +7188,7 @@ app.post('/getcardhint', async (req, res) => {
 
 			let myhtml = `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">${results.map(d => `<img loading="lazy" src="${d.url}" onclick="clickimg('${d.url}')" style="cursor: pointer; height: auto; width: 100%"></img>`).join('')}</div>`
 			return res.json({ content: myhtml })
-		
+
 		} catch (e) {
 			console.error(err)
 			return res.status(401).end()
