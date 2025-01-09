@@ -2198,7 +2198,6 @@ function enterdidntremember(){
     cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
 }
 function leavedidntremember(){
-    didntremembervalue = 0
     let cardinsideprogress = getelement('cardinsideprogress')
     cardinsideprogress.classList.add('hidden')
     cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
