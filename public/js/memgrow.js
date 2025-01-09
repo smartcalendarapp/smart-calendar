@@ -147,6 +147,9 @@ class CardSet{
 
 
     getInnerHTML(){
+        if(this.title == '\\n'){
+            return ''
+        }
         if(this.id == dragdivid && hascloned){
             return ''
         }else{
@@ -156,10 +159,18 @@ class CardSet{
     }
 
     getHTML(){
-        if(this.id == dragdivid && hascloned){
-            return `<div data-id="${this.id}" class="cardset cardsetblank"></div>`
+        if(this.title == '\\n'){
+            if(this.id == dragdivid && hascloned){
+                return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardsetbreakdrag gap-6px flex-column" onclick="opencardset('${this.id}')">${this.getInnerHTML()}</div>`
+            }else{
+                return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardsetbreak gap-6px flex-column" onclick="opencardset('${this.id}')">${this.getInnerHTML()}</div>`
+            }
         }else{
-            return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardset gap-6px flex-column" onclick="opencardset('${this.id}')">${this.getInnerHTML()}</div>`
+            if(this.id == dragdivid && hascloned){
+                return `<div data-id="${this.id}" class="cardset cardsetblank"></div>`
+            }else{
+                return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardset gap-6px flex-column" onclick="opencardset('${this.id}')">${this.getInnerHTML()}</div>`
+            }
         }
     }
 }
@@ -2031,7 +2042,7 @@ async function clickhint(hinttype){
     try {
         if(!currentcardset || !currentcardset.cards[currentcardindex]?.backtext || !currentcardset.cards[currentcardindex]?.fronttext) return
 
-        if(currentcardset?.cards[currentcardindex]?.imgurl){
+        if(hinttype == 2 && currentcardset?.cards[currentcardindex]?.imgurl){
             //has saved img hint
 
             let hinttext = getelement('hinttext')
