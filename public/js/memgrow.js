@@ -2194,7 +2194,7 @@ let didntremembervalue = 0
 function enterdidntremember(){
     didntremembervalue = 1
     let cardinsideprogress = getelement('cardinsideprogress')
-    cardinsideprogress.classList.remove('hidden')
+    //cardinsideprogress.classList.remove('hidden')
     cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
 }
 function leavedidntremember(){
@@ -2206,7 +2206,7 @@ function leavedidntremember(){
 function enterremembered(){
     didntremembervalue = 0
     let cardinsideprogress = getelement('cardinsideprogress')
-    cardinsideprogress.classList.remove('hidden')
+    //cardinsideprogress.classList.remove('hidden')
     cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
 }
 function leaveremembered(){
