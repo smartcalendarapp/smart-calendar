@@ -925,7 +925,6 @@ function onMouseMove(e) {
 
             if(userdata.getCardSet(dragdivid)?.isNewlineSet()){
                 dragdiv.style.opacity = '0'
-                offsetX = window.offsetWidth/2
             }
 
             document.body.appendChild(dragdiv)
