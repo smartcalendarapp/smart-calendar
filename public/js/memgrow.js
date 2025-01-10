@@ -147,23 +147,16 @@ class CardSet{
 
 
     getInnerHTML(){
-        if(this.title == '\\n'){
-            return ''
-        }
-        if(this.id == dragdivid && hascloned){
-            return ''
-        }else{
-            return `<div class="pointer-none text-16px text-bold">${this.title || 'New Card Set'}</div>
-            <div class="pointer-none text-13px text-secondary">${displaynumber(this.cards.length, 'item')} • ${this.getStatusText()}</div>`
-        }
+        return `<div class="pointer-none text-16px text-bold">${this.title || 'New Card Set'}</div>
+        <div class="pointer-none text-13px text-secondary">${displaynumber(this.cards.length, 'item')} • ${this.getStatusText()}</div>`
     }
 
     getHTML(){
         if(this.title == '\\n'){
             if(this.id == dragdivid && hascloned){
-                return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardsetbreakdrag gap-6px flex-column" onclick="opencardset('${this.id}')">${this.getInnerHTML()}</div>`
+                return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardsetbreakdrag cardsetnewlineindicator" onclick="opencardset('${this.id}')"></div>`
             }else{
-                return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardsetbreak gap-6px flex-column" onclick="opencardset('${this.id}')">${this.getInnerHTML()}</div>`
+                return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardsetbreak flex-column justify-center" onclick="opencardset('${this.id}')"><div class="cardsetbreakline background-secondary"></div></div>`
             }
         }else{
             if(this.id == dragdivid && hascloned){

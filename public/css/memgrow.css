@@ -75,6 +75,10 @@ body {
     flex-shrink:0;
     height:50px;
 }
+.cardsetbreakline{
+    height:1px;
+    width:100%;
+}
 
 .cardsetbreakdrag{
     width: 250px;
@@ -328,6 +332,11 @@ textarea{
 .disabled{
     filter: opacity(0.2);
     pointer-events:none;
+}
+
+
+.cardsetnewlineindicator{
+    border: 1px solid #3075ff
 }
 
 
