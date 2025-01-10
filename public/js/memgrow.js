@@ -145,14 +145,24 @@ class CardSet{
         return this.cards.filter(d => Date.now() > d.laststudied + DELAYS[this.delayindex][Math.max(d.laststudiedindex, 0)] && d.fronttext && d.backtext)
     }
 
+    isNewlineSet(){
+        return this.title === '\\n'
+    }
+
 
     getInnerHTML(){
+        if(this.id == dragdivid && hascloned){
+            return ''
+        }
+        if(this.isNewlineSet()){
+            return ''
+        }
         return `<div class="pointer-none text-16px text-bold">${this.title || 'New Card Set'}</div>
         <div class="pointer-none text-13px text-secondary">${displaynumber(this.cards.length, 'item')} • ${this.getStatusText()}</div>`
     }
 
     getHTML(){
-        if(this.title == '\\n'){
+        if(this.isNewlineSet()){
             if(this.id == dragdivid && hascloned){
                 return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardsetbreakdrag cardsetnewlineindicator" onclick="opencardset('${this.id}')"></div>`
             }else{
@@ -910,6 +920,10 @@ function onMouseMove(e) {
             dragdiv.style.transition = 'none'
             dragdiv.style.transform = `translate(${rect.left + window.scrollX}px, ${rect.top + window.scrollY}px)`
 
+            if(userdata.getCardSet(dragdivid)?.isNewlineSet()){
+                dragdiv.style.opacity = '0'
+            }
+
             document.body.appendChild(dragdiv)
 
             updatescreen()
@@ -942,6 +956,10 @@ function onTouchMove(e) {
             dragdiv.style.transition = 'none'
             dragdiv.style.transform = `translate(${rect.left + window.scrollX}px, ${rect.top + window.scrollY}px)`
 
+            if(userdata.getCardSet(dragdivid)?.isNewlineSet()){
+                dragdiv.style.opacity = '0'
+            }
+            
             document.body.appendChild(dragdiv)
 
             updatescreen()

@@ -91,6 +91,13 @@ body {
     height: 250px;
 }
 
+
+.cardsetnewlineindicator{
+    border: 1px solid #3075ff;
+    border-radius:16px;
+}
+
+
 .hidden{
     visibility:hidden;
     opacity:0;
@@ -338,11 +345,6 @@ textarea{
 .disabled{
     filter: opacity(0.2);
     pointer-events:none;
-}
-
-
-.cardsetnewlineindicator{
-    border: 1px solid #3075ff
 }
 
 
