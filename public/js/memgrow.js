@@ -489,6 +489,9 @@ function updatescreen(){
             cardanswercover.classList.remove('hidden')
         }
 
+        let cardinsideprogress = getelement('cardinsideprogress')
+        cardinsideprogress.innerHTML = `${currentcardset.cards[currentcardindex].laststudiedindex}`
+
         let clickbackhomebutton = getelement('clickbackhomebutton')
         clickbackhomebutton.classList.remove('display-none')
 
@@ -922,6 +925,7 @@ function onMouseMove(e) {
 
             if(userdata.getCardSet(dragdivid)?.isNewlineSet()){
                 dragdiv.style.opacity = '0'
+                offsetX = window.offsetWidth/2
             }
 
             document.body.appendChild(dragdiv)
@@ -959,7 +963,7 @@ function onTouchMove(e) {
             if(userdata.getCardSet(dragdivid)?.isNewlineSet()){
                 dragdiv.style.opacity = '0'
             }
-            
+
             document.body.appendChild(dragdiv)
 
             updatescreen()
