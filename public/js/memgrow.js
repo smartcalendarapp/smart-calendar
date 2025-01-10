@@ -2213,31 +2213,31 @@ function getcardinsideprogress(card, cardset){
         if (minutes > 0) return [minutes, 'm']
         return [seconds, 's']
     }
-    return timeShort(DELAYS[cardset.delayindex][Math.max(card.laststudiedindex + 1 - didntremembervalue, 0)]).join('')
+    return timeShort(DELAYS[cardset.delayindex][didntremembervalue ? 0 : Math.max(card.laststudiedindex + 1, 0)]).join('')
 }
 let didntremembervalue = 0
 function enterdidntremember(){
     didntremembervalue = 1
     let cardinsideprogress = getelement('cardinsideprogress')
     //cardinsideprogress.classList.remove('hidden')
-    cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
+    //cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
 }
 function leavedidntremember(){
     let cardinsideprogress = getelement('cardinsideprogress')
-    cardinsideprogress.classList.add('hidden')
-    cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
+    //cardinsideprogress.classList.add('hidden')
+    //cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
 }
 
 function enterremembered(){
     didntremembervalue = 0
     let cardinsideprogress = getelement('cardinsideprogress')
     //cardinsideprogress.classList.remove('hidden')
-    cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
+    //cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
 }
 function leaveremembered(){
     let cardinsideprogress = getelement('cardinsideprogress')
-    cardinsideprogress.classList.add('hidden')
-    cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
+    //cardinsideprogress.classList.add('hidden')
+    //cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
 }
 
 //CREDITS to:
