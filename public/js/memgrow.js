@@ -156,7 +156,7 @@ class CardSet{
             if(this.id == dragdivid && hascloned){
                 return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardsetbreakdrag cardsetnewlineindicator" onclick="opencardset('${this.id}')"></div>`
             }else{
-                return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardsetbreak flex-column justify-center" onclick="opencardset('${this.id}')"><div class="cardsetbreakline background-secondary"></div></div>`
+                return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardsetbreak flex-column justify-center" onclick="opencardset('${this.id}')"></div>`
             }
         }else{
             if(this.id == dragdivid && hascloned){

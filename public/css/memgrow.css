@@ -73,11 +73,17 @@ body {
     width:100%;
     box-sizing: border-box;
     flex-shrink:0;
+    position:relative;
     height:50px;
 }
-.cardsetbreakline{
+.cardsetbreak::after{
+    content:"";
+    position:absolute;
+    top:50%;
     height:1px;
-    width:100%;
+    background-color:var(--background-secondary);
+    right:0;
+    left:0;
 }
 
 .cardsetbreakdrag{
