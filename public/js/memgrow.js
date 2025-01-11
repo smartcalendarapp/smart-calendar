@@ -131,14 +131,14 @@ class CardSet{
             let timedata = timeUntil(timeuntil)
             return `Review in ${displaynumber(timedata[0], timedata[1])}`
         }else if(status == 1){
-            return '<span class="greenreview">Ready for review</span>'
+            return `<span class="greenreview">${this.getReviewCards().length} ready for review</span>`
         }else if(status == 2){
             return 'Finish creating'
         }
     }
 
     getReviewTime(){
-        return Math.ceil(this.getReviewCards().length/2)
+        return Math.ceil(this.getReviewCards().length * 10/60)
     }
 
     getReviewCards(){
@@ -149,6 +149,14 @@ class CardSet{
         return this.title === '\\n'
     }
 
+    getMemoryScore(){
+        function memfunction(x){
+            if(x < 0) x = 0
+            return 100 * (1 - Math.pow(Math.E, -0.4 * x))
+        }
+        let tempcards = this.cards.filter(d => d.fronttext && d.backtext)
+        return (tempcards.map(d => memfunction(d.laststudiedindex)).reduce((s, a) => s + a, 0)/tempcards.length).toFixed(0)
+    }
 
     getInnerHTML(){
         if(this.id == dragdivid && hascloned){
@@ -158,7 +166,8 @@ class CardSet{
             return ''
         }
         return `<div class="pointer-none text-16px text-bold">${this.title || 'New Card Set'}</div>
-        <div class="pointer-none text-13px text-secondary">${displaynumber(this.cards.length, 'item')} • ${this.getStatusText()}</div>`
+        <div class="pointer-none text-13px text-secondary">${displaynumber(this.cards.length, 'item')} • ${this.getStatusText()}</div>
+        <div class="pointer-none text-13px text-green">${this.getMemoryScore}%</div>`
     }
 
     getHTML(){
@@ -491,6 +500,11 @@ function updatescreen(){
 
         let cardinsideprogress = getelement('cardinsideprogress')
         cardinsideprogress.innerHTML = `${currentcardset.cards[currentcardindex].laststudiedindex}`
+        if(editcardmode){
+            cardinsideprogress.classList.add('display-none')
+        }else{
+            cardinsideprogress.classList.remove('display-none')
+        }
 
         let clickbackhomebutton = getelement('clickbackhomebutton')
         clickbackhomebutton.classList.remove('display-none')
