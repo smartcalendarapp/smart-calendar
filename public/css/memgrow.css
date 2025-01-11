@@ -69,6 +69,21 @@ body {
     transform: scale(1.05)
 }
 
+.centerminitext{
+    left:50%;
+    top:50%;
+    transform:translate(-50%, -50%);
+    font-size:10px;
+    color:#47af72;
+}
+
+.cardsetinside{
+    opacity:0;
+}
+.cardset:hover .cardsetinside{
+    opacity:1 !important;
+}
+
 .cardsetbreak{
     width:100%;
     box-sizing: border-box;
@@ -673,3 +688,42 @@ textarea{
     pointer-events:auto !important;
 }
 
+
+
+
+/* progress */
+
+.circular-progress {
+    --size: 22px;
+    --half-size: calc(var(--size) / 2);
+    --stroke-width: 2.5px;
+    --radius: calc((var(--size) - var(--stroke-width)) / 2);
+    --circumference: calc(var(--radius) * pi * 2);
+    --dash: calc((var(--progress) * var(--circumference)) / 100);
+}
+
+.circular-progress circle {
+    cx: var(--half-size);
+    cy: var(--half-size);
+    r: var(--radius);
+    stroke-width: var(--stroke-width);
+    fill: none;
+    stroke-linecap: round;
+}
+
+.circular-progress circle.bg {
+    stroke: var(--background-tertiary);
+}
+
+.circular-progress circle.fg {
+    transform: rotate(-90deg);
+    transform-origin: var(--half-size) var(--half-size);
+    stroke-dasharray: var(--dash) calc(var(--circumference) - var(--dash));
+    stroke: #47af72;
+}
+
+@property --progress {
+    syntax: "<number>";
+    inherits: false;
+    initial-value: 0;
+}

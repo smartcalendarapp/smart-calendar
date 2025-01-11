@@ -155,6 +155,7 @@ class CardSet{
             return 100 * (1 - Math.pow(Math.E, -0.4 * x))
         }
         let tempcards = this.cards.filter(d => d.fronttext && d.backtext)
+        if(tempcards.length == 0) return 0
         return (tempcards.map(d => memfunction(d.laststudiedindex)).reduce((s, a) => s + a, 0)/tempcards.length).toFixed(0)
     }
 
@@ -167,7 +168,13 @@ class CardSet{
         }
         return `<div class="pointer-none text-16px text-bold">${this.title || 'New Card Set'}</div>
         <div class="pointer-none text-13px text-secondary">${displaynumber(this.cards.length, 'item')} • ${this.getStatusText()}</div>
-        <div class="pointer-none text-13px text-green">${this.getMemoryScore}%</div>`
+        <div class="absolute cardsetinside top-0 right-0 margin-12px">
+            <svg width="22" height="22" viewBox="0 0 22 22" class="cardsetinside circular-progress display-flex align-center justify-center right-0" style="--progress: ${this.getMemoryScore()}">
+                <circle class="bg"></circle>
+                <circle class="fg"></circle>
+                <div class="absolute centerminitext nowrap">${this.getMemoryScore()}</div>
+            </svg>
+        </div>`
     }
 
     getHTML(){
@@ -181,7 +188,7 @@ class CardSet{
             if(this.id == dragdivid && hascloned){
                 return `<div data-id="${this.id}" class="cardset cardsetblank"></div>`
             }else{
-                return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardset gap-6px flex-column" onclick="opencardset('${this.id}')">${this.getInnerHTML()}</div>`
+                return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardset gap-6px flex-column relative" onclick="opencardset('${this.id}')">${this.getInnerHTML()}</div>`
             }
         }
     }
