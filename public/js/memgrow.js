@@ -131,7 +131,7 @@ class CardSet{
             let timedata = timeUntil(timeuntil)
             return `Review in ${displaynumber(timedata[0], timedata[1])}`
         }else if(status == 1){
-            return `<span class="greenreview">${this.getReviewCards().length} ready for review</span>`
+            return `<span class="greenreview">Ready for review</span>`
         }else if(status == 2){
             return 'Finish creating'
         }
