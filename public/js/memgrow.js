@@ -2290,6 +2290,7 @@ function leaveremembered(){
     //cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
 }
 
+
 //points indicator
 async function updatepointstext(text, force){
     let pointstext = getelement('pointstext')
@@ -2300,6 +2301,7 @@ async function updatepointstext(text, force){
         pointstext.classList.remove('forceunhidden')
     }
 }
+
 
 //CREDITS to:
 
