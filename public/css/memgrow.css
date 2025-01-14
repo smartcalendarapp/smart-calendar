@@ -727,3 +727,21 @@ textarea{
     inherits: false;
     initial-value: 0;
 }
+
+
+
+.pointstext{
+    color: #47af72;
+}
+
+#pointstext{
+    opacity:0;
+}
+
+.hiddenhovergroup:hover #pointstext{
+    opacity:1;
+}
+
+.forceunhidden{
+    opacity:1 !important;
+}

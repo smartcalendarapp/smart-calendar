@@ -4,7 +4,10 @@ function getelement(id){
 }
 
 
-// Example usage
+function memfunction(x){
+    if(x < 0) x = 0
+    return 100 * (1 - Math.pow(Math.E, -0.4 * x))
+}
 
 function generateID() {
 	let uuid = ''
@@ -60,6 +63,10 @@ class UserData{
 
     getReviewSets(){
         return this.cardsets.filter(d => d.getStatus() == 1)
+    }
+
+    getMemoryScore(){
+       return this.cardsets.map(d => d.cards).flat().map(d => memfunction(d.laststudiedindex)).reduce((s,a)=>s+a,0).toFixed(0)
     }
 }
 
@@ -150,10 +157,6 @@ class CardSet{
     }
 
     getMemoryScore(){
-        function memfunction(x){
-            if(x < 0) x = 0
-            return 100 * (1 - Math.pow(Math.E, -0.4 * x))
-        }
         let tempcards = this.cards.filter(d => d.fronttext && d.backtext)
         if(tempcards.length == 0) return 0
         return (tempcards.map(d => memfunction(d.laststudiedindex)).reduce((s, a) => s + a, 0)/tempcards.length).toFixed(0)
@@ -333,6 +336,7 @@ function monitorChanges() {
 })();
 
 
+
 //START
 
 let screenview = 0
@@ -394,8 +398,10 @@ function updatescreendynamically(){
     }
 }
 
+let oldscreenview;
+let oldmemoryscore;
 
-function updatescreen(){
+async function updatescreen(){
     let screenview1 = getelement('screenview1')
     screenview1.classList.add('hidden')
 
@@ -430,7 +436,22 @@ function updatescreen(){
         </div>`)
 
         cardsetlist.innerHTML = output.join('')
+
+        if(oldscreenview == 1){
+            if(userdata.getMemoryScore() > oldmemoryscore){
+                await updatepointstext(`+${userdata.getMemoryScore() - oldmemoryscore} pts`, true)
+                updatepointstext(userdata.getMemoryScore())
+            }else{
+                updatepointstext(userdata.getMemoryScore())
+            }
+        }else{
+            updatepointstext(userdata.getMemoryScore())
+        }
     }else if(screenview == 1){
+        if(oldscreenview == 0){
+            oldmemoryscore = userdata.getMemoryScore()
+        }
+
         let cardlist = getelement('cardlist')
         cardlist.classList.add('hiddenwidth')
         
@@ -643,6 +664,8 @@ function updatescreen(){
 
         MathJax.typeset()
     }
+
+    oldscreenview = screenview
 }
 
 function clickfronttext(){
@@ -2267,6 +2290,17 @@ function leaveremembered(){
     //cardinsideprogress.innerHTML = getcardinsideprogress(currentcardset?.cards[currentcardindex], currentcardset)
 }
 
+//points indicator
+async function updatepointstext(text, force){
+    let pointstext = getelement('pointstext')
+    pointstext.innerHTML = text
+    if(force){
+        pointstext.classList.add('forceunhidden')
+        await sleep(3000)
+        pointstext.classList.remove('forceunhidden')
+    }
+}
+
 //CREDITS to:
 
 //https://andymatuschak.org/prompts/
@@ -2274,3 +2308,5 @@ function leaveremembered(){
 //https://michaelnielsen.org/
 
 //https://andymatuschak.org/
+
+
