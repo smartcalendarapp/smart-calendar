@@ -7096,7 +7096,7 @@ app.post('/speaktext', async (req, res) => {
 		let lang = 'en'
 		if(containsChinese(text)){
 			lang = 'zh';
-			text = text.replace(/[^\u4e00-\u9fff]/g, '');
+			text = text.replace(/[^\u4e00-\u9fff，。！？、：；“”‘’（）【】《》]/g, '')
 		}
 
 		const url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${lang}&client=tw-ob&q=${encodeURIComponent(
