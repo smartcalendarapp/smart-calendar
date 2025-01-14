@@ -2016,7 +2016,13 @@ document.addEventListener('keydown', async (event) => {
             }
         }
         if(event.key == 's'){ //speak
-            speakcardtext(0)
+            let hintpopup = getelement('hintpopup')
+            if(!hintpopup.classList.contains('hidden')){
+                let hinttext = getelement('hinttext')
+                speaktext(hinttext.textContent)
+            }else{
+                speakcardtext(0)
+            }
         }
     }
 
