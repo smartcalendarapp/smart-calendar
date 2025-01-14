@@ -6,7 +6,7 @@ function getelement(id){
 
 function memfunction(x){
     if(x < 0) x = 0
-    return 100 * (1 - Math.pow(Math.E, -0.4 * x))
+    return (1 - Math.pow(Math.E, -0.4 * x))
 }
 
 function generateID() {
@@ -159,7 +159,7 @@ class CardSet{
     getMemoryScore(){
         let tempcards = this.cards.filter(d => d.fronttext && d.backtext)
         if(tempcards.length == 0) return 0
-        return (tempcards.map(d => memfunction(d.laststudiedindex)).reduce((s, a) => s + a, 0)/tempcards.length).toFixed(0)
+        return (tempcards.map(d => 100 * memfunction(d.laststudiedindex)).reduce((s, a) => s + a, 0)/tempcards.length).toFixed(0)
     }
 
     getInnerHTML(){

@@ -731,7 +731,10 @@ textarea{
 
 
 .pointstext{
-    color: #47af72;
+    color:#ffffff;
+    background-color: rgba(44, 104, 255, 0.74);
+    border-radius:6px;
+    padding:2px 4px;
 }
 
 #pointstext{
