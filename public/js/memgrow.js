@@ -206,6 +206,8 @@ class Card{
 
         this.laststudied = 0
         this.laststudiedindex = 0
+        this.rememberedtimes = 0
+        this.forgottimes = 0
         this.id = generateID()
     }
 }
@@ -1502,6 +1504,7 @@ function clickremembered(){
     currentcardset.cards[currentcardindex].laststudied = Date.now()
     if(currentcardset.cards[currentcardindex].laststudiedindex < DELAYS[currentcardset.delayindex].length - 1){
         currentcardset.cards[currentcardindex].laststudiedindex++
+        currentcardset.cards[currentcardindex].rememberedtimes++
     }
 
     processnextcard()
@@ -1511,6 +1514,7 @@ function clickdidntremember(){
     currentcardset.cards[currentcardindex].laststudied = Date.now()
     if(currentcardset.cards[currentcardindex].laststudiedindex <= 0){
         currentcardset.cards[currentcardindex].laststudiedindex-- //penalty
+        currentcardset.cards[currentcardindex].forgottimes++
 
         if(currentcardset.cards[currentcardindex].laststudiedindex < -2){
             currentcardset.cards[currentcardindex].laststudiedindex = -2
