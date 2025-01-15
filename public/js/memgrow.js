@@ -206,8 +206,6 @@ class Card{
 
         this.laststudied = 0
         this.laststudiedindex = 0
-        this.rememberedtimes = 0
-        this.forgottimes = 0
         this.id = generateID()
     }
 }
