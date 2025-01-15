@@ -439,8 +439,15 @@ async function updatescreen(){
 
         if(oldscreenview == 1){
             if(userdata.getMemoryScore() > oldmemoryscore){
-                await updatepointstext(`+${userdata.getMemoryScore() - oldmemoryscore} pts`, true)
-                updatepointstext(userdata.getMemoryScore())
+                updatepointstext(`+${userdata.getMemoryScore() - oldmemoryscore} pts`, true)
+                setTimeout(function(){
+                    updatepointstext(userdata.getMemoryScore())
+                }, 2000)
+            }else if(userdata.getMemoryScore() < oldmemoryscore){
+                updatepointstext(`-${oldmemoryscore - userdata.getMemoryScore()} pts`, true)
+                setTimeout(function(){
+                    updatepointstext(userdata.getMemoryScore())
+                }, 2000)
             }else{
                 updatepointstext(userdata.getMemoryScore())
             }
@@ -2297,7 +2304,7 @@ async function updatepointstext(text, force){
     pointstext.innerHTML = text
     if(force){
         pointstext.classList.add('forceunhidden')
-        await sleep(3000)
+        await sleep(4000)
         pointstext.classList.remove('forceunhidden')
     }
 }
