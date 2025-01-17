@@ -470,18 +470,14 @@ async function updatescreen(){
 
         let screencardsettitle = getelement('screencardsettitle')
         screencardsettitle.classList.remove('titleinputedit')
-        screencardsettitle.disabled = true
         screencardsettitle.value = currentcardset.title
 
         let screencardfronttext = getelement('screencardfronttext')
         screencardfronttext.classList.remove('textareainputedit')
-        screencardfronttext.disabled = true
         screencardfronttext.value = (currentcardset.cards[currentcardindex].fronttext || '')
-
 
         let screencardbacktext = getelement('screencardbacktext')
         screencardbacktext.classList.remove('textareainputedit')
-        screencardbacktext.disabled = true
         screencardbacktext.value = (currentcardset.cards[currentcardindex].backtext || '')
 
         let screencardfronttextview = getelement('screencardfronttextview')
@@ -599,6 +595,10 @@ async function updatescreen(){
             editcardactions.classList.remove('hidden')
 
             deletecardsetbutton.classList.remove('hidden')
+        }else{
+            screencardsettitle.disabled = true
+            screencardfronttext.disabled = true
+            screencardbacktext.disabled = true
         }
 
         if(currentcardset.mixset){
