@@ -153,7 +153,7 @@ class CardSet{
     }
 
     isNewlineSet(){
-        return this.title === '\\n'
+        return this.title.endsWith('\\n')
     }
 
     getMemoryScore(){
@@ -185,7 +185,7 @@ class CardSet{
             if(this.id == dragdivid && hascloned){
                 return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardsetbreakdrag cardsetnewlineindicator" onclick="opencardset('${this.id}')"></div>`
             }else{
-                return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardsetbreak flex-column justify-center" onclick="opencardset('${this.id}')"></div>`
+                return `<div data-id="${this.id}" onmousedown="dragcardset(event, '${this.id}')" class="cardsetbreak flex-column text-center justify-center" onclick="opencardset('${this.id}')">${this.title.replace('\\n', '')}</div>`
             }
         }else{
             if(this.id == dragdivid && hascloned){

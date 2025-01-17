@@ -90,8 +90,9 @@ body {
     flex-shrink:0;
     position:relative;
     height:50px;
+    color:var(--background-secondary)
 }
-.cardsetbreak::after{
+.cardsetbreak::before{
     content:"";
     position:absolute;
     top:50%;
@@ -99,6 +100,7 @@ body {
     background-color:var(--background-secondary);
     right:0;
     left:0;
+    z-index:-1;
 }
 
 .cardsetbreakdrag{
