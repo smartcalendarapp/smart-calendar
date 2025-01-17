@@ -790,6 +790,9 @@ async function submitaifield(event){
                         hidecardgroupblur = true
 
                         clickcardblur()
+
+                        currentcardindex = len
+                        updatescreen()
                     }
                 }
             }
@@ -1708,6 +1711,9 @@ async function submituploadfile(event){
                         hidecardgroupblur = true
 
                         clickcardblur()
+
+                        currentcardindex = len
+                        updatescreen()
                     }
                     
                 }
@@ -1881,6 +1887,9 @@ async function updaterecognitionui(processresult, tempuserwantstostop){
                             hidecardgroupblur = true
 
                             clickcardblur()
+
+                            currentcardindex = len
+                            updatescreen()
                         }
                         
                     }

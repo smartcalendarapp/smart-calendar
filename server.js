@@ -7240,7 +7240,7 @@ app.post('/generateaicards', async (req, res) => {
 	
     const input = req.body.input
     const istranscript = req.body.istranscript
-    const existingcards = req.body.existingcards //or decide to select them to save ctx
+    const existingcards = []//req.body.existingcards //or decide to select them to save ctx
     const files = req.body.files
 
 const systemprompt = `Each card prompt must follow the rules below:
@@ -7251,7 +7251,7 @@ const systemprompt = `Each card prompt must follow the rules below:
 - one sentence at most
 Answers should be at a PhD level difficulty but very concise.
 If user asks to create a certain number of cards, ensure you create that many.
-${existingcards.length > 0 ? `\nBelow are some recent user's existing cards for context. Only create a new card if it adds something new. If you have no new cards to create, then do not return anything.\n"""${existingcards.filter(d => d.fronttext).slice(-3).map(d => d.fronttext.slice(0, 200)).join('\n')}"""` : ''}`
+${existingcards.length > 0 ? `\nBelow are some recent user's existing cards for context. Only create a new card if it adds something new. If you have no new cards to create, then do not return anything.\n"""${existingcards.filter(d => d.fronttext).map(d => d.fronttext.slice(0, 200)).join('\n')}"""` : ''}`
 
     try{
 const finalinput = `${istranscript ? `Below is a transcript of a recorded input source (e.g. lecture). Only make cards for the information that is valuable and needs to be remembered.\n` : ''}${input}`
