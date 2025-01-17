@@ -1373,10 +1373,10 @@ async function previouscard(newindex, checkdisplaycard){
         isanimating = false
 
 
-        if(!currentcardset.cards[currentcardindex].fronttext){
+        if(!currentcardset.cards[currentcardindex]?.fronttext){
             let screencardfronttext = getelement('screencardfronttext')
             screencardfronttext.focus()
-        }else if(!currentcardset.cards[currentcardindex].backtext){
+        }else if(!currentcardset.cards[currentcardindex]?.backtext){
             let screencardbacktext = getelement('screencardbacktext')
             screencardbacktext.focus()
         }
@@ -1422,10 +1422,10 @@ async function nextcard(newindex, checkdisplaycard){
         isanimating = false
 
 
-        if(!currentcardset.cards[currentcardindex].fronttext){
+        if(!currentcardset.cards[currentcardindex]?.fronttext){
             let screencardfronttext = getelement('screencardfronttext')
             screencardfronttext.focus()
-        }else if(!currentcardset.cards[currentcardindex].backtext){
+        }else if(!currentcardset.cards[currentcardindex]?.backtext){
             let screencardbacktext = getelement('screencardbacktext')
             screencardbacktext.focus()
         }
@@ -1434,7 +1434,7 @@ async function nextcard(newindex, checkdisplaycard){
 
 function newcard(event){
     editcardmode = true
-    if(event.shiftKey){
+    if(event?.shiftKey){
         currentcardset.cards.splice(currentcardindex + 1, 0, new Card())
         nextcard(currentcardindex + 1)
     }else{

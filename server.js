@@ -7050,7 +7050,7 @@ const { zodResponseFormat } = require("openai/helpers/zod")
 
 
 const MEMGROW_GPT_INDEX = 1
-const MEMGROW_IS_AZURE = true
+const MEMGROW_IS_AZURE = false
 
 const MEMGROW_GPT_MODEL = ['gpt-4o-mini-2024-07-18','gpt-4o-2024-08-06'][MEMGROW_GPT_INDEX]
 const MEMGROW_AZURE_MODEL = ['gpt-4o-mini/chat/completions?api-version=2023-03-15-preview','gpt-4o/chat/completions?api-version=2024-08-01-preview'][MEMGROW_GPT_INDEX]
