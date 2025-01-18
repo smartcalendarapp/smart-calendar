@@ -1298,14 +1298,14 @@ function submitscreencardtitle(){
 }
 
 function submitscreencardfronttext(){
-    currentcardset.cards[currentcardindex].fronttext = getelement('screencardfronttext').value.trim()
+    currentcardset.cards[currentcardindex].fronttext = getelement('screencardfronttext').value
     if(!dragdivid2){
         updatescreen()
     }
 }
 
 function submitscreencardbacktext(){
-    currentcardset.cards[currentcardindex].backtext = getelement('screencardbacktext').value.trim()
+    currentcardset.cards[currentcardindex].backtext = getelement('screencardbacktext').value
     if(!dragdivid2){
         updatescreen()
     }
