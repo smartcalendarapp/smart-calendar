@@ -211,8 +211,8 @@ class Card{
 }
 
 const DELAYS = [
-    [3 * 3600 * 1000, 12 * 3600 * 1000, 86400 * 1000, 2 * 86400 * 1000, 5 * 86400 * 1000, 7 * 86400 * 1000, 14 * 86400 * 1000, 30 * 86400 * 1000, 3 * 30 * 86400 * 1000, 6 * 30 * 86400 * 1000],
-    [3 * 3600 * 1000, 86400 * 1000, 5 * 86400 * 1000, 14 * 86400 * 1000, 30 * 86400 * 1000, 3 * 30 * 86400 * 1000, 6 * 30 * 86400 * 1000]
+    [3 * 3600 * 1000, 12 * 3600 * 1000, 86400 * 1000, 2 * 86400 * 1000, 5 * 86400 * 1000, 7 * 86400 * 1000, 14 * 86400 * 1000, 30 * 86400 * 1000],
+    [3 * 3600 * 1000, 86400 * 1000, 5 * 86400 * 1000, 12 * 86400 * 1000, 30 * 86400 * 1000, 3 * 30 * 86400 * 1000, 6 * 30 * 86400 * 1000],
 ]
 
 
@@ -1993,6 +1993,9 @@ document.addEventListener('keydown', async (event) => {
     }
 
     if(event.key == 'ArrowDown'){
+        event.preventDefault()
+        event.stopPropagation()
+
         if(currentcardset){
             showanswer = false
             if(editcardmode){
@@ -2006,6 +2009,9 @@ document.addEventListener('keydown', async (event) => {
     }
     
     if(event.key == 'ArrowUp'){
+        event.preventDefault()
+        event.stopPropagation()
+
         if(currentcardset){
             showanswer = false
             if(editcardmode){
