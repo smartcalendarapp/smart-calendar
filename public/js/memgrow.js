@@ -2351,7 +2351,7 @@ function predictReviews({
   } = {}) {
     // Get tomorrow's midnight as the simulation start.
     let now = new Date();
-    let simulationStartDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    let simulationStartDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     let simulationStart = simulationStartDate.getTime();
     let simulationEnd = simulationStart + daysInAdvance * 24 * 3600 * 1000;
   
