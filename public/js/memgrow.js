@@ -2440,10 +2440,10 @@ function predictReviews({
 let myChart;
 
 function showpredictreviews(){
-    let predictionData = Object.entries(predictReviews({ daysInAdvance: 30, successProbability: 0.9 }))
+    let predictionData = Object.entries(predictReviews({ daysInAdvance: 100, successProbability: 0.9 }))
 
     const labels = predictionData.map(item => item[0]);
-    const values = predictionData.map(item => item[1]);
+    const values = predictionData.map(item => Math.floor(item[1]));
 
     if(myChart) myChart.destroy()
 
