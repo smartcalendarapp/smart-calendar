@@ -752,7 +752,15 @@ textarea{
 
 
 #chartpopup{
-    background-color:#00000033
+    background-color:#ffffff33;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter:blur(10px)
+}
+
+@media (prefers-color-scheme: dark) {
+    #chartpopup{
+        background-color:#00000033;
+    }
 }
 
 .statshover:hover{
