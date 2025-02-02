@@ -749,3 +749,8 @@ textarea{
 .forceunhidden{
     opacity:1 !important;
 }
+
+
+#chartpopup{
+    background-color:#00000033
+}

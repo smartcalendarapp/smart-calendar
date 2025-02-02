@@ -59,6 +59,10 @@ if(localStorage.getItem('noanalytics')!=JSON.stringify(true)){
         </div>
     </div>
 
+    <div class="display-flex align-center justify-center absolute top-0 right-0 bottom-0 left-0 z-index-999 display-none" id="chartpopup">
+        <canvas id="predictionChart" width="600" height="300"></canvas>
+    </div>
+
     <div class="margin-top-12px absolute hidden z-index-999 display-flex border-16px backdrop-blur gap-12px background-secondary box-shadow padding-12px display-flex flex-column" id="hintpopup">
         <div class="text-16px text-primary text-center" id="hintpopuptitle">Hint</div>
         <div class="hinttext text-16px" id="hinttext">
@@ -339,6 +343,7 @@ if(localStorage.getItem('noanalytics')!=JSON.stringify(true)){
         };
       </script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script src="../js/memgrow.js"></script>
 

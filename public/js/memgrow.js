@@ -2327,6 +2327,170 @@ async function updatepointstext(text, force){
 }
 
 
+
+//sim
+
+/**
+ * Predict the number of reviews (per day) that will occur in the next few days.
+ *
+ * @param {Object}   options
+ * @param {number}   [options.daysInAdvance=7]           – The number of days to simulate (starting tomorrow).
+ * @param {number}   [options.successProbability=0.9]      – The chance that a review is successful.
+ * @param {number}   [options.simulationRuns=100]         – How many Monte Carlo iterations to average over.
+ * @param {Array}    [options.cardSets=userdata.cardsets]  – The list of card sets to simulate (default: global userdata.cardsets).
+ * @returns {Object} An object mapping dates (YYYY-MM-DD) to the predicted average review count.
+ */
+
+function predictReviews({
+    daysInAdvance = 30,
+    successProbability = 0.9,
+    simulationRuns = 100,
+    cardSets = userdata.cardsets // assume global userdata holds our card sets
+  } = {}) {
+    // Get tomorrow's midnight as the simulation start.
+    let now = new Date();
+    let simulationStartDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    let simulationStart = simulationStartDate.getTime();
+    let simulationEnd = simulationStart + daysInAdvance * 24 * 3600 * 1000;
+  
+    // Array to accumulate review counts per day.
+    let aggregatedCounts = new Array(daysInAdvance).fill(0);
+  
+    // Run the Monte Carlo simulation many times.
+    for (let run = 0; run < simulationRuns; run++) {
+      let runCounts = new Array(daysInAdvance).fill(0);
+  
+      // Process each card set.
+      cardSets.forEach(cardset => {
+        // Get the delay schedule; if cardset.delayindex is not valid, default to DELAYS[0].
+        let delaySchedule = (cardset.delayindex !== undefined && DELAYS[cardset.delayindex])
+          ? DELAYS[cardset.delayindex]
+          : DELAYS[0];
+  
+        // Process each card in the set.
+        cardset.cards.forEach(card => {
+          // Skip cards that have never been reviewed.
+          if (card.laststudied === 0) return;
+  
+          // Ensure a nonnegative starting index.
+          let simIndex = (typeof card.laststudiedindex === "number") ? Math.max(0, card.laststudiedindex) : 0;
+          let simTime = card.laststudied;
+  
+          // Use an iteration cap as a safeguard.
+          let iterations = 0;
+          const maxIterations = 1000;
+  
+          while (iterations < maxIterations) {
+            iterations++;
+  
+            // Pick the delay from the schedule. If simIndex is beyond the schedule length, use the last delay.
+            let delayIdx = (simIndex < delaySchedule.length) ? simIndex : (delaySchedule.length - 1);
+            let delayDuration = delaySchedule[delayIdx];
+  
+            // If delayDuration is not a valid positive number, exit.
+            if (typeof delayDuration !== "number" || delayDuration <= 0) break;
+  
+            let nextReviewTime = simTime + delayDuration;
+  
+            // If the next review is beyond our simulation window, break.
+            if (nextReviewTime > simulationEnd) break;
+  
+            // If the next review is within the simulation window, count it.
+            if (nextReviewTime >= simulationStart) {
+              let dayOffset = Math.floor((nextReviewTime - simulationStart) / (24 * 3600 * 1000));
+              runCounts[dayOffset] += 1;
+            }
+  
+            // Simulate the review outcome:
+            //   - If remembered (with probability successProbability): increment the index.
+            //   - If forgotten: reset the index to 0.
+            if (Math.random() < successProbability) {
+              simIndex++;
+            } else {
+              simIndex = 0;
+            }
+            // Advance simulation time.
+            simTime = nextReviewTime;
+          }
+        });
+      });
+  
+      // Accumulate the run's counts.
+      for (let i = 0; i < daysInAdvance; i++) {
+        aggregatedCounts[i] += runCounts[i];
+      }
+    }
+  
+    // Average the counts over the number of simulation runs.
+    let averageCounts = aggregatedCounts.map(count => count / simulationRuns);
+  
+    // Build and return the result object mapping YYYY-MM-DD to the predicted review count.
+    let result = {};
+    for (let i = 0; i < daysInAdvance; i++) {
+      let date = new Date(simulationStart + i * 24 * 3600 * 1000);
+      let dateStr = date.toISOString().split("T")[0];
+      result[dateStr] = averageCounts[i];
+    }
+  
+    return result;
+}
+
+function showpredictreviews(){
+    let predictionData = predictReviews({ daysInAdvance: 30, successProbability: 0.9 })
+
+    const labels = predictionData.map(item => item.date);
+    const values = predictionData.map(item => item.predictedReviews);
+
+    // Get the canvas context:
+    const ctx = document.getElementById("predictionChart").getContext("2d");
+
+    // Create the chart:
+    const myChart = new Chart(ctx, {
+      type: "line",  // or 'bar', 'line', 'radar', 'pie', etc.
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Predicted Reviews",
+            data: values,
+            borderColor: "rgba(75,192,192,1)",
+            backgroundColor: "rgba(75,192,192,0.2)",
+            borderWidth: 2,
+            fill: true,
+            tension: 0.2
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: "Reviews"
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: "Date"
+            }
+          }
+        }
+      }
+    });
+
+    chartpopup.classList.remove('display-none')
+    
+    function hidepopup(){
+        chartpopup.classList.add('display-none')
+        chartpopup.removeEventListener('onclick', hidepopup)
+    }
+    chartpopup.addEventListener('onclick', hidepopup)
+}
+
+
 //CREDITS to:
 
 //https://andymatuschak.org/prompts/
