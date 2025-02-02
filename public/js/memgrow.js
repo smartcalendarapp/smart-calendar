@@ -435,6 +435,8 @@ async function updatescreen(){
             <div class="pointer-none text-16px">Create new</div>
         </div>`)
 
+        output.push(`<div class="text-12px text-secondary align-self-flex-end statshover" onclick="showpredictreviews()">Stats</div>`)
+
         cardsetlist.innerHTML = output.join('')
 
         if(oldscreenview == 1){
@@ -2435,17 +2437,20 @@ function predictReviews({
     return result;
 }
 
+let myChart;
+
 function showpredictreviews(){
-    let predictionData = predictReviews({ daysInAdvance: 30, successProbability: 0.9 })
+    let predictionData = Object.entries(predictReviews({ daysInAdvance: 30, successProbability: 0.9 }))
 
-    const labels = predictionData.map(item => item.date);
-    const values = predictionData.map(item => item.predictedReviews);
+    const labels = predictionData.map(item => item[0]);
+    const values = predictionData.map(item => item[1]);
 
-    // Get the canvas context:
+    if(myChart) myChart.destroy()
+
     const ctx = document.getElementById("predictionChart").getContext("2d");
 
     // Create the chart:
-    const myChart = new Chart(ctx, {
+    myChart = new Chart(ctx, {
       type: "line",  // or 'bar', 'line', 'radar', 'pie', etc.
       data: {
         labels: labels,
@@ -2482,14 +2487,13 @@ function showpredictreviews(){
     });
 
     chartpopup.classList.remove('display-none')
-    
-    function hidepopup(){
-        chartpopup.classList.add('display-none')
-        chartpopup.removeEventListener('onclick', hidepopup)
-    }
-    chartpopup.addEventListener('onclick', hidepopup)
 }
 
+
+
+function hidecanvaspopup(){
+    chartpopup.classList.add('display-none')
+}
 
 //CREDITS to:
 

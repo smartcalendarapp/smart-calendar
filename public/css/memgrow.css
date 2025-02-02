@@ -754,3 +754,7 @@ textarea{
 #chartpopup{
     background-color:#00000033
 }
+
+.statshover:hover{
+    text-decoration:underline
+}

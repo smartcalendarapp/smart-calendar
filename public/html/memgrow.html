@@ -59,7 +59,7 @@ if(localStorage.getItem('noanalytics')!=JSON.stringify(true)){
         </div>
     </div>
 
-    <div class="display-flex align-center justify-center absolute top-0 right-0 bottom-0 left-0 z-index-999 display-none" id="chartpopup">
+    <div class="display-flex align-center justify-center absolute top-0 right-0 bottom-0 left-0 z-index-999 display-none" id="chartpopup" onclick="hidecanvaspopup()">
         <canvas id="predictionChart" width="600" height="300"></canvas>
     </div>
 
