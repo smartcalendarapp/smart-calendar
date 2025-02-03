@@ -1992,6 +1992,10 @@ document.addEventListener('keydown', async (event) => {
         if(screenview == 1){
             clickscreen(0)
         }
+        let chartpopup = getelement('chartpopup')
+        if(!chartpopup.classList.contains('display-none')){
+            chartpopup.classList.add('display-none')
+        }
     }
 
     if(event.key == 'ArrowDown'){
