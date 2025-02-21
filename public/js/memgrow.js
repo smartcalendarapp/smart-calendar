@@ -134,7 +134,7 @@ class CardSet{
                 return [seconds, 'second']
             }
 
-            let timeuntil = Math.min(...this.cards.filter(d => d.fronttext && d.backtext).map(d => d.laststudied + DELAYS[this.delayindex][Math.max(d.laststudiedindex, 0)]))
+            let timeuntil = Math.min(...this.cards.filter(d => d.fronttext && d.backtext).map(d => d.laststudied + DELAYS[this.delayindex][Math.min(Math.max(d.laststudiedindex, 0), DELAYS[this.delayindex].length - 1)]))
             let timedata = timeUntil(timeuntil)
             return `Review in ${displaynumber(timedata[0], timedata[1])}`
         }else if(status == 1){
@@ -149,7 +149,7 @@ class CardSet{
     }
 
     getReviewCards(){
-        return this.cards.filter(d => Date.now() > d.laststudied + DELAYS[this.delayindex][Math.max(d.laststudiedindex, 0)] && d.fronttext && d.backtext)
+        return this.cards.filter(d => Date.now() > d.laststudied + DELAYS[this.delayindex][Math.min(Math.max(d.laststudiedindex, 0), DELAYS[this.delayindex].length - 1)] && d.fronttext && d.backtext)
     }
 
     isNewlineSet(){
@@ -211,8 +211,8 @@ class Card{
 }
 
 const DELAYS = [
-    [3 * 3600 * 1000, 12 * 3600 * 1000, 86400 * 1000, 2 * 86400 * 1000, 5 * 86400 * 1000, 7 * 86400 * 1000, 14 * 86400 * 1000, 30 * 86400 * 1000],
-    [3 * 3600 * 1000, 86400 * 1000, 5 * 86400 * 1000, 12 * 86400 * 1000, 30 * 86400 * 1000, 70 * 86400 * 1000, 180 * 86400 * 1000],
+    [3 * 3600 * 1000, 12 * 3600 * 1000, 86400 * 1000, 2 * 86400 * 1000, 5 * 86400 * 1000, 7 * 86400 * 1000, 14 * 86400 * 1000, 30 * 86400 * 1000], //short term
+    [3 * 3600 * 1000, 86400 * 1000, 5 * 86400 * 1000, 12 * 86400 * 1000, 30 * 86400 * 1000, 70 * 86400 * 1000, 180 * 86400 * 1000], //long term
 ]
 
 
@@ -435,7 +435,7 @@ async function updatescreen(){
             <div class="pointer-none text-16px">Create new</div>
         </div>`)
 
-        output.push(`<div class="text-12px text-secondary align-self-flex-end statshover" onclick="showpredictreviews()">Stats</div>`)
+        output.push(`<div class="text-14px text-secondary align-self-flex-end statshover" onclick="showpredictreviews()">Stats</div>`)
 
         cardsetlist.innerHTML = output.join('')
 
@@ -1487,7 +1487,7 @@ function deletecardset(){
 
 function clickcardblur(){
     if(currentcardset.getStatus() == 1){
-        displaycardindexes = currentcardset.getReviewCards().sort((a, b) => (a.laststudied + DELAYS[currentcardset.delayindex][a.laststudiedindex]) - (b.laststudied + DELAYS[currentcardset.delayindex][b.laststudiedindex])).map(d => currentcardset.cards.findIndex(f => f.id == d.id)) //sort here
+        displaycardindexes = currentcardset.getReviewCards().sort((a, b) => (a.laststudied + DELAYS[currentcardset.delayindex][Math.min(a.laststudiedindex, DELAYS[currentcardset.delayindex].length - 1)]) - (b.laststudied + DELAYS[currentcardset.delayindex][Math.min(b.laststudiedindex, DELAYS[currentcardset.delayindex].length - 1)])).map(d => currentcardset.cards.findIndex(f => f.id == d.id)) //sort here
 
         currentcardindex = displaycardindexes[0]
 
