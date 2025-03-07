@@ -9411,7 +9411,6 @@ function fixrecurringtodo(item){
 				}
 				item.repeatid = null
 			}
-		}else{
 			return
 		}
 
