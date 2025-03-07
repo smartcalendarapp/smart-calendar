@@ -8308,20 +8308,22 @@ function getRecurrenceString(item) {
 
 	const options = {}
 
-	if (frequency != null && frequency < 4) {
-		options.freq = 3 - frequency
-	}
-	if (byday && byday.length > 0) {
-		options.byweekday = byday.map((d) => (d + 6) % 7)
-	}
-	if (interval != null) {
-		options.interval = interval
-	}
-	if (count != null) {
-		options.count = count
-	}
-	if (until != null) {
-		options.until = new Date(until)
+	if(item.type == 0){
+		if (frequency != null && frequency < 4) {
+			options.freq = 3 - frequency
+		}
+		if (byday && byday.length > 0) {
+			options.byweekday = byday.map((d) => (d + 6) % 7)
+		}
+		if (interval != null) {
+			options.interval = interval
+		}
+		if (count != null) {
+			options.count = count
+		}
+		if (until != null) {
+			options.until = new Date(until)
+		}
 	}
 
 	return new RRule(options).toString()
@@ -8428,11 +8430,13 @@ function getdatafromgooglecalendar(listdata) {
 				myevent.googlecalendarid = mycalendar.googleid
 			}
 
-			myevent.repeat.frequency = frequency
-			myevent.repeat.interval = interval
-			myevent.repeat.byday = byday
-			myevent.repeat.until = until
-			myevent.repeat.count = count
+			if(myevent.type == 0){
+				myevent.repeat.frequency = frequency
+				myevent.repeat.interval = interval
+				myevent.repeat.byday = byday
+				myevent.repeat.until = until
+				myevent.repeat.count = count
+			}
 			fixrepeat(myevent)
 
 			outputevents.push(myevent)
