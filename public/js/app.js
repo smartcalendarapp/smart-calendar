@@ -8416,6 +8416,9 @@ function getdatafromgooglecalendar(listdata) {
 				myevent.end.month = enddate.getMonth()
 				myevent.end.day = enddate.getDate()
 				myevent.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+
+				myevent.title = summary
+				myevent.notes = description
 			} else {
 				myevent = new Calendar.Event(startdate.getFullYear(), startdate.getMonth(), startdate.getDate(), startdate.getHours() * 60 + startdate.getMinutes(), enddate.getFullYear(), enddate.getMonth(), enddate.getDate(), enddate.getHours() * 60 + enddate.getMinutes(), summary, description)
 				myevent.googleeventid = id
