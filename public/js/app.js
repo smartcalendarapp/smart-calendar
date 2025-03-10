@@ -8361,8 +8361,8 @@ function getdatafromgooglecalendar(listdata) {
 		//modify existing calendar or create new calendar
 		let mycalendar = calendar.calendars.find(r => r.googleid == calendardata.id || (r.isprimary && calendardata.primary))
 		if (mycalendar) {
-			mycalendar.title = calendardata.summary
-			mycalendar.notes = calendardata.description
+			mycalendar.title = calendardata.summary || ''
+			mycalendar.notes = calendardata.description || ''
 			mycalendar.readonly = calendardata.accessRole == 'reader' || calendardata.accessRole == 'freeBusyReader'
 		} else {
 			mycalendar = new Calendar.Calendar(calendardata.summary, calendardata.description, calendardata.accessRole == 'reader' || calendardata.accessRole == 'freeBusyReader', null)
