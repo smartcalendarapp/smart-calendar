@@ -1518,7 +1518,6 @@ function clickdidntremember(){
     currentcardset.cards[currentcardindex].laststudied = Date.now()
     if(currentcardset.cards[currentcardindex].laststudiedindex <= 0){
         currentcardset.cards[currentcardindex].laststudiedindex-- //penalty
-        currentcardset.cards[currentcardindex].forgottimes++
 
         if(currentcardset.cards[currentcardindex].laststudiedindex < -2){
             currentcardset.cards[currentcardindex].laststudiedindex = -2
