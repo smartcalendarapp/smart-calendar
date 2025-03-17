@@ -7822,8 +7822,8 @@ async function getclientgoogleclassroom(){
 					mytodo.endbefore.day = endbeforeday
 					mytodo.endbefore.minute = endbeforeminute
 
-					mytodo.title = googleitem.title
-					mytodo.notes = googleitem.description
+					mytodo.title = googleitem.title || ''
+					mytodo.notes = googleitem.description || ''
 					mytodo.googleclassroomlink = googleitem.alternateLink
 				}
 
