@@ -7240,7 +7240,7 @@ app.post('/generateaicards', async (req, res) => {
 	
     const input = req.body.input
     const istranscript = req.body.istranscript
-    const existingcards = []//req.body.existingcards //or decide to select them to save ctx
+    const existingcards = req.body.existingcards.slice(-1) //or decide to select them to save ctx
     const files = req.body.files
 
 const systemprompt = `Each card prompt must follow the rules below:

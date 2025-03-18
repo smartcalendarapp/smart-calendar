@@ -56,7 +56,7 @@ body {
 
 .cardset{
     width: 250px;
-    height: 250px;
+    height: 150px;
     padding: 12px;
     background-color: var(--background-secondary);
     border-radius: 16px;
