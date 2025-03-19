@@ -1519,8 +1519,8 @@ function clickdidntremember(){
     if(currentcardset.cards[currentcardindex].laststudiedindex <= 0){
         currentcardset.cards[currentcardindex].laststudiedindex-- //penalty
 
-        if(currentcardset.cards[currentcardindex].laststudiedindex < 0){
-            currentcardset.cards[currentcardindex].laststudiedindex = 0
+        if(currentcardset.cards[currentcardindex].laststudiedindex < -1){
+            currentcardset.cards[currentcardindex].laststudiedindex = -1
         }
         
 
