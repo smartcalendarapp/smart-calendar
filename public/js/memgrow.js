@@ -1506,10 +1506,7 @@ function togglecardsetinterval(){
 //remember
 function clickremembered(){
     currentcardset.cards[currentcardindex].laststudied = Date.now()
-    if(currentcardset.cards[currentcardindex].laststudiedindex < DELAYS[currentcardset.delayindex].length - 1){
-        currentcardset.cards[currentcardindex].laststudiedindex++
-        currentcardset.cards[currentcardindex].rememberedtimes++
-    }
+    currentcardset.cards[currentcardindex].laststudiedindex++
 
     processnextcard()
 }
@@ -2293,7 +2290,7 @@ function getcardinsideprogress(card, cardset){
         if (minutes > 0) return [minutes, 'm']
         return [seconds, 's']
     }
-    return timeShort(DELAYS[cardset.delayindex][didntremembervalue ? 0 : Math.max(card.laststudiedindex + 1, 0)]).join('')
+    return timeShort(DELAYS[cardset.delayindex][didntremembervalue ? 0 : Math.min(Math.max(card.laststudiedindex + 1, 0), DELAYS[cardset.delayindex].length - 1)]).join('')
 }
 let didntremembervalue = 0
 function enterdidntremember(){
@@ -2379,7 +2376,7 @@ function predictReviews({
           if (card.laststudied === 0) return;
   
           // Ensure a nonnegative starting index.
-          let simIndex = (typeof card.laststudiedindex === "number") ? Math.max(0, card.laststudiedindex) : 0;
+          let simIndex = (typeof card.laststudiedindex === "number") ? Math.min(Math.max(0, card.laststudiedindex), DELAYS[cardset.delayindex].length - 1) : 0;
           let simTime = card.laststudied;
   
           // Use an iteration cap as a safeguard.
