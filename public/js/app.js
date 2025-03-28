@@ -2559,8 +2559,8 @@ class Calendar {
 					let infotitle = getElement('infotitle')
 					let infonotes = getElement('infonotes')
 
-					infotitle.value = item.title
-					infonotes.value = item.notes
+					infotitle.value = item.title || ''
+					infonotes.value = item.notes || ''
 
 					if (item.type == 0) {
 						let infostartdate = getElement('infostartdate')
