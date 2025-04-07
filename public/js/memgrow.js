@@ -471,6 +471,13 @@ async function updatescreen(){
             aibuttonwrap.classList.remove('hiddenshiftdown')
         }
 
+        let gesturebutton = getelement('gesturebutton')
+        if(editcardmode){
+            gesturebutton.classList.add('display-none')
+        }else{
+            gesturebutton.classList.remove('display-none')
+        }
+
         let screencardsettitle = getelement('screencardsettitle')
         screencardsettitle.classList.remove('titleinputedit')
         screencardsettitle.value = currentcardset.title
@@ -2497,16 +2504,16 @@ function hidecanvaspopup(){
 }
 
 
-
 //HAND GESTURE?!
 
-import { setGestureCallback } from './handgesture.js';
-  
-
-setGestureCallback((gesture) => {
-  console.log("Gesture received in main:", gesture);
-
+window.HandGesture.setGestureCallback(function(gesture) {
+    console.log("Gesture received in main:", gesture);
 });
+
+
+function togglegesture(){
+    window.HandGesture.toggleGestureRecognition();
+}
 
 
 //CREDITS to:
