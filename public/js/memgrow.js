@@ -2223,10 +2223,23 @@ async function clickhint(hinttype){
                         </div>`;
                         hinttext.innerHTML = myhtml
                     }else{
-                        let replacedcontent = (data?.content || '').replace(new RegExp(currentcardset.cards[currentcardindex].fronttext, 'gm'), (match) => {
-                            return `<span class="highlighttext">${match}</span>`
-                        })
-                        hinttext.innerHTML = replacedcontent
+                        let displaycontent = data?.content || ''
+                        function containsChinese(word) {
+                            const chineseRegex = /[\u4e00-\u9fff]/;
+                            return chineseRegex.test(word);
+                        }
+                        if(containsChinese(displaycontent)){
+                            const frontLines = currentcardset.cards[currentcardindex].fronttext.split('\n');
+                            const firstLine = frontLines[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                            const lastLine = frontLines.slice(-1)[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+                            const regex = new RegExp(`${firstLine}|${lastLine}`, 'gm');
+
+                            displaycontent = displaycontent.replace(regex, (match) => {
+                            return `<span class="highlighttext">${match}</span>`;
+                            });
+                        }
+                        hinttext.innerHTML = displaycontent
                         hintpopup.classList.remove('hintpopupexpanded')
                     }
 
