@@ -2223,8 +2223,11 @@ async function clickhint(hinttype){
                         </div>`;
                         hinttext.innerHTML = myhtml
                     }else{
-                        hinttext.innerHTML = data.content
-                        hintpopup.classList.remove('hintpopupexpanded')    
+                        let replacedcontent = (data?.content || '').replace(new RegExp(currentcardset.cards[currentcardindex].fronttext, 'gm'), (match) => {
+                            return `<span class="highlighttext">${match}</span>`
+                        })
+                        hinttext.innerHTML = replacedcontent
+                        hintpopup.classList.remove('hintpopupexpanded')
                     }
 
                     let hintpopuptitle = getelement('hintpopuptitle')
@@ -2541,7 +2544,7 @@ document.addEventListener('HandGestureReady', function() {
     window.HandGesture.setGestureCallback(function(gesture) {
         currentgesture = gesture
 
-        if(gesture.handedness == 'Left'){
+        if(gesture.handedness == 'Left'){ //right hand, with mirrored camera
             console.log("Gesture received in main:", gesture);
 
             //main actions

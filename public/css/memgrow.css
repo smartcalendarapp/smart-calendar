@@ -786,3 +786,9 @@ textarea{
 .PlayBackRatePanelYPSC{
     display:none !important
 }
+
+.highlighttext{
+    background-color: #f8e91e73;
+    border-radius: 4px;
+    padding: 0px 1px;
+}
