@@ -2587,9 +2587,7 @@ document.addEventListener('HandGestureReady', function() {
             //supplementary actions, e.g. hint, speak
             if(handlingsupplementarygesture) return
 
-            if(gesture.categoryName == 'Pointing_Up'){
-                if(!showanswer) return
-    
+            if(gesture.categoryName == 'Pointing_Up'){    
                 if(!notanysupplementarygesture) return
 
                 handlingsupplementarygesture = true
@@ -2607,8 +2605,6 @@ document.addEventListener('HandGestureReady', function() {
             }else if(gesture.categoryName == 'Open_Palm'){
                 //equivalent of D key
     
-                if(!showanswer) return
-
                 if(!notanysupplementarygesture) return
         
                 handlingsupplementarygesture = true
