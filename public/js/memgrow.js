@@ -2509,7 +2509,7 @@ function hidecanvaspopup(){
 window.HandGesture.setGestureCallback(function(gesture) {
     console.log("Gesture received in main:", gesture);
 });
-  
+
 window.HandGesture.setToggleStateCallback(function(isRunning) {
     if(isRunning){
         getelement('gesturebutton').classList.add('gesturebuttonactive')
@@ -2517,7 +2517,7 @@ window.HandGesture.setToggleStateCallback(function(isRunning) {
         getelement('gesturebutton').classList.remove('gesturebuttonactive')
     }
 });
-  
+
 
 function togglegesture(){
     window.HandGesture.toggleGestureRecognition();
@@ -2531,5 +2531,7 @@ function togglegesture(){
 //https://michaelnielsen.org/
 
 //https://andymatuschak.org/
+
+//https://codepen.io/mediapipe-preview/pen/zYamdVd
 
 
