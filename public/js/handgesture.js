@@ -118,10 +118,17 @@ function toggleGestureRecognition() {
   }
 }
 
+function turnOffRecognition(){
+    if (gestureRecognitionRunning) {
+        stopGestureRecognition();
+    }
+}
+
 window.HandGesture = {
     setGestureCallback,
     setToggleStateCallback,
-    toggleGestureRecognition
+    toggleGestureRecognition,
+    turnOffRecognition
   };
   
   // Dispatch an event so the main script knows the API is ready.

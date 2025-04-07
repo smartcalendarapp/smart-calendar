@@ -441,6 +441,8 @@ async function updatescreen(){
         cardsetlist.innerHTML = output.join('')
 
         if(oldscreenview == 1){
+            turnoffgesture()
+
             if(userdata.getMemoryScore() > oldmemoryscore){
                 updatepointstext(`+${userdata.getMemoryScore() - oldmemoryscore} pts`, true)
                 setTimeout(function(){
@@ -2511,7 +2513,7 @@ function hidecanvaspopup(){
 }
 
 
-//HAND GESTURE?!
+//HAND GESTURE
 
 let handlinggesture = false
 let handlingsupplementarygesture = false
@@ -2525,7 +2527,7 @@ document.addEventListener('HandGestureReady', function() {
     window.HandGesture.setGestureCallback(function(gesture) {
         currentgesture = gesture
 
-        if(gesture.handedness == 'left'){
+        if(gesture.handedness == 'Left'){
             console.log("Gesture received in main:", gesture);
 
             //main actions
@@ -2541,14 +2543,15 @@ document.addEventListener('HandGestureReady', function() {
                 }
     
                 setTimeout(function(){
+                    handlinggesture = false
+                    hidegestureremembered()
+
                     if(currentgesture.categoryName == 'Pointing_Up'){
                         //equivalent of space key
                         processspacekey()
     
                         notpointgesture = false
                     }
-                    handlinggesture = false
-                    hidegestureremembered()
                 }, 200)
             }else if(gesture.categoryName == 'Open_Palm'){
                 //equivalent of D key
@@ -2561,20 +2564,20 @@ document.addEventListener('HandGestureReady', function() {
                 handlinggesture = true
     
                 setTimeout(function(){
+                    handlinggesture = false
+                    hidegesturedidntremember()
+                    
                     if(currentgesture.categoryName == 'Open_Palm'){
                         if(showanswer){
                             clickdidntremember()
                         }
                     }
-    
-                    handlinggesture = false
-                    hidegesturedidntremember()
                 }, 200)
             }else{
                 notpointgesture = true
             }
 
-        }else if(gesture.handedness == 'right'){
+        }else if(gesture.handedness == 'Right'){
             console.log("Gesture received in main:", gesture);
 
             //supplementary actions, e.g. hint, speak
@@ -2588,13 +2591,14 @@ document.addEventListener('HandGestureReady', function() {
                 handlingsupplementarygesture = true
     
                 setTimeout(function(){
+                    handlingsupplementarygesture = false
+
                     if(currentgesture.categoryName == 'Pointing_Up'){
                         //equivalent of E key for hint
                         clickhint(0)
                         
                         notanysupplementarygesture = false
                     }
-                    handlingsupplementarygesture = false
                 }, 200)
             }else if(gesture.categoryName == 'Open_Palm'){
                 //equivalent of D key
@@ -2606,6 +2610,8 @@ document.addEventListener('HandGestureReady', function() {
                 handlingsupplementarygesture = true
     
                 setTimeout(function(){
+                    handlingsupplementarygesture = false
+
                     if(currentgesture.categoryName == 'Open_Palm'){
                         if(showanswer){
                             //equivalent of S key for speak
@@ -2614,8 +2620,6 @@ document.addEventListener('HandGestureReady', function() {
                             notanysupplementarygesture = false
                         }
                     }
-    
-                    handlingsupplementarygesture = false
                 }, 200)
             }else{
                 notanysupplementarygesture = true
@@ -2660,6 +2664,9 @@ function togglegesture(){
     window.HandGesture.toggleGestureRecognition();
 }
 
+function turnoffgesture(){
+    window.HandGesture.turnOffRecognition();
+}
 
 //CREDITS to:
 
