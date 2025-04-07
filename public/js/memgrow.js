@@ -2501,6 +2501,7 @@ function hidecanvaspopup(){
 //HAND GESTURE?!
 
 import { setGestureCallback } from './handgesture.js';
+  
 
 setGestureCallback((gesture) => {
   console.log("Gesture received in main:", gesture);
