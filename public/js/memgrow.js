@@ -2558,7 +2558,7 @@ document.addEventListener('HandGestureReady', function() {
         currentgesture = gesture
 
         if(gesture.handedness == 'Left'){ //right hand, with mirrored camera
-            console.log("Gesture received in main:", gesture);
+            //console.log("Gesture received in main:", gesture);
 
             //main actions
             if(handlinggesture) return
@@ -2609,10 +2609,13 @@ document.addEventListener('HandGestureReady', function() {
             }
 
         }else if(gesture.handedness == 'Right'){
-            console.log("Gesture received in main:", gesture);
+            //console.log("Gesture received in main:", gesture);
 
             //supplementary actions, e.g. hint, speak
             if(handlingsupplementarygesture) return
+
+            if(!hidecardgroupblur || finishedreview) return
+
 
             if(gesture.categoryName == 'Pointing_Up'){   
                 //equivalent of E key 
