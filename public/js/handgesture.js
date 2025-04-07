@@ -118,9 +118,11 @@ function toggleGestureRecognition() {
   }
 }
 
-// Attach the API to the global window object.
 window.HandGesture = {
-  setGestureCallback,
-  setToggleStateCallback,
-  toggleGestureRecognition
-};
+    setGestureCallback,
+    setToggleStateCallback,
+    toggleGestureRecognition
+  };
+  
+  // Dispatch an event so the main script knows the API is ready.
+  document.dispatchEvent(new Event('HandGestureReady'));

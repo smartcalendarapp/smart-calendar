@@ -2506,17 +2506,23 @@ function hidecanvaspopup(){
 
 //HAND GESTURE?!
 
-window.HandGesture.setGestureCallback(function(gesture) {
-    console.log("Gesture received in main:", gesture);
+document.addEventListener('HandGestureReady', function() {
+    window.HandGesture.setGestureCallback(function(gesture) {
+      console.log("Gesture received in main:", gesture);
+    });
+  
+    window.HandGesture.setToggleStateCallback(function(isRunning) {
+      const btn = getelement('gesturebutton');
+      if (btn) {
+        if (isRunning) {
+          btn.classList.add('gesturebuttonactive');
+        } else {
+          btn.classList.remove('gesturebuttonactive');
+        }
+      }
+    });
 });
-
-window.HandGesture.setToggleStateCallback(function(isRunning) {
-    if(isRunning){
-        getelement('gesturebutton').classList.add('gesturebuttonactive')
-    }else{
-        getelement('gesturebutton').classList.remove('gesturebuttonactive')
-    }
-});
+  
 
 
 function togglegesture(){
