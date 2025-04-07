@@ -2039,15 +2039,7 @@ document.addEventListener('keydown', async (event) => {
         event.stopPropagation()
 
         if(screenview == 1 && currentcardset && !editcardmode){
-            if(!hidecardgroupblur){
-                clickcardblur()
-            }else if(finishedreview){
-                clickcardgroupdone()
-            }else if(!showanswer){
-                clicktoreveal()
-            }else{
-                clickremembered()
-            }
+            processspacekey()
         }else if(screenview == 0){
             if(userdata.getReviewSets().length > 0){
                 clickmaintitle()
@@ -2073,18 +2065,33 @@ document.addEventListener('keydown', async (event) => {
             }
         }
         if(event.key == 's'){ //speak
-            let hintpopup = getelement('hintpopup')
-            if(!hintpopup.classList.contains('hidden')){
-                let hinttext = getelement('hinttext')
-                speaktext(hinttext.textContent)
-            }else{
-                speakcardtext(0)
-            }
+            processSkey()
         }
     }
 
 })
 
+
+function processspacekey(){
+    if(!hidecardgroupblur){
+        clickcardblur()
+    }else if(finishedreview){
+        clickcardgroupdone()
+    }else if(!showanswer){
+        clicktoreveal()
+    }else{
+        clickremembered()
+    }
+}
+function processSkey(){
+    let hintpopup = getelement('hintpopup')
+    if(!hintpopup.classList.contains('hidden')){
+        let hinttext = getelement('hinttext')
+        speaktext(hinttext.textContent)
+    }else{
+        speakcardtext(0)
+    }
+}
 
 
 //save backup
@@ -2507,58 +2514,115 @@ function hidecanvaspopup(){
 //HAND GESTURE?!
 
 let handlinggesture = false
+let handlingsupplementarygesture = false
+
 let currentgesture;
+
 let notpointgesture = true
+let notanysupplementarygesture = true
 
 document.addEventListener('HandGestureReady', function() {
     window.HandGesture.setGestureCallback(function(gesture) {
         currentgesture = gesture
-        if(handlinggesture) return
 
-        console.log("Gesture received in main:", gesture);
+        if(gesture.handedness == 'left'){
+            console.log("Gesture received in main:", gesture);
 
-        if(gesture.categoryName == 'Pointing_Up'){
-            if(!notpointgesture) return
+            //main actions
+            if(handlinggesture) return
 
-            handlinggesture = true
-
-            if(showanswer){
-                showgestureremembered()
+            if(gesture.categoryName == 'Pointing_Up'){
+                if(!notpointgesture) return
+    
+                handlinggesture = true
+    
+                if(showanswer){
+                    showgestureremembered()
+                }
+    
+                setTimeout(function(){
+                    if(currentgesture.categoryName == 'Pointing_Up'){
+                        //equivalent of space key
+                        processspacekey()
+    
+                        notpointgesture = false
+                    }
+                    handlinggesture = false
+                    hidegestureremembered()
+                }, 200)
+            }else if(gesture.categoryName == 'Open_Palm'){
+                //equivalent of D key
+                notpointgesture = true
+    
+                if(!showanswer) return
+    
+                showgesturedidntremember()
+    
+                handlinggesture = true
+    
+                setTimeout(function(){
+                    if(currentgesture.categoryName == 'Open_Palm'){
+                        if(showanswer){
+                            clickdidntremember()
+                        }
+                    }
+    
+                    handlinggesture = false
+                    hidegesturedidntremember()
+                }, 200)
+            }else{
+                notpointgesture = true
             }
 
-            setTimeout(function(){
-                if(currentgesture.categoryName == 'Pointing_Up'){
-                    if(showanswer){
-                        clickremembered()
-                        notpointgesture = false
-                    }else{
-                        clicktoreveal()
+        }else if(gesture.handedness == 'right'){
+            console.log("Gesture received in main:", gesture);
+
+            //supplementary actions, e.g. hint, speak
+            if(handlingsupplementarygesture) return
+
+            if(gesture.categoryName == 'Pointing_Up'){
+                if(!showanswer) return
+    
+                if(!notanysupplementarygesture) return
+
+                handlingsupplementarygesture = true
+    
+                setTimeout(function(){
+                    if(currentgesture.categoryName == 'Pointing_Up'){
+                        //equivalent of E key for hint
+                        clickhint(0)
+                        
+                        notanysupplementarygesture = false
                     }
-                }
-                handlinggesture = false
-                hidegestureremembered()
-            }, 500)
-        }else if(gesture.categoryName == 'Open_Palm'){
-            notpointgesture = true
+                    handlingsupplementarygesture = false
+                }, 200)
+            }else if(gesture.categoryName == 'Open_Palm'){
+                //equivalent of D key
+    
+                if(!showanswer) return
 
-            if(!showanswer) return
+                if(!notanysupplementarygesture) return
+        
+                handlingsupplementarygesture = true
+    
+                setTimeout(function(){
+                    if(currentgesture.categoryName == 'Open_Palm'){
+                        if(showanswer){
+                            //equivalent of S key for speak
+                            processSkey()
 
-            showgesturedidntremember()
-
-            handlinggesture = true
-
-            setTimeout(function(){
-                if(currentgesture.categoryName == 'Open_Palm'){
-                    if(showanswer){
-                        clickdidntremember()
+                            notanysupplementarygesture = false
+                        }
                     }
-                }
-                handlinggesture = false
-                hidegesturedidntremember()
-            }, 500)
-        }else{
-            notpointgesture = true
+    
+                    handlingsupplementarygesture = false
+                }, 200)
+            }else{
+                notanysupplementarygesture = true
+            }
+
         }
+
     });
   
     window.HandGesture.setToggleStateCallback(function(isRunning) {
