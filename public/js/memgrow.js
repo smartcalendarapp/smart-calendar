@@ -2496,6 +2496,18 @@ function hidecanvaspopup(){
     chartpopup.classList.add('display-none')
 }
 
+
+
+//HAND GESTURE?!
+
+import { setGestureCallback } from './handgesture.js';
+
+setGestureCallback((gesture) => {
+  console.log("Gesture received in main:", gesture);
+
+});
+
+
 //CREDITS to:
 
 //https://andymatuschak.org/prompts/
