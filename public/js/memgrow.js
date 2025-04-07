@@ -462,16 +462,16 @@ async function updatescreen(){
             updatepointstext(userdata.getMemoryScore())
         }
     }else if(screenview == 1){
+        if(editcardmode){
+            turnoffgesture()
+        }else{
+            if(usegesture){
+                turnongesture()
+            }
+        }
+
         if(oldscreenview == 0){
             oldmemoryscore = userdata.getMemoryScore()
-
-            if(editcardmode){
-                turnoffgesture()
-            }else{
-                if(usegesture){
-                    turnongesture()
-                }
-            }
         }
 
         let cardlist = getelement('cardlist')
