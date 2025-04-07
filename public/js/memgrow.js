@@ -2060,6 +2060,10 @@ document.addEventListener('keydown', async (event) => {
                 clickhint(2)
             }
         }
+
+        if(event.key == 'h'){ //hand gestures
+            togglegesture()
+        }
     
         if(event.key == 'd'){ //didnt remember
             if(hidecardgroupblur && !finishedreview){
@@ -2566,7 +2570,7 @@ document.addEventListener('HandGestureReady', function() {
                 setTimeout(function(){
                     handlinggesture = false
                     hidegesturedidntremember()
-                    
+
                     if(currentgesture.categoryName == 'Open_Palm'){
                         if(showanswer){
                             clickdidntremember()
