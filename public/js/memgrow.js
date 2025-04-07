@@ -402,6 +402,8 @@ function updatescreendynamically(){
 let oldscreenview;
 let oldmemoryscore;
 
+let usegesture = false;
+
 async function updatescreen(){
     let screenview1 = getelement('screenview1')
     screenview1.classList.add('hidden')
@@ -462,6 +464,10 @@ async function updatescreen(){
     }else if(screenview == 1){
         if(oldscreenview == 0){
             oldmemoryscore = userdata.getMemoryScore()
+
+            if(usegesture){
+                turnongesture()
+            }
         }
 
         let cardlist = getelement('cardlist')
@@ -2628,12 +2634,14 @@ document.addEventListener('HandGestureReady', function() {
     });
   
     window.HandGesture.setToggleStateCallback(function(isRunning) {
-      const btn = getelement('gesturebutton');
+      const btn = getelement('gesturebutton')
       if (btn) {
         if (isRunning) {
-          btn.classList.add('gesturebuttonactive');
+          btn.classList.add('gesturebuttonactive')
+          usegesture = true
         } else {
-          btn.classList.remove('gesturebuttonactive');
+          btn.classList.remove('gesturebuttonactive')
+          usegesture = false
         }
       }
     });
@@ -2659,11 +2667,15 @@ function hidegestureremembered(){
 }
 
 function togglegesture(){
-    window.HandGesture.toggleGestureRecognition();
+    window.HandGesture.toggleGestureRecognition()
 }
 
 function turnoffgesture(){
-    window.HandGesture.turnOffRecognition();
+    window.HandGesture.turnOffRecognition()
+}
+
+function turnongesture(){
+    window.HandGesture.turnOnRecognition()
 }
 
 //CREDITS to:
