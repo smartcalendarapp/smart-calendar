@@ -465,8 +465,12 @@ async function updatescreen(){
         if(oldscreenview == 0){
             oldmemoryscore = userdata.getMemoryScore()
 
-            if(usegesture){
-                turnongesture()
+            if(editcardmode){
+                turnoffgesture()
+            }else{
+                if(usegesture){
+                    turnongesture()
+                }
             }
         }
 
