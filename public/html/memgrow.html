@@ -236,7 +236,7 @@ if(localStorage.getItem('noanalytics')!=JSON.stringify(true)){
 
                 <div class="flex-column gap-12px width-full" id="remembergroup">
                     <div class="flex-row gap-12px remembergroup2items" id="remembergroupitems">
-                        <div class="rememberbutton justify-center flex-1 align-center flex-row gap-12px nowrap padding-8px-12px pointer border-8px-12px border-8px" onmouseenter="enterdidntremember()" onmouseleave="leavedidntremember()" onclick="clickdidntremember()">
+                        <div class="rememberbutton justify-center flex-1 align-center flex-row gap-12px nowrap padding-8px-12px pointer border-8px-12px border-8px" onmouseenter="enterdidntremember()" onmouseleave="leavedidntremember()" onclick="clickdidntremember()" id="didntrememberbutton">
                             <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite pointer-none">
                                 <g>
                                 <path d="M229.927 149.865C229.927 202.652 187.135 245.445 134.348 245.445C81.5606 245.445 38.7682 202.652 38.7682 149.865C38.7682 97.8591 80.3041 56.5247 132.012 55.3134C132.788 55.2952 159.382 52.7582 179.094 60.9501" fill="none" opacity="1" stroke-linecap="round" stroke-linejoin="round" stroke-width="25"/>
@@ -246,7 +246,7 @@ if(localStorage.getItem('noanalytics')!=JSON.stringify(true)){
                             </svg>
                             <div class="pointer-none text-14px text-white">Didn't remember</div>
                         </div>
-                        <div class="rememberbutton justify-center flex-1 align-center flex-row gap-12px nowrap padding-8px-12px pointer border-8px-12px border-8px" onclick="clickremembered()" onmouseenter="enterremembered()" onmouseleave="leaveremembered()">
+                        <div class="rememberbutton justify-center flex-1 align-center flex-row gap-12px nowrap padding-8px-12px pointer border-8px-12px border-8px" onclick="clickremembered()" onmouseenter="enterremembered()" onmouseleave="leaveremembered()" id="rememberedbutton">
                             <svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonwhite pointer-none">
                                 <g>
                                 <path d="M93.2369 211.648L10 120.493" opacity="1" stroke-linecap="round" stroke-linejoin="miter" stroke-width="25"></path>

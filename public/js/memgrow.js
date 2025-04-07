@@ -2506,9 +2506,59 @@ function hidecanvaspopup(){
 
 //HAND GESTURE?!
 
+let handlinggesture = false
+let currentgesture;
+let notpointgesture = true
+
 document.addEventListener('HandGestureReady', function() {
     window.HandGesture.setGestureCallback(function(gesture) {
-      console.log("Gesture received in main:", gesture);
+        currentgesture = gesture
+        if(handlinggesture) return
+
+        console.log("Gesture received in main:", gesture);
+
+        if(gesture.categoryName == 'Pointing_Up'){
+            if(!notpointgesture) return
+
+            handlinggesture = true
+
+            if(showanswer){
+                showgestureremembered()
+            }
+
+            setTimeout(function(){
+                if(currentgesture.categoryName == 'Pointing_Up'){
+                    if(showanswer){
+                        clickremembered()
+                        notpointgesture = false
+                    }else{
+                        clicktoreveal()
+                    }
+                }
+                handlinggesture = false
+                hidegestureremembered()
+            }, 500)
+        }else if(gesture.categoryName == 'Open_Palm'){
+            notpointgesture = true
+
+            if(!showanswer) return
+
+            showgesturedidntremember()
+
+            handlinggesture = true
+
+            setTimeout(function(){
+                if(currentgesture.categoryName == 'Open_Palm'){
+                    if(showanswer){
+                        clickdidntremember()
+                    }
+                }
+                handlinggesture = false
+                hidegesturedidntremember()
+            }, 500)
+        }else{
+            notpointgesture = true
+        }
     });
   
     window.HandGesture.setToggleStateCallback(function(isRunning) {
@@ -2522,8 +2572,25 @@ document.addEventListener('HandGestureReady', function() {
       }
     });
 });
-  
 
+
+function showgesturedidntremember(){
+    let didntrememberbutton = getelement('didntrememberbutton')
+    didntrememberbutton.classList.add('rememberbuttongesturehover')
+}
+function showgestureremembered(){
+    let rememberedbutton = getelement('rememberedbutton')
+    rememberedbutton.classList.add('rememberbuttongesturehover')
+}
+
+function hidegesturedidntremember(){
+    let didntrememberbutton = getelement('didntrememberbutton')
+    didntrememberbutton.classList.remove('rememberbuttongesturehover')
+}
+function hidegestureremembered(){
+    let rememberedbutton = getelement('rememberedbutton')
+    rememberedbutton.classList.remove('rememberbuttongesturehover')
+}
 
 function togglegesture(){
     window.HandGesture.toggleGestureRecognition();

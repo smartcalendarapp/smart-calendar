@@ -358,6 +358,11 @@ textarea{
     background-color: #1c2877
 }
 
+
+.rememberbuttongesturehover{
+    background-color: #1c2877 !important
+}
+
 .disabled{
     filter: opacity(0.2);
     pointer-events:none;
