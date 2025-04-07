@@ -2598,7 +2598,7 @@ document.addEventListener('HandGestureReady', function() {
                     handlingsupplementarygesture = false
 
                     if(currentgesture.categoryName == 'Pointing_Up'){
-                        clickhint(0)
+                        clickhint(1)
                         
                         notanysupplementarygesture = false
                     }
