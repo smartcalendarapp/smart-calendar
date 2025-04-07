@@ -2563,7 +2563,7 @@ document.addEventListener('HandGestureReady', function() {
     
                         notpointgesture = false
                     }
-                }, 50)
+                }, 100)
             }else if(gesture.categoryName == 'Open_Palm'){
                 //equivalent of D key
                 notpointgesture = true
@@ -2583,7 +2583,7 @@ document.addEventListener('HandGestureReady', function() {
                             clickdidntremember()
                         }
                     }
-                }, 50)
+                }, 100)
             }else{
                 notpointgesture = true
             }
@@ -2608,7 +2608,7 @@ document.addEventListener('HandGestureReady', function() {
                         
                         notanysupplementarygesture = false
                     }
-                }, 50)
+                }, 100)
             }else if(gesture.categoryName == 'Open_Palm'){
                 //equivalent of S key
 
@@ -2624,7 +2624,7 @@ document.addEventListener('HandGestureReady', function() {
 
                         notanysupplementarygesture = false
                     }
-                }, 50)
+                }, 100)
             }else{
                 notanysupplementarygesture = true
             }
@@ -2633,15 +2633,19 @@ document.addEventListener('HandGestureReady', function() {
 
     });
   
-    window.HandGesture.setToggleStateCallback(function(isRunning) {
+    window.HandGesture.setToggleStateCallback(function(isRunning, isforce) {
       const btn = getelement('gesturebutton')
       if (btn) {
         if (isRunning) {
           btn.classList.add('gesturebuttonactive')
-          usegesture = true
+          if(isforce){
+            usegesture = true
+          }
         } else {
           btn.classList.remove('gesturebuttonactive')
-          usegesture = false
+          if(isforce){
+            usegesture = false
+          }
         }
       }
     });

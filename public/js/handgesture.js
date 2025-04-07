@@ -83,14 +83,14 @@ async function predictWebcam() {
 }
 
 // Starts the webcam and gesture recognition.
-function startGestureRecognition() {
+function startGestureRecognition(force) {
   if (navigator.mediaDevices.getUserMedia) {
     navigator.mediaDevices.getUserMedia({ video: true })
       .then(stream => {
         videoStream = stream;
         video.srcObject = stream;
         gestureRecognitionRunning = true;
-        toggleStateCallback(gestureRecognitionRunning); // notify new state
+        toggleStateCallback(gestureRecognitionRunning, force); // notify new state
         video.addEventListener("loadeddata", predictWebcam);
       })
       .catch(err => console.error("Error accessing webcam:", err));
@@ -100,21 +100,21 @@ function startGestureRecognition() {
 }
 
 // Stops the webcam and gesture recognition.
-function stopGestureRecognition() {
+function stopGestureRecognition(force) {
   gestureRecognitionRunning = false;
   if (videoStream) {
     videoStream.getTracks().forEach(track => track.stop());
     videoStream = null;
   }
-  toggleStateCallback(gestureRecognitionRunning); // notify new state
+  toggleStateCallback(gestureRecognitionRunning, force); // notify new state
 }
 
 // Toggles gesture recognition on or off.
 function toggleGestureRecognition() {
   if (gestureRecognitionRunning) {
-    stopGestureRecognition();
+    stopGestureRecognition(true);
   } else {
-    startGestureRecognition();
+    startGestureRecognition(true);
   }
 }
 
