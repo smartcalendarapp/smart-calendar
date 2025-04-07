@@ -2538,6 +2538,8 @@ document.addEventListener('HandGestureReady', function() {
             if(handlinggesture) return
 
             if(gesture.categoryName == 'Pointing_Up'){
+                //equivalent of space key
+
                 if(!notpointgesture) return
     
                 handlinggesture = true
@@ -2551,7 +2553,6 @@ document.addEventListener('HandGestureReady', function() {
                     hidegestureremembered()
 
                     if(currentgesture.categoryName == 'Pointing_Up'){
-                        //equivalent of space key
                         processspacekey()
     
                         notpointgesture = false
@@ -2587,7 +2588,8 @@ document.addEventListener('HandGestureReady', function() {
             //supplementary actions, e.g. hint, speak
             if(handlingsupplementarygesture) return
 
-            if(gesture.categoryName == 'Pointing_Up'){    
+            if(gesture.categoryName == 'Pointing_Up'){   
+                //equivalent of E key 
                 if(!notanysupplementarygesture) return
 
                 handlingsupplementarygesture = true
@@ -2596,15 +2598,14 @@ document.addEventListener('HandGestureReady', function() {
                     handlingsupplementarygesture = false
 
                     if(currentgesture.categoryName == 'Pointing_Up'){
-                        //equivalent of E key for hint
                         clickhint(0)
                         
                         notanysupplementarygesture = false
                     }
                 }, 50)
             }else if(gesture.categoryName == 'Open_Palm'){
-                //equivalent of D key
-    
+                //equivalent of S key
+
                 if(!notanysupplementarygesture) return
         
                 handlingsupplementarygesture = true
@@ -2613,7 +2614,6 @@ document.addEventListener('HandGestureReady', function() {
                     handlingsupplementarygesture = false
 
                     if(currentgesture.categoryName == 'Open_Palm'){
-                        //equivalent of S key for speak
                         processSkey()
 
                         notanysupplementarygesture = false
