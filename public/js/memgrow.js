@@ -2509,7 +2509,15 @@ function hidecanvaspopup(){
 window.HandGesture.setGestureCallback(function(gesture) {
     console.log("Gesture received in main:", gesture);
 });
-
+  
+window.HandGesture.setToggleStateCallback(function(isRunning) {
+    if(isRunning){
+        getelement('gesturebutton').classList.add('gesturebuttonactive')
+    }else{
+        getelement('gesturebutton').classList.remove('gesturebuttonactive')
+    }
+});
+  
 
 function togglegesture(){
     window.HandGesture.toggleGestureRecognition();

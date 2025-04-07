@@ -766,3 +766,14 @@ textarea{
 .statshover:hover{
     text-decoration:underline
 }
+
+#gesturebutton{
+    margin:40px;
+}
+
+.gesturebuttonactive{
+    background-color: #efefef !important;
+}
+.gesturebuttonactive svg{
+    fill: #000000 !important;
+}

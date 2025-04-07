@@ -3,17 +3,27 @@ import { GestureRecognizer, FilesetResolver } from "https://cdn.jsdelivr.net/npm
 // Global variable to hold the current gesture data (if needed externally)
 let currentGesture = null;
 
-// Default callback function (can be overridden)
+// Default callback function for gesture updates (can be overridden)
 let gestureCallback = function(gestureData) {
   console.log("Default gesture callback:", gestureData);
 };
 
-// Function for setting the callback from external script
+// Default toggle state callback (can be overridden)
+let toggleStateCallback = function(isRunning) {
+  console.log("Default toggle state callback. Recognition running:", isRunning);
+};
+
+// Function for setting the gesture update callback from external script
 function setGestureCallback(callback) {
   gestureCallback = callback;
 }
 
-// Function to update gesture data and call the registered callback
+// Function for setting the toggle state callback from external script
+function setToggleStateCallback(callback) {
+  toggleStateCallback = callback;
+}
+
+// Function to update gesture data and call the registered gesture callback
 function updateGesture(gestureData) {
   currentGesture = gestureData;
   gestureCallback(gestureData);
@@ -80,6 +90,7 @@ function startGestureRecognition() {
         videoStream = stream;
         video.srcObject = stream;
         gestureRecognitionRunning = true;
+        toggleStateCallback(gestureRecognitionRunning); // notify new state
         video.addEventListener("loadeddata", predictWebcam);
       })
       .catch(err => console.error("Error accessing webcam:", err));
@@ -95,6 +106,7 @@ function stopGestureRecognition() {
     videoStream.getTracks().forEach(track => track.stop());
     videoStream = null;
   }
+  toggleStateCallback(gestureRecognitionRunning); // notify new state
 }
 
 // Toggles gesture recognition on or off.
@@ -109,5 +121,6 @@ function toggleGestureRecognition() {
 // Attach the API to the global window object.
 window.HandGesture = {
   setGestureCallback,
+  setToggleStateCallback,
   toggleGestureRecognition
 };
