@@ -2556,7 +2556,7 @@ document.addEventListener('HandGestureReady', function() {
     
                         notpointgesture = false
                     }
-                }, 200)
+                }, 50)
             }else if(gesture.categoryName == 'Open_Palm'){
                 //equivalent of D key
                 notpointgesture = true
@@ -2576,7 +2576,7 @@ document.addEventListener('HandGestureReady', function() {
                             clickdidntremember()
                         }
                     }
-                }, 200)
+                }, 50)
             }else{
                 notpointgesture = true
             }
@@ -2601,7 +2601,7 @@ document.addEventListener('HandGestureReady', function() {
                         
                         notanysupplementarygesture = false
                     }
-                }, 200)
+                }, 50)
             }else if(gesture.categoryName == 'Open_Palm'){
                 //equivalent of D key
     
@@ -2613,14 +2613,12 @@ document.addEventListener('HandGestureReady', function() {
                     handlingsupplementarygesture = false
 
                     if(currentgesture.categoryName == 'Open_Palm'){
-                        if(showanswer){
-                            //equivalent of S key for speak
-                            processSkey()
+                        //equivalent of S key for speak
+                        processSkey()
 
-                            notanysupplementarygesture = false
-                        }
+                        notanysupplementarygesture = false
                     }
-                }, 200)
+                }, 50)
             }else{
                 notanysupplementarygesture = true
             }
