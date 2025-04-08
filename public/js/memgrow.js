@@ -1535,8 +1535,8 @@ function clickdidntremember(){
     if(currentcardset.cards[currentcardindex].laststudiedindex <= 0){
         currentcardset.cards[currentcardindex].laststudiedindex-- //penalty
 
-        if(currentcardset.cards[currentcardindex].laststudiedindex < -1){
-            currentcardset.cards[currentcardindex].laststudiedindex = -1
+        if(currentcardset.cards[currentcardindex].laststudiedindex < 0){ //technically can put at -1
+            currentcardset.cards[currentcardindex].laststudiedindex = 0
         }
         
 
@@ -2567,6 +2567,8 @@ document.addEventListener('HandGestureReady', function() {
                 //equivalent of space key
 
                 if(!notpointgesture) return
+
+                console.log('left hand pointing up')
     
                 handlinggesture = true
     
@@ -2589,6 +2591,8 @@ document.addEventListener('HandGestureReady', function() {
                 notpointgesture = true
     
                 if(!showanswer) return
+
+                console.log('left hand open palm')
     
                 showgesturedidntremember()
     
@@ -2616,6 +2620,8 @@ document.addEventListener('HandGestureReady', function() {
 
             if(!hidecardgroupblur || finishedreview) return
 
+            console.log('right hand gesture')
+
 
             if(gesture.categoryName == 'Pointing_Up'){   
                 //equivalent of E key 
@@ -2636,6 +2642,8 @@ document.addEventListener('HandGestureReady', function() {
                 //equivalent of S key
 
                 if(!notanysupplementarygesture) return
+
+                console.log('right hand open palm')
         
                 handlingsupplementarygesture = true
     
