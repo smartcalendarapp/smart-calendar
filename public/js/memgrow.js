@@ -2390,105 +2390,76 @@ async function updatepointstext(text, force){
  * @returns {Object} An object mapping dates (YYYY-MM-DD) to the predicted average review count.
  */
 
+
 function predictReviews({
     daysInAdvance = 30,
     successProbability = 0.9,
     simulationRuns = 100,
-    cardSets = userdata.cardsets // assume global userdata holds our card sets
+    cardSets = userdata.cardsets
   } = {}) {
-    let now = new Date();
-    let simulationStartDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    let simulationStart = simulationStartDate.getTime();
-    let simulationEnd = simulationStart + daysInAdvance * 24 * 3600 * 1000;
-  
-    let aggregatedCounts = new Array(daysInAdvance).fill(0);
-  
-    // Map cardset name (or id) => total reviews due today over all runs
-    let perCardsetTodayTotal = new Map();
-  
+    let now = new Date()
+    let simulationStartDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+    let simulationStart = simulationStartDate.getTime()
+    let simulationEnd = simulationStart + daysInAdvance * 24 * 3600 * 1000
+    let aggregatedCounts = new Array(daysInAdvance).fill(0)
+    let perCardsetTodayCards = new Map()
     for (let run = 0; run < simulationRuns; run++) {
-      let runCounts = new Array(daysInAdvance).fill(0);
-  
+      let runCounts = new Array(daysInAdvance).fill(0)
       cardSets.forEach(cardset => {
-        let delaySchedule = (cardset.delayindex !== undefined && DELAYS[cardset.delayindex])
-          ? DELAYS[cardset.delayindex]
-          : DELAYS[0];
-  
-        let todayCount = 0;
-  
+        let delaySchedule = (cardset.delayindex !== undefined && DELAYS[cardset.delayindex]) ? DELAYS[cardset.delayindex] : DELAYS[0]
+        let todayCards = new Set()
         cardset.cards.forEach(card => {
-          if (card.laststudied === 0) return;
-  
-          let simIndex = (typeof card.laststudiedindex === "number") ? Math.min(Math.max(0, card.laststudiedindex), delaySchedule.length - 1) : 0;
-          let simTime = card.laststudied;
-  
-          let iterations = 0;
-          const maxIterations = 1000;
-  
+          if (card.laststudied === 0) return
+          let simIndex = (typeof card.laststudiedindex === "number") ? Math.min(Math.max(0, card.laststudiedindex), delaySchedule.length - 1) : 0
+          let simTime = card.laststudied
+          let iterations = 0
+          const maxIterations = 1000
           while (iterations < maxIterations) {
-            iterations++;
-  
-            let delayIdx = (simIndex < delaySchedule.length) ? simIndex : (delaySchedule.length - 1);
-            let delayDuration = delaySchedule[delayIdx];
-  
-            if (typeof delayDuration !== "number" || delayDuration <= 0) break;
-  
-            let nextReviewTime = simTime + delayDuration;
-  
-            if (nextReviewTime < simulationStart) {
-              nextReviewTime = simulationStart;
-            }
-  
-            if (nextReviewTime > simulationEnd) break;
-  
-            let dayOffset = Math.floor((nextReviewTime - simulationStart) / (24 * 3600 * 1000));
-            runCounts[dayOffset] += 1;
-  
-            // Track today's review count per cardset
+            iterations++
+            let delayIdx = (simIndex < delaySchedule.length) ? simIndex : (delaySchedule.length - 1)
+            let delayDuration = delaySchedule[delayIdx]
+            if (typeof delayDuration !== "number" || delayDuration <= 0) break
+            let nextReviewTime = simTime + delayDuration
+            if (nextReviewTime < simulationStart) nextReviewTime = simulationStart
+            if (nextReviewTime > simulationEnd) break
+            let dayOffset = Math.floor((nextReviewTime - simulationStart) / (24 * 3600 * 1000))
+            runCounts[dayOffset] += 1
             if (dayOffset === 0) {
-              todayCount += 1;
+              todayCards.add(card.id || JSON.stringify(card))
             }
-  
             if (Math.random() < successProbability) {
-              simIndex++;
+              simIndex++
             } else {
-              simIndex = 0;
+              simIndex = 0
             }
-  
-            simTime = nextReviewTime;
+            simTime = nextReviewTime
           }
-        });
-  
-        // Accumulate today's count for this cardset
-        let current = perCardsetTodayTotal.get(cardset.name || cardset.id || "Unnamed Set") || 0;
-        perCardsetTodayTotal.set((cardset.title || cardset.id || "Unnamed Set"), current + todayCount);
-      });
-  
+        })
+        let label = cardset.title|| "Unnamed Set"
+        if (!perCardsetTodayCards.has(label)) {
+          perCardsetTodayCards.set(label, new Set())
+        }
+        todayCards.forEach(cardId => perCardsetTodayCards.get(label).add(cardId))
+      })
       for (let i = 0; i < daysInAdvance; i++) {
-        aggregatedCounts[i] += runCounts[i];
+        aggregatedCounts[i] += runCounts[i]
       }
     }
-  
     let averageCounts = aggregatedCounts.map(count => count / simulationRuns);
-  
-    console.log("Today's Reviews Per Cardset (sorted):");
-  [...perCardsetTodayTotal.entries()]
-    .sort((a, b) => b[1] - a[1]) // sort descending by totalToday
-    .forEach(([cardsetLabel, totalToday]) => {
-        if(totalToday == 0) return
-      console.log(`  ${cardsetLabel}: ${(totalToday / simulationRuns).toFixed(2)} reviews`);
+    console.log("Unique Cards Due for Review Today (sorted):");
+        [...perCardsetTodayCards.entries()].map(([label, cardIdSet]) => [label, cardIdSet.size]).sort((a, b) => b[1] - a[1]).forEach(([label, count]) => {
+            if(count == 0)return
+      console.log(`  ${label}: ${count} cards`)
     });
-  
-  
-    let result = {};
+    let result = {}
     for (let i = 0; i < daysInAdvance; i++) {
-      let date = new Date(simulationStart + i * 24 * 3600 * 1000);
-      let dateStr = date.toISOString().split("T")[0];
-      result[dateStr] = averageCounts[i];
+      let date = new Date(simulationStart + i * 24 * 3600 * 1000)
+      let dateStr = date.toISOString().split("T")[0]
+      result[dateStr] = averageCounts[i]
     }
-  
-    return result;
+    return result
   }
+  
   
 
 let myChart;
