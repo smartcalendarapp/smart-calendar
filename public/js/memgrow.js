@@ -2396,84 +2396,90 @@ function predictReviews({
     simulationRuns = 100,
     cardSets = userdata.cardsets // assume global userdata holds our card sets
   } = {}) {
-    // Get tomorrow's midnight as the simulation start.
     let now = new Date();
     let simulationStartDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     let simulationStart = simulationStartDate.getTime();
     let simulationEnd = simulationStart + daysInAdvance * 24 * 3600 * 1000;
   
-    // Array to accumulate review counts per day.
     let aggregatedCounts = new Array(daysInAdvance).fill(0);
   
-    // Run the Monte Carlo simulation many times.
+    // Map cardset name (or id) => total reviews due today over all runs
+    let perCardsetTodayTotal = new Map();
+  
     for (let run = 0; run < simulationRuns; run++) {
       let runCounts = new Array(daysInAdvance).fill(0);
   
-      // Process each card set.
       cardSets.forEach(cardset => {
-        // Get the delay schedule; if cardset.delayindex is not valid, default to DELAYS[0].
         let delaySchedule = (cardset.delayindex !== undefined && DELAYS[cardset.delayindex])
           ? DELAYS[cardset.delayindex]
           : DELAYS[0];
   
-        // Process each card in the set.
+        let todayCount = 0;
+  
         cardset.cards.forEach(card => {
-          // Skip cards that have never been reviewed.
           if (card.laststudied === 0) return;
   
-          // Ensure a nonnegative starting index.
-          let simIndex = (typeof card.laststudiedindex === "number") ? Math.min(Math.max(0, card.laststudiedindex), DELAYS[cardset.delayindex].length - 1) : 0;
+          let simIndex = (typeof card.laststudiedindex === "number") ? Math.min(Math.max(0, card.laststudiedindex), delaySchedule.length - 1) : 0;
           let simTime = card.laststudied;
   
-          // Use an iteration cap as a safeguard.
           let iterations = 0;
           const maxIterations = 1000;
   
           while (iterations < maxIterations) {
             iterations++;
   
-            // Pick the delay from the schedule. If simIndex is beyond the schedule length, use the last delay.
             let delayIdx = (simIndex < delaySchedule.length) ? simIndex : (delaySchedule.length - 1);
             let delayDuration = delaySchedule[delayIdx];
   
-            // If delayDuration is not a valid positive number, exit.
             if (typeof delayDuration !== "number" || delayDuration <= 0) break;
   
             let nextReviewTime = simTime + delayDuration;
   
-            // If the next review is beyond our simulation window, break.
-            if (nextReviewTime > simulationEnd) break;
-  
-            // If the next review is within the simulation window, count it.
-            if (nextReviewTime >= simulationStart) {
-              let dayOffset = Math.floor((nextReviewTime - simulationStart) / (24 * 3600 * 1000));
-              runCounts[dayOffset] += 1;
+            if (nextReviewTime < simulationStart) {
+              nextReviewTime = simulationStart;
             }
   
-            // Simulate the review outcome:
-            //   - If remembered (with probability successProbability): increment the index.
-            //   - If forgotten: reset the index to 0.
+            if (nextReviewTime > simulationEnd) break;
+  
+            let dayOffset = Math.floor((nextReviewTime - simulationStart) / (24 * 3600 * 1000));
+            runCounts[dayOffset] += 1;
+  
+            // Track today's review count per cardset
+            if (dayOffset === 0) {
+              todayCount += 1;
+            }
+  
             if (Math.random() < successProbability) {
               simIndex++;
             } else {
               simIndex = 0;
             }
-            // Advance simulation time.
+  
             simTime = nextReviewTime;
           }
         });
+  
+        // Accumulate today's count for this cardset
+        let current = perCardsetTodayTotal.get(cardset.name || cardset.id || "Unnamed Set") || 0;
+        perCardsetTodayTotal.set((cardset.title || cardset.id || "Unnamed Set"), current + todayCount);
       });
   
-      // Accumulate the run's counts.
       for (let i = 0; i < daysInAdvance; i++) {
         aggregatedCounts[i] += runCounts[i];
       }
     }
   
-    // Average the counts over the number of simulation runs.
     let averageCounts = aggregatedCounts.map(count => count / simulationRuns);
   
-    // Build and return the result object mapping YYYY-MM-DD to the predicted review count.
+    console.log("Today's Reviews Per Cardset (sorted):");
+  [...perCardsetTodayTotal.entries()]
+    .sort((a, b) => b[1] - a[1]) // sort descending by totalToday
+    .forEach(([cardsetLabel, totalToday]) => {
+        if(totalToday == 0) return
+      console.log(`  ${cardsetLabel}: ${(totalToday / simulationRuns).toFixed(2)} reviews`);
+    });
+  
+  
     let result = {};
     for (let i = 0; i < daysInAdvance; i++) {
       let date = new Date(simulationStart + i * 24 * 3600 * 1000);
@@ -2482,7 +2488,8 @@ function predictReviews({
     }
   
     return result;
-}
+  }
+  
 
 let myChart;
 
@@ -2723,4 +2730,4 @@ function turnongesture(){
 
 //https://codepen.io/mediapipe-preview/pen/zYamdVd
 
-
+//https://mediapipe-studio.webapps.google.com/home
