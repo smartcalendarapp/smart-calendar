@@ -202,8 +202,6 @@ class Card{
         this.fronttext = fronttext
         this.backtext = backtext
 
-        this.imgurl = null
-
         this.laststudied = 0
         this.laststudiedindex = 0
         this.id = generateID()
@@ -2231,14 +2229,14 @@ function press3(event){
 
 function clickimg(url){
     if(currentcardset?.cards[currentcardindex]){
-        currentcardset.cards[currentcardindex].imgurl = url
+        //currentcardset.cards[currentcardindex].imgurl = url
         let hinttext = getelement('hinttext')
         hinttext.innerHTML = `<img src="${url}" onclick="clickremoveimg()" class="fade-in" style="cursor: pointer; height: auto; width: 100%"></img>`
     }
 }
 function clickremoveimg(){
     if(currentcardset?.cards[currentcardindex]){
-        currentcardset.cards[currentcardindex].imgurl = null
+        //currentcardset.cards[currentcardindex].imgurl = null
         let hintpopup = getelement('hintpopup')
         hintpopup.classList.add('hidden')
     }
@@ -2255,9 +2253,10 @@ async function clickhint(hinttype){
     try {
         if(!currentcardset || !currentcardset.cards[currentcardindex]?.backtext || !currentcardset.cards[currentcardindex]?.fronttext) return
 
-        if(hinttype == 2 && currentcardset?.cards[currentcardindex]?.imgurl){
+        if(hinttype == 2 && false){
             //has saved img hint
 
+            /*
             let hinttext = getelement('hinttext')
             hinttext.innerHTML = `<img loading="lazy" src="${currentcardset.cards[currentcardindex].imgurl}" onclick="clickremoveimg()" style="cursor: pointer; height: auto; width: 100%; opacity: 0; transition: opacity 0.5s ease-in-out;" onload="this.style.opacity = '1';"></img>`
 
@@ -2280,6 +2279,7 @@ async function clickhint(hinttype){
             }
 
             hintpopup.classList.remove('hidden')
+            */
         }else{
 
             if(isgettinghint) return
@@ -2326,10 +2326,13 @@ async function clickhint(hinttype){
                             const lastLine = frontLines.slice(-1)[0].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
                             const regex = new RegExp(`${firstLine}|${lastLine}`, 'gm');
+                            const regex2 = new RegExp(`[\u4e00-\u9fff][\u4e00-\u9fff，。！？、：；“”‘’（）【】《》\\.,!?]*[\u4e00-\u9fff]`, 'gm')
 
-                            displaycontent = displaycontent.replace(regex, (match) => {
-                            return `<span class="highlighttext">${match}</span>`;
-                            });
+                            displaycontent = displaycontent.replace(regex2, (match) => {
+                                return `<span class="text-24px">${match}</span>`
+                            }).replace(regex, (match) => {
+                                return `<span class="highlighttext">${match}</span>`;
+                            })
                         }
                         hinttext.innerHTML = displaycontent
                         hintpopup.classList.remove('hintpopupexpanded')
