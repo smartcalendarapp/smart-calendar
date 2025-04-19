@@ -247,10 +247,8 @@ let signedInUser = false;
 
 async function saveData() {
     try {
-      // only send patch if signed in
       if (!signedInUser) {
         localStorage.setItem('userdata', JSON.stringify(userdata));
-        // also update our “old” snapshot
         oldData = JSON.stringify(userdata);
         oldDataObj = JSON.parse(oldData);
         return;
@@ -262,13 +260,10 @@ async function saveData() {
       }
 
   
-      // compute a fresh deep clone of current data
       const newDataObj = JSON.parse(JSON.stringify(userdata));
-      // generate RFC‑6902 patch
-      const patch = jsonpatch.compare(oldDataObj, newDataObj);
+      const patch = jsonpatch.compare(oldDataObj, newDataObj, /*detectMoves=*/ true)
   
       if (patch.length === 0) {
-        // nothing changed since last save
         return;
       }
 
@@ -285,7 +280,6 @@ async function saveData() {
   
       if (response.status === 200) {
         console.log("Delta saved successfully.");
-        // update our “old” snapshot
         oldDataObj = newDataObj;
         oldData = JSON.stringify(newDataObj);
 
@@ -329,9 +323,8 @@ async function saveData() {
 let firstloaddata = true
 async function loadData() {
     try {
-      let raw;  // will hold the plain object from server or localStorage
+      let raw; 
   
-      // 1) Try to fetch from server
       const res = await fetch('/getuserdata', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -346,15 +339,12 @@ async function loadData() {
         }
         lastEdited = Date.now();
       } else {
-        // 2) Fallback to localStorage
         const fromLS = localStorage.getItem('userdata');
         raw = fromLS ? JSON.parse(fromLS) : {};
       }
   
-      // 3) Rehydrate into your classes
       userdata = restoreUserData(raw);
   
-      // 4) Reset your “old” snapshot to the raw JSON
       oldData    = JSON.stringify(raw);
       oldDataObj = JSON.parse(oldData);
   
@@ -418,7 +408,7 @@ async function syncData() {
 */
 
 function monitorChanges() {
-    setInterval(syncData, 5000);
+    setInterval(syncData, 3000);
 
     let oldtitle;
     setInterval(() => {
@@ -428,7 +418,7 @@ function monitorChanges() {
             document.title = title;
             oldtitle = title
         }
-    }, 1000);
+    }, 5000);
 }
 
 (async function initializeApp() {
