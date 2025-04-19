@@ -7137,34 +7137,37 @@ const jsonpatch = require('fast-json-patch');
 app.post('/saveuserdata', async (req, res) => {
 	try {
 		if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
+		
+		const { full, data, patch, lastedited } = req.body;
 
-		const { patch, lastedited } = req.body;
-		if (!Array.isArray(patch)) {
-			return res.status(400).json({ error: 'Missing or invalid patch.' });
-		}
-
-		let stored = await getmemgrowdata(DEV_ID);
-	  let existing = stored?.data || {};
-  
-		let result;
-		try {
-			result = jsonpatch.applyPatch(existing, patch, /*validate*/ true);
-		} catch(e) {
+		let stored  = await getmemgrowdata(DEV_ID);
+		let existing = stored?.data || {};
+	
+		let newData;
+		if (full) {
+		  newData = data;
+		} else if (Array.isArray(patch)) {
+		  try {
+			const result = jsonpatch.applyPatch(existing, patch, /*validate=*/ true);
+			newData = result.newDocument;
+		  } catch (e) {
 			console.error("Bad patch:", e);
 			return res.status(400).json({ error: 'Invalid patch.' });
+		  }
+		} else {
+		  return res.status(400).json({ error: 'Missing or invalid patch/full flag.' });
 		}
-		const newData = result.newDocument;
 
-  
-	  await setmemgrowdata({ id: DEV_ID, data: newData });
-	  await setmemgrowlastediteddata({ id: DEV_ID, lastedited });
-  
-	  res.sendStatus(200);
+
+		await setmemgrowdata({ id: DEV_ID, data: newData });
+		await setmemgrowlastediteddata({ id: DEV_ID, lastedited });
+	
+		res.sendStatus(200);
 	} catch (err) {
-	  console.error(err);
-	  res.sendStatus(500);
+		console.error(err);
+		res.sendStatus(500);
 	}
-  });
+});
 
   
 /*

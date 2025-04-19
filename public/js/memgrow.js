@@ -249,48 +249,54 @@ async function saveData() {
     try {
       if (!signedInUser) {
         localStorage.setItem('userdata', JSON.stringify(userdata));
-        oldData = JSON.stringify(userdata);
+        oldData    = JSON.stringify(userdata);
         oldDataObj = JSON.parse(oldData);
         return;
       }
-
+  
       if (oldDataObj === null) {
         oldDataObj = JSON.parse(JSON.stringify(userdata));
         oldData    = JSON.stringify(userdata);
       }
-
   
       const newDataObj = JSON.parse(JSON.stringify(userdata));
-      const patch = jsonpatch.compare(oldDataObj, newDataObj, /*detectMoves=*/ true)
+      const patch = jsonpatch.compare(oldDataObj, newDataObj, /*detectMoves=*/ true);
+      if (patch.length === 0) return;
   
-      if (patch.length === 0) {
-        return;
-      }
-
       needsave = true;
   
+      const patchStr = JSON.stringify(patch);
+      const fullStr  = JSON.stringify(newDataObj);
+  
+      let body;
+      if (patchStr.length > fullStr.length) {
+      
+        body = { full: true, data: newDataObj, lastedited: (lastEdited = Date.now()) };
+      } else {
+       
+        body = { patch, lastedited: (lastEdited = Date.now()) };
+      }
+  
       const response = await fetch('/saveuserdata', {
-        method: 'POST',
+        method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          patch,
-          lastedited: (lastEdited = Date.now())
-        }),
+        body:    JSON.stringify(body),
       });
   
-      if (response.status === 200) {
+      if (response.ok) {
         console.log("Delta saved successfully.");
         oldDataObj = newDataObj;
-        oldData = JSON.stringify(newDataObj);
-
-        needsave = false;
+        oldData    = fullStr;
+        needsave   = false;
       } else {
-        console.error("Error saving delta:", response);
+        console.error("Error saving data:", response);
       }
+  
     } catch (err) {
       console.error("Error saving data:", err);
     }
-}
+  }
+  
 
 /*
 async function saveData() {
@@ -408,7 +414,7 @@ async function syncData() {
 */
 
 function monitorChanges() {
-    setInterval(syncData, 3000);
+    setInterval(syncData, 5000);
 
     let oldtitle;
     setInterval(() => {
