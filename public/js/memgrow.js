@@ -260,7 +260,7 @@ async function saveData() {
       }
   
       const newDataObj = JSON.parse(JSON.stringify(userdata));
-      const patch = jsonpatch.compare(oldDataObj, newDataObj, /*detectMoves=*/ true);
+      const patch = jsonpatch.compare(oldDataObj, newDataObj);
       if (patch.length === 0) return;
   
       needsave = true;
