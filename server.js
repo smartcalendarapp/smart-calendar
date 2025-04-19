@@ -7136,26 +7136,27 @@ const jsonpatch = require('fast-json-patch');
 
 app.post('/saveuserdata', async (req, res) => {
 	try {
-	  const { patch, lastedited, data: fullData } = req.body;
-	  // fetch existing stored document
-	  let stored = await getmemgrowdata(DEV_ID);
+		if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
+
+		const { patch, lastedited } = req.body;
+		if (!Array.isArray(patch)) {
+			return res.status(400).json({ error: 'Missing or invalid patch.' });
+		}
+
+		let stored = await getmemgrowdata(DEV_ID);
 	  let existing = stored?.data || {};
   
-	  let newData;
-	  if (Array.isArray(patch)) {
-		// apply JSON Patch
-		const result = jsonpatch.applyPatch(existing, patch, /*validate*/ true);
-		newData = result.newDocument;
-	  } else if (fullData) {
-		// fallback: client sent full payload
-		newData = fullData;
-	  } else {
-		return res.status(400).json({ error: 'No patch or full data provided.' });
-	  }
+		let result;
+		try {
+			result = jsonpatch.applyPatch(existing, patch, /*validate*/ true);
+		} catch(e) {
+			console.error("Bad patch:", e);
+			return res.status(400).json({ error: 'Invalid patch.' });
+		}
+		const newData = result.newDocument;
+
   
-	  // write merged document back
 	  await setmemgrowdata({ id: DEV_ID, data: newData });
-	  // update last‑edited timestamp
 	  await setmemgrowlastediteddata({ id: DEV_ID, lastedited });
   
 	  res.sendStatus(200);
@@ -7229,7 +7230,7 @@ app.post('/getcardhint', async (req, res) => {
 			return res.json({ content: results })
 
 		} catch (e) {
-			console.error(err)
+			console.error(e)
 			return res.status(401).end()
 		}
 	}else{
