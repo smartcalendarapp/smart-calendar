@@ -7132,6 +7132,41 @@ app.post('/speaktext', async (req, res) => {
 })
 
 
+const jsonpatch = require('fast-json-patch');
+
+app.post('/saveuserdata', async (req, res) => {
+	try {
+	  const { patch, lastedited, data: fullData } = req.body;
+	  // fetch existing stored document
+	  let stored = await getmemgrowdata(DEV_ID);
+	  let existing = stored?.data || {};
+  
+	  let newData;
+	  if (Array.isArray(patch)) {
+		// apply JSON Patch
+		const result = jsonpatch.applyPatch(existing, patch, /*validate*/ true);
+		newData = result.newDocument;
+	  } else if (fullData) {
+		// fallback: client sent full payload
+		newData = fullData;
+	  } else {
+		return res.status(400).json({ error: 'No patch or full data provided.' });
+	  }
+  
+	  // write merged document back
+	  await setmemgrowdata({ id: DEV_ID, data: newData });
+	  // update last‑edited timestamp
+	  await setmemgrowlastediteddata({ id: DEV_ID, lastedited });
+  
+	  res.sendStatus(200);
+	} catch (err) {
+	  console.error(err);
+	  res.sendStatus(500);
+	}
+  });
+
+  
+/*
 app.post('/saveuserdata', async (req, res) => {
     try{
 		if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
@@ -7148,6 +7183,7 @@ app.post('/saveuserdata', async (req, res) => {
         res.status(401).end()
     }
 })
+*/
 
 app.post('/getuserdatalastedited', async (req, res) => {
     try{

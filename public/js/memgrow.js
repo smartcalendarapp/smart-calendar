@@ -220,10 +220,65 @@ const DELAYS = [
 
 
 let userdata = new UserData();
-let oldData = JSON.stringify(userdata);
+let oldData = ''
+let oldDataObj = null;
 let lastEdited = Date.now();
 let signedInUser = false;
 
+async function saveData() {
+    try {
+      // only send patch if signed in
+      if (!signedInUser) {
+        localStorage.setItem('userdata', JSON.stringify(userdata));
+        // also update our “old” snapshot
+        oldData = JSON.stringify(userdata);
+        oldDataObj = JSON.parse(oldData);
+        return;
+      }
+
+      if (oldDataObj === null) {
+        oldDataObj = JSON.parse(JSON.stringify(userdata));
+        oldData    = JSON.stringify(userdata);
+      }
+
+  
+      // compute a fresh deep clone of current data
+      const newDataObj = JSON.parse(JSON.stringify(userdata));
+      // generate RFC‑6902 patch
+      const patch = jsonpatch.compare(oldDataObj, newDataObj);
+  
+      if (patch.length === 0) {
+        // nothing changed since last save
+        return;
+      }
+
+      needsave = true;
+  
+      const response = await fetch('/saveuserdata', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          patch,
+          lastedited: (lastEdited = Date.now())
+        }),
+      });
+  
+      if (response.status === 200) {
+        console.log("Delta saved successfully.");
+        // update our “old” snapshot
+        oldDataObj = newDataObj;
+        oldData = JSON.stringify(newDataObj);
+
+        needsave = false;
+      } else {
+        console.error("Error saving delta:", response);
+      }
+    } catch (err) {
+      console.error("Error saving data:", err);
+    }
+}
+
+/*
 async function saveData() {
     try {
         if (signedInUser) {
@@ -248,6 +303,8 @@ async function saveData() {
         console.error("Error saving data:", err);
     }
 }
+*/
+
 
 let firstloaddata = true
 async function loadData() {
@@ -283,7 +340,10 @@ async function loadData() {
             userdata = tempData ? Object.assign(new UserData(), JSON.parse(tempData)) : new UserData();
         }
 
+
         oldData = JSON.stringify(userdata);
+        oldDataObj = JSON.parse(oldData);
+
         console.log("Data loaded successfully.");
         updatescreen(); 
     } catch (err) {
@@ -291,6 +351,29 @@ async function loadData() {
     }
 }
 
+
+async function syncData() {
+    try {
+      // fetch server timestamp
+      const response = await fetch('/getuserdatalastedited', { method:'POST', headers:{ 'Content-Type':'application/json' } });
+      if (response.status === 200) {
+        const { lastedited: serverLastEdited } = await response.json();
+        if (serverLastEdited > lastEdited) {
+          await loadData();
+          return;
+        }
+      }
+  
+      // now only patch if needed
+      if (JSON.stringify(userdata) !== oldData) {
+        await saveData();
+      }
+    } catch (err) {
+      console.error("Error syncing data:", err);
+    }
+  }
+  
+/*
 async function syncData() {
     try {
         const response = await fetch('/getuserdatalastedited', {
@@ -316,6 +399,7 @@ async function syncData() {
         console.error("Error syncing data:", err);
     }
 }
+*/
 
 function monitorChanges() {
     setInterval(syncData, 5000);
@@ -353,11 +437,7 @@ let finishedreview = false
 
 
 //loops
-let lasttemp;
-let olddata;
-let lastsavedata = 0;
-let needsave;
-
+let needsave = false;
 
 
 function getneedsave(){
@@ -445,13 +525,13 @@ async function updatescreen(){
         if(oldscreenview == 1){
             turnoffgesture()
 
-            if(userdata.getMemoryScore() > oldmemoryscore){
-                updatepointstext(`+${userdata.getMemoryScore() - oldmemoryscore} pts`, true)
+            if(+userdata.getMemoryScore() > oldmemoryscore){
+                updatepointstext(`+${(+userdata.getMemoryScore()) - oldmemoryscore} pts`, true)
                 setTimeout(function(){
-                    updatepointstext(userdata.getMemoryScore())
+                    updatepointstext(+userdata.getMemoryScore())
                 }, 2000)
-            }else if(userdata.getMemoryScore() < oldmemoryscore){
-                updatepointstext(`-${oldmemoryscore - userdata.getMemoryScore()} pts`, true)
+            }else if(+userdata.getMemoryScore() < oldmemoryscore){
+                updatepointstext(`-${oldmemoryscore - (+userdata.getMemoryScore())} pts`, true)
                 setTimeout(function(){
                     updatepointstext(userdata.getMemoryScore())
                 }, 2000)
@@ -471,7 +551,7 @@ async function updatescreen(){
         }
 
         if(oldscreenview == 0){
-            oldmemoryscore = userdata.getMemoryScore()
+            oldmemoryscore = +userdata.getMemoryScore()
         }
 
         let cardlist = getelement('cardlist')
