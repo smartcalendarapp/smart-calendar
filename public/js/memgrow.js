@@ -217,6 +217,26 @@ const DELAYS = [
 //[3 * 3600 * 1000, 86400 * 1000, 5 * 86400 * 1000, 12 * 86400 * 1000, 30 * 86400 * 1000, 70 * 86400 * 1000, 180 * 86400 * 1000]
 
 
+function restoreUserData(raw) {
+    const ud = new UserData();
+  
+    // If there are no cardsets, bail early
+    if (!Array.isArray(raw.cardsets)) return ud;
+  
+    raw.cardsets.forEach(rawSet => {
+      // Create a real CardSet, then copy over every own‑property
+      const cs = Object.assign(new CardSet(), rawSet);
+  
+      // Now rebuild its `cards` array with real Card instances
+      cs.cards = Array.isArray(rawSet.cards)
+        ? rawSet.cards.map(rawCard => Object.assign(new Card(), rawCard))
+        : [];
+  
+      ud.cardsets.push(cs);
+    });
+  
+    return ud;
+}
 
 
 let userdata = new UserData();
@@ -309,47 +329,43 @@ async function saveData() {
 let firstloaddata = true
 async function loadData() {
     try {
-        const response = await fetch('/getuserdata', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-        });
-
-        if (response.status === 200) {
-            const data = await response.json();
-            userdata = Object.assign(new UserData(), data.data);
-            if(firstloaddata){
-                signedInUser = true;
-                firstloaddata = false
-            }
-
-            lastEdited = Date.now();
-
-            //fixing
-            if(userdata){
-                for(let index = 0; index < userdata.cardsets.length; index++){
-                    userdata.cardsets[index] = Object.assign(new CardSet(), userdata.cardsets[index])
-                    
-                    for(let index2 = 0; index2 < userdata.cardsets[index].cards.length; index2++){
-                        userdata.cardsets[index].cards[index2] = Object.assign(new Card(), userdata.cardsets[index].cards[index2])
-                    }
-                }
-            }
-
-        } else if(!signedInUser){
-            const tempData = localStorage.getItem('userdata');
-            userdata = tempData ? Object.assign(new UserData(), JSON.parse(tempData)) : new UserData();
+      let raw;  // will hold the plain object from server or localStorage
+  
+      // 1) Try to fetch from server
+      const res = await fetch('/getuserdata', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      });
+  
+      if (res.ok) {
+        const { data } = await res.json();
+        raw = data;
+        if (firstloaddata) {
+          signedInUser = true;
+          firstloaddata = false;
         }
-
-
-        oldData = JSON.stringify(userdata);
-        oldDataObj = JSON.parse(oldData);
-
-        console.log("Data loaded successfully.");
-        updatescreen(); 
+        lastEdited = Date.now();
+      } else {
+        // 2) Fallback to localStorage
+        const fromLS = localStorage.getItem('userdata');
+        raw = fromLS ? JSON.parse(fromLS) : {};
+      }
+  
+      // 3) Rehydrate into your classes
+      userdata = restoreUserData(raw);
+  
+      // 4) Reset your “old” snapshot to the raw JSON
+      oldData    = JSON.stringify(raw);
+      oldDataObj = JSON.parse(oldData);
+  
+      console.log("Data loaded successfully.");
+      updatescreen();
+  
     } catch (err) {
-        console.error("Error loading data:", err);
+      console.error("Error loading data:", err);
     }
 }
+  
 
 
 async function syncData() {
