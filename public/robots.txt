@@ -1,3 +1,3 @@
 User-agent: *
-Disallow: /error /research /memgrow
+Disallow: /error /research /memgrow /blackboard
 Sitemap: https://smartcalendar.us/sitemap.xml
