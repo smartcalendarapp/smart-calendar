@@ -7363,7 +7363,7 @@ app.post('/gpt-add-memgrow-card', async (req, res) => {
 
 		let lastedited = Date.now()
 
-		await setmemgrowdata({ id: DEV_ID, data: memgrowdata });
+		await setmemgrowdata({ id: DEV_ID, data: memgrowdata.data });
 		await setmemgrowlastediteddata({ id: DEV_ID, lastedited });
 
 		res.status(200).json({ success: true, message: `${items.length} card${items.length != 1 ? 's' : ''} successfully saved.` });
