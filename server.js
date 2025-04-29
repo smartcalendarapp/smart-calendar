@@ -6983,7 +6983,7 @@ async function setmemgrowdata(tempdata) {
     }
 }
 
-async function getmemgrowdataold(id){
+/*async function getmemgrowdataold(id){
 	const params = {
 		TableName: 'memgrowdata',
 		Key: {
@@ -6995,7 +6995,7 @@ async function getmemgrowdataold(id){
 			return (unmarshall(data.Item))
 		}
 		return null
-}
+}*/
 
 
 async function getmemgrowdata(id) {
@@ -7329,6 +7329,44 @@ const finalinput = `${istranscript ? `Below is a transcript of a recorded input 
         const content = JSON.parse(response.choices[0].message.content)
         return res.json({ content: content, tokens: response.usage })
     
+    }catch(err){
+        console.error(err)
+        return res.status(401).end()
+    }
+})
+
+
+//CUSTOM GPT ACTION
+
+const CUSTOM_GPT_API_KEY = '88e70f9e-2241-4021-9c38-1e95c23c960f' //not sensitive anyway
+const MEMGROW_USER_ID = DEV_ID
+
+app.post('/gpt-add-memgrow-card', async (req, res) => {
+	try{
+		const apiKey = req.headers['x-api-key'];
+
+		if (!apiKey || apiKey !== CUSTOM_GPT_API_KEY) {
+			return res.status(401).json({ success: false, message: 'Unauthorized: Invalid API key' });
+		}
+
+		const { items } = req.body;
+
+		if (!items || !Array.isArray(items)) {
+			return res.status(400).json({ success: false, message: 'Bad Request: "items" must be an array' });
+		}
+
+		let memgrowdata = await getmemgrowdata(MEMGROW_USER_ID)
+		let tempcardset = memgrowdata.data.cardsets.find(d => d?.metadata?.gpt_import == true)
+		if(tempcardset?.cards?.length > 0){
+			tempcardset.cards.push(...items)
+		}
+
+		let lastedited = Date.now()
+
+		await setmemgrowdata({ id: DEV_ID, data: memgrowdata });
+		await setmemgrowlastediteddata({ id: DEV_ID, lastedited });
+
+		res.status(200).json({ success: true, message: `${items.length} card${items.length != 1 ? 's' : ''} successfully saved.` });
     }catch(err){
         console.error(err)
         return res.status(401).end()
