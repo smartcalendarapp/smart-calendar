@@ -494,6 +494,7 @@ let oldmemoryscore;
 
 let usegesture = false;
 
+let lastcardsetid;
 async function updatescreen(){
     let screenview1 = getelement('screenview1')
     screenview1.classList.add('hidden')
@@ -924,8 +925,24 @@ async function submitaifield(event){
 
 function clickmaintitle(){
     let sets = userdata.getReviewSets()
-    if(sets.length > 0){
-        opencardset(sets[0].id)
+    if(sets.length > 0){//here2
+        let lastcardset = userdata.getCardSet(lastcardsetid)
+        if(lastcardset){
+            let nextcardsetindex = userdata.cardsets.findIndex(d => d.id == lastcardset.id) + 1
+            if(nextcardsetindex >= userdata.cardsets.length){
+                opencardset(sets[0].id)
+            }else{
+                let nextsets = userdata.cardsets.slice(nextcardsetindex).filter(d => d.getReviewCards().length != 0)
+                if(nextsets.length > 0){
+                    opencardset(nextsets[0].id)
+                }else{
+                    opencardset(sets[0].id)
+                }
+            }
+        }else{
+            opencardset(sets[0].id)
+        }
+
         /*if(sets.length == 1){
             opencardset(sets[0].id)
         }else{
@@ -1039,6 +1056,8 @@ function opencardset(input, set){
         hidecardgroupblur = false
 
         clickscreen(1)
+
+        lastcardsetid = currentcardset.id
     }
 }
 
