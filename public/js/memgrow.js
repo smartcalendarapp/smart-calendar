@@ -2220,30 +2220,40 @@ function processSkey(){
 
 
 //save backup
-document.addEventListener('keydown', press1, false)
-function press1(event){
-    if(document.activeElement && document.activeElement !== document.body) return
-	if(event.key == 'q'){
-		document.addEventListener('keydown', press2, false)
-	}
-}
-function press2(event){
-	if(event.key == 'q'){
-		document.removeEventListener('keydown', press2, false)
-		document.addEventListener('keydown', press3, false)
-	}else{
-		document.removeEventListener('keydown', press2, false)
-	}
-}
-function press3(event){
-	if(event.key == 'q'){
-		document.removeEventListener('keydown', press3, false)
+let qCount = 0;
 
-        localStorage.setItem('backup', JSON.stringify(userdata))
-	}else{
-		document.removeEventListener('keydown', press3, false)
-	}
-}
+document.addEventListener('keydown', function (e) {
+  if (document.activeElement !== document.body) return;
+
+  if (e.key === 'q') {
+    qCount++;
+    if (qCount === 3) {
+      localStorage.setItem('backup', JSON.stringify(userdata));
+      qCount = 0;
+    }
+  } else {
+    qCount = 0;
+  }
+}, false)
+
+
+let idx = 0;
+const seq = ['e', 'x', 'p'];
+
+document.addEventListener('keydown', function (e) {
+  if (document.activeElement !== document.body) return;
+  
+  if (e.key === seq[idx]) {
+    idx++;
+    if (idx === seq.length) {
+      exportjson()
+      idx = 0;
+    }
+  } else {
+    idx = e.key === seq[0] ? 1 : 0;
+  }
+}, false);
+
 
 
 function clickimg(url){
@@ -2805,6 +2815,74 @@ function turnongesture(){
     window.HandGesture.turnOnRecognition()
 }
 
+
+
+//export and import
+
+function exportjson() {
+    if (!currentcardset) return;
+    // Deep-clone the cardset so we don't mutate original
+    const rawClone = JSON.parse(JSON.stringify(currentcardset));
+    // Reset card data except fronttext/backtext/id
+    rawClone.cards.forEach(card => {
+        // Preserve fronttext, backtext, id
+        const { fronttext, backtext } = card;
+        // Reset and remove any other props
+        card.laststudied = 0;
+        card.laststudiedindex = 0;
+        // If there are any other custom props, strip them
+        Object.keys(card).forEach(key => {
+            if (!['fronttext', 'backtext'].includes(key)) {
+                delete card[key];
+            }
+        });
+        // Reassign preserved
+        card.fronttext = fronttext;
+        card.backtext = backtext;
+    });
+
+    // Serialize and encode
+    const dataStr = JSON.stringify(rawClone);
+    const encoded = encodeURIComponent(dataStr);
+    // Construct shareable URL without reloading
+    const baseUrl = window.location.origin + window.location.pathname;
+    const shareUrl = `${baseUrl}#${encoded}`;
+    // Copy to clipboard
+    navigator.clipboard.writeText(shareUrl)
+        .then(() => alert('Shareable URL (clean) copied to clipboard'))
+        .catch(err => console.error('Clipboard write failed:', err));
+}
+
+// Import CardSet(s) from URL fragment
+function importjson() {
+    const fragment = window.location.hash.slice(1);
+    if (!fragment) return;
+    try {
+        const dataStr = decodeURIComponent(fragment);
+        const raw = JSON.parse(dataStr);
+        const sets = Array.isArray(raw) ? raw : [raw];
+        sets.forEach(rawSet => {
+            // Rebuild CardSet instance
+            const cs = Object.assign(new CardSet(), rawSet);
+            cs.cards = Array.isArray(rawSet.cards)
+                ? rawSet.cards.map(rawCard => Object.assign(new Card(), rawCard))
+                : [];
+            // Add to user data
+            userdata.addCardSet(cs);
+        });
+        // Clear hash to prevent re-import on reload
+        window.history.replaceState(null, '', window.location.pathname);
+        updatescreen();
+    } catch (err) {
+        console.error('Import failed:', err);
+        alert('Failed to import JSON from URL');
+    }
+}
+
+// Automatically attempt import on page load
+window.addEventListener('load', importjson);
+
+
 //CREDITS to:
 
 //https://andymatuschak.org/prompts/
@@ -2816,3 +2894,6 @@ function turnongesture(){
 //https://codepen.io/mediapipe-preview/pen/zYamdVd
 
 //https://mediapipe-studio.webapps.google.com/home
+
+
+
