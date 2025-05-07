@@ -354,6 +354,9 @@ async function loadData() {
   
       console.log("Data loaded successfully.");
       updatescreen();
+
+
+      importjson()
   
     } catch (err) {
       console.error("Error loading data:", err);
@@ -2229,6 +2232,7 @@ document.addEventListener('keydown', function (e) {
     qCount++;
     if (qCount === 3) {
       localStorage.setItem('backup', JSON.stringify(userdata));
+      alert('Backup saved to local storage.');
       qCount = 0;
     }
   } else {
@@ -2849,7 +2853,7 @@ function exportjson() {
     const shareUrl = `${baseUrl}#${encoded}`;
     // Copy to clipboard
     navigator.clipboard.writeText(shareUrl)
-        .then(() => alert('Shareable URL (clean) copied to clipboard'))
+        .then(() => alert('Shareable URL copied to clipboard'))
         .catch(err => console.error('Clipboard write failed:', err));
 }
 
@@ -2878,9 +2882,6 @@ function importjson() {
         alert('Failed to import JSON from URL');
     }
 }
-
-// Automatically attempt import on page load
-window.addEventListener('load', importjson);
 
 
 //CREDITS to:
