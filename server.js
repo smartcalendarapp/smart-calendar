@@ -5242,6 +5242,10 @@ app.post('/gettasksuggestions', async (req, res) => {
 
 		let currenttime = Date.now()
 
+		if(user.calendardata.gettasksuggestions == false){
+			return res.status(401).json({ error: 'Turned off feature, check general settings' })
+		}
+
 		//check ratelimit
 		if(user.accountdata.gptsuggestionusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
 			return res.status(401).json({ error: 'Daily AI limit reached.' })
@@ -5313,6 +5317,10 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 
 		let currenttime = Date.now()
 
+		if(user.calendardata.gettasksuggestions == false){
+			return res.status(401).json({ error: 'Turned off feature, check general settings' })
+		}
+
 		//check ratelimit
 		if(user.accountdata.gptsuggestionusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
 			return res.status(401).json({ error: 'Daily AI limit reached.' })
@@ -5378,6 +5386,10 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 
 
 		let currenttime = Date.now()
+
+		if(user.calendardata.gettasksuggestions == false){
+			return res.status(401).json({ error: 'Turned off feature, check general settings' })
+		}
 
 		//check ratelimit
 		if(user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
@@ -5470,8 +5482,13 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 			appliedratelimit = MAX_GPT_CHAT_PER_DAY_BETA_TESTER
 		}
 
+		
 
 		let currenttime = Date.now()
+
+		if(user.calendardata.gettasksuggestions == false){
+			return res.status(401).json({ error: 'Turned off feature, check general settings' })
+		}
 
 		//check ratelimit
 		if(user.accountdata.gptchatusedtimestamps.filter(d => currenttime - d < 86400000).length >= appliedratelimit){
@@ -5585,6 +5602,9 @@ app.post('/getgptchatresponseeveningsummary', async (req, res) => {
 			appliedratelimit = MAX_GPT_CHAT_PER_DAY_BETA_TESTER
 		}
 
+		if(user.calendardata.gettasksuggestions == false){
+			return res.status(401).json({ error: 'Turned off feature, check general settings' })
+		}
 
 		let currenttime = Date.now()
 
@@ -5680,6 +5700,9 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 			appliedratelimit = MAX_GPT_CHAT_PER_DAY_BETA_TESTER
 		}
 
+		if(user.calendardata.gettasksuggestions == false){
+			return res.status(401).json({ error: 'Turned off feature, check general settings' })
+		}
 
 		let currenttime = Date.now()
 
