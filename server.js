@@ -5242,7 +5242,7 @@ app.post('/gettasksuggestions', async (req, res) => {
 
 		let currenttime = Date.now()
 
-		if(user.calendardata.gettasksuggestions == false){
+		if(user.calendardata.settings.gettasksuggestions == false){
 			return res.status(401).json({ error: 'Turned off feature, check general settings' })
 		}
 
@@ -5317,7 +5317,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 
 		let currenttime = Date.now()
 
-		if(user.calendardata.gettasksuggestions == false){
+		if(user.calendardata.settings.gettasksuggestions == false){
 			return res.status(401).json({ error: 'Turned off feature, check general settings' })
 		}
 
@@ -5387,7 +5387,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 
 		let currenttime = Date.now()
 
-		if(user.calendardata.gettasksuggestions == false){
+		if(user.calendardata.settings.gettasksuggestions == false){
 			return res.status(401).json({ error: 'Turned off feature, check general settings' })
 		}
 
@@ -5486,7 +5486,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 
 		let currenttime = Date.now()
 
-		if(user.calendardata.gettasksuggestions == false){
+		if(user.calendardata.settings.gettasksuggestions == false){
 			return res.status(401).json({ error: 'Turned off feature, check general settings' })
 		}
 
@@ -5602,7 +5602,7 @@ app.post('/getgptchatresponseeveningsummary', async (req, res) => {
 			appliedratelimit = MAX_GPT_CHAT_PER_DAY_BETA_TESTER
 		}
 
-		if(user.calendardata.gettasksuggestions == false){
+		if(user.calendardata.settings.gettasksuggestions == false){
 			return res.status(401).json({ error: 'Turned off feature, check general settings' })
 		}
 
@@ -5700,7 +5700,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 			appliedratelimit = MAX_GPT_CHAT_PER_DAY_BETA_TESTER
 		}
 
-		if(user.calendardata.gettasksuggestions == false){
+		if(user.calendardata.settings.gettasksuggestions == false){
 			return res.status(401).json({ error: 'Turned off feature, check general settings' })
 		}
 
