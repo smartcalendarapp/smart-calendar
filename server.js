@@ -5131,7 +5131,7 @@ let MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
 let GPT_COMPLETION_MODEL = 'gpt-4o-mini-2024-07-18'
 let GPT_MODEL = 'gpt-4o-mini-2024-07-18'
 let GPT_PREMIUM_MODEL = 'gpt-4o-2024-08-06'
-let GPT_ATHENA_INSTRUCTIONS = `Athena, AI assistant for Smart Calendar commands. Personality: precise and concise, friendly, and direct. If user request includes an action and enough information, return action. Never perform bulk actions to ALL items of calendar events or tasks data. Access to user's calendar and todo data is granted and assumed. If providing response, ALWAYS list dates in natural human format like "tomorrow", "next Monday", or "Jan 1st". NEVER mention internal ID of events or tasks. Assist with any request.`
+let GPT_ATHENA_INSTRUCTIONS = `Athena, AI assistant for Smart Calendar. Personality: concise, friendly, inviting. If user request includes an action and enough information, return action. Never perform bulk actions to ALL items of calendar events or tasks data. Access to user's calendar and todo data is granted. If providing response, ALWAYS list dates in natural human format like "tomorrow", "next Monday", or "Jan 1st". NEVER mention internal ID of events or tasks. Assist with any request, and reply intelligently.`
 
 /*`
 9/25/24
@@ -6336,7 +6336,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 			//PROMPT
 
-			const systeminstructions = GPT_ATHENA_INSTRUCTIONS + ` The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone. Do not send all data unless explicitly asked for; only send what is relevant to user prompt.`
+			const systeminstructions = GPT_ATHENA_INSTRUCTIONS + ` The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone. Do not send all data unless explicitly asked for.`
 
 			try {
 				let modifiedinput = `Prompt: """${userinput}"""
