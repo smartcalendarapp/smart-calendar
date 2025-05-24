@@ -8376,6 +8376,7 @@ function getdatafromgooglecalendar(listdata) {
 
 		//events
 		for (const event of eventdata) {
+			if(event.status == 'cancelled') continue
 			//get properties
 			const id = event.id
 			const summary = event.summary
