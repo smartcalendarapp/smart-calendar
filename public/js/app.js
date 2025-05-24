@@ -44,12 +44,11 @@ const TIME_TIMEWINDOW_OPTION_DATA = [
 
 const TIMEWINDOW_PRESETS = [
 	{ day: { byday: [] }, time: { startminute: null, endminute: null }, text: 'Any time' },
-	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 9*60, endminute: 17*60 }, text: 'Work hours', fulltext: 'Work hours (M-F 9am-5pm)' },
-	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 8*60, endminute: 15*60 }, text: 'School hours', fulltext: 'School hours (M-F 8am-3pm)' },
-	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 15*60, endminute: 22*60 }, text: 'After school', fulltext: 'After school (M-F 3pm-10pm)' },
-	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: null, endminute: null }, text: 'Weekdays' },
-	{ day: { byday: [0, 6] }, time: { startminute: null, endminute: null }, text: 'Weekends' },
-	{ day: { byday: [] }, time: { startminute: 5*60, endminute: 9*60 }, text: 'Early morning', fulltext: 'Early morning (5am-9am)' },
+	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 9*60, endminute: 17*60 }, text: 'Work', fulltext: 'Work hours (M-F 9am-5pm)' },
+	{ day: { byday: [1, 2, 3, 4, 5] }, time: { startminute: 8*60, endminute: 15*60 }, text: 'School', fulltext: 'School hours (M-F 8am-3pm)' },
+	{ day: { byday: [] }, time: { startminute: 5*60, endminute: 12*60 }, text: 'Morning', fulltext: 'Morning (5am-11am)' },
+	{ day: { byday: [] }, time: { startminute: 12*60, endminute: 17*60 }, text: 'Afternoon', fulltext: 'Afternoon (12pm-5pm)' },
+	{ day: { byday: [] }, time: { startminute: 17*60, endminute: 21*60 }, text: 'Evening', fulltext: 'Evening (5pm-9pm)' },
 ]
 
 
@@ -2440,10 +2439,11 @@ class Calendar {
 				 					<div class="text-14px text-primary width90px">Time slot</div>
 					 				<div class="inputeventtype" id="inputTIMEWINDOW_PRESETS">
 									 	<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(0)">Any time</div>
-										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(1)">Work hours</div>
-										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(2)">School hours</div>
-					 					<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(3)">After school</div>
-										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(4)">Early morning</div>
+										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(1)">Work</div>
+										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(2)">School</div>
+					 					<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(3)">Morning</div>
+										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(4)">Afternoon</div>
+										<div class="inputeventtypechild" onclick="clickeventtimewindowpreset(5)">Evening</div>
 									</div>
 				 				</div>
 							</div>
@@ -11678,10 +11678,11 @@ function gettododata(item) {
 						<div class="text-14px text-primary width90px">Time slot</div>
 						<div class="inputeventtype width-fit flex-grow-0 flex-basis-auto" id="inputtodotimewindow">
 							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(0)">Any time</div>
-							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(1)">Work hours</div>
-							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(2)">School hours</div>
-							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(3)">After school</div>
-							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(4)">Early morning</div>
+							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(1)">Work</div>
+							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(2)">School</div>
+							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(3)">Morning</div>
+							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(4)">Afternoon</div>
+							<div class="inputeventtypechild" onclick="clicktodotimewindowpreset(4)">Evening</div>
 						</div>
 					</div>
 				</div>
@@ -11702,10 +11703,11 @@ function gettododata(item) {
 						<div class="text-14px text-primary width90px">Preferred time</div>
 						<div class="inputeventtype width-fit flex-grow-0 flex-basis-auto" id="todoedittimewindowtime">
 							<div class="inputeventtypechild" onclick="clickedittodotimewindowtime(0)">Any time</div>
-							<div class="inputeventtypechild" onclick="clickedittodotimewindowtime(1)">Morning</div>
-							<div class="inputeventtypechild" onclick="clickedittodotimewindowtime(2)">Afternoon</div>
-							<div class="inputeventtypechild" onclick="clickedittodotimewindowtime(3)">Evening</div>
-							<div class="inputeventtypechild" onclick="clickedittodotimewindowtime(4)">Work hours</div>
+							<div class="inputeventtypechild" onclick="clickedittodotimewindowtime(1)">Work</div>
+							<div class="inputeventtypechild" onclick="clickedittodotimewindowtime(2)">School</div>
+							<div class="inputeventtypechild" onclick="clickedittodotimewindowtime(3)">Morning</div>
+							<div class="inputeventtypechild" onclick="clickedittodotimewindowtime(4)">Afternoon</div>
+							<div class="inputeventtypechild" onclick="clickedittodotimewindowtime(4)">Evening</div>
 						</div>
 					</div>
 				</div>
