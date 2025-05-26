@@ -2174,12 +2174,12 @@ document.addEventListener('keydown', async (event) => {
     if(screenview == 1 && currentcardset && !editcardmode){
         if(event.key == 'e'){ //explain
             if(hidecardgroupblur && !finishedreview){
-                clickhint(1)
+                clickhint(0)
             }
         }
         if(event.key == 'g'){ //google
             if(hidecardgroupblur && !finishedreview){
-                clickhint(2)
+                clickhint(1)
             }
         }
 
@@ -2286,34 +2286,7 @@ async function clickhint(hinttype){
     try {
         if(!currentcardset || !currentcardset.cards[currentcardindex]?.backtext || !currentcardset.cards[currentcardindex]?.fronttext) return
 
-        if(hinttype == 2 && false){
-            //has saved img hint
-
-            /*
-            let hinttext = getelement('hinttext')
-            hinttext.innerHTML = `<img loading="lazy" src="${currentcardset.cards[currentcardindex].imgurl}" onclick="clickremoveimg()" style="cursor: pointer; height: auto; width: 100%; opacity: 0; transition: opacity 0.5s ease-in-out;" onload="this.style.opacity = '1';"></img>`
-
-            let maincardcontent = getelement('maincardcontent')
-
-            hintpopup.classList.add('hintpopupexpanded')
-
-            let hintpopuptitle = getelement('hintpopuptitle')
-            hintpopuptitle.innerHTML = currentcardset.cards[currentcardindex].fronttext
-            
-            await sleep(10)
-
-            if(isMobile()){
-                hintpopup.style.top = (window.innerHeight - hintpopup.offsetHeight - 24) + 'px'
-                hintpopup.style.left = (window.innerWidth/2 - hintpopup.offsetWidth/2) + 'px'
-            }else{
-                let rect = maincardcontent.getBoundingClientRect()
-                hintpopup.style.top = (window.innerHeight/2 - hintpopup.offsetHeight/2) + 'px'
-                hintpopup.style.left = (rect.left + rect.width + 30) + 'px'
-            }
-
-            hintpopup.classList.remove('hidden')
-            */
-        }else{
+        if(true){
 
             if(isgettinghint) return
             isgettinghint = true
@@ -2324,7 +2297,8 @@ async function clickhint(hinttype){
                 body: JSON.stringify({
                     card: currentcardset.cards[currentcardindex],
                     showanswer: showanswer,
-                    hinttype: hinttype
+                    hinttype: hinttype,
+                    metadata: currentcardset.metadata
                 })
             })
 
@@ -2418,7 +2392,8 @@ async function speaktext(text){
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                text: text
+                text: text,
+                metadata: currentcardset.metadata
             })
         })
 
@@ -2739,7 +2714,7 @@ document.addEventListener('HandGestureReady', function() {
                     handlingsupplementarygesture = false
 
                     if(currentgesture.categoryName == 'Pointing_Up'){
-                        clickhint(1)
+                        clickhint(0)
                         
                         notanysupplementarygesture = false
                     }
