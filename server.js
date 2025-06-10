@@ -1715,6 +1715,14 @@ const session = require('express-session')
 const app = express()
 const helmet = require('helmet')
 
+const cors = require('cors');
+app.use(
+  cors({
+    origin: ['https://smartcalendar.us','https://www.smartcalendar.us'],
+    credentials: true
+  })
+);
+
 
 
 const DynamoDBStore = require('dynamodb-store')
