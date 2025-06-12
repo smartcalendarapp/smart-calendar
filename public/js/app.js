@@ -9448,17 +9448,20 @@ function fixrecurringtodo(item){
 			}
 			
 			if(newtododuedate.getTime() <= lasttododuedate.getTime()){
-				for(let i = 0; i < item.repeat.interval; i++){
-					if (item.repeat.frequency == 0) {
-						newtododuedate.setDate(newtododuedate.getDate() + 1)
-					} else if (item.repeat.frequency == 1) {
-						newtododuedate.setDate(newtododuedate.getDate() + 7)
-					} else if (item.repeat.frequency == 2) {
-						newtododuedate.setMonth(newtododuedate.getMonth() + 1)
-					} else if (item.repeat.frequency == 3) {
-						newtododuedate.setFullYear(newtododuedate.getFullYear() + 1)
+				let currentdate = new Date()
+				do{
+					for(let i = 0; i < item.repeat.interval; i++){
+						if (item.repeat.frequency == 0) {
+							newtododuedate.setDate(newtododuedate.getDate() + 1)
+						} else if (item.repeat.frequency == 1) {
+							newtododuedate.setDate(newtododuedate.getDate() + 7)
+						} else if (item.repeat.frequency == 2) {
+							newtododuedate.setMonth(newtododuedate.getMonth() + 1)
+						} else if (item.repeat.frequency == 3) {
+							newtododuedate.setFullYear(newtododuedate.getFullYear() + 1)
+						}
 					}
-				}
+				}while (newtododuedate.getTime() <= currentdate.getTime())
 			}
 
 			//until
@@ -12842,6 +12845,7 @@ function rejecteventsuggestion(id){
 async function playsound(name){
 	let sounddiv = getElement('soundeffectaudio')
 	sounddiv.src = `${name}.mp3`
+	sounddiv.volume = 0.5
 	
 	try{
 		await sounddiv.play()
