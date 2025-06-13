@@ -9448,7 +9448,9 @@ function fixrecurringtodo(item){
 			}
 			
 			if(newtododuedate.getTime() <= lasttododuedate.getTime()){
-				let currentdate = new Date()
+				let currentdayend = new Date()
+				currentdayend.setHours(0,0,0,0)
+				currentdayend.setDate(currentdayend.getDate() + 1)
 				do{
 					for(let i = 0; i < item.repeat.interval; i++){
 						if (item.repeat.frequency == 0) {
@@ -9461,7 +9463,7 @@ function fixrecurringtodo(item){
 							newtododuedate.setFullYear(newtododuedate.getFullYear() + 1)
 						}
 					}
-				}while (newtododuedate.getTime() <= currentdate.getTime())
+				}while (newtododuedate.getTime() <= currentdayend.getTime())
 			}
 
 			//until
