@@ -7118,23 +7118,18 @@ app.post('/speaktext', async (req, res) => {
 	try{
 		if(req?.body?.secretToken != process.env.MEMGROW_SECRET && req?.session?.user?.userid != DEV_ID) return res.status(401).end()
 		let text = req.body.text
-		let metadata = req.body.metadata || {}
 
 		function containsChinese(word) {
             const chineseRegex = /[\u4e00-\u9fff]/;
             return chineseRegex.test(word);
         }
 
-		function containsFrench(tempd){
-			return tempd?.french_speak
-		}
+	
 
 		let lang = 'en'
 		if(containsChinese(text)){
 			lang = 'zh';
 			text = text.replace(/[^\u4e00-\u9fff，。！？、：；“”‘’（）【】《》.,!?]/g, '');
-		}else if(containsFrench(metadata)){
-			lang = 'fr';
 		}
 
 		const url = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${lang}&client=tw-ob&q=${encodeURIComponent(text)}`;
@@ -7281,10 +7276,9 @@ app.post('/getcardhint', async (req, res) => {
 			return chineseRegex.test(word);
 		}
 		let ischinese = containsChinese(card.fronttext)
-		let isfrench = containsFrench(metadata)
 
 
-		const systemprompt = showanswer ? [ischinese ? `Use the word in a Chinese sentence that's short, interesting and memorable, and give translation below in parentheses. No pinyin` : (isfrench ? `Explain how to pronounce this French using English-alike words` : `Explain this to me in a way I'll never forget in a few sentences.`)][hinttype] : `Give a cue hint without revealing anything that is part of the card back`
+		const systemprompt = showanswer ? [ischinese ? `Use the word in a Chinese sentence that's short, interesting and memorable, and give translation below in parentheses. No pinyin` : `Explain this to me in a way I'll never forget in a few sentences.`][hinttype] : `Give a cue hint without revealing anything that is part of the card back`
 
 		const userprompt = `Card front: """${card.fronttext}"""\nCard back: """${card.backtext}"""`
 
@@ -7394,7 +7388,7 @@ app.post('/gpt-add-memgrow-card', async (req, res) => {
 		}
 
 		let memgrowdata = await getmemgrowdata(MEMGROW_USER_ID)
-		let tempcardset = memgrowdata.data.cardsets.find(d => d?.metadata?.gpt_import == true)
+		let tempcardset = memgrowdata.data.cardsets.find(d => d?.title?.includes('[gpt]'))
 		if(tempcardset?.cards?.length > 0){
 			tempcardset.cards.push(...items)
 		}
