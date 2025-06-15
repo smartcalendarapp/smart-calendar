@@ -1450,7 +1450,14 @@ ol{
 	stroke: none;
 	pointer-events: none;
 	display: inline-block;
-	vertical-align:middle;
+}
+.repeatbuttoneventsmall{
+	height: 12px;
+	width: 12px;
+	fill: var(--green);
+	stroke: none;
+	pointer-events: none;
+	display: inline-block;
 }
 .completedtext .repeatbuttonevent{
 	fill:var(--text-secondary) !important
@@ -3841,6 +3848,11 @@ max-width:1000px;
 
 .checkboxunfilled {
 	stroke: var(--text-secondary) !important;
+}
+
+
+.checkboxunfilledfill {
+	fill: var(--text-secondary) !important;
 }
 
 

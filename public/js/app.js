@@ -429,6 +429,46 @@ function getwhitecheckcirclesmall(boolean, tooltip) {
 }
 
 
+//get white check circle
+function getwhiteplay(boolean, tooltip) {
+	if (boolean) {
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallinline checkboxfilledprimary">
+			<g>
+			<path d="M83.1088 160.743C83.1088 164.608 84.1982 167.609 86.377 169.746C88.5558 171.884 91.5773 172.953 95.4416 172.953L160.558 172.953C164.423 172.953 167.444 171.884 169.623 169.746C171.802 167.609 172.891 164.608 172.891 160.743L172.891 95.1332C172.891 91.3512 171.802 88.3913 169.623 86.2537C167.444 84.116 164.423 83.0471 160.558 83.0471L95.4416 83.0471C91.5773 83.0471 88.5558 84.116 86.377 86.2537C84.1982 88.3913 83.1088 91.3512 83.1088 95.1332L83.1088 160.743Z" fill-rule="nonzero" opacity="1" stroke="none"/>
+			<path d="M128 3.34375C59.1587 3.34375 3.34374 59.1587 3.34375 128C3.34375 196.841 59.1587 252.656 128 252.656C196.841 252.656 252.656 196.841 252.656 128C252.656 59.1587 196.841 3.34374 128 3.34375ZM128 25.3438C184.691 25.3438 230.656 71.309 230.656 128C230.656 184.691 184.691 230.656 128 230.656C71.309 230.656 25.3437 184.691 25.3438 128C25.3438 71.309 71.309 25.3437 128 25.3438Z" fill-rule="nonzero" opacity="1" stroke="none"/>
+			</g>
+			</svg>
+	 		${tooltip || ''}`
+	} else {
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallinline checkboxunfilled">
+			<g>
+			<path d="M32.3281 2.81165C24.5938 2.94696 17.5781 9.15139 17.5781 17.8116L17.5781 238.187C17.5781 249.734 30.0781 256.929 40.0781 251.155L230.922 140.999C240.922 135.226 240.922 120.773 230.922 114.999C230.549 114.784 40.4509 5.0581 40.0781 4.8429C37.5781 3.39952 34.9063 2.76654 32.3281 2.81165ZM47.5781 43.8116C78.0158 61.3848 162.926 110.41 193.391 127.999L47.5781 212.187L47.5781 43.8116Z" fill-rule="nonzero" opacity="1" stroke="none"/>
+			</g>
+			</svg>
+	 		${tooltip || ''}`
+	}
+}
+
+//get small white check circle
+function getwhiteplaysmall(boolean, tooltip) {
+	if (boolean) {
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallerinline checkboxfilledprimary">
+			<g>
+			171.884 91.5773 172.953 95.4416 172.953L160.558 172.953C164.423 172.953 167.444 171.884 169.623 169.746C171.802 167.609 172.891 164.608 172.891 160.743L172.891 95.1332C172.891 91.3512 171.802 88.3913 169.623 86.2537C167.444 84.116 164.423 83.0471 160.558 83.0471L95.4416 83.0471C91.5773 83.0471 88.5558 84.116 86.377 86.2537C84.1982 88.3913 83.1088 91.3512 83.1088 95.1332L83.1088 160.743Z" fill-rule="nonzero" opacity="1" stroke="none"/>
+			<path d="M128 3.34375C59.1587 3.34375 3.34374 59.1587 3.34375 128C3.34375 196.841 59.1587 252.656 128 252.656C196.841 252.656 252.656 196.841 252.656 128C252.656 59.1587 196.841 3.34374 128 3.34375ZM128 25.3438C184.691 25.3438 230.656 71.309 230.656 128C230.656 184.691 184.691 230.656 128 230.656C71.309 230.656 25.3437 184.691 25.3438 128C25.3438 71.309 71.309 25.3437 128 25.3438Z" fill-rule="nonzero" opacity="1" stroke="none"/>
+			</g>
+			</svg>
+	 		${tooltip || ''}`
+	} else {
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallerinline checkboxunfilled">
+			<g>
+			<path d="M32.3281 2.81165C24.5938 2.94696 17.5781 9.15139 17.5781 17.8116L17.5781 238.187C17.5781 249.734 30.0781 256.929 40.0781 251.155L230.922 140.999C240.922 135.226 240.922 120.773 230.922 114.999C230.549 114.784 40.4509 5.0581 40.0781 4.8429C37.5781 3.39952 34.9063 2.76654 32.3281 2.81165ZM47.5781 43.8116C78.0158 61.3848 162.926 110.41 193.391 127.999L47.5781 212.187L47.5781 43.8116Z" fill-rule="nonzero" opacity="1" stroke="none"/>
+			</g>
+			</svg>
+	 		${tooltip || ''}`
+	}
+}
+
 //get check
 function getcheck(boolean) {
 	if (boolean) {
@@ -2259,7 +2299,7 @@ class Calendar {
 		}
 	}
 
-	updateInfo(updateStructure, showinfo) {
+	updateInfo(updateStructure, showinfo, updatemoveditem) {
 		updateitemreminders()
 
 		requestAnimationFrame(function () {
@@ -2349,7 +2389,6 @@ class Calendar {
 							
 							<div class="horizontalbar"></div>`)
 
-						if (item.type == 0) {
 							infodata.push(`
 				 
 								<div class="infogroup">
@@ -2368,6 +2407,9 @@ class Calendar {
 								}
 									</div>
 								</div>`)
+
+						if (item.type == 0) {
+
 
 							infodata.push(`
 								<div class="infogroup">
@@ -2580,6 +2622,17 @@ class Calendar {
 							infoendtime.value = getHMText(item.end.minute)
 						}
 					} else if (item.type == 1) {
+						let infostarttime = getElement('infostarttime')
+						let infostartdate = getElement('infostartdate')
+
+						if(updatemoveditem){
+							infostarttime.value = getHMText(item.startafter.minute)
+							infostartdate.value = getDMDYText(new Date(item.startafter.year, item.startafter.month, item.startafter.day))
+						}else{
+							infostarttime.value = getHMText(item.start.minute)
+							infostartdate.value = getDMDYText(new Date(item.start.year, item.start.month, item.start.day))
+						}
+
 						let infoduration = getElement('infoduration')
 						let infoendbeforedate = getElement('infoendbeforedate')
 						let infoendbeforetime = getElement('infoendbeforetime')
@@ -2920,7 +2973,7 @@ class Calendar {
 		for (let [index, div] of Object.entries(todoedittimewindowtime.children)) {
 			let itemvalue = item.timewindow.time
 			let modelvalue = TIME_TIMEWINDOW_OPTION_DATA[+index]
-			if (itemvalue.startminute == modelvalue.startminute && itemvalue.endminute == modelvalue.endminute) {
+			if (itemvalue?.startminute == modelvalue?.startminute && itemvalue?.endminute == modelvalue?.endminute) {
 				div.classList.add('selectedbutton')
 			} else {
 				div.classList.remove('selectedbutton')
@@ -4068,7 +4121,7 @@ if (mobilescreen) {
 //initialize
 let historydata = []
 let historyindex = 0
-let selectedeventid, selectedeventinitialy, selectedeventdate, selectedeventdatetime, selectedeventfromdate, editeventid;
+let selectedeventid, selectedeventinitialy, selectedeventdate, selectedeventdatetime, selectedeventfromdate, editeventid, doingeventid;
 let selectedeventbyday = []
 let copiedevent;
 let editinfo = false;
@@ -6707,6 +6760,22 @@ function inputeventstartdate(event, id) {
 	let tempdate = new Date(mystartyear, mystartmonth, mystartday)
 
 	let oldstartdate = new Date(item.start.year, item.start.month, item.start.day)
+	
+
+	if(!isNaN(tempdate.getTime()) && item.type == 1){
+		item.autoschedulelocked = true
+
+		let tempdate2 = new Date(tempdate)
+		tempdate2.setHours(0, item.start.minute, 0, 0)
+
+		item.startafter.year = tempdate2.getFullYear()
+		item.startafter.month = tempdate2.getMonth()
+		item.startafter.day = tempdate2.getDate()
+		item.startafter.minute = tempdate2.getHours() * 60 + tempdate2.getMinutes()
+
+		startAutoSchedule({moveditemtimestamp: tempdate2, moveditem: item})
+		return
+	}
 
 	if (!isNaN(tempdate.getTime())) {
 		let duration = (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
@@ -6717,6 +6786,7 @@ function inputeventstartdate(event, id) {
 
 		fixeventend(item, duration)
 	}
+	
 
 	if(oldstartdate.getTime() != new Date(item.start.year, item.start.month, item.start.day).getTime() && (item.repeat.frequency == null && item.repeat.interval == null)){
 		calendarday = item.start.day
@@ -6732,6 +6802,7 @@ function inputeventstartdate(event, id) {
 	calendar.updateHistory()
 }
 
+
 //input start minute
 function inputeventstartminute(event, id) {
 	let string = event.target.value.toLowerCase()
@@ -6742,6 +6813,20 @@ function inputeventstartminute(event, id) {
 	if (!item) return
 	
 	let oldminute = item.start.minute
+
+	if(mystartminute != null && item.type == 1){
+		let tempdate = new Date(item.start.year, item.start.month, item.start.day, 0, mystartminute)
+
+		item.autoschedulelocked = true
+
+		item.startafter.year = tempdate.getFullYear()
+		item.startafter.month = tempdate.getMonth()
+		item.startafter.day = tempdate.getDate()
+		item.startafter.minute = tempdate.getHours() * 60 + tempdate.getMinutes()
+
+		startAutoSchedule({moveditemtimestamp: tempdate, moveditem: item})
+		return
+	}
 	
 	if (mystartminute != null) {
 		let duration = (new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute).getTime() - new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute).getTime())
@@ -6750,6 +6835,8 @@ function inputeventstartminute(event, id) {
 
 		fixeventend(item, duration)
 	}
+
+
 
 	calendar.updateHistory()
 
@@ -8968,6 +9055,10 @@ async function startAutoSchedule({scheduletodos = [], eventsuggestiontodos = [],
 		return
 	}
 
+	if(moveditem){
+		calendar.updateInfo(false, false, true)
+	}
+	
 	let oldcalendartabs = [...calendartabs]
 
 
@@ -12874,6 +12965,10 @@ async function todocompleted(id) {
 		itemrect = itemelement.getBoundingClientRect()
 	}
 
+	if(getdoingeventid(item) == item.id){
+		toggledoingevent(item.id)
+	}
+
 	calendar.updateTodo()
 	if(Calendar.Event.isEvent(item)){
 		calendar.updateEvents()
@@ -16460,7 +16555,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 				
 					${item.repeat.frequency != null && item.repeat.interval != null && item.type == 1 ? `
 					<span class="todoitemcheckbox tooltip checkcircletop pointer-none">
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="repeatbuttonevent">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="${myheight <= 15 ? 'repeatbuttoneventsmall' : 'repeatbuttonevent'}">
 						<g>
 						<g opacity="1">
 						<path d="M0 119.447C0 123.04 1.24973 126.086 3.7492 128.586C6.24867 131.085 9.29489 132.335 12.8879 132.335C16.4809 132.335 19.5271 131.085 22.0265 128.586C24.526 126.086 25.7757 123.04 25.7757 119.447L25.7757 111.714C25.7757 102.42 28.7243 94.9407 34.6215 89.2778C40.5187 83.615 48.2709 80.7835 57.8783 80.7835L155.592 80.7835L155.592 55.3593L60.3387 55.3593C48.0757 55.3593 37.4139 57.5854 28.3533 62.0375C19.2928 66.4897 12.3021 72.7969 7.38124 80.9593C2.46041 89.1216 0 98.7484 0 109.84L0 119.447ZM146.219 105.27C146.219 108.473 147.176 110.992 149.089 112.827C151.003 114.663 153.561 115.581 156.763 115.581C158.169 115.581 159.575 115.327 160.981 114.819C162.387 114.312 163.637 113.589 164.73 112.652L209.018 76.097C211.674 73.9881 212.982 71.391 212.943 68.3057C212.904 65.2204 211.595 62.5843 209.018 60.3973L164.73 23.6082C163.637 22.749 162.387 22.0461 160.981 21.4993C159.575 20.9526 158.169 20.6792 156.763 20.6792C153.561 20.6792 151.003 21.6165 149.089 23.4911C147.176 25.3657 146.219 27.9042 146.219 31.1066L146.219 105.27ZM109.781 150.847C109.781 147.644 108.844 145.125 106.969 143.29C105.095 141.454 102.517 140.536 99.2366 140.536C97.8307 140.536 96.4442 140.79 95.0773 141.298C93.7104 141.806 92.4802 142.489 91.3867 143.348L47.0993 179.903C44.4436 182.09 43.1158 184.707 43.1158 187.753C43.1158 190.799 44.4436 193.416 47.0993 195.603L91.3867 232.392C92.4802 233.329 93.7104 234.052 95.0773 234.559C96.4442 235.067 97.8307 235.321 99.2366 235.321C102.517 235.321 105.095 234.403 106.969 232.568C108.844 230.732 109.781 228.213 109.781 225.011L109.781 150.847ZM256 136.436C256 132.843 254.75 129.777 252.251 127.238C249.751 124.7 246.705 123.431 243.112 123.431C239.519 123.431 236.473 124.7 233.973 127.238C231.474 129.777 230.224 132.843 230.224 136.436L230.224 144.168C230.224 153.463 227.276 160.942 221.378 166.605C215.481 172.268 207.729 175.099 198.122 175.099L100.408 175.099L100.408 200.524L195.661 200.524C208.002 200.524 218.684 198.278 227.705 193.787C236.727 189.295 243.698 182.969 248.619 174.806C253.54 166.644 256 157.056 256 146.043L256 136.436Z" fill-rule="nonzero" opacity="1" ></path>
@@ -16474,7 +16569,21 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 							${getpriorityicon(item.priority)}
 						</span>` : '' }
 				
+					${item.type == 1 && myheight >= 45 ? 
+						`<span class="margin-left-6px scalebutton todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="toggledoingevent('${item.id}')">
+							${myheight <= 15 ? `${getwhiteplaysmall(getdoingeventid() == item.id)}` : `${getwhiteplay(getdoingeventid() == item.id)}`}
+						</span>` 
+						: ''
+					}
+
 					${item.iseventsuggestion ? aisuggestiontext : `${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item)}</span>`}
+
+					${item.type == 1 && myheight < 45 ? 
+						`<span class="margin-left-6px scalebutton todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="toggledoingevent('${item.id}')">
+							${myheight <= 15 ? `${getwhiteplaysmall(getdoingeventid() == item.id)}` : `${getwhiteplay(getdoingeventid() == item.id)}`}
+						</span>` 
+						: ''
+					}
 
 				</div>
 				
@@ -16600,7 +16709,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 					${item.repeat.frequency != null && item.repeat.interval != null && item.type == 1 ? `
 					<span class="todoitemcheckbox tooltip checkcircletop pointer-none">
-						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="repeatbuttonevent">
+						<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="${myheight <= 15 ? 'repeatbuttoneventsmall' : 'repeatbuttonevent'}">
 						<g>
 						<g opacity="1">
 						<path d="M0 119.447C0 123.04 1.24973 126.086 3.7492 128.586C6.24867 131.085 9.29489 132.335 12.8879 132.335C16.4809 132.335 19.5271 131.085 22.0265 128.586C24.526 126.086 25.7757 123.04 25.7757 119.447L25.7757 111.714C25.7757 102.42 28.7243 94.9407 34.6215 89.2778C40.5187 83.615 48.2709 80.7835 57.8783 80.7835L155.592 80.7835L155.592 55.3593L60.3387 55.3593C48.0757 55.3593 37.4139 57.5854 28.3533 62.0375C19.2928 66.4897 12.3021 72.7969 7.38124 80.9593C2.46041 89.1216 0 98.7484 0 109.84L0 119.447ZM146.219 105.27C146.219 108.473 147.176 110.992 149.089 112.827C151.003 114.663 153.561 115.581 156.763 115.581C158.169 115.581 159.575 115.327 160.981 114.819C162.387 114.312 163.637 113.589 164.73 112.652L209.018 76.097C211.674 73.9881 212.982 71.391 212.943 68.3057C212.904 65.2204 211.595 62.5843 209.018 60.3973L164.73 23.6082C163.637 22.749 162.387 22.0461 160.981 21.4993C159.575 20.9526 158.169 20.6792 156.763 20.6792C153.561 20.6792 151.003 21.6165 149.089 23.4911C147.176 25.3657 146.219 27.9042 146.219 31.1066L146.219 105.27ZM109.781 150.847C109.781 147.644 108.844 145.125 106.969 143.29C105.095 141.454 102.517 140.536 99.2366 140.536C97.8307 140.536 96.4442 140.79 95.0773 141.298C93.7104 141.806 92.4802 142.489 91.3867 143.348L47.0993 179.903C44.4436 182.09 43.1158 184.707 43.1158 187.753C43.1158 190.799 44.4436 193.416 47.0993 195.603L91.3867 232.392C92.4802 233.329 93.7104 234.052 95.0773 234.559C96.4442 235.067 97.8307 235.321 99.2366 235.321C102.517 235.321 105.095 234.403 106.969 232.568C108.844 230.732 109.781 228.213 109.781 225.011L109.781 150.847ZM256 136.436C256 132.843 254.75 129.777 252.251 127.238C249.751 124.7 246.705 123.431 243.112 123.431C239.519 123.431 236.473 124.7 233.973 127.238C231.474 129.777 230.224 132.843 230.224 136.436L230.224 144.168C230.224 153.463 227.276 160.942 221.378 166.605C215.481 172.268 207.729 175.099 198.122 175.099L100.408 175.099L100.408 200.524L195.661 200.524C208.002 200.524 218.684 198.278 227.705 193.787C236.727 189.295 243.698 182.969 248.619 174.806C253.54 166.644 256 157.056 256 146.043L256 136.436Z" fill-rule="nonzero" opacity="1" ></path>
@@ -16614,7 +16723,23 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 							${getpriorityicon(item.priority)}
 						</span>` : '' }
 					
+					${item.type == 1 && myheight >= 45 ? 
+						`<span class="margin-left-6px scalebutton todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="toggledoingevent('${item.id}')">
+							${myheight <= 15 ? `${getwhiteplaysmall(getdoingeventid() == item.id)}` : `${getwhiteplay(getdoingeventid() == item.id)}`}
+						</span>` 
+						: ''
+					}
+
 					${item.iseventsuggestion ? aisuggestiontext : `${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item)}</span>`}
+
+					${item.type == 1 && myheight < 45 ? 
+						`<span class="margin-left-6px scalebutton todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="toggledoingevent('${item.id}')">
+							${myheight <= 15 ? `${getwhiteplaysmall(getdoingeventid() == item.id)}` : `${getwhiteplay(getdoingeventid() == item.id)}`}
+						</span>` 
+						: ''
+					}
+					
+
 				
 				</div>
 				
@@ -16625,6 +16750,64 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 	return output
 }
 
+
+//doing event
+
+function getdoingeventid(filteritem){
+	//find event with event.type == 1 such that the start is before the current time and the end is after the current time
+	let currenttime = new Date()
+	currenttime.setSeconds(0, 0)
+
+	let searcharray = []
+	if(filteritem){
+		searcharray = [filteritem]
+	}else{
+		searcharray = calendar.events
+	}
+
+	let doingevent = searcharray.find(item => item.type == 1 && new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute) <= currenttime && new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute) > currenttime)
+	
+	if(doingevent){
+		return doingevent.id
+	}
+	return null
+}
+
+function toggledoingevent(itemid) {
+	let item = calendar.events.find(d => d.id == itemid)
+	if(!item) return
+	if(getdoingeventid(item) == item.id){
+		//completed
+
+		let enddate = new Date()
+		enddate.setSeconds(0, 0)
+
+		let startdate = new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute)
+		if(enddate.getTime() > startdate.getTime()){
+			item.end.year = enddate.getFullYear()
+			item.end.month = enddate.getMonth()
+			item.end.day = enddate.getDate()
+			item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
+		}
+		
+		item.completed = true
+
+		calendar.updateEvents()
+		calendar.updateInfo()
+	}else{
+		item.autoschedulelocked = true
+
+		let movedate = new Date()
+		movedate.setSeconds(0, 0)
+
+		item.startafter.year = movedate.getFullYear();
+		item.startafter.month = movedate.getMonth();
+		item.startafter.day = movedate.getDate();
+		item.startafter.minute = movedate.getHours() * 60 + movedate.getMinutes()
+
+		startAutoSchedule({moveditemtimestamp: movedate, moveditem: item})
+	}
+}
 
 
 //event type
@@ -17489,6 +17672,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		}
 
 
+
 		//start
 		if (true) {
 			//SMART FOCUS
@@ -18049,7 +18233,11 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		
 		if(moveditem){
 			if(!addedtodos.find(d => d.id == moveditem.id)){
-				displayalert(`Task "${Calendar.Event.getTitle(moveditem).slice(0, 10)}${Calendar.Event.getTitle(moveditem).length > 10 ? '...' : ''}" rescheduled for ${Calendar.Event.getStartText(moveditem)}`)
+				if(getdoingeventid(moveditem) == moveditem.id){
+					displayalert(`Starting "${Calendar.Event.getTitle(moveditem).slice(0, 10)}${Calendar.Event.getTitle(moveditem).length > 10 ? '...' : ''}" now`)
+				}else{
+					displayalert(`"${Calendar.Event.getTitle(moveditem).slice(0, 10)}${Calendar.Event.getTitle(moveditem).length > 10 ? '...' : ''}" rescheduled for ${Calendar.Event.getStartText(moveditem)}`)
+				}
 			}
 		}
 
@@ -18406,6 +18594,7 @@ function closescheduleeditorpopup(){
 	clearInterval(scheduleeditorpopupinterval)
 }
 
+
 //move event to different time
 function editschedulemoveevent(id, timestamp){
 	let item = calendar.events.find(d => d.id == id)
@@ -18420,7 +18609,6 @@ function editschedulemoveevent(id, timestamp){
 	item.startafter.month = movedate.getMonth();
 	item.startafter.day = movedate.getDate();
 	item.startafter.minute = movedate.getHours() * 60 + movedate.getMinutes()
-
 	
 	closescheduleeditorpopup()
 
@@ -19487,6 +19675,12 @@ async function eventcompleted(id) {
 	let item = calendar.events.find(f => f.id == id)
 	if (!item) return
 	item.completed = !item.completed
+
+	if(item.type == 1){
+		if(getdoingeventid(item) == item.id){
+			toggledoingevent(item.id)
+		}
+	}
 
 
 	fixrecurringtodo(item)

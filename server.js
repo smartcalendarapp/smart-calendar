@@ -7388,7 +7388,10 @@ app.post('/gpt-add-memgrow-card', async (req, res) => {
 		}
 
 		let memgrowdata = await getmemgrowdata(MEMGROW_USER_ID)
-		let tempcardset = memgrowdata.data.cardsets.find(d => d?.title?.includes('[gpt]'))
+		let tempcardset = memgrowdata.data.cardsets.find(d => d?.title?.includes('[gpt_import]'))
+		if(!tempcardset){
+			return res.status(401).json({ success: false, message: 'No set with [gpt_import] in title found' });
+		}
 		if(tempcardset?.cards?.length > 0){
 			tempcardset.cards.push(...items)
 		}

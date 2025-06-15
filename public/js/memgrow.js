@@ -169,7 +169,14 @@ class CardSet{
         if(this.isNewlineSet()){
             return `${this.title.replace('\\n', '')}`
         }
-        return `<div class="pointer-none text-16px text-bold">${this.title || 'New Card Set'}</div>
+        function replaceterms(text){
+            let terms = ['gpt_import', 'chinese_import']
+            for(let term of terms){
+                text = text.replaceAll(term, '')
+            }
+            return text
+        }
+        return `<div class="pointer-none text-16px text-bold">${replaceterms(this.title) || 'New Card Set'}</div>
         <div class="pointer-none text-13px text-secondary">${displaynumber(this.cards.length, 'item')} • ${this.getStatusText()}</div>
         <div class="absolute cardsetinside top-0 right-0 margin-12px">
             <svg width="22" height="22" viewBox="0 0 22 22" class="cardsetinside circular-progress display-flex align-center justify-center right-0" style="--progress: ${this.getMemoryScore()}">
