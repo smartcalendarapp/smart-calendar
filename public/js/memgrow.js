@@ -2328,6 +2328,7 @@ async function clickhint(hinttype){
                             `).join('')}
                         </div>`;
                         hinttext.innerHTML = myhtml
+
                     }else{
                         let displaycontent = data?.content || ''
                         function containsChinese(word) {
@@ -2355,6 +2356,8 @@ async function clickhint(hinttype){
                     let hintpopuptitle = getelement('hintpopuptitle')
                     hintpopuptitle.innerHTML = currentcardset.cards[currentcardindex].fronttext
 
+                    MathJax.typeset()
+                    
                     await sleep(10)
 
                     let maincardcontent = getelement('maincardcontent')
