@@ -2317,7 +2317,7 @@ async function clickhint(hinttype){
                     let hinttext = getelement('hinttext')
                     let hintpopup = getelement('hintpopup')
 
-                    if(hinttype == 2){
+                    if(hinttype == 1){
                         hintpopup.classList.add('hintpopupexpanded')
 
                         let myhtml = `
