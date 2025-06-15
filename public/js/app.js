@@ -17623,6 +17623,14 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				let tempitem = calendar.events.find(d => d.id == overdueitem.id)
 				if(tempitem){
 					tempitem.autoschedulelocked = false
+
+					if(new Date(tempitem.start.year, tempitem.start.month, tempitem.start.day, 0, tempitem.start.minute).getTime() > Date.now()){
+						tempitem.autoschedulelocked = true
+						tempitem.startafter.year = tempitem.start.year
+						tempitem.startafter.month = tempitem.start.month
+						tempitem.startafter.day = tempitem.start.day
+						tempitem.startafter.minute = tempitem.start.minute
+					}
 				}
 
 				if(complete){
@@ -17661,7 +17669,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			rescheduletaskpopup.classList.remove('hiddenpopup')
 
 			let checkinterval = setInterval(function(){
-				if(!calendar.events.find(d => d.id == overdueitem.id) || overdueitem.completed){
+				if(!calendar.events.find(d => d.id == overdueitem.id) || overdueitem.completed || new Date(overdueitem.start.year, overdueitem.start.month, overdueitem.start.day, 0, overdueitem.start.minute).getTime() > Date.now()){
 					clearInterval(checkinterval)
 					rescheduletaskfunction()
 				}
