@@ -12950,6 +12950,11 @@ async function playsound(name){
 async function todocompleted(id) {
 	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
+
+	if(!item.completed && getdoingeventid(item) == item.id){
+		toggledoingevent(item.id)
+	}
+
 	item.completed = !item.completed
 
 
@@ -12963,10 +12968,6 @@ async function todocompleted(id) {
 		if (!itemelement) return
 
 		itemrect = itemelement.getBoundingClientRect()
-	}
-
-	if(getdoingeventid(item) == item.id){
-		toggledoingevent(item.id)
 	}
 
 	calendar.updateTodo()
