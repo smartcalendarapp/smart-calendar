@@ -432,6 +432,7 @@ function getwhitecheckcirclesmall(boolean, tooltip) {
 //get white check circle
 function getwhiteplay(boolean, tooltip) {
 	if (boolean) {
+		return ''
 		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallinline checkboxfilledprimary">
 			<g>
 			<path d="M83.1088 160.743C83.1088 164.608 84.1982 167.609 86.377 169.746C88.5558 171.884 91.5773 172.953 95.4416 172.953L160.558 172.953C164.423 172.953 167.444 171.884 169.623 169.746C171.802 167.609 172.891 164.608 172.891 160.743L172.891 95.1332C172.891 91.3512 171.802 88.3913 169.623 86.2537C167.444 84.116 164.423 83.0471 160.558 83.0471L95.4416 83.0471C91.5773 83.0471 88.5558 84.116 86.377 86.2537C84.1982 88.3913 83.1088 91.3512 83.1088 95.1332L83.1088 160.743Z" fill-rule="nonzero" opacity="1" stroke="none"/>
@@ -452,6 +453,7 @@ function getwhiteplay(boolean, tooltip) {
 //get small white check circle
 function getwhiteplaysmall(boolean, tooltip) {
 	if (boolean) {
+		return ''
 		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallerinline checkboxfilledprimary">
 			<g>
 			171.884 91.5773 172.953 95.4416 172.953L160.558 172.953C164.423 172.953 167.444 171.884 169.623 169.746C171.802 167.609 172.891 164.608 172.891 160.743L172.891 95.1332C172.891 91.3512 171.802 88.3913 169.623 86.2537C167.444 84.116 164.423 83.0471 160.558 83.0471L95.4416 83.0471C91.5773 83.0471 88.5558 84.116 86.377 86.2537C84.1982 88.3913 83.1088 91.3512 83.1088 95.1332L83.1088 160.743Z" fill-rule="nonzero" opacity="1" stroke="none"/>
@@ -12951,9 +12953,6 @@ async function todocompleted(id) {
 	let item = [...calendar.events, ...calendar.todos].find(x => x.id == id)
 	if (!item) return
 
-	if(!item.completed && getdoingeventid(item) == item.id){
-		toggledoingevent(item.id)
-	}
 
 	item.completed = !item.completed
 
@@ -16763,10 +16762,10 @@ function getdoingeventid(filteritem){
 	if(filteritem){
 		searcharray = [filteritem]
 	}else{
-		searcharray = calendar.events
+		searcharray = calendar.events.filter(d => !d.completed)
 	}
 
-	let doingevent = searcharray.find(item => !item.completed && item.type == 1 && new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute) <= currenttime && new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute) > currenttime)
+	let doingevent = searcharray.find(item => item.type == 1 && new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute) <= currenttime && new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute) > currenttime)
 	
 	if(doingevent){
 		return doingevent.id
@@ -16778,7 +16777,9 @@ async function toggledoingevent(itemid) {
 	let item = calendar.events.find(d => d.id == itemid)
 	if(!item) return
 	if(getdoingeventid(item) == item.id){
-		//completed
+		return
+
+		//no behavior fo rnow
 
 		let enddate = new Date()
 		enddate.setSeconds(0, 0)
@@ -16791,52 +16792,6 @@ async function toggledoingevent(itemid) {
 			item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
 		}
 
-		item.completed = true
-
-		calendar.updateInfo()
-		calendar.updateCalendar()
-		
-
-		let itemrect;
-		if(item.completed){
-			let itemelement = getElement(`todo-${item.id}`)
-			if (!itemelement) return
-
-			itemrect = itemelement.getBoundingClientRect()
-		}
-
-
-		if(item.completed){
-			promptaiassistanttaskcompleted(item)
-
-			playsound('check-ding-2')
-		}
-
-		if(item.completed){
-			let confetticanvas = getElement('confetticanvas')
-			let myconfetti = confetti.create(confetticanvas, {
-				resize: true,
-				useWorker: true
-			})
-			
-			try{
-				await myconfetti({
-					spread: 30,
-					particleCount: 30,
-					gravity: 0.8,
-					startVelocity: 20,
-					decay: 0.94,
-					ticks: 150,
-					origin: {
-						x: (itemrect.x + itemrect.width / 2) / (window.innerWidth || document.body.clientWidth),
-						y: (itemrect.y + itemrect.height / 2) / (window.innerHeight || document.body.clientHeight)
-					}
-				})
-
-				if(myconfetti) myconfetti.reset()
-			}catch(e){}
-		}
-		
 	}else{
 		item.autoschedulelocked = true
 
@@ -19717,14 +19672,10 @@ function synctoautoschedule(id){
 async function eventcompleted(id) {
 	let item = calendar.events.find(f => f.id == id)
 	if (!item) return
+
+
+
 	item.completed = !item.completed
-
-	if(item.type == 1){
-		if(getdoingeventid(item) == item.id){
-			toggledoingevent(item.id)
-		}
-	}
-
 
 	fixrecurringtodo(item)
 	fixsubandparenttask(item)
