@@ -2320,13 +2320,28 @@ async function clickhint(hinttype){
                     if(hinttype == 1){
                         hintpopup.classList.add('hintpopupexpanded')
 
-                        let myhtml = `
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
-                            ${data.content.map(d => `
-                                <img loading="lazy" onerror="this.remove()" src="${d.url}" onclick="clickimg('${d.url}')" style="cursor: pointer; height: auto; width: 100%; opacity: 0; transition: opacity 0.5s ease-in-out;" onload="this.style.opacity = '1';">
-                                </img>
-                            `).join('')}
-                        </div>`;
+                        let col1 = []
+                        let col2 = []
+                        let height1 = 0
+                        let height2 = 0
+                        for(let item of data.content){
+                            if(height1 <= height2){
+                                col1.push(`<img height="${item.height}" width="${item.width}" loading="lazy" onerror="this.remove()" src="${item.url}" onclick="clickimg('${item.url}')" style="cursor: pointer; height: auto; width: 100%; opacity: 0; transition: opacity 0.5s ease-in-out;" onload="this.style.opacity = '1';">
+                                </img>`)
+                                height1 += item.height || 0
+                            }else{
+                                col2.push(`<img height="${item.height}" width="${item.width}"  loading="lazy" onerror="this.remove()" src="${item.url}" onclick="clickimg('${item.url}')" style="cursor: pointer; height: auto; width: 100%; opacity: 0; transition: opacity 0.5s ease-in-out;" onload="this.style.opacity = '1';">
+                                </img>`)
+                                height2 += item.height || 0
+                            }
+                            
+                        }
+
+                        let myhtml = `<div class="flex-row gap-12px">
+                            <div class="flex-column flex-1 gap-12px">${col1.join('')}</div>
+                            <div class="flex-column flex-1 gap-12px">${col2.join('')}</div>
+                        </div>`
+                       
                         hinttext.innerHTML = myhtml
 
                     }else{
