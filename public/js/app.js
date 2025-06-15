@@ -16569,7 +16569,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 							${getpriorityicon(item.priority)}
 						</span>` : '' }
 				
-					${item.type == 1 && myheight >= 45 ? 
+					${item.type == 1 && myheight >= 45 && !item.completed ? 
 						`<span class="margin-left-6px scalebutton todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="toggledoingevent('${item.id}')">
 							${myheight <= 15 ? `${getwhiteplaysmall(getdoingeventid() == item.id)}` : `${getwhiteplay(getdoingeventid() == item.id)}`}
 						</span>` 
@@ -16578,7 +16578,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 
 					${item.iseventsuggestion ? aisuggestiontext : `${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item)}</span>`}
 
-					${item.type == 1 && myheight < 45 ? 
+					${item.type == 1 && myheight < 45 && !item.completed ? 
 						`<span class="margin-left-6px scalebutton todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="toggledoingevent('${item.id}')">
 							${myheight <= 15 ? `${getwhiteplaysmall(getdoingeventid() == item.id)}` : `${getwhiteplay(getdoingeventid() == item.id)}`}
 						</span>` 
@@ -16723,7 +16723,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 							${getpriorityicon(item.priority)}
 						</span>` : '' }
 					
-					${item.type == 1 && myheight >= 45 ? 
+					${item.type == 1 && myheight >= 45 && !item.completed  ? 
 						`<span class="margin-left-6px scalebutton todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="toggledoingevent('${item.id}')">
 							${myheight <= 15 ? `${getwhiteplaysmall(getdoingeventid() == item.id)}` : `${getwhiteplay(getdoingeventid() == item.id)}`}
 						</span>` 
@@ -16732,7 +16732,7 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 					${item.iseventsuggestion ? aisuggestiontext : `${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item)}</span>`}
 
-					${item.type == 1 && myheight < 45 ? 
+					${item.type == 1 && myheight < 45 && !item.completed ? 
 						`<span class="margin-left-6px scalebutton todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="toggledoingevent('${item.id}')">
 							${myheight <= 15 ? `${getwhiteplaysmall(getdoingeventid() == item.id)}` : `${getwhiteplay(getdoingeventid() == item.id)}`}
 						</span>` 
