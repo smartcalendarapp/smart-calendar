@@ -2326,11 +2326,11 @@ async function clickhint(hinttype){
                         let height2 = 0
                         for(let item of data.content){
                             if(height1 <= height2){
-                                col1.push(`<img height="${item.height}" width="${item.width}" loading="lazy" onerror="this.remove()" src="${item.url}" onclick="clickimg('${item.url}')" style="cursor: pointer; height: auto; width: 100%; opacity: 0; transition: opacity 0.5s ease-in-out;" onload="this.style.opacity = '1';">
+                                col1.push(`<img height="${item.height}" width="${item.width}" loading="lazy" decoding="async" onerror="this.remove()" src="${item.url}" onclick="clickimg('${item.url}')" style="cursor: pointer; height: auto; width: 100%; opacity: 0; transition: opacity 0.5s ease-in-out;" onload="this.style.opacity = '1';">
                                 </img>`)
                                 height1 += item.height || 0
                             }else{
-                                col2.push(`<img height="${item.height}" width="${item.width}"  loading="lazy" onerror="this.remove()" src="${item.url}" onclick="clickimg('${item.url}')" style="cursor: pointer; height: auto; width: 100%; opacity: 0; transition: opacity 0.5s ease-in-out;" onload="this.style.opacity = '1';">
+                                col2.push(`<img height="${item.height}" width="${item.width}"  loading="lazy" decoding="async"  onerror="this.remove()" src="${item.url}" onclick="clickimg('${item.url}')" style="cursor: pointer; height: auto; width: 100%; opacity: 0; transition: opacity 0.5s ease-in-out;" onload="this.style.opacity = '1';">
                                 </img>`)
                                 height2 += item.height || 0
                             }
