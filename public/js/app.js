@@ -440,7 +440,7 @@ function getwhiteplay(boolean, tooltip) {
 			</svg>
 	 		${tooltip || ''}`
 	} else {
-		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallinline checkboxunfilled">
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallinline checkboxunfilledfill">
 			<g>
 			<path d="M32.3281 2.81165C24.5938 2.94696 17.5781 9.15139 17.5781 17.8116L17.5781 238.187C17.5781 249.734 30.0781 256.929 40.0781 251.155L230.922 140.999C240.922 135.226 240.922 120.773 230.922 114.999C230.549 114.784 40.4509 5.0581 40.0781 4.8429C37.5781 3.39952 34.9063 2.76654 32.3281 2.81165ZM47.5781 43.8116C78.0158 61.3848 162.926 110.41 193.391 127.999L47.5781 212.187L47.5781 43.8116Z" fill-rule="nonzero" opacity="1" stroke="none"/>
 			</g>
@@ -460,7 +460,7 @@ function getwhiteplaysmall(boolean, tooltip) {
 			</svg>
 	 		${tooltip || ''}`
 	} else {
-		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallerinline checkboxunfilled">
+		return `<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" viewBox="0 0 256 256" width="100%" class="buttonsmallerinline checkboxunfilledfill">
 			<g>
 			<path d="M32.3281 2.81165C24.5938 2.94696 17.5781 9.15139 17.5781 17.8116L17.5781 238.187C17.5781 249.734 30.0781 256.929 40.0781 251.155L230.922 140.999C240.922 135.226 240.922 120.773 230.922 114.999C230.549 114.784 40.4509 5.0581 40.0781 4.8429C37.5781 3.39952 34.9063 2.76654 32.3281 2.81165ZM47.5781 43.8116C78.0158 61.3848 162.926 110.41 193.391 127.999L47.5781 212.187L47.5781 43.8116Z" fill-rule="nonzero" opacity="1" stroke="none"/>
 			</g>
@@ -16765,7 +16765,7 @@ function getdoingeventid(filteritem){
 		searcharray = calendar.events
 	}
 
-	let doingevent = searcharray.find(item => item.type == 1 && new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute) <= currenttime && new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute) > currenttime)
+	let doingevent = searcharray.find(item => !item.completed && item.type == 1 && new Date(item.start.year, item.start.month, item.start.day, 0, item.start.minute) <= currenttime && new Date(item.end.year, item.end.month, item.end.day, 0, item.end.minute) > currenttime)
 	
 	if(doingevent){
 		return doingevent.id
@@ -16773,7 +16773,7 @@ function getdoingeventid(filteritem){
 	return null
 }
 
-function toggledoingevent(itemid) {
+async function toggledoingevent(itemid) {
 	let item = calendar.events.find(d => d.id == itemid)
 	if(!item) return
 	if(getdoingeventid(item) == item.id){
@@ -16789,11 +16789,53 @@ function toggledoingevent(itemid) {
 			item.end.day = enddate.getDate()
 			item.end.minute = enddate.getHours() * 60 + enddate.getMinutes()
 		}
-		
+
 		item.completed = true
 
-		calendar.updateEvents()
 		calendar.updateInfo()
+		calendar.updateCalendar()
+		
+
+		let itemrect;
+		if(item.completed){
+			let itemelement = getElement(`todo-${item.id}`)
+			if (!itemelement) return
+
+			itemrect = itemelement.getBoundingClientRect()
+		}
+
+
+		if(item.completed){
+			promptaiassistanttaskcompleted(item)
+
+			playsound('check-ding-2')
+		}
+
+		if(item.completed){
+			let confetticanvas = getElement('confetticanvas')
+			let myconfetti = confetti.create(confetticanvas, {
+				resize: true,
+				useWorker: true
+			})
+			
+			try{
+				await myconfetti({
+					spread: 30,
+					particleCount: 30,
+					gravity: 0.8,
+					startVelocity: 20,
+					decay: 0.94,
+					ticks: 150,
+					origin: {
+						x: (itemrect.x + itemrect.width / 2) / (window.innerWidth || document.body.clientWidth),
+						y: (itemrect.y + itemrect.height / 2) / (window.innerHeight || document.body.clientHeight)
+					}
+				})
+
+				if(myconfetti) myconfetti.reset()
+			}catch(e){}
+		}
+		
 	}else{
 		item.autoschedulelocked = true
 
