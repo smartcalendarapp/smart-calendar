@@ -9517,7 +9517,8 @@ function fixrecurringtodo(item){
 
 		if(item.id != lasttodo.id) return
 
-		if(lasttodo.completed){
+		//old method: fixed schedule of repeating task
+		/*if(lasttodo.completed){
 			let lasttododuedate = new Date(lasttodo.endbefore.year, lasttodo.endbefore.month, lasttodo.endbefore.day, 0, lasttodo.endbefore.minute)
 
 			let newtododuedate = new Date(lasttododuedate)
@@ -9559,6 +9560,7 @@ function fixrecurringtodo(item){
 				}while (newtododuedate.getTime() <= currentdayend.getTime())
 			}
 
+
 			//until
 			if(lasttodo.repeat.until && newtododuedate.getTime() > new Date(lasttodo.repeat.until).getTime()){
 				return
@@ -9596,6 +9598,88 @@ function fixrecurringtodo(item){
 				startAutoSchedule({ eventsuggestiontodos: [newitem] })
 			}
 			
+		}
+		*/
+
+		
+		//new method: flexible schedule of repeating task
+		if(lasttodo.completed){
+			let lasttododuedate = new Date(lasttodo.endbefore.year, lasttodo.endbefore.month, lasttodo.endbefore.day, 0, lasttodo.endbefore.minute)
+
+			let newtododuedate = new Date()
+			newtododuedate.setHours(0,lasttodo.endbefore.minute,0, 0)
+			
+			let tonightmidnight = new Date()
+			tonightmidnight.setHours(24, 0, 0, 0)
+			if(lasttododuedate.getTime() == tonightmidnight.getTime()){
+				newtododuedate.setDate(newtododuedate.getDate() + 1)
+			}
+
+			if(newtododuedate.getTime() <= lasttododuedate.getTime() && lasttododuedate.getTime() > tonightmidnight.getTime()){
+				let lasttodoenddate = new Date(lasttodo.end.year, lasttodo.end.month, lasttodo.end.day, 0, lasttodo.end.minute)
+				lasttodoenddate.setHours(0, lasttodo.endbefore.minute, 0, 0)
+
+				newtododuedate.setTime(lasttodoenddate)
+				
+				let lasttodomidnight = new Date(lasttodoenddate)
+				lasttodomidnight.setHours(24, 0, 0, 0)
+				if(lasttodoenddate.getHours() * 60 + lasttodoenddate.getMinutes() == 0){
+					newtododuedate.setDate(newtododuedate.getDate() + 1)
+					tonightmidnight.setTime(newtododuedate)
+				}
+			}
+
+			do{
+				for (let i = 0; i < item.repeat.interval; i++) {
+					if (item.repeat.frequency == 0) { // Daily
+						newtododuedate.setDate(newtododuedate.getDate() + 1);
+					} else if (item.repeat.frequency == 1) { // Weekly
+						newtododuedate.setDate(newtododuedate.getDate() + 7);
+					} else if (item.repeat.frequency == 2) { // Monthly
+						newtododuedate.setMonth(newtododuedate.getMonth() + 1);
+					} else if (item.repeat.frequency == 3) { // Yearly
+						newtododuedate.setFullYear(newtododuedate.getFullYear() + 1);
+					}
+				}
+			} while (newtododuedate.getTime() <= lasttododuedate.getTime())
+
+			//until
+			if(lasttodo.repeat.until && newtododuedate.getTime() > new Date(lasttodo.repeat.until).getTime()){
+				return
+			}
+			//count
+			if(lasttodo.repeat.count && relatedtodos.length >= lasttodo.repeat.count){
+				return
+			}
+
+			let newitem;
+			if(Calendar.Event.isEvent(lasttodo)){
+				newitem = gettodofromevent(lasttodo)
+			}else{
+				newitem = deepCopy(lasttodo)
+			}
+
+			newitem.startafter.year = tonightmidnight.getFullYear()
+			newitem.startafter.month = tonightmidnight.getMonth()
+			newitem.startafter.day = tonightmidnight.getDate()
+			newitem.startafter.minute = tonightmidnight.getHours() * 60 + tonightmidnight.getMinutes()
+
+			newitem.endbefore.year = newtododuedate.getFullYear()
+			newitem.endbefore.month = newtododuedate.getMonth()
+			newitem.endbefore.day = newtododuedate.getDate()
+			newitem.endbefore.minute = newtododuedate.getHours() * 60 + newtododuedate.getMinutes()
+			
+			newitem.completed = false
+			newitem.id = generateID()
+			newitem.repeatid = originaltodo.id
+
+
+			calendar.todos.push(newitem)
+
+			if(Calendar.Event.isEvent(lasttodo)){
+				startAutoSchedule({ eventsuggestiontodos: [newitem] })
+			}
+
 		}
 	}
 }
@@ -17624,7 +17708,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 				if(tempitem){
 					tempitem.autoschedulelocked = false
 
-					if(new Date(tempitem.start.year, tempitem.start.month, tempitem.start.day, 0, tempitem.start.minute).getTime() > Date.now()){
+					if(new Date(tempitem.end.year, tempitem.end.month, tempitem.end.day, 0, tempitem.end.minute).getTime() > Date.now()){
 						tempitem.autoschedulelocked = true
 						tempitem.startafter.year = tempitem.start.year
 						tempitem.startafter.month = tempitem.start.month
