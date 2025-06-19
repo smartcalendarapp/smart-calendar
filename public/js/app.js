@@ -17688,7 +17688,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 		
 		//check for todos that are currently being done - don't reschedule first one
-		let doingtodos = sortstartdate(smartevents).filter(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now() && !getconflictingevent(iteratedevents, d) && (!moveditem || d.id != moveditem.id))
+		let doingtodos = sortstartdate(smartevents).filter(d => new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime() <= Date.now() && new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() > Date.now() && !getconflictingevent(iteratedevents, d) && (!moveditem || d.id != moveditem.id) && !addedtodos?.find(f => f.id == d.id))
 		if(doingtodos[0]){
 			smartevents = smartevents.filter(d => d.id != doingtodos[0].id)
 		}
