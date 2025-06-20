@@ -2853,7 +2853,10 @@ document.addEventListener('FaceBlinkReady', () => {
 
     /* require a quiet-eyes frame after every accepted blink */
     if (needReset) {
-      if (type === 'reset_none') needReset = false;
+      if (type === 'reset_none'){
+        needReset = false;
+        notpointgesture = true
+      }
       else return;                              // still waiting
     }
 
@@ -2871,6 +2874,7 @@ document.addEventListener('FaceBlinkReady', () => {
 
   /* toggle UI badge */
   window.FaceBlink.setToggleStateCallback(isRunning => {
+    notpointgesture = true
     const btn = getelement('gesturebutton');
     if (btn) btn.classList.toggle('gesturebuttonactive', isRunning);
   });
