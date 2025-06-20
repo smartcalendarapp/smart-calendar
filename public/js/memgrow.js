@@ -2649,7 +2649,7 @@ function hidecanvaspopup(){
 }
 
 
-//HAND GESTURE
+//HAND & FACE GESTURE
 
 let handlinggesture = false
 let handlingsupplementarygesture = false
@@ -2660,6 +2660,8 @@ let notpointgesture = true
 let notanysupplementarygesture = true
 
 document.addEventListener('HandGestureReady', function() {
+    if (GESTURE_METHOD !== 'hand') return;
+
     window.HandGesture.setGestureCallback(function(gesture) {
         currentgesture = gesture
 
@@ -2789,6 +2791,67 @@ document.addEventListener('HandGestureReady', function() {
 });
 
 
+// React to FaceBlink API ready
+document.addEventListener('FaceBlinkReady', function() {
+  if (GESTURE_METHOD !== 'face') return;
+
+  window.FaceBlink.setBlinkCallback(function(data) {
+    const blink = data.blinkType;  // 'left', 'right' or 'both'
+
+    // — Main action: left-eye blink → "pointing up" logic
+    if (blink === 'left') {
+      if (handlinggesture) return;
+      if (!notpointgesture) return;
+      console.log('Face blink: left eye');
+
+      handlinggesture = true;
+      if (showanswer) {
+        showgestureremembered();
+      }
+      setTimeout(function() {
+        handlinggesture = false;
+        hidegestureremembered();
+        if (blink === 'left') {
+          processspacekey();
+          notpointgesture = false;
+        }
+      }, 100);
+    }
+
+    // — Secondary action: right-eye blink → "open palm" logic
+    else if (blink === 'right') {
+      notpointgesture = true;
+      console.log('Face blink: right eye');
+
+      if (!showanswer) return;
+      showgesturedidntremember();
+
+      handlinggesture = true;
+      setTimeout(function() {
+        handlinggesture = false;
+        hidegesturedidntremember();
+        if (blink === 'right') {
+          clickdidntremember();
+        }
+      }, 100);
+    }
+
+    // — (Optional) both-eyes blink
+    else if (blink === 'both') {
+      console.log('Face blink: both eyes');
+      // …you can hook in any “both-eyes” behavior here…
+    }
+  });
+
+  window.FaceBlink.setToggleStateCallback(function(isRunning, isForce) {
+    const btn = getelement('gesturebutton');
+    if (btn) {
+      btn.classList.toggle('gesturebuttonactive', isRunning);
+    }
+  });
+});
+
+
 function showgesturedidntremember(){
     let didntrememberbutton = getelement('didntrememberbutton')
     didntrememberbutton.classList.add('rememberbuttongesturehover')
@@ -2807,16 +2870,30 @@ function hidegestureremembered(){
     rememberedbutton.classList.remove('rememberbuttongesturehover')
 }
 
+const GESTURE_METHOD = 'face' // or 'hand'
+
 function togglegesture(){
-    window.HandGesture.toggleGestureRecognition()
+    if(GESTURE_METHOD == 'hand'){
+        window.HandGesture.toggleGestureRecognition()
+    }else if(GESTURE_METHOD == 'face'){
+        window.FaceBlink.toggleBlinkRecognition()
+    }
 }
 
-function turnoffgesture(){
-    window.HandGesture.turnOffRecognition()
+function turnoffgesture() {
+  if (GESTURE_METHOD === 'hand') {
+    window.HandGesture.turnOffRecognition();
+  } else if (GESTURE_METHOD === 'face') {
+    window.FaceBlink.turnOffBlinkRecognition();
+  }
 }
 
-function turnongesture(){
-    window.HandGesture.turnOnRecognition()
+function turnongesture() {
+  if (GESTURE_METHOD === 'hand') {
+    window.HandGesture.turnOnRecognition();
+  } else if (GESTURE_METHOD === 'face') {
+    window.FaceBlink.turnOnBlinkRecognition();
+  }
 }
 
 
@@ -2896,5 +2973,4 @@ function importjson() {
 
 //https://mediapipe-studio.webapps.google.com/home
 
-
-
+//https://codepen.io/mediapipe-preview/pen/OJBVQJm
