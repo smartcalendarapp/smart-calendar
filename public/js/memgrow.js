@@ -2792,6 +2792,8 @@ document.addEventListener('HandGestureReady', function() {
 
 
 
+
+// React to FaceBlink API ready
 document.addEventListener('FaceBlinkReady', function() {
   if (GESTURE_METHOD !== 'face') return;
 
@@ -2807,34 +2809,44 @@ document.addEventListener('FaceBlinkReady', function() {
     holdTimer = null;
   }
 
-  // Advanced classification using multiple blendshapes
+  // Advanced classification using multiple blendshapes and custom weights
   function classifyAndHandle(categories) {
-    // extract scores
+    // helper to get score by name
     const score = name => {
       const c = categories.find(x => x.categoryName === name);
       return c ? c.score : 0;
     };
-    const leftBlink   = score('eyeBlinkLeft');
-    const rightBlink  = score('eyeBlinkRight');
-    const leftSquint  = score('eyeSquintLeft');
-    const rightSquint = score('eyeSquintRight');
 
-    // combine metrics (tunable weights)
-    const leftMetric  = 0.7 * leftBlink  + 0.3 * leftSquint;
-    const rightMetric = 0.7 * rightBlink + 0.3 * rightSquint;
+    // raw scores
+    const eyeBlinkLeft      = score('eyeBlinkLeft');
+    const eyeBlinkRight     = score('eyeBlinkRight');
+    const eyeSquintLeft     = score('eyeSquintLeft');
+    const eyeSquintRight    = score('eyeSquintRight');
 
-    // thresholds (tunable)
-    const HIGH = 0.6;
-    const LOW  = 0.3;
+    // weighted combination (tune these weights as needed)
+    const WEIGHTS = {
+      blink:    0.5,
+      squint:   0.5,
+    };
 
-    // if both metrics are high or both ambiguous, ignore
-    if ((leftMetric > LOW && rightMetric > LOW) ||
+    const leftMetric =  WEIGHTS.blink    * eyeBlinkLeft
+                      + WEIGHTS.squint   * eyeSquintLeft
+
+    const rightMetric = WEIGHTS.blink    * eyeBlinkRight
+                      + WEIGHTS.squint   * eyeSquintRight
+
+    // classification thresholds
+    const HIGH     = 0.5;  // minimum metric for dominant eye
+    const MIN_DIFF = 0.1; // required difference between metrics
+
+    // if both metrics exceed HIGH, or neither exceeds HIGH, ignore
+    if ((leftMetric > HIGH && rightMetric > HIGH) ||
         (leftMetric < HIGH && rightMetric < HIGH)) {
       return;
     }
 
-    // RIGHT blink: strong rightMetric and weak leftMetric
-    if (rightMetric >= HIGH && leftMetric <= LOW) {
+    // RIGHT-eye blink: right dominant
+    if (rightMetric >= HIGH && (rightMetric - leftMetric) >= MIN_DIFF) {
       if (handlinggesture || !notpointgesture) return;
       console.log('Classified blink: RIGHT eye');
       handlinggesture = true;
@@ -2845,9 +2857,11 @@ document.addEventListener('FaceBlinkReady', function() {
         processspacekey();
         notpointgesture = false;
       }, 100);
+      return;
     }
-    // LEFT blink: strong leftMetric and weak rightMetric
-    else if (leftMetric >= HIGH && rightMetric <= LOW) {
+
+    // LEFT-eye blink: left dominant
+    if (leftMetric >= HIGH && (leftMetric - rightMetric) >= MIN_DIFF) {
       console.log('Classified blink: LEFT eye');
       notpointgesture = true;
       if (showanswer) showgesturedidntremember();
@@ -2862,7 +2876,6 @@ document.addEventListener('FaceBlinkReady', function() {
 
   // Receive full categories array, hold then classify
   window.FaceBlink.setBlinkCallback(function(data) {
-    // data.categories = FaceLandmarker blend-shape array
     clearPending();
     pendingCategories = data.categories;
     holdTimer = setTimeout(() => {
