@@ -12,7 +12,6 @@ let faceLandmarker = null;
 let blinkRunning   = false;
 let videoStream    = null;
 let lastVideoTime  = -1;
-
 const video = document.createElement("video");
 video.autoplay = true;
 video.playsInline = true;
@@ -49,8 +48,8 @@ async function predictWebcam() {
     const results    = faceLandmarker.detectForVideo(video, nowMs);
     const categories = results.faceBlendshapes?.[0]?.categories;
     if (categories && categories.length) {
-      // hand off full blend-shape array for classification upstream
-      blinkCallback({ categories });
+      // **Pass the raw array** instead of wrapping in an object**
+      blinkCallback(categories);
     }
   }
   requestAnimationFrame(predictWebcam);
@@ -62,8 +61,7 @@ function startBlinkRecognition(force = false) {
     console.error("Webcam not supported");
     return;
   }
-  navigator.mediaDevices
-    .getUserMedia({ video: true })
+  navigator.mediaDevices.getUserMedia({ video: true })
     .then((stream) => {
       videoStream = stream;
       video.srcObject = stream;
@@ -77,16 +75,14 @@ function startBlinkRecognition(force = false) {
 function stopBlinkRecognition(force = false) {
   blinkRunning = false;
   if (videoStream) {
-    videoStream.getTracks().forEach((t) => t.stop());
+    videoStream.getTracks().forEach(t => t.stop());
     videoStream = null;
   }
   toggleStateCallback(false, force);
 }
 
 function toggleBlinkRecognition() {
-  blinkRunning
-    ? stopBlinkRecognition(true)
-    : startBlinkRecognition(true);
+  blinkRunning ? stopBlinkRecognition(true) : startBlinkRecognition(true);
 }
 
 function turnOnBlinkRecognition() {

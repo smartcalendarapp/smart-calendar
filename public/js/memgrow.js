@@ -2874,23 +2874,17 @@ document.addEventListener('FaceBlinkReady', function() {
     }
   }
 
-  // Receive full categories array, hold then classify
-  window.FaceBlink.setBlinkCallback(function(data) {
-    console.log(classifyAndHandle());
+  window.FaceBlink.setBlinkCallback(function(categories) {
     clearPending();
-
-    return;
-    pendingCategories = data.categories;
+    pendingCats = categories;
     holdTimer = setTimeout(() => {
-      classifyAndHandle(pendingCategories);
+      classifyAndHandle(pendingCats);
       clearPending();
     }, HOLD_TIME);
   });
 
-  // Toggle state callback
-  window.FaceBlink.setToggleStateCallback(function(isRunning, isForce) {
-    const btn = getelement('gesturebutton');
-    if (btn) btn.classList.toggle('gesturebuttonactive', isRunning);
+  window.FaceBlink.setToggleStateCallback((run,_) => {
+    getelement('gesturebutton')?.classList.toggle('gesturebuttonactive', run);
   });
 });
 
