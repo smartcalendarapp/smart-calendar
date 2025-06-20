@@ -43,7 +43,7 @@ async function predictWebcam() {
     return;
   }
   const nowMs = Date.now();
-  const delta_time = 0.1 // 100ms between predictions
+  const delta_time = 0.01 // 10ms between predictions
   if (video.currentTime > lastVideoTime + delta_time) {
     lastVideoTime = video.currentTime;
     const results    = faceLandmarker.detectForVideo(video, nowMs);
@@ -67,6 +67,7 @@ function startBlinkRecognition(force = false) {
       videoStream = stream;
       video.srcObject = stream;
       blinkRunning = true;
+      lastVideoTime = -1
       toggleStateCallback(true, force);
       video.addEventListener("loadeddata", predictWebcam);
     })

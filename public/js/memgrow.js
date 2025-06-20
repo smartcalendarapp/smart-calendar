@@ -2794,18 +2794,21 @@ document.addEventListener('HandGestureReady', function() {
 
 
 // React to FaceBlink API ready
-document.addEventListener('FaceBlinkReady', function() {
+// React to FaceBlink API ready
+document.addEventListener('FaceBlinkReady', function () {
   if (GESTURE_METHOD !== 'face') return;
 
   // —— TUNABLE CONSTANTS ——
-  const HOLD_TIME = 200;    // ms to hold and confirm
-  const HIGH      = 0.6;    // min “dominant metric”
-  const MIN_DIFF  = 0.15;   // required dominance margin
+  const HOLD_TIME = 200;   // ms
+  const HIGH      = 0.55;  // dominant eye minimum
+  const LOW       = 0.20;  // quiet eye maximum
+  const MIN_DIFF  = 0.15;  // dominance margin
 
   // —— INTERNAL STATE ——
   let holdTimer   = null;
-  let holdType    = null;   // 'left' or 'right'
-  let lastCats    = null;   // last blend-shape array
+  let holdType    = null;   // 'left' | 'right'
+  let lastCats    = null;   // latest blend-shapes
+  let needReset   = false;  // must see reset_none before new blink
 
   // —— HELPERS ——
   function clearHold() {
@@ -2815,42 +2818,39 @@ document.addEventListener('FaceBlinkReady', function() {
   }
 
   function getBlinkType(categories) {
-    // pull raw scores
-    const score = name => {
-      const c = categories.find(x => x.categoryName === name);
-      return c ? c.score : 0;
-    };
+    const score = n => (categories.find(x => x.categoryName === n)?.score) || 0;
     const Rb = score('eyeBlinkRight'),  Lb = score('eyeBlinkLeft');
     const Rs = score('eyeSquintRight'), Ls = score('eyeSquintLeft');
 
-    // combined metric (you can tweak weights)
-    const rightMetric = 0.7*Rb + 0.3*Rs;
-    const leftMetric  = 0.7*Lb + 0.3*Ls;
+    const rightMetric = 0.5 * Rb + 0.5 * Rs;
+    const leftMetric  = 0.5 * Lb + 0.5 * Ls;
 
-    console.log(rightMetric.toFixed(2), leftMetric.toFixed(2))
-
-    // must be above HIGH and dominate by MIN_DIFF
-    if (rightMetric >= HIGH && (rightMetric - leftMetric) >= MIN_DIFF) return 'right';
-    if (leftMetric  >= HIGH && (leftMetric  - rightMetric) >= MIN_DIFF) return 'left';
+    if (rightMetric < LOW && leftMetric < LOW)          return 'reset_none';
+    if (rightMetric >= HIGH && leftMetric >= HIGH)      return 'none';
+    if (rightMetric >= HIGH && rightMetric - leftMetric >= MIN_DIFF) return 'right';
+    if (leftMetric  >= HIGH && leftMetric  - rightMetric >= MIN_DIFF) return 'left';
     return 'none';
   }
 
-  // —— THE MAGIC ——  
-  window.FaceBlink.setBlinkCallback(function(categories) {
+  // —— MAIN CALLBACK ——
+  window.FaceBlink.setBlinkCallback(function (categories) {
     const type = getBlinkType(categories);
-    lastCats = categories;
+    lastCats   = categories;
+
+    /* ── REQUIRE A "reset_none" GAP ── */
+    if (needReset) {
+      if (type === 'reset_none') needReset = false;     // gap observed
+      else return;                                       // still waiting
+    }
 
     if (type === 'left' || type === 'right') {
       if (!holdTimer) {
-        // first detection: start hold timer
-        holdType = type;
+        holdType  = type;
         holdTimer = setTimeout(() => {
-          // on timeout, confirm it’s still the same blink
           if (getBlinkType(lastCats) === holdType) {
             if (holdType === 'right') {
-              // — RIGHT-EYE BLINK = “pointing up” logic —
+              // RIGHT-eye blink  ≅  Pointing_Up
               if (!handlinggesture && notpointgesture) {
-                console.log('Confirmed RIGHT blink');
                 handlinggesture = true;
                 if (showanswer) showgestureremembered();
                 setTimeout(() => {
@@ -2861,8 +2861,7 @@ document.addEventListener('FaceBlinkReady', function() {
                 }, 100);
               }
             } else {
-              // — LEFT-EYE BLINK = “open palm” logic —
-              console.log('Confirmed LEFT blink');
+              // LEFT-eye blink  ≅  Open_Palm
               notpointgesture = true;
               if (showanswer) showgesturedidntremember();
               handlinggesture = true;
@@ -2872,25 +2871,25 @@ document.addEventListener('FaceBlinkReady', function() {
                 clickdidntremember();
               }, 100);
             }
+            needReset = true;           // must see quiet eyes before next blink
           }
           clearHold();
         }, HOLD_TIME);
+      } else if (type !== holdType) {
+        clearHold(); // inconsistent — cancel
       }
-      else if (type !== holdType) {
-        // if a different blink shows up during hold, cancel
-        clearHold();
-      }
-    } else {
-      // no valid blink → cancel any pending
-      clearHold();
+    } else if (type === 'none') {
+      clearHold();   // ambiguous/both-eyes → cancel
     }
+    // type === 'reset_none' simply lets loop continue and clears needReset above
   });
 
-  window.FaceBlink.setToggleStateCallback(function(isRunning) {
+  window.FaceBlink.setToggleStateCallback(function (isRunning) {
     const btn = getelement('gesturebutton');
     if (btn) btn.classList.toggle('gesturebuttonactive', isRunning);
   });
 });
+
 
 
 function showgesturedidntremember(){
