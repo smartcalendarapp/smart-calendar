@@ -2792,8 +2792,6 @@ document.addEventListener('HandGestureReady', function() {
 
 
 
-
-
 /* ------------------------------------------------------------------ *
  *  Face-Blink → single-eye gesture mapping (no hold, 0.5 s cooldown)
  * ------------------------------------------------------------------ */
