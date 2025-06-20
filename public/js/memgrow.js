@@ -2791,63 +2791,90 @@ document.addEventListener('HandGestureReady', function() {
 });
 
 
-// React to FaceBlink API ready
+
 document.addEventListener('FaceBlinkReady', function() {
   if (GESTURE_METHOD !== 'face') return;
 
-  window.FaceBlink.setBlinkCallback(function(data) {
-    const blink = data.blinkType;  // 'left', 'right' or 'both'
+  // Hold-based processing variables
+  let holdTimer = null;
+  let pendingCategories = null;
+  const HOLD_TIME = 200; // ms
 
-    // — Main action: left-eye blink → "pointing up" logic
-    if (blink === 'left') {
-      if (handlinggesture) return;
-      if (!notpointgesture) return;
-      console.log('Face blink: left eye');
+  // Clear any pending classification
+  function clearPending() {
+    if (holdTimer) clearTimeout(holdTimer);
+    pendingCategories = null;
+    holdTimer = null;
+  }
 
+  // Advanced classification using multiple blendshapes
+  function classifyAndHandle(categories) {
+    // extract scores
+    const score = name => {
+      const c = categories.find(x => x.categoryName === name);
+      return c ? c.score : 0;
+    };
+    const leftBlink   = score('eyeBlinkLeft');
+    const rightBlink  = score('eyeBlinkRight');
+    const leftSquint  = score('eyeSquintLeft');
+    const rightSquint = score('eyeSquintRight');
+
+    // combine metrics (tunable weights)
+    const leftMetric  = 0.7 * leftBlink  + 0.3 * leftSquint;
+    const rightMetric = 0.7 * rightBlink + 0.3 * rightSquint;
+
+    // thresholds (tunable)
+    const HIGH = 0.6;
+    const LOW  = 0.3;
+
+    // if both metrics are high or both ambiguous, ignore
+    if ((leftMetric > LOW && rightMetric > LOW) ||
+        (leftMetric < HIGH && rightMetric < HIGH)) {
+      return;
+    }
+
+    // RIGHT blink: strong rightMetric and weak leftMetric
+    if (rightMetric >= HIGH && leftMetric <= LOW) {
+      if (handlinggesture || !notpointgesture) return;
+      console.log('Classified blink: RIGHT eye');
       handlinggesture = true;
-      if (showanswer) {
-        showgestureremembered();
-      }
-      setTimeout(function() {
+      if (showanswer) showgestureremembered();
+      setTimeout(() => {
         handlinggesture = false;
         hidegestureremembered();
-        if (blink === 'left') {
-          processspacekey();
-          notpointgesture = false;
-        }
+        processspacekey();
+        notpointgesture = false;
       }, 100);
     }
-
-    // — Secondary action: right-eye blink → "open palm" logic
-    else if (blink === 'right') {
+    // LEFT blink: strong leftMetric and weak rightMetric
+    else if (leftMetric >= HIGH && rightMetric <= LOW) {
+      console.log('Classified blink: LEFT eye');
       notpointgesture = true;
-      console.log('Face blink: right eye');
-
-      if (!showanswer) return;
-      showgesturedidntremember();
-
+      if (showanswer) showgesturedidntremember();
       handlinggesture = true;
-      setTimeout(function() {
+      setTimeout(() => {
         handlinggesture = false;
         hidegesturedidntremember();
-        if (blink === 'right') {
-          clickdidntremember();
-        }
+        clickdidntremember();
       }, 100);
     }
+  }
 
-    // — (Optional) both-eyes blink
-    else if (blink === 'both') {
-      console.log('Face blink: both eyes');
-      // …you can hook in any “both-eyes” behavior here…
-    }
+  // Receive full categories array, hold then classify
+  window.FaceBlink.setBlinkCallback(function(data) {
+    // data.categories = FaceLandmarker blend-shape array
+    clearPending();
+    pendingCategories = data.categories;
+    holdTimer = setTimeout(() => {
+      classifyAndHandle(pendingCategories);
+      clearPending();
+    }, HOLD_TIME);
   });
 
+  // Toggle state callback
   window.FaceBlink.setToggleStateCallback(function(isRunning, isForce) {
     const btn = getelement('gesturebutton');
-    if (btn) {
-      btn.classList.toggle('gesturebuttonactive', isRunning);
-    }
+    if (btn) btn.classList.toggle('gesturebuttonactive', isRunning);
   });
 });
 

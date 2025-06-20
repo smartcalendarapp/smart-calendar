@@ -1,28 +1,26 @@
 // faceblink.js
+
 import vision from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3";
 const { FaceLandmarker, FilesetResolver } = vision;
 
 // ——— exported API callbacks ———
-let blinkCallback       = data => console.log('blink:', data);
-let toggleStateCallback = (isRunning, isForce) =>
-  console.log('Blink detection running=', isRunning, 'force=', isForce);
+let blinkCallback       = () => {};
+let toggleStateCallback = () => {};
 
 // ——— internal state ———
-let faceLandmarker;
-const video = document.createElement('video');
-video.autoplay = video.playsInline = true;
-video.style.display = 'none';
-document.body.appendChild(video);
-
+let faceLandmarker = null;
 let blinkRunning   = false;
 let videoStream    = null;
 let lastVideoTime  = -1;
-let isBlinkLeft    = false;
-let isBlinkRight   = false;
-const BLINK_THRESH = 0.5;
+
+const video = document.createElement("video");
+video.autoplay = true;
+video.playsInline = true;
+video.style.display = "none";
+document.body.appendChild(video);
 
 // ——— load the model ———
-async function createFaceLandmarker() {
+(async function createFaceLandmarker() {
   const resolver = await FilesetResolver.forVisionTasks(
     "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
   );
@@ -36,12 +34,10 @@ async function createFaceLandmarker() {
     runningMode: "VIDEO",
     numFaces: 1
   });
-  // signal ready
-  document.dispatchEvent(new Event('FaceBlinkReady'));
-}
-createFaceLandmarker();
+  document.dispatchEvent(new Event("FaceBlinkReady"));
+})();
 
-// ——— per-frame loop ———
+// ——— frame loop ———
 async function predictWebcam() {
   if (!blinkRunning || !faceLandmarker) {
     requestAnimationFrame(predictWebcam);
@@ -49,59 +45,39 @@ async function predictWebcam() {
   }
   const nowMs = Date.now();
   if (video.currentTime !== lastVideoTime) {
-    lastVideoTime  = video.currentTime;
-    const results  = faceLandmarker.detectForVideo(video, nowMs);
-    const shapes   = results.faceBlendshapes?.[0]?.categories;
-    if (shapes) {
-      const leftScore  = shapes.find(s=>s.categoryName==='eyeBlinkLeft').score;
-      const rightScore = shapes.find(s=>s.categoryName==='eyeBlinkRight').score;
-
-      // both-eyes blink
-      if (leftScore > BLINK_THRESH && rightScore > BLINK_THRESH) {
-        blinkCallback({ blinkType: 'both', leftScore, rightScore });
-        isBlinkLeft = isBlinkRight = true;
-      } else {
-        // left-only
-        if (leftScore > BLINK_THRESH && !isBlinkLeft) {
-          blinkCallback({ blinkType: 'left', leftScore, rightScore });
-          isBlinkLeft = true;
-        } else if (leftScore <= BLINK_THRESH) {
-          isBlinkLeft = false;
-        }
-        // right-only
-        if (rightScore > BLINK_THRESH && !isBlinkRight) {
-          blinkCallback({ blinkType: 'right', leftScore, rightScore });
-          isBlinkRight = true;
-        } else if (rightScore <= BLINK_THRESH) {
-          isBlinkRight = false;
-        }
-      }
+    lastVideoTime = video.currentTime;
+    const results    = faceLandmarker.detectForVideo(video, nowMs);
+    const categories = results.faceBlendshapes?.[0]?.categories;
+    if (categories && categories.length) {
+      // hand off full blend-shape array for classification upstream
+      blinkCallback({ categories });
     }
   }
   requestAnimationFrame(predictWebcam);
 }
 
-// ——— start/stop/toggle ———
+// ——— start/stop controls ———
 function startBlinkRecognition(force = false) {
   if (!navigator.mediaDevices?.getUserMedia) {
     console.error("Webcam not supported");
     return;
   }
-  navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => {
+  navigator.mediaDevices
+    .getUserMedia({ video: true })
+    .then((stream) => {
       videoStream = stream;
       video.srcObject = stream;
       blinkRunning = true;
       toggleStateCallback(true, force);
       video.addEventListener("loadeddata", predictWebcam);
     })
-    .catch(err => console.error(err));
+    .catch(console.error);
 }
 
 function stopBlinkRecognition(force = false) {
   blinkRunning = false;
   if (videoStream) {
-    videoStream.getTracks().forEach(t => t.stop());
+    videoStream.getTracks().forEach((t) => t.stop());
     videoStream = null;
   }
   toggleStateCallback(false, force);
@@ -113,16 +89,18 @@ function toggleBlinkRecognition() {
     : startBlinkRecognition(true);
 }
 
-function turnOnBlinkRecognition()  { if (!blinkRunning) startBlinkRecognition(false); }
-function turnOffBlinkRecognition() { if ( blinkRunning) stopBlinkRecognition(false); }
+function turnOnBlinkRecognition() {
+  if (!blinkRunning) startBlinkRecognition(false);
+}
+
+function turnOffBlinkRecognition() {
+  if (blinkRunning) stopBlinkRecognition(false);
+}
 
 // ——— registration functions ———
-function setBlinkCallback(cb)       { blinkCallback = cb; }
-function setToggleStateCallback(cb) { toggleStateCallback = cb; }
-
 window.FaceBlink = {
-  setBlinkCallback,
-  setToggleStateCallback,
+  setBlinkCallback(cb)       { blinkCallback = cb; },
+  setToggleStateCallback(cb) { toggleStateCallback = cb; },
   toggleBlinkRecognition,
   turnOnBlinkRecognition,
   turnOffBlinkRecognition
