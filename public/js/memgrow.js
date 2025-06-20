@@ -2876,7 +2876,10 @@ document.addEventListener('FaceBlinkReady', function() {
 
   // Receive full categories array, hold then classify
   window.FaceBlink.setBlinkCallback(function(data) {
+    console.log(classifyAndHandle());
     clearPending();
+
+    return;
     pendingCategories = data.categories;
     holdTimer = setTimeout(() => {
       classifyAndHandle(pendingCategories);
