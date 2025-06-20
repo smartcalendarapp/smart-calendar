@@ -43,7 +43,7 @@ async function predictWebcam() {
     return;
   }
   const nowMs = Date.now();
-  const delta_time = 0.01 // 10ms between predictions
+  const delta_time = 0.05 //  between predictions
   if (video.currentTime > lastVideoTime + delta_time) {
     lastVideoTime = video.currentTime;
     const results    = faceLandmarker.detectForVideo(video, nowMs);

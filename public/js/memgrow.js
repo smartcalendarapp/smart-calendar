@@ -2793,98 +2793,84 @@ document.addEventListener('HandGestureReady', function() {
 
 
 
-// React to FaceBlink API ready
-// React to FaceBlink API ready
-document.addEventListener('FaceBlinkReady', function () {
+
+/* ------------------------------------------------------------------ *
+ *  Face-Blink → single-eye gesture mapping (no hold, 0.5 s cooldown)
+ * ------------------------------------------------------------------ */
+document.addEventListener('FaceBlinkReady', () => {
   if (GESTURE_METHOD !== 'face') return;
 
-  // —— TUNABLE CONSTANTS ——
-  const HOLD_TIME = 200;   // ms
-  const HIGH      = 0.55;  // dominant eye minimum
-  const LOW       = 0.20;  // quiet eye maximum
-  const MIN_DIFF  = 0.15;  // dominance margin
+  /* tunables */
+  const HIGH      = 0.55;     // dominant-eye minimum
+  const LOW       = 0.30;     // both-eyes quiet
+  const MIN_DIFF  = 0.15;     // dominance margin
+  const COOLDOWN  = 500;      // ms after any blink action
 
-  // —— INTERNAL STATE ——
-  let holdTimer   = null;
-  let holdType    = null;   // 'left' | 'right'
-  let lastCats    = null;   // latest blend-shapes
-  let needReset   = false;  // must see reset_none before new blink
+  /* state */
+  let needReset      = false; // must see reset_none before next blink
+  let lastActionTime = 0;     // timestamp of last accepted blink
 
-  // —— HELPERS ——
-  function clearHold() {
-    if (holdTimer) clearTimeout(holdTimer);
-    holdTimer = null;
-    holdType  = null;
-  }
+  /* helpers */
+  function getBlinkType(cats) {
+    const s = n => cats.find(c => c.categoryName === n)?.score || 0;
+    const Rb = s('eyeBlinkRight'),  Lb = s('eyeBlinkLeft');
+    const Rs = s('eyeSquintRight'), Ls = s('eyeSquintLeft');
 
-  function getBlinkType(categories) {
-    const score = n => (categories.find(x => x.categoryName === n)?.score) || 0;
-    const Rb = score('eyeBlinkRight'),  Lb = score('eyeBlinkLeft');
-    const Rs = score('eyeSquintRight'), Ls = score('eyeSquintLeft');
+    const right = 0.5 * Rb + 0.5 * Rs;
+    const left  = 0.5 * Lb + 0.5 * Ls;
 
-    const rightMetric = 0.5 * Rb + 0.5 * Rs;
-    const leftMetric  = 0.5 * Lb + 0.5 * Ls;
-
-    if (rightMetric < LOW && leftMetric < LOW)          return 'reset_none';
-    if (rightMetric >= HIGH && leftMetric >= HIGH)      return 'none';
-    if (rightMetric >= HIGH && rightMetric - leftMetric >= MIN_DIFF) return 'right';
-    if (leftMetric  >= HIGH && leftMetric  - rightMetric >= MIN_DIFF) return 'left';
+    if (right < LOW && left < LOW) return 'reset_none';
+    if (right >= HIGH && left >= HIGH) return 'none';                // both eyes
+    if (right >= HIGH && right - left >= MIN_DIFF)  return 'right';
+    if (left  >= HIGH && left  - right >= MIN_DIFF)  return 'left';
     return 'none';
   }
 
-  // —— MAIN CALLBACK ——
-  window.FaceBlink.setBlinkCallback(function (categories) {
+  function tooSoon() {
+    return Date.now() - lastActionTime < COOLDOWN;
+  }
+
+  function triggerRight() {
+    if (handlinggesture || !notpointgesture) return;
+    handlinggesture = true;
+    if (showanswer) showgestureremembered();
+    hidegestureremembered();
+    processspacekey();
+    notpointgesture = false;
+    handlinggesture = false;
+  }
+
+  function triggerLeft() {
+    notpointgesture = true;
+    if (showanswer) showgesturedidntremember();
+    hidegesturedidntremember();
+    clickdidntremember();
+  }
+
+  /* main callback */
+  window.FaceBlink.setBlinkCallback(categories => {
     const type = getBlinkType(categories);
-    lastCats   = categories;
 
-    /* ── REQUIRE A "reset_none" GAP ── */
+    /* require a quiet-eyes frame after every accepted blink */
     if (needReset) {
-      if (type === 'reset_none') needReset = false;     // gap observed
-      else return;                                       // still waiting
+      if (type === 'reset_none') needReset = false;
+      else return;                              // still waiting
     }
 
-    if (type === 'left' || type === 'right') {
-      if (!holdTimer) {
-        holdType  = type;
-        holdTimer = setTimeout(() => {
-          if (getBlinkType(lastCats) === holdType) {
-            if (holdType === 'right') {
-              // RIGHT-eye blink  ≅  Pointing_Up
-              if (!handlinggesture && notpointgesture) {
-                handlinggesture = true;
-                if (showanswer) showgestureremembered();
-                setTimeout(() => {
-                  handlinggesture = false;
-                  hidegestureremembered();
-                  processspacekey();
-                  notpointgesture = false;
-                }, 100);
-              }
-            } else {
-              // LEFT-eye blink  ≅  Open_Palm
-              notpointgesture = true;
-              if (showanswer) showgesturedidntremember();
-              handlinggesture = true;
-              setTimeout(() => {
-                handlinggesture = false;
-                hidegesturedidntremember();
-                clickdidntremember();
-              }, 100);
-            }
-            needReset = true;           // must see quiet eyes before next blink
-          }
-          clearHold();
-        }, HOLD_TIME);
-      } else if (type !== holdType) {
-        clearHold(); // inconsistent — cancel
-      }
-    } else if (type === 'none') {
-      clearHold();   // ambiguous/both-eyes → cancel
+    if (type === 'right' && !tooSoon()) {
+      triggerRight();
+      needReset      = true;
+      lastActionTime = Date.now();
+    } else if (type === 'left' && !tooSoon()) {
+      triggerLeft();
+      needReset      = true;
+      lastActionTime = Date.now();
     }
-    // type === 'reset_none' simply lets loop continue and clears needReset above
+    // 'none' and any type during cooldown or needReset are ignored
   });
 
-  window.FaceBlink.setToggleStateCallback(function (isRunning) {
+  /* toggle UI badge */
+  window.FaceBlink.setToggleStateCallback(isRunning => {
     const btn = getelement('gesturebutton');
     if (btn) btn.classList.toggle('gesturebuttonactive', isRunning);
   });
