@@ -2797,94 +2797,98 @@ document.addEventListener('HandGestureReady', function() {
 document.addEventListener('FaceBlinkReady', function() {
   if (GESTURE_METHOD !== 'face') return;
 
-  // Hold-based processing variables
-  let holdTimer = null;
-  let pendingCategories = null;
-  const HOLD_TIME = 200; // ms
+  // —— TUNABLE CONSTANTS ——
+  const HOLD_TIME = 200;    // ms to hold and confirm
+  const HIGH      = 0.6;    // min “dominant metric”
+  const MIN_DIFF  = 0.15;   // required dominance margin
 
-  // Clear any pending classification
-  function clearPending() {
+  // —— INTERNAL STATE ——
+  let holdTimer   = null;
+  let holdType    = null;   // 'left' or 'right'
+  let lastCats    = null;   // last blend-shape array
+
+  // —— HELPERS ——
+  function clearHold() {
     if (holdTimer) clearTimeout(holdTimer);
-    pendingCategories = null;
     holdTimer = null;
+    holdType  = null;
   }
 
-  // Advanced classification using multiple blendshapes and custom weights
-  function classifyAndHandle(categories) {
-    // helper to get score by name
+  function getBlinkType(categories) {
+    // pull raw scores
     const score = name => {
       const c = categories.find(x => x.categoryName === name);
       return c ? c.score : 0;
     };
+    const Rb = score('eyeBlinkRight'),  Lb = score('eyeBlinkLeft');
+    const Rs = score('eyeSquintRight'), Ls = score('eyeSquintLeft');
 
-    // raw scores
-    const eyeBlinkLeft      = score('eyeBlinkLeft');
-    const eyeBlinkRight     = score('eyeBlinkRight');
-    const eyeSquintLeft     = score('eyeSquintLeft');
-    const eyeSquintRight    = score('eyeSquintRight');
+    // combined metric (you can tweak weights)
+    const rightMetric = 0.7*Rb + 0.3*Rs;
+    const leftMetric  = 0.7*Lb + 0.3*Ls;
 
-    // weighted combination (tune these weights as needed)
-    const WEIGHTS = {
-      blink:    0.5,
-      squint:   0.5,
-    };
+    console.log(rightMetric.toFixed(2), leftMetric.toFixed(2))
 
-    const leftMetric =  WEIGHTS.blink    * eyeBlinkLeft
-                      + WEIGHTS.squint   * eyeSquintLeft
-
-    const rightMetric = WEIGHTS.blink    * eyeBlinkRight
-                      + WEIGHTS.squint   * eyeSquintRight
-
-    // classification thresholds
-    const HIGH     = 0.5;  // minimum metric for dominant eye
-    const MIN_DIFF = 0.1; // required difference between metrics
-
-    // if both metrics exceed HIGH, or neither exceeds HIGH, ignore
-    if ((leftMetric > HIGH && rightMetric > HIGH) ||
-        (leftMetric < HIGH && rightMetric < HIGH)) {
-      return;
-    }
-
-    // RIGHT-eye blink: right dominant
-    if (rightMetric >= HIGH && (rightMetric - leftMetric) >= MIN_DIFF) {
-      if (handlinggesture || !notpointgesture) return;
-      console.log('Classified blink: RIGHT eye');
-      handlinggesture = true;
-      if (showanswer) showgestureremembered();
-      setTimeout(() => {
-        handlinggesture = false;
-        hidegestureremembered();
-        processspacekey();
-        notpointgesture = false;
-      }, 100);
-      return;
-    }
-
-    // LEFT-eye blink: left dominant
-    if (leftMetric >= HIGH && (leftMetric - rightMetric) >= MIN_DIFF) {
-      console.log('Classified blink: LEFT eye');
-      notpointgesture = true;
-      if (showanswer) showgesturedidntremember();
-      handlinggesture = true;
-      setTimeout(() => {
-        handlinggesture = false;
-        hidegesturedidntremember();
-        clickdidntremember();
-      }, 100);
-    }
+    // must be above HIGH and dominate by MIN_DIFF
+    if (rightMetric >= HIGH && (rightMetric - leftMetric) >= MIN_DIFF) return 'right';
+    if (leftMetric  >= HIGH && (leftMetric  - rightMetric) >= MIN_DIFF) return 'left';
+    return 'none';
   }
 
+  // —— THE MAGIC ——  
   window.FaceBlink.setBlinkCallback(function(categories) {
-    clearPending();
-    pendingCats = categories;
-    holdTimer = setTimeout(() => {
-      classifyAndHandle(pendingCats);
-      clearPending();
-    }, HOLD_TIME);
+    const type = getBlinkType(categories);
+    lastCats = categories;
+
+    if (type === 'left' || type === 'right') {
+      if (!holdTimer) {
+        // first detection: start hold timer
+        holdType = type;
+        holdTimer = setTimeout(() => {
+          // on timeout, confirm it’s still the same blink
+          if (getBlinkType(lastCats) === holdType) {
+            if (holdType === 'right') {
+              // — RIGHT-EYE BLINK = “pointing up” logic —
+              if (!handlinggesture && notpointgesture) {
+                console.log('Confirmed RIGHT blink');
+                handlinggesture = true;
+                if (showanswer) showgestureremembered();
+                setTimeout(() => {
+                  handlinggesture = false;
+                  hidegestureremembered();
+                  processspacekey();
+                  notpointgesture = false;
+                }, 100);
+              }
+            } else {
+              // — LEFT-EYE BLINK = “open palm” logic —
+              console.log('Confirmed LEFT blink');
+              notpointgesture = true;
+              if (showanswer) showgesturedidntremember();
+              handlinggesture = true;
+              setTimeout(() => {
+                handlinggesture = false;
+                hidegesturedidntremember();
+                clickdidntremember();
+              }, 100);
+            }
+          }
+          clearHold();
+        }, HOLD_TIME);
+      }
+      else if (type !== holdType) {
+        // if a different blink shows up during hold, cancel
+        clearHold();
+      }
+    } else {
+      // no valid blink → cancel any pending
+      clearHold();
+    }
   });
 
-  window.FaceBlink.setToggleStateCallback((run,_) => {
-    getelement('gesturebutton')?.classList.toggle('gesturebuttonactive', run);
+  window.FaceBlink.setToggleStateCallback(function(isRunning) {
+    const btn = getelement('gesturebutton');
+    if (btn) btn.classList.toggle('gesturebuttonactive', isRunning);
   });
 });
 
