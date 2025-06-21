@@ -7254,7 +7254,6 @@ app.post('/getcardhint', async (req, res) => {
 	const card = req.body.card
 	const showanswer = req.body.showanswer
 	const hinttype = req.body.hinttype || 0
-	const metadata = req.body.metadata || {}
 
 	if(hinttype == 1){
 		//google images
@@ -7278,7 +7277,7 @@ app.post('/getcardhint', async (req, res) => {
 		let ischinese = containsChinese(card.fronttext)
 
 
-		const systemprompt = showanswer ? [ischinese ? `Use the word in a Chinese sentence that's short, interesting and memorable, and give translation below in parentheses. No pinyin` : `I'm having trouble understanding, explain this as a tutor concisely and clearly`][hinttype] : `Give a cue hint without revealing anything that is part of the card back`
+		const systemprompt = showanswer ? [ischinese ? `Use the word in a Chinese sentence that's short, interesting and meaningful, and give translation below in parentheses. No pinyin` : `I'm having trouble understanding, explain this as a tutor concisely and clearly`][hinttype] : `Give a cue hint without revealing anything that is part of the card back`
 
 		const userprompt = `Card front: """${card.fronttext}"""\nCard back: """${card.backtext}"""`
 
