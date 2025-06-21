@@ -57,7 +57,7 @@ async function predictWebcam() {
 }
 
 // ——— start/stop controls ———
-function startBlinkRecognition(force = false) {
+function startBlinkRecognition(force) {
   if (!navigator.mediaDevices?.getUserMedia) {
     console.error("Webcam not supported");
     return;
@@ -74,7 +74,7 @@ function startBlinkRecognition(force = false) {
     .catch(console.error);
 }
 
-function stopBlinkRecognition(force = false) {
+function stopBlinkRecognition(force ) {
   blinkRunning = false;
   if (videoStream) {
     videoStream.getTracks().forEach(t => t.stop());
@@ -82,6 +82,7 @@ function stopBlinkRecognition(force = false) {
   }
   toggleStateCallback(false, force);
 }
+
 
 function toggleBlinkRecognition() {
   blinkRunning ? stopBlinkRecognition(true) : startBlinkRecognition(true);

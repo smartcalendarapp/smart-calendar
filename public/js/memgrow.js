@@ -2871,10 +2871,23 @@ document.addEventListener('FaceBlinkReady', () => {
   });
 
   /* toggle UI badge */
-  window.FaceBlink.setToggleStateCallback(isRunning => {
+  window.FaceBlink.setToggleStateCallback((isRunning, isforce) => {
     notpointgesture = true
-    const btn = getelement('gesturebutton');
-    if (btn) btn.classList.toggle('gesturebuttonactive', isRunning);
+   const btn = getelement('gesturebutton')
+      if (btn) {
+        if (isRunning) {
+          btn.classList.add('gesturebuttonactive')
+          if(isforce){
+            usegesture = true
+          }
+        } else {
+          btn.classList.remove('gesturebuttonactive')
+          if(isforce){
+            usegesture = false
+          }
+        }
+      }
+
   });
 });
 
