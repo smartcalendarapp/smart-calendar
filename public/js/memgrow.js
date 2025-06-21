@@ -2799,7 +2799,7 @@ document.addEventListener('FaceBlinkReady', () => {
   if (GESTURE_METHOD !== 'face') return;
 
   /* tunables */
-  const HIGH      = 0.55;     // dominant-eye minimum
+  const HIGH      = 0.60;     // dominant-eye minimum
   const LOW       = 0.30;     // both-eyes quiet
   const MIN_DIFF  = 0.15;     // dominance margin
   const COOLDOWN  = 500;      // ms after any blink action
@@ -2832,17 +2832,22 @@ document.addEventListener('FaceBlinkReady', () => {
     if (handlinggesture || !notpointgesture) return;
     handlinggesture = true;
     if (showanswer) showgestureremembered();
-    hidegestureremembered();
     processspacekey();
     notpointgesture = false;
     handlinggesture = false;
+    setTimeout(function(){
+        hidegestureremembered()
+    }, 500)
   }
 
   function triggerLeft() {
+    if(!showanswer) return
     notpointgesture = true;
     if (showanswer) showgesturedidntremember();
-    hidegesturedidntremember();
     clickdidntremember();
+    setTimeout(function(){
+        hidegesturedidntremember()
+    }, 500);
   }
 
   /* main callback */
