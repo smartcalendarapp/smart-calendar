@@ -17753,7 +17753,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 			rescheduletaskpopup.classList.remove('hiddenpopup')
 
 			let checkinterval = setInterval(function(){
-				if(!calendar.events.find(d => d.id == overdueitem.id) || overdueitem.completed || new Date(overdueitem.start.year, overdueitem.start.month, overdueitem.start.day, 0, overdueitem.start.minute).getTime() > Date.now()){
+				if(!calendar.events.find(d => d.id == overdueitem.id) || overdueitem.completed || new Date(overdueitem.end.year, overdueitem.end.month, overdueitem.end.day, 0, overdueitem.end.minute).getTime() > Date.now()){
 					clearInterval(checkinterval)
 					rescheduletaskfunction()
 				}
