@@ -2798,101 +2798,63 @@ document.addEventListener('HandGestureReady', function() {
 document.addEventListener('FaceBlinkReady', () => {
   if (GESTURE_METHOD !== 'face') return;
 
-  /* tunables */
-  const HIGH      = 0.55;     // dominant-eye minimum
-  const LOW       = 0.30;     // both-eyes quiet
-  const MIN_DIFF  = 0.15;     // dominance margin
-  const COOLDOWN  = 500;      // ms after any blink action
+  /* thresholds */
+  const HIGH = 0.55, LOW = 0.30, GAP = 0.15, COOLDOWN = 500;
 
-  /* state */
-  let needReset      = false; // must see reset_none before next blink
-  let lastActionTime = 0;     // timestamp of last accepted blink
+  /* runtime flags */
+  let needQuiet = false;
+  let lastAction = 0;
 
-  /* helpers */
-  function getBlinkType(cats) {
-    const s = n => cats.find(c => c.categoryName === n)?.score || 0;
-    const Rb = s('eyeBlinkRight'),  Lb = s('eyeBlinkLeft');
-    const Rs = s('eyeSquintRight'), Ls = s('eyeSquintLeft');
-
-    const right = 0.5 * Rb + 0.5 * Rs;
-    const left  = 0.5 * Lb + 0.5 * Ls;
-
-    if (right < LOW && left < LOW) return 'reset_none';
-    if (right >= HIGH && left >= HIGH) return 'none';                // both eyes
-    if (right >= HIGH && right - left >= MIN_DIFF)  return 'right';
-    if (left  >= HIGH && left  - right >= MIN_DIFF)  return 'left';
+  const getType = cats=>{
+    const s=n=>cats.find(c=>c.categoryName===n)?.score||0;
+    const r = .5*s('eyeBlinkRight') + .5*s('eyeSquintRight');
+    const l = .5*s('eyeBlinkLeft')  + .5*s('eyeSquintLeft');
+    if(r<LOW && l<LOW)              return 'quiet';
+    if(r>=HIGH && l>=HIGH)          return 'both';
+    if(r>=HIGH && r-l>=GAP)         return 'right';
+    if(l>=HIGH && l-r>=GAP)         return 'left';
     return 'none';
-  }
+  };
+  const cool = ()=> Date.now()-lastAction < COOLDOWN;
 
-  function tooSoon() {
-    return Date.now() - lastActionTime < COOLDOWN;
-  }
+  const uiClear = ()=>{
+    hidegestureremembered();
+    hidegesturedidntremember();
+  };
 
-  function triggerRight() {
-    if (handlinggesture || !notpointgesture) return;
-    handlinggesture = true;
-    if (showanswer) showgestureremembered();
+  const doRight = ()=>{
+    if(handlinggesture || !notpointgesture) return;
+    handlinggesture=true;
+    showgestureremembered();
     processspacekey();
-    notpointgesture = false;
-    handlinggesture = false;
-    setTimeout(function(){
-        hidegestureremembered()
-    }, 500)
-  }
+    notpointgesture=false;
+    setTimeout(()=>{handlinggesture=false; uiClear();},200);
+  };
 
-  function triggerLeft() {
-    if(!showanswer) return
-    notpointgesture = true;
-    if (showanswer) showgesturedidntremember();
+  const doLeft = ()=>{
+    if(!showanswer) return;
+    showgesturedidntremember();
     clickdidntremember();
-    setTimeout(function(){
-        hidegesturedidntremember()
-    }, 500);
-  }
+    setTimeout(uiClear,200);
+  };
 
-  /* main callback */
-  window.FaceBlink.setBlinkCallback(categories => {
-    const type = getBlinkType(categories);
+  window.FaceBlink.setBlinkCallback(cats=>{
+    const t = getType(cats);
 
-    /* require a quiet-eyes frame after every accepted blink */
-    if (needReset) {
-      if (type === 'reset_none'){
-        needReset = false;
-        notpointgesture = true
-      }
-      else return;                              // still waiting
+    if(t==='quiet'){
+      needQuiet=false;            // reset gate
+      return;
     }
+    if(needQuiet || cool()) return;
 
-    if (type === 'right' && !tooSoon()) {
-      triggerRight();
-      needReset      = true;
-      lastActionTime = Date.now();
-    } else if (type === 'left' && !tooSoon()) {
-      triggerLeft();
-      needReset      = true;
-      lastActionTime = Date.now();
-    }
-    // 'none' and any type during cooldown or needReset are ignored
+    if(t==='right'){ doRight();  needQuiet=true; lastAction=Date.now(); }
+    if(t==='left' ){ doLeft();   needQuiet=true; lastAction=Date.now(); }
   });
 
-  /* toggle UI badge */
-  window.FaceBlink.setToggleStateCallback((isRunning, isforce) => {
-    notpointgesture = true
-   const btn = getelement('gesturebutton')
-      if (btn) {
-        if (isRunning) {
-          btn.classList.add('gesturebuttonactive')
-          if(isforce){
-            usegesture = true
-          }
-        } else {
-          btn.classList.remove('gesturebuttonactive')
-          if(isforce){
-            usegesture = false
-          }
-        }
-      }
-
+  window.FaceBlink.setToggleStateCallback((on,force)=>{
+    getelement('gesturebutton')?.classList.toggle('gesturebuttonactive',on);
+    if(force) usegesture = on;
+    needQuiet=false; notpointgesture=true;
   });
 });
 
