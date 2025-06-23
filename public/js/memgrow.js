@@ -2832,17 +2832,21 @@ document.addEventListener('FaceBlinkReady', () => {
   };
 
   const doLeft = ()=>{
+    if(handlinggesture || !notpointgesture) return;
     if(!showanswer) return;
+    handlinggesture=true;
     showgesturedidntremember();
     clickdidntremember();
-    setTimeout(uiClear,200);
+    notpointgesture=false;
+    setTimeout(()=>{handlinggesture=false; uiClear();},200);
   };
 
   window.FaceBlink.setBlinkCallback(cats=>{
     const t = getType(cats);
 
     if(t==='quiet'){
-      needQuiet=false;            // reset gate
+      needQuiet=false;
+      notpointgesture = true
       return;
     }
     if(needQuiet || cool()) return;
