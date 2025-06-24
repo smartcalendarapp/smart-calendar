@@ -2013,6 +2013,14 @@ async function updaterecognitionui(processresult, tempuserwantstostop){
                         entiretranscript += finalTranscript
                         finalTranscript = ''
 
+                        //save the transcript as a card
+                        let tempcard = currentcardset.cards.find(g => g.fronttext.includes('[transcript]'))
+                        if(tempcard){
+                            tempcard.backtext = entiretranscript
+                        }else{
+                            currentcardset.cards.unshift(new Card('[transcript]', entiretranscript))
+                        }
+
                         if(editcardmode){
                             currentcardindex = len
 
