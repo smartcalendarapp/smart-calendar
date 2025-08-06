@@ -621,6 +621,12 @@ async function updatescreen(){
             screencardfronttextview.classList.remove('bigfronttext')
         }
 
+        if(containsChinese(currentcardset.cards[currentcardindex].backtext || '')){
+            screencardbacktextview.classList.add('bigfronttext')
+        }else{
+            screencardbacktextview.classList.remove('bigfronttext')
+        }
+
 
         //let speakcardtextbutton0 = getelement('speakcardtextbutton0')
         //let speakcardtextbutton1 = getelement('speakcardtextbutton1')

@@ -3846,6 +3846,8 @@ max-width:1000px;
 	fill:var(--white) !important;
 }
 
+
+
 .checkboxunfilled {
 	stroke: var(--text-secondary) !important;
 }
@@ -3853,6 +3855,10 @@ max-width:1000px;
 
 .checkboxunfilledfill {
 	fill: var(--text-secondary) !important;
+}
+
+.selectedevent .checkboxunfilledfill{
+	fill:var(--white) !important;
 }
 
 

@@ -2863,7 +2863,7 @@ class Calendar {
 								</svg>
 
 
-								<div class="pointer-none nowrap text-primary text-14px">Undo schedule</div>
+								<div class="pointer-none nowrap text-primary text-14px">Un-schedule</div>
 							</div>
 
 							<div class="text-white display-flex flex-row align-center gap-6px text-14px padding-8px-12px tooltip infotopright background-green hover:background-green-hover pointer-auto transition-duration-100 border-8px pointer display-none" onclick="startnow(selectedeventid);if(gtag){gtag('event', 'button_click', { useraction: 'Start now - event info' })}">
@@ -9677,7 +9677,7 @@ function fixrecurringtodo(item){
 			calendar.todos.push(newitem)
 
 			if(Calendar.Event.isEvent(lasttodo)){
-				startAutoSchedule({ eventsuggestiontodos: [newitem] })
+				startAutoSchedule({ scheduletodos: [newitem] })//here2
 			}
 
 		}
@@ -16635,6 +16635,13 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 						: ''
 					}
 
+					${item.type == 1 && myheight < 45 && !item.completed ? 
+						`<span class="margin-left-6px margin-right-6px scalebutton todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="toggledoingevent('${item.id}')">
+							${myheight <= 15 ? `${getwhiteplaysmall(getdoingeventid() == item.id)}` : `${getwhiteplay(getdoingeventid() == item.id)}`}
+						</span>` 
+						: ''
+					}
+
 					<span class="text-bold">${Calendar.Event.getTitle(item)}</span>
 				
 					${item.repeat.frequency != null && item.repeat.interval != null && item.type == 1 ? `
@@ -16662,12 +16669,7 @@ function getanimateddayeventdata(item, olditem, newitem, currentdate, timestamp,
 
 					${item.iseventsuggestion ? aisuggestiontext : `${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item)}</span>`}
 
-					${item.type == 1 && myheight < 45 && !item.completed ? 
-						`<span class="margin-left-6px scalebutton todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="toggledoingevent('${item.id}')">
-							${myheight <= 15 ? `${getwhiteplaysmall(getdoingeventid() == item.id)}` : `${getwhiteplay(getdoingeventid() == item.id)}`}
-						</span>` 
-						: ''
-					}
+					
 
 				</div>
 				
@@ -16788,6 +16790,13 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 						: ''
 					}
 
+					${item.type == 1 && myheight < 45 && !item.completed ? 
+						`<span class="margin-left-6px margin-right-6px scalebutton todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="toggledoingevent('${item.id}')">
+							${myheight <= 15 ? `${getwhiteplaysmall(getdoingeventid() == item.id)}` : `${getwhiteplay(getdoingeventid() == item.id)}`}
+						</span>` 
+						: ''
+					}
+
 					<span class="text-bold">${Calendar.Event.getTitle(item)}</span>
 		
 
@@ -16816,13 +16825,6 @@ function getdayeventdata(item, currentdate, timestamp, leftindent, columnwidth) 
 
 					${item.iseventsuggestion ? aisuggestiontext : `${myheight < 45 ? ' ' : '</br>'}<span class="text-quaternary">${Calendar.Event.getShortStartEndText(item)}</span>`}
 
-					${item.type == 1 && myheight < 45 && !item.completed ? 
-						`<span class="margin-left-6px scalebutton todoitemcheckbox tooltip checkcircletop pointer pointer-auto" onclick="toggledoingevent('${item.id}')">
-							${myheight <= 15 ? `${getwhiteplaysmall(getdoingeventid() == item.id)}` : `${getwhiteplay(getdoingeventid() == item.id)}`}
-						</span>` 
-						: ''
-					}
-					
 
 				
 				</div>
@@ -18606,7 +18608,7 @@ function openscheduleeditorpopup(id){
 				</svg>
 
 
-				<div class="pointer-none nowrap text-primary text-14px">Undo schedule</div>
+				<div class="pointer-none nowrap text-primary text-14px">Un-schedule</div>
 			</div>
 
 		</div>`)
