@@ -6665,6 +6665,7 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
 
           try {
             for await (const event of stream2) {
+				console.warn(event)
               if (event.type === "response.function_call.arguments.delta") {
                 isfunctioncall2 = true
                 if (event.delta) accumulatedTool2.arguments += event.delta
