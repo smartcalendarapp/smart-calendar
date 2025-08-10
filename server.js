@@ -5137,8 +5137,8 @@ let MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
 let MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
 
 let GPT_COMPLETION_MODEL = 'gpt-4o-mini-2024-07-18'
-let GPT_MODEL = 'gpt-4o-mini-2024-07-18'
-let GPT_PREMIUM_MODEL = 'gpt-4o-2024-08-06'
+let GPT_MODEL = 'gpt-5-nano'
+let GPT_PREMIUM_MODEL = 'gpt-5'
 let GPT_ATHENA_INSTRUCTIONS = `Athena, AI assistant for Smart Calendar. Personality: concise, friendly, inviting. If user request includes an action and enough information, return action. Never perform bulk actions to ALL items of calendar events or tasks data. Access to user's calendar and todo data is granted. If providing response, ALWAYS list dates in natural human format like "tomorrow", "next Monday", or "Jan 1st". NEVER mention internal ID of events or tasks. Assist with any request, and reply intelligently.`
 
 /*`
@@ -5218,7 +5218,7 @@ app.post('/gettasksuggestions', async (req, res) => {
 					role: 'user',
 					content: prompt
 				}],
-				max_tokens: 200,
+				max_completion_tokens: 200,
 			})
 
 			return res.choices[0].message.content
@@ -5293,7 +5293,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 						content: prompt
 					}
 				],
-				max_tokens: 200,
+				max_completion_tokens: 200,
 			})
 
 			return res.choices[0].message.content
@@ -5458,7 +5458,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 					content: inputtext,
 				}
 			],
-			max_tokens: 200,
+			max_completion_tokens: 200,
 			temperature: 1,
 			top_p: 1,
 		})
@@ -5578,7 +5578,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 					content: inputtext,
 				}
 			],
-			max_tokens: 200,
+			max_completion_tokens: 200,
 			temperature: 1,
 			top_p: 1,
 		})
@@ -5677,7 +5677,7 @@ app.post('/getgptchatresponseeveningsummary', async (req, res) => {
 					content: inputtext,
 				}
 			],
-			max_tokens: 200,
+			max_completion_tokens: 200,
 			temperature: 1,
 			top_p: 1,
 		})
@@ -5790,7 +5790,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 					content: inputtext,
 				}
 			],
-			max_tokens: 200,
+			max_completion_tokens: 200,
 			temperature: 1,
 			top_p: 1,
 		})
@@ -6422,7 +6422,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 							"description": `If command requires data, return fetch_events or fetch_tasks. If command is not complete, do NOT return this function. Otherwise, return this function for the following commands: ${allfunctions.map(d => d.name).join(', ')}.`
 						}
 					],
-					max_tokens: 200,
+					max_completion_tokens: 200,
 					temperature: 0.5,
 					top_p: 1,
 					stream: true
@@ -6561,7 +6561,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
 						let request2options = {
 							model: GPT_MODEL,
-							max_tokens: commands.length > 0 ? 1500 : 300, //more tokens for functions
+							max_completion_tokens: commands.length > 0 ? 1500 : 300, //more tokens for functions
 							temperature: 0.5,
 							top_p: 1,
 							stream: true
@@ -7294,7 +7294,7 @@ app.post('/getcardhint', async (req, res) => {
 					content: userprompt
 				}
 				],
-				max_tokens: 500,
+				max_completion_tokens: 500,
 			})
 
 			const content = response.choices[0].message.content
