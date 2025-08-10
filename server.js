@@ -6084,7 +6084,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
     const MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH = 2000
     const MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH = 5
 
-	
+
     let userid = req.session.user.userid
 
     let user = await getUserById(userid)
@@ -6456,7 +6456,7 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
 
         // ---- FIRST CALL (discover commands or answer) ----
         // Responses API: stream + tool-calls
-        const stream1 = await openai.responses.stream({
+        const stream1 = await openai.responses.create({
           model: GPT_MODEL,
           instructions: systeminstructions,
           input: [
@@ -6621,7 +6621,7 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
               }))
           )
 
-          const stream2 = await openai.responses.stream({
+          const stream2 = await openai.responses.create({
             model: GPT_MODEL,
             instructions: systeminstructions,
             input: [
