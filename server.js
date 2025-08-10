@@ -5137,8 +5137,8 @@ let MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
 let MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
 
 let GPT_COMPLETION_MODEL = 'gpt-4o-mini-2024-07-18'
-let GPT_MODEL = 'gpt-5-nano'
-let GPT_PREMIUM_MODEL = 'gpt-5-nano'
+let GPT_MODEL = 'gpt-4o-mini-2024-07-18'
+let GPT_PREMIUM_MODEL = 'gpt-4o-2024-08-06'
 let GPT_ATHENA_INSTRUCTIONS = `Athena, AI assistant for Smart Calendar. Personality: concise, friendly, inviting. If user request includes an action and enough information, return action. Never perform bulk actions to ALL items of calendar events or tasks data. Access to user's calendar and todo data is granted. If providing response, ALWAYS list dates in natural human format like "tomorrow", "next Monday", or "Jan 1st". NEVER mention internal ID of events or tasks. Assist with any request, and reply intelligently.`
 
 /*`
@@ -6422,8 +6422,7 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
             }
           }],
           tool_choice: "auto",
-          reasoning: { effort: "minimal" },
-          text: { verbosity: "low" },
+          ...(/gpt-5/i.test(GPT_MODEL) ? { reasoning: { effort: "minimal" }, text: { verbosity: "low" }, } : {}),
           max_output_tokens: 200,
           top_p: 1,
           stream: true
@@ -6576,8 +6575,7 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
               }
             }],
             tool_choice: "auto", // or { type: "function", name: "app_action" } to force
-            reasoning: { effort: "minimal" },
-            text: { verbosity: "low" },
+            ...(/gpt-5/i.test(GPT_MODEL) ? { reasoning: { effort: "minimal" }, text: { verbosity: "low" }, } : {}),
             max_output_tokens: commands.length > 0 ? 1500 : 300,
             top_p: 1,
             stream: true
