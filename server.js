@@ -6079,6 +6079,12 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
       return res.status(401).json({ error: 'User is not signed in.' })
     }
 
+	const MAX_CALENDAR_CONTEXT_LENGTH = 2000
+    const MAX_TODO_CONTEXT_LENGTH = 2000
+    const MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH = 2000
+    const MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH = 5
+
+	
     let userid = req.session.user.userid
 
     let user = await getUserById(userid)
@@ -6724,11 +6730,6 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
 
     // ======== CONTEXT BUILD ========
 
-    const DAYLIST = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] // ensure defined
-    const MAX_CALENDAR_CONTEXT_LENGTH = 2000
-    const MAX_TODO_CONTEXT_LENGTH = 2000
-    const MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH = 2000
-    const MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH = 5
 
     const output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory1, conversationhistory, timezoneoffset)
 
