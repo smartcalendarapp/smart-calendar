@@ -5137,8 +5137,8 @@ let MAX_GPT_COMPLETION_PER_DAY_BETA_TESTER = 30
 let MAX_GPT_COMPLETION_PER_DAY_PREMIUM = 100
 
 let GPT_COMPLETION_MODEL = 'gpt-4o-mini-2024-07-18'
-let GPT_MODEL = 'gpt-4o-mini-2024-07-18'
-let GPT_PREMIUM_MODEL = 'gpt-5'
+let GPT_MODEL = 'gpt-5-nano'
+let GPT_PREMIUM_MODEL = 'gpt-5-nano'
 let GPT_ATHENA_INSTRUCTIONS = `Athena, AI assistant for Smart Calendar. Personality: concise, friendly, inviting. If user request includes an action and enough information, return action. Never perform bulk actions to ALL items of calendar events or tasks data. Access to user's calendar and todo data is granted. If providing response, ALWAYS list dates in natural human format like "tomorrow", "next Monday", or "Jan 1st". NEVER mention internal ID of events or tasks. Assist with any request, and reply intelligently.`
 
 /*`
@@ -6073,33 +6073,24 @@ async function searchgoogle(query){
 
 const DAYLIST = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
+
 app.post('/getgptchatinteractionV2', async (req, res) => {
   try {
     if (!req.session.user) {
       return res.status(401).json({ error: 'User is not signed in.' })
     }
 
-	const MAX_CALENDAR_CONTEXT_LENGTH = 2000
-    const MAX_TODO_CONTEXT_LENGTH = 2000
-    const MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH = 2000
-    const MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH = 5
-
-
     let userid = req.session.user.userid
-
     let user = await getUserById(userid)
     if (!user) {
       return res.status(401).json({ error: 'User does not exist.' })
     }
 
     let usedmodel = getusedmodel(user)
-
     let appliedratelimit = getappliedratelimit(user)
     let appliedratelimit4 = getappliedratelimit4(user)
-
     let currenttime = Date.now()
 
-    //check ratelimit
     if (!usedmodel) {
       return res.status(401).json({
         error: `Daily AI limit reached. (${appliedratelimit} messages per day${userhaspremium(user) ? ` and ${appliedratelimit4} premium messages per day for GPT-4` : ''}). Please <span class="gradienttextgold text-bold pointer" onclick="clicktab([5])">upgrade to premium</span> to help us cover the costs of AI.`
@@ -6110,7 +6101,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
       return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
     }
 
-    //set ratelimit
     if (usedmodel == GPT_MODEL) {
       user.accountdata.gptchatusedtimestamps.push(currenttime)
     } else {
@@ -6118,37 +6108,29 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
     }
     await setUser(user)
 
-    // ==== HELPERS (unchanged unless noted) ====
-
+    // ===== Helpers =====
     const idmap = {}
     let idmapeventcounter = 1
     let idmaptaskcounter = 1
     function gettempid(currentid, type) {
       if (!type) {
-        if (calendartodos.find(d => d.id == currentid)) {
-          type = 'task'
-        } else if (calendarevents.find(d => d.id == currentid)) {
-          type = 'event'
-        } else {
-          type = 'event'
-        }
+        if (calendartodos.find(d => d.id == currentid)) type = 'task'
+        else if (calendarevents.find(d => d.id == currentid)) type = 'event'
+        else type = 'event'
       }
       let existingitem = Object.entries(idmap).find(([key, value]) => value == currentid)
-      if (existingitem) {
-        return existingitem[0]
-      }
+      if (existingitem) return existingitem[0]
 
       let newid
       if (type == 'event') {
         newid = `E${idmapeventcounter}`
         idmap[newid] = currentid
         idmapeventcounter++
-      } else if (type == 'task') {
+      } else {
         newid = `T${idmaptaskcounter}`
         idmap[newid] = currentid
         idmaptaskcounter++
       }
-
       return newid
     }
 
@@ -6158,36 +6140,26 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
       let newkey = `{link${emaillinkcounter < 10 ? `0${emaillinkcounter}` : emaillinkcounter}}`
       emaillinkmap[newkey] = link
       emaillinkcounter++
-
       return newkey
     }
 
     function getcalendarcontext(tempevents) {
       if (tempevents.length == 0) return 'No events'
-
-      function getDateTimeText(currentDatetime) {
-        const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
-        const formattedTime = `${currentDatetime.getHours().toString().padStart(2, '0')}:${currentDatetime.getMinutes().toString().padStart(2, '0')}`
-        return `${formattedDate} ${formattedTime}`
+      function getDateTimeText(dt) {
+        const d = `${dt.getFullYear()}-${(dt.getMonth() + 1 + '').padStart(2, '0')}-${(dt.getDate() + '').padStart(2, '0')}`
+        const t = `${(dt.getHours() + '').padStart(2, '0')}:${(dt.getMinutes() + '').padStart(2, '0')}`
+        return `${d} ${t}`
       }
-
-      function getDateText(currentDatetime) {
-        const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
-        return `${formattedDate} (all day)`
+      function getDateText(dt) {
+        return `${dt.getFullYear()}-${(dt.getMonth() + 1 + '').padStart(2, '0')}-${(dt.getDate() + '').padStart(2, '0')} (all day)`
       }
-
-      function isAllDay(item) {
-        return !item.start.minute && !item.end.minute
-      }
+      function isAllDay(item) { return !item.start.minute && !item.end.minute }
 
       let tempoutput = ''
       for (let d of tempevents) {
         let newstring = `Event title: ${d.title || 'New Event'}, ID: ${gettempid(d.id, 'event')}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}${d.repeat.frequency != null && d.repeat.interval != null ? `, recurrence: ${getRecurrenceString(d)}` : ''}.`
-
         eventslist.push(d.title || 'New Event')
-
         if (tempoutput.length + newstring.length > MAX_CALENDAR_CONTEXT_LENGTH) break
-
         tempoutput += '\n' + newstring
       }
       return tempoutput
@@ -6195,51 +6167,38 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 
     function gettodocontext(temptodos) {
       if (temptodos.length == 0) return 'No tasks'
-
-      function getDateTimeText(currentDatetime) {
-        const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
-        const formattedTime = `${currentDatetime.getHours().toString().padStart(2, '0')}:${currentDatetime.getMinutes().toString().padStart(2, '0')}`
-        return `${formattedDate} ${formattedTime}`
+      function getDateTimeText(dt) {
+        const d = `${dt.getFullYear()}-${(dt.getMonth() + 1 + '').padStart(2, '0')}-${(dt.getDate() + '').padStart(2, '0')}`
+        const t = `${(dt.getHours() + '').padStart(2, '0')}:${(dt.getMinutes() + '').padStart(2, '0')}`
+        return `${d} ${t}`
       }
-
       function getDHMText(input) {
         let temp = input
-        let days = Math.floor(temp / 1440)
-        temp -= days * 1440
-
-        let hours = Math.floor(temp / 60)
-        temp -= hours * 60
-
+        let days = Math.floor(temp / 1440); temp -= days * 1440
+        let hours = Math.floor(temp / 60);   temp -= hours * 60
         let minutes = temp
-
         if (days) days += 'd'
         if (hours) hours += 'h'
         if (minutes || (hours == 0 && days == 0)) minutes += 'm'
-
-        return [days, hours, minutes].filter(f => f).join(' ')
+        return [days, hours, minutes].filter(Boolean).join(' ')
       }
-
       let tempoutput = ''
       for (let d of temptodos) {
-        let newstring = `Task title: ${d.title || 'New Task'}, ID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration || Math.floor(((new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime()) - new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime()) / 60000))}, completed: ${d.completed}.`
-
+        let mins = d.duration || Math.floor((new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute) - new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) / 60000)
+        let newstring = `Task title: ${d.title || 'New Task'}, ID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(mins)}, completed: ${d.completed}.`
         taskslist.push(d.title || 'New Task')
-
         if (tempoutput.length + newstring.length > MAX_TODO_CONTEXT_LENGTH) break
-
         tempoutput += '\n' + newstring
       }
       return tempoutput
     }
 
-    function getconversationhistory(temphistory) { //simple way for history, just send latest X messages
+    function getconversationhistory(temphistory) {
       let tempoutput = []
       let counter = 0
       for (let interactionmessages of temphistory.reverse()) {
-        if (JSON.stringify(interactionmessages).length + JSON.stringify(tempoutput).length > MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH) break //max X characters
-
-        if (counter > MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH) break //max X messages
-
+        if (JSON.stringify(interactionmessages).length + JSON.stringify(tempoutput).length > MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH) break
+        if (counter > MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH) break
         for (let interactionmessage of interactionmessages) {
           if (interactionmessage?.tool_calls?.arguments) {
             let temparguments = JSON.parse(interactionmessage.tool_calls.arguments)
@@ -6248,30 +6207,29 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
               for (let tempcommand of tempcommands) {
                 let commandarguments = Object.values(tempcommand)[0]
                 if (commandarguments.id) {
-                  //update id business
                   let newid = gettempid(commandarguments.id)
-                  if (newid) {
-                    commandarguments.id = newid
-                  }
+                  if (newid) commandarguments.id = newid
                 }
               }
             }
             interactionmessage.tool_calls.arguments = JSON.stringify(temparguments)
           }
         }
-
         tempoutput.push(...interactionmessages.reverse())
         counter++
       }
       return tempoutput.reverse()
     }
 
-    // NEW: minimal scrubber so Responses API gets clean role+content only
     const scrubHistory = (msgs) =>
       (msgs || [])
         .map(m => (m && m.role && m.content ? { role: m.role, content: m.content } : null))
-        .filter(Boolean);
+        .filter(Boolean)
 
+    const MAX_CALENDAR_CONTEXT_LENGTH = 2000
+    const MAX_TODO_CONTEXT_LENGTH = 2000
+    const MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH = 2000
+    const MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH = 5
 
     let userinput = req.body.userinput.slice(0, 300)
     let calendarevents = req.body.calendarevents
@@ -6287,7 +6245,8 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
     let conversationhistory1 = getconversationhistory(rawconversationhistory1)
     let conversationhistory = getconversationhistory(rawconversationhistory)
 
-    // ==== RESPONSES API ====
+    // ====== Query (Responses API) ======
+    const DAYLIST = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
     async function queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory1, conversationhistory, timezoneoffset) {
       const allfunctions = [
@@ -6364,9 +6323,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
           description: 'Find event by direct and explicit reference in user prompt. Return nothing if the event does not exist.',
           parameters: {
             type: 'object',
-            properties: {
-              id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
-            },
+            properties: { id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' } },
             required: []
           }
         },
@@ -6375,9 +6332,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
           description: 'Find task by direct and explicit reference in user prompt. Return nothing if the task does not exist.',
           parameters: {
             type: 'object',
-            properties: {
-              id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
-            },
+            properties: { id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' } },
             required: []
           }
         },
@@ -6386,26 +6341,21 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
           description: 'Go to date in calendar UI',
           parameters: {
             type: 'object',
-            properties: {
-              date: { type: 'string', description: 'Date in format: YYYY-MM-DD' },
-            },
+            properties: { date: { type: 'string', description: 'Date in format: YYYY-MM-DD' } },
             required: []
           }
         },
       ]
 
-      //beta assistant
       if (user.google_email == 'james.tsaggaris@gmail.com') {
-        allfunctions.push(...[
+        allfunctions.push(
           { name: 'check_emails' },
           {
             name: 'open_link',
             description: 'Open link at user request',
             parameters: {
               type: 'object',
-              properties: {
-                link: { type: 'string', description: 'Link to open' },
-              },
+              properties: { link: { type: 'string', description: 'Link to open' } },
               required: []
             }
           },
@@ -6422,7 +6372,7 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
               required: []
             }
           },
-        ])
+        )
       }
 
       const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'new_emaildraft', 'open_link', 'go_to_date_in_calendar']
@@ -6430,20 +6380,16 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
       const tododataneededfunctions = ['delete_task', 'modify_task', 'fetch_tasks']
 
       const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
-      const localdatestring = `${DAYLIST[localdate.getDay()]} ${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
-
-      function formatdateyyyymmddhhmm(inputdate) {
-        return `${inputdate.getFullYear()}-${(inputdate.getMonth() + 1).toString().padStart(2, '0')}-${inputdate.getDate().toString().padStart(2, '0')} ${inputdate.getHours().toString().padStart(2, '0')}:${inputdate.getMinutes().toString().padStart(2, '0')}`
-      }
+      const localdatestring = `${DAYLIST[localdate.getDay()]} ${localdate.getFullYear()}-${(localdate.getMonth() + 1 + '').padStart(2, '0')}-${(localdate.getDate() + '').padStart(2, '0')} ${((localdate.getHours()) + '').padStart(2, '0')}:${(localdate.getMinutes() + '').padStart(2, '0')}`
 
       const functioncallcontext = {
         'create_task': [
           { role: "user", content: "(sample message not from user) I need to do some goal planning tomorrow afternoon 3pm due in a week" },
-          { role: "assistant", content: '(sample) I will add a task with the right due date and start-after time.' }
+          { role: "assistant", content: "(sample) I'll add a task with the right due date and start-after time." }
         ],
         'modify_task': [
           { role: "user", content: `(sample message not from user) Move buy groceries to tomorrow morning 9am, and make it due at the end of tomorrow` },
-          { role: "assistant", content: '(sample) I will update the task start-after to 9:00 and set the due by end of day tomorrow.' }
+          { role: "assistant", content: "(sample) I'll update the task start-after to 9:00 and set the due by end of day tomorrow." }
         ]
       }
 
@@ -6454,36 +6400,30 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 Events list (fetch_events to get details such as time or date): """${eventslist}"""
 Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""`
 
-        // ---- FIRST CALL (discover commands or answer) ----
-        // Responses API: stream + tool-calls
+        // ---- FIRST CALL ----
         const stream1 = await openai.responses.create({
           model: GPT_MODEL,
           instructions: systeminstructions,
           input: [
-            // few-shot (kept minimal to avoid tool-call struct in history)
             ...Object.values(functioncallcontext).flat(),
-            // history (role + content only)
             ...scrubHistory(conversationhistory1),
             { role: 'user', content: modifiedinput }
           ],
-          tools: [
-            {
-              type: "function",
-			name: "app_action",
-			description: `If command requires data, return fetch_events or fetch_tasks. If command is not complete, do NOT call this tool. Otherwise, return this tool for the following commands: ${allfunctions.map(d => d.name).join(', ')}.`,
-			parameters: {
-				type: "object",
-				properties: {
-				commands: {
-					type: "array",
-					items: { type: "string" }
-				}
-				},
-				required: ["commands"]
-			}
-
+          tools: [{
+            type: "function",
+            name: "app_action",
+            description: `If command requires data, return fetch_events or fetch_tasks. If command is not complete, do NOT call this tool. Otherwise, return this tool for the following commands: ${allfunctions.map(d => d.name).join(', ')}.`,
+            parameters: {
+              type: "object",
+              properties: {
+                commands: { type: "array", items: { type: "string" } }
+              },
+              required: ["commands"]
             }
-          ],
+          }],
+          tool_choice: "auto",
+          reasoning: { effort: "minimal" },
+          text: { verbosity: "low" },
           max_output_tokens: 200,
           top_p: 1,
           stream: true
@@ -6495,17 +6435,29 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
 
         try {
           for await (const event of stream1) {
-            // stream text to client unless a tool-call starts
             if (event.type === "response.output_text.delta") {
-              if (!isfunctioncall && event.delta) {
-                res.write(event.delta)
-              }
+              if (!isfunctioncall && event.delta) res.write(event.delta)
             } else if (event.type === "response.function_call.arguments.delta") {
               isfunctioncall = true
               if (event.delta) accumulatedTool.arguments += event.delta
               if (event.name && !accumulatedTool.name) accumulatedTool.name = event.name
+            } else if (event.type === "response.output_item.done") {
+              const item = event.item
+              if (item?.type === "function_call") {
+                isfunctioncall = true
+                if (!accumulatedTool.name) accumulatedTool.name = item.name
+                if (!accumulatedTool.arguments && item.arguments) accumulatedTool.arguments = item.arguments
+              }
             } else if (event.type === "response.completed") {
               usageReasoning1 = event.response?.usage?.output_tokens_details?.reasoning_tokens || 0
+              if (!isfunctioncall) {
+                const fn = (event.response?.output || []).find(o => o.type === "function_call")
+                if (fn) {
+                  isfunctioncall = true
+                  accumulatedTool.name = accumulatedTool.name || fn.name
+                  accumulatedTool.arguments = accumulatedTool.arguments || fn.arguments
+                }
+              }
             }
           }
         } catch (err) {
@@ -6517,12 +6469,11 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
           }
         }
 
-        // Parse commands list from first tool call
-        let commands
+        let commands;
         try {
-          const parsed = JSON.parse(accumulatedTool.arguments)
+          const parsed = JSON.parse(accumulatedTool.arguments || '{}')
           commands = Array.isArray(parsed?.commands) ? parsed.commands : parsed?.commands ? [parsed.commands] : null
-        } catch (e) {
+        } catch {
           commands = null
         }
 
@@ -6531,53 +6482,37 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
           const requirestododata = tododataneededfunctions.find(f => commands.find(g => g == f))
           const requirescustomfunction = ['check_emails', ...customfunctions].find(f => commands.find(g => g == f))
 
-          // other custom behavior, api, etc
           let gmailcontext;
           if (commands.includes('check_emails')) {
             function getFullRelativeDHMText(input) {
               let temp = Math.abs(input)
-              let days = Math.floor(temp / 1440)
-              temp -= days * 1440
-
-              let hours = Math.floor(temp / 60)
-              temp -= hours * 60
-
+              let days = Math.floor(temp / 1440); temp -= days * 1440
+              let hours = Math.floor(temp / 60);   temp -= hours * 60
               let minutes = temp
-
               if (days) days += ` day${days == 1 ? '' : 's'}`
               if (hours) hours += ` hour${hours == 1 ? '' : 's'}`
               if (minutes) minutes += ` minute${hours == 1 ? '' : 's'}`
-
-              if (days == 0 && hours == 0 && minutes == 0) {
-                return 'now'
-              }
-
-              if (input < 0) {
-                return `in ${[days, hours, minutes].filter(v => v)[0]}`
-              } else {
-                return `${[days, hours, minutes].filter(v => v)[0]} ago`
-              }
+              if (days == 0 && hours == 0 && minutes == 0) return 'now'
+              return input < 0 ? `in ${[days, hours, minutes].filter(v => v)[0]}` : `${[days, hours, minutes].filter(v => v)[0]} ago`
             }
 
             let emails = await getgmailemails(req)
             if (!emails || emails.error || !emails.emails) {
               return {
                 data: { commands: [{ 'check_emails': { error: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' } }] },
-                data1: { commands: commands },
+                data1: { commands },
                 usage: { reasoning_tokens_first: usageReasoning1 }
               }
             }
-
             if (emails.emails.length == 0) {
               return {
                 data: { commands: [{ 'check_emails': { message: emails?.error || 'You have no unread emails!' } }] },
-                data1: { commands: commands },
+                data1: { commands },
                 usage: { reasoning_tokens_first: usageReasoning1 }
               }
             }
 
             const MAX_EMAIL_CONTENT_LENGTH = 3000
-
             let tempcontext = ''
             tempcontext += `In a concise, short, briefing manner, talk to the user and summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. Next, list any links (any string in email that is in format {link#}), in the exact markdown format: "[descriptive text]({link01})", only including important links the user should click, avoiding links to images or icons. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
 
@@ -6588,21 +6523,17 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
                 return inputText.replace(urlRegex, (url) => getshortenedlink(url))
               }
               item.content = replaceURLs(item.content)
-
               tempcontext2 += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${(item.date && getFullRelativeDHMText(Math.floor((Date.now() - item.date) / 60000))) || ''}, Message: ${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}`
             }
-
             gmailcontext = `${tempcontext} Emails: """${tempcontext2}"""`
           }
 
-          // ---- SECOND CALL (execute concrete custom tool with needed context) ----
-          let request2input = ''
-          request2input += `Prompt: """${userinput}"""`
+          // ---- SECOND CALL ----
+          let request2input = `Prompt: """${userinput}"""`
           if (requirescalendardata) request2input += ` Calendar events: """${calendarcontext}"""`
           if (requirestododata) request2input += ` To-do list tasks: """${todocontext}"""`
           if (gmailcontext) request2input += ` ${gmailcontext}`
 
-          // Build dynamic tool schema for allowed custom functions
           const dynamicToolSchema = Object.assign(
             {},
             ...allfunctions
@@ -6621,33 +6552,32 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
             model: GPT_MODEL,
             instructions: systeminstructions,
             input: [
-              // few-shot for the specific command family
               ...Object.entries(functioncallcontext).filter(([key]) => commands.includes(key)).map(([, v]) => v).flat(),
-              // history (role + content only)
               ...scrubHistory(conversationhistory),
               { role: 'user', content: request2input }
             ],
             tools: [{
               type: "function",
-
-                name: "app_action",
-                description: `If command requires data, return fetch_events or fetch_tasks. If command is not complete, do NOT call this tool. Otherwise, return this tool for the following commands: ${commands.filter(d => customfunctions.includes(d))}.`,
-                parameters: {
-                  type: "object",
-                  properties: {
-                    commands: {
-                      type: "array",
-                      items: {
-                        type: "object",
-                        properties: dynamicToolSchema,
-                        additionalProperties: false
-                      }
+              name: "app_action",
+              description: `If command requires data, return fetch_events or fetch_tasks. If command is not complete, do NOT call this tool. Otherwise, return this tool for the following commands: ${commands.filter(d => customfunctions.includes(d))}.`,
+              parameters: {
+                type: "object",
+                properties: {
+                  commands: {
+                    type: "array",
+                    items: {
+                      type: "object",
+                      properties: dynamicToolSchema,
+                      additionalProperties: false
                     }
-                  },
-                  required: ["commands"]
-                }
-
+                  }
+                },
+                required: ["commands"]
+              }
             }],
+            tool_choice: "auto", // or { type: "function", name: "app_action" } to force
+            reasoning: { effort: "minimal" },
+            text: { verbosity: "low" },
             max_output_tokens: commands.length > 0 ? 1500 : 300,
             top_p: 1,
             stream: true
@@ -6656,22 +6586,35 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
           let isfunctioncall2 = false
           let accumulatedTool2 = { name: 'app_action', arguments: '' }
           let usageReasoning2 = 0
-          let emailBuffer = '' // to capture streamed text if check_emails
+          let emailBuffer = ''
 
           try {
             for await (const event of stream2) {
-				console.warn(event)
               if (event.type === "response.function_call.arguments.delta") {
                 isfunctioncall2 = true
                 if (event.delta) accumulatedTool2.arguments += event.delta
                 if (event.name && !accumulatedTool2.name) accumulatedTool2.name = event.name
               } else if (commands.includes('check_emails') && event.type === "response.output_text.delta") {
-                emailBuffer += (event.delta || '')
+                if (event.delta) emailBuffer += event.delta
               } else if (event.type === "response.output_text.delta") {
-                // stream normal text to client
                 if (event.delta) res.write(event.delta)
+              } else if (event.type === "response.output_item.done") {
+                const item = event.item
+                if (item?.type === "function_call") {
+                  isfunctioncall2 = true
+                  if (!accumulatedTool2.name) accumulatedTool2.name = item.name
+                  if (!accumulatedTool2.arguments && item.arguments) accumulatedTool2.arguments = item.arguments
+                }
               } else if (event.type === "response.completed") {
                 usageReasoning2 = event.response?.usage?.output_tokens_details?.reasoning_tokens || 0
+                if (!isfunctioncall2) {
+                  const fn = (event.response?.output || []).find(o => o.type === "function_call")
+                  if (fn) {
+                    isfunctioncall2 = true
+                    accumulatedTool2.name = accumulatedTool2.name || fn.name
+                    accumulatedTool2.arguments = accumulatedTool2.arguments || fn.arguments
+                  }
+                }
               }
             }
           } catch (err) {
@@ -6683,26 +6626,26 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
             }
           }
 
-          let commands2;
+          let commands2
           if (commands.includes('check_emails')) {
             commands2 = [{ 'check_emails': { message: emailBuffer } }]
           } else {
             try {
-              const parsed2 = JSON.parse(accumulatedTool2.arguments)
+              const parsed2 = JSON.parse(accumulatedTool2.arguments || '{}')
               commands2 = Array.isArray(parsed2?.commands) ? parsed2.commands : parsed2?.commands ? [parsed2.commands] : null
-            } catch (e) {
+            } catch {
               commands2 = null
             }
           }
 
-          if (!Array.isArray(commands2) && typeof commands2 == 'object') {
+          if (!Array.isArray(commands2) && typeof commands2 == 'object' && commands2) {
             commands2 = Object.keys(commands2).map(key => ({ [key]: commands2[key] }))
           }
 
           if (commands2 && commands2.length > 0) {
             return {
               data: { commands: commands2 },
-              data1: { commands: commands },
+              data1: { commands },
               usage: {
                 reasoning_tokens_first: usageReasoning1,
                 reasoning_tokens_second: usageReasoning2
@@ -6710,11 +6653,10 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
             }
           }
 
-          console.warn('ERRORED RESPONSE 2 (Responses API): ' + accumulatedTool2.arguments)
+          console.warn('ERRORED RESPONSE 2 (Responses API): ' + (accumulatedTool2.arguments || '<no-args>'))
         }
 
-        console.warn('ERRORED RESPONSE 1 (Responses API): ' + accumulatedTool.arguments)
-
+        console.warn('ERRORED RESPONSE 1 (Responses API): ' + (accumulatedTool.arguments || '<no-args>'))
         return { data: { error: markdowntryagainerror } }
 
       } catch (err) {
@@ -6722,9 +6664,6 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
         return { data: { error: `An unexpected error occurred: ${err.message}, please try again or [https://smartcalendar.us/contact](contact us).` } }
       }
     }
-
-    // ======== CONTEXT BUILD ========
-
 
     const output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory1, conversationhistory, timezoneoffset)
 
@@ -6738,6 +6677,8 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
     return res.status(401).json({ error: markdowntryagainerror })
   }
 })
+
+
 
 
 
