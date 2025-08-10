@@ -6469,20 +6469,19 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
           tools: [
             {
               type: "function",
-              function: {
-                name: "app_action",
-                description: `If command requires data, return fetch_events or fetch_tasks. If command is not complete, do NOT call this tool. Otherwise, return this tool for the following commands: ${allfunctions.map(d => d.name).join(', ')}.`,
-                parameters: {
-                  type: "object",
-                  properties: {
-                    commands: {
-                      type: "array",
-                      items: { type: "string" }
-                    }
-                  },
-                  required: ["commands"]
-                }
-              }
+			name: "app_action",
+			description: `If command requires data, return fetch_events or fetch_tasks. If command is not complete, do NOT call this tool. Otherwise, return this tool for the following commands: ${allfunctions.map(d => d.name).join(', ')}.`,
+			parameters: {
+				type: "object",
+				properties: {
+				commands: {
+					type: "array",
+					items: { type: "string" }
+				}
+				},
+				required: ["commands"]
+			}
+
             }
           ],
           // NEW: thinking-token controls
@@ -6633,7 +6632,7 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
             ],
             tools: [{
               type: "function",
-              function: {
+
                 name: "app_action",
                 description: `If command requires data, return fetch_events or fetch_tasks. If command is not complete, do NOT call this tool. Otherwise, return this tool for the following commands: ${commands.filter(d => customfunctions.includes(d))}.`,
                 parameters: {
@@ -6650,7 +6649,7 @@ Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""
                   },
                   required: ["commands"]
                 }
-              }
+
             }],
             reasoning: { effort: "minimal" },
             text: { verbosity: "low" },
