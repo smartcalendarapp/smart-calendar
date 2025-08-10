@@ -6073,611 +6073,842 @@ async function searchgoogle(query){
 
 const DAYLIST = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
-
 app.post('/getgptchatinteractionV2', async (req, res) => {
-  try {
-    if (!req.session.user) {
-      return res.status(401).json({ error: 'User is not signed in.' })
-    }
+	try{
+		if(!req.session.user){
+			return res.status(401).json({ error: 'User is not signed in.' })
+		}
+		
+		let userid = req.session.user.userid
+		
+		let user = await getUserById(userid)
+		if (!user) {
+			return res.status(401).json({ error: 'User does not exist.' })
+		}
 
-    let userid = req.session.user.userid
-    let user = await getUserById(userid)
-    if (!user) {
-      return res.status(401).json({ error: 'User does not exist.' })
-    }
 
-    let usedmodel = getusedmodel(user)
-    let appliedratelimit = getappliedratelimit(user)
-    let appliedratelimit4 = getappliedratelimit4(user)
-    let currenttime = Date.now()
+		let usedmodel = getusedmodel(user)
 
-    if (!usedmodel) {
-      return res.status(401).json({
-        error: `Daily AI limit reached. (${appliedratelimit} messages per day${userhaspremium(user) ? ` and ${appliedratelimit4} premium messages per day for GPT-4` : ''}). Please <span class="gradienttextgold text-bold pointer" onclick="clicktab([5])">upgrade to premium</span> to help us cover the costs of AI.`
-      })
-    }
+		let appliedratelimit = getappliedratelimit(user)
+		let appliedratelimit4 = getappliedratelimit4(user)
 
-    if (user.accountdata.gptchatusedtimestamps.filter(d => Date.now() - d < 5000).length >= 2 || user.accountdata.gptchat4usedtimestamps.filter(d => Date.now() - d < 5000).length >= 2) {
-      return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
-    }
+		let currenttime = Date.now()
 
-    if (usedmodel == GPT_MODEL) {
-      user.accountdata.gptchatusedtimestamps.push(currenttime)
-    } else {
-      user.accountdata.gptchat4usedtimestamps.push(currenttime)
-    }
-    await setUser(user)
+		//check ratelimit
+		if(!usedmodel){
+			return res.status(401).json({ error: `Daily AI limit reached. (${appliedratelimit} messages per day${userhaspremium(user) ? ` and ${appliedratelimit4} premium messages per day for GPT-4` : ''}). Please <span class="gradienttextgold text-bold pointer" onclick="clicktab([5])">upgrade to premium</span> to help us cover the costs of AI.` })
+		}
 
-    // ===== Helpers =====
-    const idmap = {}
-    let idmapeventcounter = 1
-    let idmaptaskcounter = 1
-    function gettempid(currentid, type) {
-      if (!type) {
-        if (calendartodos.find(d => d.id == currentid)) type = 'task'
-        else if (calendarevents.find(d => d.id == currentid)) type = 'event'
-        else type = 'event'
-      }
-      let existingitem = Object.entries(idmap).find(([key, value]) => value == currentid)
-      if (existingitem) return existingitem[0]
+		if(user.accountdata.gptchatusedtimestamps.filter(d => Date.now() - d < 5000).length >= 2 || user.accountdata.gptchat4usedtimestamps.filter(d => Date.now() - d < 5000).length >= 2){
+			return res.status(401).json({ error: `You are sending requests too fast, please try again in a few seconds.` })
+		}
 
-      let newid
-      if (type == 'event') {
-        newid = `E${idmapeventcounter}`
-        idmap[newid] = currentid
-        idmapeventcounter++
-      } else {
-        newid = `T${idmaptaskcounter}`
-        idmap[newid] = currentid
-        idmaptaskcounter++
-      }
-      return newid
-    }
+		//set ratelimit
+		if(usedmodel == GPT_MODEL){
+			user.accountdata.gptchatusedtimestamps.push(currenttime)
+		}else{
+			user.accountdata.gptchat4usedtimestamps.push(currenttime)
+		}
+		await setUser(user)
+		
 
-    const emaillinkmap = {}
-    let emaillinkcounter = 1
-    function getshortenedlink(link) {
-      let newkey = `{link${emaillinkcounter < 10 ? `0${emaillinkcounter}` : emaillinkcounter}}`
-      emaillinkmap[newkey] = link
-      emaillinkcounter++
-      return newkey
-    }
+		//CONTEXT
 
-    function getcalendarcontext(tempevents) {
-      if (tempevents.length == 0) return 'No events'
-      function getDateTimeText(dt) {
-        const d = `${dt.getFullYear()}-${(dt.getMonth() + 1 + '').padStart(2, '0')}-${(dt.getDate() + '').padStart(2, '0')}`
-        const t = `${(dt.getHours() + '').padStart(2, '0')}:${(dt.getMinutes() + '').padStart(2, '0')}`
-        return `${d} ${t}`
-      }
-      function getDateText(dt) {
-        return `${dt.getFullYear()}-${(dt.getMonth() + 1 + '').padStart(2, '0')}-${(dt.getDate() + '').padStart(2, '0')} (all day)`
-      }
-      function isAllDay(item) { return !item.start.minute && !item.end.minute }
+		async function queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory1, conversationhistory, timezoneoffset) {
+			const allfunctions = [
+				{
+					name: 'fetch_events',
+				},
+				{
+					name: 'fetch_tasks',
+				},
+				/*{
+					name: 'schedule_unscheduled_task_in_calendar',
+					description: `Schedule a task into user's calendar. Task must already exist, this is simply putting it in the calendar.`,
+					parameters: {
+						type: 'object',
+						properties: {
+							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
+						},
+						required: []
+					}
+				},*/
+				{
+					name: 'create_task',
+					description: 'Create a task to be auto-scheduled by the app in the calendar. Return nothing for options not provided. All fields optional. Only include startAfterDate IF user requests to work on a task after a certain date (not immediately)',
+					parameters: {
+						type: 'object',
+						properties: {
+							title: { type: 'string', description: 'Task title' },
+							dueDate: { type: 'string', description: 'Task due date/time in format: YYYY-MM-DD HH:MM' },
+							startAfterDate: { type: 'string', description: '(optional) Start task after date/time in format: YYYY-MM-DD HH:MM' },
+							duration: { type: 'string', description: 'Task duration in format: HH:MM' },
+							RRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
+							hexColor: { type: 'string', description: '(optional) Task HEX color. Example: #18a4f5' },
+						},
+						required: ['title']
+					}
+				},
+				{
+					name: 'create_event',
+					description: 'Create a new event in the calendar. Return nothing for options not provided. All fields optional.',
+					parameters: {
+						type: 'object',
+						properties: {
+							title: { type: 'string', description: 'Event title' },
+							startDate: { type: 'string', description: 'Event start date/time in format: YYYY-MM-DD HH:MM' },
+							endDate: { type: 'string', descrption: 'Event end date/time in format: YYYY-MM-DD HH:MM' },
+							RRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
+							hexColor: { type: 'string', description: '(optional) Event HEX color. Example: #18a4f5' }
+						},
+						required: ['title']
+					}
+				},
+				{
+					name: 'modify_event',
+					description: 'Find event by direct and explicit reference in user prompt. If event not found or unsure, do not return function and reply with a message for clarification. Return nothing if the event does not exist. All fields optional.',
+					parameters: {
+						type: 'object',
+						properties: {
+							id: { type: 'string', description: 'Specific ID of event determined by user input. Return nothing if not found.' },
+							newTitle: { type: 'string', description: 'New title' },
+							newStartDate: { type: 'string', description: 'New start date/time in format: YYYY-MM-DD HH:MM' },
+							newEndDate: { type: 'string', description: 'New end date/time in format: YYYY-MM-DD HH:MM' },
+							newRRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
+							newDuration: { type: 'string', description: 'New duration in format: HH:MM' },
+							newHexColor: { type: 'string', description: '(optional) Event HEX color. Example: #18a4f5' },
+						},
+						required: []
+					}
+				},
+				{
+					name: 'modify_task',
+					description: 'Find task by direct and explicit reference in user prompt. If task not found or unsure, do not return function and reply with a message for clarification. Return nothing if the task does not exist. If user wants to move/reschedule a task to a different time, return newStartAfterDate, not newDueDate. All fields optional.',
+					parameters: {
+						type: 'object',
+						properties: {
+							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
+							newTitle: { type: 'string', description: 'New title' },
+							newStartAfterDate: { type: 'string', description: '(optional) Start task after date/time in format: YYYY-MM-DD HH:MM' },
+							newDueDate: { type: 'string', description: 'New due date/time in format: YYYY-MM-DD HH:MM' },
+							newDuration: { type: 'string', description: 'New duration in format: HH:MM' },
+							newRRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
+							newCompleted: { type: 'boolean', description: 'New completed status' },
+							newHexColor: { type: 'string', description: '(optional) Task HEX color. Example: #18a4f5' },
+						},
+						required: []
+					}
+				},
+				{
+					name: 'delete_event',
+					description: 'Find event by direct and explicit reference in user prompt. Return nothing if the event does not exist.',
+					parameters: {
+						type: 'object',
+						properties: {
+							id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' },
+						},
+						required: []
+					}
+				},
+				{
+					name: 'delete_task',
+					description: 'Find task by direct and explicit reference in user prompt. Return nothing if the task does not exist.',
+					parameters: {
+						type: 'object',
+						properties: {
+							id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
+						},
+						required: []
+					}
+				},
+				{
+					name: 'go_to_date_in_calendar',
+					description: 'Go to date in calendar UI',
+					parameters: {
+						type: 'object',
+						properties: {
+							date: { type: 'string', description: 'Date in format: YYYY-MM-DD' },
+						},
+						required: []
+					}
+				},
+			]
 
-      let tempoutput = ''
-      for (let d of tempevents) {
-        let newstring = `Event title: ${d.title || 'New Event'}, ID: ${gettempid(d.id, 'event')}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}${d.repeat.frequency != null && d.repeat.interval != null ? `, recurrence: ${getRecurrenceString(d)}` : ''}.`
-        eventslist.push(d.title || 'New Event')
-        if (tempoutput.length + newstring.length > MAX_CALENDAR_CONTEXT_LENGTH) break
-        tempoutput += '\n' + newstring
-      }
-      return tempoutput
-    }
 
-    function gettodocontext(temptodos) {
-      if (temptodos.length == 0) return 'No tasks'
-      function getDateTimeText(dt) {
-        const d = `${dt.getFullYear()}-${(dt.getMonth() + 1 + '').padStart(2, '0')}-${(dt.getDate() + '').padStart(2, '0')}`
-        const t = `${(dt.getHours() + '').padStart(2, '0')}:${(dt.getMinutes() + '').padStart(2, '0')}`
-        return `${d} ${t}`
-      }
-      function getDHMText(input) {
-        let temp = input
-        let days = Math.floor(temp / 1440); temp -= days * 1440
-        let hours = Math.floor(temp / 60);   temp -= hours * 60
-        let minutes = temp
-        if (days) days += 'd'
-        if (hours) hours += 'h'
-        if (minutes || (hours == 0 && days == 0)) minutes += 'm'
-        return [days, hours, minutes].filter(Boolean).join(' ')
-      }
-      let tempoutput = ''
-      for (let d of temptodos) {
-        let mins = d.duration || Math.floor((new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute) - new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) / 60000)
-        let newstring = `Task title: ${d.title || 'New Task'}, ID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(mins)}, completed: ${d.completed}.`
-        taskslist.push(d.title || 'New Task')
-        if (tempoutput.length + newstring.length > MAX_TODO_CONTEXT_LENGTH) break
-        tempoutput += '\n' + newstring
-      }
-      return tempoutput
-    }
+			//beta assistant
+			if(user.google_email == 'james.tsaggaris@gmail.com'){
+				allfunctions.push(...[
+					{
+						name: 'check_emails',
+					},
+					/*{
+						name: 'open_mac_app',
+						description: 'Open mac app by URL scheme',
+						parameters: {
+							type: 'object',
+							properties: {
+								scheme: { type: 'string', description: 'URL scheme for the app, example: discord://' },
+							},
+							required: []
+						}
+					},*/
+					{
+						name: 'open_link',
+						description: 'Open link at user request',
+						parameters: {
+							type: 'object',
+							properties: {
+								link: { type: 'string', description: 'Link to open' },
+							},
+							required: []
+						}
+					},
+					{
+						name: 'new_emaildraft',
+						description: 'Send a person an email at user request',
+						parameters: {
+							type: 'object',
+							properties: {
+								recipient: { type: 'string', description: 'Plain email. If name provided, do format: John Doe <johndoe@example.com>' },
+								subject: { type: 'string', description: 'Subject' },
+								body: { type: 'string', description: 'Body text' },
+							},
+							required: []
+						}
+					},
+				])
+			}
 
-    function getconversationhistory(temphistory) {
-      let tempoutput = []
-      let counter = 0
-      for (let interactionmessages of temphistory.reverse()) {
-        if (JSON.stringify(interactionmessages).length + JSON.stringify(tempoutput).length > MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH) break
-        if (counter > MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH) break
-        for (let interactionmessage of interactionmessages) {
-          if (interactionmessage?.tool_calls?.arguments) {
-            let temparguments = JSON.parse(interactionmessage.tool_calls.arguments)
-            let tempcommands = temparguments.commands
-            if (tempcommands) {
-              for (let tempcommand of tempcommands) {
-                let commandarguments = Object.values(tempcommand)[0]
-                if (commandarguments.id) {
-                  let newid = gettempid(commandarguments.id)
-                  if (newid) commandarguments.id = newid
-                }
-              }
-            }
-            interactionmessage.tool_calls.arguments = JSON.stringify(temparguments)
-          }
-        }
-        tempoutput.push(...interactionmessages.reverse())
-        counter++
-      }
-      return tempoutput.reverse()
-    }
 
-    const scrubHistory = (msgs) =>
-      (msgs || [])
-        .map(m => (m && m.role && m.content ? { role: m.role, content: m.content } : null))
-        .filter(Boolean)
 
-    const MAX_CALENDAR_CONTEXT_LENGTH = 2000
-    const MAX_TODO_CONTEXT_LENGTH = 2000
-    const MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH = 2000
-    const MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH = 5
+			const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'new_emaildraft', 'open_link', 'go_to_date_in_calendar', /*'open_mac_app'*/] //a subset of all functions, the functions that invoke custom function
+			const calendardataneededfunctions = ['delete_event', 'modify_event', 'fetch_events'] //a subset of all functions, the functions that need calendar data
+			const tododataneededfunctions = ['delete_task', 'modify_task', 'fetch_tasks'] //a subset of all functions, the functions that need todo data
 
-    let userinput = req.body.userinput.slice(0, 300)
-    let calendarevents = req.body.calendarevents
-    let calendartodos = req.body.calendartodos
-    let timezoneoffset = req.body.timezoneoffset
-    let rawconversationhistory1 = req.body.chathistory1
-    let rawconversationhistory = req.body.chathistory
+			const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
+			const localdatestring = `${DAYLIST[localdate.getDay()]} ${localdate.getFullYear()}-${(localdate.getMonth() + 1).toString().padStart(2, '0')}-${localdate.getDate().toString().padStart(2, '0')} ${localdate.getHours().toString().padStart(2, '0')}:${localdate.getMinutes().toString().padStart(2, '0')}`
 
-    let eventslist = []
-    let taskslist = []
-    let calendarcontext = getcalendarcontext(calendarevents)
-    let todocontext = gettodocontext(calendartodos)
-    let conversationhistory1 = getconversationhistory(rawconversationhistory1)
-    let conversationhistory = getconversationhistory(rawconversationhistory)
+			function formatdateyyyymmddhhmm(inputdate){
+				return `${inputdate.getFullYear()}-${(inputdate.getMonth() + 1).toString().padStart(2, '0')}-${inputdate.getDate().toString().padStart(2, '0')} ${inputdate.getHours().toString().padStart(2, '0')}:${inputdate.getMinutes().toString().padStart(2, '0')}`
+			}
 
-    // ====== Query (Responses API) ======
-    const DAYLIST = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
-    async function queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory1, conversationhistory, timezoneoffset) {
-      const allfunctions = [
-        { name: 'fetch_events' },
-        { name: 'fetch_tasks' },
-        {
-          name: 'create_task',
-          description: 'Create a task to be auto-scheduled by the app in the calendar. Return nothing for options not provided. All fields optional. Only include startAfterDate IF user requests to work on a task after a certain date (not immediately)',
-          parameters: {
-            type: 'object',
-            properties: {
-              title: { type: 'string', description: 'Task title' },
-              dueDate: { type: 'string', description: 'Task due date/time in format: YYYY-MM-DD HH:MM' },
-              startAfterDate: { type: 'string', description: '(optional) Start task after date/time in format: YYYY-MM-DD HH:MM' },
-              duration: { type: 'string', description: 'Task duration in format: HH:MM' },
-              RRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
-              hexColor: { type: 'string', description: '(optional) Task HEX color. Example: #18a4f5' },
-            },
-            required: ['title']
-          }
-        },
-        {
-          name: 'create_event',
-          description: 'Create a new event in the calendar. Return nothing for options not provided. All fields optional.',
-          parameters: {
-            type: 'object',
-            properties: {
-              title: { type: 'string', description: 'Event title' },
-              startDate: { type: 'string', description: 'Event start date/time in format: YYYY-MM-DD HH:MM' },
-              endDate: { type: 'string', descrption: 'Event end date/time in format: YYYY-MM-DD HH:MM' },
-              RRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
-              hexColor: { type: 'string', description: '(optional) Event HEX color. Example: #18a4f5' }
-            },
-            required: ['title']
-          }
-        },
-        {
-          name: 'modify_event',
-          description: 'Find event by direct and explicit reference in user prompt. If event not found or unsure, do not return function and reply with a message for clarification. Return nothing if the event does not exist. All fields optional.',
-          parameters: {
-            type: 'object',
-            properties: {
-              id: { type: 'string', description: 'Specific ID of event determined by user input. Return nothing if not found.' },
-              newTitle: { type: 'string', description: 'New title' },
-              newStartDate: { type: 'string', description: 'New start date/time in format: YYYY-MM-DD HH:MM' },
-              newEndDate: { type: 'string', description: 'New end date/time in format: YYYY-MM-DD HH:MM' },
-              newRRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
-              newDuration: { type: 'string', description: 'New duration in format: HH:MM' },
-              newHexColor: { type: 'string', description: '(optional) Event HEX color. Example: #18a4f5' },
-            },
-            required: []
-          }
-        },
-        {
-          name: 'modify_task',
-          description: 'Find task by direct and explicit reference in user prompt. If task not found or unsure, do not return function and reply with a message for clarification. Return nothing if the task does not exist. If user wants to move/reschedule a task to a different time, return newStartAfterDate, not newDueDate. All fields optional.',
-          parameters: {
-            type: 'object',
-            properties: {
-              id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' },
-              newTitle: { type: 'string', description: 'New title' },
-              newStartAfterDate: { type: 'string', description: '(optional) Start task after date/time in format: YYYY-MM-DD HH:MM' },
-              newDueDate: { type: 'string', description: 'New due date/time in format: YYYY-MM-DD HH:MM' },
-              newDuration: { type: 'string', description: 'New duration in format: HH:MM' },
-              newRRULE: { type: 'string', description: 'Recurrence in RRULE format. Example: RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU,TH;UNTIL=20241231T000000Z' },
-              newCompleted: { type: 'boolean', description: 'New completed status' },
-              newHexColor: { type: 'string', description: '(optional) Task HEX color. Example: #18a4f5' },
-            },
-            required: []
-          }
-        },
-        {
-          name: 'delete_event',
-          description: 'Find event by direct and explicit reference in user prompt. Return nothing if the event does not exist.',
-          parameters: {
-            type: 'object',
-            properties: { id: { type: 'string', description: 'Specific ID of event. Return nothing if not found.' } },
-            required: []
-          }
-        },
-        {
-          name: 'delete_task',
-          description: 'Find task by direct and explicit reference in user prompt. Return nothing if the task does not exist.',
-          parameters: {
-            type: 'object',
-            properties: { id: { type: 'string', description: 'Specific ID of task. Return nothing if not found.' } },
-            required: []
-          }
-        },
-        {
-          name: 'go_to_date_in_calendar',
-          description: 'Go to date in calendar UI',
-          parameters: {
-            type: 'object',
-            properties: { date: { type: 'string', description: 'Date in format: YYYY-MM-DD' } },
-            required: []
-          }
-        },
-      ]
+			const functioncallcontext = {
+				'create_task': [
+					{
+						role: "user",
+						content: "(sample message not from user) I need to do some goal planning tomorrow afternoon 3pm due in a week"
+					},
+					{
+						role: "assistant",
+						function_call: {
+							name: "app_action",
+							arguments: JSON.stringify({
+								commands: [
+									{
+										'create_task': {
+											title: 'Goal Planning',
+											dueDate: formatdateyyyymmddhhmm(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 7, 0, 0)),
+											startAfterDate: formatdateyyyymmddhhmm(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 15, 0))
+										}
+									}
+								]
+							})
+						}
+					}
+				],
+				'modify_task': [
+					{
+						role: "user",
+						content: `(sample message not from user) Move buy groceries to tomorrow morning 9am, and make it due at the end of tomorrow`
+					},
+					{
+						role: "assistant",
+						function_call: {
+							name: "app_action",
+							arguments: JSON.stringify({
+								commands: [
+									{
+										'modify_task': {
+											newStartAfterDate: formatdateyyyymmddhhmm(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 9, 0)),
+											newDueDate: formatdateyyyymmddhhmm(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 0, 1440-1))
+										}
+									}
+								]
+							})
+						}
+					}
+				]
+			}
 
-      if (user.google_email == 'james.tsaggaris@gmail.com') {
-        allfunctions.push(
-          { name: 'check_emails' },
-          {
-            name: 'open_link',
-            description: 'Open link at user request',
-            parameters: {
-              type: 'object',
-              properties: { link: { type: 'string', description: 'Link to open' } },
-              required: []
-            }
-          },
-          {
-            name: 'new_emaildraft',
-            description: 'Send a person an email at user request',
-            parameters: {
-              type: 'object',
-              properties: {
-                recipient: { type: 'string', description: 'Plain email. If name provided, do format: John Doe <johndoe@example.com>' },
-                subject: { type: 'string', description: 'Subject' },
-                body: { type: 'string', description: 'Body text' },
-              },
-              required: []
-            }
-          },
-        )
-      }
 
-      const customfunctions = ['create_event', 'delete_event', 'modify_event', 'create_task', 'delete_task', 'modify_task', 'new_emaildraft', 'open_link', 'go_to_date_in_calendar']
-      const calendardataneededfunctions = ['delete_event', 'modify_event', 'fetch_events']
-      const tododataneededfunctions = ['delete_task', 'modify_task', 'fetch_tasks']
+			//PROMPT
 
-      const localdate = new Date(new Date().getTime() - timezoneoffset * 60000)
-      const localdatestring = `${DAYLIST[localdate.getDay()]} ${localdate.getFullYear()}-${(localdate.getMonth() + 1 + '').padStart(2, '0')}-${(localdate.getDate() + '').padStart(2, '0')} ${((localdate.getHours()) + '').padStart(2, '0')}:${(localdate.getMinutes() + '').padStart(2, '0')}`
+			const systeminstructions = GPT_ATHENA_INSTRUCTIONS + ` The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone. Do not send all data unless explicitly asked for.`
 
-      const functioncallcontext = {
-        'create_task': [
-          { role: "user", content: "(sample message not from user) I need to do some goal planning tomorrow afternoon 3pm due in a week" },
-          { role: "assistant", content: "(sample) I'll add a task with the right due date and start-after time." }
-        ],
-        'modify_task': [
-          { role: "user", content: `(sample message not from user) Move buy groceries to tomorrow morning 9am, and make it due at the end of tomorrow` },
-          { role: "assistant", content: "(sample) I'll update the task start-after to 9:00 and set the due by end of day tomorrow." }
-        ]
-      }
+			try {
+				let modifiedinput = `Prompt: """${userinput}"""
+				Events list (fetch_events to get details such as time or date): """${eventslist}"""
+				Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""`
+				const response = await openai.chat.completions.create({
+					model: GPT_MODEL,
+					messages: [
+						{ 
+							role: 'system', 
+							content: systeminstructions
+						},
+						...[
+							{
+								role: "user",
+								content: "(sample message not from user) I need to work on my project by tomorrow 6pm"
+							},
+							{
+								role: "assistant",
+								function_call: {
+									name: "app_action",
+									arguments: JSON.stringify({
+										commands: ['create_task']
+									})
+								}
+							},
+							{
+								role: "user",
+								content: "(sample message not from user) Move it to tomorrow morning. Add an event to meet with boss tomorrow lunch"
+							},
+							{
+								role: "assistant",
+								function_call: {
+									name: "app_action",
+									arguments: JSON.stringify({
+										commands: ['modify_task', 'create_event']
+									})
+								}
+							},
+							{
+								role: "user",
+								content: "(sample message not from user) When is my meeting?"
+							},
+							{
+								role: "assistant",
+								function_call: {
+									name: "app_action",
+									arguments: JSON.stringify({
+										commands: ['fetch_events', 'fetch_tasks']
+									})
+								}
+							},
+						],
+						...conversationhistory1,
+						{
+							role: 'user',
+							content: modifiedinput,
+						}
+					],
+					functions: [
+						{
+							"name": "app_action",
+							"parameters": {
+								"type": "object",
+								"properties": {
+								  "commands": {
+									"type": "array",
+									"items": {
+									  "type": "string"
+									}
+								  }
+								},
+								"required": [ "commands" ]
+							},
+							"description": `If command requires data, return fetch_events or fetch_tasks. If command is not complete, do NOT return this function. Otherwise, return this function for the following commands: ${allfunctions.map(d => d.name).join(', ')}.`
+						}
+					],
+					max_tokens: 200,
+					temperature: 0.5,
+					top_p: 1,
+					stream: true
+				})
 
-      const systeminstructions = GPT_ATHENA_INSTRUCTIONS + ` The user's name is ${getUserName(user)}. Current time is ${localdatestring} in user's timezone. Do not send all data unless explicitly asked for.`
+				//stream management
+				let isfunctioncall = false
+				let accumulatedresponse = {
+					message: {}
+				}
+				try {
+					for await (const chunk of response) {	
+						if(chunk.choices[0].delta?.function_call && chunk.choices[0].delta?.function_call?.name){
+							isfunctioncall = true
+						}
+						
+						if(isfunctioncall){
+							//function call
 
-      try {
-        let modifiedinput = `Prompt: """${userinput}"""
-Events list (fetch_events to get details such as time or date): """${eventslist}"""
-Tasks list (fetch_tasks to get details such as time or date): """${taskslist}"""`
+							if(!accumulatedresponse.message.function_call){
+								accumulatedresponse.message.function_call = { name: null, arguments: '' }
+							}
+							if(chunk.choices[0].delta?.function_call?.name){
+								accumulatedresponse.message.function_call.name = chunk.choices[0].delta.function_call?.name
+							}
+							if(chunk.choices[0].delta.function_call?.arguments){
+								accumulatedresponse.message.function_call.arguments += chunk.choices[0].delta.function_call?.arguments
+							}
+						}else{
+							//text response
 
-        // ---- FIRST CALL ----
-        const stream1 = await openai.responses.create({
-          model: GPT_MODEL,
-          instructions: systeminstructions,
-          input: [
-            ...Object.values(functioncallcontext).flat(),
-            ...scrubHistory(conversationhistory1),
-            { role: 'user', content: modifiedinput }
-          ],
-          tools: [{
-            type: "function",
-            name: "app_action",
-            description: `If command requires data, return fetch_events or fetch_tasks. If command is not complete, do NOT call this tool. Otherwise, return this tool for the following commands: ${allfunctions.map(d => d.name).join(', ')}.`,
-            parameters: {
-              type: "object",
-              properties: {
-                commands: { type: "array", items: { type: "string" } }
-              },
-              required: ["commands"]
-            }
-          }],
-          tool_choice: "auto",
-          ...(/gpt-5/i.test(GPT_MODEL) ? { reasoning: { effort: "minimal" }, text: { verbosity: "low" }, } : {}),
-          max_output_tokens: 200,
-          top_p: 1,
-          stream: true
-        })
+							if(chunk.choices[0].delta.content){
+								if(!accumulatedresponse.message.content){
+									accumulatedresponse.message.content = ''
+								}
+								accumulatedresponse.message.content += chunk.choices[0].delta.content
 
-        let isfunctioncall = false
-        let accumulatedTool = { name: 'app_action', arguments: '' }
-        let usageReasoning1 = 0
+								//send chunk
+    							res.write(chunk.choices[0].delta.content)
+							}
+						}
+					}
+				}catch(err){
+					console.error(err)
+				}finally{
+					if(!isfunctioncall){
+						res.end()
+						return
+					}
+				}
 
-        try {
-          for await (const event of stream1) {
-            if (event.type === "response.output_text.delta") {
-              if (!isfunctioncall && event.delta) res.write(event.delta)
-            } else if (event.type === "response.function_call.arguments.delta") {
-              isfunctioncall = true
-              if (event.delta) accumulatedTool.arguments += event.delta
-              if (event.name && !accumulatedTool.name) accumulatedTool.name = event.name
-            } else if (event.type === "response.output_item.done") {
-              const item = event.item
-              if (item?.type === "function_call") {
-                isfunctioncall = true
-                if (!accumulatedTool.name) accumulatedTool.name = item.name
-                if (!accumulatedTool.arguments && item.arguments) accumulatedTool.arguments = item.arguments
-              }
-            } else if (event.type === "response.completed") {
-              usageReasoning1 = event.response?.usage?.output_tokens_details?.reasoning_tokens || 0
-              if (!isfunctioncall) {
-                const fn = (event.response?.output || []).find(o => o.type === "function_call")
-                if (fn) {
-                  isfunctioncall = true
-                  accumulatedTool.name = accumulatedTool.name || fn.name
-                  accumulatedTool.arguments = accumulatedTool.arguments || fn.arguments
-                }
-              }
-            }
-          }
-        } catch (err) {
-          console.error(err)
-        } finally {
-          if (!isfunctioncall) {
-            res.end()
-            return
-          }
-        }
 
-        let commands;
-        try {
-          const parsed = JSON.parse(accumulatedTool.arguments || '{}')
-          commands = Array.isArray(parsed?.commands) ? parsed.commands : parsed?.commands ? [parsed.commands] : null
-        } catch {
-          commands = null
-        }
+				if (isfunctioncall) {
+					let commands = JSON.parse(accumulatedresponse.message.function_call?.arguments)?.commands
 
-        if (commands && commands.length > 0) {
-          const requirescalendardata = calendardataneededfunctions.find(f => commands.find(g => g == f))
-          const requirestododata = tododataneededfunctions.find(f => commands.find(g => g == f))
-          const requirescustomfunction = ['check_emails', ...customfunctions].find(f => commands.find(g => g == f))
+					if(!Array.isArray(JSON.parse(accumulatedresponse.message.function_call?.arguments)?.commands) && accumulatedresponse.message.function_call?.name && accumulatedresponse.message.function_call?.arguments){ //if gpt is weird and decides to return object and not array
+						commands = [{ [accumulatedresponse.message.function_call.name]: JSON.parse(accumulatedresponse.message.function_call.arguments) }]
+					}
 
-          let gmailcontext;
-          if (commands.includes('check_emails')) {
-            function getFullRelativeDHMText(input) {
-              let temp = Math.abs(input)
-              let days = Math.floor(temp / 1440); temp -= days * 1440
-              let hours = Math.floor(temp / 60);   temp -= hours * 60
-              let minutes = temp
-              if (days) days += ` day${days == 1 ? '' : 's'}`
-              if (hours) hours += ` hour${hours == 1 ? '' : 's'}`
-              if (minutes) minutes += ` minute${hours == 1 ? '' : 's'}`
-              if (days == 0 && hours == 0 && minutes == 0) return 'now'
-              return input < 0 ? `in ${[days, hours, minutes].filter(v => v)[0]}` : `${[days, hours, minutes].filter(v => v)[0]} ago`
-            }
+					if (commands && commands?.length > 0) {
+						const requirescalendardata = calendardataneededfunctions.find(f => commands.find(g => g == f))
+						const requirestododata = tododataneededfunctions.find(f => commands.find(g => g == f))
+						const requirescustomfunction = customfunctions.find(f => commands.find(g => g == f))
 
-            let emails = await getgmailemails(req)
-            if (!emails || emails.error || !emails.emails) {
-              return {
-                data: { commands: [{ 'check_emails': { error: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' } }] },
-                data1: { commands },
-                usage: { reasoning_tokens_first: usageReasoning1 }
-              }
-            }
-            if (emails.emails.length == 0) {
-              return {
-                data: { commands: [{ 'check_emails': { message: emails?.error || 'You have no unread emails!' } }] },
-                data1: { commands },
-                usage: { reasoning_tokens_first: usageReasoning1 }
-              }
-            }
+						//other custom behavior, api, etc
+						let gmailcontext;
+						if(commands.includes('check_emails')){
+							function getFullRelativeDHMText(input){
+								let temp = Math.abs(input)
+								let days = Math.floor(temp / 1440)
+								temp -= days * 1440
+							  
+								let hours = Math.floor(temp / 60)
+								temp -= hours * 60
+							  
+								let minutes = temp
+							  
+								if (days) days += ` day${days == 1 ? '' : 's'}`
+								if (hours) hours += ` hour${hours == 1 ? '' : 's'}`
+								if (minutes) minutes += ` minute${hours == 1 ? '' : 's'}`
+							  
+								if (days == 0 && hours == 0 && minutes == 0){
+								  return 'now'
+								}
+							  
+								if(input < 0){
+									return `in ${[days, hours, minutes].filter(v => v)[0]}`
+								}else{
+									return `${[days, hours, minutes].filter(v => v)[0]} ago`
+								}
+							}
 
-            const MAX_EMAIL_CONTENT_LENGTH = 3000
-            let tempcontext = ''
-            tempcontext += `In a concise, short, briefing manner, talk to the user and summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. Next, list any links (any string in email that is in format {link#}), in the exact markdown format: "[descriptive text]({link01})", only including important links the user should click, avoiding links to images or icons. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
 
-            let tempcontext2 = ''
-            for (let item of emails.emails) {
-              function replaceURLs(inputText) {
-                const urlRegex = /((?:https?:\/\/)(?:[\w-]+\.)+[\w]{2,}(?:\/[\w-_.~%\/#?&=!$()'*+,;:@]+)?)/gi
-                return inputText.replace(urlRegex, (url) => getshortenedlink(url))
-              }
-              item.content = replaceURLs(item.content)
-              tempcontext2 += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${(item.date && getFullRelativeDHMText(Math.floor((Date.now() - item.date) / 60000))) || ''}, Message: ${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}`
-            }
-            gmailcontext = `${tempcontext} Emails: """${tempcontext2}"""`
-          }
+							let emails = await getgmailemails(req)
+							if(!emails || emails.error || !emails.emails){
+								return { data: { commands: [ { 'check_emails': { error: emails?.error || 'I could not access your Gmail inbox, please try again or [https://smartcalendar.us/contact](contact us).' } } ] }, data1: { commands: commands } }
+							}
 
-          // ---- SECOND CALL ----
-          let request2input = `Prompt: """${userinput}"""`
-          if (requirescalendardata) request2input += ` Calendar events: """${calendarcontext}"""`
-          if (requirestododata) request2input += ` To-do list tasks: """${todocontext}"""`
-          if (gmailcontext) request2input += ` ${gmailcontext}`
+							if(emails.emails.length == 0){
+								return { data: { commands: [ { 'check_emails': { message: emails?.error || 'You have no unread emails!' } } ] }, data1: { commands: commands } }
+							}
 
-          const dynamicToolSchema = Object.assign(
-            {},
-            ...allfunctions
-              .filter(d => customfunctions.includes(d.name) && commands.includes(d.name))
-              .map(d => ({
-                [d.name]: {
-                  type: "object",
-                  description: d.description || '',
-                  properties: (d.parameters && d.parameters.properties) || {},
-                  required: (d.parameters && d.parameters.required) || []
-                }
-              }))
-          )
+							const MAX_EMAIL_CONTENT_LENGTH = 3000
 
-          const stream2 = await openai.responses.create({
-            model: GPT_MODEL,
-            instructions: systeminstructions,
-            input: [
-              ...Object.entries(functioncallcontext).filter(([key]) => commands.includes(key)).map(([, v]) => v).flat(),
-              ...scrubHistory(conversationhistory),
-              { role: 'user', content: request2input }
-            ],
-            tools: [{
-              type: "function",
-              name: "app_action",
-              description: `If command requires data, return fetch_events or fetch_tasks. If command is not complete, do NOT call this tool. Otherwise, return this tool for the following commands: ${commands.filter(d => customfunctions.includes(d))}.`,
-              parameters: {
-                type: "object",
-                properties: {
-                  commands: {
-                    type: "array",
-                    items: {
-                      type: "object",
-                      properties: dynamicToolSchema,
-                      additionalProperties: false
-                    }
-                  }
-                },
-                required: ["commands"]
-              }
-            }],
-            tool_choice: "auto", // or { type: "function", name: "app_action" } to force
-            ...(/gpt-5/i.test(GPT_MODEL) ? { reasoning: { effort: "minimal" }, text: { verbosity: "low" }, } : {}),
-            max_output_tokens: commands.length > 0 ? 1500 : 300,
-            top_p: 1,
-            stream: true
-          })
+							let tempcontext = ''
+							tempcontext += `In a concise, short, briefing manner, talk to the user and summarize the email subject, who it is from, and how long ago it was sent (paraphrase and only include relevant details). Then, in 1-2 sentences brief user on the email message(s) highlighting most important things, what they need to do, and action items. Next, list any links (any string in email that is in format {link#}), in the exact markdown format: "[descriptive text]({link01})", only including important links the user should click, avoiding links to images or icons. Finally, ${emails.unreadcount > 0 ? `tell the user there are ${emails.unreadcount} unread emails remaining, and ` : ``} prompt the user on what to do with the email${emails.unreadcount > 0 ? ` or to move on to next email` : ''}.`
 
-          let isfunctioncall2 = false
-          let accumulatedTool2 = { name: 'app_action', arguments: '' }
-          let usageReasoning2 = 0
-          let emailBuffer = ''
+							let tempcontext2 = ''
+							for(let item of emails.emails){
+								function replaceURLs(inputText) {
+									const urlRegex = /((?:https?:\/\/)(?:[\w-]+\.)+[\w]{2,}(?:\/[\w-_.~%\/#?&=!$()'*+,;:@]+)?)/gi
+									
+									return inputText.replace(urlRegex, (url) => {
+										return getshortenedlink(url)
+									})
+								}
+								item.content = replaceURLs(item.content)
 
-          try {
-            for await (const event of stream2) {
-              if (event.type === "response.function_call.arguments.delta") {
-                isfunctioncall2 = true
-                if (event.delta) accumulatedTool2.arguments += event.delta
-                if (event.name && !accumulatedTool2.name) accumulatedTool2.name = event.name
-              } else if (commands.includes('check_emails') && event.type === "response.output_text.delta") {
-                if (event.delta) emailBuffer += event.delta
-              } else if (event.type === "response.output_text.delta") {
-                if (event.delta) res.write(event.delta)
-              } else if (event.type === "response.output_item.done") {
-                const item = event.item
-                if (item?.type === "function_call") {
-                  isfunctioncall2 = true
-                  if (!accumulatedTool2.name) accumulatedTool2.name = item.name
-                  if (!accumulatedTool2.arguments && item.arguments) accumulatedTool2.arguments = item.arguments
-                }
-              } else if (event.type === "response.completed") {
-                usageReasoning2 = event.response?.usage?.output_tokens_details?.reasoning_tokens || 0
-                if (!isfunctioncall2) {
-                  const fn = (event.response?.output || []).find(o => o.type === "function_call")
-                  if (fn) {
-                    isfunctioncall2 = true
-                    accumulatedTool2.name = accumulatedTool2.name || fn.name
-                    accumulatedTool2.arguments = accumulatedTool2.arguments || fn.arguments
-                  }
-                }
-              }
-            }
-          } catch (err) {
-            console.error(err)
-          } finally {
-            if (!isfunctioncall2 && !commands.includes('check_emails')) {
-              res.end()
-              return
-            }
-          }
+								tempcontext2 += '\n' + `From: ${item.from}, To: ${item.to}, Subject: ${item.subject}, Received: ${(item.date && getFullRelativeDHMText(Math.floor((Date.now() - item.date)/60000))) || ''}, Message: ${item.content.slice(0, MAX_EMAIL_CONTENT_LENGTH)}`
+							}
 
-          let commands2
-          if (commands.includes('check_emails')) {
-            commands2 = [{ 'check_emails': { message: emailBuffer } }]
-          } else {
-            try {
-              const parsed2 = JSON.parse(accumulatedTool2.arguments || '{}')
-              commands2 = Array.isArray(parsed2?.commands) ? parsed2.commands : parsed2?.commands ? [parsed2.commands] : null
-            } catch {
-              commands2 = null
-            }
-          }
+							gmailcontext = `${tempcontext} Emails: """${tempcontext2}"""`
+						}
+						//here3
 
-          if (!Array.isArray(commands2) && typeof commands2 == 'object' && commands2) {
-            commands2 = Object.keys(commands2).map(key => ({ [key]: commands2[key] }))
-          }
+						//*****NOTES TODO*****\\
 
-          if (commands2 && commands2.length > 0) {
-            return {
-              data: { commands: commands2 },
-              data1: { commands },
-              usage: {
-                reasoning_tokens_first: usageReasoning1,
-                reasoning_tokens_second: usageReasoning2
-              }
-            }
-          }
+						//need to store internal data like from who to who etc (maybe internal data property, just for emails for now), so gpt can reply etc
+						//later can store a reference ID to fetch email later
+						//e.g. when return read email command, add a email_id param
 
-          console.warn('ERRORED RESPONSE 2 (Responses API): ' + (accumulatedTool2.arguments || '<no-args>'))
-        }
+						//and have list of latest 10-20 emails, and ability to open already read emails by ID
+						//and maybe every 5m check for unread emails
 
-        console.warn('ERRORED RESPONSE 1 (Responses API): ' + (accumulatedTool.arguments || '<no-args>'))
-        return { data: { error: markdowntryagainerror } }
 
-      } catch (err) {
-        console.error(err)
-        return { data: { error: `An unexpected error occurred: ${err.message}, please try again or [https://smartcalendar.us/contact](contact us).` } }
-      }
-    }
 
-    const output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory1, conversationhistory, timezoneoffset)
+						let request2options = {
+							model: GPT_MODEL,
+							max_tokens: commands.length > 0 ? 1500 : 300, //more tokens for functions
+							temperature: 0.5,
+							top_p: 1,
+							stream: true
+						}
+						let request2input = ''
+						
+						request2input += `Prompt: """${userinput}"""`
 
-    console.warn(userid, userinput)
+						if(requirescalendardata){
+							//yes calendar data
+							request2input += ` Calendar events: """${calendarcontext}"""`
+						}
 
-    if (output) {
-      return res.json({ ...output, idmap: idmap, emaillinkmap: emaillinkmap })
-    }
-  } catch (err) {
-    console.error(err)
-    return res.status(401).json({ error: markdowntryagainerror })
-  }
+						if(requirestododata){
+							//yes todo data
+							request2input += ` To-do list tasks: """${todocontext}"""`
+						}
+
+						if(gmailcontext){
+							//yes todo data
+							request2input += ` ${gmailcontext}`
+						}
+		
+						if(requirescustomfunction){
+							//yes custom function
+
+
+							request2options.functions = [
+								{
+									"name": "app_action",
+									"parameters": {
+										"type": "object",
+										"properties": {
+										  "commands": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": Object.assign({}, ...allfunctions
+													.filter(d => customfunctions.includes(d.name) && commands.includes(d.name))
+													.map(d => ({
+														[d.name]: {
+															"type": "object",
+															"description": d.description,
+															"properties": d.parameters.properties,
+															"required": d.parameters.required
+														}
+													})))
+												}
+										  	}
+										},
+										"required": [ "commands" ]
+									},
+									"description": `If command requires data, return fetch_events or fetch_tasks. If command is not complete, do NOT return this function. Otherwise, return this function for the following commands: ${commands.filter(d => customfunctions.find(g => g == d))}.`
+								}
+							]
+						}
+
+						request2options.messages = [
+							{ 
+								role: 'system', 
+								content: systeminstructions
+							},
+							...Object.entries(functioncallcontext).filter(([key, value]) => commands.includes(key)).map(([key, value]) => value).flat(),
+							...conversationhistory,
+							{
+								role: 'user',
+								content: request2input
+							}
+						]
+						
+						//make request
+						const response2 = await openai.chat.completions.create(request2options)
+
+						//stream management
+						let isfunctioncall2 = false
+						let accumulatedresponse2 = {
+							message: {}
+						}
+						try {
+							for await (const chunk of response2) {	
+								if(chunk.choices[0].delta?.function_call && chunk.choices[0].delta?.function_call?.name){
+									isfunctioncall2 = true
+								}
+								
+								if(isfunctioncall2){
+									//function call
+
+									if(!accumulatedresponse2.message.function_call){
+										accumulatedresponse2.message.function_call = { name: null, arguments: '' }
+									}
+									if(chunk.choices[0].delta.function_call?.name){
+										accumulatedresponse2.message.function_call.name = chunk.choices[0].delta.function_call?.name
+									}
+									if(chunk.choices[0].delta.function_call?.arguments){
+										accumulatedresponse2.message.function_call.arguments += chunk.choices[0].delta.function_call?.arguments
+									}
+								}else if(commands.includes('check_emails')){
+									if(!accumulatedresponse2.message.function_call){
+										accumulatedresponse2.message.function_call = { name: 'app_action', arguments: { commands: [ { 'check_emails': { message: '' } } ] } }
+									}
+
+									if(chunk.choices[0].delta.content){
+										accumulatedresponse2.message.function_call.arguments.commands[0]['check_emails'].message += chunk.choices[0].delta.content
+									}
+								}else{
+									//text response
+
+									if(chunk.choices[0].delta.content){
+										if(!accumulatedresponse2.message.content){
+											accumulatedresponse2.message.content = ''
+										}
+										accumulatedresponse2.message.content += chunk.choices[0].delta.content
+										
+										//send chunk
+										res.write(chunk.choices[0].delta.content)
+									}
+								}
+							}
+						}catch(err){
+							console.error(err)
+						}finally{
+							if(!isfunctioncall2 && !commands.includes('check_emails')){
+								res.end()
+								return
+							}
+						}
+
+
+						let commands2;
+						if(commands.includes('check_emails')){
+							commands2 = accumulatedresponse2.message.function_call?.arguments?.commands
+						}else{
+							commands2 = JSON.parse(accumulatedresponse2.message.function_call?.arguments)?.commands
+						}
+
+
+						if(!Array.isArray(commands2) && typeof commands2 == 'object'){ //if gpt is weird and decides to return object and not array
+							commands2 = Object.keys(commands2).map(key => { return { [key]: commands2[key] } })
+						}
+
+						
+						if (commands2 && commands2?.length > 0) {					
+							return { data: { commands: commands2 }, data1: { commands: commands } }
+						}
+
+						console.warn('ERRORED RESPONSE 2: ' + JSON.stringify(accumulatedresponse2))
+	
+					}
+				}
+
+				console.warn('ERRORED RESPONSE 1: ' + JSON.stringify(accumulatedresponse))
+
+				return { data: { error: markdowntryagainerror } }
+		
+			} catch (err) {
+				console.error(err)
+
+				return { data: { error: `An unexpected error occurred: ${err.message}, please try again or [https://smartcalendar.us/contact](contact us).` } }
+			}
+
+		}
+
+
+		const idmap = {}
+		let idmapeventcounter = 1
+		let idmaptaskcounter = 1
+		function gettempid(currentid, type){
+			if(!type){
+				if(calendartodos.find(d => d.id == currentid)){
+					type = 'task'
+				}else if(calendarevents.find(d => d.id == currentid)){
+					type = 'event'
+				}else{
+					type = 'event'
+				}
+			}
+			let existingitem = Object.entries(idmap).find(([key, value]) => value == currentid)
+			if(existingitem){
+				return existingitem[0]
+			}
+
+			let newid;
+			if(type == 'event'){
+				newid = `E${idmapeventcounter}`
+				idmap[newid] = currentid
+				idmapeventcounter++
+			}else if(type == 'task'){
+				newid = `T${idmaptaskcounter}`
+				idmap[newid] = currentid
+				idmaptaskcounter++
+			}
+
+			return newid
+		}
+
+		const emaillinkmap = {}
+		let emaillinkcounter = 1
+		function getshortenedlink(link){
+			let newkey = `{link${emaillinkcounter < 10 ? `0${emaillinkcounter}` : emaillinkcounter}}`
+			emaillinkmap[newkey] = link
+			emaillinkcounter++
+
+			return newkey
+		}
+
+		function getcalendarcontext(tempevents){
+			if(tempevents.length == 0) return 'No events'
+
+			function getDateTimeText(currentDatetime) {
+				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
+				const formattedTime = `${currentDatetime.getHours().toString().padStart(2, '0')}:${currentDatetime.getMinutes().toString().padStart(2, '0')}`
+				return `${formattedDate} ${formattedTime}`
+			}
+
+			function getDateText(currentDatetime) {
+				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
+				return `${formattedDate} (all day)`
+			}
+
+			function isAllDay(item){
+				return !item.start.minute && !item.end.minute
+			}
+
+			let tempoutput = ''
+			for(let d of tempevents){
+				let newstring = `Event title: ${d.title || 'New Event'}, ID: ${gettempid(d.id, 'event')}, start date: ${isAllDay(d) ? getDateText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute)) : getDateTimeText(new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute))}, end date: ${isAllDay(d) ? getDateText(new Date(d.end.year, d.end.month, d.end.day - 1, 0, d.end.minute)) : getDateTimeText(new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute))}${d.repeat.frequency != null && d.repeat.interval != null ? `, recurrence: ${getRecurrenceString(d)}` : ''}.`
+
+				eventslist.push(d.title || 'New Event')
+
+				if(tempoutput.length + newstring.length > MAX_CALENDAR_CONTEXT_LENGTH) break
+
+				tempoutput += '\n' + newstring
+			}
+			return tempoutput
+		}
+
+		function gettodocontext(temptodos){
+			if(temptodos.length == 0) return 'No tasks'
+
+			function getDateTimeText(currentDatetime) {
+				const formattedDate = `${currentDatetime.getFullYear()}-${(currentDatetime.getMonth() + 1).toString().padStart(2, '0')}-${currentDatetime.getDate().toString().padStart(2, '0')}`
+				const formattedTime = `${currentDatetime.getHours().toString().padStart(2, '0')}:${currentDatetime.getMinutes().toString().padStart(2, '0')}`
+				return `${formattedDate} ${formattedTime}`
+			}
+
+			function getDHMText(input) {
+				let temp = input
+				let days = Math.floor(temp / 1440)
+				temp -= days * 1440
+			
+				let hours = Math.floor(temp / 60)
+				temp -= hours * 60
+			
+				let minutes = temp
+			
+				if (days) days += 'd'
+				if (hours) hours += 'h'
+				if (minutes || (hours == 0 && days == 0)) minutes += 'm'
+			
+				return [days, hours, minutes].filter(f => f).join(' ')
+			}
+
+
+			let tempoutput = ''
+			for(let d of temptodos){
+				let newstring = `Task title: ${d.title || 'New Task'}, ID: ${gettempid(d.id, 'task')}, due date: ${getDateTimeText(new Date(d.endbefore.year, d.endbefore.month, d.endbefore.day, 0, d.endbefore.minute))}, time needed: ${getDHMText(d.duration || Math.floor(((new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime()) - new Date(d.start.year, d.start.month, d.start.day, 0, d.start.minute).getTime())/60000))}, completed: ${d.completed}.`
+
+				taskslist.push(d.title || 'New Task')
+
+				if(tempoutput.length + newstring.length > MAX_TODO_CONTEXT_LENGTH) break
+
+				tempoutput += '\n' + newstring
+			}
+			return tempoutput
+		}
+
+
+		function getconversationhistory(temphistory){ //simple way for history, just send latest X messages
+			let tempoutput = []
+			let counter = 0
+			for(let interactionmessages of temphistory.reverse()){
+				if(JSON.stringify(interactionmessages).length + JSON.stringify(tempoutput).length > MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH) break //max X characters
+
+				if(counter > MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH) break //max X messages
+
+				for(let interactionmessage of interactionmessages){
+					if(interactionmessage?.function_call?.arguments){
+						let temparguments = JSON.parse(interactionmessage.function_call.arguments)
+						let tempcommands = temparguments.commands
+						if(tempcommands){
+							for(let tempcommand of tempcommands){
+								let commandarguments = Object.values(tempcommand)[0]
+								if(commandarguments.id){
+									//update id business
+									let newid = gettempid(commandarguments.id)
+									if(newid){
+										commandarguments.id = newid
+									}
+								}
+							}
+						}
+						interactionmessage.function_call.arguments = JSON.stringify(temparguments)
+
+					}
+				}
+
+				tempoutput.push(...interactionmessages.reverse())
+				counter++
+			}
+			return tempoutput.reverse()
+		}
+
+
+		const MAX_CALENDAR_CONTEXT_LENGTH = 2000
+		const MAX_TODO_CONTEXT_LENGTH = 2000
+		const MAX_CONVERSATIONHISTORY_CONTEXT_LENGTH = 2000
+		const MAX_CONVERSATIONHISTORY_CONTEXT_ITEMS_LENGTH = 5
+
+		
+		let userinput = req.body.userinput.slice(0, 300)
+		let calendarevents = req.body.calendarevents
+		let calendartodos = req.body.calendartodos
+		let timezoneoffset = req.body.timezoneoffset
+		let rawconversationhistory1 = req.body.chathistory1
+		let rawconversationhistory = req.body.chathistory
+
+		let eventslist = []
+		let taskslist = []
+		let calendarcontext = getcalendarcontext(calendarevents)
+		let todocontext = gettodocontext(calendartodos)
+		let conversationhistory1 = getconversationhistory(rawconversationhistory1)
+		let conversationhistory = getconversationhistory(rawconversationhistory)
+
+		//REQUEST
+		let output = await queryGptWithFunction(userinput, calendarcontext, todocontext, conversationhistory1, conversationhistory, timezoneoffset)
+
+
+		console.warn(userid, userinput)
+
+		if(output){
+			return res.json({ ...output, idmap: idmap, emaillinkmap: emaillinkmap })
+		}
+	}catch(err){
+		console.error(err)
+		return res.status(401).json({ error: markdowntryagainerror })
+	}
 })
-
-
-
 
 
 app.post('/savegptchatinteraction', async (req, res) => {
@@ -7063,7 +7294,7 @@ app.post('/getcardhint', async (req, res) => {
 					content: userprompt
 				}
 				],
-				max_completion_tokens: 500,
+				max_tokens: 500,
 			})
 
 			const content = response.choices[0].message.content
