@@ -5218,7 +5218,7 @@ app.post('/gettasksuggestions', async (req, res) => {
 					role: 'user',
 					content: prompt
 				}],
-				max_completion_tokens: 200,
+				max_tokens: 200,
 			})
 
 			return res.choices[0].message.content
@@ -5293,7 +5293,7 @@ app.post('/getsubtasksuggestions', async (req, res) => {
 						content: prompt
 					}
 				],
-				max_completion_tokens: 200,
+				max_tokens: 200,
 			})
 
 			return res.choices[0].message.content
@@ -5458,7 +5458,7 @@ app.post('/getgptchatresponsetaskstarted', async (req, res) => {
 					content: inputtext,
 				}
 			],
-			max_completion_tokens: 200,
+			max_tokens: 200,
 			temperature: 1,
 			top_p: 1,
 		})
@@ -5578,7 +5578,7 @@ app.post('/getgptchatresponsetaskcompleted', async (req, res) => {
 					content: inputtext,
 				}
 			],
-			max_completion_tokens: 200,
+			max_tokens: 200,
 			temperature: 1,
 			top_p: 1,
 		})
@@ -5677,7 +5677,7 @@ app.post('/getgptchatresponseeveningsummary', async (req, res) => {
 					content: inputtext,
 				}
 			],
-			max_completion_tokens: 200,
+			max_tokens: 200,
 			temperature: 1,
 			top_p: 1,
 		})
@@ -5790,7 +5790,7 @@ app.post('/getgptchatresponsemorningsummary', async (req, res) => {
 					content: inputtext,
 				}
 			],
-			max_completion_tokens: 200,
+			max_tokens: 200,
 			temperature: 1,
 			top_p: 1,
 		})
@@ -6423,7 +6423,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						}
 					],
 					max_completion_tokens: 200,
-					temperature: 0.5,
 					top_p: 1,
 					stream: true
 				})
@@ -6562,7 +6561,6 @@ app.post('/getgptchatinteractionV2', async (req, res) => {
 						let request2options = {
 							model: GPT_MODEL,
 							max_completion_tokens: commands.length > 0 ? 1500 : 300, //more tokens for functions
-							temperature: 0.5,
 							top_p: 1,
 							stream: true
 						}
