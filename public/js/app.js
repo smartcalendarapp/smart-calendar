@@ -17507,7 +17507,9 @@ let animatenextitem;
 let isautoscheduling = false;
 let iseditingschedule = false;
 let rescheduletaskfunction;
-async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassedtodos = [], eventsuggestiontodos = [], moveditemtimestamp, moveditem}) {
+let isRescheduleDialogOpen = false;
+let rescheduleDialogToken = 0;
+async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassedtodos = [], eventsuggestiontodos = [], moveditemtimestamp, moveditem, deferScheduling = false}) {
 	try{
 		//functions
 
@@ -17697,74 +17699,135 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 
 
 		//check for todos that haven't been done - ask to reschedule them
-		let passedtodos = smartevents.filter(d => new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() <= Date.now() && (!moveditem || d.id != moveditem.id))
-		if(resolvedpassedtodos){
-			passedtodos = passedtodos.filter(d => !resolvedpassedtodos.find(f => f == d.id))
+	let passedtodos = smartevents.filter(d =>
+	new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() <= Date.now() &&
+	(!moveditem || d.id != moveditem.id)
+	);
+	if (resolvedpassedtodos) {
+	passedtodos = passedtodos.filter(d => !resolvedpassedtodos.find(f => f == d.id));
+	}
+
+	if (passedtodos.length > 0) {
+	// show only one dialog at a time; defer ALL scheduling until all are answered
+	if (isRescheduleDialogOpen) return;
+
+	isRescheduleDialogOpen = true;
+	const overdueitem = passedtodos[0];
+	const myToken = ++rescheduleDialogToken;
+
+	const rescheduleHandler = async (complete = false) => {
+		// cancel stale handler if a newer dialog took over
+		if (myToken !== rescheduleDialogToken) return;
+
+		clearInterval(checkinterval);
+
+		let tempitem = calendar.events.find(d => d.id == overdueitem.id);
+		if (tempitem) {
+		// prepare for later single-run scheduling
+		tempitem.autoschedulelocked = false;
+
+		// if user had dragged it into the future, keep it "start-after" locked
+		if (new Date(tempitem.end.year, tempitem.end.month, tempitem.end.day, 0, tempitem.end.minute).getTime() > Date.now()) {
+			tempitem.autoschedulelocked = true;
+			tempitem.startafter.year = tempitem.start.year;
+			tempitem.startafter.month = tempitem.start.month;
+			tempitem.startafter.day = tempitem.start.day;
+			tempitem.startafter.minute = tempitem.start.minute;
 		}
-	
-		if(passedtodos.length > 0){
-			let overdueitem = passedtodos[0]
-
-			rescheduletaskfunction = async function(complete){
-				let tempitem = calendar.events.find(d => d.id == overdueitem.id)
-				if(tempitem){
-					tempitem.autoschedulelocked = false
-
-					if(new Date(tempitem.end.year, tempitem.end.month, tempitem.end.day, 0, tempitem.end.minute).getTime() > Date.now()){
-						tempitem.autoschedulelocked = true
-						tempitem.startafter.year = tempitem.start.year
-						tempitem.startafter.month = tempitem.start.month
-						tempitem.startafter.day = tempitem.start.day
-						tempitem.startafter.minute = tempitem.start.minute
-					}
-				}
-
-				if(complete){
-					if(tempitem){
-						todocompleted(tempitem.id)
-						fixrecurringtodo(tempitem)
-						fixsubandparenttask(tempitem)
-
-						calendar.updateTodo()
-					}
-					calendar.updateEvents()
-				}
-
-				let rescheduletaskpopup = getElement('rescheduletaskpopup')
-				rescheduletaskpopup.classList.add('hiddenpopup')
-
-				let newresolvedpassedtodos = resolvedpassedtodos || []
-
-				newresolvedpassedtodos.push(overdueitem.id)
-
-				await sleep(300)
-
-				autoScheduleV2({smartevents: smartevents, addedtodos: addedtodos, resolvedpassedtodos: newresolvedpassedtodos, eventsuggestiontodos: eventsuggestiontodos})
-			}
-
-			//show popup
-			let rescheduletaskpopuptext = getElement('rescheduletaskpopuptext')
-			rescheduletaskpopuptext.innerHTML = `We want to keep your schedule up-to-date.<br>Have you completed <span class="text-bold">${Calendar.Event.getTitle(overdueitem)}</span>?`
-
-			let rescheduletaskpopupbuttons = getElement('rescheduletaskpopupbuttons')
-			rescheduletaskpopupbuttons.innerHTML = `
-				<div class="border-8px background-tint-1 hover:background-tint-2 padding-8px-12px text-primary text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction()">No, reschedule it</div>
-				<div class="border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer" onclick="rescheduletaskfunction(true)">Yes, mark completed</div>`
-
-			let rescheduletaskpopup = getElement('rescheduletaskpopup')
-			rescheduletaskpopup.classList.remove('hiddenpopup')
-
-			let checkinterval = setInterval(function(){
-				if(!calendar.events.find(d => d.id == overdueitem.id) || overdueitem.completed || new Date(overdueitem.end.year, overdueitem.end.month, overdueitem.end.day, 0, overdueitem.end.minute).getTime() > Date.now()){
-					clearInterval(checkinterval)
-					rescheduletaskfunction()
-				}
-			}, 1000)
-			return
 		}
 
+		if (complete) {
+		if (tempitem) {
+			todocompleted(tempitem.id);
+			fixrecurringtodo(tempitem);
+			fixsubandparenttask(tempitem);
+			calendar.updateTodo();
+		}
+		// no scheduling here—defer to the final run
+		calendar.updateEvents();
+		}
 
+		// hide popup
+		const rescheduletaskpopup = getElement('rescheduletaskpopup');
+		rescheduletaskpopup.classList.add('hiddenpopup');
 
+		// mark this item resolved for THIS pass
+		const newresolvedpassedtodos = [...(resolvedpassedtodos || []), overdueitem.id];
+
+		// release lock so the next overdue item can prompt
+		isRescheduleDialogOpen = false;
+
+		await sleep(300);
+
+		// Re-enter autoScheduleV2 to either ask the next overdue item
+		// or (when none left) proceed to ONE scheduling pass
+		const remainingOverdues = smartevents
+  .filter(d =>
+    new Date(d.end.year, d.end.month, d.end.day, 0, d.end.minute).getTime() <= Date.now() &&
+    (!moveditem || d.id != moveditem.id)
+  )
+  .filter(d => !newresolvedpassedtodos.includes(d.id));
+
+autoScheduleV2({
+  smartevents,
+  addedtodos,
+  resolvedpassedtodos: newresolvedpassedtodos,
+  eventsuggestiontodos,
+  moveditemtimestamp,
+  moveditem,
+  // stay in ask-only mode until none left
+  deferScheduling: remainingOverdues.length > 0
+});
+
+	};
+
+  // build popup (no inline onclicks so nothing gets overwritten)
+  const rescheduletaskpopuptext = getElement('rescheduletaskpopuptext');
+  rescheduletaskpopuptext.innerHTML =
+    `We want to keep your schedule up-to-date.<br>Have you completed <span class="text-bold">${Calendar.Event.getTitle(overdueitem)}</span>?`;
+
+  const buttons = getElement('rescheduletaskpopupbuttons');
+  buttons.innerHTML = '';
+
+  const noBtn = document.createElement('div');
+  noBtn.className = 'border-8px background-tint-1 hover:background-tint-2 padding-8px-12px text-primary text-14px transition-duration-100 pointer';
+  noBtn.textContent = 'No, reschedule it';
+  noBtn.addEventListener('click', () => rescheduleHandler(false));
+
+  const yesBtn = document.createElement('div');
+  yesBtn.className = 'border-8px background-blue hover:background-blue-hover padding-8px-12px text-white text-14px transition-duration-100 pointer';
+  yesBtn.textContent = 'Yes, mark completed';
+  yesBtn.addEventListener('click', () => rescheduleHandler(true));
+
+  buttons.appendChild(noBtn);
+  buttons.appendChild(yesBtn);
+
+  const rescheduletaskpopup = getElement('rescheduletaskpopup');
+  rescheduletaskpopup.classList.remove('hiddenpopup');
+
+  // auto-close if item disappears/changes while dialog is open
+  const checkinterval = setInterval(function () {
+    if (myToken !== rescheduleDialogToken) { // superseded by newer dialog
+      clearInterval(checkinterval);
+      return;
+    }
+    if (
+      !calendar.events.find(d => d.id == overdueitem.id) ||
+      overdueitem.completed ||
+      new Date(overdueitem.end.year, overdueitem.end.month, overdueitem.end.day, 0, overdueitem.end.minute).getTime() > Date.now()
+    ) {
+      clearInterval(checkinterval);
+      rescheduleHandler(false);
+    }
+  }, 1000);
+
+  // IMPORTANT: exit now—no scheduling until all overdue items are answered
+  return;
+}
+
+if (deferScheduling) {
+  return;
+}
 		//start
 		if (true) {
 			//SMART FOCUS
@@ -18310,7 +18373,7 @@ async function autoScheduleV2({smartevents = [], addedtodos = [], resolvedpassed
 		let sortedmodifiedevents =  sortstartdate(modifiedevents)
 		for(let item of sortedmodifiedevents){
 			await animateitem(item.id)
-			await sleep(400)
+			await sleep(300)
 		}
 
 		//post animate

@@ -170,9 +170,9 @@ class CardSet{
             return `${this.title.replace('\\n', '')}`
         }
         function replaceterms(text){
-            let terms = ['gpt_import', 'chinese_import']
+            let terms = ['gpt_import', 'zh_import']
             for(let term of terms){
-                text = text.replaceAll(term, '')
+                text = text.replaceAll('['+term+']', '')
             }
             return text
         }
