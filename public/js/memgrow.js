@@ -1105,6 +1105,9 @@ function opencardset(input){
                     }
 
                     userdata.importcardsets.shift()
+
+                    editcardmode = true
+                    updatescreen()
                     return
                 }
             }catch(e){}
@@ -2196,6 +2199,8 @@ document.addEventListener('paste', async (event) => {
                             }
 
                         }
+                        editcardmode = true
+                        updatescreen()
                         return
                     }
                 }catch(e){}
