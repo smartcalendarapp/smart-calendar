@@ -7387,20 +7387,22 @@ app.post('/gpt-add-memgrow-card', async (req, res) => {
 		}
 
 		let memgrowdata = await getmemgrowdata(MEMGROW_USER_ID)
-		let tempcardset = memgrowdata.data.cardsets.find(d => d?.title?.includes('[gpt_import]'))
-		if(!tempcardset){
-			return res.status(401).json({ success: false, message: 'No set with [gpt_import] in title found' });
+		if(!memgrowdata.data.importcardsets) memgrowdata.data.importcardsets = []
+		
+		let newcardset = {
+			cards: []
 		}
-		if(tempcardset?.cards?.length > 0){
-			tempcardset.cards.push(...items)
-		}
+		newcardset.cards.push(...items)
+
+		memgrowdata.data.importcardsets.push(newcardset)
+
 
 		let lastedited = Date.now()
 
 		await setmemgrowdata({ id: DEV_ID, data: memgrowdata.data });
 		await setmemgrowlastediteddata({ id: DEV_ID, lastedited });
 
-		res.status(200).json({ success: true, message: `${items.length} card${items.length != 1 ? 's' : ''} successfully saved.` });
+		res.status(200).json({ success: true, message: `Successfully imported ${items.length} card${items.length != 1 ? 's' : ''}.` });
     }catch(err){
         console.error(err)
         return res.status(401).end()

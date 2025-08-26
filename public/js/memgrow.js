@@ -39,6 +39,7 @@ function sleep(time) {
 class UserData{
     constructor(){
         this.cardsets = []
+        this.importcardsets = []
     }
 
     addCardSet(cardset){
@@ -169,15 +170,9 @@ class CardSet{
         if(this.isNewlineSet()){
             return `${this.title.replace('\\n', '')}`
         }
-        function replaceterms(text){
-            let terms = ['gpt_import', 'zh_import']
-            for(let term of terms){
-                text = text.replaceAll('['+term+']', '')
-            }
-            return text
-        }
-        return `<div class="pointer-none text-16px text-bold">${replaceterms(this.title) || 'New Card Set'}</div>
-        <div class="pointer-none text-13px text-secondary">${displaynumber(this.cards.length, 'item')} • ${this.getStatusText()}</div>
+
+        return `<div class="pointer-none text-16px text-bold">${this.title || 'New Card Set'}</div>
+        <div class="pointer-none text-13px text-secondary">${displaynumber(this.cards.length, 'card')} • ${this.getStatusText()}</div>
         <div class="absolute cardsetinside top-0 right-0 margin-12px">
             <svg width="22" height="22" viewBox="0 0 22 22" class="cardsetinside circular-progress display-flex align-center justify-center right-0" style="--progress: ${this.getMemoryScore()}">
                 <circle class="bg"></circle>
@@ -492,6 +487,12 @@ function updatescreendynamically(){
             if(!cardset) continue
 
             div.innerHTML = cardset.getInnerHTML()
+
+            if(userdata.importcardsets.length > 0){
+                div.classList.add('hoverblueline')
+            }else{
+                div.classList.remove('hoverblueline')
+            }
         }
     }else if(screenview == 1){
         let cardgroupblur = getelement('cardgroupblur')
@@ -561,6 +562,15 @@ async function updatescreen(){
             }
         }else{
             updatepointstext(userdata.getMemoryScore())
+        }
+
+
+        if(userdata.importcardsets.length > 0){
+            getelement('maintitle').innerHTML = `Choose a card set to import into <span class="text-secondary text-14px">${displaynumber(userdata.importcardsets[0].cards?.length, 'card')}</span>`
+            getelement('maintitle').classList.add('bluetext')
+        }else{
+            getelement('maintitle').innerHTML = `Welcome to MemGrow`
+            getelement('maintitle').classList.remove('bluetext')
         }
     }else if(screenview == 1){
         if(editcardmode){
@@ -958,15 +968,6 @@ function clickmaintitle(){
         }else{
             opencardset(sets[0].id)
         }
-
-        /*if(sets.length == 1){
-            opencardset(sets[0].id)
-        }else{
-            let mixset = new CardSet('Mixed Review', sets.map(d => d.getReviewCards()).flat())
-            mixset.mixset = true
-            
-            opencardset('mix', mixset)
-        }*/
     }
 }
 
@@ -1046,30 +1047,68 @@ function clickdoneeditcardset(){
 }
 
 
-function opencardset(input, set){
-    if(input == 'mix'){
-        currentcardset = set
-
-        currentcardindex = 0
-
-        showanswer = false
-        hidecardgroupblur = false
-
-        clickscreen(1)
-    }else if(userdata.getCardSet(input)){
+function opencardset(input){
+    if(userdata.getCardSet(input)){
         currentcardset = userdata.getCardSet(input)
 
         currentcardindex = 0
         
-        if(currentcardset.cards.filter(d => d.fronttext && d.backtext).length == 0){
-            //editcardmode = true
-        }
         if(currentcardset.cards.length == 0){
             currentcardset.addCard(new Card())
         }
 
         showanswer = false
         hidecardgroupblur = false
+
+        if(userdata.importcardsets.length > 0){
+            try{
+                let temp = userdata.importcardsets[0].cards
+                if(Array.isArray(temp)){
+                    let setindex = false
+                    for(let item of temp){
+                        let ft = item.fronttext || item.frontText || item.front || ''
+                        let bt = item.backtext || item.backText || item.back || ''
+                        let id = item.id
+
+                        if(ft || bt){
+                                let foundcard;
+                                if(id){
+                                    foundcard = currentcardset.cards.find(r => r.id == id)
+                                }
+
+                                if(foundcard){
+                                    foundcard.fronttext = ft || foundcard.fronttext
+                                    foundcard.backtext = bt || foundcard.backtext
+
+                                    if(!setindex){
+                                        currentcardindex = currentcardset.cards.findIndex(r => r.id == id)
+                                        setindex = true
+                                    }
+                                }else{
+                                    if(currentcardset.cards.length == 1 && !currentcardset.cards[0].fronttext && !currentcardset.cards[0].backtext){
+                                        currentcardset.cards[0].fronttext = ft
+                                        currentcardset.cards[0].backtext = bt
+                                        
+                                        currentcardindex = 0
+                                        setindex = true
+                                    }else{
+                                        currentcardset.cards.push(new Card(ft, bt))
+
+                                        if(!setindex){
+                                            currentcardindex = currentcardset.cards.length - 1
+                                            setindex = true
+                                        }
+                                    }
+                                }
+                            }
+
+                    }
+
+                    userdata.importcardsets.shift()
+                    return
+                }
+            }catch(e){}
+        }
 
         clickscreen(1)
 
@@ -1423,19 +1462,8 @@ function processcarddrag(){
 //new cardset
 function createnewcardset(){
     let newcardset = new CardSet()
-    currentcardset = newcardset
-
-    currentcardset.addCard(new Card())
-    
-    userdata.addCardSet(newcardset)
-
-    //editcardmode = true
-    showanswer = false
-    hidecardgroupblur = false
-
-    currentcardindex = 0
-    
-    clickscreen(1)    
+    userdata.cardsets.push(newcardset)
+    opencardset(newcardset.id)
 }
 
 
@@ -2124,6 +2152,53 @@ document.addEventListener('paste', async (event) => {
             } else if (item.types.includes('text/plain')) {
                 const text = await item.getType('text/plain')
                 const data = await text.text()
+
+                //check if text is json format already
+                try{
+                    let temp = JSON.parse(data)
+                    if(Array.isArray(temp)){
+                        let setindex = false
+                        for(let item of temp){
+                            let ft = item.fronttext || item.frontText || item.front || ''
+                            let bt = item.backtext || item.backText || item.back || ''
+                            let id = item.id
+
+                            if(ft || bt){
+                                let foundcard;
+                                if(id){
+                                    foundcard = currentcardset.cards.find(r => r.id == id)
+                                }
+
+                                if(foundcard){
+                                    foundcard.fronttext = ft || foundcard.fronttext
+                                    foundcard.backtext = bt || foundcard.backtext
+
+                                    if(!setindex){
+                                        currentcardindex = currentcardset.cards.findIndex(r => r.id == id)
+                                        setindex = true
+                                    }
+                                }else{
+                                    if(currentcardset.cards.length == 1 && !currentcardset.cards[0].fronttext && !currentcardset.cards[0].backtext){
+                                        currentcardset.cards[0].fronttext = ft
+                                        currentcardset.cards[0].backtext = bt
+                                        
+                                        currentcardindex = 0
+                                        setindex = true
+                                    }else{
+                                        currentcardset.cards.push(new Card(ft, bt))
+
+                                        if(!setindex){
+                                            currentcardindex = currentcardset.cards.length - 1
+                                            setindex = true
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                        return
+                    }
+                }catch(e){}
 
                 myuploads.push({ type: 'text', data: data, id: generateID() })
                 updatefileuploader()

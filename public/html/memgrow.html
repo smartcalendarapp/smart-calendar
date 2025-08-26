@@ -45,7 +45,7 @@ if(localStorage.getItem('noanalytics')!=JSON.stringify(true)){
 <body>
     <div class="absolute flex-column top-0 left-0 width-full height-full flex-column">
         <div class="hiddenhovergroup display-flex flex-row gap-12px align-center pointer padding-24px" onclick="clickmaintitle()">
-            <div class="pointer-none text-bold text-32px">Welcome to MemGrow</div>
+            <div class="pointer-none text-bold text-32px" id="maintitle">Welcome to MemGrow</div>
             <div class="pointer-none text-12px pointstext" id="pointstext"></div>
         </div>
         <div class="padding-24px flex-row flex-wrap-wrap gap-24px overflow-auto" id="cardsetlist"></div>

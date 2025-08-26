@@ -52,6 +52,12 @@ body {
 }
 
 
+
+.bluetext{
+	color: #3075ff !important;
+}
+
+
 /* SPECIFIC CLASSES */
 
 .cardset{
@@ -67,6 +73,13 @@ body {
 .cardset:hover{
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
     transform: scale(1.05)
+}
+
+.cardset.hoverblueline{
+    outline: 2px solid transparent;
+}
+.cardset.hoverblueline:hover{
+    outline: 2px solid #3075ff;
 }
 
 .centerminitext{
