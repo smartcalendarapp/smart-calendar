@@ -566,7 +566,7 @@ async function updatescreen(){
 
 
         if(userdata.importcardsets.length > 0){
-            getelement('maintitle').innerHTML = `Choose a card set to import into <span class="text-secondary text-14px">${displaynumber(userdata.importcardsets[0].cards?.length, 'card')}</span>`
+            getelement('maintitle').innerHTML = `Choose a card set to import into <span class="text-secondary text-14px text-normal">${displaynumber(userdata.importcardsets[0].cards?.length, 'card')}</span>`
             getelement('maintitle').classList.add('bluetext')
         }else{
             getelement('maintitle').innerHTML = `Welcome to MemGrow`
@@ -1062,56 +1062,66 @@ function opencardset(input){
 
         if(userdata.importcardsets.length > 0){
             try{
-                let temp = userdata.importcardsets[0].cards
-                if(Array.isArray(temp)){
-                    let setindex = false
-                    for(let item of temp){
-                        let ft = item.fronttext || item.frontText || item.front || ''
-                        let bt = item.backtext || item.backText || item.back || ''
-                        let id = item.id
-
-                        if(ft || bt){
-                                let foundcard;
-                                if(id){
-                                    foundcard = currentcardset.cards.find(r => r.id == id)
-                                }
-
-                                if(foundcard){
-                                    foundcard.fronttext = ft || foundcard.fronttext
-                                    foundcard.backtext = bt || foundcard.backtext
-
-                                    if(!setindex){
-                                        currentcardindex = currentcardset.cards.findIndex(r => r.id == id)
-                                        setindex = true
-                                    }
-                                }else{
-                                    if(currentcardset.cards.length == 1 && !currentcardset.cards[0].fronttext && !currentcardset.cards[0].backtext){
-                                        currentcardset.cards[0].fronttext = ft
-                                        currentcardset.cards[0].backtext = bt
-                                        
-                                        currentcardindex = 0
-                                        setindex = true
-                                    }else{
-                                        currentcardset.cards.push(new Card(ft, bt))
-
-                                        if(!setindex){
-                                            currentcardindex = currentcardset.cards.length - 1
-                                            setindex = true
-                                        }
-                                    }
-                                }
-                            }
-
+                //check if text is json format already
+                try {
+                    let parsed = userdata.importcardsets[0].cards
+                    if(!parsed) return
+                    if(!Array.isArray(parsed)){
+                        return
                     }
+
+                    let indexChosen = false;                     // set currentcardindex only once
+
+                    parsed
+                        // ignore completely empty cards coming in
+                        .filter(({ fronttext, backtext }) => fronttext || backtext)
+                        .forEach(item => {
+                        const { id } = item;
+                        const incomingCard = Object.assign(new Card(), item);
+
+                        // ── 1 │ does a card with this id already exist? ───────────────
+                        let idx = id != null
+                            ? currentcardset.cards.findIndex(c => c.id === id)
+                            : -1;
+
+                        if (idx !== -1) {
+                            // update the existing card, keep its original id
+                            Object.assign(currentcardset.cards[idx], incomingCard);
+                        }
+                        // ── 2 │ only placeholder card exists, so replace it ───────────
+                        else if (
+                            currentcardset.cards.length === 1 &&
+                            !currentcardset.cards[0].fronttext &&
+                            !currentcardset.cards[0].backtext
+                        ) {
+                            idx = 0;
+                            Object.assign(currentcardset.cards[0], incomingCard);
+                        }
+                        // ── 3 │ otherwise append as a brand-new card ─────────────────
+                        else {
+                            currentcardset.cards.push(incomingCard);
+                            idx = currentcardset.cards.length - 1;
+                        }
+
+                        if (!indexChosen) {
+                            currentcardindex = idx;
+                            indexChosen = true;
+                        }
+                    });
 
                     userdata.importcardsets.shift()
 
-                    editcardmode = true
-                    updatescreen()
-                    return
+                    editcardmode = true;
+                    updatescreen();
+
+                } catch (err) {
+                    console.error('Card import failed:', err);
                 }
+
             }catch(e){}
         }
+
+
 
         clickscreen(1)
 
@@ -2133,6 +2143,39 @@ function setrecognitionstatus(status, isusertriggered, tempuserwantstostop){
 
 
 
+//copy
+document.addEventListener('copy', (event) => {
+  // only when nothing editable has focus
+  if (document.activeElement && document.activeElement !== document.body) return;
+  if (typeof screenview !== 'undefined' && screenview != 1) return;
+
+  // if user selected some visible text, let the normal copy happen
+  const sel = window.getSelection && window.getSelection();
+  if (sel && !sel.isCollapsed && String(sel).trim() !== '') return;
+
+  try {
+    // get the current card
+    if (!currentcardset || !currentcardset.cards || currentcardset.cards.length === 0) return;
+    const idx = Math.max(0, Math.min(currentcardindex || 0, currentcardset.cards.length - 1));
+    const card = currentcardset.cards[idx];
+    if (!card) return;
+
+    const text = JSON.stringify(card);
+
+    // override clipboard contents
+    event.preventDefault();
+    if (event.clipboardData && event.clipboardData.setData) {
+      event.clipboardData.setData('text/plain', text);
+    } else if (navigator.clipboard && navigator.clipboard.writeText) {
+      // fallback for environments exposing async clipboard only
+      navigator.clipboard.writeText(text).catch(() => {});
+    }
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+
 //paste to upload
 document.addEventListener('paste', async (event) => {
     if(document.activeElement && document.activeElement !== document.body) return
@@ -2157,53 +2200,64 @@ document.addEventListener('paste', async (event) => {
                 const data = await text.text()
 
                 //check if text is json format already
-                try{
-                    let temp = JSON.parse(data)
-                    if(Array.isArray(temp)){
-                        let setindex = false
-                        for(let item of temp){
-                            let ft = item.fronttext || item.frontText || item.front || ''
-                            let bt = item.backtext || item.backText || item.back || ''
-                            let id = item.id
-
-                            if(ft || bt){
-                                let foundcard;
-                                if(id){
-                                    foundcard = currentcardset.cards.find(r => r.id == id)
-                                }
-
-                                if(foundcard){
-                                    foundcard.fronttext = ft || foundcard.fronttext
-                                    foundcard.backtext = bt || foundcard.backtext
-
-                                    if(!setindex){
-                                        currentcardindex = currentcardset.cards.findIndex(r => r.id == id)
-                                        setindex = true
-                                    }
-                                }else{
-                                    if(currentcardset.cards.length == 1 && !currentcardset.cards[0].fronttext && !currentcardset.cards[0].backtext){
-                                        currentcardset.cards[0].fronttext = ft
-                                        currentcardset.cards[0].backtext = bt
-                                        
-                                        currentcardindex = 0
-                                        setindex = true
-                                    }else{
-                                        currentcardset.cards.push(new Card(ft, bt))
-
-                                        if(!setindex){
-                                            currentcardindex = currentcardset.cards.length - 1
-                                            setindex = true
-                                        }
-                                    }
-                                }
-                            }
-
+                try {
+                    let parsed = JSON.parse(data);
+                    if(!parsed) return
+                    if(!Array.isArray(parsed)){
+                         if(typeof parsed === 'object' && !Array.isArray(parsed)){
+                            parsed = [parsed];
+                        }else{
+                            return
                         }
-                        editcardmode = true
-                        updatescreen()
-                        return
                     }
-                }catch(e){}
+
+                    let indexChosen = false;                     // set currentcardindex only once
+
+                    parsed
+                        // ignore completely empty cards coming in
+                        .filter(({ fronttext, backtext }) => fronttext || backtext)
+                        .forEach(item => {
+                        const { id } = item;
+                        const incomingCard = Object.assign(new Card(), item);
+
+                        // ── 1 │ does a card with this id already exist? ───────────────
+                        let idx = id != null
+                            ? currentcardset.cards.findIndex(c => c.id === id)
+                            : -1;
+
+                        if (idx !== -1) {
+                            // update the existing card, keep its original id
+                            Object.assign(currentcardset.cards[idx], incomingCard);
+                        }
+                        // ── 2 │ only placeholder card exists, so replace it ───────────
+                        else if (
+                            currentcardset.cards.length === 1 &&
+                            !currentcardset.cards[0].fronttext &&
+                            !currentcardset.cards[0].backtext
+                        ) {
+                            idx = 0;
+                            Object.assign(currentcardset.cards[0], incomingCard);
+                        }
+                        // ── 3 │ otherwise append as a brand-new card ─────────────────
+                        else {
+                            currentcardset.cards.push(incomingCard);
+                            idx = currentcardset.cards.length - 1;
+                        }
+
+                        if (!indexChosen) {
+                            currentcardindex = idx;
+                            indexChosen = true;
+                        }
+                    });
+
+                    editcardmode = true;
+                    updatescreen();
+
+                    return
+                } catch (err) {
+                    console.error('Card import failed:', err);
+                }
+
 
                 myuploads.push({ type: 'text', data: data, id: generateID() })
                 updatefileuploader()

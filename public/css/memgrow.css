@@ -75,7 +75,7 @@ body {
     transform: scale(1.05)
 }
 
-.cardset.hoverblueline{
+.cardset{
     outline: 2px solid transparent;
 }
 .cardset.hoverblueline:hover{
