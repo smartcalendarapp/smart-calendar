@@ -905,7 +905,7 @@ async function submitaifield(event){
             },
             body: JSON.stringify({
                 input: input,
-                existingcards: currentcardset.cards
+                existingcards: [currentcardset.cards[currentcardindex]]
             })
         })
 

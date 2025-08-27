@@ -7311,7 +7311,7 @@ app.post('/generateaicards', async (req, res) => {
 	
     const input = req.body.input
     const istranscript = req.body.istranscript
-    const existingcards = req.body.existingcards.slice(-1) //or decide to select them to save ctx
+    const existingcards = req.body.existingcards
     const files = req.body.files
 
 const systemprompt = `Each card prompt must follow the rules below:
@@ -7404,7 +7404,6 @@ app.post('/gpt-add-memgrow-card', async (req, res) => {
 		await setmemgrowdata({ id: MEMGROW_USER_ID, data: memgrowdata.data });
 		await setmemgrowlastediteddata({ id: MEMGROW_USER_ID, lastedited });
 
-		console.warn(JSON.stringify((await getmemgrowdata(MEMGROW_USER_ID)).importcardsets))
 
 		res.status(200).json({ success: true, message: `${items.length} card${items.length != 1 ? 's' : ''} successfully saved.` });
     }catch(err){
