@@ -7386,7 +7386,6 @@ app.post('/gpt-add-memgrow-card', async (req, res) => {
 			return res.status(400).json({ success: false, message: 'Bad Request: "items" must be an array' });
 		}
 
-		console.warn(JSON.stringify(items))
 
 		let memgrowdata = await getmemgrowdata(MEMGROW_USER_ID)
 		if(!memgrowdata.data.importcardsets) memgrowdata.data.importcardsets = []
@@ -7398,13 +7397,15 @@ app.post('/gpt-add-memgrow-card', async (req, res) => {
 
 		memgrowdata.data.importcardsets.push(newcardset)
 
+		console.warn(JSON.stringify(memgrowdata.data.importcardsets))
+
 
 		let lastedited = Date.now()
 
 		await setmemgrowdata({ id: DEV_ID, data: memgrowdata.data });
 		await setmemgrowlastediteddata({ id: DEV_ID, lastedited });
 
-		res.status(200).json({ success: true, message: `Successfully imported ${items.length} card${items.length != 1 ? 's' : ''}.` });
+		res.status(200).json({ success: true, message: `${items.length} card${items.length != 1 ? 's' : ''} successfully saved.` });
     }catch(err){
         console.error(err)
         return res.status(401).end()
