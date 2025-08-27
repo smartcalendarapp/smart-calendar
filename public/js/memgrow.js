@@ -221,7 +221,7 @@ function restoreUserData(raw) {
     const ud = new UserData();
   
     // If there are no cardsets, bail early
-    if (!Array.isArray(raw.cardsets)) return ud;
+    if (!Array.isArray(raw.cardsets) && !Array.isArray(raw.importcardsets)) return ud;
   
     raw.cardsets.forEach(rawSet => {
       // Create a real CardSet, then copy over every own‑property
@@ -233,6 +233,18 @@ function restoreUserData(raw) {
         : [];
   
       ud.cardsets.push(cs);
+    });
+
+     raw.importcardsets.forEach(rawSet => {
+      // Create a real CardSet, then copy over every own‑property
+      const cs = Object.assign(new CardSet(), rawSet);
+  
+      // Now rebuild its `cards` array with real Card instances
+      cs.cards = Array.isArray(rawSet.cards)
+        ? rawSet.cards.map(rawCard => Object.assign(new Card(), rawCard))
+        : [];
+  
+      ud.importcardsets.push(cs);
     });
   
     return ud;
