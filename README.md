@@ -2,7 +2,7 @@
 (c) 2025 James Tsaggaris
 
 
-For Penn Spark application:
+For application readers:
 
 Thank you for visiting my repository! I finished developing my main productivity app a year ago and it's been in production mode since then. I decided to make some additions to a sister app I developed, which is a spaced repetition memory app called MemGrow (under the same domain to save costs, at [https://smartcalendar.us/memgrow](https://smartcalendar.us/memgrow)).
 1. MemGrow is a memory app that uses flashcards. When you answer a card correctly, it waits longer before showing it again. If you get it wrong, it comes back sooner. My memory app has been used by many of my classmates during finals season to memorize formulas and concepts in courses like math, psychology, and physics. I have personally used it to learn 4000+ Chinese words.
