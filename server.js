@@ -791,6 +791,9 @@ async function processReminders(){
 	lastreminderdate = currentdate
 
 
+	return
+	//here2
+	
 	//send reminders
 	for(let item of sendreminders){
 		//push notifications
@@ -1699,7 +1702,8 @@ const apnoptions = {
   	production: true
 }
 
-let apnProvider = new apn.Provider(apnoptions)
+let apnProvider;// = new apn.Provider(apnoptions)
+//here2 - canceling for now until applications are over
 
 
 //OPENAI INITIALIZATION
